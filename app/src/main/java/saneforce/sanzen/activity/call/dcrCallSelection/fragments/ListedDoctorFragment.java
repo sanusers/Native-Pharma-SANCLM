@@ -173,7 +173,7 @@ public class ListedDoctorFragment extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             if(SharedPref.getMultiHQCode(requireContext()).contains(jsonObject.optString("id"))) {
-                                list.add(jsonObject.getString("name"));
+                                list.add(jsonObject.optString("name"));
                             }
                         }
                     }
@@ -228,9 +228,9 @@ public class ListedDoctorFragment extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             try {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                                    DcrCallTabLayoutActivity.TodayPlanSfCode = jsonObject.getString("id");
-                                    DcrCallTabLayoutActivity.TodayPlanSfName = jsonObject.getString("name");
+                                if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
+                                    DcrCallTabLayoutActivity.TodayPlanSfCode = jsonObject.optString("id");
+                                    DcrCallTabLayoutActivity.TodayPlanSfName = jsonObject.optString("name");
                                     SharedPref.saveHq(requireContext(), DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
                                     break;
                                 }
@@ -495,7 +495,7 @@ public class ListedDoctorFragment extends Fragment {
             Log.v("jsonArray", "--" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
-                filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
+                filterSelectionList.add(new DCRFillteredModelClass(jsonObject.optString("Name"), jsonObject.optString("Code")));
             }
 
         } catch (Exception ignored) {
@@ -559,16 +559,16 @@ public class ListedDoctorFragment extends Fragment {
                                 if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                     Log.v("DrCall", "111");
                                     float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                        if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+                                        if (jsonObject.optString("cust_status").equalsIgnoreCase("0")) {
                                             custListArrayList = SaveData(jsonObject, i, true);
                                         }
                                     }
                                 } else {
                                     Log.v("DrCall", "222");
                                     float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
                                         custListArrayList = SaveData(jsonObject, i, true);
                                     }
@@ -580,7 +580,7 @@ public class ListedDoctorFragment extends Fragment {
                             // This not need TbBased DCR
 //                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
 //                            Log.v("DrCall", "444");
-//                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
 //                                custListArrayList = SaveData(jsonObject, i);
 //                            }
 //                        } else {
@@ -630,20 +630,20 @@ public class ListedDoctorFragment extends Fragment {
                     jsonObject = jsonArray.getJSONObject(i);
                     try {
                         if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-                            if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
+                            if (!jsonObject.optString("Lat").isEmpty() && !jsonObject.optString("Long").isEmpty()) {
                                 if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                     Log.v("DrCall", "111");
                                     float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("Lat")), Double.parseDouble(jsonObject.optString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                        if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+                                        if (jsonObject.optString("cust_status").equalsIgnoreCase("0")) {
                                             custListArrayList = SaveData(jsonObject, i, true);
                                         }
                                     }
                                 } else {
                                     Log.v("DrCall", "222");
                                     float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("Lat")), Double.parseDouble(jsonObject.optString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
                                         custListArrayList = SaveData(jsonObject, i, true);
                                     }
@@ -655,7 +655,7 @@ public class ListedDoctorFragment extends Fragment {
                             // This not need TbBased DCR
 //                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
 //                            Log.v("DrCall", "444");
-//                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
 //                                custListArrayList = SaveData(jsonObject, i);
 //                            }
 //                        } else {
@@ -670,17 +670,17 @@ public class ListedDoctorFragment extends Fragment {
                     }
                /* switch (RequiredFiltered) {
                     case "Speciality":
-                        if (filteredStr.equalsIgnoreCase(jsonObject.getString("Specialty"))) {
+                        if (filteredStr.equalsIgnoreCase(jsonObject.optString("Specialty"))) {
                             AssignData(i);
                         }
                         break;
                     case "Category":
-                        if (filteredStr.equalsIgnoreCase(jsonObject.getString("Category"))) {
+                        if (filteredStr.equalsIgnoreCase(jsonObject.optString("Category"))) {
                             AssignData(i);
                         }
                         break;
                     case "Territory":
-                        if (filteredStr.equalsIgnoreCase(jsonObject.getString("Town_Name"))) {
+                        if (filteredStr.equalsIgnoreCase(jsonObject.optString("Town_Name"))) {
                             AssignData(i);
                         }
                         break;
@@ -728,7 +728,7 @@ public class ListedDoctorFragment extends Fragment {
 
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i, boolean isFenced) {
         try {
-            String brands = getBrands(jsonObject.getString("MappProds"));
+            String brands = getBrands(jsonObject.optString("MappProds"));
             if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
                     || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) && !stpOfflineDataDao.isNotApproved()))
                     && !deviation.equalsIgnoreCase("1")) {
@@ -737,7 +737,7 @@ public class ListedDoctorFragment extends Fragment {
                     List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
                     Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                     if (!drList.isEmpty()) {
-                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
                             prepareData(jsonObject, i, brands, false);
                         }
                     }
@@ -757,18 +757,18 @@ public class ListedDoctorFragment extends Fragment {
 //                        }
 //                        Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
 //                        if(!drList.isEmpty()) {
-//                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+//                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
 //                                prepareData(jsonObject, i, brands, false);
 //                            }
 //                        } else {
-                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
 //                            } else {
 //                                prepareData(jsonObject, i, brands, true)
                     }
 //                        }
 //                    } else {
-//                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
 //                            prepareData(jsonObject, i, brands, false);
 //                        } else {
 //                            prepareData(jsonObject, i, brands, true);
@@ -776,7 +776,7 @@ public class ListedDoctorFragment extends Fragment {
 //                    }
                 } else {
                     Log.d("TAG", "SaveData: 111");
-                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
                     } else {
                         prepareData(jsonObject, i, brands, true);
@@ -791,7 +791,7 @@ public class ListedDoctorFragment extends Fragment {
 //                List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
 //                Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
 //                if(!drList.isEmpty()) {
-//                    if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+//                    if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
 //                        prepareData(jsonObject, i, brands, false);
 //                    }
 //                } else
@@ -801,7 +801,7 @@ public class ListedDoctorFragment extends Fragment {
                         List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                         if(!drList.isEmpty()) {
-                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
                                 prepareData(jsonObject, i, brands, false);
                             }
                         }
@@ -837,19 +837,18 @@ public class ListedDoctorFragment extends Fragment {
         return custListArrayList;
     }
 
-    private void prepareData(JSONObject jsonObject, int i, String brands,
-                             boolean isClusterAvailable) throws JSONException {
+    private void prepareData(JSONObject jsonObject, int i, String brands, boolean isClusterAvailable) {
         if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
             if (jsonObject.has("Product_Code")) {
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.optString("GEOTagedCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code"), brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst"), jsonObject.getString("Doc_Class_ShortName"), jsonObject.getString("Doc_ClsCode"), isClusterAvailable));
+                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("SpecialtyCode"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagedCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("HosAddr"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), jsonObject.optString("Product_Code"), brands, jsonObject.optString("MProd"), jsonObject.optString("Tlvst"), jsonObject.optString("Doc_Class_ShortName"), jsonObject.optString("Doc_ClsCode"), isClusterAvailable));
             } else {
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagedCnt"), jsonObject.getString("Geototal"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), "", brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst"), jsonObject.getString("Doc_Class_ShortName"), jsonObject.getString("Doc_ClsCode"), isClusterAvailable));
+                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("SpecialtyCode"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagedCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("HosAddr"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), "", brands, jsonObject.optString("MProd"), jsonObject.optString("Tlvst"), jsonObject.optString("Doc_Class_ShortName"), jsonObject.optString("Doc_ClsCode"), isClusterAvailable));
             }
         } else {
             if (jsonObject.has("Product_Code")) {
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), "", "", String.valueOf(i), "", "", jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code"), brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst"), jsonObject.getString("Doc_Class_ShortName"), jsonObject.getString("Doc_ClsCode"), isClusterAvailable));
+                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("SpecialtyCode"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), "", "", String.valueOf(i), "", "", jsonObject.optString("HosAddr"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), jsonObject.optString("Product_Code"), brands, jsonObject.optString("MProd"), jsonObject.optString("Tlvst"), jsonObject.optString("Doc_Class_ShortName"), jsonObject.optString("Doc_ClsCode"), isClusterAvailable));
             } else {
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), "", "", String.valueOf(i), "", "", jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), "", brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst"), jsonObject.getString("Doc_Class_ShortName"), jsonObject.getString("Doc_ClsCode"), isClusterAvailable));
+                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("SpecialtyCode"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), "", "", String.valueOf(i), "", "", jsonObject.optString("HosAddr"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), "", brands, jsonObject.optString("MProd"), jsonObject.optString("Tlvst"), jsonObject.optString("Doc_Class_ShortName"), jsonObject.optString("Doc_ClsCode"), isClusterAvailable));
 
             }
 
@@ -877,29 +876,29 @@ public class ListedDoctorFragment extends Fragment {
         try {
             Log.v("CheckSelCall", "--dr-" + GeoTagApproval + "--" + DrGeoTag + "----" + TpBasedDcr);
             if (DrGeoTag.equalsIgnoreCase("1")) {
-                if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
+                if (!jsonObject.optString("Lat").isEmpty() && !jsonObject.optString("Long").isEmpty()) {
                     if (GeoTagApproval.equalsIgnoreCase("0")) {
                         Log.v("CheckSelCall", "111");
                         float[] distance = new float[2];
-                        Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), lat, lng, distance);
+                        Location.distanceBetween(Double.parseDouble(jsonObject.optString("Lat")), Double.parseDouble(jsonObject.optString("Long")), lat, lng, distance);
                         if (distance[0] < limitKm * 1000.0) {
-                            if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+                            if (jsonObject.optString("cust_status").equalsIgnoreCase("0")) {
                                 if (jsonObject.has("Product_Code")) {
-                                    custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code")));
+                                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("Lat"), jsonObject.optString("Long"), jsonObject.optString("Addrs"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), jsonObject.optString("Product_Code")));
                                 } else {
-                                    custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), ""));
+                                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("Lat"), jsonObject.optString("Long"), jsonObject.optString("Addrs"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), ""));
                                 }
                             }
                         }
                     } else {
                         Log.v("CheckSelCall", "222");
                         float[] distance = new float[2];
-                        Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), lat, lng, distance);
+                        Location.distanceBetween(Double.parseDouble(jsonObject.optString("Lat")), Double.parseDouble(jsonObject.optString("Long")), lat, lng, distance);
                         if (distance[0] < limitKm * 1000.0) {
                             if (jsonObject.has("Product_Code")) {
-                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code")));
+                                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("Lat"), jsonObject.optString("Long"), jsonObject.optString("Addrs"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), jsonObject.optString("Product_Code")));
                             } else {
-                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), ""));
+                                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("Lat"), jsonObject.optString("Long"), jsonObject.optString("Addrs"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), ""));
                             }
                         }
                     }
@@ -908,19 +907,19 @@ public class ListedDoctorFragment extends Fragment {
                 Log.v("CheckSelCall", "333");
                 if (TpBasedDcr.equalsIgnoreCase("0")) {
                     Log.v("CheckSelCall", "444");
-                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
+                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.optString("Town_Code"))) {
                         if (jsonObject.has("Product_Code")) {
-                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code")));
+                            custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("Lat"), jsonObject.optString("Long"), jsonObject.optString("Addrs"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), jsonObject.optString("Product_Code")));
                         } else {
-                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), ""));
+                            custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("Lat"), jsonObject.optString("Long"), jsonObject.optString("Addrs"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), ""));
                         }
                     }
                 } else {
                     Log.v("CheckSelCall", "555");
                     if (jsonObject.has("Product_Code")) {
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code")));
+                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("Lat"), jsonObject.optString("Long"), jsonObject.optString("Addrs"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), jsonObject.optString("Product_Code")));
                     } else {
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), ""));
+                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "1", jsonObject.optString("Category"), jsonObject.optString("CategoryCode"), jsonObject.optString("Specialty"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("Lat"), jsonObject.optString("Long"), jsonObject.optString("Addrs"), jsonObject.optString("DOB"), jsonObject.optString("DOW"), jsonObject.optString("DrEmail"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), jsonObject.optString("DrDesig"), ""));
                     }
                 }
             }
