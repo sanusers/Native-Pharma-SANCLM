@@ -158,9 +158,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             if(timer.containsKey(slideName)) {
                 list = timer.get(slideName);
             }
-            list.add(pageStartTime + " $ " + now);
-            timer.put(slideName, list);
-            Log.d("SlideTiming", "Final slide " + slideName + "started at " + pageStartTime + " ended after " + now);
+            if (!pageStartTime.equalsIgnoreCase(now)) {
+                list.add(pageStartTime + " $ " + now);
+                timer.put(slideName, list);
+                Log.d("SlideTiming", "Final slide " + slideName + "started at " + pageStartTime + " ended after " + now);
+            }
             currentPage = -1;
             pageStartTime = now;
         }
@@ -168,21 +170,20 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
     public void onPageChanged(int newPosition) {
         String now = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
-
         if(currentPage != -1 && !pageStartTime.isEmpty()) {
             String slideName = getSlideNameAt(currentPage);
             ArrayList<String> list = new ArrayList<>();
             if(timer.containsKey(slideName)) {
                 list = timer.get(slideName);
             }
-            list.add(pageStartTime + " $ " + now);
-            timer.put(slideName, list);
-            Log.d("SlideTiming", "Slide " + slideName + "started at " + pageStartTime + " ended after " + now);
+            if (!pageStartTime.equalsIgnoreCase(now)) {
+                list.add(pageStartTime + " $ " + now);
+                timer.put(slideName, list);
+                Log.d("SlideTiming", "Slide " + slideName + "started at " + pageStartTime + " ended after " + now);
+            }
         }
-
         pageStartTime = now;
         currentPage = newPosition;
-
     }
 
     public void resetTimer() {
