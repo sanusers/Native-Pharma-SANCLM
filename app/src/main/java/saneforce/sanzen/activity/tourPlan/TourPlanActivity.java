@@ -2215,13 +2215,13 @@ public class TourPlanActivity extends AppCompatActivity {
         if (oneBuildModelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Weekly Off")) {
             if (weeklyOffEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 binding.tpNavigation.editLayout.setVisibility(View.GONE);
             }
         } else if (oneBuildModelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Holiday")) {
             if (holidayEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 binding.tpNavigation.editLayout.setVisibility(View.GONE);
             }
         } else {
@@ -3210,14 +3210,14 @@ public class TourPlanActivity extends AppCompatActivity {
                                 Log.v("tpGetPlan", "----" + response.body());
                                 try {
                                     JSONObject json = new JSONObject(response.body().toString());
-                                    Log.d("TAG", "onResponse: "+json);
+                                    Log.d("TAG", "onResponse: " + json);
                                     JSONObject outer = new JSONObject(response.body().toString());
                                     String dString = outer.getString("d");
                                     JSONObject inner = new JSONObject(dString);
                                     boolean status = inner.getBoolean("Status");
                                     status = true;
                                     /*int data = inner.getInt("Data");*/
-                                    String message = inner.optString("Message", "");
+                                    /*String message = inner.optString("Message", "");*/
                                     if (response.body() != null && !response.body().isJsonNull() && status) {
                                         try {
                                             //JsonObject jsonObject = new JsonObject(response.body().toString());
@@ -3278,7 +3278,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             }
 
                                         } catch (JSONException e) {
-                                           e.printStackTrace();
+                                            e.printStackTrace();
                                         }
 
 
@@ -4146,7 +4146,7 @@ public class TourPlanActivity extends AppCompatActivity {
             jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
             jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
             jsonObject.put("Year", localDate1.getYear());
-            Log.d("TAG", "get1MonthRemoteTPData: "+jsonObject);
+            Log.d("TAG", "get1MonthRemoteTPData: " + jsonObject);
 
 
             Map<String, String> mapString = new HashMap<>();
@@ -4229,7 +4229,7 @@ public class TourPlanActivity extends AppCompatActivity {
             jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
             jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
             jsonObject.put("Year", localDate1.getYear());
-            Log.v("TAG","json--"+jsonObject);
+            Log.v("TAG", "json--" + jsonObject);
 
 
             Map<String, String> mapString = new HashMap<>();
@@ -4247,7 +4247,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 if (jsonArray.length() > 0) {
                                     String status = jsonArray.getJSONObject(0).getString("Change_Status");
                                     String reason = jsonArray.getJSONObject(0).getString("Rejection_Reason");
-                                    tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status,reason);
+                                    tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status, reason);
 
                                     TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                                     if (tourPlanOfflineDataTable != null) {
@@ -4916,38 +4916,38 @@ public class TourPlanActivity extends AppCompatActivity {
 
                         binding.progressBar.setVisibility(View.GONE);
                         /*if (statusOffline) {*/
-                            JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                            ArrayList<OneBuildModelClass> arrayList;
-                            ArrayList<String> dummy = new ArrayList<>();
-                            Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
-                            }.getType();
-                            if (jsonArray.length() >= 0) {
-                                try {
-                                    arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                                    for (OneBuildModelClass modelClass : arrayList) {
-                                        if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
-                                            dummy.add(modelClass.getDayNo());
-                                            switch (isClickedName) {
-                                                case "previous":
-                                                    changeApprovalBtnStateOneBuild(dayWiseArrayPrevMonthOneBuild);
-                                                    break;
-                                                case "current":
-                                                    changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
-                                                    break;
-                                                case "next":
-                                                    changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
-                                                    break;
-                                            }
-                                                get1MonthRemoteTPDataOneBuild(localDate);
-
-                                            break;
+                        JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                        ArrayList<OneBuildModelClass> arrayList;
+                        ArrayList<String> dummy = new ArrayList<>();
+                        Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
+                        }.getType();
+                        if (jsonArray.length() >= 0) {
+                            try {
+                                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                                for (OneBuildModelClass modelClass : arrayList) {
+                                    if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
+                                        dummy.add(modelClass.getDayNo());
+                                        switch (isClickedName) {
+                                            case "previous":
+                                                changeApprovalBtnStateOneBuild(dayWiseArrayPrevMonthOneBuild);
+                                                break;
+                                            case "current":
+                                                changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
+                                                break;
+                                            case "next":
+                                                changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
+                                                break;
                                         }
+                                        get1MonthRemoteTPDataOneBuild(localDate);
+
+                                        break;
                                     }
-                                    get1MonthRemoteTPDataOneBuild(localDate);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
+                                get1MonthRemoteTPDataOneBuild(localDate);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
+                        }
 
                         /*}else{
                             get3MonthRemoteTPData(isClickedName);
@@ -5019,12 +5019,9 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void checkTpApiStatusOneBuild() {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         if (!SharedPref.getTpSyncStaus(TourPlanActivity.this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Warning!")
-                    .setMessage("Tour plan Not sync properly. once sync again...").setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton("Sync", (dialog, which) -> {
+            builder.setTitle("Warning!").setMessage("Tour plan Not sync properly. once sync again...").setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("Sync", (dialog, which) -> {
                         syncTPSetup();
                         get3MonthRemoteTPDataOneBuild("current");
                     })

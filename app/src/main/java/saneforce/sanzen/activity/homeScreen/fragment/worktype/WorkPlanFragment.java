@@ -996,46 +996,78 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if (object.getString("FWFlg").equalsIgnoreCase("L")) {
                     continue;
                 }
-                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
-                    if(EditSession.equalsIgnoreCase("1")) {
-                        if(!(mWTCode2).equalsIgnoreCase(object.getString("Code"))) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                    if (EditSession.equalsIgnoreCase("1")) {
+                        if (!(mWTCode2).equalsIgnoreCase(object.getString("Code"))) {
                             workType_list1.add(object);
                         }
-                    }else if(EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) {
-                        if(!(mWTCode1).equalsIgnoreCase(object.getString("Code"))) {
+                    } else if (EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) {
+                        if (!(mWTCode1).equalsIgnoreCase(object.getString("Code"))) {
                             workType_list1.add(object);
                         }
-                    }else if(DayPlanCount.equalsIgnoreCase("1")) {
-                        if(!(mWTCode2).equalsIgnoreCase(object.getString("Code"))) {
+                    } else if (DayPlanCount.equalsIgnoreCase("1")) {
+                        if (!(mWTCode2).equalsIgnoreCase(object.getString("Code"))) {
                             workType_list1.add(object);
                         }
                     }
-                }else {
-                    if(EditSession.equalsIgnoreCase("1")) {
-                        if(!mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
-                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
-                                IsFeildWorkFlag = "F1";
+                } else {
+
+                    if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                        if (EditSession.equalsIgnoreCase("1")) {
+                            if (mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
+                                if (object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                                    IsFeildWorkFlag = "F1";
+                                    workType_list1.add(object);
+                                }
+                            } else {
                                 workType_list1.add(object);
-                            }else {
+                            }
+                        } else if (EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) {
+                            if (mWTCode1.equalsIgnoreCase(object.getString("Code"))) {
+                                if (object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                                    IsFeildWorkFlag = "F2";
+                                    workType_list1.add(object);
+                                }
+                            } else {
+                                workType_list1.add(object);
+                            }
+                        } else if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
+                            if (mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
+                                if (object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                                    IsFeildWorkFlag = "F1";
+                                    workType_list1.add(object);
+                                }
+                            } else {
                                 workType_list1.add(object);
                             }
                         }
-                    }else if(EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) {
-                        if(!mWTCode1.equalsIgnoreCase(object.getString("Code"))) {
-                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
-                                IsFeildWorkFlag = "F2";
-                                workType_list1.add(object);
-                            }else {
-                                workType_list1.add(object);
+                    } else {
+                        if (EditSession.equalsIgnoreCase("1")) {
+                            if (!mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
+                                if (object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                                    IsFeildWorkFlag = "F1";
+                                    workType_list1.add(object);
+                                } else {
+                                    workType_list1.add(object);
+                                }
                             }
-                        }
-                    }else if(EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
-                        if(!mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
-                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
-                                IsFeildWorkFlag = "F1";
-                                workType_list1.add(object);
-                            }else {
-                                workType_list1.add(object);
+                        } else if (EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) {
+                            if (!mWTCode1.equalsIgnoreCase(object.getString("Code"))) {
+                                if (object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                                    IsFeildWorkFlag = "F2";
+                                    workType_list1.add(object);
+                                } else {
+                                    workType_list1.add(object);
+                                }
+                            }
+                        } else if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
+                            if (!mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
+                                if (object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                                    IsFeildWorkFlag = "F1";
+                                    workType_list1.add(object);
+                                } else {
+                                    workType_list1.add(object);
+                                }
                             }
                         }
                     }
@@ -1648,10 +1680,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     }
                                 }
                             }else {
-                                binding.deviationLock.setVisibility(View.GONE);       // Temp change from visible to gone
-                                binding.rlWorkPlanMain.setVisibility(View.VISIBLE);   // Temp change from gone to visible
+                                binding.deviationLock.setVisibility(View.VISIBLE);       // Temp change from visible to gone
+                                binding.rlWorkPlanMain.setVisibility(View.GONE);   // Temp change from gone to visible
                                 previousWTCode1 = "";
                                 previousWTCode2 = "";
+                                SharedPref.setTpDcrDeviationApprStatus(requireContext(),"");
 //                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                             }
 
