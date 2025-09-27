@@ -1144,7 +1144,7 @@ public class ChemistAddition extends AppCompatActivity {
             s3Client.setRegion(Region.getRegion(region));*/
 
             util.getS3Client(getApplicationContext());
-            String bucketName = "san-edet";
+            String bucketName = "san-one";
             File fileToUpload = new File(destinationFilePath);
             Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
             if(!fileToUpload.exists()) {
@@ -1153,7 +1153,7 @@ public class ChemistAddition extends AppCompatActivity {
                 return;
             }
 
-            String fileKey = SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
+            String fileKey = "uploads/"+SharedPref.getDivisionSname(getApplicationContext())+SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
 
             TransferUtility transferUtility = TransferUtility.builder()
                     .context(getApplicationContext())

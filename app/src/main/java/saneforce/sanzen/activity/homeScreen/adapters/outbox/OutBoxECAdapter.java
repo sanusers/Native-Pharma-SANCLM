@@ -305,7 +305,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             s3Client.setRegion(Region.getRegion(region));*/
 
             util.getS3Client(context);
-            String bucketName = "san-edet";
+//            String bucketName = "san-edet";
+            String bucketName = "san-one";
 
 
             File fileToUpload = new File(filePath);
@@ -315,7 +316,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             } else {
 
 
-                String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/" + fileToUpload.getName();
+//                String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/" + fileToUpload.getName();
+                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                 TransferNetworkLossHandler.getInstance(context);

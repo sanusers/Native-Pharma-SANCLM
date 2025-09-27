@@ -187,14 +187,15 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
     private void CallSignImageApiS3(String id, SignModelClass signModelClass, String filePath, String jsonValues) {
         try {
             util.getS3Client(context);
-            String bucketName = "san-edet";
+            String bucketName = "san-one";
             if (!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
                 if (fileToUpload.toString().isEmpty()) {
                     Log.d("fileToUploadSignAdapter", "not exists: " + filePath);
                 } else {
-                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+//                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
 

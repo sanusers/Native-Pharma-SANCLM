@@ -1032,7 +1032,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             s3Client.setRegion(Region.getRegion(region));*/
 
             util.getS3Client(getApplicationContext());
-            String bucketName = "san-edet";
+            String bucketName = "san-one";
             File fileToUpload = new File(destinationFilePath);
             Log.d("fileToUpload", "CallImageAPIS3: " + fileToUpload.getAbsolutePath());
             if(!fileToUpload.exists()) {
@@ -1041,7 +1041,8 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 return;
             }
 
-            String fileKey = SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
+//            String fileKey = SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
+            String fileKey = "uploads/"+SharedPref.getDivisionSname(getApplicationContext())+SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
             /*String upload_url = "https://" + "s3." + "eu-north-1." + "amazonaws.com/" + bucketName + "/" + fileKey;
             Log.i("s3url", "Uploading to S3: " + upload_url);*/
 

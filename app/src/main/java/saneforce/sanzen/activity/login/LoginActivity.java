@@ -296,7 +296,7 @@ public class LoginActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         language = SharedPref.getSelectedLanguage(this);
 
-        String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE"};
+        String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE","ARABIC"};
         languageAdapter = new ArrayAdapter<>(LoginActivity.this, R.layout.listview_items, languages);
         binding.languageListView.setAdapter(languageAdapter);
         languageAdapter.notifyDataSetChanged();
@@ -325,6 +325,9 @@ public class LoginActivity extends AppCompatActivity {
                     break;
                 case "th":
                     binding.selectLanguage.setText("THAILAND");
+                    break;
+                case "ar":
+                    binding.selectLanguage.setText("ARABIC");
                     break;
                 default:
                     binding.selectLanguage.setText("ENGLISH");
@@ -372,6 +375,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 case "VIETNAMESE": {
                     selectedLanguage = "vi";
+                    break;
+                }
+                case "ARABIC": {
+                    selectedLanguage = "ar";
                     break;
                 }
             }

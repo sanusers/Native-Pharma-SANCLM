@@ -758,14 +758,15 @@ public class OutboxFragment extends Fragment {
     private void CallSendAPIImageS3(ChildListModelClass child, int index, EcModelClass ecModelClass, ApiCallback callback) {
         try {
             util.getS3Client(context);
-            String bucketName = "san-edet";
+            String bucketName = "san-one";
             File fileToUpload = new File(ecModelClass.getFilePath());
             Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
             if (!fileToUpload.exists()) {
                 Log.d("fileToUpload", "not exists: " + ecModelClass.getFilePath());
                 callback.onSuccess();
             } else {
-                String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+//                String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                 TransferNetworkLossHandler.getInstance(context);
@@ -922,15 +923,15 @@ public class OutboxFragment extends Fragment {
     private void CallSendAPIImageS3(ChildListModelClass child, int index, SignModelClass signModelClass, ApiCallback callback) {
         try {
             util.getS3Client(context);
-            String bucketName = "san-edet";
+            String bucketName = "san-one";
             if (!signModelClass.getFilePath().isEmpty()) {
                 File fileToUpload = new File(signModelClass.getFilePath());
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
                 if (fileToUpload.toString().isEmpty()) {
                     Log.d("fileToUploadSignObFrag", "not exists: " + signModelClass.getFilePath());
                 } else {
-                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
-
+//                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                     TransferNetworkLossHandler.getInstance(context);

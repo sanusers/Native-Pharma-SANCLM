@@ -678,7 +678,8 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
     try {
         util.getS3Client(context);
-        String bucketName = "san-edet";
+//        String bucketName = "san-edet";
+        String bucketName = "san-one";
         File fileToUpload = new File(filePath);
         Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
         if (!fileToUpload.exists()) {
@@ -686,7 +687,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
         } else {
 
 
-                String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
             /*String UploadUrl = "https://" + "s3." +"eu-north-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
@@ -801,14 +802,14 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
     private void CallSendSignImageS3(int position,int i ,SignModelClass signModelClass, String jsonValues, String filePath, String id) {
         try {
             util.getS3Client(context);
-            String bucketName = "san-edet";
+            String bucketName = "san-one";
             if (!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
                 if (fileToUpload.toString().isEmpty()) {
                     Log.d("fileToUploadSignContent", "not exists: " + filePath);
                 } else {
-                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
                     if (s3Key.contains(null)) {
                         Log.d("s3Key", "CallSendSignImage: " + "s3key is null");
                     }

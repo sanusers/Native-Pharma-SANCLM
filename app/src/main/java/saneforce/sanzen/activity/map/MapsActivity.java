@@ -1710,7 +1710,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                AmazonS3Client s3Client = new AmazonS3Client(credentials);
 //                s3Client.setRegion(Region.getRegion(region));
                 util.getS3Client(context);
-                String bucketName = "san-edet";
+                String bucketName = "san-one";
                 File fileToUpload = new File(destinationFilePath);
                 Log.d("destfilepath", "CallImageAPI: " + destinationFilePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
@@ -1721,7 +1721,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     return;
                 }
 
-                String fileKey = SharedPref.getDivisionCode(context).replace(",", "/") + "Tagging" + "/" + fileToUpload.getName();
+//                String fileKey = SharedPref.getDivisionCode(context).replace(",", "/") + "Tagging" + "/" + fileToUpload.getName();
+                String fileKey = "uploads/"+SharedPref.getDivisionSname(getApplicationContext())+SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
+
                 TransferUtility transferUtility = TransferUtility.builder()
                         .context(getApplicationContext())
                         .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())

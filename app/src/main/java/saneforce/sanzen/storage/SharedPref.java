@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -347,6 +348,12 @@ public class SharedPref {
     public static final String S3_BUCKET_NEED = "S3BucketNeed";
     public static final String DYNAMIC_OPTION_NEED = "dynamic_option_need";
     public static final String DYNAMIC_OPTION_CAPS = "dynamic_option_caps";
+    public static final String SKIP_DETAILING_DR = "skipDetailing_Dr";
+    public static final String SKIP_DETAILING_CHE = "skipDetailing_chm";
+    public static final String SKIP_DETAILING_STK = "skipDetailing_stk";
+    public static final String SKIP_DETAILING_UNDR = "skipDetailing_undr";
+    public static final String DIVISION_SNAME = "Division_SName";
+
     //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
     public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
@@ -479,6 +486,7 @@ public class SharedPref {
     public static String TpIdCurrent = "tpIdCurrent";
     public static String TpIdPrevious = "tpIdPrevious";
     public static String TpIdNext     = "tpIdNext";
+
 
     public static SharedPreferences.Editor editor;
 
@@ -822,6 +830,11 @@ public class SharedPref {
         editor.putString(S3_BUCKET_NEED, jsonObject.optString("S3BucketNeed"));
         editor.putString(DYNAMIC_OPTION_NEED,jsonObject.optString("dynamic_option_need"));
         editor.putString(DYNAMIC_OPTION_CAPS,jsonObject.optString("dynamic_option_caps"));
+        editor.putString(SKIP_DETAILING_DR,jsonObject.optString("skipDetailing_Dr"));
+        editor.putString(SKIP_DETAILING_CHE, jsonObject.optString("skipDetailing_chm"));
+        editor.putString(SKIP_DETAILING_STK, jsonObject.optString("skipDetailing_stk"));
+        editor.putString(SKIP_DETAILING_UNDR, jsonObject.optString("skipDetailing_undr"));
+        editor.putString(DIVISION_SNAME,jsonObject.optString("Division_SName"));
         editor.apply();
 
         } catch (Exception ignore) {
@@ -2042,6 +2055,23 @@ public class SharedPref {
     public static String getDynamicOptionCaps(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DYNAMIC_OPTION_CAPS,"");
     }
+    public static String getSkipDetailingDr(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_DR,"");
+    }
+    public static String getSkipDetailingChe(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_CHE,"");
+    }
+    public static String getSkipDetailingStk(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_STK,"");
+    }
+    public static String getSkipDetailingUndr(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_UNDR,"");
+    }
+
+    public static String getDivisionSname(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DIVISION_SNAME,"");
+    }
+
 
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
