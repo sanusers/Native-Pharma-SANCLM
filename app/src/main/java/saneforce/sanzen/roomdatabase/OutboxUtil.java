@@ -4,9 +4,6 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -22,6 +19,7 @@ import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDa
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
@@ -30,7 +28,7 @@ import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.QuizAssertsTable.QuizAssertsDao;
 import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataDao;
 
-public class CallsUtil {
+public class OutboxUtil {
     private final CallOfflineECDataDao callOfflineECDataDao;
     private final CallOfflineDataDao callOfflineDataDao;
     private final CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
@@ -42,8 +40,7 @@ public class CallsUtil {
     private final QuizAssertsDao quizAssertsDao;
     private final CallOfflineSignDataDao callOfflineSignDataDao;
 
-    public CallsUtil(Context context) {
-
+    public OutboxUtil(Context context) {
         RoomDB roomDB = RoomDB.getDatabase(context);
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
@@ -72,11 +69,13 @@ public class CallsUtil {
     public void deleteOfflineCalls(String cusCode, String cusName, String date) {
         callOfflineDataDao.deleteOfflineCalls(cusCode, cusName, date);
         callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
+        callOfflineSignDataDao.deleteOfflineSign(cusCode, cusName, date);
     }
 
     public void deleteOfflineCallsWithActivity(String cusCode, String cusName, String date) {
         callOfflineDataDao.deleteOfflineCalls(cusCode, cusName, date);
         callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
+        callOfflineSignDataDao.deleteOfflineSign(cusCode, cusName, date);
         deleteOfflineActivityUpload(cusCode, date);
 //        deleteOfflineActivity(cusCode, date);
     }
@@ -113,6 +112,12 @@ public class CallsUtil {
             callOfflineECDataTable.setCallSyncStatusEC(ecSynced);
             callOfflineECDataDao.update(callOfflineECDataTable);
         }
+        CallOfflineSignDataTable callOfflineECDate = callOfflineSignDataDao.getCallOfflineSignData(cusCode, date);
+        if(callOfflineECDate != null) {
+            callOfflineECDate.setCallSignStatus(status);
+            callOfflineECDate.setCallSignSyncStatus(ecSynced);
+            callOfflineSignDataDao.update(callOfflineECDate);
+        }
     }
 
     public void updateStatusActivity(int id, int count, String status) {
@@ -131,13 +136,48 @@ public class CallsUtil {
     }
 
     public boolean isOutBoxDataAvailable() {
-        return callOfflineDataDao.isAvailableCall(Constants.DUPLICATE_CALL) || callOfflineECDataDao.isAvailableEc() || callOfflineSignDataDao.isSignDataAvailable() || offlineCheckInOutDataDao.isAvailableCheckInOut() || offlineDaySubmitDao.isAvailableDaySubmit() || callOfflineDataDao.isAvailableCall() || callOfflineWorkTypeDataDao.isAvailableWT() || activityOfflineDataDao.isActivityAvailable() || activityUploadDataDao.isActivityUploadAvailable();
-//                || quizOfflineDataDao.isQuizAvailable();
+        return callOfflineDataDao.isAvailableCallOnStatus(Constants.DUPLICATE_CALL) || callOfflineECDataDao.isAvailableEc() || callOfflineSignDataDao.isSignDataAvailable() || offlineCheckInOutDataDao.isAvailableCheckInOut() || offlineDaySubmitDao.isAvailableDaySubmit() || callOfflineDataDao.isAvailableCall() || callOfflineWorkTypeDataDao.isAvailableWT() || activityOfflineDataDao.isActivityAvailable() || activityUploadDataDao.isActivityUploadAvailable();
     }
 
     public boolean isOutBoxNonSyncDataAvailable() {
         return callOfflineECDataDao.isNonSyncAvailableEc() || callOfflineSignDataDao.isNonSyncSignDataAvailable() || offlineCheckInOutDataDao.isNonSyncAvailableCheckInOut() || offlineDaySubmitDao.isNonSyncAvailableDaySubmit() || callOfflineDataDao.isNonSyncAvailableCall() || callOfflineWorkTypeDataDao.isNonSyncAvailableWT() || activityOfflineDataDao.isNonSyncActivityAvailable() || activityUploadDataDao.isNonSyncActivityUploadAvailable();
-//                || quizOfflineDataDao.isQuizAvailable();
+    }
+
+    public boolean checkSyncAvailable(String date, int type) {
+        boolean result = false;
+        boolean checkInOutDataAvailable = offlineCheckInOutDataDao.isAvailableCheckInOut(date);
+        boolean workPlanDataAvailable = callOfflineWorkTypeDataDao.isAvailableWT(date);
+        boolean callDataAvailable = callOfflineDataDao.isAvailableCall(date);
+        boolean eventCaptureDataAvailable = callOfflineECDataDao.isAvailableEc(date);
+        boolean signDataAvailable = callOfflineSignDataDao.isSignDataAvailable(date);
+        boolean activityDataAvailable = activityOfflineDataDao.isActivityAvailable(date);
+        boolean activityUploadDataAvailable = activityUploadDataDao.isActivityUploadAvailable(date);
+        switch (type) {
+            case 0:
+                break;
+            case 1:
+                result = checkInOutDataAvailable;
+                break;
+            case 2:
+                result = checkInOutDataAvailable||workPlanDataAvailable;
+                break;
+            case 3:
+//                result = checkInOutDataAvailable||workPlanDataAvailable||callDataAvailable||eventCaptureDataAvailable||signDataAvailable||activityDataAvailable||activityUploadDataAvailable;
+                break;
+            case 4:
+//                result = checkInOutDataAvailable||workPlanDataAvailable||callDataAvailable||eventCaptureDataAvailable||signDataAvailable||activityDataAvailable||activityUploadDataAvailable;
+                break;
+            case 5:
+                result = checkInOutDataAvailable||workPlanDataAvailable||callDataAvailable;
+                break;
+            case 6:
+//                result = checkInOutDataAvailable||workPlanDataAvailable||callDataAvailable||eventCaptureDataAvailable||signDataAvailable||activityDataAvailable||activityUploadDataAvailable;
+                break;
+            case 7:
+                result = checkInOutDataAvailable||workPlanDataAvailable||callDataAvailable||eventCaptureDataAvailable||signDataAvailable||activityDataAvailable||activityUploadDataAvailable;
+                break;
+        }
+        return result;
     }
 
     public Set<String> getOutboxDates() {

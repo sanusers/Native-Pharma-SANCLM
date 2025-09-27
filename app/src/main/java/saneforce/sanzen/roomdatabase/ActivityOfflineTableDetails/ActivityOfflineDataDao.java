@@ -35,7 +35,10 @@ public interface ActivityOfflineDataDao {
     @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_OFFLINE_TABLE")
     boolean isActivityAvailable();
 
-    @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_OFFLINE_TABLE WHERE  `SYNC_STATUS` != 'Duplicate Call'")
+    @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_OFFLINE_TABLE WHERE `SYNC_STATUS` != 'Duplicate Call' AND `ACTIVITY_DATE` = :date")
+    boolean isActivityAvailable(String date);
+
+    @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_OFFLINE_TABLE WHERE `SYNC_STATUS` != 'Duplicate Call'")
     boolean isNonSyncActivityAvailable();
 
     @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_OFFLINE_TABLE WHERE `ACTIVITY_DATE` = :date")

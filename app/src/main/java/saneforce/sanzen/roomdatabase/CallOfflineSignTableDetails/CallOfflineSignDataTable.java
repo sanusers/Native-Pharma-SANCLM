@@ -41,12 +41,15 @@ public class CallOfflineSignDataTable {
         this.callCusCodeSign = callCusCodeSign;
         this.callCusNameSign = callCusNameSign;
     }
+
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
+
     public String getCallSignImageName() {
         return callSignImageName;
     }
@@ -99,8 +102,8 @@ public class CallOfflineSignDataTable {
         return callSignSyncStatus;
     }
 
-    public void setCallSignSyncStatusEC(int callSignSyncStatusEC) {
-        this.callSignSyncStatus = callSignSyncStatusEC;
+    public void setCallSignSyncStatus(int callSignSyncStatus) {
+        this.callSignSyncStatus = callSignSyncStatus;
     }
 
     public String getCallCusNameSign() {

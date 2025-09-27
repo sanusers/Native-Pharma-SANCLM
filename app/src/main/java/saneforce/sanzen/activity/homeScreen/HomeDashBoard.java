@@ -19,7 +19,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,17 +44,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -78,7 +74,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -143,7 +138,7 @@ import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.databinding.HomeNavigationFooterBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
@@ -212,7 +207,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public String isFrom = "";
     public static int JoiningDate, JoiningMonth, JoiningYear;
     private InAppUpdate inAppUpdate;
-    private static CallsUtil callsUtil;
+    private static OutboxUtil outboxUtil;
     private static HomeDashBoard activity;
     public static boolean isFakeLocationDetected = false;
     private static final int NOTIFICATION_PERMISSION_CODE = 101;
@@ -233,7 +228,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private final Runnable updateClock = new Runnable() {
         @Override
         public void run() {
-            String currentTime = sdf.format(new Date());
+            String currentTime = sdf.format(new Date()).toUpperCase();
             binding.clock.setText(currentTime);
             handler.postDelayed(this, 1000);
             try {
@@ -671,7 +666,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         slidesDao = roomDB.slidesDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
 //        leaveViewModel = new LeaveViewModel(this);
-        callsUtil = new CallsUtil(this);
+        outboxUtil = new OutboxUtil(this);
         inAppUpdate = new InAppUpdate(this);
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
@@ -1692,7 +1687,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
             @Override
             public void datesFound() {
-                if (callsUtil != null && callsUtil.getOutboxDates().size() > 2 && !SharedPref.getLastOutboxAlertDate(context).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4))) {
+                if (outboxUtil != null && outboxUtil.getOutboxDates().size() > 2 && !SharedPref.getLastOutboxAlertDate(context).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4))) {
                     CommonAlertBox.outboxDataAvailableAlert(activity);
                     SharedPref.setLastOutboxAlertDate(context, CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4));
                 }

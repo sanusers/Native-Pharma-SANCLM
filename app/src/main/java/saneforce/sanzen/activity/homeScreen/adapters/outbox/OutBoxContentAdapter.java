@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.homeScreen.adapters.outbox;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
@@ -23,16 +22,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -68,7 +62,6 @@ import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.Keys;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -79,7 +72,7 @@ import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECData
 //import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
@@ -103,7 +96,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
     RoomDB roomDB;
-
     MasterDataDao masterDataDao;
     private final OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     private final CallOfflineECDataDao callOfflineECDataDao;
@@ -112,17 +104,18 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     private final CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
     private final ActivityOfflineDataDao activityOfflineDataDao;
     private final ActivityUploadDataDao activityUploadDataDao;
-    private final CallsUtil callsUtil;
+    private final OutboxUtil outboxUtil;
     Util util;
     boolean isCallAvailable;
+    private final String date;
 
-    public OutBoxContentAdapter(Activity activity, Context context, ArrayList<ChildListModelClass> groupModelClasses) {
+    public OutBoxContentAdapter(Activity activity, Context context, ArrayList<ChildListModelClass> groupModelClasses, String date) {
         this.activity = activity;
         this.context = context;
         this.childListModelClasses = groupModelClasses;
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         commonUtilsMethods = new CommonUtilsMethods(context);
-
+        this.date = date;
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
@@ -132,7 +125,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
         activityUploadDataDao = roomDB.activityUploadDataDao();
-        callsUtil = new CallsUtil(context);
+        outboxUtil = new OutboxUtil(context);
         util = new Util();
     }
 
@@ -273,17 +266,25 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         }
 
         holder.sync.setOnClickListener(v -> {
-            if (UtilityClass.isNetworkAvailable(context)) {
+//            if (UtilityClass.isNetworkAvailable(context)) {
                 progressDialog = CommonUtilsMethods.createProgressDialog(context);
                 switch (contentList.getChildId()) {
                     case 0:
                         CallAPICheckInOut(position);
                         break;
                     case 1:
-                        CallAPIWorkPlan(position);
+                        if (!outboxUtil.checkSyncAvailable(date, 1)) {
+                            CallAPIWorkPlan(position);
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, "Sync Check In/Out!");
+                        }
                         break;
                     case 2:
-                        CallAPIList(position);
+                        if (!outboxUtil.checkSyncAvailable(date, 2)) {
+                            CallAPIList(position);
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, "Sync Work Plan!");
+                        }
                         break;
                     case 3:
                         CallAPIListImage(position);
@@ -298,12 +299,16 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                         CallAPIActivityUpload(position);
                         break;
                     case 7:
-                        CallAPIDaySubmit(position);
+                        if (!outboxUtil.checkSyncAvailable(date, 7)) {
+                            CallAPIDaySubmit(position);
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, "Sync Calls!");
+                        }
                         break;
                 }
-            } else {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
-            }
+//            } else {
+//                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+//            }
         });
 
         holder.expandContentView.setOnClickListener(v -> {
@@ -1073,10 +1078,10 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                callsUtil.deleteOfflineCalls(cusCode, cusName, date);
+                                outboxUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 childListModelClasses.get(position).getOutBoxCallLists().remove(outBoxList);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
+                                outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
                                 childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, 5));
                                 DeleteUpdateDcrTable(date, cusCode, cusType);
                                 UpdateEcData(date, cusCode, cusName, Constants.DUPLICATE_CALL, 1);
@@ -1084,7 +1089,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                             CallAPIList(position);
                             notifyDataSetChanged();
                         } catch (Exception e) {
-                            callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
+                            outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
                             UpdateEcData(date, cusCode, cusName, Constants.EXCEPTION_ERROR, 0);
                             childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.EXCEPTION_ERROR, 5));
                             CallAPIList(position);
@@ -1097,7 +1102,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, SyncCount + 1, Constants.CALL_FAILED, 1);
+                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, SyncCount + 1, Constants.CALL_FAILED, 1);
                     childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, SyncCount + 1));
                     UpdateEcData(date, cusCode, cusName, Constants.CALL_FAILED, 1);
                     CallAPIList(position);
@@ -1151,7 +1156,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                                 activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
                                 childListModelClasses.get(position).getActivityModelClasses().remove(outBoxListIndex);
                             } else {
-                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                 activityModelClass.setSyncStatus(Constants.FAILED);
                                 activityModelClass.setSyncCount(5);
                                 childListModelClasses.get(position).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
@@ -1159,7 +1164,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                             CallAPIActivity(position);
                             notifyDataSetChanged();
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
                             activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityModelClass.setSyncCount(5);
                             childListModelClasses.get(position).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
@@ -1174,7 +1179,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityModelClass.setSyncStatus(Constants.FAILED);
                     activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
                     childListModelClasses.get(position).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
@@ -1228,7 +1233,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                                 activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
                                 childListModelClasses.get(position).getActivityUploadModelClasses().remove(outBoxListIndex);
                             }else {
-                                callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                 activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                 activityUploadModelClass.setSyncCount(5);
                                 childListModelClasses.get(position).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
@@ -1236,7 +1241,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                             CallAPIActivityUpload(position);
                             notifyDataSetChanged();
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncCount(5);
                             Log.v("SendOutboxCall", "---" + e);
@@ -1250,7 +1255,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
-                    callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityUploadModelClass.setSyncStatus(Constants.FAILED);
                     activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
                     childListModelClasses.get(position).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);

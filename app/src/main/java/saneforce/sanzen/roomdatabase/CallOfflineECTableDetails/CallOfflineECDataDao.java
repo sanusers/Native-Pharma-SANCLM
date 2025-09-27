@@ -35,6 +35,9 @@ public interface CallOfflineECDataDao {
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_EC_TABLE`)")
     boolean isAvailableEc();
 
+    @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_EC_TABLE` WHERE `CALL_SYNC_STATUS_EC` = 0 AND `CALL_DATE_EC` = :date)")
+    boolean isAvailableEc(String date);
+
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_EC_TABLE` WHERE `CALL_SYNC_STATUS_EC` = 0)")
     boolean isNonSyncAvailableEc();
 

@@ -46,11 +46,7 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataDao;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
-import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
-import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
-import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
-import saneforce.sanzen.roomdatabase.CallsUtil;
-import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -67,7 +63,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
     private final OfflineDaySubmitDao offlineDaySubmitDao;
     private final ActivityOfflineDataDao activityOfflineDataDao;
     private final ActivityUploadDataDao activityUploadDataDao;
-    private final CallsUtil callsUtil;
+    private final OutboxUtil outboxUtil;
 
     public OutBoxActivityAdapter(Activity activity, Context context, ArrayList<ActivityModelClass> activityModelClassList, ApiInterface apiInterface) {
         this.context = context;
@@ -79,7 +75,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
         activityUploadDataDao = roomDB.activityUploadDataDao();
-        callsUtil = new CallsUtil(context);
+        outboxUtil = new OutboxUtil(context);
     }
 
     @NonNull
@@ -174,14 +170,14 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
                                 removeAt(pos);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.activity_saved_successfully));
                             } else {
-                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                 activityModelClass.setSyncStatus(Constants.FAILED);
                                 activityModelClass.setSyncCount(5);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed));
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
                             activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityModelClass.setSyncCount(5);
                             Log.v("SendOutboxCall", "---" + e);
@@ -193,7 +189,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityModelClass.setSyncStatus(Constants.FAILED);
                     activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed));
@@ -217,7 +213,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
         activityModelClassList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, activityModelClassList.size());
-        ArrayList<GroupModelClass> listDatesDup = callsUtil.getOutBoxDatesWithData();
+        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData();
         try {
             for (int i = 0; i < listDates.size(); i++) {
                 GroupModelClass groupModelClass = listDates.get(i);

@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.homeScreen.adapters.outbox;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
@@ -13,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Environment;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -30,17 +28,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import id.zelory.compressor.Compressor;
@@ -50,7 +44,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityUploadModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -58,10 +51,9 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataDao;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-import saneforce.sanzen.storage.SharedPref;
 
 public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActivityUploadAdapter.ViewHolder> {
     Context context;
@@ -72,7 +64,7 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
     private final OfflineDaySubmitDao offlineDaySubmitDao;
     private final ActivityOfflineDataDao activityOfflineDataDao;
     private final ActivityUploadDataDao activityUploadDataDao;
-    private final CallsUtil callsUtil;
+    private final OutboxUtil outboxUtil;
     private final ApiInterface apiInterface;
     ProgressDialog progressDialog;
 
@@ -86,7 +78,7 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
         activityUploadDataDao = roomDB.activityUploadDataDao();
-        callsUtil = new CallsUtil(context);
+        outboxUtil = new OutboxUtil(context);
     }
 
     @NonNull
@@ -207,14 +199,14 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
                                 removeAt(pos);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.activity_upload_saved_successfully));
                             }else {
-                                callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                 activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                 activityUploadModelClass.setSyncCount(5);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed));
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncCount(5);
                             Log.v("SendOutboxCall", "---" + e);
@@ -226,7 +218,7 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
-                    callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityUploadModelClass.setSyncStatus(Constants.FAILED);
                     activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed));

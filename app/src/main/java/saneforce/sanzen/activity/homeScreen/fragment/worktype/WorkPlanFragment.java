@@ -69,7 +69,6 @@ import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.MultiHQClusterItem;
 import saneforce.sanzen.activity.homeScreen.modelClass.MultiHQExpandItem;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
-import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
@@ -87,7 +86,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataTable;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
@@ -162,7 +161,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private Handler handler;
     private Runnable runnable;
     private int limit = 1;
-    private CallsUtil callsUtil;
+    private OutboxUtil outboxUtil;
 
     @Override
     public void onResume() {
@@ -200,7 +199,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding = WorkplanFragmentBinding.inflate(inflater);
         View view = binding.getRoot();
         Log.d("ACTIVITY_STATUS", "oncreateview");
-        callsUtil = new CallsUtil(requireContext());
+        outboxUtil = new OutboxUtil(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
@@ -2117,7 +2116,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(UtilityClass.isNetworkAvailable(requireContext()) && !callsUtil.isOutBoxNonSyncDataAvailable()) {
+            if(UtilityClass.isNetworkAvailable(requireContext()) && !outboxUtil.isOutBoxNonSyncDataAvailable()) {
                 progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
                 CallCheckInAPI(saveWorkPlan);
             }else {
@@ -2425,7 +2424,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                setUpWorkPlan();
 //                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.work_plan_updated_successfully));
 //            }else {
-            if(UtilityClass.isNetworkAvailable(requireContext()) && !callsUtil.isOutBoxNonSyncDataAvailable()) {
+            if(UtilityClass.isNetworkAvailable(requireContext()) && !outboxUtil.isOutBoxNonSyncDataAvailable()) {
                 workPlanSubmit("Save");
             }else {
                 SaveWTLocal(sessionType);
@@ -4816,7 +4815,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (UtilityClass.isNetworkAvailable(requireContext()) && !callsUtil.isOutBoxNonSyncDataAvailable()) {
+        if (UtilityClass.isNetworkAvailable(requireContext()) && !outboxUtil.isOutBoxNonSyncDataAvailable()) {
             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
             tpDataObj = null;
             if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && CheckInOutManager.isCheckInAvailable(requireContext())) {

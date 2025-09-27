@@ -45,19 +45,17 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.SimpleDecrypt;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityLoginBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -87,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
     MasterDataDao masterDataDao;
     CallTableDao callTableDao;
     private LoginDataDao loginDataDao;
-    private CallsUtil callsUtil;
+    private OutboxUtil outboxUtil;
     String appAccess = "";
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -102,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
-        callsUtil = new CallsUtil(this);
+        outboxUtil = new OutboxUtil(this);
 
         roomDB=RoomDB.getDatabase(getApplicationContext());
 
@@ -186,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.clearData.setOnClickListener(view -> {
-            if (callsUtil.isOutBoxDataAvailable()) {
+            if (outboxUtil.isOutBoxDataAvailable()) {
                 new AlertDialog.Builder(this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
             } else {
                 DeleteAllFiles();

@@ -11,7 +11,6 @@ import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment
 
 //import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.signatureBinding;
 import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.callSignCaptureImage;
-import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.filePath;
 import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.imageName;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
@@ -64,7 +63,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -132,7 +130,7 @@ import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECData
 //import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -180,7 +178,7 @@ public class DCRCallActivity extends AppCompatActivity {
     private CallOfflineECDataDao callOfflineECDataDao;
     private CallOfflineSignDataDao callOfflineSignDataDao;
     private CallOfflineDataDao callOfflineDataDao;
-    private CallsUtil callsUtil;
+    private OutboxUtil outboxUtil;
     AlertDialog customDialog;
     Handler mainHandler = new Handler(Looper.getMainLooper());
     Handler handler1 = new Handler();
@@ -285,7 +283,7 @@ public class DCRCallActivity extends AppCompatActivity {
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
-        callsUtil = new CallsUtil(this);
+        outboxUtil = new OutboxUtil(this);
         gpsTrack = new GPSTrack(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
@@ -595,8 +593,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 finish();
             }else{
                 if (isFromActivity.equalsIgnoreCase("new")) {
-                    callsUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                    callsUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
+                    outboxUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                    outboxUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
                     Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -1461,7 +1459,7 @@ public class DCRCallActivity extends AppCompatActivity {
                             commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_failed));
                         }
 
-                        callsUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                        outboxUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                         progressDialog.dismiss();
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                            dialogCheckOut.show();

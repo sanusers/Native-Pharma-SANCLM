@@ -31,6 +31,9 @@ public interface OfflineCheckInOutDataDao {
     @Query("SELECT EXISTS(SELECT 1 FROM `OFFLINE_CHECK_IN_OUT_TABLE` WHERE `offline_sync_status` = 0)")
     boolean isNonSyncAvailableCheckInOut();
 
+    @Query("SELECT EXISTS(SELECT 1 FROM `OFFLINE_CHECK_IN_OUT_TABLE` WHERE `offline_sync_status` = 0 AND `OFFLINE_CHECK_IN_OUT_DATE` = :date)")
+    boolean isAvailableCheckInOut(String date);
+
     @Query("SELECT * FROM `OFFLINE_CHECK_IN_OUT_TABLE` WHERE `OFFLINE_CHECK_IN_OUT_DATE` = :date")
     List<OfflineCheckInOutDataTable> getCheckInOut(String date);
 

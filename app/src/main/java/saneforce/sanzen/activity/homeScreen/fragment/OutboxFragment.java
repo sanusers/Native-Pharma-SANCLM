@@ -81,7 +81,7 @@ import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSign
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
@@ -115,7 +115,7 @@ public class OutboxFragment extends Fragment {
     private OfflineDaySubmitDao offlineDaySubmitDao;
     private ActivityOfflineDataDao activityOfflineDataDao;
     private ActivityUploadDataDao activityUploadDataDao;
-    private static CallsUtil callsUtil;
+    private static OutboxUtil outboxUtil;
     private int callSyncCount = 0;
 
     Util util;
@@ -139,7 +139,7 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public static void SetupOutBoxAdapter(Activity activity, Context context) {
-        listDates = callsUtil.getOutBoxDatesWithData();
+        listDates = outboxUtil.getOutBoxDatesWithData();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         OutboxFragment.context = context;
@@ -167,7 +167,7 @@ public class OutboxFragment extends Fragment {
         offlineDaySubmitDao = db.offlineDaySubmitDao();
         activityOfflineDataDao = db.activityOfflineDataDao();
         activityUploadDataDao = db.activityUploadDataDao();
-        callsUtil = new CallsUtil(requireContext());
+        outboxUtil = new OutboxUtil(requireContext());
         util = new Util();
         callSyncCount = 0;
         SetupOutBoxAdapter(requireActivity(), requireContext());
@@ -176,7 +176,7 @@ public class OutboxFragment extends Fragment {
 
         outBoxBinding.clearAll.setOnClickListener(v1 -> {
             if (!listDates.isEmpty()) {
-                Set<String> dates = callsUtil.getOutboxDates();
+                Set<String> dates = outboxUtil.getOutboxDates();
                 ArrayList<String> finalDates = new ArrayList<>();
                 for (String date : dates) {
                     finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
@@ -231,7 +231,7 @@ public class OutboxFragment extends Fragment {
             }
 
             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, dateSyncArray.toString(), 0));
-            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC_DUP).getMasterSyncDataJsonArray().toString(), 0));
+//            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC_DUP).getMasterSyncDataJsonArray().toString(), 0));
             if (HomeDashBoard.binding.textDate.getText().toString() == null || HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
             }
@@ -242,10 +242,10 @@ public class OutboxFragment extends Fragment {
     }
 
     private void clearCalls() {
-        ArrayList<OutBoxCallList> outBoxCallLists = callsUtil.getAllOutBoxCallsList();
-        Set<String> dates = callsUtil.getOutboxDates();
+        ArrayList<OutBoxCallList> outBoxCallLists = outboxUtil.getAllOutBoxCallsList();
+        Set<String> dates = outboxUtil.getOutboxDates();
         try {
-            if (offlineWorkTypeDataDao.getAllCallOfflineWTDates().contains(HomeDashBoard.selectedDate.toString())) {
+            if (HomeDashBoard.selectedDate != null && offlineWorkTypeDataDao.getAllCallOfflineWTDates().contains(HomeDashBoard.selectedDate.toString())) {
                 Log.e("outbox workplan", "clearCalls: date found");
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
                 SharedPref.setDayPlanStartedDate(requireContext(), "");
@@ -279,18 +279,20 @@ public class OutboxFragment extends Fragment {
                 }
                 CallDataRestClass.resetcallValues(requireContext());
 
-                JSONArray jsonArrayCalls = new JSONArray(SharedPref.getTodayCallList(requireContext()));
-                boolean callsAvailable = false;
-                for (int i = 0; i < jsonArrayCalls.length(); i++) {
-                    JSONObject json = jsonArrayCalls.getJSONObject(i);
-                    if (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_4, json.getString("vstTime")).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
-                        callsAvailable = true;
+                if (HomeDashBoard.selectedDate != null) {
+                    JSONArray jsonArrayCalls = new JSONArray(SharedPref.getTodayCallList(requireContext()));
+                    boolean callsAvailable = false;
+                    for (int i = 0; i < jsonArrayCalls.length(); i++) {
+                        JSONObject json = jsonArrayCalls.getJSONObject(i);
+                        if (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_4, json.getString("vstTime")).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                            callsAvailable = true;
+                        }
                     }
-                }
-                if (!callsAvailable) {
-                    SharedPref.setLastCallDate(requireContext(), "");
-                } else {
-                    SharedPref.setLastCallDate(requireContext(), HomeDashBoard.selectedDate.toString());
+                    if (!callsAvailable) {
+                        SharedPref.setLastCallDate(requireContext(), "");
+                    } else {
+                        SharedPref.setLastCallDate(requireContext(), HomeDashBoard.selectedDate.toString());
+                    }
                 }
             }
         } catch (Exception e) {
@@ -315,7 +317,7 @@ public class OutboxFragment extends Fragment {
             e.printStackTrace();
         }
 
-        callsUtil.deleteOfflineCalls();
+        outboxUtil.deleteOfflineCalls();
         listDates.clear();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
@@ -671,13 +673,13 @@ public class OutboxFragment extends Fragment {
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                callsUtil.deleteOfflineCalls(outBoxCallList.getCusCode(), outBoxCallList.getCusName(), outBoxCallList.getDates());
+                                outboxUtil.deleteOfflineCalls(outBoxCallList.getCusCode(), outBoxCallList.getCusName(), outBoxCallList.getDates());
                                 callsList.remove(outBoxCallList);
                                 notifyedmethod();
                                 callSyncCount++;
                                 callSubmitAPI(child, index, 0, callback);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, Constants.DUPLICATE_CALL, 1);
+                                outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, Constants.DUPLICATE_CALL, 1);
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
                                 UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.DUPLICATE_CALL, 1);
@@ -686,7 +688,7 @@ public class OutboxFragment extends Fragment {
                                 callback.onSuccess();
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
                                 if (jsonSaveRes.has("msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("msg"));
                                     outBoxCallList.setSyncCount(5);
                                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), jsonSaveRes.getString("msg"), 1);
@@ -694,7 +696,7 @@ public class OutboxFragment extends Fragment {
                                     notifyedmethod();
                                     callback.onFailure();
                                 } else if (jsonSaveRes.has("Msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("Msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("Msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("Msg"));
                                     outBoxCallList.setSyncCount(5);
                                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), jsonSaveRes.getString("Msg"), 1);
@@ -704,7 +706,7 @@ public class OutboxFragment extends Fragment {
                                 }
                             }
                         } catch (Exception e) {
-                            callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, Constants.EXCEPTION_ERROR, 0);
+                            outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, Constants.EXCEPTION_ERROR, 0);
                             outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
                             outBoxCallList.setSyncCount(5);
                             UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.EXCEPTION_ERROR, 0);
@@ -718,7 +720,7 @@ public class OutboxFragment extends Fragment {
                 @Override
                 public void onFailure(Call<JsonElement> call, Throwable throwable) {
                     Log.v("CallsResponse", "" + throwable.getMessage().toString());
-                    callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), attempt + 1, Constants.CALL_FAILED, 1);
+                    outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), attempt + 1, Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(attempt + 1);
                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.CALL_FAILED, 1);
@@ -1087,14 +1089,14 @@ public class OutboxFragment extends Fragment {
                                     notifyedmethod();
                                     callback.onSuccess();
                                 } else {
-                                    callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                    outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                     activityModelClass.setSyncStatus(Constants.FAILED);
                                     activityModelClass.setSyncCount(5);
                                     notifyedmethod();
                                     callback.onFailure();
                                 }
                             } catch (Exception e) {
-                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                                outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
                                 activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                                 activityModelClass.setSyncCount(5);
                                 Log.v("SendOutboxCall", "---" + e);
@@ -1108,7 +1110,7 @@ public class OutboxFragment extends Fragment {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                        outboxUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
                         activityModelClass.setSyncStatus(Constants.FAILED);
                         activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
                         notifyedmethod();
@@ -1151,14 +1153,14 @@ public class OutboxFragment extends Fragment {
                                     notifyedmethod();
                                     callback.onSuccess();
                                 } else {
-                                    callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                     activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                     activityUploadModelClass.setSyncCount(5);
                                     notifyedmethod();
                                     callback.onFailure();
                                 }
                             } catch (Exception e) {
-                                callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
                                 activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                                 activityUploadModelClass.setSyncCount(5);
                                 Log.v("SendOutboxCall", "---" + e);
@@ -1172,7 +1174,7 @@ public class OutboxFragment extends Fragment {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
-                        callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                        outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
                         activityUploadModelClass.setSyncStatus(Constants.FAILED);
                         activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
                         notifyedmethod();
@@ -1802,23 +1804,23 @@ public class OutboxFragment extends Fragment {
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                callsUtil.deleteOfflineCalls(cusCode, cusName, date);
+                                outboxUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists().remove(CurrentPos);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
+                                outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
                                 UpdateEcData(date, cusCode, cusName, Constants.DUPLICATE_CALL, 1);
                                 DeleteUpdateDcrTable(date, cusCode, cusType);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
                                 if (jsonSaveRes.has("msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("msg"));
                                     outBoxCallList.setSyncCount(5);
                                     UpdateEcData(date, cusCode, cusName, jsonSaveRes.getString("msg"), 1);
                                     DeleteUpdateDcrTable(date, cusCode, cusType);
                                 } else if (jsonSaveRes.has("Msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("Msg"));
                                     outBoxCallList.setSyncCount(5);
                                     UpdateEcData(date, cusCode, cusName, jsonSaveRes.getString("Msg"), 1);
@@ -1827,7 +1829,7 @@ public class OutboxFragment extends Fragment {
                             }
                             CallOfflineCalls(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists(), modelClass);
                         } catch (Exception e) {
-                            callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
+                            outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
                             outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
                             outBoxCallList.setSyncCount(5);
                             UpdateEcData(date, cusCode, cusName, Constants.EXCEPTION_ERROR, 0);
@@ -1846,7 +1848,7 @@ public class OutboxFragment extends Fragment {
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     Log.v("CallsResponse", "" + t.getMessage().toString());
-                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, syncCount + 1, Constants.CALL_FAILED, 1);
+                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, syncCount + 1, Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                     outBoxCallList.setSyncCount(syncCount + 1);
                     UpdateEcData(date, cusCode, cusName, Constants.CALL_FAILED, 1);
@@ -1950,14 +1952,14 @@ public class OutboxFragment extends Fragment {
                                 activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
                                 listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().remove(activityModelClass);
                             } else {
-                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                 activityModelClass.setSyncStatus(Constants.FAILED);
                                 activityModelClass.setSyncCount(5);
                                 listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
                             }
                             CallAPIOfflineActivity(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityModelClasses(), groupModelClass);
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
                             activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityModelClass.setSyncCount(5);
                             listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
@@ -1972,7 +1974,7 @@ public class OutboxFragment extends Fragment {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityModelClass.setSyncStatus(Constants.FAILED);
                     activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
                     listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
@@ -2002,14 +2004,14 @@ public class OutboxFragment extends Fragment {
                                 activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
                                 listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().remove(outBoxListIndex);
                             } else {
-                                callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                 activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                 activityUploadModelClass.setSyncCount(5);
                                 listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
                             }
                             CallAPIActivityUpload(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityUploadModelClasses(), groupModelClass);
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncCount(5);
                             listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
@@ -2024,7 +2026,7 @@ public class OutboxFragment extends Fragment {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
-                    callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityUploadModelClass.setSyncStatus(Constants.FAILED);
                     activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
                     listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);

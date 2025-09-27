@@ -15,7 +15,6 @@ import static android.view.Gravity.TOP;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
-import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -30,7 +29,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -107,7 +105,6 @@ import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
 import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -117,12 +114,11 @@ import saneforce.sanzen.databinding.FragmentActivityBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataDao;
-import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataTable;
 import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataDao;
 import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTable;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataTable;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -152,7 +148,7 @@ public class ActivityFragment extends Fragment {
     private ActivityDetailsDataDao activityDetailsDataDao;
     private ActivityOfflineDataDao activityOfflineDataDao;
     private ActivityUploadDataDao activityUploadDataDao;
-    private CallsUtil callsUtil;
+    private OutboxUtil outboxUtil;
     public static boolean isEdited = false;
     private ActivityModelClass chosenActivityModelClass;
     private String activityDate, activityTime, activityCap = "Activity";
@@ -177,7 +173,7 @@ public class ActivityFragment extends Fragment {
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
         activityUploadDataDao = roomDB.activityUploadDataDao();
         activityCap = SharedPref.getActivityCap(requireContext());
-        callsUtil = new CallsUtil(requireContext());
+        outboxUtil = new OutboxUtil(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
     }
@@ -345,7 +341,7 @@ public class ActivityFragment extends Fragment {
         getActivityDetails(ActivityList.get(chosenActivityPosition));
         fragmentActivityBinding.btnSubmit.setEnabled(true);
         fragmentActivityBinding.btnSubmit.setAlpha(1f);
-        callsUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
+        outboxUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
     }
 
     public void getActivityData() {

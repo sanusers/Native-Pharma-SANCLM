@@ -148,11 +148,13 @@ public class SignatureFragment1 extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         ArrayList<CallSignCaptureImageList> parcelableList = new ArrayList<>();
-        for (CallSignCaptureImageList item : callSignCaptureImage) {
-            parcelableList.add(0, new CallSignCaptureImageList(item.getId(), item.getImg_Name(), item.getFilepath(), item.getSign_view(), item.isNewlyAdded()));
+        if (callSignCaptureImage != null) {
+            for (CallSignCaptureImageList item : callSignCaptureImage) {
+                parcelableList.add(0, new CallSignCaptureImageList(item.getId(), item.getImg_Name(), item.getFilepath(), item.getSign_view(), item.isNewlyAdded()));
+            }
+            outState.putParcelableArrayList("Signature", parcelableList);
+            Log.d("SignatureFragment", "onSaveInstanceState: Saving list size: " + callSignCaptureImage.size());
         }
-        outState.putParcelableArrayList("Signature", parcelableList);
-        Log.d("SignatureFragment", "onSaveInstanceState: Saving list size: " + callSignCaptureImage.size());
     }
 
 
