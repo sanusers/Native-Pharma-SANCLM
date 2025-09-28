@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.approvals.dcr.detailView.adapter;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.logging.Handler;
 
 import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.S3DownloadFiles;
@@ -47,9 +50,12 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
          holder.Name.setText(List.get(position).getTitle());
          holder.Description.setText(List.get(position).getRemarks());
 
+
          holder.Imageview.setOnClickListener(view -> {
 
+             ProgressDialog progressDialog = new ProgressDialog(context);
              if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+                 progressDialog.show();
                  AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                  View view1  = LayoutInflater.from(context).inflate(R.layout.eventimageitem, null);
                  dialog.setView(view1);
@@ -82,7 +88,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
                                  holder.Imageview.setVisibility(View.VISIBLE);
                                  imageView.setImageBitmap(bitmap);
                                  dialog.show();
-
+                                 progressDialog.dismiss();
                              } else {
                                  Log.d("bitmap image", "Failed to load image, bitmap is null.");
                                  holder.Imageview.setVisibility(View.GONE);
@@ -102,6 +108,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
                  AlertDialog dialog1=dialog.create();
                  dialog1.show();
                  Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
+                 progressDialog.dismiss();
              }
 
 //             Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
@@ -121,6 +128,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
 
         ImageView Imageview;
         TextView Name,Description;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

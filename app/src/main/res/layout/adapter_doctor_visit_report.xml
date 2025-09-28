@@ -138,6 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_5ssp"
                     android:text="Total Customer" />
 
                 <TextView
@@ -146,6 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/satoshi_bold"
+                    android:textSize="@dimen/_5ssp"
                     android:text=""
                     android:textColor="@color/black" />
             </LinearLayout>
@@ -166,6 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_5ssp"
                     android:text="Visited" />
 
                 <TextView
@@ -175,6 +178,7 @@
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/satoshi_bold"
                     android:text=""
+                    android:textSize="@dimen/_5ssp"
                     android:textColor="@color/black" />
 
             </LinearLayout>
@@ -195,6 +199,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_5ssp"
                     android:text="Missed" />
 
                 <TextView
@@ -202,6 +207,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:textSize="@dimen/_5ssp"
                     android:fontFamily="@font/satoshi_bold"
                     android:text=""
                     android:textColor="@color/black" />
@@ -225,6 +231,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_5ssp"
                     android:text="Field Work Days" />
 
                 <TextView
@@ -233,6 +240,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/satoshi_bold"
+                    android:textSize="@dimen/_5ssp"
                     android:text=""
                     android:textColor="@color/black" />
 
@@ -255,6 +263,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_5ssp"
                     android:text="Call Average" />
 
                 <TextView
@@ -264,6 +273,7 @@
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/satoshi_bold"
                     android:text=""
+                    android:textSize="@dimen/_5ssp"
                     android:textColor="@color/black" />
 
             </LinearLayout>
@@ -285,6 +295,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_5ssp"
                     android:text="Coverage" />
 
                 <TextView
@@ -293,6 +304,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/satoshi_bold"
+                    android:textSize="@dimen/_5ssp"
                     android:text=""
                     android:textColor="@color/black" />
 

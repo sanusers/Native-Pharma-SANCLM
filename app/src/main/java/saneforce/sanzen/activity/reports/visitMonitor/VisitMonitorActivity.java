@@ -50,6 +50,8 @@ public class VisitMonitorActivity extends AppCompatActivity {
             getOnBackPressedDispatcher().onBackPressed();
         });
 
+        binding.calendarLyt.findViewById(R.id.calendar_lyt);
+
 
         binding.self.setOnClickListener(view -> {
             selectedTab = "As on Calls";
@@ -66,6 +68,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
             binding.note.setVisibility(View.GONE);
             binding.calendarLyt.setVisibility(View.VISIBLE);
             updateReportUi();
+            loadFragment(new ApprovedCallsFragment());
         });
     }
 

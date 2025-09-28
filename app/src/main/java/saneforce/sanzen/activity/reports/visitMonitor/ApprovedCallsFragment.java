@@ -25,6 +25,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.ReportsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.databinding.ActivityVisitMonitorBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -48,6 +49,8 @@ public class ApprovedCallsFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recyclerView);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
+//        ActivityVisitMonitorBinding.inflate(inflater.)
+
 
 
         return v;

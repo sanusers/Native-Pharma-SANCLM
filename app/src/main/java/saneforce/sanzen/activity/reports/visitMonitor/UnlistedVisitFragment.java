@@ -162,7 +162,7 @@ public class UnlistedVisitFragment extends Fragment {
         List<BarEntry> entries = new ArrayList<>();
         ArrayList<String> xVals = new ArrayList<>();
         xVals.add(getString(R.string.total));
-        xVals.add(getString(R.string.visit));
+        xVals.add(getString(R.string.visited));
         xVals.add(getString(R.string.miss));
         xVals.add(getString(R.string.avg));
 

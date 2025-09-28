@@ -179,7 +179,7 @@ public class DoctorFragment extends Fragment {
         List<BarEntry> entries = new ArrayList<>();
         ArrayList<String> xVals = new ArrayList<>();
         xVals.add(getString(R.string.total));
-        xVals.add(getString(R.string.visit));
+        xVals.add(getString(R.string.visited));
         xVals.add(getString(R.string.miss));
         xVals.add(getString(R.string.avg));
 
@@ -250,7 +250,7 @@ public class DoctorFragment extends Fragment {
         colors.add(requireContext().getResources().getColor(R.color.red_60));
         colors.add(requireContext().getResources().getColor(R.color.green_2));
         dataSet.setColors(colors);
-        dataSet.setDrawValues(false);
+//        dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
         pieChart.setData(data);
