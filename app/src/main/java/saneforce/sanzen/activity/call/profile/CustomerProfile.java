@@ -81,12 +81,12 @@ public class CustomerProfile extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("call", CallActivityCustDetails);
         outState.putString("CheckInJsonObject", checkInJsonObject.toString());
-        if(HomeDashBoard.selectedDate != null) {
+        if (HomeDashBoard.selectedDate != null) {
             outState.putString("date", HomeDashBoard.selectedDate.toString());
             outState.putInt(Manifest.permission.ACCESS_FINE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION));
             outState.putInt(Manifest.permission.ACCESS_COARSE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION));
             outState.putInt(Manifest.permission.CAMERA, ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA));
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
                 outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
                 outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
@@ -111,24 +111,24 @@ public class CustomerProfile extends AppCompatActivity {
         btn_start = findViewById(R.id.btn_start_det);
         img_back = findViewById(R.id.iv_back);
         cusName = findViewById(R.id.tag_selection);
-        if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
+        if (savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
             try {
                 CallActivityCustDetails = savedInstanceState.getParcelableArrayList("call");
                 checkInJsonObject = new JSONObject(savedInstanceState.getString("CheckInJsonObject"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if(savedInstanceState.getString("date") != null) {
+            if (savedInstanceState.getString("date") != null) {
                 HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
             }
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_COARSE_LOCATION, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != savedInstanceState.getInt(Manifest.permission.CAMERA, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.READ_EXTERNAL_STORAGE, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1) ) {
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1)) {
                 CommonAlertBox.permissionChangeAlert(this);
             }
         }
@@ -138,7 +138,7 @@ public class CustomerProfile extends AppCompatActivity {
 
         try {
             Bundle bundle = getIntent().getExtras();
-            if(bundle != null && bundle.containsKey("CheckInJsonObject")) {
+            if (bundle != null && bundle.containsKey("CheckInJsonObject")) {
                 String jsonObject = bundle.getString("CheckInJsonObject");
                 checkInJsonObject = new JSONObject(jsonObject);
             } else {
@@ -188,7 +188,7 @@ public class CustomerProfile extends AppCompatActivity {
             intent1.putExtra(Constants.DETAILING_REQUIRED, "false");
             intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
             intent1.putExtra("remainder_save", "0");
-            intent1.putExtra("hq_code", "" );
+            intent1.putExtra("hq_code", "");
             intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
 
             //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -198,7 +198,7 @@ public class CustomerProfile extends AppCompatActivity {
         });
 
         btn_start.setOnClickListener(view -> {
-            if(HomeDashBoard.selectedDate != null) {
+            if (HomeDashBoard.selectedDate != null) {
                 Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
                 intent.putExtra("from", "call");
                 intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());
@@ -237,14 +237,14 @@ public class CustomerProfile extends AppCompatActivity {
                 break;
         }
 
-        if(detailingNeed.equalsIgnoreCase("0")){
+        if (detailingNeed.equalsIgnoreCase("0")) {
             btn_start.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             btn_start.setVisibility(View.GONE);
         }
 
         String skipNeed;
-        switch (CallActivityCustDetails.get(0).getType()){
+        switch (CallActivityCustDetails.get(0).getType()) {
             case "1":
                 skipNeed = SharedPref.getSkipDetailingDr(this);
                 break;
@@ -261,9 +261,9 @@ public class CustomerProfile extends AppCompatActivity {
                 skipNeed = "0";
                 break;
         }
-       if(skipNeed.equalsIgnoreCase("0")){
-           btn_skip.setVisibility(View.VISIBLE);
-        } else{
+        if (skipNeed.equalsIgnoreCase("0")) {
+            btn_skip.setVisibility(View.VISIBLE);
+        } else {
             btn_skip.setVisibility(View.GONE);
         }
 

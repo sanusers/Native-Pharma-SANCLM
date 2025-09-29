@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 
+import com.github.chrisbanes.photoview.PhotoView;
+
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;

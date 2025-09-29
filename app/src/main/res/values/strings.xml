@@ -506,7 +506,7 @@
     <string name="hq_mandt">Headquarter <font color='#FF0000'>*</font></string>
     <string name="additional_doctor">Add Unlisted Doctor</string>
     <string name="Photocapture">Photo Capture</string>
-    <string name="mobile">Mobile</string>
+    <string name="mobile">Mobile </string>
     <string name="DOB">DOB</string>
     <string name="DOW">DOW</string>
     <string name="catogy">Category</string>
