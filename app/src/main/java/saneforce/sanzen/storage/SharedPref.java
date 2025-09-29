@@ -483,10 +483,13 @@ public class SharedPref {
 
     public static final String A_S_KEY = "A_S_KEY";
 
-    public static String TpIdCurrent = "tpIdCurrent";
-    public static String TpIdPrevious = "tpIdPrevious";
-    public static String TpIdNext     = "tpIdNext";
+    public static final String TpIdCurrent = "tpIdCurrent";
+    public static final String TpIdPrevious = "tpIdPrevious";
+    public static final String TpIdNext = "tpIdNext";
 
+    public static final String LAST_LOGIN = "Last Login";
+    public static final String LOGIN_FAILED_COUNT = "Login failed count";
+    public static final String LOGIN_FAILED_TIME = "Login failed time";
 
     public static SharedPreferences.Editor editor;
 
@@ -3023,8 +3026,30 @@ public class SharedPref {
     public static String getKeys(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(A_S_KEY, "^^");
     }
-    public static String getSfcode(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(SF_CODE, "");
+
+    public static void setLastLogin(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LAST_LOGIN, date).apply();
     }
+
+    public static String getLastLogin(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_LOGIN, "");
+    }
+
+    public static void setLoginFailedCount(Context context, int count, String dateTime) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(LOGIN_FAILED_COUNT, count);
+        editor.putInt(LOGIN_FAILED_TIME, count).apply();
+    }
+
+    public static int getLoginFailedCount(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(LOGIN_FAILED_COUNT, 0);
+    }
+
+    public static String getLoginFailedDateTime(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_FAILED_TIME, "");
+    }
+
 }

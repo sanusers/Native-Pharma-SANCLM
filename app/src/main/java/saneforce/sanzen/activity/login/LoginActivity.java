@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -41,6 +42,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -111,6 +114,17 @@ public class LoginActivity extends AppCompatActivity {
         uiInitialisation();
         binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
 
+        int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
+        if (loginFailedCount == 5) {
+            binding.password.setEnabled(false);
+            binding.userId.setEnabled(false);
+            binding.loginBtn.setEnabled(false);
+            binding.clearData.setEnabled(false);
+            binding.rlRejReason.setVisibility(View.VISIBLE);
+            binding.rejectedReason.setText("Please try again after 5 minutes!");
+            startLoginTimer();
+        }
+
         if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, s -> {
                 fcmToken = s;
@@ -164,6 +178,7 @@ public class LoginActivity extends AppCompatActivity {
 //                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                     Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
                 } else {
+                    loginFailed();
                     commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
                 }
             } else {
@@ -221,6 +236,32 @@ public class LoginActivity extends AppCompatActivity {
             });
             loginConfirmation.show();
         }
+    }
+
+    private void loginFailed() {
+        int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
+        loginFailedCount++;
+        SharedPref.setLoginFailedCount(LoginActivity.this, loginFailedCount, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_1));
+        if (loginFailedCount == 5) {
+            binding.password.setEnabled(false);
+            binding.userId.setEnabled(false);
+            binding.loginBtn.setEnabled(false);
+            binding.clearData.setEnabled(false);
+            binding.rlRejReason.setVisibility(View.VISIBLE);
+            binding.rejectedReason.setText("Please try again after 5 minutes!");
+            startLoginTimer();
+        }
+    }
+
+    private void startLoginTimer() {
+        new Handler().postDelayed( () -> {
+            binding.password.setEnabled(true);
+            binding.userId.setEnabled(true);
+            binding.loginBtn.setEnabled(true);
+            binding.clearData.setEnabled(true);
+            binding.rlRejReason.setVisibility(View.GONE);
+            SharedPref.setLoginFailedCount(LoginActivity.this, 0, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_1));
+        }, 5 * 60 * 1000);
     }
 
     private void SelectedLanguage(String selectedLanguage) {
@@ -469,11 +510,13 @@ public class LoginActivity extends AppCompatActivity {
 //                                commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.access_denied));
 //                            }
                         } else {
+                            loginFailed();
                             if (responseObject.has("msg")) {
                                 commonUtilsMethods.showToastMessage(LoginActivity.this, responseObject.getString("msg"));
                             }
                         }
                     } catch (JSONException e) {
+                        loginFailed();
                         Log.v("Login", "--error-" + e);
                     }
                 }

@@ -304,7 +304,7 @@ public class MissedReport extends AppCompatActivity {
             return;
         }
         if (SharedPref.getSfType(this).equals("1")) {
-            fetchAndLoadMonthlyData(selectedDate,SharedPref.getSfcode(this));
+            fetchAndLoadMonthlyData(selectedDate,SharedPref.getSfCode(this));
         } else if (SharedPref.getSfType(this).equals("2")) {
             if (selectedHqId != null && !selectedHqId.isEmpty()) {
                 fetchAndLoadMonthlyData(selectedDate,selectedHqId);
