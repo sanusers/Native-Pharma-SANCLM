@@ -68,11 +68,14 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
                             Log.d("bitmap image", "Image successfully loaded.");
                             holder.imageView.setImageBitmap(bitmap);
                             holder.imageView.setVisibility(View.VISIBLE);
-                            holder.progressBar.setVisibility(View.GONE);
+                            if(holder.progressBar != null) {
+                                holder.progressBar.setVisibility(View.GONE);
+                            }
                         } else {
                             Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                            holder.progressBar.setVisibility(View.VISIBLE);
-
+                            if(holder.progressBar != null) {
+                                holder.progressBar.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 });

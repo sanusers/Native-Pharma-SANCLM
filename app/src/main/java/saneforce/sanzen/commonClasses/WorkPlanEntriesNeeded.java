@@ -54,8 +54,8 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class WorkPlanEntriesNeeded {
-
     public static TreeSet<String> datesNeeded = new TreeSet<>();
+    public static TreeSet<String> skipDates = new TreeSet<>();
     public static TreeSet<String> addedDatesNeeded = new TreeSet<>();
     private static MasterDataDao masterDataDao;
     private static OfflineDaySubmitDao offlineDaySubmitDao;
@@ -581,6 +581,7 @@ public class WorkPlanEntriesNeeded {
             e.printStackTrace();
         }
         datesNeeded.addAll(addedDatesNeeded);
+        datesNeeded.removeAll(skipDates);
 
         String date = null;
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));

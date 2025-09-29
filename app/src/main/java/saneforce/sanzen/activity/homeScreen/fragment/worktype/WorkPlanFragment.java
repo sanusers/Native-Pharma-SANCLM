@@ -14,8 +14,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.BulletSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +85,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.STPDaySorter;
 import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.WorkplanFragmentBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -2853,6 +2858,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                            HomeDashBoard.canMoveNextDate = false;
                             FinalSubmitStatus = jsonObject.getString("Msg");
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submitted_successfully));
+                            WorkPlanEntriesNeeded.skipDates.clear();
                             progressDialog.dismiss();
                             HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
                         } catch (Exception e) {
@@ -3712,7 +3718,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), false, false);
             rejectedReason = "";
-
+            String dateType = "";
             if (dateSync.length() > 0 && HomeDashBoard.selectedDate != null) {
                 for (int i = 0; i < dateSync.length(); i++) {
                     JSONObject jsonObject = dateSync.getJSONObject(i);
@@ -3720,6 +3726,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     LocalDate date = LocalDate.parse(dateString);
                     LocalDate currentDate = HomeDashBoard.selectedDate;
                     if (date.isEqual(currentDate)) {
+                        String flag = jsonObject.optString("flg");
+                        String tbName = jsonObject.optString("tbname");
+                        if (tbName.equalsIgnoreCase("missed")) {
+                            dateType = "Missed";
+                        } else if (tbName.equalsIgnoreCase("dcr") && flag.equalsIgnoreCase("2")) {
+                            dateType = "Rejected";
+                        } else if (tbName.equalsIgnoreCase("dcr") && flag.equalsIgnoreCase("3")) {
+                            dateType = "Re-Entry";
+                        }else if (flag.equalsIgnoreCase("0")) {
+                            dateType = "Planning";
+                        }
                         rejectedReason = jsonObject.optString("reason");
                         break;
                     }
@@ -3766,6 +3783,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             mHQName = "";
             mFinalRemarks = "";
             isFromTP = false;
+            DayPlanCount = "1";
             if (workPlanData.length() > 0) {
                 if (HomeDashBoard.selectedDate != null) {
                     SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
@@ -3958,6 +3976,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                             SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                         }
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 2));
+                        setUpWorkPlan();
 //                    HomeDashBoard.binding.textDate.setText(CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy"));
 //                    SharedPref.saveHq(requireContext(), "", "");
 //                    SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
@@ -4197,6 +4217,62 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.backround_text));
                     binding.cardPlan2.setVisibility(View.GONE);
                     binding.llDeviation.setVisibility(View.GONE);
+                }
+            } else if(!dateType.isEmpty() && !UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+                Log.e("TAG", "setUpWorkPlan: skip" + HomeDashBoard.selectedDate.toString());
+                if (!dateType.equalsIgnoreCase("Missed")) {
+                    Dialog dialog = new Dialog(requireContext());
+                    dialog.setContentView(R.layout.dcr_cancel_alert);
+                    dialog.setCancelable(false);
+                    if (dialog.getWindow() != null) {
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    }
+                    if (!dialog.isShowing()) {
+                        dialog.show();
+                    }
+                    TextView content = dialog.findViewById(R.id.ed_alert_msg);
+                    content.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen._6sdp));
+                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                    TextView btn_no = dialog.findViewById(R.id.btn_no);
+                    btn_yes.setText(requireContext().getResources().getString(R.string.proceed));
+                    btn_yes.setAllCaps(true);
+                    btn_no.setText(requireContext().getResources().getString(R.string.continuee));
+
+                    SpannableStringBuilder builder = new SpannableStringBuilder();
+
+                    String nextDate = "";
+                    if (WorkPlanEntriesNeeded.datesNeeded.size() > 1) {
+                        nextDate = " (" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, List.copyOf(WorkPlanEntriesNeeded.datesNeeded).get(1)) + ")";
+                    }
+                    String[] items = {"No network to get 'Work Plan' for " + dateType + " date(" + HomeDashBoard.binding.textDate.getText().toString() + ")",
+                            "Click '" + requireContext().getResources().getString(R.string.proceed).toUpperCase() + "' to work on Next date" + nextDate,
+                            "Connect to network and click '" + requireContext().getResources().getString(R.string.continuee) + "' to continue selected date"};
+
+                    for (String item : items) {
+                        SpannableString spannable = new SpannableString(item + "\n");
+                        spannable.setSpan(new BulletSpan(20), 0, spannable.length(), 0);
+                        builder.append(spannable);
+                    }
+                    content.setText(builder);
+
+                    btn_yes.setOnClickListener(view -> {
+                        WorkPlanEntriesNeeded.skipDates.add(HomeDashBoard.selectedDate.toString());
+                        HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                        dialog.dismiss();
+                    });
+
+                    btn_no.setOnClickListener(view -> {
+                        if (UtilityClass.isNetworkAvailable(requireContext())) {
+                            syncMyDayPlan(false);
+                            dialog.dismiss();
+                        } else {
+                            commonUtilsMethods.showToastMessage(requireContext(), requireContext().getResources().getString(R.string.no_network));
+                        }
+                    });
+                }
+            } else if(!dateType.isEmpty() && UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+                if (!dateType.equalsIgnoreCase("Missed")) {
+                    syncMyDayPlan(false);
                 }
             } else if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0") && tpDataObj != null && HomeDashBoard.selectedDate != null) {
                 SharedPref.setTpDcrDeviatedDate(requireContext(), "");
@@ -4846,6 +4922,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 offlineDaySubmitDao.insert(new OfflineDaySubmitDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), finalSubmitJSONObject.toString()));
             }
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submit_saved_locally));
+            WorkPlanEntriesNeeded.skipDates.clear();
 //            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
 //            SharedPref.setCheckInTime(requireContext(), "");
 //            SharedPref.setCheckDateTodayPlan(requireContext(), "");

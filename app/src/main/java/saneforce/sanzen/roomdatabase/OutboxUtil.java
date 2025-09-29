@@ -179,6 +179,20 @@ public class OutboxUtil {
         }
         return result;
     }
+    
+    public boolean checkIsDataAvailable(GroupModelClass groupModelClass) {
+        boolean isDataAvailable = false;
+        ArrayList<ChildListModelClass> dataList = groupModelClass.getChildItems();
+        if (!dataList.get(0).getCheckInOutModelClasses().isEmpty()) isDataAvailable = true;
+        if (dataList.get(1).getWorkPlanModelClass() != null) isDataAvailable = true;
+        if (!dataList.get(2).getOutBoxCallLists().isEmpty()) isDataAvailable = true;
+        if (!dataList.get(3).getEcModelClasses().isEmpty()) isDataAvailable = true;
+        if (!dataList.get(4).getSignModelClasses().isEmpty()) isDataAvailable = true;
+        if (!dataList.get(5).getActivityModelClasses().isEmpty()) isDataAvailable = true;
+        if (!dataList.get(6).getActivityUploadModelClasses().isEmpty()) isDataAvailable = true;
+        if (dataList.get(7).getDaySubmitModelClass() != null) isDataAvailable = true;
+        return  isDataAvailable;
+    }
 
     public Set<String> getOutboxDates() {
         Set<String> dates = new TreeSet<>();

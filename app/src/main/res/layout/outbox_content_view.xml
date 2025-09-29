@@ -10,7 +10,7 @@
         android:id="@+id/card_content_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginBottom="@dimen/_1sdp"
         app:cardCornerRadius="@dimen/_3sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

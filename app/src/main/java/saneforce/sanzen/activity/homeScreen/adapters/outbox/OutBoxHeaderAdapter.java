@@ -135,59 +135,70 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull OutBoxHeaderAdapter.listDataViewholider holder, int position) {
-
-        GroupModelClass groupModelClass = groupModelClasses.get(position);
-        holder.tvDate.setText(CommonUtilsMethods.setConvertDate("yyyy-MM-dd", "dd MMM yyyy", groupModelClass.getGroupName()));
-
-        if (groupModelClass.isExpanded()) {
-            holder.constraintContent.setVisibility(View.VISIBLE);
-            outBoxContentAdapter = new OutBoxContentAdapter(activity, context, groupModelClass.getChildItems(), groupModelClass.getGroupName());
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-            holder.rvContentList.setLayoutManager(mLayoutManager);
-            holder.rvContentList.setAdapter(outBoxContentAdapter);
-            holder.ivExpand.setImageResource(R.drawable.top_vector);
+        if (position == 0) {
+            holder.view.setVisibility(View.GONE);
         } else {
-            holder.constraintContent.setVisibility(View.GONE);
-            holder.ivExpand.setImageResource(R.drawable.down_arrow);
+            holder.view.setVisibility(View.VISIBLE);
         }
+        GroupModelClass groupModelClass = groupModelClasses.get(position);
+        if (!outboxUtil.checkIsDataAvailable(groupModelClass)) {
+            outBoxBinding.rvOutBoxHead.post(() -> {
+                listDates.remove(groupModelClass);
+                notifyDataSetChanged();
+            });
+        } else {
+            holder.tvDate.setText(CommonUtilsMethods.setConvertDate("yyyy-MM-dd", "dd MMM yyyy", groupModelClass.getGroupName()));
 
-        holder.ivSync.setOnClickListener(v -> {
-            if (UtilityClass.isNetworkAvailable(context)) {
-                progressDialog = CommonUtilsMethods.createProgressDialog(context);
-//                CallOfflineData(groupModelClass, 0);
-                processApisForDate(groupModelClass, 0, new ApiCallback() {
-                    @Override
-                    public void onSuccess() {
-                        Log.v("SendOutboxCall", "--finallyOut--");
-                        progressDialog.dismiss();
-                        if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
-                            //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
-                        }
-                        CallDataRestClass.resetcallValues(context);
-                        RefreshAdapter();
-                        if (callSyncCount > 0) {
-                            CallsFragment.syncCalls();
-                            callSyncCount = 0;
-                        }
-                        OutboxFragment.SetupOutBoxAdapter(activity, context);
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        stopSync();
-                        progressDialog.dismiss();
-                    }
-                });
+            if (groupModelClass.isExpanded()) {
+                holder.constraintContent.setVisibility(View.VISIBLE);
+                outBoxContentAdapter = new OutBoxContentAdapter(activity, context, groupModelClass.getChildItems(), groupModelClass.getGroupName());
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+                holder.rvContentList.setLayoutManager(mLayoutManager);
+                holder.rvContentList.setAdapter(outBoxContentAdapter);
+                holder.ivExpand.setImageResource(R.drawable.top_vector);
             } else {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                holder.constraintContent.setVisibility(View.GONE);
+                holder.ivExpand.setImageResource(R.drawable.down_arrow);
             }
-        });
+
+            holder.ivSync.setOnClickListener(v -> {
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    progressDialog = CommonUtilsMethods.createProgressDialog(context);
+//                CallOfflineData(groupModelClass, 0);
+                    processApisForDate(groupModelClass, 0, new ApiCallback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.v("SendOutboxCall", "--finallyOut--");
+                            progressDialog.dismiss();
+                            if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
+                                //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+                            }
+                            CallDataRestClass.resetcallValues(context);
+                            RefreshAdapter();
+                            if (callSyncCount > 0) {
+                                CallsFragment.syncCalls();
+                                callSyncCount = 0;
+                            }
+                            OutboxFragment.SetupOutBoxAdapter(activity, context);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            stopSync();
+                            progressDialog.dismiss();
+                        }
+                    });
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                }
+            });
 
 
-        holder.cardView.setOnClickListener(v -> {
-            groupModelClass.setExpanded(Objects.equals(holder.ivExpand.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.down_arrow)).getConstantState()));
-            notifyDataSetChanged();
-        });
+            holder.cardView.setOnClickListener(v -> {
+                groupModelClass.setExpanded(Objects.equals(holder.ivExpand.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.down_arrow)).getConstantState()));
+                notifyDataSetChanged();
+            });
+        }
     }
 
     private void stopSync() {
@@ -1999,6 +2010,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         ConstraintLayout constraintContent;
         RecyclerView rvContentList;
         CardView cardView;
+        View view;
 
         public listDataViewholider(@NonNull View itemView) {
             super(itemView);
@@ -2008,6 +2020,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             constraintContent = itemView.findViewById(R.id.constraint_rv);
             rvContentList = itemView.findViewById(R.id.rv_outbox_list);
             cardView = itemView.findViewById(R.id.card_view_top);
+            view = itemView.findViewById(R.id.date_divider);
         }
     }
 }

@@ -385,8 +385,6 @@ public class DCRCallActivity extends AppCompatActivity {
         AddActivityData();
         AddSignData();
 
-
-
         dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
