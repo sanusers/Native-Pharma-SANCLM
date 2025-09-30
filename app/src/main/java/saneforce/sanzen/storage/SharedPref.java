@@ -490,6 +490,7 @@ public class SharedPref {
     public static final String LAST_LOGIN = "Last Login";
     public static final String LOGIN_FAILED_COUNT = "Login failed count";
     public static final String LOGIN_FAILED_TIME = "Login failed time";
+    public static final String LOGIN_REMAINING_TIME = "Login remaining time";
 
     public static SharedPreferences.Editor editor;
 
@@ -3037,11 +3038,21 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_LOGIN, "");
     }
 
+    public static void setLoginRemainingTime(Context context, long time) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putLong(LOGIN_REMAINING_TIME, time).apply();
+    }
+
+    public static long getLoginRemainingTime(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getLong(LOGIN_REMAINING_TIME, 0);
+    }
+
     public static void setLoginFailedCount(Context context, int count, String dateTime) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putInt(LOGIN_FAILED_COUNT, count);
-        editor.putInt(LOGIN_FAILED_TIME, count).apply();
+        editor.putString(LOGIN_FAILED_TIME, dateTime).apply();
     }
 
     public static int getLoginFailedCount(Context context) {

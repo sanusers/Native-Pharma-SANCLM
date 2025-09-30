@@ -55,7 +55,7 @@ public class TimeUtils {
     public static final String FORMAT_37 = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final String FORMAT_38 = "d MMMM yyyy";
     public static final String FORMAT_39 = "dd-MM-yyyy hh:mm a";
-
+    public static final String FORMAT_40 = "mm:ss";
 
     public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
@@ -143,6 +143,16 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static long timeDifferenceInMillis(String startTime, String endTime) {
+        try {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_1);
+            return simpleDateFormat.parse(endTime).getTime() - simpleDateFormat.parse(startTime).getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static String addTime(String oldTime, String newTime) {
@@ -236,6 +246,8 @@ public class TimeUtils {
             time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
         } else if(format.equalsIgnoreCase(FORMAT_29)) {
             time = String.format("%02d:%02d", hours, minutes);
+        } else if(format.equalsIgnoreCase(FORMAT_40)) {
+            time = String.format("%02d:%02d", minutes, seconds);
         }
         return time;
     }

@@ -1,27 +1,15 @@
 package saneforce.sanzen.activity.presentation.playPreview;
 
-
 import android.content.Context;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-
 import androidx.annotation.NonNull;
-
 import androidx.viewpager.widget.PagerAdapter;
-
-
-import com.github.chrisbanes.photoview.PhotoView;
-
 import java.util.ArrayList;
-
 import saneforce.sanzen.R;
-
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 

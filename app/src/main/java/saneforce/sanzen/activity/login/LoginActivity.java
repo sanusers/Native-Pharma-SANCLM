@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.InputType;
@@ -48,6 +49,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
@@ -90,6 +92,9 @@ public class LoginActivity extends AppCompatActivity {
     private LoginDataDao loginDataDao;
     private OutboxUtil outboxUtil;
     String appAccess = "";
+    private CountDownTimer countDownTimer;
+    private boolean isTimerStarted = false;
+    private long remainingTime = 0;
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -116,13 +121,15 @@ public class LoginActivity extends AppCompatActivity {
 
         int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
         if (loginFailedCount == 5) {
+            isTimerStarted = true;
             binding.password.setEnabled(false);
             binding.userId.setEnabled(false);
             binding.loginBtn.setEnabled(false);
             binding.clearData.setEnabled(false);
             binding.rlRejReason.setVisibility(View.VISIBLE);
             binding.rejectedReason.setText("Please try again after 5 minutes!");
-            startLoginTimer();
+            remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+            startTimer();
         }
 
         if (fcmToken.isEmpty()) {
@@ -249,19 +256,52 @@ public class LoginActivity extends AppCompatActivity {
             binding.clearData.setEnabled(false);
             binding.rlRejReason.setVisibility(View.VISIBLE);
             binding.rejectedReason.setText("Please try again after 5 minutes!");
-            startLoginTimer();
+            isTimerStarted = true;
+            remainingTime = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, "00:05:00");
+            startTimer();
         }
     }
 
-    private void startLoginTimer() {
-        new Handler().postDelayed( () -> {
-            binding.password.setEnabled(true);
-            binding.userId.setEnabled(true);
-            binding.loginBtn.setEnabled(true);
-            binding.clearData.setEnabled(true);
-            binding.rlRejReason.setVisibility(View.GONE);
-            SharedPref.setLoginFailedCount(LoginActivity.this, 0, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_1));
-        }, 5 * 60 * 1000);
+    private void startTimer() {
+        try {
+            countDownTimer = new CountDownTimer(remainingTime, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    String timeLeftFormatted = TimeUtils.getMillisToFormattedTime(millisUntilFinished, TimeUtils.FORMAT_40);
+                    binding.rejectedReason.setText("Please try again after " + timeLeftFormatted + " minutes!");
+                    remainingTime = millisUntilFinished;
+                }
+
+                @Override
+                public void onFinish() {
+                    binding.password.setEnabled(true);
+                    if (SharedPref.getLoginId(LoginActivity.this).isEmpty()) {
+                        binding.userId.setEnabled(true);
+                    }
+                    binding.loginBtn.setEnabled(true);
+                    binding.clearData.setEnabled(true);
+                    binding.rlRejReason.setVisibility(View.GONE);
+                    SharedPref.setLoginFailedCount(LoginActivity.this, 0, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_1));
+                }
+            }.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(isTimerStarted) {
+            try {
+                SharedPref.setLoginRemainingTime(LoginActivity.this, remainingTime);
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void SelectedLanguage(String selectedLanguage) {

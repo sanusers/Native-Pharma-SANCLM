@@ -1265,6 +1265,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         EditText new_password = dialogPwdChange.findViewById(R.id.newpasswrd);
         EditText remain_password = dialogPwdChange.findViewById(R.id.repeatpass);
         TextView update = dialogPwdChange.findViewById(R.id.update);
+        TextView title = dialogPwdChange.findViewById(R.id.title);
         ImageView cls_but = dialogPwdChange.findViewById(R.id.close);
         ProgressBar progressBar = dialogPwdChange.findViewById(R.id.progressBar);
 
