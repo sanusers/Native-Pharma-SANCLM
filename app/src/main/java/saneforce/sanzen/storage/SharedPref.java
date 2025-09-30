@@ -353,6 +353,7 @@ public class SharedPref {
     public static final String SKIP_DETAILING_STK = "skipDetailing_stk";
     public static final String SKIP_DETAILING_UNDR = "skipDetailing_undr";
     public static final String DIVISION_SNAME = "Division_SName";
+    public static final String TP_OBJECTIVE_MANDATORY = "tp_objective_mandatory";
 
     //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
@@ -839,6 +840,7 @@ public class SharedPref {
         editor.putString(SKIP_DETAILING_STK, jsonObject.optString("skipDetailing_stk"));
         editor.putString(SKIP_DETAILING_UNDR, jsonObject.optString("skipDetailing_undr"));
         editor.putString(DIVISION_SNAME,jsonObject.optString("Division_SName"));
+        editor.putString(TP_OBJECTIVE_MANDATORY,jsonObject.optString("tp_objective_mandatory"));
         editor.apply();
 
         } catch (Exception ignore) {
@@ -2074,6 +2076,9 @@ public class SharedPref {
 
     public static String getDivisionSname(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DIVISION_SNAME,"");
+    }
+    public static String getTpObjectiveMandatory(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_OBJECTIVE_MANDATORY,"");
     }
 
 

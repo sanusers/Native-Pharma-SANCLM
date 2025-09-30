@@ -48,6 +48,7 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -65,6 +66,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -178,21 +180,55 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         } else {
             unlistedadditionbinding.layout6.setVisibility(View.GONE);
         }
-        String hqCode = SharedPref.getHqCode(this);
-        String jsonArray = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS+ hqCode);
-        Log.d("TAG", "onCreate: " + jsonArray);
-        if (!unlistedadditionbinding.edtDctr.getText().toString().isEmpty() && !unlistedadditionbinding.txtSelectHq.getText().toString().isEmpty() && unlistedadditionbinding.txtSelectTerritory.getText().toString().isEmpty()
-                && !unlistedadditionbinding.txtSelectSpec.getText().toString().isEmpty() && !unlistedadditionbinding.txtSelectCategory.getText().toString().isEmpty() &&
-                !unlistedadditionbinding.txtSelectClass.getText().toString().isEmpty() && !unlistedadditionbinding.txtSelectQua.getText().toString().isEmpty() && SharedPref.getSfType(this).equalsIgnoreCase("2")) {
 
 
+        JSONArray masterJsonArrayUlist1 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
 
+      /*  boolean isDuplicate = false;
 
-        } else if (!unlistedadditionbinding.edtDctr.getText().toString().isEmpty() && !unlistedadditionbinding.txtSelectHq.getText().toString().isEmpty() && unlistedadditionbinding.txtSelectTerritory.getText().toString().isEmpty()
-                && !unlistedadditionbinding.txtSelectSpec.getText().toString().isEmpty() && !unlistedadditionbinding.txtSelectCategory.getText().toString().isEmpty() &&
-                !unlistedadditionbinding.txtSelectClass.getText().toString().isEmpty() && !unlistedadditionbinding.txtSelectQua.getText().toString().isEmpty() ) {
+        try {
+            String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
+            String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
+            String enteredHQ = unlistedadditionbinding.txtSelectHq.getText().toString().trim();
+            String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
+            String enteredClass = unlistedadditionbinding.txtSelectClass.getText().toString().trim();
+            String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
+            String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
 
-        }
+            for (int i = 0; i < masterJsonArrayUlist1.length(); i++) {
+                JSONObject obj = masterJsonArrayUlist1.getJSONObject(i);
+
+                String name = obj.optString("Name", "").trim();
+                String territory = obj.optString("Town_Name", "").trim();
+                String hq = obj.optString("HQ", "").trim();
+                String spec = obj.optString("SpecialtyName", "").trim();
+                String cls = obj.optString("Doc_ClsCode", "").trim();
+                String cat = obj.optString("CategoryName", "").trim();
+                String quli = obj.optString("Doc_QuaName", "").trim();
+
+                // Check duplicate condition
+                if (enteredName.equalsIgnoreCase(name)
+                        && enteredTerritory.equalsIgnoreCase(territory)
+                        && enteredHQ.equalsIgnoreCase(hq)
+                        && enteredSpec.equalsIgnoreCase(spec)
+                        && enteredClass.equalsIgnoreCase(cls)
+                        && enteredCat.equalsIgnoreCase(cat)
+                        && enteredQuli.equalsIgnoreCase(quli)) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+
+            if (isDuplicate) {
+                commonUtilsMethods.showToastMessage(this, "Duplicate entry already exists!");
+                unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                return; // stop saving further
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
 
         unlistedadditionbinding.btnUnlstsave.setOnClickListener(v -> {
             unlistedadditionbinding.btnUnlstsave.setEnabled(false);
@@ -203,6 +239,51 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 unlistedadditionbinding.edtDctr.setError("Invalid Character");
                 unlistedadditionbinding.btnUnlstsave.setEnabled(true);
             } else if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+                boolean isDuplicate = false;
+                try {
+                    String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
+                    String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
+//                    String enteredHQ = unlistedadditionbinding.txtSelectHq.getText().toString().trim();
+                    String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
+                    String enteredClass = unlistedadditionbinding.txtSelectClass.getText().toString().trim();
+                    String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
+                    String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
+
+                    for (int i = 0; i < masterJsonArrayUlist1.length(); i++) {
+                        JSONObject obj = masterJsonArrayUlist1.getJSONObject(i);
+
+                        String name = obj.optString("Name", "").trim();
+                        String territory = obj.optString("Town_Name", "").trim();
+                        /*String hq = obj.optString("DrHQNm", "").trim();*/
+                        String spec = obj.optString("SpecialtyName", "").trim();
+                        String cls = obj.optString("Doc_ClsCode", "").trim();
+                        String cat = obj.optString("CategoryName", "").trim();
+                        String quli = obj.optString("Doc_QuaName", "").trim();
+
+                        // Check duplicate condition
+                        if (enteredName.equalsIgnoreCase(name)
+                                && enteredTerritory.equalsIgnoreCase(territory)
+/*
+                                && enteredHQ.equalsIgnoreCase(hq)
+*/
+                                && enteredSpec.equalsIgnoreCase(spec)
+                                && enteredClass.equalsIgnoreCase(cls)
+                                && enteredCat.equalsIgnoreCase(cat)
+                                && enteredQuli.equalsIgnoreCase(quli)) {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (isDuplicate) {
+                        commonUtilsMethods.showToastMessage(this, "Duplicate entry already exists!");
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                        return; // stop saving further
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (unlistedadditionbinding.txtSelectHq.getText().toString().isEmpty()) {
                     commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.headquarter));
                     unlistedadditionbinding.btnUnlstsave.setEnabled(true);

@@ -855,6 +855,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                 break;
                             }
                         }
+                    }if(SharedPref.getTpObjectiveMandatory(this).equalsIgnoreCase("0") && oneBuildModelClass.getRemarks().isEmpty()){
+                        isEmpty = true;
+                        position = i;
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.need_remarks) + (i + 1));
+                        break;
                     }
                 }
 
@@ -4219,8 +4224,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void get1MonthRemoteTPDataOneBuild(LocalDate localDate1) {
         try {
-            ProgressDialog progressDialog = new ProgressDialog(this);  //remove this
-            progressDialog.show();
+//            ProgressDialog progressDialog = new ProgressDialog(this);  //remove this
+//            progressDialog.show();
             apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
             JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
             jsonObject.put("tableName", "gettpdetail_onebuild");
@@ -4239,7 +4244,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
                         binding.progressBar.setVisibility(View.GONE);
                         if (response.body().isJsonArray()) {
                             try {
@@ -4304,7 +4309,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         } else {
-                            progressDialog.dismiss();
+//                            progressDialog.dismiss();
                             binding.progressBar.setVisibility(View.GONE);
                             System.out.println("No Response");
                         }
