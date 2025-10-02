@@ -493,6 +493,12 @@ public class SharedPref {
     public static final String LOGIN_FAILED_TIME = "Login failed time";
     public static final String LOGIN_REMAINING_TIME = "Login remaining time";
 
+    public static final String SIGN_IN_TIME = "signin_time";
+    public static final String MODE = "mode";
+    public static final String DEVICE_NAME = "device_name";
+    public static final String LOGIN_DEVICE_REG_ID = "LoginDeviceRegId";
+    public static final String LOGIN_APP_DEVICE_ID = "Loginappdeviceid";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -840,6 +846,11 @@ public class SharedPref {
         editor.putString(SKIP_DETAILING_STK, jsonObject.optString("skipDetailing_stk"));
         editor.putString(SKIP_DETAILING_UNDR, jsonObject.optString("skipDetailing_undr"));
         editor.putString(DIVISION_SNAME,jsonObject.optString("Division_SName"));
+        editor.putString(SIGN_IN_TIME,jsonObject.optString("signin_time"));
+        editor.putString(MODE,jsonObject.optString("mode"));
+        editor.putString(DEVICE_NAME,jsonObject.optString("device_name"));
+        editor.putString(LOGIN_DEVICE_REG_ID,jsonObject.optString("LoginDeviceRegId"));
+        editor.putString(LOGIN_APP_DEVICE_ID,jsonObject.optString("Loginappdeviceid"));
 
         editor.apply();
 
@@ -3066,6 +3077,26 @@ public class SharedPref {
 
     public static String getLoginFailedDateTime(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_FAILED_TIME, "");
+    }
+
+    public static String getSignInTime(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SIGN_IN_TIME, "");
+    }
+
+    public static String getMode(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(MODE, "");
+    }
+
+    public static String getDeviceName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DEVICE_NAME, "");
+    }
+
+    public static String getLoginDeviceRegId(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_DEVICE_REG_ID, "");
+    }
+
+    public static String getLoginAppDeviceId(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_APP_DEVICE_ID, "");
     }
 
 }

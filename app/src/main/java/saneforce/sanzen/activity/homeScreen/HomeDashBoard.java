@@ -82,6 +82,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -429,6 +430,26 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
+        String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
+        if (signInTime.isEmpty()) {
+            changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+        } else {
+            try {
+                JSONObject jsonObject = new JSONObject(signInTime);
+                String date = jsonObject.optString("date");
+                Log.i("Login date", "onPostCreate: " + date);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+                LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
+                LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
+                if (givenDate.isBefore(ninetyDaysAgo)) {
+                    changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+                } else {
+                    System.out.println("The given date is within the last 90 days.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void playVideo(String url) {
@@ -1227,7 +1248,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         l_click.setOnClickListener(v -> {
             if (UtilityClass.isNetworkAvailable(this)) {
                 popupWindow.dismiss();
-                changePassword();
+                changePassword(HomeDashBoard.this.getString(R.string.change_password));
             } else {
                 commonUtilsMethods.showToastMessage(this, "Please Check The Internet Connection");
             }
@@ -1240,7 +1261,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
     @SuppressLint({"MissingInflatedId", "WrongConstant", "UseCompatLoadingForDrawables"})
-    public void changePassword() {
+    public void changePassword(String title) {
 
         //  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
@@ -1265,10 +1286,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         EditText new_password = dialogPwdChange.findViewById(R.id.newpasswrd);
         EditText remain_password = dialogPwdChange.findViewById(R.id.repeatpass);
         TextView update = dialogPwdChange.findViewById(R.id.update);
-        TextView title = dialogPwdChange.findViewById(R.id.title);
+        TextView tvTitle = dialogPwdChange.findViewById(R.id.title);
         ImageView cls_but = dialogPwdChange.findViewById(R.id.close);
         ProgressBar progressBar = dialogPwdChange.findViewById(R.id.progressBar);
+        tvTitle.setText(title);
 
+        if (title.equals(HomeDashBoard.this.getString(R.string.reset_password))) {
+            cls_but.setVisibility(View.GONE);
+        } else {
+            cls_but.setVisibility(View.VISIBLE);
+        }
 
         old_password.addTextChangedListener(new TextWatcher() {
             @Override
