@@ -59,7 +59,7 @@ public class AWSBuckets {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                TransferObserver downloadObserver = transferUtility.download("san-edet",SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/"+ filestored_name+filename, file);
+                TransferObserver downloadObserver = transferUtility.download("san-one","uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/"+ filestored_name+filename, file);
                 downloadObserver.setTransferListener(new TransferListener() {
 
                     @Override
@@ -95,7 +95,7 @@ public class AWSBuckets {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                TransferObserver image_upload = transferUtility.upload("san-edet",SharedPref.getDivisionCode(context).replace(",","/")+ "Event_Capture"+"/"+filestored_name+filename, file);
+                TransferObserver image_upload = transferUtility.upload("san-one","uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/"+ filestored_name+filename, file);
                 if (image_upload == null) {
                     Log.e("AWSUpload", "TransferObserver is null - upload() may have failed silently.");
                     return false;

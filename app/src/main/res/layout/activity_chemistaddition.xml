@@ -273,7 +273,6 @@
                             android:id="@+id/three_two"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 

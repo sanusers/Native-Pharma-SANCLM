@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.myresource;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 
@@ -30,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -249,45 +251,80 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         if (fileName.isEmpty()) {
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
-        ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
-        ImageButton closeButton = dialogView.findViewById(R.id.close_button);
-        ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
+        if(SharedPref.getS3BucketNeed(getApplicationContext()).equalsIgnoreCase("0")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
+            ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
+            ImageButton closeButton = dialogView.findViewById(R.id.close_button);
+            ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
 //        ImageView popupImageView = dialog.findViewById(R.id.img_dr_content);
-        fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
-        builder.setView(dialogView);
-        AlertDialog dialog_fullScreen = builder.create();
-        fullScreenImage.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-        dialog_fullScreen.show();
-        dialog_fullScreen.getWindow().setLayout(
-                (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
-                (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
-        );
-        if (ImageName == null || ImageName.isEmpty() || ImageName.contains("noimage") || ImageName.endsWith(".jpg")) {
-            Log.d("Image Name", "showImagePopup: "+"no image Found");
-        } else {
-            TransferNetworkLossHandler.getInstance(getApplicationContext());
-            File MapView = new File(MyResource_mapview.this.getFilesDir(), fileName);
-            Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
-            new AWSBucketsTag(MyResource_mapview.this, fileName, MapView, 0, "", new S3DownloadFiles() {
-                @Override
-                public void fileDataAdd(int pos, Bitmap bitmap) {
-                    if (bitmap != null) {
-                        Log.d("bitmap image", "image: " + "bitmap map is not null");
-                        fullScreenImage.setImageBitmap(bitmap);
-                        fullScreenImage.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                    } else {
-                        Log.d("bitmap image", "image: " + "bitmap image is null");
-                        fullScreenImage.setVisibility(View.VISIBLE);
+            fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+            builder.setView(dialogView);
+            AlertDialog dialog_fullScreen = builder.create();
+            fullScreenImage.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            dialog_fullScreen.show();
+            dialog_fullScreen.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
+                    (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
+            );
+            if (ImageName == null || ImageName.isEmpty() || ImageName.contains("noimage") || ImageName.endsWith(".jpg")) {
+                Log.d("Image Name", "showImagePopup: " + "no image Found");
+            } else {
+                TransferNetworkLossHandler.getInstance(getApplicationContext());
+                File MapView = new File(MyResource_mapview.this.getFilesDir(), fileName);
+                Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
+                new AWSBucketsTag(MyResource_mapview.this, fileName, MapView, 0, "", new S3DownloadFiles() {
+                    @Override
+                    public void fileDataAdd(int pos, Bitmap bitmap) {
+                        if (bitmap != null) {
+                            Log.d("bitmap image", "image: " + "bitmap map is not null");
+                            fullScreenImage.setImageBitmap(bitmap);
+                            fullScreenImage.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                        } else {
+                            Log.d("bitmap image", "image: " + "bitmap image is null");
+                            fullScreenImage.setVisibility(View.GONE);
+                        }
                     }
-                }
-            });
+                });
+            }
+            closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
+        }else{
+//            Dialog dialog = new Dialog(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
+
+            ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
+            ImageButton closeButton = dialogView.findViewById(R.id.close_button);
+            ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
+//            fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+            builder.setView(dialogView);
+            AlertDialog dialog_fullScreen = builder.create();
+            fullScreenImage.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            dialog_fullScreen.show();
+            dialog_fullScreen.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
+                    (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
+            );
+            if (ImageName == null || ImageName.isEmpty() || ImageName.contains("noimage") || ImageName.endsWith(".jpg")) {
+                Log.d("Image Name", "showImagePopup: " + "no image Found");
+
+            } else {
+
+                String url = SharedPref.getTagImageUrl(context) + "photos/" + ImageName;
+                Log.e("Inmge", url);
+//                Picasso.get().load(url).into(fullScreenImage);
+                Glide.with(getApplicationContext()).load(url).into(fullScreenImage);
+                fullScreenImage.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                dialog_fullScreen.show();
+            }
+            closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
         }
-        closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
 
     }
 //    private void showImagePopup() {

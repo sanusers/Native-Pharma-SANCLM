@@ -830,8 +830,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 btn_confirm.setEnabled(false);
                 btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    CallImageAPI(jsonImage.toString(), jsonObject.toString(), progressBar);
-                    tag_Image();
+                    if(SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                        CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
+                        tag_Image();
+                    }else{
+                        CallImageAPI(jsonImage.toString(),jsonObject.toString(), progressBar);
+                    }
                 } else {
                     CallAPIGeo(jsonObject.toString(), progressBar);
                 }
@@ -1259,53 +1263,53 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-//    private void CallImageAPI(String jsonImage, String jsonTag,ProgressBar progressBar) {
-//        try {
-//            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
-//            Call<JsonObject> callImage;
-//            HashMap<String, RequestBody> values = field(jsonImage);
-//            MultipartBody.Part img = convertImg("UploadImg", destinationFilePath);
-//            callImage = apiInterface.SaveImg(values, img);
-//
-//            callImage.enqueue(new Callback<JsonObject>() {
-//                @Override
-//                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-//                    assert response.body() != null;
-//                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
-//                    if (response.isSuccessful()) {
-//                        try {
-//                            JSONObject jsonImgRes;
-//                            jsonImgRes = new JSONObject(response.body().toString());
-//                            Log.v("img_tag", jsonImgRes.getString("success"));
-//                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-//                                progressBar.setVisibility(View.VISIBLE);
-//                                CallAPIGeo(jsonTag,progressBar);
-//                            } else {
-//                                dialogTagCust.dismiss();
-//                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
-//                            }
-//                        } catch (Exception e) {
-//                            Log.v("img_tag", e.toString());
-//                            dialogTagCust.dismiss();
-//                        }
-//                    } else {
-//                        dialogTagCust.dismiss();
-//                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-//                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-//                    dialogTagCust.dismiss();
-//                }
-//            });
-//        } catch (Exception e) {
-//            dialogTagCust.dismiss();
-//        }
-//    }
+    private void CallImageAPI(String jsonImage, String jsonTag,ProgressBar progressBar) {
+        try {
+            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
+            Call<JsonObject> callImage;
+            HashMap<String, RequestBody> values = field(jsonImage);
+            MultipartBody.Part img = convertImg("UploadImg", destinationFilePath);
+            callImage = apiInterface.SaveImg(values, img);
 
-    private void CallImageAPI(String jsonImage, String jsonTag, ProgressBar progressBar) {
+            callImage.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    assert response.body() != null;
+                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonImgRes;
+                            jsonImgRes = new JSONObject(response.body().toString());
+                            Log.v("img_tag", jsonImgRes.getString("success"));
+                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
+                                progressBar.setVisibility(View.VISIBLE);
+                                CallAPIGeo(jsonTag,progressBar);
+                            } else {
+                                dialogTagCust.dismiss();
+                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
+                            }
+                        } catch (Exception e) {
+                            Log.v("img_tag", e.toString());
+                            dialogTagCust.dismiss();
+                        }
+                    } else {
+                        dialogTagCust.dismiss();
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                    dialogTagCust.dismiss();
+                }
+            });
+        } catch (Exception e) {
+            dialogTagCust.dismiss();
+        }
+    }
+
+    private void CallImageAPIS3(String jsonImage, String jsonTag, ProgressBar progressBar) {
         try {
             progressBar.setVisibility(View.VISIBLE);
 

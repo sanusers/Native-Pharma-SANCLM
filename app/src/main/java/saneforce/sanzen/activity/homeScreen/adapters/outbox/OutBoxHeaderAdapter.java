@@ -21,16 +21,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -51,6 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
@@ -63,7 +59,7 @@ import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
-//import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
+import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -75,13 +71,13 @@ import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOffline
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
-//import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
-import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -99,13 +95,14 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
      MasterDataDao masterDataDao;
      private final OfflineCheckInOutDataDao offlineCheckInOutDataDao;
      private final CallOfflineECDataDao callOfflineECDataDao;
+    private final CallOfflineSignDataDao callOfflineSignDataDao;
      private final CallOfflineWorkTypeDataDao offlineWorkTypeDataDao;
      private final OfflineDaySubmitDao offlineDaySubmitDao;
      private final ActivityOfflineDataDao activityOfflineDataDao;
      private final ActivityUploadDataDao activityUploadDataDao;
-     private final CallsUtil callsUtil;
+     private final OutboxUtil outboxUtil;
      Util util;
-     private int callSyncCount = 0;
+    private int callSyncCount = 0;
 
     public OutBoxHeaderAdapter(Activity activity, Context context, ArrayList<GroupModelClass> groupModelClasses) {
         this.activity = activity;
@@ -117,77 +114,89 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         masterDataDao=db.masterDataDao();
         offlineCheckInOutDataDao = db.offlineCheckInOutDataDao();
         callOfflineECDataDao = db.callOfflineECDataDao();
+        callOfflineSignDataDao = db.callOfflineSignDataDao();
         offlineWorkTypeDataDao = db.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = db.offlineDaySubmitDao();
         activityOfflineDataDao = db.activityOfflineDataDao();
         activityUploadDataDao = db.activityUploadDataDao();
-        callsUtil = new CallsUtil(context);
+        outboxUtil = new OutboxUtil(context);
         util = new Util();
     }
 
     @NonNull
     @Override
-    public OutBoxHeaderAdapter.listDataViewholider onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public listDataViewholider onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.outbox_group_view, parent, false);
-        return new OutBoxHeaderAdapter.listDataViewholider(view);
+        return new listDataViewholider(view);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void onBindViewHolder(@NonNull OutBoxHeaderAdapter.listDataViewholider holder, int position) {
-
-        GroupModelClass groupModelClass = groupModelClasses.get(position);
-        holder.tvDate.setText(CommonUtilsMethods.setConvertDate("yyyy-MM-dd", "dd MMM yyyy", groupModelClass.getGroupName()));
-
-        if (groupModelClass.isExpanded()) {
-            holder.constraintContent.setVisibility(View.VISIBLE);
-            outBoxContentAdapter = new OutBoxContentAdapter(activity, context, groupModelClass.getChildItems());
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-            holder.rvContentList.setLayoutManager(mLayoutManager);
-            holder.rvContentList.setAdapter(outBoxContentAdapter);
-            holder.ivExpand.setImageResource(R.drawable.top_vector);
+    public void onBindViewHolder(@NonNull listDataViewholider holder, int position) {
+        if (position == 0) {
+            holder.view.setVisibility(View.GONE);
         } else {
-            holder.constraintContent.setVisibility(View.GONE);
-            holder.ivExpand.setImageResource(R.drawable.down_arrow);
+            holder.view.setVisibility(View.VISIBLE);
         }
+        GroupModelClass groupModelClass = groupModelClasses.get(position);
+        if (!outboxUtil.checkIsDataAvailable(groupModelClass)) {
+            outBoxBinding.rvOutBoxHead.post(() -> {
+                listDates.remove(groupModelClass);
+                notifyDataSetChanged();
+            });
+        } else {
+            holder.tvDate.setText(CommonUtilsMethods.setConvertDate("yyyy-MM-dd", "dd MMM yyyy", groupModelClass.getGroupName()));
 
-        holder.ivSync.setOnClickListener(v -> {
-            if (UtilityClass.isNetworkAvailable(context)) {
-                progressDialog = CommonUtilsMethods.createProgressDialog(context);
-//                CallOfflineData(groupModelClass, 0);
-                processApisForDate(groupModelClass, 0, new ApiCallback() {
-                    @Override
-                    public void onSuccess() {
-                        Log.v("SendOutboxCall", "--finallyOut--");
-                        progressDialog.dismiss();
-                        if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
-                            //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
-                        }
-                        CallDataRestClass.resetcallValues(context);
-                        RefreshAdapter();
-                        if (callSyncCount > 0) {
-                            CallsFragment.syncCalls();
-                            callSyncCount = 0;
-                        }
-                        OutboxFragment.SetupOutBoxAdapter(activity, context);
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        stopSync();
-                        progressDialog.dismiss();
-                    }
-                });
+            if (groupModelClass.isExpanded()) {
+                holder.constraintContent.setVisibility(View.VISIBLE);
+                outBoxContentAdapter = new OutBoxContentAdapter(activity, context, groupModelClass.getChildItems(), groupModelClass.getGroupName());
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+                holder.rvContentList.setLayoutManager(mLayoutManager);
+                holder.rvContentList.setAdapter(outBoxContentAdapter);
+                holder.ivExpand.setImageResource(R.drawable.top_vector);
             } else {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                holder.constraintContent.setVisibility(View.GONE);
+                holder.ivExpand.setImageResource(R.drawable.down_arrow);
             }
-        });
+
+            holder.ivSync.setOnClickListener(v -> {
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    progressDialog = CommonUtilsMethods.createProgressDialog(context);
+//                CallOfflineData(groupModelClass, 0);
+                    processApisForDate(groupModelClass, 0, new ApiCallback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.v("SendOutboxCall", "--finallyOut--");
+                            progressDialog.dismiss();
+                            if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
+                                //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+                            }
+                            CallDataRestClass.resetcallValues(context);
+                            RefreshAdapter();
+                            if (callSyncCount > 0) {
+                                CallsFragment.syncCalls();
+                                callSyncCount = 0;
+                            }
+                            OutboxFragment.SetupOutBoxAdapter(activity, context);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            stopSync();
+                            progressDialog.dismiss();
+                        }
+                    });
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                }
+            });
 
 
-        holder.cardView.setOnClickListener(v -> {
-            groupModelClass.setExpanded(Objects.equals(holder.ivExpand.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.down_arrow)).getConstantState()));
-            notifyDataSetChanged();
-        });
+            holder.cardView.setOnClickListener(v -> {
+                groupModelClass.setExpanded(Objects.equals(holder.ivExpand.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.down_arrow)).getConstantState()));
+                notifyDataSetChanged();
+            });
+        }
     }
 
     private void stopSync() {
@@ -218,7 +227,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 //                if (child.getChildId() == 3 || child.getChildId() == 4 || child.getChildId() == 6) {
 //                    processApisForDate(dateGroup, apiIndex + 1, callback);
 //                } else {
-                callback.onFailure();
+                    callback.onFailure();
 //                }
             }
         });
@@ -243,14 +252,18 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 break;
 
             case 4:
-                activitySubmitAPI(child,0, callback);
+                signatureSubmitAPI(child,0, callback);
                 break;
 
             case 5:
-                activityUploadSubmitAPI(child,0, callback);
+                activitySubmitAPI(child,0, callback);
                 break;
 
             case 6:
+                activityUploadSubmitAPI(child,0, callback);
+                break;
+
+            case 7:
                 daySubmitAPI(child, callback);
                 break;
 
@@ -412,13 +425,13 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                callsUtil.deleteOfflineCalls(outBoxCallList.getCusCode(), outBoxCallList.getCusName(), outBoxCallList.getDates());
+                                outboxUtil.deleteOfflineCalls(outBoxCallList.getCusCode(), outBoxCallList.getCusName(), outBoxCallList.getDates());
                                 callsList.remove(outBoxCallList);
                                 notifyDataSetChanged();
                                 callSyncCount++;
                                 callSubmitAPI(child, index, 0, callback);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, Constants.DUPLICATE_CALL, 1);
+                                outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, Constants.DUPLICATE_CALL, 1);
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
                                 UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.DUPLICATE_CALL, 1);
@@ -427,7 +440,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 callback.onSuccess();
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
                                 if (jsonSaveRes.has("msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("msg"));
                                     outBoxCallList.setSyncCount(5);
                                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), jsonSaveRes.getString("msg"), 1);
@@ -435,7 +448,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                     notifyDataSetChanged();
                                     callback.onFailure();
                                 } else if (jsonSaveRes.has("Msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("Msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("Msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("Msg"));
                                     outBoxCallList.setSyncCount(5);
                                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), jsonSaveRes.getString("Msg"), 1);
@@ -445,7 +458,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 }
                             }
                         } catch (Exception e) {
-                            callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, Constants.EXCEPTION_ERROR, 0);
+                            outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, Constants.EXCEPTION_ERROR, 0);
                             outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
                             outBoxCallList.setSyncCount(5);
                             UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.EXCEPTION_ERROR, 0);
@@ -459,7 +472,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 @Override
                 public void onFailure(Call<JsonElement> call, Throwable throwable) {
                     Log.v("CallsResponse", "" + throwable.getMessage().toString());
-                    callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), attempt + 1, Constants.CALL_FAILED, 1);
+                    outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), attempt + 1, Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(attempt + 1);
                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.CALL_FAILED, 1);
@@ -484,11 +497,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         }
         EcModelClass ecModelClass = callsImageList.get(index);
         if (ecModelClass.getSynced() == 0) {
-//            if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+            if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                 CallSendAPIImageS3(child, index, ecModelClass, callback);
-//            } else {
-//                CallSendAPIImage(child, index, ecModelClass, callback);
-//            }
+            } else {
+                CallSendAPIImage(child, index, ecModelClass, callback);
+            }
         } else {
             eventCaptureSubmitAPI(child, index + 1, callback);
         }
@@ -639,6 +652,171 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         });
     }
 
+    private void signatureSubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
+        ArrayList<SignModelClass> callsSignList = child.getSignModelClasses();
+        if (callsSignList == null || callsSignList.isEmpty() || index >= callsSignList.size()) {
+            callback.onSuccess();
+            return;
+        }
+        SignModelClass signModelClass = callsSignList.get(index);
+
+        if (signModelClass.getSynced() == 0) {
+            if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                CallSendAPIImageS3(child, index, signModelClass, callback);
+            } else {
+                CallSendAPISignImage(child, index, signModelClass, callback);
+            }
+        } else {
+            signatureSubmitAPI(child, index + 1, callback);
+        }
+    }
+
+    private void CallSendAPIImageS3(ChildListModelClass child, int index, SignModelClass signModelClass, ApiCallback callback) {
+        try {
+            util.getS3Client(context);
+            String bucketName = "san-one";
+            if (!signModelClass.getFilePath().isEmpty()) {
+                File fileToUpload = new File(signModelClass.getFilePath());
+                Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
+                if (fileToUpload.toString().isEmpty()) {
+                    Log.d("fileToUploadSignObFrag", "not exists: " + signModelClass.getFilePath());
+                } else {
+//                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+
+                    Log.d("TAG", "CallSendAPIImage: " + s3Key);
+
+                    TransferNetworkLossHandler.getInstance(context);
+
+                    TransferUtility transferUtility = TransferUtility.builder()
+                            .context(context)
+                            .s3Client(util.getS3Client(context))
+                            .build();
+
+                    TransferObserver uploadObserver = transferUtility.upload(
+                            bucketName,
+                            s3Key,
+                            fileToUpload);
+                    uploadObserver.setTransferListener(new TransferListener() {
+                        @Override
+                        public void onStateChanged(int idInt, TransferState state) {
+                            if (state == TransferState.COMPLETED) {
+                                Log.d("TAG", "signModelClass: " + signModelClass.getFilePath());
+                                InsertImageSign(signModelClass.getFilePath(), context);
+                                try {
+                                    File fileDelete = new File(signModelClass.getFilePath());
+                                    if (fileDelete.exists()) {
+                                        if (fileDelete.delete()) {
+                                            Log.i("file Deleted :", "onResponse: " + signModelClass.getFilePath());
+                                        } else {
+                                            Log.e("file Deleted :", "onResponse: " + signModelClass.getFilePath());
+                                        }
+                                    }
+                                    callOfflineSignDataDao.deleteOfflineSignImage(signModelClass.getFilePath());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                child.getSignModelClasses().remove(signModelClass);
+                                notifyDataSetChanged();
+                                signatureSubmitAPI(child, index, callback);
+                            } else if (state == TransferState.FAILED) {
+                                Log.e("S3 Upload", "Upload Failed");
+                                InsertImageSign(signModelClass.getFilePath(), context);
+                                signModelClass.setSynced(1);
+                                signModelClass.setSync_status(Constants.CALL_FAILED);
+                                callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.CALL_FAILED, 1);
+                                notifyDataSetChanged();
+                                callback.onFailure();
+                            }
+
+                        }
+
+                        @Override
+                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                            double progress = (bytesCurrent * 100.0) / bytesTotal;
+                            Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                        }
+
+                        @Override
+                        public void onError(int idInt, Exception ex) {
+                            Log.e("S3 Upload", "Error: " + ex.getMessage());
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
+                            notifyDataSetChanged();
+                            callback.onFailure();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            Log.v("img_tagOF", e.toString());
+            signModelClass.setSynced(1);
+            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
+            notifyDataSetChanged();
+            callback.onFailure();
+        }
+    }
+
+    private void CallSendAPISignImage(ChildListModelClass child, int index, SignModelClass signModelClass, ApiCallback callback) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("SignImg", signModelClass.getFilePath());
+        HashMap<String, RequestBody> values = field(signModelClass.getJson_values());
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
+                            try {
+                                File fileDelete = new File(signModelClass.getFilePath());
+                                if (fileDelete.exists()) {
+                                    if (fileDelete.delete()) {
+                                        Log.i("file Deleted :", "onResponse: " + signModelClass.getFilePath());
+                                    } else {
+                                        Log.e("file Deleted :", "onResponse: " + signModelClass.getFilePath());
+                                    }
+                                }
+                                callOfflineSignDataDao.deleteOfflineSignImage(signModelClass.getFilePath());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            child.getSignModelClasses().remove(signModelClass);
+                            notifyDataSetChanged();
+                            signatureSubmitAPI(child, index, callback);
+                        } else {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.DUPLICATE_CALL, 1);
+                            callback.onSuccess();
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        e.printStackTrace();
+                        signModelClass.setSynced(1);
+                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.DUPLICATE_CALL, 1);
+                        callback.onFailure();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                t.printStackTrace();
+                signModelClass.setSynced(1);
+                signModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.CALL_FAILED, 1);
+                callback.onFailure();
+            }
+        });
+    }
+
     private void activitySubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
         try {
             ArrayList<ActivityModelClass> activityList = child.getActivityModelClasses();
@@ -664,14 +842,14 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                     notifyDataSetChanged();
                                     callback.onSuccess();
                                 } else {
-                                    callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                    outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                     activityModelClass.setSyncStatus(Constants.FAILED);
                                     activityModelClass.setSyncCount(5);
                                     notifyDataSetChanged();
                                     callback.onFailure();
                                 }
                             } catch (Exception e) {
-                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                                outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
                                 activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                                 activityModelClass.setSyncCount(5);
                                 Log.v("SendOutboxCall", "---" + e);
@@ -685,7 +863,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                        outboxUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
                         activityModelClass.setSyncStatus(Constants.FAILED);
                         activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
                         notifyDataSetChanged();
@@ -728,14 +906,14 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 notifyDataSetChanged();
                                 callback.onSuccess();
                             } else {
-                                callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                 activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                 activityUploadModelClass.setSyncCount(5);
                                 notifyDataSetChanged();
                                 callback.onFailure();
                             }
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncCount(5);
                             Log.v("SendOutboxCall", "---" + e);
@@ -749,7 +927,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
-                    callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityUploadModelClass.setSyncStatus(Constants.FAILED);
                     activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
                     notifyDataSetChanged();
@@ -950,7 +1128,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
     private void CallSendWorkPlan(GroupModelClass groupModelClass, WorkPlanModelClass workPlanModelClass, int childPos, String jsonValues) {
         Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "edetsave/dayplan");
+        if(SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+            mapString.put("axn", "edetsave/dayplan");
+        } else {
+            mapString.put("axn", "multihqsave/dayplan");
+        }
         Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonValues);
         saveMyDayPlan.enqueue(new Callback<JsonElement>() {
             @SuppressLint("NotifyDataSetChanged")
@@ -1026,7 +1208,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getFilePath());
                     Log.v("SendOutboxCall_______", "--image--" + ecModelClass.getJson_values());
-                    CallSendAPIImage(ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), groupModelClass);
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                        CallSendAPIImageS3(ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), groupModelClass);
+                    }else {
+                        CallSendAPIImage(groupModelClass, ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                    }
                     break;
                 }
             }
@@ -1036,7 +1222,30 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
         if (!isCallAvailable) {
             notifyDataSetChanged();
-            CallAPIOfflineActivity(groupModelClass, 4);
+            CallApiSignImage(groupModelClass,4);
+
+        }
+    }
+
+    public void CallApiSignImage(GroupModelClass groupModelClass, int childPos){
+        if(!groupModelClass.getChildItems().get(childPos).getSignModelClasses().isEmpty()){
+            isCallAvailable = false;
+            for(int i=0; i< groupModelClass.getChildItems().get(childPos).getSignModelClasses().size(); i++){
+                SignModelClass signModelClass = groupModelClass.getChildItems().get(childPos).getSignModelClasses().get(i);
+                if(signModelClass.getSynced()==0){
+                    isCallAvailable = true;
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+                        CallSendSignImageS3(groupModelClass,signModelClass,childPos,i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()));
+                    }
+                    CallSendSignImage(groupModelClass,signModelClass,childPos,i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()));
+                    break;
+                }
+            }
+        }else{
+            isCallAvailable = false;
+        }
+        if(!isCallAvailable){
+            CallAPIOfflineActivity(groupModelClass, 5);
         }
     }
 
@@ -1058,9 +1267,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIDaySubmit(groupModelClass, 4);
+            CallAPIDaySubmit(groupModelClass, 7);
             notifyDataSetChanged();
-            CallAPIActivityUpload(groupModelClass, 5);
+            CallAPIActivityUpload(groupModelClass, 6);
         }
     }
 
@@ -1082,7 +1291,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIDaySubmit(groupModelClass, 6);
+            CallAPIDaySubmit(groupModelClass,7);
         }
     }
 
@@ -1129,7 +1338,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
                                 groupModelClass.getChildItems().get(childPos).getActivityModelClasses().remove(activityModelClass);
                             } else {
-                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                 activityModelClass.setSyncStatus(Constants.FAILED);
                                 activityModelClass.setSyncCount(5);
                                 groupModelClass.getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
@@ -1137,7 +1346,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                             CallAPIOfflineActivity(groupModelClass, childPos);
                             notifyDataSetChanged();
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
                             activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityModelClass.setSyncCount(5);
                             groupModelClass.getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
@@ -1152,7 +1361,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityModelClass.setSyncStatus(Constants.FAILED);
                     activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
                     groupModelClass.getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
@@ -1182,7 +1391,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
                                 groupModelClass.getChildItems().get(position).getActivityUploadModelClasses().remove(activityUploadModelClass);
                             }else {
-                                callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                 activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                 activityUploadModelClass.setSyncCount(5);
                                 groupModelClass.getChildItems().get(position).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
@@ -1190,7 +1399,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                             CallAPIActivityUpload(groupModelClass, position);
                             notifyDataSetChanged();
                         } catch (Exception e) {
-                            callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
                             activityUploadModelClass.setSyncCount(5);
                             Log.v("SendOutboxCall", "---" + e);
@@ -1204,7 +1413,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
-                    callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityUploadModelClass.setSyncStatus(Constants.FAILED);
                     activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
                     groupModelClass.getChildItems().get(position).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
@@ -1303,116 +1512,104 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     }
 
     // Event Capture S3
-    private void CallSendAPIImage(EcModelClass ecModelClass, int childPos, int CurrentPos,
+    private void CallSendAPIImageS3(EcModelClass ecModelClass, int childPos, int CurrentPos,
                                   String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
-            /*String accessKey = Keys.ACCESS_KEY;
-            String secretKey = Keys.SECRET_KEY;
-            Regions region = Regions.EU_NORTH_1;
-
-
-            BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
-
-            AmazonS3Client s3Client = new AmazonS3Client(credentials);
-            s3Client.setRegion(Region.getRegion(region));*/
-
             util.getS3Client(context);
-            String bucketName = "san-edet";
+//            String bucketName = "san-edet";
+            String bucketName = "san-one";
             if(!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
                 if (!fileToUpload.exists()) {
                     Log.d("fileToUpload", "not exists: " + filePath);
                 } else {
-
-
-                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+//                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                     TransferNetworkLossHandler.getInstance(context);
 
                     TransferUtility transferUtility = TransferUtility.builder()
                             .context(context)
-                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                             .s3Client(util.getS3Client(context))
-                            .defaultBucket(bucketName)
                             .build();
 
-                    TransferObserver uploadObserver = transferUtility.upload(
-                            bucketName,
-                            s3Key,
-                            fileToUpload);
-                    Log.d("uploadObserver", "CallSendAPIImage: " + uploadObserver);
+                        TransferObserver uploadObserver = transferUtility.upload(
+                                bucketName,
+                                s3Key,
+                                fileToUpload);
+                        Log.d("uploadObserver", "CallSendAPIImage: " + uploadObserver);
 
-                    uploadObserver.setTransferListener(new TransferListener() {
-                        @Override
-                        public void onStateChanged(int idInt, TransferState state) {
-                            if (state == TransferState.COMPLETED) {
-                                Log.d("TAG", "ecModelClass: " + filePath);
-                                InsertImage(ecModelClass.getFilePath(), context);
-                                DeleteCacheFile(filePath, id, CurrentPos, childPos, modelClass);
-                                Log.d("S3 Upload", "Upload Successful: " + s3Key);
-                                try {
-                                    modelClass.getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
-                                    CallAPIListImage(modelClass, childPos);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else if (state == TransferState.FAILED) {
-                                Log.e("S3 Upload", "Upload Failed");
-                                InsertImage(ecModelClass.getFilePath(), context);
-                                ecModelClass.setSynced(1);
-                                ecModelClass.setSync_status(Constants.CALL_FAILED);
-                                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
-                                CallAPIListImage(modelClass, childPos);
-                                try {
+                        uploadObserver.setTransferListener(new TransferListener() {
+                            @Override
+                            public void onStateChanged(int idInt, TransferState state) {
+                                if (state == TransferState.COMPLETED) {
+                                    Log.d("TAG", "ecModelClass: " + filePath);
+                                    InsertImage(ecModelClass.getFilePath(), context);
+                                    DeleteCacheFile(filePath, id, CurrentPos, childPos, modelClass);
+                                    Log.d("S3 Upload", "Upload Successful: " + s3Key);
+                                    try {
+                                        modelClass.getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
+                                        CallAPIListImage(modelClass, childPos);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else if (state == TransferState.FAILED) {
+                                    Log.e("S3 Upload", "Upload Failed");
+                                    InsertImage(ecModelClass.getFilePath(), context);
+                                    ecModelClass.setSynced(1);
+                                    ecModelClass.setSync_status(Constants.CALL_FAILED);
                                     callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
                                     CallAPIListImage(modelClass, childPos);
+                                    try {
+                                        callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                                        CallAPIListImage(modelClass, childPos);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    ecModelClass.setSynced(1);
+                                    ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                                    callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                                    CallAPIListImage(modelClass, childPos);
+                                }
+
+                            }
+
+                            @Override
+                            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                                double progress = (bytesCurrent * 100.0) / bytesTotal;
+                                Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                            }
+
+                            @Override
+                            public void onError(int idInt, Exception ex) {
+                                Log.e("S3 Upload", "Error: " + ex.getMessage());
+                                ecModelClass.setSynced(1);
+                                ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                                callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                                try {
+                                    CallAPIListImage(modelClass, childPos);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            }else{
-                                ecModelClass.setSynced(1);
-                                ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
-                                callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
-                                CallAPIListImage(modelClass, childPos);
                             }
-
-                        }
-
-                        @Override
-                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                            double progress = (bytesCurrent * 100.0) / bytesTotal;
-                            Log.d("S3 Upload", "Upload Progress: " + progress + "%");
-                        }
-
-                        @Override
-                        public void onError(int idInt, Exception ex) {
-                            Log.e("S3 Upload", "Error: " + ex.getMessage());
-                            ecModelClass.setSynced(1);
-                            ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                            callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-                            try {
-                                CallAPIListImage(modelClass, childPos);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                        });
+                    }
+                } else {
+                    Log.d("Filepath", "CallSendAPIImage: " + "file path in adap is empty");
                 }
-            }else{
-                Log.d("Filepath", "CallSendAPIImage: "+"file path in adap is empty");
+            } catch (Exception e) {
+                Log.v("img_tag", e.toString());
+                ecModelClass.setSynced(1);
+                ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                try {
+                    CallAPIListImage(modelClass, childPos);
+                } catch (Exception a) {
+                    a.printStackTrace();
+                }
             }
-        } catch(Exception e){
-            Log.v("img_tag", e.toString());
-            ecModelClass.setSynced(1);
-            ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-            callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-            try {
-                CallAPIListImage(modelClass, childPos);
-            } catch (Exception a) {
-                a.printStackTrace();
-            }
-        }
-
+//        }
     }
 
     private void InsertImage(final String ImageUrl, Context context) {
@@ -1445,62 +1642,225 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         }
     }
 
-//    private void CallSendAPIImage(GroupModelClass groupModelClass, EcModelClass ecModelClass, int childPos, int i, String jsonValues, String filePath, String id) {
-//        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-//        MultipartBody.Part img = convertImg("EventImg", filePath);
-//        HashMap<String, RequestBody> values = field(jsonValues);
-//        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
-//
-//        saveImgDcr.enqueue(new Callback<JsonObject>() {
-//            @Override
-//            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-//                if (response.isSuccessful()) {
-//                    try {
-//                        assert response.body() != null;
-//                        JSONObject json = new JSONObject(response.body().toString());
-//                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-//                            DeleteCacheFile(groupModelClass, groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(), id, i, childPos);
-//                        } else {
-//                            ecModelClass.setSynced(1);
-//                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
-//                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
-//                            CallAPIListImage(groupModelClass, childPos);
-//                        }
-//                    } catch (Exception e) {
-//                        Log.v("SendOutboxCall", "-error---" + e);
-//                        ecModelClass.setSynced(1);
-//                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-//                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-//                        CallAPIListImage(groupModelClass, childPos);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-//                ecModelClass.setSynced(1);
-//                ecModelClass.setSync_status(Constants.CALL_FAILED);
-//                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
-//                CallAPIListImage(groupModelClass, childPos);
-//            }
-//        });
-//    }
-//
-//    @SuppressLint("NotifyDataSetChanged")
-//    private void DeleteCacheFile(GroupModelClass groupModelClass, String filePath, String id, int i, int childPos) {
-//        File fileDelete = new File(filePath);
-//        if (fileDelete.exists()) {
-//            if (fileDelete.delete()) {
-////                System.out.println("file Deleted :" + filePath);
-//            } else {
-////                System.out.println("file not Deleted :" + filePath);
-//            }
-//        }
-//        callOfflineECDataDao.deleteOfflineEC(id);
-//        groupModelClass.getChildItems().get(childPos).getEcModelClasses().remove(i);
-//        CallAPIListImage(groupModelClass, childPos);
-//    }
+    private void CallSendAPIImage(GroupModelClass groupModelClass, EcModelClass ecModelClass, int childPos, int i, String jsonValues, String filePath, String id) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("EventImg", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
 
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                            DeleteCacheFile(groupModelClass, groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(), id, i, childPos);
+                        } else {
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                            CallAPIListImage(groupModelClass, childPos);
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                        CallAPIListImage(groupModelClass, childPos);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                ecModelClass.setSynced(1);
+                ecModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                CallAPIListImage(groupModelClass, childPos);
+            }
+        });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void DeleteCacheFile(GroupModelClass groupModelClass, String filePath, String id, int i, int childPos) {
+        File fileDelete = new File(filePath);
+        if (fileDelete.exists()) {
+            if (fileDelete.delete()) {
+//                System.out.println("file Deleted :" + filePath);
+            } else {
+//                System.out.println("file not Deleted :" + filePath);
+            }
+        }
+        callOfflineECDataDao.deleteOfflineEC(id);
+        groupModelClass.getChildItems().get(childPos).getEcModelClasses().remove(i);
+        CallAPIListImage(groupModelClass, childPos);
+    }
+
+
+    public void CallSendSignImageS3(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
+        try {
+            util.getS3Client(context);
+            String bucketName = "san-edet";
+            if(!filePath.isEmpty()) {
+                File fileToUpload = new File(filePath);
+                Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
+                if (fileToUpload.toString().isEmpty()) {
+                    Log.d("fileToUploadSignHeader", "not exists: " + filePath);
+                } else {
+
+                    String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ fileToUpload.getName();
+                    if(s3Key.contains(null)){
+                        Log.d("s3Key", "CallSendSignImage: "+"s3key is null");
+                    }
+                    Log.d("TAG", "CallSendAPIImage: " + s3Key);
+
+                    TransferNetworkLossHandler.getInstance(context);
+
+                    TransferUtility transferUtility = TransferUtility.builder()
+                            .context(context)
+                            .s3Client(util.getS3Client(context))
+                            .build();
+
+                    TransferObserver uploadObserver = transferUtility.upload(
+                            bucketName,
+                            s3Key,
+                            fileToUpload);
+                    uploadObserver.setTransferListener(new TransferListener() {
+                        @Override
+                        public void onStateChanged(int idInt, TransferState state) {
+                            if (state == TransferState.COMPLETED) {
+                                Log.d("TAG", "ecModelClass: " + filePath);
+                                InsertImageSign(signModelClass.getFilePath(), context);
+                                DeleteCacheFileSign(groupModelClass,filePath, id,i, childPos );
+                                Log.d("S3 Upload", "Upload Successful: " + s3Key);
+                                try {
+                                    groupModelClass.getChildItems().get(childPos).getSignModelClasses().remove(0);
+                                    CallApiSignImage(groupModelClass, childPos);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else if (state == TransferState.FAILED) {
+
+                                Log.e("S3 Upload", "Upload Failed");
+                                InsertImageSign(signModelClass.getFilePath(), context);
+                                signModelClass.setSynced(1);
+                                signModelClass.setSync_status(Constants.CALL_FAILED);
+                                try {
+                                    callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+                                    CallApiSignImage(groupModelClass, childPos);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+
+                        @Override
+                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                            double progress = (bytesCurrent * 100.0) / bytesTotal;
+                            Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                        }
+
+                        @Override
+                        public void onError(int idInt, Exception ex) {
+                            Log.e("S3 Upload", "Error: " + ex.getMessage());
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                            callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+                            try {
+                                CallApiSignImage(groupModelClass, childPos);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }else{
+                Log.d("Filepath", "CallSendAPIImage: "+"file path in adap is empty");
+            }
+        } catch(Exception e){
+            Log.v("img_tagOHA", e.toString());
+            signModelClass.setSynced(1);
+            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+            callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+            try {
+                CallApiSignImage(groupModelClass, childPos);
+            } catch (Exception a) {
+                a.printStackTrace();
+            }
+        }
+    }
+
+    private void CallSendSignImage(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("SignImg", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
+                            DeleteCacheFileSign(groupModelClass, groupModelClass.getChildItems().get(childPos).getSignModelClasses().get(i).getFilePath(), id, i, childPos);
+                        } else {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+                            CallAPIListImage(groupModelClass, childPos);
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        signModelClass.setSynced(1);
+                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+                        CallApiSignImage(groupModelClass, childPos);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                signModelClass.setSynced(1);
+                signModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+                CallApiSignImage(groupModelClass, childPos);
+            }
+        });
+    }
+
+
+    private void InsertImageSign(final String ImageUrl, Context context) {
+        File imageFile = new File(ImageUrl);
+        Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
+        String fileName = new File(ImageUrl).getName();
+        new AWSBucketsSign(context,fileName,imageFile,"");
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void DeleteCacheFileSign(GroupModelClass groupModelClass, String filePath, String id, int i, int childPos) {
+        File fileDelete = new File(filePath);
+        if (fileDelete.exists()) {
+            if (fileDelete.delete()) {
+                System.out.println("file Deleted :" + filePath);
+            } else {
+                System.out.println("file not Deleted :" + filePath);
+            }
+        }
+        callOfflineSignDataDao.deleteOfflineSignImage(filePath);
+        try{
+            groupModelClass.getChildItems().get(childPos).getSignModelClasses().remove(i);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        CallApiSignImage(groupModelClass, childPos);
+    }
 
     private void CallSendAPI(GroupModelClass groupModelClass, OutBoxCallList outBoxCallList, int childPos, int outBoxList, String date, String cusName, String cusCode, String jsonData, int SyncCount) {
         JSONObject jsonSaveDcr;
@@ -1517,10 +1877,10 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                callsUtil.deleteOfflineCalls(cusCode, cusName, date);
+                                outboxUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().remove(outBoxList);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
+                                outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
                                 groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, 5));
                                 JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -1544,7 +1904,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 }
                             } else if(jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
                                 if(jsonSaveRes.has("msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
                                     groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), jsonSaveRes.getString("msg"), 5));
                                     JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -1567,7 +1927,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                         masterDataDao.insert(mData);
                                     }
                                 } else if(jsonSaveRes.has("Msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
                                     groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), jsonSaveRes.getString("msg"), 5));
                                     JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -1594,7 +1954,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                             CallAPIOfflineCalls(groupModelClass, childPos);
                             notifyDataSetChanged();
                         } catch (Exception e) {
-                            callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
+                            outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
                             groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.EXCEPTION_ERROR, 5));
                             UpdateEcData(date, cusCode, cusName, Constants.EXCEPTION_ERROR, 0);
                             CallAPIOfflineCalls(groupModelClass, childPos);
@@ -1607,7 +1967,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, SyncCount + 1, Constants.CALL_FAILED, 1);
+                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, SyncCount + 1, Constants.CALL_FAILED, 1);
                     groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, SyncCount + 1));
                     UpdateEcData(date, cusCode, cusName, Constants.CALL_FAILED, 1);
                     CallAPIOfflineCalls(groupModelClass, childPos);
@@ -1648,6 +2008,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         ConstraintLayout constraintContent;
         RecyclerView rvContentList;
         CardView cardView;
+        View view;
 
         public listDataViewholider(@NonNull View itemView) {
             super(itemView);
@@ -1657,6 +2018,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             constraintContent = itemView.findViewById(R.id.constraint_rv);
             rvContentList = itemView.findViewById(R.id.rv_outbox_list);
             cardView = itemView.findViewById(R.id.card_view_top);
+            view = itemView.findViewById(R.id.date_divider);
         }
     }
 }

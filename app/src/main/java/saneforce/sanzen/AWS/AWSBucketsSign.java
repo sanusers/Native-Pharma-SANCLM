@@ -16,7 +16,7 @@ import java.io.File;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 
-public class AWSBucketsTag {
+public class AWSBucketsSign {
     private static final String TAG = "Upload Task";
     TransferUtility transferUtility;
     Util util;
@@ -27,7 +27,9 @@ public class AWSBucketsTag {
     S3DownloadFiles S3DownloadFiles;
     CommonUtilsMethods commonUtilsMethods;
 
-    public AWSBucketsTag(Context context, String Filename, File File, String filestored_name) {  // for upload
+
+
+    public AWSBucketsSign(Context context, String Filename, File File, String filestored_name) {  // for upload
         this.context = context;
         this.filename = Filename;
         this.file = File;
@@ -35,10 +37,11 @@ public class AWSBucketsTag {
         util = new Util();
         transferUtility = util.getTransferUtility(context);
         commonUtilsMethods =  new CommonUtilsMethods(context);
-        new AWSbucketsclassTag().execute();
+        new AWSbucketsclassSign().execute();
     }
 
-    public AWSBucketsTag(Context context, String Filename, File File, int filepos, String filestored_name, S3DownloadFiles s3Download_Files) {
+    // download
+    public AWSBucketsSign(Context context, String Filename, File File, int filepos, String filestored_name, S3DownloadFiles s3Download_Files) {  // for download/ retrival
         this.context = context;
         this.filename = Filename;
         this.file = File;
@@ -48,15 +51,55 @@ public class AWSBucketsTag {
         util = new Util();
         transferUtility = util.getTransferUtility(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
-        new AWSbucketsDownloadTag().execute();
+        new AWSbucketsDownloadSign().execute();
     }
 
-    private class AWSbucketsclassTag extends AsyncTask<Void, Void, Boolean> {
+
+    private class AWSbucketsDownloadSign extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                TransferObserver image_upload = transferUtility.upload("san-one", "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Tagging"+"/"+filestored_name+filename, file);
+                TransferObserver downloadObserver = transferUtility.download("san-one","uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ filestored_name+filename, file);
+                downloadObserver.setTransferListener(new TransferListener() {
 
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        if (TransferState.COMPLETED == state) {
+                            Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath());
+                            System.out.println("CHk_Data-->>" + bmp);
+                            S3DownloadFiles.fileDataAdd(pos, bmp);
+                        } else if (TransferState.FAILED == state) {
+                            Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
+                        }
+                    }
+
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "Download Error Exception " + e.getMessage());
+                return false;
+            }
+        }
+    }
+
+    private class AWSbucketsclassSign extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... arg0) {
+            try {
+                TransferObserver image_upload = transferUtility.upload("san-one","uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ filestored_name+filename, file);
+                if (image_upload == null) {
+                    Log.e("AWSUpload", "TransferObserver is null - upload() may have failed silently.");
+                    return false;
+                }
                 image_upload.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
@@ -89,42 +132,6 @@ public class AWSBucketsTag {
         }
 
     }
-
-    private class AWSbucketsDownloadTag extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... arg0) {
-            try {
-
-                TransferObserver downloadObserver = transferUtility.download("san-one", "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Tagging"+"/"+filestored_name+filename, file);
-                downloadObserver.setTransferListener(new TransferListener() {
-
-                    @Override
-                    public void onStateChanged(int id, TransferState state) {
-                        if (TransferState.COMPLETED == state) {
-                            Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath());
-                            System.out.println("CHk_Data-->>" + bmp);
-                            S3DownloadFiles.fileDataAdd(pos, bmp);
-                        } else if (TransferState.FAILED == state) {
-                            Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
-                        }
-                    }
-
-                    @Override
-                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                    }
-
-                    @Override
-                    public void onError(int id, Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(TAG, "Download Error Exception " + e.getMessage());
-                return false;
-            }
-        }
-    }
-
 }
+
+

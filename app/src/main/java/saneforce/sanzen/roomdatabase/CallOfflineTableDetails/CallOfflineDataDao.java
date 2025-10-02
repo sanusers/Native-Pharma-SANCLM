@@ -38,6 +38,13 @@ public interface CallOfflineDataDao {
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_TABLE` WHERE `CALL_SYNC_STATUS` = :status)")
     boolean isAvailableCall(String status);
 
+    @Query("SELECT COUNT(1) > 0 FROM CALL_OFFLINE_TABLE WHERE `CALL_SYNC_STATUS` != 'Duplicate Call'")
+    boolean isNonSyncAvailableCall();
+
+    @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_TABLE` WHERE `CALL_SYNC_STATUS` = :status)")
+    boolean isAvailableCallOnStatus(String status);
+
+
     @Query("SELECT * FROM `CALL_OFFLINE_TABLE` WHERE `CALL_CUS_CODE` = :cusCode AND `CALL_DATE` = :date")
     CallOfflineDataTable getCallOfflineData(String cusCode, String date);
 

@@ -30,6 +30,12 @@ public interface CallOfflineWorkTypeDataDao {
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_WORK_TYPE_TABLE`)")
     boolean isAvailableWT();
 
+    @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_WORK_TYPE_TABLE` WHERE `CALL_OFFLINE_WT_SYNC_STATUS` = 0 AND `CALL_OFFLINE_WT_DATE` = :date)")
+    boolean isAvailableWT(String date);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_WORK_TYPE_TABLE` WHERE `CALL_OFFLINE_WT_SYNC_STATUS` = 0)")
+    boolean isNonSyncAvailableWT();
+
     @Query("SELECT `CALL_OFFLINE_WT_NAME` FROM `CALL_OFFLINE_WORK_TYPE_TABLE` WHERE `CALL_OFFLINE_WT_DATE` = :date")
     List<String> getListOfflineWTNames(String date);
 

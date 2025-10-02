@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -55,7 +54,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
-import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
@@ -68,7 +66,7 @@ import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
@@ -90,7 +88,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
     private CallOfflineDataDao callOfflineDataDao;
     private OfflineDaySubmitDao offlineDaySubmitDao;
     private CallTableDao callTableDao;
-    private CallsUtil callsUtil;
+    private OutboxUtil outboxUtil;
 
     public OutBoxCallAdapter(Activity activity, Context context, ArrayList<OutBoxCallList> outBoxCallLists, ApiInterface apiInterface) {
         this.context = context;
@@ -104,7 +102,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         callOfflineDataDao = roomDB.callOfflineDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         callTableDao = roomDB.callTableDao();
-        callsUtil = new CallsUtil(context);
+        outboxUtil = new OutboxUtil(context);
     }
 
     @NonNull
@@ -214,7 +212,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                 }
                             }
                         }
-                        callsUtil.deleteOfflineCallsWithActivity(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
+                        outboxUtil.deleteOfflineCallsWithActivity(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
                         try {
                             if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
                                 JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
@@ -343,23 +341,23 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                callsUtil.deleteOfflineCalls(cusCode, cusName, date);
+                                outboxUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 removeAt(pos);
                              //   CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_saved_successfully));
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
+                                outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_already_exist));
                             } else if(jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
                                 if(jsonSaveRes.has("msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("msg"));
                                     outBoxCallList.setSyncCount(5);
                                     commonUtilsMethods.showToastMessage(context, jsonSaveRes.getString("msg"));
                                 } else if(jsonSaveRes.has("Msg")) {
-                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
+                                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("Msg"));
                                     outBoxCallList.setSyncCount(5);
                                     commonUtilsMethods.showToastMessage(context, jsonSaveRes.getString("Msg"));
@@ -367,7 +365,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {
-                            callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
+                            outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
                             outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
                             outBoxCallList.setSyncCount(5);
                             Log.v("SendOutboxCall", "---" + e);
@@ -379,7 +377,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, syncCount + 1, Constants.CALL_FAILED, 1);
+                    outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, syncCount + 1, Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(syncCount + 1);
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_failed));
@@ -465,7 +463,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         outBoxCallLists.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, outBoxCallLists.size());
-        ArrayList<GroupModelClass> listDatesDup = callsUtil.getOutBoxDatesWithData();
+        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData();
         try {
             for (int i = 0; i < listDates.size(); i++) {
                 GroupModelClass groupModelClass = listDates.get(i);

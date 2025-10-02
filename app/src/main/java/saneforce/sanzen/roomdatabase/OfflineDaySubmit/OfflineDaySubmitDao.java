@@ -30,6 +30,9 @@ public interface OfflineDaySubmitDao {
     @Query("SELECT EXISTS(SELECT 1 FROM `OFFLINE_DAY_SUBMIT_TABLE`)")
     boolean isAvailableDaySubmit();
 
+    @Query("SELECT EXISTS(SELECT 1 FROM `OFFLINE_DAY_SUBMIT_TABLE` WHERE `sync_status` = 0)")
+    boolean isNonSyncAvailableDaySubmit();
+
     @Query("SELECT * FROM `OFFLINE_DAY_SUBMIT_TABLE` WHERE `DATE` = :date")
     OfflineDaySubmitDataTable getDaySubmit(String date);
 

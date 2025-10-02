@@ -471,6 +471,8 @@ public class SharedPref {
 
     public static final String A_S_KEY = "A_S_KEY";
     public static final String TP_OBJECTIVE_MANDATORY = "tp_objective_mandatory";
+    public static final String DIVISION_SNAME = "Division_SName";
+    public static final String S3_BUCKET_NEED = "S3BucketNeed";
 
     public static SharedPreferences.Editor editor;
 
@@ -811,6 +813,8 @@ public class SharedPref {
         editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
         editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
         editor.putString(TP_OBJECTIVE_MANDATORY,jsonObject.optString("tp_objective_mandatory"));
+        editor.putString(DIVISION_SNAME,jsonObject.optString("Division_SName"));
+        editor.putString(S3_BUCKET_NEED, jsonObject.optString("S3BucketNeed"));
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.apply();
 
@@ -2916,6 +2920,11 @@ public class SharedPref {
     public static String getTpObjectiveMandatory(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_OBJECTIVE_MANDATORY,"");
     }
-
+    public static String getDivisionSname(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DIVISION_SNAME,"");
+    }
+    public static String getS3BucketNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_BUCKET_NEED, "");
+    }
 
 }

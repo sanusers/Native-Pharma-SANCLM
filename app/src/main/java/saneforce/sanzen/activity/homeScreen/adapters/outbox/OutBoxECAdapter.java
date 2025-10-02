@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.homeScreen.adapters.outbox;
 
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.listDates;
+import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.notifyedmethod;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
 import android.annotation.SuppressLint;
@@ -27,23 +28,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
+import id.zelory.compressor.Compressor;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
@@ -52,6 +57,8 @@ import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
@@ -84,14 +91,14 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
 
     @NonNull
     @Override
-    public OutBoxECAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.outbox_ec_view, parent, false);
         return new ViewHolder(view);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void onBindViewHolder(@NonNull OutBoxECAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tvImageName.setText(ecModelClasses.get(position).getImg_name());
         holder.tvStatus.setText(ecModelClasses.get(position).getSync_status());
 
@@ -120,10 +127,17 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
                     EcModelClass ecModelClass = ecModelClasses.get(position);
-                    CallImageApi(ecModelClass,ecModelClass.getJson_values(),ecModelClass.getFilePath(),String.valueOf(ecModelClass.getId()));
-
+//                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+//                        CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+//                    }else {
+//                        CallSendAPIImage(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+//                    }
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        CallImageApi(ecModelClass,ecModelClass.getJson_values(),ecModelClass.getFilePath(),String.valueOf(ecModelClass.getId()));
+                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                            CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                        }else{
+                            CallSendAPIImage(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                        }
                     } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                     }
@@ -199,7 +213,80 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         });
     }
 
-    private void CallImageApi(EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
+    public HashMap<String, RequestBody> field(String val) {
+        HashMap<String, RequestBody> xx = new HashMap<>();
+        xx.put("data", createFromString(val));
+        return xx;
+    }
+
+    private RequestBody createFromString(String txt) {
+        return RequestBody.create(txt, MultipartBody.FORM);
+    }
+
+    public MultipartBody.Part convertImg(String tag, String path) {
+        Log.d("path", tag + "-" + path);
+        MultipartBody.Part yy = null;
+        try {
+            File file;
+            if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
+                file = new Compressor(context).compressToFile(new File(path));
+                Log.d("path", tag + "-" + path);
+            } else {
+                file = new File(path);
+            }
+            RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
+            yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
+
+            Log.d("path", String.valueOf(yy));
+        } catch (Exception ignored) {
+        }
+        return yy;
+    }
+
+    private void CallSendAPIImage(EcModelClass ecModelClass, String jsonValues, String filePath, String id) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("EventImg", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        Log.v("SendOutboxCall", "-imageRes---" + json);
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                            DeleteCacheFile(filePath, id);
+                        } else {
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                        }
+                        notifyedmethod();
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error-ec--" + e);
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                        notifyedmethod();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                ecModelClass.setSynced(1);
+                ecModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                notifyedmethod();
+            }
+        });
+    }
+
+    private void CallImageApiS3(EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
         Log.d("CallImageApi", "filePath received: " + filePath);
         try {
 
@@ -213,7 +300,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             s3Client.setRegion(Region.getRegion(region));*/
 
             util.getS3Client(context);
-            String bucketName = "san-edet";
+//            String bucketName = "san-edet";
+            String bucketName = "san-one";
 
 
             File fileToUpload = new File(filePath);
@@ -223,7 +311,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             } else {
 
 
-                String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/" + fileToUpload.getName();
+//                String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/" + fileToUpload.getName();
+                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                 TransferNetworkLossHandler.getInstance(context);
@@ -337,7 +426,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         Dialog builder = new Dialog(context);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.setCancelable(true);
-        Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         ImageView imageView = new ImageView(context);
         imageView.setImageBitmap(img_view);

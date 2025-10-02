@@ -16,6 +16,7 @@ public class ChildListModelClass {
     private WorkPlanModelClass workPlanModelClass;
     private DaySubmitModelClass daySubmitModelClass;
     private QuizModelClass quizModelClass;
+    private ArrayList<SignModelClass> signModelClass;
     private boolean isAvailableList;
     private boolean isExpanded;
     private int Counts;
@@ -35,6 +36,13 @@ public class ChildListModelClass {
         this.isExpanded = isExpanded;
         this.isAvailableList = isAvailableList;
         this.ecModelClasses = ecModelClasses;
+    }
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<SignModelClass> signModelClass, String dummy1,String dummy2,String dummy3) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isExpanded = isExpanded;
+        this.isAvailableList = isAvailableList;
+        this.signModelClass = signModelClass;
     }
 
     public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<ActivityModelClass> activityModelClasses, ActivityModelClass activityModelClass) {
@@ -101,6 +109,13 @@ public class ChildListModelClass {
 
     public void setEcModelClasses(ArrayList<EcModelClass> ecModelClasses) {
         this.ecModelClasses = ecModelClasses;
+    }
+
+    public ArrayList<SignModelClass> getSignModelClasses(){
+        return signModelClass;
+    }
+    public void setSignModelClasses(ArrayList<SignModelClass> signModelClasses){
+        this.signModelClass = signModelClasses;
     }
 
     public String getOtherContents() {

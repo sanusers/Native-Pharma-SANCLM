@@ -18,9 +18,7 @@ package saneforce.sanzen.AWS;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.Shader;
 import android.net.Uri;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -39,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
+
 import saneforce.sanzen.commonClasses.SimpleDecrypt;
 import saneforce.sanzen.storage.SharedPref;
 

@@ -51,7 +51,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -93,7 +92,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.BusinessEntry.DoctorBusinessActivity;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.homeScreen.notification.NotificationViewModel;
@@ -138,7 +136,7 @@ import saneforce.sanzen.databinding.HomeNavigationFooterBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
-import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
@@ -207,7 +205,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public String isFrom="";
     public static int JoiningDate, JoiningMonth, JoiningYear;
     private InAppUpdate inAppUpdate;
-    private static CallsUtil callsUtil;
+    private static OutboxUtil outboxUtil;
     private static HomeDashBoard activity;
     public static boolean isFakeLocationDetected = false;
     private static final int NOTIFICATION_PERMISSION_CODE = 101;
@@ -406,7 +404,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         slidesDao=roomDB.slidesDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
 //        leaveViewModel = new LeaveViewModel(this);
-        callsUtil = new CallsUtil(this);
+        outboxUtil = new OutboxUtil(this);
         inAppUpdate = new InAppUpdate(this);
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
@@ -1430,7 +1428,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
             @Override
             public void datesFound() {
-                if(callsUtil!= null && callsUtil.getOutboxDates().size() > 2 && !SharedPref.getLastOutboxAlertDate(context).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4))) {
+                if(outboxUtil != null && outboxUtil.getOutboxDates().size() > 2 && !SharedPref.getLastOutboxAlertDate(context).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4))) {
                     CommonAlertBox.outboxDataAvailableAlert(activity);
                     SharedPref.setLastOutboxAlertDate(context, CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4));
                 }

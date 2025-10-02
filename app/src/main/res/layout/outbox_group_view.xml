@@ -15,43 +15,55 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="@dimen/_5sdp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_date"
+            <View
+                android:id="@+id/date_divider"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_medium"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/bg_grey"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text=""
-                android:textColor="@color/black_45"
-                 android:textSize="@dimen/_7ssp"
-                android:textStyle="bold">
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp">
 
-            </TextView>
+                <TextView
+                    android:id="@+id/text_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold"/>
 
-            <ImageView
-                android:id="@+id/img_sync_all"
-                android:layout_width="@dimen/_10sdp"
-                android:layout_height="@dimen/_10sdp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/_6sdp"
-                android:layout_toStartOf="@id/txt_expand_status"
-                android:src="@drawable/sync_outbox" />
+                <ImageView
+                    android:id="@+id/img_sync_all"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    android:layout_toStartOf="@id/txt_expand_status"
+                    android:src="@drawable/sync_outbox" />
 
-            <ImageView
-                android:id="@+id/txt_expand_status"
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_10sdp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/down_arrow" />
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/txt_expand_status"
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/down_arrow" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
