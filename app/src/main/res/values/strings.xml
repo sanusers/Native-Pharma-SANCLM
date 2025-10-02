@@ -641,4 +641,5 @@
     <string name="avg">Average</string>
     <string name="cvg">Coverage</string>
     <string name="draft_save"> Tour Plan Data Saved Successfully</string>
+    <string name="need_remarks"> Enter Remarks in session </string>
 </resources>

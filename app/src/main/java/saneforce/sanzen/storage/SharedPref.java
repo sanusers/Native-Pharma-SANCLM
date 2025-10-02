@@ -840,7 +840,7 @@ public class SharedPref {
         editor.putString(SKIP_DETAILING_STK, jsonObject.optString("skipDetailing_stk"));
         editor.putString(SKIP_DETAILING_UNDR, jsonObject.optString("skipDetailing_undr"));
         editor.putString(DIVISION_SNAME,jsonObject.optString("Division_SName"));
-        editor.putString(TP_OBJECTIVE_MANDATORY,jsonObject.optString("tp_objective_mandatory"));
+
         editor.apply();
 
         } catch (Exception ignore) {
