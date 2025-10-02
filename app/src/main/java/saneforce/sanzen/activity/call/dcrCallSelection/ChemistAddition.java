@@ -212,8 +212,8 @@ public class ChemistAddition extends AppCompatActivity {
                         json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
                         json.put("DeviceID", SharedPref.getDeviceId(ChemistAddition.this));
                         json.put("DrName", chemistadditionbinding.edtDctr.getText().toString());
-                        json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(ChemistAddition.this)));
-                        json.put("DrqulNm", chemistadditionbinding.txtSelectQua.getText().toString());
+                        json.put("DrQulCd", "");           //String.valueOf(SharedPref.getSelectedQualification(ChemistAddition.this))
+                        json.put("DrqulNm", "");           //chemistadditionbinding.txtSelectQua.getText().toString()
                         json.put("DrClsCd", "");
                         json.put("DrClsNm", "");
                         json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(ChemistAddition.this)));

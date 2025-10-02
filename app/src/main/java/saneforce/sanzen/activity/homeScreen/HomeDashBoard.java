@@ -413,6 +413,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods = new CommonUtilsMethods(HomeDashBoard.this);
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
+        binding.subDivision.setText(SharedPref.getSubDivisionNames(this));
         isDateSelectionClicked = false;
 
         if(SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")){
@@ -940,6 +941,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         TextView user_name = popupView.findViewById(R.id.user_name);
         TextView sf_name = popupView.findViewById(R.id.sf_name);
         TextView Cluster = popupView.findViewById(R.id.clut);
+        TextView Rpt_Mgr = popupView.findViewById(R.id.reporting);
         LinearLayout l_click = popupView.findViewById(R.id.change_passwrd);
         LinearLayout user_logout = popupView.findViewById(R.id.user_logout);
 
@@ -957,6 +959,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         user_name.setText(SharedPref.getSfName(this));
         sf_name.setText(SharedPref.getDsName(this));
         Cluster.setText(SharedPref.getHqNameMain(this));
+        Rpt_Mgr.setText(SharedPref.getHqName(this));
 
         if(SharedPref.getPwdSetup(this).equalsIgnoreCase("0")){
             l_click.setVisibility(View.VISIBLE);

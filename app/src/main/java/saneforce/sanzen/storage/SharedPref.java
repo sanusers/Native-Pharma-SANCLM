@@ -283,6 +283,7 @@ public class SharedPref {
     public static final String STATE_CODE = "State_Code";
     public static final String SF_EMP_ID = "sf_emp_id";
     public static final String SUBDIVISION_CODE = "subdivision_code";
+    public static final String SUBDIVISION_NAMES = "SubdivisionNames";
     public static final String REMAINDER_CALL_CAP = "Remainder_call_cap";
     public static final String CALL_REPORT_FROM_DATE = "call_report_from_date";
     public static final String CALL_REPORT_TO_DATE = "call_report_to_date";
@@ -469,6 +470,7 @@ public class SharedPref {
     public static final String CHECK_IN_SKIP_DATE = "Check_In_Skip_Date";
 
     public static final String A_S_KEY = "A_S_KEY";
+    public static final String TP_OBJECTIVE_MANDATORY = "tp_objective_mandatory";
 
     public static SharedPreferences.Editor editor;
 
@@ -719,6 +721,7 @@ public class SharedPref {
         editor.putString(STATE_CODE, jsonObject.optString("State_Code"));
         editor.putString(SF_EMP_ID, jsonObject.optString("sf_emp_id"));
         editor.putString(SUBDIVISION_CODE, jsonObject.optString("subdivision_code"));
+        editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
         editor.putString(REMAINDER_CALL_CAP, jsonObject.optString("Remainder_call_cap"));
         editor.putString(CALL_REPORT_FROM_DATE, jsonObject.optString("call_report_from_date"));
         editor.putString(CALL_REPORT_TO_DATE, jsonObject.optString("call_report_to_date"));
@@ -807,6 +810,7 @@ public class SharedPref {
         editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.optString("SeqDcrLockDays"));
         editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
         editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
+        editor.putString(TP_OBJECTIVE_MANDATORY,jsonObject.optString("tp_objective_mandatory"));
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.apply();
 
@@ -1747,6 +1751,9 @@ public class SharedPref {
 
     public static String getSubdivisionCode(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SUBDIVISION_CODE, "");
+    }
+    public static String getSubDivisionNames(Context context){
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SUBDIVISION_NAMES, "");
     }
 
     public static String getRemainderCallCap(Context context) {
@@ -2906,5 +2913,9 @@ public class SharedPref {
     public static String getKeys(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(A_S_KEY, "^^");
     }
+    public static String getTpObjectiveMandatory(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_OBJECTIVE_MANDATORY,"");
+    }
+
 
 }

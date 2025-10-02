@@ -97,7 +97,7 @@ public class TourPlanActivity extends AppCompatActivity {
     ModelClass.SessionList.WorkType weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType();
     ModelClass.SessionList.WorkType holidayWorkTypeModel = new ModelClass.SessionList.WorkType();
     LocalDate localDate;
-    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "";
+    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "", remarksNeed = "";
     private String drCap, chmCap, stkCap, unListDrCap, cipCap, hosCap, masters;
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable, isEdited;
@@ -514,6 +514,12 @@ public class TourPlanActivity extends AppCompatActivity {
                         }
                     }
                 }
+                if(remarksNeed.equalsIgnoreCase("0") && modelClass.getRemarks().isEmpty()){
+                    isEmpty = true;
+                    position = i;
+                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.need_remarks) + (i + 1));
+                    break;
+                }
             }
 
             if(!isEmpty) {
@@ -750,6 +756,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 unListedDrNeed = jsonArray.getJSONObject(i).getString("UnDrNeed");
                 cipNeed = jsonArray.getJSONObject(i).getString("Cip_Need");
                 hospNeed = jsonArray.getJSONObject(i).getString("HospNeed");
+                remarksNeed = jsonArray.getJSONObject(i).getString("tp_objective_mandatory");
             }
 
 
