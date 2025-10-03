@@ -487,13 +487,13 @@ public class SharedPref {
     public static final String SKIP_DETAILING_STK = "skipDetailing_stk";
     public static final String SKIP_DETAILING_UNDR = "skipDetailing_undr";
 
-
     public static final String SIGN_IN_TIME = "signin_time";
     public static final String MODE = "mode";
     public static final String DEVICE_NAME = "device_name";
     public static final String LOGIN_DEVICE_REG_ID = "LoginDeviceRegId";
     public static final String LOGIN_APP_DEVICE_ID = "Loginappdeviceid";
     public static final String REPORTING_TO_SF = "Reporting_To_SF";
+    public static final String SETUP_SYNCED = "setup_synced";
 
     public static SharedPreferences.Editor editor;
 
@@ -2981,9 +2981,7 @@ public class SharedPref {
         editor = sharedPreferences.edit();
         editor.putInt(LOGIN_FAILED_COUNT, count);
         editor.putString(LOGIN_FAILED_TIME, dateTime).apply();
-        }
-
-
+    }
 
     public static int getLoginFailedCount(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(LOGIN_FAILED_COUNT, 0);
@@ -2995,16 +2993,18 @@ public class SharedPref {
     public static String getSkipDetailingDr(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_DR,"");
     }
+
     public static String getSkipDetailingChe(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_CHE,"");
     }
+
     public static String getSkipDetailingStk(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_STK,"");
     }
+
     public static String getSkipDetailingUndr(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_UNDR,"");
     }
-
 
     public static String getSignInTime(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SIGN_IN_TIME, "");
@@ -3028,5 +3028,16 @@ public class SharedPref {
     public static String getReportingToSf(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(REPORTING_TO_SF,"");
     }
+
+    public static void setIsSetupSynced(Context context, boolean isSynced) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(SETUP_SYNCED, isSynced).apply();
+    }
+
+    public static boolean getIsSetupSynced(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getBoolean(SETUP_SYNCED,false);
+    }
+
 
 }

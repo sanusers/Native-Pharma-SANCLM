@@ -78,6 +78,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -97,6 +98,7 @@ import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.homeScreen.notification.NotificationViewModel;
 import saneforce.sanzen.activity.homeScreen.notification.NotificationsAdapter;
+import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.survey.SurveyActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
@@ -137,6 +139,7 @@ import saneforce.sanzen.databinding.HomeNavigationFooterBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
+import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
@@ -371,8 +374,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
         String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
-        if (signInTime.isEmpty()) {
+        if (signInTime.isEmpty() && !SharedPref.getIsSetupSynced(HomeDashBoard.this)) {
             changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+        } else if(signInTime.isEmpty()) {
+            syncSetup();
         } else {
             try {
                 JSONObject jsonObject = new JSONObject(signInTime);
@@ -392,15 +397,126 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
+    private void syncSetup() {
+        MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP, Constants.SETUP, "getsetups_edet", Constants.SETUP, 0, false);
+        try {
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+            jsonObject.put("tableName", setupModel.getRemoteTableName());
+            jsonObject.put("sfcode", SharedPref.getSfCode(this));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+            jsonObject.put("Rsf", SharedPref.getSfCode(this));
+            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+            Log.e("API Object", "master sync obj : " + jsonObject);
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "table/setups");
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            if (call != null) {
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        Log.e("response :   ", setupModel.getRemoteTableName() + " : " + response.body().toString());
+                        boolean success = false;
+                        JSONArray jsonArray = new JSONArray();
+                        JSONObject jsonObject2 = new JSONObject();
+                        if (response.isSuccessful()) {
+                            Log.e("test", "response : " + setupModel.getMasterOf() + " -- " + setupModel.getRemoteTableName() + " : " + response.body().toString());
+                            try {
+                                JsonElement jsonElement = response.body();
+                                if (!jsonElement.isJsonNull()) {
+                                    if (jsonElement.isJsonArray()) {
+                                        jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                        success = true;
+                                    } else if (jsonElement.isJsonObject()) {
+                                        jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
+                                        if (!jsonObject2.has("success")) {
+                                            jsonArray.put(jsonObject2);
+                                            success = true;
+                                        } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                            masterDataDao.saveMasterSyncStatus(setupModel.getLocalTableKeyName(), 1);
+                                            setupModel.setSyncSuccess(1);
+                                        }
+                                    }
+                                    if (success) {
+                                        setupModel.setCount(jsonArray.length());
+                                        setupModel.setSyncSuccess(2);
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(setupModel.getLocalTableKeyName(), jsonArray.toString(), 2));
+                                        if (jsonArray.length() > 0) {
+                                            SharedPref.setIsSetupSynced(HomeDashBoard.this, true);
+                                            SharedPref.InsertLogInData(HomeDashBoard.this, jsonArray.getJSONObject(0));
+                                            String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
+                                            if(signInTime.isEmpty()) {
+                                                changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+                                            } else {
+                                                try {
+                                                    JSONObject jsonObject = new JSONObject(signInTime);
+                                                    String date = jsonObject.optString("date");
+                                                    Log.i("Login date", "onPostCreate: " + date);
+                                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+                                                    LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
+                                                    LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
+                                                    if (givenDate.isBefore(ninetyDaysAgo)) {
+                                                        changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+                                                    } else {
+                                                        System.out.println("The given date is within the last 90 days.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+//                                        JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
+//                                        for (int bean = 0; bean < input.length(); bean++) {
+//                                            try {
+//                                                JSONObject setUpObject = input.getJSONObject(bean);
+//                                                String appAccess = setUpObject.getString("sanzen_edet");
+//                                                if (!appAccess.equals("1")){
+//                                                    CommonUtilsMethods.accessDialogBox(HomeDashBoard.this);
+//                                                }
+//                                            } catch (JSONException e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                        }
+                                    }
+                                } else {
+                                    setupModel.setSyncSuccess(1);
+                                    masterDataDao.saveMasterSyncStatus(setupModel.getLocalTableKeyName(), 1);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            setupModel.setSyncSuccess(1);
+                            masterDataDao.saveMasterSyncStatus(setupModel.getLocalTableKeyName(), 1);
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        masterDataDao.saveMasterSyncStatus(setupModel.getLocalTableKeyName(), 1);
+                        setupModel.setPBarVisibility(false);
+                        setupModel.setSyncSuccess(1);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Log.v("masterCheck", "--error-" + e);
+            e.printStackTrace();
+        }
+
+    }
+
     private void playVideo(String url) {
 //        binding.videoView.setVideoURI(Uri.parse(url));
 //        binding.videoView.setVisibility(VideoView.VISIBLE);
 //        binding.videoView.start();
     }
 
-    @Override
-    public void onUserLeaveHint() {
-        super.onUserLeaveHint();
+//    @Override
+//    public void onUserLeaveHint() {
+//        super.onUserLeaveHint();
 //        enterPipMode();
 //        if (youTubePlayer != null) {
 //            youTubePlayer.pause();
@@ -410,7 +526,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //        binding.youtubePlayerView.release();
 //        getLifecycle().removeObserver(binding.youtubePlayerView);
 //        binding.floatingPlayer.setVisibility(View.GONE);
-    }
+//    }
 
 //    private void enterPipMode() {
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -1330,11 +1446,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
         remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
         String password = SharedPref.getLoginUserPwd(this).toLowerCase();
-//        System.out.println("loginPassword--->"+password);
 
         old_view.setOnClickListener(v -> {
             if (!old_password.getText().toString().equals("")) {
-
                 if (passwordNotVisible == 1) {
                     old_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     old_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_hide));
@@ -1365,7 +1479,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-
         update.setOnClickListener(v -> {
             if (old_password.getText().toString().equals("")) {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_old_pwd));
@@ -1384,7 +1497,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     try {
                         if (UtilityClass.isNetworkAvailable(this)) {
                             progressBar.setVisibility(View.VISIBLE);
-                            CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar);
+                            CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar, title);
                         }else{
                             commonUtilsMethods.showToastMessage(this,"Please check Your Internet Connection");
                         }
@@ -1401,7 +1514,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         dialogPwdChange.show();
     }
 
-    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd,ProgressBar progressBar) {
+    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd, ProgressBar progressBar, String title) {
         JSONObject jj =CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jj.put("tableName", "savechpwd");
@@ -1431,7 +1544,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             SharedPref.saveLoginPwd(HomeDashBoard.this, confirmPwd);
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_changed_successfully));
 //                            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
-                            commonUtilsMethods.loginNavigation(HomeDashBoard.this);
+                            if (title.equalsIgnoreCase(getString(R.string.change_password))) {
+                                commonUtilsMethods.loginNavigation(HomeDashBoard.this);
+                            } else {
+                                SharedPref.saveLoginState(HomeDashBoard.this, false);
+                                Intent intent = new Intent(HomeDashBoard.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                Toast.makeText(HomeDashBoard.this, "Login with New Password", Toast.LENGTH_LONG).show();
+                                finish();
+                            }
                             dialogPwdChange.dismiss();
                         } else {
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, js.getString("msg"));

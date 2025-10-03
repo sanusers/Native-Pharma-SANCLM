@@ -61,7 +61,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                 }
             }
         } else {
-            holder.cornerImage.setVisibility(View.GONE);
+            holder.cornerImage.setVisibility(View.INVISIBLE);
         }
         if (!date.isEmpty()) {
             if (Integer.valueOf(date) < TourPlanActivity.JoningDate && Integer.valueOf(modelClass.getMonth()) == TourPlanActivity.JoiningMonth && Integer.valueOf(modelClass.getYear()) == TourPlanActivity.JoinYear) {
@@ -102,7 +102,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             drawable.setColor(context.getResources().getColor(R.color.lustylavender_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
         } else {
-            holder.cornerImage.setVisibility(View.GONE);
+            holder.cornerImage.setVisibility(View.INVISIBLE);
         }
         holder.cornerImage.setImageDrawable(drawable);
     }
