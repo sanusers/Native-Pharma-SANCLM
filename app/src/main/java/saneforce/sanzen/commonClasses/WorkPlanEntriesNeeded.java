@@ -94,7 +94,7 @@ public class WorkPlanEntriesNeeded {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
  editor.putString(DCR_SEQUENTIAL, "1");
-// editor.putString(STP_BASED_MTP, "0");
+ editor.putString(TP_MANDATORY_NEED, "1");
 // editor.putString(STP_APPR_NEED, "0");
 // editor.putString(TP_MANDATORY_NEED, "1");
 // editor.putString(TPDCR_MGRAPPR, "0");

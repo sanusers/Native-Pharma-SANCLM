@@ -194,7 +194,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
                     String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
                     String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
-                    String enteredHq = unlistedadditionbinding.txtSelectHq.getText().toString().trim();
+                    String enteredHq =  String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this));/*unlistedadditionbinding.txtSelectHq.getText().toString().trim();*/
                     String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
                     String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
 
@@ -204,7 +204,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         String name = obj.optString("Name", "").trim();
                         String territory = obj.optString("Town_Name", "").trim();
                         String spec = obj.optString("SpecialtyName", "").trim();
-                        String drHQNm = obj.optString("DrHQNm", "").trim();
+                        String drHQNm = obj.optString("SF_Code", "").trim();
                         String cat = obj.optString("CategoryName", "").trim();
                         String quli = obj.optString("Doc_QuaName", "").trim();
 
