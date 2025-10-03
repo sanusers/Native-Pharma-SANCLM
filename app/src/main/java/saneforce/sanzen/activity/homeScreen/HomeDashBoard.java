@@ -77,6 +77,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -216,7 +217,227 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+//        mediaController = new MediaController(this);
+//        binding.videoView.setMediaController(mediaController);
+//        String jsonStr = "{ \"video_url\" : \"https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm\" }";
+//        try {
+//            JSONObject jsonObject = new JSONObject(jsonStr);
+//            videoUrl = jsonObject.getString("video_url");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+
+//        if (!videoUrl.isEmpty()) {
+//            playVideo(videoUrl);
+//        }
+
+//        binding.youtubePlayerView.getPlayerUiController().showUi(false);
+//        binding.youtubePlayerView.setEnableAutomaticInitialization(true);
+//        getLifecycle().addObserver(binding.youtubePlayerView);
+
+//        binding.youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+//            @Override
+//            public void onReady(@NonNull YouTubePlayer player) {
+//                youTubePlayer = player;
+//                youTubePlayer.loadVideo("jZwyEuVrUKA", 0);
+//            }
+//        });
+
+        // Play / Pause
+//        binding.btnPlayPause.setOnClickListener(v -> {
+//            if (youTubePlayer != null) {
+//                if (isPlaying) {
+//                    youTubePlayer.pause();
+//                    binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_play);
+//                } else {
+//                    youTubePlayer.play();
+//                    binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+//                }
+//                isPlaying = !isPlaying;
+//            }
+//        });
+
+        // Close
+//        binding.btnClose.setOnClickListener(v -> {
+//            if (youTubePlayer != null) {
+//                youTubePlayer.pause();
+//                isPlaying = false;
+//                youTubePlayer = null;
+//            }
+////            binding.youtubePlayerView.release();
+////            getLifecycle().removeObserver(binding.youtubePlayerView);
+//            binding.floatingPlayer.setVisibility(View.GONE);
+//        });
+
+        // Dragging
+//        binding.floatingPlayer.setOnTouchListener(new View.OnTouchListener() {
+//            private int lastX, lastY;
+//            private int paramsX, paramsY;
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        lastX = (int) event.getRawX();
+//                        lastY = (int) event.getRawY();
+//                        paramsX = (int) v.getX();
+//                        paramsY = (int) v.getY();
+//                        return true;
+//                    case MotionEvent.ACTION_MOVE:
+//                        int dx = (int) event.getRawX() - lastX;
+//                        int dy = (int) event.getRawY() - lastY;
+//                        v.setX(paramsX + dx);
+//                        v.setY(paramsY + dy);
+//                        return true;
+//                }
+//                return false;
+//            }
+//        });
+//        binding.floatingPlayer.setOnTouchListener((v, event) -> {
+//            switch (event.getActionMasked()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    dX = v.getX() - event.getRawX();
+//                    dY = v.getY() - event.getRawY();
+//                    lastAction = MotionEvent.ACTION_DOWN;
+//                    return true;
+//
+//                case MotionEvent.ACTION_MOVE:
+//                    v.animate()
+//                            .x(event.getRawX() + dX)
+//                            .y(event.getRawY() + dY)
+//                            .setDuration(0)
+//                            .start();
+//                    lastAction = MotionEvent.ACTION_MOVE;
+//                    return true;
+//
+//                case MotionEvent.ACTION_UP:
+//                    if (lastAction == MotionEvent.ACTION_DOWN) {
+//                        // Could detect tap here if needed
+//                    }
+//                    return true;
+//
+//                default:
+//                    return false;
+//            }
+//        });
+
+//        binding.dragOverlay.setOnTouchListener(new View.OnTouchListener() {
+//            float dX, dY;
+//            int lastAction;
+//
+//            @Override public boolean onTouch(View v, MotionEvent event) {
+//                View root = binding.getRoot(); // <-- your root container id
+//                if (root == null) return false;
+//
+//                switch (event.getActionMasked()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        // Prevent parent (e.g., RecyclerView/ScrollView) from stealing events
+//                        v.getParent().requestDisallowInterceptTouchEvent(true);
+//                        dX = binding.floatingPlayer.getX() - event.getRawX();
+//                        dY = binding.floatingPlayer.getY() - event.getRawY();
+//                        lastAction = MotionEvent.ACTION_DOWN;
+//                        return true;
+//
+//                    case MotionEvent.ACTION_MOVE: {
+//                        float newX = event.getRawX() + dX;
+//                        float newY = event.getRawY() + dY;
+//
+//                        // Clamp to root bounds
+//                        int rootW = root.getWidth();
+//                        int rootH = root.getHeight();
+//                        int fpW = binding.floatingPlayer.getWidth();
+//                        int fpH = binding.floatingPlayer.getHeight();
+//
+//                        newX = Math.max(0, Math.min(newX, rootW - fpW));
+//                        newY = Math.max(0, Math.min(newY, rootH - fpH));
+//
+//                        binding.floatingPlayer.setX(newX);
+//                        binding.floatingPlayer.setY(newY);
+//                        lastAction = MotionEvent.ACTION_MOVE;
+//                        return true;
+//                    }
+//
+//                    case MotionEvent.ACTION_UP:
+//                        v.getParent().requestDisallowInterceptTouchEvent(false);
+//                        return lastAction == MotionEvent.ACTION_MOVE;
+//
+//                    default:
+//                        return false;
+//                }
+//            }
+//        });
+
+        // Show binding.floatingPlayer player initially
+//        binding.floatingPlayer.setVisibility(View.VISIBLE);
+        String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
+        if (signInTime.isEmpty()) {
+            changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+        } else {
+            try {
+                JSONObject jsonObject = new JSONObject(signInTime);
+                String date = jsonObject.optString("date");
+                Log.i("Login date", "onPostCreate: " + date);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+                LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
+                LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
+                if (givenDate.isBefore(ninetyDaysAgo)) {
+                    changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+                } else {
+                    System.out.println("The given date is within the last 90 days.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    private void playVideo(String url) {
+//        binding.videoView.setVideoURI(Uri.parse(url));
+//        binding.videoView.setVisibility(VideoView.VISIBLE);
+//        binding.videoView.start();
+    }
+
+    @Override
+    public void onUserLeaveHint() {
+        super.onUserLeaveHint();
+//        enterPipMode();
+//        if (youTubePlayer != null) {
+//            youTubePlayer.pause();
+//            isPlaying = false;
+//            youTubePlayer = null;
+//        }
+//        binding.youtubePlayerView.release();
+//        getLifecycle().removeObserver(binding.youtubePlayerView);
+//        binding.floatingPlayer.setVisibility(View.GONE);
+    }
+
+//    private void enterPipMode() {
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            Rational aspectRatio = new Rational(16, 9);
+//            PictureInPictureParams params = new PictureInPictureParams.Builder()
+//                    .setAspectRatio(aspectRatio)
+//                    .build();
+//            enterPictureInPictureMode(params);
+//        } else {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                enterPictureInPictureMode();
+//            }
+//        }
+//    }
+
+//    @Override
+//    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+//        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+//
+////        if (isInPictureInPictureMode) {
+////            // Hide extra dashboard UI if needed
+////            mediaController.hide();
+////        } else {
+////            // Restore full UI when back
+////            mediaController.show();
+////        }
+//    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -957,7 +1178,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         user_name.setText(SharedPref.getSfName(this));
         sf_name.setText(SharedPref.getDsName(this));
         Cluster.setText(SharedPref.getHqNameMain(this));
-        Rpt_Mgr.setText(SharedPref.getHqName(this));
+        Rpt_Mgr.setText(SharedPref.getReportingToSf(this));
 
         if(SharedPref.getPwdSetup(this).equalsIgnoreCase("0")){
             l_click.setVisibility(View.VISIBLE);
@@ -968,7 +1189,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         l_click.setOnClickListener(v -> {
             if (UtilityClass.isNetworkAvailable(this)) {
                 popupWindow.dismiss();
-                changePassword();
+                changePassword(HomeDashBoard.this.getString(R.string.change_password));
             } else {
                 commonUtilsMethods.showToastMessage(this, "Please Check The Internet Connection");
             }
@@ -981,7 +1202,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
     @SuppressLint({"MissingInflatedId", "WrongConstant", "UseCompatLoadingForDrawables"})
-    public void changePassword() {
+    public void changePassword(String title) {
 
         //  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
@@ -1006,9 +1227,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         EditText new_password = dialogPwdChange.findViewById(R.id.newpasswrd);
         EditText remain_password = dialogPwdChange.findViewById(R.id.repeatpass);
         TextView update = dialogPwdChange.findViewById(R.id.update);
+        TextView tvTitle = dialogPwdChange.findViewById(R.id.title);
         ImageView cls_but = dialogPwdChange.findViewById(R.id.close);
         ProgressBar progressBar = dialogPwdChange.findViewById(R.id.progressBar);
+        tvTitle.setText(title);
 
+        if (title.equals(HomeDashBoard.this.getString(R.string.reset_password))) {
+            cls_but.setVisibility(View.GONE);
+        } else {
+            cls_but.setVisibility(View.VISIBLE);
+        }
 
         old_password.addTextChangedListener(new TextWatcher() {
             @Override

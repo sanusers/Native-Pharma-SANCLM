@@ -349,7 +349,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         });
     }
 
-    private void CallEditAPI(String transSlno, String aDetSLNo, String docName, String docCode, String type, String checkInOutNeed) {
+   /* private void CallEditAPI(String transSlno, String aDetSLNo, String docName, String docCode, String type, String checkInOutNeed) {
         progressBar = CommonUtilsMethods.createProgressDialog(context);
         JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
         try {
@@ -420,7 +420,97 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
             }
         });
-    }
+    }*/
+   private void CallEditAPI(String transSlno, String aDetSLNo, String docName, String docCode, String type, String checkInOutNeed) {
+       progressBar = CommonUtilsMethods.createProgressDialog(context);
+       JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+       try {
+           jsonObject.put("headerno", transSlno);
+           jsonObject.put("detno", aDetSLNo);
+           jsonObject.put("sfcode",  SharedPref.getSfCode(context));
+           jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
+           jsonObject.put("Rsf",  SharedPref.getHqCode(context));
+           jsonObject.put("cusname", docName);
+           jsonObject.put("cuscode", docCode);
+           jsonObject.put("custype", type);
+           jsonObject.put("pob", "1");
+           jsonObject.put("activitynd", SharedPref.getActivityNd(context));
+           jsonObject.put("checkinoutneed", checkInOutNeed);
+           if(HomeDashBoard.selectedDate != null) {
+               jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
+           }
+           Log.v("editCall", jsonObject.toString());
+
+       } catch (Exception e) {
+           Log.v("editCall", e.toString());
+       }
+       apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+
+
+       Map<String, String> mapString = new HashMap<>();
+       mapString.put("axn", "edit_edet/dcr");
+       Call<JsonElement> getEditCallDetails = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+       getEditCallDetails.enqueue(new Callback<JsonElement>() {
+           @Override
+           public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+               if (response.isSuccessful()) {
+                   try {
+                       assert response.body() != null;
+                       JSONObject jsonObject = new JSONObject(response.body().toString());
+                       Log.v("editCall", jsonObject.toString());
+                       Intent intent = new Intent(context, DCRCallActivity.class);
+                       JSONArray callData = jsonObject.optJSONArray("DCRDetail");
+                       String selectedHQ = "", mProds = "";
+                       if (callData != null) {
+                           JSONObject dcrDetail = callData.optJSONObject(0);
+                           if (dcrDetail != null) {
+                               selectedHQ = dcrDetail.optString("DataSF");
+                               JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
+                               for (int i = 0; i < drMas.length(); i++) {
+                                   JSONObject drObj = drMas.optJSONObject(i);
+                                   if (drObj.optString("Code").equalsIgnoreCase(docCode)) {
+                                       mProds = drObj.optString("MProd");
+                                       break;
+                                   }
+                               }
+                           }
+                       }
+                       CallActivityCustDetails = new ArrayList<>();
+                       CustList custList = new CustList(docName.substring(0, docName.lastIndexOf(" ---")).trim(), docCode, type, transSlno, aDetSLNo, "", jsonObject.toString());
+                       custList.setMappedSlides(mProds);
+                       CallActivityCustDetails.add(0, custList);
+                       intent.putExtra(Constants.DETAILING_REQUIRED, "false");
+                       intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");
+                       intent.putExtra("remainder_save", "0");
+                       intent.putExtra("hq_code", "" );
+
+                       intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                       context.startActivity(intent);
+                       new CountDownTimer(2000, 2000) {
+                           public void onTick(long millisUntilFinished) {
+                           }
+
+                           public void onFinish() {
+                               progressBar.dismiss();
+                           }
+                       }.start();
+                   } catch (Exception e) {
+                       progressBar.dismiss();
+                       Log.v("editCall", e.toString());
+                   }
+               } else {
+                   progressBar.dismiss();
+                   commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+               }
+           }
+
+           @Override
+           public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+               progressBar.dismiss();
+               commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+           }
+       });
+   }
 
 
     @Override

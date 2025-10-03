@@ -470,9 +470,30 @@ public class SharedPref {
     public static final String CHECK_IN_SKIP_DATE = "Check_In_Skip_Date";
 
     public static final String A_S_KEY = "A_S_KEY";
-    public static final String TP_OBJECTIVE_MANDATORY = "tp_objective_mandatory";
-    public static final String DIVISION_SNAME = "Division_SName";
+
+    public static final String TpIdCurrent = "tpIdCurrent";
+    public static final String TpIdPrevious = "tpIdPrevious";
+    public static final String TpIdNext = "tpIdNext";
+
+    public static final String LAST_LOGIN = "Last Login";
+    public static final String LOGIN_FAILED_COUNT = "Login failed count";
+    public static final String LOGIN_FAILED_TIME = "Login failed time";
+    public static final String LOGIN_REMAINING_TIME = "Login remaining time";
     public static final String S3_BUCKET_NEED = "S3BucketNeed";
+    public static final String DIVISION_SNAME = "Division_SName";
+
+    public static final String SKIP_DETAILING_DR = "skipDetailing_Dr";
+    public static final String SKIP_DETAILING_CHE = "skipDetailing_chm";
+    public static final String SKIP_DETAILING_STK = "skipDetailing_stk";
+    public static final String SKIP_DETAILING_UNDR = "skipDetailing_undr";
+
+
+    public static final String SIGN_IN_TIME = "signin_time";
+    public static final String MODE = "mode";
+    public static final String DEVICE_NAME = "device_name";
+    public static final String LOGIN_DEVICE_REG_ID = "LoginDeviceRegId";
+    public static final String LOGIN_APP_DEVICE_ID = "Loginappdeviceid";
+    public static final String REPORTING_TO_SF = "Reporting_To_SF";
 
     public static SharedPreferences.Editor editor;
 
@@ -812,9 +833,20 @@ public class SharedPref {
         editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.optString("SeqDcrLockDays"));
         editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
         editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
-        editor.putString(TP_OBJECTIVE_MANDATORY,jsonObject.optString("tp_objective_mandatory"));
         editor.putString(DIVISION_SNAME,jsonObject.optString("Division_SName"));
         editor.putString(S3_BUCKET_NEED, jsonObject.optString("S3BucketNeed"));
+        editor.putString(SKIP_DETAILING_DR,jsonObject.optString("skipDetailing_Dr"));
+        editor.putString(SKIP_DETAILING_CHE, jsonObject.optString("skipDetailing_chm"));
+        editor.putString(SKIP_DETAILING_STK, jsonObject.optString("skipDetailing_stk"));
+        editor.putString(SKIP_DETAILING_UNDR, jsonObject.optString("skipDetailing_undr"));
+        editor.putString(DIVISION_SNAME,jsonObject.optString("Division_SName"));
+        editor.putString(SIGN_IN_TIME,jsonObject.optString("signin_time"));
+        editor.putString(MODE,jsonObject.optString("mode"));
+        editor.putString(DEVICE_NAME,jsonObject.optString("device_name"));
+        editor.putString(LOGIN_DEVICE_REG_ID,jsonObject.optString("LoginDeviceRegId"));
+        editor.putString(LOGIN_APP_DEVICE_ID,jsonObject.optString("Loginappdeviceid"));
+        editor.putString(REPORTING_TO_SF,jsonObject.optString("Reporting_To_SF"));
+
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.apply();
 
@@ -2917,14 +2949,84 @@ public class SharedPref {
     public static String getKeys(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(A_S_KEY, "^^");
     }
-    public static String getTpObjectiveMandatory(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_OBJECTIVE_MANDATORY,"");
+    public static String getS3BucketNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_BUCKET_NEED, "");
     }
     public static String getDivisionSname(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DIVISION_SNAME,"");
     }
-    public static String getS3BucketNeed(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_BUCKET_NEED, "");
+
+    public static void setLastLogin(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LAST_LOGIN, date).apply();
+    }
+
+    public static String getLastLogin(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_LOGIN, "");
+    }
+
+    public static void setLoginRemainingTime(Context context, long time) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putLong(LOGIN_REMAINING_TIME, time).apply();
+    }
+
+    public static long getLoginRemainingTime(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getLong(LOGIN_REMAINING_TIME, 0);
+    }
+
+    public static void setLoginFailedCount(Context context, int count, String dateTime) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(LOGIN_FAILED_COUNT, count);
+        editor.putString(LOGIN_FAILED_TIME, dateTime).apply();
+        }
+
+
+
+    public static int getLoginFailedCount(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(LOGIN_FAILED_COUNT, 0);
+    }
+
+    public static String getLoginFailedDateTime(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_FAILED_TIME, "");
+    }
+    public static String getSkipDetailingDr(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_DR,"");
+    }
+    public static String getSkipDetailingChe(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_CHE,"");
+    }
+    public static String getSkipDetailingStk(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_STK,"");
+    }
+    public static String getSkipDetailingUndr(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_UNDR,"");
+    }
+
+
+    public static String getSignInTime(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SIGN_IN_TIME, "");
+    }
+
+    public static String getMode(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(MODE, "");
+    }
+
+    public static String getDeviceName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DEVICE_NAME, "");
+    }
+
+    public static String getLoginDeviceRegId(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_DEVICE_REG_ID, "");
+    }
+
+    public static String getLoginAppDeviceId(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_APP_DEVICE_ID, "");
+    }
+    public static String getReportingToSf(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(REPORTING_TO_SF,"");
     }
 
 }

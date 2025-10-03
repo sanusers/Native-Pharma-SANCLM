@@ -221,6 +221,30 @@ public class CustomerProfile extends AppCompatActivity {
             }
         });
 
+        String skipNeed;
+        switch (CallActivityCustDetails.get(0).getType()) {
+            case "1":
+                skipNeed = SharedPref.getSkipDetailingDr(this);
+                break;
+            case "2":
+                skipNeed = SharedPref.getSkipDetailingChe(this);
+                break;
+            case "3":
+                skipNeed = SharedPref.getSkipDetailingStk(this);
+                break;
+            case "4":
+                skipNeed = SharedPref.getSkipDetailingUndr(this);
+                break;
+            default:
+                skipNeed = "0";
+                break;
+        }
+        if (skipNeed.equalsIgnoreCase("0")) {
+            btn_skip.setVisibility(View.VISIBLE);
+        } else {
+            btn_skip.setVisibility(View.GONE);
+        }
+
         String detailingNeed;
         switch (CallActivityCustDetails.get(0).getType()) {
             case "2":

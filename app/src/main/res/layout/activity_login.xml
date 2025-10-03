@@ -223,6 +223,44 @@
 
                     </LinearLayout>
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/rl_rej_reason"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/backround_text"
+                        android:backgroundTint="@color/bg_pink10"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/card11"
+                            android:layout_width="@dimen/_2sdp"
+                            android:layout_height="0dp"
+                            android:backgroundTint="@color/red_60"
+                            app:layout_constraintEnd_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:cardCornerRadius="@dimen/_2sdp" />
+
+                        <TextView
+                            android:id="@+id/rejected_reason"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/card11"
+                            android:padding="@dimen/_4sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textColor="@color/black_45"
+                            android:textSize="@dimen/_7sdp"
+                            tools:ignore="SpUsage"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/card11"
+                            tools:text="Update Sample Given" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
                     <Button
                         android:id="@+id/loginBtn"
                         android:layout_width="match_parent"

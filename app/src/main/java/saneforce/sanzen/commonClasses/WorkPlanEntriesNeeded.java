@@ -3,6 +3,7 @@ package saneforce.sanzen.commonClasses;
 import static android.content.Context.MODE_PRIVATE;
 
 import static saneforce.sanzen.storage.SharedPref.CUST_SRT_ND;
+import static saneforce.sanzen.storage.SharedPref.DCR_SEQUENTIAL;
 import static saneforce.sanzen.storage.SharedPref.SP_NAME;
 import static saneforce.sanzen.storage.SharedPref.SRT_ND;
 import static saneforce.sanzen.storage.SharedPref.STP_APPR_NEED;
@@ -92,7 +93,7 @@ public class WorkPlanEntriesNeeded {
         SharedPreferences.Editor editor;
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-// editor.putString(STP_NEED, "0");
+ editor.putString(DCR_SEQUENTIAL, "1");
 // editor.putString(STP_BASED_MTP, "0");
 // editor.putString(STP_APPR_NEED, "0");
 // editor.putString(TP_MANDATORY_NEED, "1");

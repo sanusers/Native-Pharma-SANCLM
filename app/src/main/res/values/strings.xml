@@ -632,4 +632,5 @@
     <string name="work_plan_updated_successfully">Work Plan updated successfully</string>
     <string name="work_day">Work Day</string>
     <string name="need_remarks"> Enter Remarks in session </string>
+    <string name="reset_password">Reset Password</string>
 </resources>
