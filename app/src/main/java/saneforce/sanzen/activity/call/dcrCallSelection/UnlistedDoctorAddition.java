@@ -287,7 +287,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
-                        json.put("UniqueUnlistedDr", "0");
+                        json.put("Unlst_Doc_App_need",  String.valueOf(SharedPref.getUnlstDocAppNeed(this)));
                         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                             json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
                             json.put("DrHQNm", unlistedadditionbinding.txtSelectHq.getText().toString());
@@ -435,6 +435,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
+                        json.put("Unlst_Doc_App_need",  String.valueOf(SharedPref.getUnlstDocAppNeed(this)));
                         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                             json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
                             json.put("DrHQNm", unlistedadditionbinding.txtSelectHq.getText().toString());

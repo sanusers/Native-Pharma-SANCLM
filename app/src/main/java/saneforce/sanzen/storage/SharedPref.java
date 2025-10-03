@@ -494,6 +494,7 @@ public class SharedPref {
     public static final String LOGIN_APP_DEVICE_ID = "Loginappdeviceid";
     public static final String REPORTING_TO_SF = "Reporting_To_SF";
     public static final String SETUP_SYNCED = "setup_synced";
+    public static final String UNLST_DOC_APP_NEED = "Unlst_Doc_App_need";
 
     public static SharedPreferences.Editor editor;
 
@@ -846,6 +847,7 @@ public class SharedPref {
         editor.putString(LOGIN_DEVICE_REG_ID,jsonObject.optString("LoginDeviceRegId"));
         editor.putString(LOGIN_APP_DEVICE_ID,jsonObject.optString("Loginappdeviceid"));
         editor.putString(REPORTING_TO_SF,jsonObject.optString("Reporting_To_SF"));
+        editor.putString(UNLST_DOC_APP_NEED,jsonObject.optString("Unlst_Doc_App_need"));
 
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.apply();
@@ -3038,6 +3040,8 @@ public class SharedPref {
     public static boolean getIsSetupSynced(Context context) {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getBoolean(SETUP_SYNCED,false);
     }
-
+    public static String getUnlstDocAppNeed(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(UNLST_DOC_APP_NEED,"");
+    }
 
 }
