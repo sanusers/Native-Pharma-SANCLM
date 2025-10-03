@@ -904,6 +904,11 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                         Log.v("SendOutboxCall", "-imageRes---" + json);
                         if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
                             DeleteCacheFileSign(filePath, id,i, position);
+                        } else if(json.getString("success").equalsIgnoreCase("true") && !json.getString("msg").isEmpty()) {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.CALL_FAILED);
+                            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.CALL_FAILED, 1);
+                            CallApiSignImage(position);
                         } else {
                             signModelClass.setSynced(1);
                             signModelClass.setSync_status(Constants.DUPLICATE_CALL);

@@ -789,6 +789,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                             child.getSignModelClasses().remove(signModelClass);
                             notifyDataSetChanged();
                             signatureSubmitAPI(child, index, callback);
+                        } else if(json.getString("success").equalsIgnoreCase("true") && !json.getString("msg").isEmpty()) {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.CALL_FAILED);
+                            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.CALL_FAILED, 1);
+                            callback.onFailure();
                         } else {
                             signModelClass.setSynced(1);
                             signModelClass.setSync_status(Constants.DUPLICATE_CALL);
