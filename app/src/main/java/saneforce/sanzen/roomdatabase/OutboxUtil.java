@@ -68,8 +68,14 @@ public class OutboxUtil {
 
     public void deleteOfflineCalls(String cusCode, String cusName, String date) {
         callOfflineDataDao.deleteOfflineCalls(cusCode, cusName, date);
-        callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
-        callOfflineSignDataDao.deleteOfflineSign(cusCode, cusName, date);
+        CallOfflineECDataTable callOfflineECDataTable = callOfflineECDataDao.getCallOfflineECDate(cusCode, date);
+        if (callOfflineECDataTable != null && callOfflineECDataTable.getCallSyncStatusEC() != 0) {
+            callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
+        }
+        CallOfflineSignDataTable callOfflineSignDataTable = callOfflineSignDataDao.getCallOfflineSignData(cusCode, date);
+        if (callOfflineSignDataTable != null && callOfflineSignDataTable.getCallSignSyncStatus() != 0) {
+            callOfflineSignDataDao.deleteOfflineSign(cusCode, cusName, date);
+        }
     }
 
     public void deleteOfflineCallsWithActivity(String cusCode, String cusName, String date) {

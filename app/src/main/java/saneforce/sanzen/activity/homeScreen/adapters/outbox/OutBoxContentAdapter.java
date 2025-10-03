@@ -371,8 +371,8 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     } else {
                         CallSendAPICheckInOut(position, i, checkInOutModelClass, checkInOutModelClass.getJsonOutValues());
                     }
+                    break;
                 }
-                break;
             }
         } else {
             isAvailable = false;
@@ -586,10 +586,9 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     }else{
                         CallSendAPIImage(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
                     }
-                    CallSendAPIImage(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
-
+//                    CallSendAPIImage(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                    break;
                 }
-                break;
             }
         } else {
             isAvailable = false;
@@ -606,10 +605,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 if(signModelClass.getSynced() == 0){
                     if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                         CallSendSignImageS3(position,i,signModelClass,signModelClass.getJson_values(),signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
+                    } else {
+                        CallSendSignImage(position, i, signModelClass, signModelClass.getJson_values(), signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
                     }
-                    CallSendSignImage(position,i,signModelClass,signModelClass.getJson_values(),signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
+                    break;
                 }
-                break;
             }
         }else{
             isCallAvailable = false;
