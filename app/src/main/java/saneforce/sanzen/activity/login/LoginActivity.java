@@ -129,6 +129,12 @@ public class LoginActivity extends AppCompatActivity {
             binding.rlRejReason.setVisibility(View.VISIBLE);
             binding.rejectedReason.setText("Please try again after 5 minutes!");
             remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+            long mins5 = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_40, "05:00");
+            if (remainingTime > mins5) {
+                remainingTime = mins5;
+            } else {
+                remainingTime = mins5 - remainingTime;
+            }
             startTimer();
         }
 
