@@ -182,7 +182,7 @@ public class OutboxFragment extends Fragment {
                     finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
                 }
                 String datesString = Arrays.toString(finalDates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
-                Dialog dialog = new Dialog(context);
+                Dialog dialog = new Dialog(requireContext());
                 dialog.setContentView(R.layout.dcr_cancel_alert);
                 dialog.setCancelable(false);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
