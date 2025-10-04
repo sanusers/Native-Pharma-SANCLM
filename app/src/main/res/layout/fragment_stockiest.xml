@@ -20,12 +20,13 @@
             app:layout_constraintVertical_bias="0.0"
             android:layout_marginTop="@dimen/_1sdp"
             app:layout_constraintBottom_toTopOf="@id/constraint_rv">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_hide_hq"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
                 android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/search_cust"
@@ -51,6 +52,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="RtlSymmetry,TextContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/img_drop_down"
+                    android:layout_width="@dimen/_7sdp"
+                    android:layout_height="@dimen/_4sdp"
+                    android:background="@drawable/down_arrow"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.95"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/view_one"

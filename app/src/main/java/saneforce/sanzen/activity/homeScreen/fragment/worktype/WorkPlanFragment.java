@@ -4271,7 +4271,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     });
                 }
             } else if(!dateType.isEmpty() && UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
-                if (!dateType.equalsIgnoreCase("Missed")) {
+                if (!dateType.equalsIgnoreCase("Missed") && !dateType.equalsIgnoreCase("Planning")) {
                     syncMyDayPlan(false);
                 }
             } else if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0") && tpDataObj != null && HomeDashBoard.selectedDate != null) {
@@ -4345,7 +4345,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         listedDr = new StringBuilder();
                         clusterCode = new StringBuilder();
                         clusterName = new StringBuilder();
-                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                             for (OneBuildModelClass.SessionList.SubClass subClass : oneBuildModelClass.getSessionList().get(1).getDoctors()) {
                                 listedDr.append(subClass.getCode());
                                 listedDr.append(",");
