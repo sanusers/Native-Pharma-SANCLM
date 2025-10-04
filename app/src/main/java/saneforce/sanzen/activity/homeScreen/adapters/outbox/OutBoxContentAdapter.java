@@ -609,8 +609,9 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 if(signModelClass.getSynced() == 0){
                     if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                         CallSendSignImageS3(position,i,signModelClass,signModelClass.getJson_values(),signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
+                    } else {
+                        CallSendSignImage(position, i, signModelClass, signModelClass.getJson_values(), signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
                     }
-                    CallSendSignImage(position,i,signModelClass,signModelClass.getJson_values(),signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
                 }
                 break;
             }

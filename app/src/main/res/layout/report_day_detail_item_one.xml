@@ -1242,6 +1242,7 @@
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardeventLayout"
                     android:layout_width="0dp"

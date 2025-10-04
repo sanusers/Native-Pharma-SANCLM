@@ -430,26 +430,27 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
-        String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
-        if (signInTime.isEmpty()) {
-            changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-        } else {
-            try {
-                JSONObject jsonObject = new JSONObject(signInTime);
-                String date = jsonObject.optString("date");
-                Log.i("Login date", "onPostCreate: " + date);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-                LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
-                LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
-                if (givenDate.isBefore(ninetyDaysAgo)) {
-                    changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-                } else {
-                    System.out.println("The given date is within the last 90 days.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        // TODO: 04-10-2025  
+//        String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
+//        if (signInTime.isEmpty()) {
+//            changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+//        } else {
+//            try {
+//                JSONObject jsonObject = new JSONObject(signInTime);
+//                String date = jsonObject.optString("date");
+//                Log.i("Login date", "onPostCreate: " + date);
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+//                LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
+//                LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
+//                if (givenDate.isBefore(ninetyDaysAgo)) {
+//                    changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+//                } else {
+//                    System.out.println("The given date is within the last 90 days.");
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private void playVideo(String url) {

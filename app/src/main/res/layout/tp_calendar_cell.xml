@@ -42,7 +42,7 @@
         android:id="@+id/img_event_point"
         android:layout_width="@dimen/_3sdp"
         android:layout_height="@dimen/_3sdp"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:src="@drawable/testdrawable"
         android:layout_marginVertical="@dimen/_3sdp"
         app:layout_constraintBottom_toBottomOf="parent"
