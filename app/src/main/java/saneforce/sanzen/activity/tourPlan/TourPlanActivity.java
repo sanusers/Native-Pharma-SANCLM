@@ -855,7 +855,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                    }if(SharedPref.getTpObjectiveMandatory(this).equalsIgnoreCase("0") && oneBuildModelClass.getRemarks().isEmpty()){
+                    }
+                    if (SharedPref.getTpObjectiveMandatory(this).equalsIgnoreCase("0") && oneBuildModelClass.getRemarks().isEmpty()) {
                         isEmpty = true;
                         position = i;
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.need_remarks) + (i + 1));
@@ -1331,6 +1332,13 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void uiInitializationOneBuild() {
         localDate = LocalDate.now();
+        drCap = SharedPref.getDrCap(TourPlanActivity.this);
+        chmCap = SharedPref.getChmCap(TourPlanActivity.this);
+        stkCap = SharedPref.getStkCap(TourPlanActivity.this);
+        unListDrCap = SharedPref.getUNLcap(TourPlanActivity.this);
+        cipCap = SharedPref.getCipCaption(TourPlanActivity.this);
+        hosCap = SharedPref.getHospCaption(TourPlanActivity.this);
+
 
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();
@@ -1394,37 +1402,74 @@ public class TourPlanActivity extends AppCompatActivity {
                 holidayMode = jsonObject.getString("Holiday_Mode");
                 weeklyOffCaption = jsonObject.getString("WTname");
             }
-            String[] holidayModeArray = holidayMode.split(",");
-            weeklyOffDays = new ArrayList<>();
-            for (String str : holidayModeArray) {
-                switch (str) {
-                    case "0": {
-                        weeklyOffDays.add("Sunday");
-                        break;
+            if (holidayMode.contains(",")) {
+                String[] holidayModeArray = holidayMode.split(",");
+                weeklyOffDays = new ArrayList<>();
+                for (String str : holidayModeArray) {
+                    switch (str) {
+                        case "0": {
+                            weeklyOffDays.add("Sunday");
+                            break;
+                        }
+                        case "1": {
+                            weeklyOffDays.add("Monday");
+                            break;
+                        }
+                        case "2": {
+                            weeklyOffDays.add("Tuesday");
+                            break;
+                        }
+                        case "3": {
+                            weeklyOffDays.add("Wednesday");
+                            break;
+                        }
+                        case "4": {
+                            weeklyOffDays.add("Thursday");
+                            break;
+                        }
+                        case "5": {
+                            weeklyOffDays.add("Friday");
+                            break;
+                        }
+                        case "6": {
+                            weeklyOffDays.add("Saturday");
+                            break;
+                        }
                     }
-                    case "1": {
-                        weeklyOffDays.add("Monday");
-                        break;
-                    }
-                    case "2": {
-                        weeklyOffDays.add("Tuesday");
-                        break;
-                    }
-                    case "3": {
-                        weeklyOffDays.add("Wednesday");
-                        break;
-                    }
-                    case "4": {
-                        weeklyOffDays.add("Thursday");
-                        break;
-                    }
-                    case "5": {
-                        weeklyOffDays.add("Friday");
-                        break;
-                    }
-                    case "6": {
-                        weeklyOffDays.add("Saturday");
-                        break;
+                }
+            }else{
+                String[] holidayModeArray = holidayMode.split("");
+                weeklyOffDays = new ArrayList<>();
+                for (String str : holidayModeArray) {
+                    switch (str) {
+                        case "0": {
+                            weeklyOffDays.add("Sunday");
+                            break;
+                        }
+                        case "1": {
+                            weeklyOffDays.add("Monday");
+                            break;
+                        }
+                        case "2": {
+                            weeklyOffDays.add("Tuesday");
+                            break;
+                        }
+                        case "3": {
+                            weeklyOffDays.add("Wednesday");
+                            break;
+                        }
+                        case "4": {
+                            weeklyOffDays.add("Thursday");
+                            break;
+                        }
+                        case "5": {
+                            weeklyOffDays.add("Friday");
+                            break;
+                        }
+                        case "6": {
+                            weeklyOffDays.add("Saturday");
+                            break;
+                        }
                     }
                 }
             }
@@ -1443,7 +1488,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
 
     public void uiInitialization() {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         localDate = LocalDate.now();
 
         drCap = SharedPref.getDrCap(TourPlanActivity.this);

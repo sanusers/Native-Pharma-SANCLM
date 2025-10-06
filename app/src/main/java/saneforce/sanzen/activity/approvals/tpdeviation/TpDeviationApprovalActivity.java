@@ -290,12 +290,12 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
-                        prepareSessionData(jsonArray);
-                       /* if(SharedPref.getOneBuild(TpDeviationApprovalActivity.this).equalsIgnoreCase("0")){
+//                        prepareSessionData(jsonArray);
+                        if(SharedPref.getOneBuild(TpDeviationApprovalActivity.this).equalsIgnoreCase("0")){
                             prepareSessionDataOneBuild(jsonArray);
                         }else {
                             prepareSessionData(jsonArray);
-                        }*/
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
