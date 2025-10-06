@@ -247,9 +247,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                     /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
                 if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                    sync(Constants.DOCTOR_MAS, "gettodaydcr", dcrModelArray, 2);
+//                    sync(Constants.DOCTOR_MAS, "gettodaydcr", dcrModelArray, 2);
+                    sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
+
                 }else {
-                    sync(Constants.DOCTOR_MAS, "gettodaydcrmultihq", dcrModelArray, 2);
+//                    sync(Constants.DOCTOR_MAS, "gettodaydcrmultihq", dcrModelArray, 2);
+                    sync(Constants.DOCTOR, "gettodaydcrmultihq", dcrModelArray, 2);
                 }
                     // to get all the HQ list initially only for MGR
 // to get all the HQ list initially only for MGR
@@ -653,21 +656,25 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.hospital.setText(SharedPref.getHospCaption(this));
         binding.cip.setText(SharedPref.getCipCaption(this));
 
-        doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
-        doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
+//        doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
+//        doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
+        doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
         specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
         qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
         categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
         departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
         classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
         feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
-        unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
-        unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
-        chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + rsf);
-        chemistGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + rsf);
+        unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
+//        unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
+//        unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
+        chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
+//        chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + rsf);
+//        chemistGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + rsf);
         chemistCategoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY_CHEMIST);
-        stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_MAS + rsf);
-        stockiestGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_GEO + rsf);
+        stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
+//        stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_MAS + rsf);
+//        stockiestGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_GEO + rsf);
         hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf);
         cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + rsf);
         inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
@@ -786,14 +793,15 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void checkAndSetStatus(MasterSyncItemModel masterSyncItemModel) {
         if (masterSyncItemModel.getSyncSuccess() == 2) {
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||
+                  /*  masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||*/
+                  /*  masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
-                doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
-                doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
+                doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
+//                doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
+//                doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
                 specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
                 qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
                 categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
@@ -805,32 +813,38 @@ public class MasterSyncActivity extends AppCompatActivity {
                     binding.syncFailedImageDr.setVisibility(View.GONE);
                 }
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||*/
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
-                chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + rsf);
-                chemistGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + rsf);
+                chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
+              /*  chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + rsf);*/
+              /*  chemistGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + rsf);*/
                 chemistCategoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY_CHEMIST);
                 if (chemistStatus == 1 || chemistGeoStatus == 1 || chemistCategoryStatus == 1) {
                     binding.syncFailedImageChm.setVisibility(View.VISIBLE);
                 } else {
                     binding.syncFailedImageChm.setVisibility(View.GONE);
                 }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") ||
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") /*||*/
+/*
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")) {
-                stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_MAS + rsf);
-                stockiestGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_GEO + rsf);
+*/
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")*/)
+            {
+                stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
+                /*  stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_MAS + rsf);*/
+              /*  stockiestGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_GEO + rsf);*/
                 if (stockiestStatus == 1 || stockiestGeoStatus == 1) {
                     binding.syncFailedImageStk.setVisibility(View.VISIBLE);
                 } else {
                     binding.syncFailedImageStk.setVisibility(View.GONE);
                 }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")) {
-                unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
-                unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") /*||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||*/
+                    /*masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")*/) {
+                unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
+//                unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
+//                unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
                 if (unlistedDrStatus == 1 || unlistedDrGeoStatus == 1) {
                     binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
                 } else {
@@ -1104,7 +1118,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
 //            if (SharedPref.getGeotagNeed(this).equalsIgnoreCase("1")) {
 //                MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
-            MasterSyncItemModel dr_mas = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
+          /*  MasterSyncItemModel dr_mas = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
             MasterSyncItemModel geo = new MasterSyncItemModel(SharedPref.getDrCap(this)+" Geo", Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
             MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR_MAS, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
             MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR_MAS, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
@@ -1119,80 +1133,78 @@ public class MasterSyncActivity extends AppCompatActivity {
             doctorModelArray.add(ql);
             doctorModelArray.add(cat);
             //  doctorModelArray.add(dep);
-            doctorModelArray.add(clas);
-         /*   }else {
+            doctorModelArray.add(clas);*/
                 MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
-                MasterSyncItemModel dr_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS,Constants.DOCTOR,"getdoctors_master",Constants.DOCTOR_MAS,ListedDoctorMaster,false);
-                MasterSyncItemModel geo = new MasterSyncItemModel(Constants.GEO, Constants.DOCTOR, "getdoctors_geo", Constants.GEO, ListedDoctorGeo, false);
                 MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
                 MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
                 MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
                 //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
                 MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
                 doctorModelArray.add(doctorModel);
-                doctorModelArray.add(dr_mas);
-                doctorModelArray.add(geo);
                 doctorModelArray.add(spl);
                 doctorModelArray.add(ql);
                 doctorModelArray.add(cat);
                 //  doctorModelArray.add(dep);
                 doctorModelArray.add(clas);
-            }*/
+
         } else binding.listedDr.setVisibility(View.GONE);
 
         //Chemist
         chemistModelArray.clear();
         if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
-//            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
-            MasterSyncItemModel cheMas = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
-            MasterSyncItemModel cheGeo = new MasterSyncItemModel(SharedPref.getChmCap(this)+" Geo", Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);
+            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+           /* MasterSyncItemModel cheMas = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);*/
+           /* MasterSyncItemModel cheGeo = new MasterSyncItemModel(SharedPref.getChmCap(this)+" Geo", Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);*/
+/*
             MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
+*/
+            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
 //            chemistModelArray.add(cheModel);
-            chemistModelArray.add(cheMas);
-            chemistModelArray.add(cheGeo);
+        /*    chemistModelArray.add(cheMas);*/
+        /*    chemistModelArray.add(cheGeo);*/
             chemistModelArray.add(chemistCategory);
         } else binding.chemist.setVisibility(View.GONE);
 
         //Stockiest
         stockiestModelArray.clear();
         if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
-//            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this),Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
-            MasterSyncItemModel stock_mas = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, stockiestStatus, false);
-            MasterSyncItemModel stock_geo = new MasterSyncItemModel(SharedPref.getStkCap(this)+" Geo", Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode, stockiestGeoStatus, false);
-//            stockiestModelArray.add(stockModel);
-            stockiestModelArray.add(stock_mas);
-            stockiestModelArray.add(stock_geo);
+            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this),Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
+           /* MasterSyncItemModel stock_mas = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, stockiestStatus, false);*/
+           /* MasterSyncItemModel stock_geo = new MasterSyncItemModel(SharedPref.getStkCap(this)+" Geo", Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode, stockiestGeoStatus, false);*/
+            stockiestModelArray.add(stockModel);
+//            stockiestModelArray.add(stock_mas);
+//            stockiestModelArray.add(stock_geo);
         } else binding.stockiest.setVisibility(View.GONE);
 
         //Unlisted Dr
         unlistedDrModelArray.clear();
         if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
-//            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this),  Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
-            MasterSyncItemModel unList_mas = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, unlistedDrStatus, false);
-            MasterSyncItemModel unList_geo = new MasterSyncItemModel(SharedPref.getUNLcap(this)+" Geo", Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, unlistedDrGeoStatus, false);
+            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this),  Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
+           // MasterSyncItemModel unList_mas = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, unlistedDrStatus, false);
+           // MasterSyncItemModel unList_geo = new MasterSyncItemModel(SharedPref.getUNLcap(this)+" Geo", Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, unlistedDrGeoStatus, false);
 
-//            unlistedDrModelArray.add(unListModel);
-            unlistedDrModelArray.add(unList_mas);
-            unlistedDrModelArray.add(unList_geo);
+            unlistedDrModelArray.add(unListModel);
+//            unlistedDrModelArray.add(unList_mas);
+//            unlistedDrModelArray.add(unList_geo);
         } else binding.unlistedDoctor.setVisibility(View.GONE);
 
         //Hospital
         hospitalModelArray.clear();
         if (SharedPref.getHospNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel hospModel = new MasterSyncItemModel(SharedPref.getHospCaption(this), Constants.DOCTOR_MAS, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
+            MasterSyncItemModel hospModel = new MasterSyncItemModel(SharedPref.getHospCaption(this), Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
             hospitalModelArray.add(hospModel);
         } else binding.hospital.setVisibility(View.GONE);
 
         //CIP
         cipModelArray.clear();
         if (SharedPref.getCipNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel ciModel = new MasterSyncItemModel(SharedPref.getCipCaption(this), Constants.DOCTOR_MAS, "getcip", Constants.CIP + hqCode, cipStatus, false);
+            MasterSyncItemModel ciModel = new MasterSyncItemModel(SharedPref.getCipCaption(this), Constants.DOCTOR, "getcip", Constants.CIP + hqCode, cipStatus, false);
 //            cipModelArray.add(ciModel);
         } else binding.cip.setVisibility(View.GONE);
 
         //Cluster
         clusterModelArray.clear();
-        MasterSyncItemModel cluster = new MasterSyncItemModel(SharedPref.getClusterCap(this), Constants.DOCTOR_MAS, "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
+        MasterSyncItemModel cluster = new MasterSyncItemModel(SharedPref.getClusterCap(this), Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
         clusterModelArray.add(cluster);
 
         //Input
@@ -1228,14 +1240,19 @@ public class MasterSyncActivity extends AppCompatActivity {
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+//        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
         if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1") && SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-            myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+//            myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+            myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+
         } else {
             if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2") && SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")){
-                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+//                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
             }else {
-                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
+//                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
+                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
             }
         }
 
@@ -1264,9 +1281,12 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Work Type
         workTypeModelArray.clear();
-        MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE, Constants.DOCTOR_MAS, "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
-        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY, Constants.DOCTOR_MAS, "getholiday", Constants.HOLIDAY, holidayStatus, false);
-        MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF, Constants.DOCTOR_MAS, "getweeklyoff", Constants.WEEKLY_OFF, weeklyOfStatus, false);
+//        MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE, Constants.DOCTOR_MAS, "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
+//        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY, Constants.DOCTOR_MAS, "getholiday", Constants.HOLIDAY, holidayStatus, false);
+//        MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF, Constants.DOCTOR_MAS, "getweeklyoff", Constants.WEEKLY_OFF, weeklyOfStatus, false);
+        MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE, Constants.DOCTOR, "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
+        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY, Constants.DOCTOR, "getholiday", Constants.HOLIDAY, holidayStatus, false);
+        MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF, Constants.DOCTOR, "getweeklyoff", Constants.WEEKLY_OFF, weeklyOfStatus, false);
         workTypeModelArray.add(workType);
         workTypeModelArray.add(holiday);
         workTypeModelArray.add(weeklyOff);
@@ -1332,7 +1352,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Other
         otherModelArray.clear();
-        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR_MAS, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
+//        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR_MAS, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
+        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
         otherModelArray.add(feedback);
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel Quiz = new MasterSyncItemModel(Constants.QUIZ, "AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
@@ -1652,10 +1673,14 @@ public class MasterSyncActivity extends AppCompatActivity {
             Map<String, String> mapString = new HashMap<>();
             Log.e("API Object", "master sync obj : " + jsonObject);
             Call<JsonElement> call = null;
-            if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+          /*  if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                 mapString.put("axn", "table/dcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
+            }*/
+            if (masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
+                mapString.put("axn", "table/dcrmasterdata");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            }else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
                 mapString.put("axn", "table/subordinates");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
@@ -1781,7 +1806,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 SaveTourPlanOne(jsonArray.getJSONObject(0));
                                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
                                             }
-                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
+//                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
+                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;

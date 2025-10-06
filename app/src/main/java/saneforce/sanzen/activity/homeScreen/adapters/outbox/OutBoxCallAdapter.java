@@ -185,7 +185,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         JSONObject dcrDetail = new JSONObject(outBoxCallLists.get(position).getJsonData());
                         if (dcrDetail != null) {
                             selectedHQ = dcrDetail.optString("Rsf");
-                            JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
+//                            JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
+                            JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
                             for (int i = 0; i < drMas.length(); i++) {
                                 JSONObject drObj = drMas.optJSONObject(i);
                                 if (drObj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {

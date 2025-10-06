@@ -346,35 +346,36 @@ public class TagCustSelectionList extends AppCompatActivity {
 
     public void prepareMasterToSync(String hqCode) {
         masterSyncArray.clear();
-//        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
-        MasterSyncItemModel doctorModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode);
-        MasterSyncItemModel doctorModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
+//        MasterSyncItemModel doctorModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode);
+//        MasterSyncItemModel doctorModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode);
 
-//        MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
-        MasterSyncItemModel cheModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode);
-        MasterSyncItemModel cheModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode);
-//        MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor", "getstockist", Constants.STOCKIEST + hqCode);
-        MasterSyncItemModel stockModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode);
-        MasterSyncItemModel stockModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode);
-//        MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
+//        MasterSyncItemModel cheModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode);
+//        MasterSyncItemModel cheModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode);
+        MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor", "getstockist", Constants.STOCKIEST + hqCode);
+//        MasterSyncItemModel stockModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode);
+//        MasterSyncItemModel stockModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
 
-        MasterSyncItemModel unListModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode);
-        MasterSyncItemModel unListModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode);
+//        MasterSyncItemModel unListModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode);
+//        MasterSyncItemModel unListModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode);
 
 //        MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor", "gethospital", Constants.HOSPITAL + hqCode);
 //        MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor", "getcip", Constants.CIP + hqCode);
 
-        masterSyncArray.add(doctorModel_mas);
-        masterSyncArray.add(doctorModel_geo);
-//        masterSyncArray.add(cheModel);
-        masterSyncArray.add(cheModel_mas);
-        masterSyncArray.add(cheModel_geo);
-//        masterSyncArray.add(stockModel);
-        masterSyncArray.add(stockModel_mas);
-        masterSyncArray.add(stockModel_geo);
-//        masterSyncArray.add(unListModel);
-        masterSyncArray.add(unListModel_mas);
-        masterSyncArray.add(unListModel_geo);
+//        masterSyncArray.add(doctorModel_mas);
+//        masterSyncArray.add(doctorModel_geo);
+        masterSyncArray.add(doctorModel);
+        masterSyncArray.add(cheModel);
+//        masterSyncArray.add(cheModel_mas);
+//        masterSyncArray.add(cheModel_geo);
+        masterSyncArray.add(stockModel);
+//        masterSyncArray.add(stockModel_mas);
+//        masterSyncArray.add(stockModel_geo);
+        masterSyncArray.add(unListModel);
+//        masterSyncArray.add(unListModel_mas);
+//        masterSyncArray.add(unListModel_geo);
 //        masterSyncArray.add(hospModel);
 //        masterSyncArray.add(ciModel);
         for (int i = 0; i < masterSyncArray.size(); i++) {
@@ -463,7 +464,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         Log.v("map_selected_tab", "---" + SelectedTab);
         Log.v("selected_hq", "---" + selectedHqCode);
         switch (SelectedTab) {
-            case "D":
+          /*  case "D":
                 try {
                     binding.tagSelection.setText(SharedPref.getDrCap(this));
                     JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHqCode).getMasterSyncDataJsonArray();
@@ -542,8 +543,37 @@ public class TagCustSelectionList extends AppCompatActivity {
                 }
 
                 break;
+*/
+            case "D":
+                try {
+                    binding.tagSelection.setText(SharedPref.getDrCap(this));
+                    if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + selectedHqCode)) {
+                        prepareMasterToSync(selectedHqCode);
+                    } else {
+                        jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHqCode).getMasterSyncDataJsonArray();
+                    }
+                    if (jsonArray.length()>0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            jsonObject = jsonArray.getJSONObject(i);
+                            if (jsonObject.has("cust_status")) {
+                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                                custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                            } else {
+                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                                custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                            }
 
-            case "C":
+                        }
+                    }else {
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
+                    }
+
+                } catch (Exception e) {
+                    Log.v("dr_tag", "---error--" + e);
+                }
+
+                break;
+            /*case "C":
                 try {
                     binding.tagSelection.setText(SharedPref.getChmCap(this));
                         JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + selectedHqCode).getMasterSyncDataJsonArray();
@@ -627,9 +657,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                     Log.e("TAG", "AddCustList: " + e.getMessage());
                     e.printStackTrace();
                 }
-                break;
+                break;*/
 
-           /* case "C":
+            case "C":
                 try {
                     binding.tagSelection.setText(SharedPref.getChmCap(this));
                     if (!masterDataDao.getMasterSyncDataOfHQ(Constants.CHEMIST + selectedHqCode)) {
@@ -653,8 +683,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                 } catch (Exception ignored) {
 
                 }
-                break;*/
-  /*          case "S":
+                break;
+            case "S":
                 try {
                     binding.tagSelection.setText(SharedPref.getStkCap(this));
                     if (!masterDataDao.getMasterSyncDataOfHQ(Constants.STOCKIEST + selectedHqCode)) {
@@ -680,8 +710,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                 } catch (Exception ignored) {
 
                 }
-                break;*/
-            case "S":
+                break;
+          /*  case "S":
                 try {
                     binding.tagSelection.setText(SharedPref.getStkCap(this));
                     JSONArray masterJsonArrayStkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + selectedHqCode).getMasterSyncDataJsonArray();
@@ -753,10 +783,10 @@ public class TagCustSelectionList extends AppCompatActivity {
                 } catch (Exception ignored) {
                     ignored.printStackTrace();
                 }
-                break;
+                break;*/
 
 
-            case "U":
+/*            case "U":
                 try {
                     binding.tagSelection.setText(SharedPref.getUNLcap(this));
                     JSONArray masterJsonArrayUlist1 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + selectedHqCode).getMasterSyncDataJsonArray();
@@ -830,9 +860,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                 } catch (Exception ignored) {
 
                 }
-                break;
+                break;*/
 
-/*
             case "U":
                 try {
                     binding.tagSelection.setText(SharedPref.getUNLcap(this));
@@ -859,7 +888,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 } catch (Exception ignored) {
 
                 }
-                break;*/
+                break;
         }
 
 

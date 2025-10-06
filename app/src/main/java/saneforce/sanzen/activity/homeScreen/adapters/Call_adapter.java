@@ -393,7 +393,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             JSONObject dcrDetail = callData.optJSONObject(0);
                             if (dcrDetail != null) {
                                 selectedHQ = dcrDetail.optString("DataSF");
-                                JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
+//                                JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
+                                JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
                                 for (int i = 0; i < drMas.length(); i++) {
                                     JSONObject drObj = drMas.optJSONObject(i);
                                     if (drObj.optString("Code").equalsIgnoreCase(docCode)) {

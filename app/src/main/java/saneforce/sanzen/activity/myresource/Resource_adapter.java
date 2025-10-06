@@ -99,7 +99,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                 switch (app_adapt.getVal_pos()) {
 
 
-             /*           case ("1"):
+                        case ("1"):
                             rec_val = "D";
                             MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR + synhqval1);
                             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
@@ -147,8 +147,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
                             search_list.addAll(listresource);
                             myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                            break;*/
-                    case ("1"):
+                            break;
+                    /*case ("1"):
                         rec_val = "D";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + synhqval1);
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR_GEO + synhqval1);
@@ -235,8 +235,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         search_list.addAll(listresource);
                         myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
                         break;
-
-                       /* case ("2"):
+*/
+                        case ("2"):
                             rec_val = "C";
                             MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST + synhqval1);
                             JSONArray jsonchemist = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + synhqval1).getMasterSyncDataJsonArray();
@@ -269,8 +269,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
                             search_list.addAll(listresource);
                             myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                            break;*/
-                    case ("2"):
+                            break;
+                   /* case ("2"):
                         rec_val = "C";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + synhqval1);
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST_GEO + synhqval1);
@@ -341,8 +341,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         search_list.addAll(listresource);
                         myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
                         break;
-
-              /*          case ("3"):
+*/
+                        case ("3"):
                             rec_val = "S";
                             MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST + synhqval1);
                             JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + synhqval1).getMasterSyncDataJsonArray();
@@ -376,8 +376,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
                             search_list.addAll(listresource);
                             myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                            break;*/
-                    case ("3"):
+                            break;
+                  /*  case ("3"):
                         rec_val = "S";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + synhqval1);
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST_GEO + synhqval1);
@@ -450,9 +450,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
                         search_list.addAll(listresource);
                         myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                        break;
+                        break;*/
 
-    /*                    case ("4"):
+                        case ("4"):
                             rec_val = "U";
                             MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + synhqval1);
                             JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + synhqval1).getMasterSyncDataJsonArray();
@@ -498,8 +498,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
                             search_list.addAll(listresource);
                             myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                            break;*/
-                    case ("4"):
+                            break;
+                   /* case ("4"):
                         rec_val = "U";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + synhqval1);
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_GEO + synhqval1);
@@ -578,7 +578,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
                         search_list.addAll(listresource);
                         myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                        break;
+                        break;*/
 
                     case ("5"):
 
@@ -741,7 +741,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.VISIT_CONTROL);
                         JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
 //                            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
-                        JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + synhqval1).getMasterSyncDataJsonArray();
+//                        JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + synhqval1).getMasterSyncDataJsonArray();
+                        JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
 
                         uniqueValues.clear();
                         idCounts.clear();

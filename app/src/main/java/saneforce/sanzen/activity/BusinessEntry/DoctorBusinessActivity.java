@@ -952,7 +952,8 @@ public class DoctorBusinessActivity extends AppCompatActivity {
 
     private void SetupAdapter() {
         try {
-            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedhq ).getMasterSyncDataJsonArray();
+//            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedhq ).getMasterSyncDataJsonArray();
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedhq ).getMasterSyncDataJsonArray();
             if (jsonArray.length() == 0) {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) );
             }

@@ -57,7 +57,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             commonUtilsMethods.displayPopupWindow(context, view, getProductList.get(position).getName());
        });
         switch (category){
-            case Constants.DOCTOR_MAS:
+//            case Constants.DOCTOR_MAS:
+            case Constants.DOCTOR:
             case "DOCTOR":
                 if (SharedPref.getRcpaQtyNeed(context).equals("1")){
                     holder.tv_rcpa.setVisibility(View.VISIBLE);
@@ -71,7 +72,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 }
                 holder.img_promoted.setVisibility(View.VISIBLE);
                 break;
-            case Constants.CHEMIST_MAS:
+//            case Constants.CHEMIST_MAS:
+            case Constants.CHEMIST:
             case "CHEMIST":
                 if(SharedPref.getChmRxQty(context).equalsIgnoreCase("1")) {
                     holder.tv_rxQty.setVisibility(View.INVISIBLE);
@@ -81,7 +83,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 holder.tv_rcpa.setVisibility(View.INVISIBLE);
                 holder.img_promoted.setVisibility(View.INVISIBLE);
                 break;
-            case Constants.STOCKIEST_MAS:
+//            case Constants.STOCKIEST_MAS:
+            case Constants.STOCKIEST:
             case "STOCKIST":
                 if(SharedPref.getStkPobNeed(context).equalsIgnoreCase("1")) {
                     holder.tv_rxQty.setVisibility(View.INVISIBLE);
@@ -91,7 +94,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 holder.tv_rcpa.setVisibility(View.INVISIBLE);
                 holder.img_promoted.setVisibility(View.INVISIBLE);
                 break;
-            case Constants.UNLISTED_DOCTOR_MAS:
+//            case Constants.UNLISTED_DOCTOR_MAS:
+            case Constants.UNLISTED_DOCTOR:
             case "ULDOCTOR":
                 if(SharedPref.getUlPobNeed(context).equalsIgnoreCase("1")) {
                     holder.tv_rxQty.setVisibility(View.INVISIBLE);
