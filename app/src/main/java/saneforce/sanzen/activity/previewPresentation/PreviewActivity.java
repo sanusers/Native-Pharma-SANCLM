@@ -290,7 +290,9 @@ public class PreviewActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
+                    if (!time.isEmpty()) {
+                        callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
+                    }
                     finalPrdNam = arrayStore.get(j).getBrdName();
                     totalDuration = "";
                 }
@@ -508,29 +510,29 @@ public class PreviewActivity extends AppCompatActivity {
             JSONArray json2 = new JSONArray(jsonvalue);
             mm = arrayStore.get(i);
             json = new JSONArray(mm.getRemTime());
-            JSONObject jjj = json.getJSONObject(0);
-            Log.v("last_value_time", jjj.getString("sT"));
-            startT = jjj.getString("sT");
+            JSONObject jjj = json.optJSONObject(0);
+            Log.v("last_value_time", jjj.optString("sT"));
+            startT = jjj.optString("sT");
             //  finalTime = startT + " " + jjj.getString("eT");
             finalTime = startT;
             if (i == arrayStore.size() - 1) {
                 mm1 = arrayStore.get(arrayStore.size() - 1);
                 json = new JSONArray(mm1.getRemTime());
-                JSONObject jj = json.getJSONObject(0);
-                endT = jj.getString("eT");
+                JSONObject jj = json.optJSONObject(0);
+                endT = jj.optString("eT");
                 for (int j = 0; j < i; j++) {
                     if (arrayStore.get(j).getBrdName().equals(mm1.getBrdName())) {
                         mm2 = arrayStore.get(j);
                         json2 = new JSONArray(mm2.getRemTime());
-                        JSONObject jj2 = json2.getJSONObject(0);
-                        startT = jj2.getString("sT");
+                        JSONObject jj2 = json2.optJSONObject(0);
+                        startT = jj2.optString("sT");
                         break;
                     }
                 }
                 finalTime = startT;
             }
             return finalTime;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return finalTime;
@@ -542,28 +544,31 @@ public class PreviewActivity extends AppCompatActivity {
         try {
             JSONArray json;
             if (i != 0) {
-
                 mm1 = arrayStore.get(i - 1);
                 json = new JSONArray(mm1.getRemTime());
-                JSONObject jj = json.getJSONObject(0);
-                endT = jj.getString("eT");
+                JSONObject jj = json.optJSONObject(0);
+                if (jj != null) {
+                    endT = jj.optString("eT");
+                }
             }
             finalTime = startT;
             mm = arrayStore.get(i);
             json = new JSONArray(mm.getRemTime());
-            JSONObject jj = json.getJSONObject(0);
-            Log.v("last_value_timemid", jj.getString("sT"));
-            startT = jj.getString("sT");
-            if (arrayStore.size() == 1) {
-                mm = arrayStore.get(i);
-                json = new JSONArray(mm.getRemTime());
-                JSONObject jjj = json.getJSONObject(0);
-                Log.v("last_value_time", jjj.getString("sT"));
-                startT = jjj.getString("sT");
-                finalTime = startT;
+            JSONObject jj = json.optJSONObject(0);
+            if (jj != null) {
+                Log.v("last_value_timemid", jj.optString("sT"));
+                startT = jj.optString("sT");
+                if (arrayStore.size() == 1) {
+                    mm = arrayStore.get(i);
+                    json = new JSONArray(mm.getRemTime());
+                    JSONObject jjj = json.optJSONObject(0);
+                    Log.v("last_value_time", jjj.optString("sT"));
+                    startT = jjj.optString("sT");
+                    finalTime = startT;
+                }
             }
             return finalTime;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return finalTime;

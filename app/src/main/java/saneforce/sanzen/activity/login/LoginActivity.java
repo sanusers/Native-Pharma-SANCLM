@@ -131,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
             remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
             long mins5 = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_40, "05:00");
             if (remainingTime > mins5) {
-                remainingTime = mins5;
+                remainingTime = 0;
             } else {
                 remainingTime = mins5 - remainingTime;
             }
