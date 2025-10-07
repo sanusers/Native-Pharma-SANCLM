@@ -191,7 +191,7 @@ public class PresentationActivity extends AppCompatActivity {
 
         String selectedCap = "";
         switch (customerType){
-  /*          case Constants.DOCTOR:
+            case Constants.DOCTOR:
                 selectedCap = drCap;
                 break;
             case Constants.CHEMIST:
@@ -202,8 +202,8 @@ public class PresentationActivity extends AppCompatActivity {
                 break;
             case Constants.UNLISTED_DOCTOR:
                 selectedCap = unlDrCap;
-                break;*/
-            case Constants.DOCTOR_MAS:
+                break;
+    /*        case Constants.DOCTOR_MAS:
                 selectedCap = drCap;
                 break;
             case Constants.CHEMIST_MAS:
@@ -214,7 +214,7 @@ public class PresentationActivity extends AppCompatActivity {
                 break;
             case Constants.UNLISTED_DOCTOR_MAS:
                 selectedCap = unlDrCap;
-                break;
+                break;*/
             case Constants.CIP:
                 selectedCap = cipCap;
                 break;

@@ -154,7 +154,7 @@ public class MyResource_Activity extends AppCompatActivity {
 
     public void Resource_list(String synhqval1) {
         try {
-        /*    JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
+            JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
             String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
             String doctor = String.valueOf(jsonDoc);
             if (!doctor.equals("") || !doctor.equals("null")) {
@@ -224,9 +224,9 @@ public class MyResource_Activity extends AppCompatActivity {
                 } else {
                     Unlist_count = "0";
                 }
-            }*/
+            }
 
-            JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + synhqval1).getMasterSyncDataJsonArray();
+         /*   JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + synhqval1).getMasterSyncDataJsonArray();
             String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
             String doctorMas = String.valueOf(jsonDoc_mas);
             if (!doctorMas.equals("") || !doctorMas.equals("null")) {
@@ -297,7 +297,7 @@ public class MyResource_Activity extends AppCompatActivity {
                 } else {
                     Unlist_count = "0";
                 }
-            }
+            }*/
 
 
 

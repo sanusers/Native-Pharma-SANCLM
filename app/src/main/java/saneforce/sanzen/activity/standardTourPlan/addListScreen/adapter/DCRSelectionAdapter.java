@@ -99,13 +99,13 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             DCRModel dcrModel = (DCRModel) filtereddcrModelList.get(position);
 
             switch (selectedDCR){
-//                case Constants.DOCTOR:
-                case Constants.DOCTOR_MAS:
+                case Constants.DOCTOR:
+//                case Constants.DOCTOR_MAS:
                     dcrViewHolder.speciality.setVisibility(View.VISIBLE);
                     dcrViewHolder.categoryXVisitFreq.setVisibility(View.VISIBLE);
                     break;
-//                case Constants.CHEMIST:
-                case Constants.CHEMIST_MAS:
+                case Constants.CHEMIST:
+//                case Constants.CHEMIST_MAS:
                     dcrViewHolder.speciality.setVisibility(View.GONE);
                     dcrViewHolder.categoryXVisitFreq.setVisibility(View.GONE);
                     break;
@@ -145,8 +145,8 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     });
                 }else {
                     dcrViewHolder.checkBox.setVisibility(View.GONE);
-//                    if(!selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
-                    if(!selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                    if(!selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
+//                    if(!selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                         dcrViewHolder.plannedFor.setVisibility(View.GONE);
                     }
 
@@ -185,11 +185,11 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 } else {
                     String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
                     docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-//                    if (dcrViewHolder.checkBox.isChecked() && docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
-                    if (dcrViewHolder.checkBox.isChecked() && docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                    if (dcrViewHolder.checkBox.isChecked() && docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
+//                    if (dcrViewHolder.checkBox.isChecked() && docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                         updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
-//                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length >= dcrModel.getVisitFrequency()) {
-                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && docList.length >= dcrModel.getVisitFrequency()) {
+                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length >= dcrModel.getVisitFrequency()) {
+//                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && docList.length >= dcrModel.getVisitFrequency()) {
                         commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
                         dcrViewHolder.checkBox.setChecked(false);
                     } else {

@@ -65,8 +65,8 @@ public class DoctorPresentationFragment extends Fragment {
 
         binding.createPresentationBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-//            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR);
-            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR_MAS);
+            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR);
+//            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR_MAS);
             startActivity(intent);
         });
 
@@ -89,8 +89,8 @@ public class DoctorPresentationFragment extends Fragment {
     private final PresentationAdapter.ShowCustomersClickListener showCustomersClickListener = new PresentationAdapter.ShowCustomersClickListener() {
         @Override
         public void onClick(String presentationName) {
-//            showSideScreenListener.onClick(Constants.DOCTOR, presentationName);
-            showSideScreenListener.onClick(Constants.DOCTOR_MAS, presentationName);
+            showSideScreenListener.onClick(Constants.DOCTOR, presentationName);
+//            showSideScreenListener.onClick(Constants.DOCTOR_MAS, presentationName);
 
         }
     };

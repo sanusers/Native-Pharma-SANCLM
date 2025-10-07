@@ -200,8 +200,8 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
     public void getData(String hq_code) {
 //        ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
         List<MasterSyncItemModel> list = new ArrayList<>();
-//        list.add(new MasterSyncItemModel("Doctor",  "Doctor", "getdoctors", Constants.DOCTOR + hq_code, 0, false));
-        list.add(new MasterSyncItemModel("Doctor",  Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hq_code, 0, false));
+        list.add(new MasterSyncItemModel("Doctor",  "Doctor", "getdoctors", Constants.DOCTOR + hq_code, 0, false));
+//        list.add(new MasterSyncItemModel("Doctor",  Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hq_code, 0, false));
         for (int i = 0; i < list.size(); i++) {
             syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hq_code);
             Log.d("check_syndata", list.get(i).getMasterOf() + "====" + list.get(i).getRemoteTableName() + "===" + list.get(i).getLocalTableKeyName());
@@ -231,7 +231,8 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                 Log.d("jsonObject", String.valueOf(jsonObject));
                 Map<String, String> mapString = new HashMap<>();
 
-                if (masterFor.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+//                if (masterFor.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                if (masterFor.equalsIgnoreCase(Constants.DOCTOR)) {
                     mapString.put("axn", "table/dcrmasterdata");
                 } else if (masterFor.equalsIgnoreCase("Subordinate")) {
                     mapString.put("axn", "table/subordinates");
@@ -260,7 +261,8 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                                         MainData.setSyncstatus(0);*/
 
 
-                                        if (masterFor.equals(Constants.DOCTOR_MAS)) {
+//                                        if (masterFor.equals(Constants.DOCTOR_MAS)) {
+                                        if (masterFor.equalsIgnoreCase(Constants.DOCTOR)) {
                                             progressDialog.dismiss();
                                             change_hq(jsonArray1, LocalTableKeyName);
                                         }

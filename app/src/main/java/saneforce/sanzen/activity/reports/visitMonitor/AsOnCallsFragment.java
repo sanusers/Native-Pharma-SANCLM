@@ -106,19 +106,23 @@ public class AsOnCallsFragment extends Fragment {
             int visitedUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
             int visitedUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
 
-            String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(requireContext()));
+//            String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(requireContext()));
+            String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR + SharedPref.getHqCode(requireContext()));
             JSONArray doctorArray = new JSONArray(doctorData);
             int totalDoctors = doctorArray.length();
 
-            String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + SharedPref.getHqCode(requireContext()));
+//            String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + SharedPref.getHqCode(requireContext()));
+            String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST + SharedPref.getHqCode(requireContext()));
             JSONArray chemistArray = new JSONArray(chemistData);
             int totalChemist = chemistArray.length();
 
-            String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + SharedPref.getHqCode(requireContext()));
+//            String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + SharedPref.getHqCode(requireContext()));
+            String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(requireContext()));
             JSONArray stkArray = new JSONArray(stkData);
             int totalStk = stkArray.length();
 
-            String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(requireContext()));
+//            String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(requireContext()));
+            String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(requireContext()));
             JSONArray unlistedArray = new JSONArray(unlistedData);
             int totalUnlisted = unlistedArray.length();
 

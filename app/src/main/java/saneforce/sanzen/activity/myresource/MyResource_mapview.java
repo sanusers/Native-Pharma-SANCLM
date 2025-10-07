@@ -130,17 +130,17 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         mMap = googleMap;
 
         if (CUST_FLAG.equalsIgnoreCase("D")) {
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
-            //parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
+//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
         } else if (CUST_FLAG.equalsIgnoreCase("C")) {
-//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + HQ_CODE).getMasterSyncDataJsonArray().toString());
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + HQ_CODE).getMasterSyncDataJsonArray().toString());
+//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
         } else if (CUST_FLAG.equalsIgnoreCase("S")) {
-//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + HQ_CODE).getMasterSyncDataJsonArray().toString());
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + HQ_CODE).getMasterSyncDataJsonArray().toString());
+//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
         } else if (CUST_FLAG.equalsIgnoreCase("U")) {
-//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
+//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
         }
 
         if (SharedPref.getGeotagImg(this).equalsIgnoreCase("0")) {

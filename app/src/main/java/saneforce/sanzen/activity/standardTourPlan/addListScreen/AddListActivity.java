@@ -124,13 +124,12 @@ public class AddListActivity extends AppCompatActivity {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }
-            /*else if(selectedDCRMap.get(Constants.DOCTOR) != null && selectedDCRMap.get(Constants.DOCTOR).isEmpty()
+            else if(selectedDCRMap.get(Constants.DOCTOR) != null && selectedDCRMap.get(Constants.DOCTOR).isEmpty()
                     && selectedDCRMap.get(Constants.CHEMIST) != null && selectedDCRMap.get(Constants.CHEMIST).isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or " + chmCap);
-            }*/
-            else if(selectedDCRMap.get(Constants.DOCTOR_MAS) != null && selectedDCRMap.get(Constants.DOCTOR_MAS).isEmpty()
+           /* else if(selectedDCRMap.get(Constants.DOCTOR_MAS) != null && selectedDCRMap.get(Constants.DOCTOR_MAS).isEmpty()
                     && selectedDCRMap.get(Constants.CHEMIST_MAS) != null && selectedDCRMap.get(Constants.CHEMIST_MAS).isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or " + chmCap);
+                commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or " + chmCap);*/
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
                 commonUtilsMethods.showToastMessage(this, "Cannot Save, Already Approved");
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
@@ -155,8 +154,8 @@ public class AddListActivity extends AppCompatActivity {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
-//                selectedDCR = Constants.DOCTOR;
-                selectedDCR = Constants.DOCTOR_MAS;
+                selectedDCR = Constants.DOCTOR;
+//                selectedDCR = Constants.DOCTOR_MAS;
                 selectedDCRCap = drCap;
                 activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
@@ -168,8 +167,8 @@ public class AddListActivity extends AppCompatActivity {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
-//                selectedDCR = Constants.CHEMIST;
-                selectedDCR = Constants.CHEMIST_MAS;
+                selectedDCR = Constants.CHEMIST;
+//                selectedDCR = Constants.CHEMIST_MAS;
                 selectedDCRCap = chmCap;
                 activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
@@ -281,12 +280,12 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-//        selectedDCR = Constants.CHEMIST;
-        selectedDCR = Constants.CHEMIST_MAS;
+        selectedDCR = Constants.CHEMIST;
+//        selectedDCR = Constants.CHEMIST_MAS;
         populateDcrData();
 
-//        selectedDCR = Constants.DOCTOR;
-        selectedDCR = Constants.DOCTOR_MAS;
+        selectedDCR = Constants.DOCTOR;
+//        selectedDCR = Constants.DOCTOR_MAS;
         populateDcrData();
     }
 
@@ -331,8 +330,8 @@ public class AddListActivity extends AppCompatActivity {
         localChmCodeList = new ArrayList<>();
         populatedDCRList = new HashSet<>();
 
-//        selectedDCR = Constants.DOCTOR;
-        selectedDCR = Constants.DOCTOR_MAS;
+        selectedDCR = Constants.DOCTOR;
+//        selectedDCR = Constants.DOCTOR_MAS;
         selectedDCRCap = drCap;
         selectedDCRMap = new HashMap<>();
 
@@ -441,13 +440,13 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.tagTvHospital.setTextColor(getColor(R.color.dark_purple));
 
         switch (selectedDCR){
-//            case Constants.DOCTOR:
-            case Constants.DOCTOR_MAS:
+            case Constants.DOCTOR:
+//            case Constants.DOCTOR_MAS:
                 activityAddListBinding.tagTvDoctor.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityAddListBinding.tagTvDoctor.setTextColor(getColor(R.color.white));
                 break;
-//            case Constants.CHEMIST:
-            case Constants.CHEMIST_MAS:
+            case Constants.CHEMIST:
+//            case Constants.CHEMIST_MAS:
                 activityAddListBinding.tagTvChemist.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityAddListBinding.tagTvChemist.setTextColor(getColor(R.color.white));
                 break;
@@ -472,20 +471,20 @@ public class AddListActivity extends AppCompatActivity {
 
     private void setDCRSelectedForEdit() {
         List<String> dcrTAGList = new ArrayList<>();
-//        dcrTAGList.add(Constants.DOCTOR);
-        dcrTAGList.add(Constants.DOCTOR_MAS);
-//        dcrTAGList.add(Constants.CHEMIST);
-        dcrTAGList.add(Constants.CHEMIST_MAS);
+        dcrTAGList.add(Constants.DOCTOR);
+//        dcrTAGList.add(Constants.DOCTOR_MAS);
+        dcrTAGList.add(Constants.CHEMIST);
+//        dcrTAGList.add(Constants.CHEMIST_MAS);
         for (String selectedDCR : dcrTAGList) {
             List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
             if(dcrModelList != null) {
                 for (DCRModel dcrModel : dcrModelList) {
                     if(mode.equalsIgnoreCase(String.valueOf(CalendarAdapter.Mode.EDIT))) {
-//                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR)) {
-                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR_MAS)) {
+                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR)) {
+//                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR_MAS)) {
                             dcrModel.setSelected(true);
-//                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST)) {
-                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST_MAS)) {
+                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST)) {
+//                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST_MAS)) {
                             dcrModel.setSelected(true);
                         }
                     }
@@ -524,11 +523,11 @@ public class AddListActivity extends AppCompatActivity {
                     }
                     dcrModels.add(dcrModel);
                     if(mode.equalsIgnoreCase(String.valueOf(CalendarAdapter.Mode.EDIT))) {
-//                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR)) {
-                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR_MAS)) {
+                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR)) {
+//                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR_MAS)) {
                             dcrModel.setSelected(true);
-//                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST)) {
-                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST_MAS)) {
+                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST)) {
+//                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST_MAS)) {
                             dcrModel.setSelected(true);
                         }
                     }
@@ -540,16 +539,16 @@ public class AddListActivity extends AppCompatActivity {
             }
 
             if(mode.equalsIgnoreCase(String.valueOf(CalendarAdapter.Mode.EDIT)) && !strClusterName.isEmpty()) {
-//                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && localDocCodeList != null) {
-                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && localDocCodeList != null) {
+                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && localDocCodeList != null) {
+//                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && localDocCodeList != null) {
                     localDocCodeList = new ArrayList<>();
-//                    populatedDCRList.add(Constants.DOCTOR);
-                    populatedDCRList.add(Constants.DOCTOR_MAS);
-//                }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && localChmCodeList != null) {
-                }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && localChmCodeList != null) {
+                    populatedDCRList.add(Constants.DOCTOR);
+//                    populatedDCRList.add(Constants.DOCTOR_MAS);
+                }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && localChmCodeList != null) {
+//                }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && localChmCodeList != null) {
                     localChmCodeList = new ArrayList<>();
-//                    populatedDCRList.add(Constants.CHEMIST);
-                    populatedDCRList.add(Constants.CHEMIST_MAS);
+                    populatedDCRList.add(Constants.CHEMIST);
+//                    populatedDCRList.add(Constants.CHEMIST_MAS);
                 }
             }
         }
@@ -588,13 +587,13 @@ public class AddListActivity extends AppCompatActivity {
             activityAddListBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
 
             switch (selectedDCR){
-//                case Constants.DOCTOR:
-                case Constants.DOCTOR_MAS:
+                case Constants.DOCTOR:
+//                case Constants.DOCTOR_MAS:
                     activityAddListBinding.tvDcrSpec.setVisibility(View.VISIBLE);
                     activityAddListBinding.tvDcrCatXVisit.setVisibility(View.VISIBLE);
                     break;
-//                case Constants.CHEMIST:
-                case Constants.CHEMIST_MAS:
+                case Constants.CHEMIST:
+//                case Constants.CHEMIST_MAS:
                     activityAddListBinding.tvDcrSpec.setVisibility(View.GONE);
                     activityAddListBinding.tvDcrCatXVisit.setVisibility(View.GONE);
                     break;
@@ -636,12 +635,12 @@ public class AddListActivity extends AppCompatActivity {
         selectedDataList = new ArrayList<>();
 
         switch (selectedDCR){
-//            case Constants.DOCTOR:
-            case Constants.DOCTOR_MAS:
+            case Constants.DOCTOR:
+//            case Constants.DOCTOR_MAS:
                 activityAddListBinding.tvSelectedDcr.setText("Selected " + drCap);
                 break;
-//            case Constants.CHEMIST:
-            case Constants.CHEMIST_MAS:
+            case Constants.CHEMIST:
+//            case Constants.CHEMIST_MAS:
                 activityAddListBinding.tvSelectedDcr.setText("Selected " + chmCap);
                 break;
             case Constants.STOCKIEST:
@@ -751,10 +750,10 @@ public class AddListActivity extends AppCompatActivity {
 
     private void clusterChangeClearDCRSelection() {
         List<String> dcrTAGList = new ArrayList<>();
-//        dcrTAGList.add(Constants.DOCTOR);
-        dcrTAGList.add(Constants.DOCTOR_MAS);
-//        dcrTAGList.add(Constants.CHEMIST);
-        dcrTAGList.add(Constants.CHEMIST_MAS);
+        dcrTAGList.add(Constants.DOCTOR);
+//        dcrTAGList.add(Constants.DOCTOR_MAS);
+        dcrTAGList.add(Constants.CHEMIST);
+//        dcrTAGList.add(Constants.CHEMIST_MAS);
 //        dcrTAGList.add(Constants.STOCKIEST);
 //        dcrTAGList.add(Constants.UNLISTED_DOCTOR);
 //        dcrTAGList.add(Constants.CIP);
@@ -909,13 +908,13 @@ public class AddListActivity extends AppCompatActivity {
                                     selectedClusterName.append(selectedDcrModel.getTownName()).append(",");
                                 }
                                 switch (selectedDCR){
-//                                    case Constants.DOCTOR:
-                                    case Constants.DOCTOR_MAS:
+                                    case Constants.DOCTOR:
+//                                    case Constants.DOCTOR_MAS:
                                         selectedDoctorCode.append(selectedDcrModel.getCode()).append(",");
                                         selectedDoctorName.append(selectedDcrModel.getName()).append(",");
                                         break;
-//                                    case Constants.CHEMIST:
-                                    case Constants.CHEMIST_MAS:
+                                    case Constants.CHEMIST:
+//                                    case Constants.CHEMIST_MAS:
                                         selectedChemistCode.append(selectedDcrModel.getCode()).append(",");
                                         selectedChemistName.append(selectedDcrModel.getName()).append(",");
                                         break;

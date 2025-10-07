@@ -865,7 +865,8 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
     public void SyncUnlisted(String hqCode) {
         UnlistedModelArray.clear();
-        UnlistedStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + hqCode);
+//        UnlistedStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + hqCode);
+        UnlistedStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + hqCode);
         MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(UnlistedDoctorAddition.this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, UnlistedStatus, false);
 
 //        MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(UnlistedDoctorAddition.this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, UnlistedStatus, false);

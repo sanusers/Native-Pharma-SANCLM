@@ -87,7 +87,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
         presentationDataDao = roomDB.presentationDataDao();
 
         Bundle bundleExtras = getIntent().getExtras();
-        if(bundleExtras != null) {
+        if (bundleExtras != null) {
             customerType = bundleExtras.getString("customerType");
             customerCodes = bundleExtras.getString("customerCodes");
             headquarterCode = bundleExtras.getString("headquarterCode");
@@ -127,7 +127,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                             if (!presentationDataDao.presentationExists(name)) {
                                 intentAction(oldName, name);
                             } else {
-                               commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.presentation_saved_already));
+                                commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already));
                             }
                         } else {
                             intentAction(oldName, name);
@@ -136,11 +136,11 @@ public class CreatePresentationActivity extends AppCompatActivity {
                         if (!presentationDataDao.presentationExists(name)) {
                             intentAction("", name);
                         } else {
-                           commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.presentation_saved_already));
+                            commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already));
                         }
                     }
                 } else {
-                   commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.enter_presentation_name));
+                    commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.enter_presentation_name));
                 }
             }
             UtilityClass.hideKeyboard(this);
@@ -171,23 +171,23 @@ public class CreatePresentationActivity extends AppCompatActivity {
                 JSONObject productObject = prodSlide.getJSONObject(i);
                 String id = productObject.getString("SlideId");
                 String code = productObject.getString("Code");
-                if(brandToProducts.containsKey(code)){
+                if (brandToProducts.containsKey(code)) {
                     brandToProducts.get(code).put(id, productObject);
-                }else {
+                } else {
                     LinkedHashMap<String, JSONObject> productData = new LinkedHashMap<>();
                     productData.put(id, productObject);
                     brandToProducts.put(code, productData);
                 }
             }
 
-            for(int i = 0; i < brandSlide.length(); i++) {
+            for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
                 String id = brandObject.getString("ID");
-                if(brandToProductWithPriority.containsKey(brandCode)){
+                if (brandToProductWithPriority.containsKey(brandCode)) {
                     brandToProductWithPriority.get(brandCode).put(id, priority);
-                }else{
+                } else {
                     LinkedHashMap<String, String> productsList = new LinkedHashMap<>();
                     productsList.put(id, priority);
                     brandToProductWithPriority.put(brandCode, productsList);
@@ -199,43 +199,43 @@ public class CreatePresentationActivity extends AppCompatActivity {
                 String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
                 LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
                 HashMap<String, JSONObject> products = brandToProducts.get(brandCode);
-                if(productWithPriority != null) {
+                if (productWithPriority != null) {
                     for (String productID : productWithPriority.keySet()) {
-                        if(products != null && products.containsKey(productID)) {
+                        if (products != null && products.containsKey(productID)) {
                             JSONObject productObject = products.get(productID);
-                            if(productObject != null) {
+                            if (productObject != null) {
                                 brandName = productObject.getString("Name");
                                 BrandModelClass.Product product = getProductData(productObject, priority);
-                                if(product != null) {
+                                if (product != null) {
                                     productArrayList.add(product);
                                 }
                             }
                         }
                     }
-                    if(!productWithPriority.isEmpty() && products != null) {
+                    if (!productWithPriority.isEmpty() && products != null) {
                         for (String productID : productWithPriority.keySet()) {
                             products.remove(productID);
                         }
                     }
                 }
-                if(products != null && !products.isEmpty()) {
+                if (products != null && !products.isEmpty()) {
                     for (String productID : products.keySet()) {
                         JSONObject productObject = products.get(productID);
-                        if(productObject != null) {
+                        if (productObject != null) {
                             brandName = productObject.getString("Name");
                             BrandModelClass.Product product = getProductData(productObject, priority);
-                            if(product != null) {
+                            if (product != null) {
                                 productArrayList.add(product);
                             }
                         }
                     }
                 }
-                if(!brandName.isEmpty() && !productArrayList.isEmpty()) {
+                if (!brandName.isEmpty() && !productArrayList.isEmpty()) {
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
                     brandProductArrayList.add(brandModelClass);
                 }
             }
-            if(!brandProductArrayList.isEmpty()) {
+            if (!brandProductArrayList.isEmpty()) {
                 BrandModelClass brandModelClass = brandProductArrayList.get(0);
                 brandModelClass.setBrandSelected(true);
                 brandProductArrayList.set(0, brandModelClass);
@@ -360,42 +360,44 @@ public class CreatePresentationActivity extends AppCompatActivity {
             presentation.setPresentationName(name);
             presentation.setProducts(selectedSlideArrayList);
             JSONObject jsonObject = new JSONObject(new Gson().toJson(presentation));
-            if(customerType == null || customerType.isEmpty()) {
+            if (customerType == null || customerType.isEmpty()) {
                 presentationDataDao.savePresentation(oldName, name, "", "", "", jsonObject.toString());
             } else {
-                switch (customerType){
-                 /*   case Constants.DOCTOR:
-                    case "1":
-                        presentationDataDao.savePresentation(oldName, name, "1", customerCodes, headquarterCode, jsonObject.toString());
-                        break;*/
-                    case Constants.DOCTOR_MAS:
+                switch (customerType) {
+                    case Constants.DOCTOR:
                     case "1":
                         presentationDataDao.savePresentation(oldName, name, "1", customerCodes, headquarterCode, jsonObject.toString());
                         break;
-                    /*case Constants.CHEMIST:
+                    case Constants.CHEMIST:
                     case "2":
                         presentationDataDao.savePresentation(oldName, name, "2", customerCodes, headquarterCode, jsonObject.toString());
-                        break;*/
+                        break;
+                    case Constants.STOCKIEST:
+                    case "3":
+                        presentationDataDao.savePresentation(oldName, name, "3", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.UNLISTED_DOCTOR:
+                    case "4":
+                        presentationDataDao.savePresentation(oldName, name, "4", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                   /* case Constants.DOCTOR_MAS:
+                    case "1":
+                        presentationDataDao.savePresentation(oldName, name, "1", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
                     case Constants.CHEMIST_MAS:
                     case "2":
                         presentationDataDao.savePresentation(oldName, name, "2", customerCodes, headquarterCode, jsonObject.toString());
                         break;
-/*                    case Constants.STOCKIEST:
-                    case "3":
-                        presentationDataDao.savePresentation(oldName, name, "3", customerCodes, headquarterCode, jsonObject.toString());
-                        break;*/
+
                     case Constants.STOCKIEST_MAS:
                     case "3":
                         presentationDataDao.savePresentation(oldName, name, "3", customerCodes, headquarterCode, jsonObject.toString());
                         break;
-/*                    case Constants.UNLISTED_DOCTOR:
-                    case "4":
-                        presentationDataDao.savePresentation(oldName, name, "4", customerCodes, headquarterCode, jsonObject.toString());
-                        break;*/
+
                     case Constants.UNLISTED_DOCTOR_MAS:
                     case "4":
                         presentationDataDao.savePresentation(oldName, name, "4", customerCodes, headquarterCode, jsonObject.toString());
-                        break;
+                        break;*/
                     case Constants.CIP:
                     case "5":
                         presentationDataDao.savePresentation(oldName, name, "5", customerCodes, headquarterCode, jsonObject.toString());
@@ -422,7 +424,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
             String slideId = productObject.getString("SlideId");
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
-            if(priority.isEmpty()) priority = "500" + slidePriority;
+            if (priority.isEmpty()) priority = "500" + slidePriority;
             return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());

@@ -63,8 +63,8 @@ public class ChemistPresentationFragment extends Fragment {
 
         binding.createPresentationBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-//            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.CHEMIST);
-            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.CHEMIST_MAS);
+            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.CHEMIST);
+//            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.CHEMIST_MAS);
             startActivity(intent);
         });
 
@@ -87,8 +87,8 @@ public class ChemistPresentationFragment extends Fragment {
     private final PresentationAdapter.ShowCustomersClickListener showCustomersClickListener = new PresentationAdapter.ShowCustomersClickListener() {
         @Override
         public void onClick(String presentationName) {
-//            showSideScreenListener.onClick(Constants.CHEMIST, presentationName);
-            showSideScreenListener.onClick(Constants.CHEMIST_MAS, presentationName);
+            showSideScreenListener.onClick(Constants.CHEMIST, presentationName);
+//            showSideScreenListener.onClick(Constants.CHEMIST_MAS, presentationName);
         }
     };
 }

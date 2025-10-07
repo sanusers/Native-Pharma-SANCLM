@@ -1010,7 +1010,11 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             Map<String, String> mapString = new HashMap<>();
             Log.e("API Object", "master sync obj : " + jsonObject);
             Call<JsonElement> call = null;
-            if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {    // previously it was DOCTOR
+//            if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {    // previously it was DOCTOR
+//                mapString.put("axn", "table/dcrmasterdata");
+//                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
+//            }
+            if (masterOf.equalsIgnoreCase(Constants.DOCTOR)) {    // previously it was DOCTOR
                 mapString.put("axn", "table/dcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
             }
@@ -1176,24 +1180,25 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
     public void prepareArray(String hqCode) {
         if (CustType.equalsIgnoreCase("D")) {
             doctorModelArray.clear();
-//            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, chemistStatus, false);
+            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, chemistStatus, false);
             // MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, chemistStatus, false);
             // MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, chemistStatus, false);
             // MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
             // MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, chemistStatus, false);
-            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, chemistStatus, false);
+//            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, chemistStatus, false);
             doctorModelArray.add(doctorModel);
             arrayForAdapter.clear();
             arrayForAdapter.addAll(doctorModelArray);
             populateAdapter(arrayForAdapter);
         } else if (CustType.equalsIgnoreCase("C")) {
-//            chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + hqCode);
-//            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+            chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + hqCode);
+            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
 
-            chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + hqCode);
-            categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
-            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
-            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
+//            chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + hqCode);
+//            categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+//            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
+//            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
             chemistModelArray.add(cheModel);
             chemistModelArray.add(chemistCategory);
             arrayForAdapter.clear();
@@ -1201,16 +1206,16 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             populateAdapter(arrayForAdapter);
         } else if (CustType.equalsIgnoreCase("S")) {
             stockiestModelArray.clear();
-//            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, chemistStatus, false);
-            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, chemistStatus, false);
+            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, chemistStatus, false);
+//            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, chemistStatus, false);
             stockiestModelArray.add(stockModel);
             arrayForAdapter.clear();
             arrayForAdapter.addAll(stockiestModelArray);
             populateAdapter(arrayForAdapter);
         } else if (CustType.equalsIgnoreCase("U")) {
             unlistedDrModelArray.clear();
-//            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, chemistStatus, false);
-            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, chemistStatus, false);
+            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, chemistStatus, false);
+//            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, chemistStatus, false);
             unlistedDrModelArray.add(unListModel);
             arrayForAdapter.clear();
             arrayForAdapter.addAll(unlistedDrModelArray);

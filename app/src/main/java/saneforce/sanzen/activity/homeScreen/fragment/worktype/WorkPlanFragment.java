@@ -724,20 +724,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             try {
                 hqCode = SelectedHQ.getString("id");
                 Log.d("work plan", "showHQ: " + hqCode);
-              /*  boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
+                boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
                         chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
                         stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
                         ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
 //                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
 //                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
-                        clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);*/
-                boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
+                        clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
+               /* boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
                         chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST_MAS + hqCode),
                         stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST_MAS + hqCode),
                         ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR_MAS + hqCode),
 //                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
 //                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
-                        clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
+                        clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);*/
                 Log.e("Work plan", "showHQ: " + docAvailability + " " + chemAvailability + " " + stkAvailability + " " + ulDocAvailability + " " + clusterAvailability);
 //                if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && hosAvailability && cipAvailability && clusterAvailability){
                 if (docAvailability && chemAvailability && stkAvailability && ulDocAvailability && clusterAvailability) {
@@ -886,21 +886,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void checkAndSyncMasters(String strHQCode, boolean shouldShowHQProgress) {
         for (String hqCode : CommonUtilsMethods.removeLastComma(strHQCode).split(",")) {
-//            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
-//                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
-//                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
-//                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
-////                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
-////                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
-//                    clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
-            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
-                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST_MAS + hqCode),
-                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST_MAS + hqCode),
-                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR_MAS + hqCode),
+            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
+                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
+                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
+                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
 //                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
 //                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
                     clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode),
-                    subordinateAvailability = masterDataDao.isDataAvailable(Constants.JOINT_WORK + hqCode);
+            subordinateAvailability = masterDataDao.isDataAvailable(Constants.JOINT_WORK + hqCode);
+//            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
+//                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST_MAS + hqCode),
+//                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST_MAS + hqCode),
+//                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR_MAS + hqCode),
+////                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
+////                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
+//                    clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode),
+//                    subordinateAvailability = masterDataDao.isDataAvailable(Constants.JOINT_WORK + hqCode);
             Log.e("Work plan", hqCode + " - showHQ: " + docAvailability + " " + chemAvailability + " " + stkAvailability + " " + ulDocAvailability + " " + clusterAvailability);
             if (!docAvailability || !chemAvailability || !stkAvailability || !ulDocAvailability || !clusterAvailability || !subordinateAvailability) {
                 getData(hqCode, shouldShowHQProgress);
@@ -3435,20 +3436,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         this.hqCode = hqCode;
 
         List<MasterSyncItemModel> list = new ArrayList<>();
-//        list.add(new MasterSyncItemModel("Doctor", "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
-//        list.add(new MasterSyncItemModel("Chemist", "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
-//        list.add(new MasterSyncItemModel("Stockiest", "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
-//        list.add(new MasterSyncItemModel("Unlisted Doctor", "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Doctor", "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Chemist", "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Stockiest", "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Unlisted Doctor", "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
 
-        list.add(new MasterSyncItemModel("Doctor", Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Chemist", Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Stockiest", Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Unlisted Doctor", Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Doctor", Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Chemist", Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Stockiest", Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Unlisted Doctor", Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, 0, false));
 
 //        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
 //        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
-//        list.add(new MasterSyncItemModel("Cluster", "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Cluster", Constants.DOCTOR_MAS,  "getterritory", Constants.CLUSTER + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Cluster", "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Cluster", Constants.DOCTOR_MAS,  "getterritory", Constants.CLUSTER + hqCode, 0, false));
 
         list.add(new MasterSyncItemModel("Joint Work", Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, 0, false));
 

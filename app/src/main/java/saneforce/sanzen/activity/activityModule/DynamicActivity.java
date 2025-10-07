@@ -3084,10 +3084,10 @@ public class DynamicActivity extends AppCompatActivity {
     private void getHQData(String hqCode) {
         try {
             Log.d("DynamicActivity", "showHQ: " + hqCode);
-            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
-                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST_MAS + hqCode),
-                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST_MAS + hqCode),
-                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR_MAS + hqCode),
+            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
+                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
+                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
+                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
 //                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
 //                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
                     clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
@@ -3105,7 +3105,7 @@ public class DynamicActivity extends AppCompatActivity {
         }
     }
 
-    public void getData(String hqCode) {
+ /*   public void getData(String hqCode) {
         SynqList = SharedPref.getsyn_hqcode(DynamicActivity.this);
         SynqList.add(hqCode);
         SharedPref.setSyncHQ(DynamicActivity.this, SynqList);
@@ -3123,7 +3123,26 @@ public class DynamicActivity extends AppCompatActivity {
         for (int i = 0; i < list.size(); i++) {
             syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hqCode);
         }
-    }
+    }*/
+ public void getData(String hqCode) {
+     SynqList = SharedPref.getsyn_hqcode(DynamicActivity.this);
+     SynqList.add(hqCode);
+     SharedPref.setSyncHQ(DynamicActivity.this, SynqList);
+     syncProgressDialog.show();
+     List<MasterSyncItemModel> list = new ArrayList<>();
+     list.add(new MasterSyncItemModel("Doctor", Constants.DOCTOR, "getdoctors", Constants.DOCTOR+ hqCode, 0, false));
+     list.add(new MasterSyncItemModel("Chemist", Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, 0, false));
+     list.add(new MasterSyncItemModel("Stockiest", Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, 0, false));
+     list.add(new MasterSyncItemModel("Unlisted Doctor", Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
+     list.add(new MasterSyncItemModel("Cluster", Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode, 0, false));
+     list.add(new MasterSyncItemModel("Joint Work", Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, 0, false));
+
+     for (int i = 0; i < list.size(); i++) {
+         syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hqCode);
+     }
+ }
 
     public void syncMaster(String masterFor, String remoteTableName, String LocalTableKeyName, String hqCode) {
         if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {

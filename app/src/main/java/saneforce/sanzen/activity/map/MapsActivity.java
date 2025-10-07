@@ -1305,7 +1305,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 switch (selectedTab) {
                     case "D":
-                        JSONArray existingGeoArrayDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
+//                        JSONArray existingGeoArrayDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray existingGeoArrayDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
                         JSONArray updatedGeoArrayDr = new JSONArray();
 
                         for (int i = 0; i < existingGeoArrayDr.length(); i++) {
@@ -1316,14 +1317,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                         updatedGeoArrayDr.put(createGeoJson);
-                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DOCTOR_GEO + taggedHQ, updatedGeoArrayDr.toString(), 1));
+//                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DOCTOR_GEO + taggedHQ, updatedGeoArrayDr.toString(), 1));
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DOCTOR + taggedHQ, updatedGeoArrayDr.toString(), 1));
 
-                        JSONArray masterJsonArrayGeoDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
+//                        JSONArray masterJsonArrayGeoDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray masterJsonArrayGeoDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
                         Log.d("MASter Geo", "updateMasterData: " + masterJsonArrayGeoDr);
                         break;
 
                     case "C":
-                        JSONArray existingGeoArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + taggedHQ).getMasterSyncDataJsonArray();
+//                        JSONArray existingGeoArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray existingGeoArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + taggedHQ).getMasterSyncDataJsonArray();
                         JSONArray updatedGeoArray = new JSONArray();
 
                         for (int i = 0; i < existingGeoArray.length(); i++) {
@@ -1334,14 +1338,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                         updatedGeoArray.put(createGeoJson);
-                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHEMIST_GEO + taggedHQ, updatedGeoArray.toString(), 1));
+//                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHEMIST_GEO + taggedHQ, updatedGeoArray.toString(), 1));
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHEMIST + taggedHQ, updatedGeoArray.toString(), 1));
 
-                        JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + taggedHQ).getMasterSyncDataJsonArray();
+//                        JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + taggedHQ).getMasterSyncDataJsonArray();
                         Log.d("MASter Geo", "updateMasterData: " + masterJsonArrayGeo);
                         break;
 
                     case "S":
-                        JSONArray existingGeoArrayStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + taggedHQ).getMasterSyncDataJsonArray();
+//                        JSONArray existingGeoArrayStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray existingGeoArrayStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + taggedHQ).getMasterSyncDataJsonArray();
                         JSONArray updatedGeoArrayStk = new JSONArray();
 
                         for (int i = 0; i < existingGeoArrayStk.length(); i++) {
@@ -1352,14 +1359,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                         updatedGeoArrayStk.put(createGeoJson);
-                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCKIEST_GEO + taggedHQ, updatedGeoArrayStk.toString(), 1));
+//                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCKIEST_GEO + taggedHQ, updatedGeoArrayStk.toString(), 1));
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCKIEST + taggedHQ, updatedGeoArrayStk.toString(), 1));
 
-                        JSONArray masterJsonArrayGeoStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + taggedHQ).getMasterSyncDataJsonArray();
+//                        JSONArray masterJsonArrayGeoStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray masterJsonArrayGeoStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + taggedHQ).getMasterSyncDataJsonArray();
                         Log.d("MASter Geo", "updateMasterData: " + masterJsonArrayGeoStk);
                         break;
 
                     case "U":
-                        JSONArray existingGeoArrayUl_Dr = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
+//                        JSONArray existingGeoArrayUl_Dr = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray existingGeoArrayUl_Dr = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
                         JSONArray updatedGeoArrayUl_Dr = new JSONArray();
 
                         for (int i = 0; i < existingGeoArrayUl_Dr.length(); i++) {
@@ -1370,9 +1380,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                         updatedGeoArrayUl_Dr.put(createGeoJson);
-                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.UNLISTED_DOCTOR_GEO + taggedHQ, updatedGeoArrayUl_Dr.toString(), 1));
+//                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.UNLISTED_DOCTOR_GEO + taggedHQ, updatedGeoArrayUl_Dr.toString(), 1));
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.UNLISTED_DOCTOR + taggedHQ, updatedGeoArrayUl_Dr.toString(), 1));
 
-                        JSONArray masterJsonArrayGeoUl_Dr = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
+//                        JSONArray masterJsonArrayGeoUl_Dr = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray masterJsonArrayGeoUl_Dr = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
                         Log.d("MASter Geo", "updateMasterData: " + masterJsonArrayGeoUl_Dr);
                         break;
                 }
@@ -2010,7 +2022,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;*/
             case "C":
                 try {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + sfCode).getMasterSyncDataJsonArray();
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + sfCode).getMasterSyncDataJsonArray();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addr");

@@ -930,22 +930,26 @@ public class MissedReportGraph extends AppCompatActivity {
             int visitedUnlistedPreviousMonth = currentMonthStats.visitedUnlisted.size();
             int visitedUnlistedPre_PrevMonth = currentMonthStats.visitedUnlisted.size();
 
-            String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(this));
+//            String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(this));
+            String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
             JSONArray doctorArray = new JSONArray(doctorData);
             totalDoctors = doctorArray.length();
 //            int currentMonthMissed = totalDoctors - visitedDoctorsCurrentMonth;
 //            int previousMonthMissed = totalDoctors - visitedDoctorsPreviousMonth;
 //            int prePreviousMonthMissed = totalDoctors - visitedDoctorsPre_PrevMonth;
 
-            String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + SharedPref.getHqCode(this));
+//            String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + SharedPref.getHqCode(this));
+            String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
             JSONArray chemistArray = new JSONArray(chemistData);
             int totalChemist = chemistArray.length();
 
-            String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + SharedPref.getHqCode(this));
+//            String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + SharedPref.getHqCode(this));
+            String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
             JSONArray stkArray = new JSONArray(stkData);
             int totalStk = stkArray.length();
 
-            String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(this));
+//            String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(this));
+            String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this));
             JSONArray unlistedArray = new JSONArray(unlistedData);
             int totalUnlisted = unlistedArray.length();
 

@@ -580,7 +580,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    /*@SuppressLint("PotentialBehaviorOverride")
+    @SuppressLint("PotentialBehaviorOverride")
     public void DCR_Doc() {
         mMap.clear();
         listed_cust.clear();
@@ -680,8 +680,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         }
 
     }
-*/
-    @SuppressLint("PotentialBehaviorOverride")
+   /* @SuppressLint("PotentialBehaviorOverride")
     public void DCR_Doc() {
         mMap.clear();
         listed_cust.clear();
@@ -780,7 +779,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             e.printStackTrace();
         }
 
-    }
+    }*/
 
 
     public String getAddress(double la, double ln) {

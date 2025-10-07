@@ -148,7 +148,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
 
                 if(customerType != null) {
                     switch (customerType){
-               /*         case Constants.DOCTOR:
+                        case Constants.DOCTOR:
                             selectedCustomerCaption = SharedPref.getDrCap(this);
                             break;
                         case Constants.CHEMIST:
@@ -159,8 +159,8 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                             break;
                         case Constants.UNLISTED_DOCTOR:
                             selectedCustomerCaption = SharedPref.getUNLcap(this);
-                            break;*/
-                        case Constants.DOCTOR_MAS:
+                            break;
+                   /*     case Constants.DOCTOR_MAS:
                             selectedCustomerCaption = SharedPref.getDrCap(this);
                             break;
                         case Constants.CHEMIST_MAS:
@@ -171,7 +171,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                             break;
                         case Constants.UNLISTED_DOCTOR_MAS:
                             selectedCustomerCaption = SharedPref.getUNLcap(this);
-                            break;
+                            break;*/
                         case Constants.CIP:
                             selectedCustomerCaption = SharedPref.getCipCaption(this);
                             break;
@@ -317,8 +317,8 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         String townCode = jsonObject.getString("Town_Code");
 
         switch (customerType){
-//            case Constants.DOCTOR:
-            case Constants.DOCTOR_MAS:
+            case Constants.DOCTOR:
+//            case Constants.DOCTOR_MAS:
                 return new CustomerDataModel(
                         name,
                         code,
@@ -331,8 +331,8 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                         jsonObject.getString("Doc_Class_ShortName"),
                         jsonObject.getString("Doc_ClsCode")
                 );
-//            case Constants.CHEMIST:
-            case Constants.CHEMIST_MAS:
+            case Constants.CHEMIST:
+//            case Constants.CHEMIST_MAS:
                 return new CustomerDataModel(
                         name,
                         code,
@@ -342,8 +342,8 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                         jsonObject.getString("Chm_cat"),
                         "", "", "", ""
                 );
-//            case Constants.STOCKIEST:
-            case Constants.STOCKIEST_MAS:
+            case Constants.STOCKIEST:
+//            case Constants.STOCKIEST_MAS:
                 return new CustomerDataModel(
                         name,
                         code,
@@ -351,8 +351,8 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                         townCode,
                         "", "", "", "", "", ""
                 );
-//            case Constants.UNLISTED_DOCTOR:
-            case Constants.UNLISTED_DOCTOR_MAS:
+            case Constants.UNLISTED_DOCTOR:
+//            case Constants.UNLISTED_DOCTOR_MAS:
                 return new CustomerDataModel(
                         name,
                         code,
@@ -511,16 +511,16 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     private void getHQData(String hqCode) {
         try {
             Log.d("DynamicActivity", "showHQ: " + hqCode);
-//            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
-//                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
-//                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
-//                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
-//                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
-//                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
-            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
+            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
+                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
+                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
+                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
+                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
+                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
+            /*boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
                     chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST_MAS + hqCode),
                     stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST_MAS + hqCode),
-                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR_MAS + hqCode),
+                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR_MAS + hqCode),*/
                     clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
             Log.e("DynamicActivity", "showHQ: " + docAvailability + " " + chemAvailability + " " + stkAvailability + " " + ulDocAvailability + " " + clusterAvailability);
 //                if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && hosAvailability && cipAvailability && clusterAvailability){
@@ -545,17 +545,17 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         SharedPref.setSyncHQ(CustomerSelectionActivity.this, SynqList);
         binding.flSyncHqProgress.setVisibility(View.VISIBLE);
         List<MasterSyncItemModel> list = new ArrayList<>();
-//        list.add(new MasterSyncItemModel("Doctor", "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
-//        list.add(new MasterSyncItemModel("Chemist", "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
-//        list.add(new MasterSyncItemModel("Stockiest", "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
-//        list.add(new MasterSyncItemModel("Unlisted Doctor", "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Doctor", "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Chemist", "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Stockiest", "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Unlisted Doctor", "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
 //        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
 //        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Doctor", Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Chemist", Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Stockiest", Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Unlisted Doctor", Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Cluster", Constants.DOCTOR_MAS, "getterritory", Constants.CLUSTER + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Doctor", Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Chemist", Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Stockiest", Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Unlisted Doctor", Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Cluster", Constants.DOCTOR_MAS, "getterritory", Constants.CLUSTER + hqCode, 0, false));
         list.add(new MasterSyncItemModel("Joint Work", Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, 0, false));
 
         for (int i = 0; i < list.size(); i++) {
@@ -664,16 +664,16 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         lv_terr = dialogFilter.findViewById(R.id.lv_territory);
         lv_class = dialogFilter.findViewById(R.id.lv_class);
 
-//        if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
-        if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
+        if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
+//        if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
             tvSpec.setVisibility(View.VISIBLE);
             tvClass.setVisibility(View.VISIBLE);
         }else {
             tvSpec.setVisibility(View.GONE);
             tvClass.setVisibility(View.GONE);
         }
-//        if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.CHEMIST) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
-        if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.CHEMIST_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
+        if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.CHEMIST) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
+//        if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.CHEMIST_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
             tvCate.setVisibility(View.VISIBLE);
         }else {
             tvCate.setVisibility(View.GONE);
@@ -808,8 +808,8 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             JSONArray jsonArray = new JSONArray();
             if(requiredList.equalsIgnoreCase("Territory")) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + selectedHQ).getMasterSyncDataJsonArray();
-//            }else if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
-            }else if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
+            }else if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
+//            }else if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
                 if(requiredList.equalsIgnoreCase("Speciality")) {
                     jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
                 }else if(requiredList.equalsIgnoreCase("Category")) {
@@ -817,12 +817,12 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                 }else if(requiredList.equalsIgnoreCase("Class")) {
                     jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray();
                 }
-//            }else if(customerType.equals(Constants.CHEMIST)) {
-//                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
-//            }
-            }else if(customerType.equals(Constants.CHEMIST_MAS)) {
+            }else if(customerType.equals(Constants.CHEMIST)) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
             }
+//            }else if(customerType.equals(Constants.CHEMIST_MAS)) {
+//                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
+//            }
             filterSelectionList.clear();
             Log.v("jsonArray", "--" + jsonArray.length());
             for (int i = 0; i<jsonArray.length(); i++) {

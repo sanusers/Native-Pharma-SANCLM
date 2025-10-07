@@ -63,15 +63,15 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         activityUnplannedVisitBinding.backArrow.setOnClickListener(v -> super.onBackPressed());
 
         activityUnplannedVisitBinding.tagTvDoctor.setOnClickListener(v -> {
-//            selectedDCR = Constants.DOCTOR;
-            selectedDCR = Constants.DOCTOR_MAS;
+            selectedDCR = Constants.DOCTOR;
+//            selectedDCR = Constants.DOCTOR_MAS;
             updateDCRSelectionUI();
             populateDcrData();
         });
 
         activityUnplannedVisitBinding.tagTvChemist.setOnClickListener(v -> {
-//            selectedDCR = Constants.CHEMIST;
-            selectedDCR = Constants.CHEMIST_MAS;
+            selectedDCR = Constants.CHEMIST;
+//            selectedDCR = Constants.CHEMIST_MAS;
             updateDCRSelectionUI();
             populateDcrData();
         });
@@ -150,8 +150,8 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         activityUnplannedVisitBinding.tagTvCip.setText(cipCap);
         activityUnplannedVisitBinding.tagTvHospital.setText(hosCap);
 
-//        selectedDCR = Constants.DOCTOR;
-        selectedDCR = Constants.DOCTOR_MAS;
+        selectedDCR = Constants.DOCTOR;
+//        selectedDCR = Constants.DOCTOR_MAS;
 
         if(drNeed.equalsIgnoreCase("0")) {
             activityUnplannedVisitBinding.tagTvDoctor.setVisibility(View.VISIBLE);
@@ -201,13 +201,13 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         activityUnplannedVisitBinding.tagTvHospital.setTextColor(getColor(R.color.dark_purple));
 
         switch (selectedDCR){
-//            case Constants.DOCTOR:
-            case Constants.DOCTOR_MAS:
+            case Constants.DOCTOR:
+//            case Constants.DOCTOR_MAS:
                 activityUnplannedVisitBinding.tagTvDoctor.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityUnplannedVisitBinding.tagTvDoctor.setTextColor(getColor(R.color.white));
                 break;
-//            case Constants.CHEMIST:
-            case Constants.CHEMIST_MAS:
+            case Constants.CHEMIST:
+//            case Constants.CHEMIST_MAS:
                 activityUnplannedVisitBinding.tagTvChemist.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityUnplannedVisitBinding.tagTvChemist.setTextColor(getColor(R.color.white));
                 break;
@@ -249,11 +249,11 @@ public class UnplannedVisitActivity extends AppCompatActivity {
                 Set<String> plannedFor = new HashSet<>(Arrays.asList(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",")));
                 plannedFor.remove("");
                 plannedFor.remove(null);
-//                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && dcrModel.getVisitFrequency() != plannedFor.size()) {
-                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && dcrModel.getVisitFrequency() != plannedFor.size()) {
+                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && dcrModel.getVisitFrequency() != plannedFor.size()) {
+//                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && dcrModel.getVisitFrequency() != plannedFor.size()) {
                     dcrModels.add(dcrModel);
-//                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))){
-                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))){
+                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))){
+//                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))){
                     dcrModels.add(dcrModel);
                 }
                 clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
@@ -271,11 +271,11 @@ public class UnplannedVisitActivity extends AppCompatActivity {
                 dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
                 dataList.addAll(dcrModels);
             }else {
-//                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
-                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
+//                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                     dataList.add(new NoDataModel("All " + drCap + " are selected"));
-//                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST)) {
-                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS)) {
+                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST)) {
+//                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS)) {
                     dataList.add(new NoDataModel("All " + chmCap + " are selected"));
                 }
             }
@@ -294,14 +294,14 @@ public class UnplannedVisitActivity extends AppCompatActivity {
             activityUnplannedVisitBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
 
             switch (selectedDCR){
-//                case Constants.DOCTOR:
-                case Constants.DOCTOR_MAS:
+                case Constants.DOCTOR:
+//                case Constants.DOCTOR_MAS:
                     activityUnplannedVisitBinding.tvDcrSpec.setVisibility(View.VISIBLE);
                     activityUnplannedVisitBinding.tvDcrCatXVisit.setVisibility(View.VISIBLE);
                     activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.VISIBLE);
                     break;
-//                case Constants.CHEMIST:
-                case Constants.CHEMIST_MAS:
+                case Constants.CHEMIST:
+//                case Constants.CHEMIST_MAS:
                     activityUnplannedVisitBinding.tvDcrSpec.setVisibility(View.GONE);
                     activityUnplannedVisitBinding.tvDcrCatXVisit.setVisibility(View.GONE);
                     activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.GONE);
