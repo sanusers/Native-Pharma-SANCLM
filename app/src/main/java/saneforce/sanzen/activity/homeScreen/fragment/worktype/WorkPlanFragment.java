@@ -4590,7 +4590,26 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             previousWTCode2 = mWTCode2;
         }
         binding.progressWt1.setVisibility(View.GONE);
+        if (!mFwFlg1.equalsIgnoreCase("F") && !mFwFlg2.equalsIgnoreCase("F")) {
+            checkAndClearCalls();
+        }
         prepareMultiHQClusters();
+    }
+
+    private void checkAndClearCalls() {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+            JSONArray resultArray = new JSONArray();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if (!jsonObject.getString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString()) || jsonObject.optString("CustType").equalsIgnoreCase("0")) {
+                    resultArray.put(jsonArray.optJSONObject(i));
+                }
+            }
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, resultArray.toString(), 2));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUpDeviationLock() {

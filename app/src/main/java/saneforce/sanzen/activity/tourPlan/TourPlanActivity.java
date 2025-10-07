@@ -1046,8 +1046,30 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 }
 
+                                ArrayList<MultiHQItemModelClass> checkList = new ArrayList<>();
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
+                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getChemists()) {
+                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getStockiests()) {
+                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getUnListedDrs()) {
+                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getCips()) {
+                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getHospitals()) {
+                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                }
+
                                 if ((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())
-                                        || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0") && modelClass.getListedDrs().isEmpty() && modelClass.getChemists().isEmpty() && modelClass.getStockiests().isEmpty() && modelClass.getUnListedDrs().isEmpty() && modelClass.getCips().isEmpty() && modelClass.getHospitals().isEmpty())) {
+                                        || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")
+                                            && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")
+                                            && checkList.isEmpty())) {
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + " " + (i + 1));
@@ -1087,8 +1109,29 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 }
                             }
+
+                            ArrayList<MultiHQItemModelClass> checkList = new ArrayList<>();
+                            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
+                                checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                            }
+                            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getChemists()) {
+                                checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                            }
+                            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getStockiests()) {
+                                checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                            }
+                            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getUnListedDrs()) {
+                                checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                            }
+                            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getCips()) {
+                                checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                            }
+                            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getHospitals()) {
+                                checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                            }
+
                             if ((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())
-                                    || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0") && modelClass.getListedDrs().isEmpty() && modelClass.getChemists().isEmpty() && modelClass.getStockiests().isEmpty() && modelClass.getUnListedDrs().isEmpty() && modelClass.getCips().isEmpty() && modelClass.getHospitals().isEmpty())) {
+                                    || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0") && checkList.isEmpty())) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + " " + (i + 1));
