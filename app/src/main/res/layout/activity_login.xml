@@ -235,7 +235,7 @@
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/card11"
-                            android:layout_width="@dimen/_2sdp"
+                            android:layout_width="@dimen/_3sdp"
                             android:layout_height="0dp"
                             android:backgroundTint="@color/red_60"
                             app:layout_constraintEnd_toStartOf="parent"

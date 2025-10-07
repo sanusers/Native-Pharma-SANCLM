@@ -119,25 +119,6 @@ public class LoginActivity extends AppCompatActivity {
         uiInitialisation();
         binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
 
-        int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
-        if (loginFailedCount == 5) {
-            isTimerStarted = true;
-            binding.password.setEnabled(false);
-            binding.userId.setEnabled(false);
-            binding.loginBtn.setEnabled(false);
-            binding.clearData.setEnabled(false);
-            binding.rlRejReason.setVisibility(View.VISIBLE);
-            binding.rejectedReason.setText("Please try again after 5 minutes!");
-            remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-            long mins5 = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_40, "05:00");
-            if (remainingTime > mins5) {
-                remainingTime = 0;
-            } else {
-                remainingTime = mins5 - remainingTime;
-            }
-            startTimer();
-        }
-
         if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, s -> {
                 fcmToken = s;
@@ -274,7 +255,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     String timeLeftFormatted = TimeUtils.getMillisToFormattedTime(millisUntilFinished, TimeUtils.FORMAT_40);
-                    binding.rejectedReason.setText("Please try again after " + timeLeftFormatted + " minutes!");
+                    binding.rejectedReason.setText("Maximum attempts reached. Please try again after " + timeLeftFormatted + " minutes!");
                     remainingTime = millisUntilFinished;
                 }
 
@@ -593,6 +574,26 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         timeZoneVerification();
         super.onResume();
+
+        int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
+        if (loginFailedCount == 5) {
+            isTimerStarted = true;
+            binding.password.setEnabled(false);
+            binding.userId.setEnabled(false);
+            binding.loginBtn.setEnabled(false);
+            binding.clearData.setEnabled(false);
+            binding.rlRejReason.setVisibility(View.VISIBLE);
+            binding.rejectedReason.setText("Please try again after 5 minutes!");
+            remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+            long mins5 = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_40, "05:00");
+            if (remainingTime > mins5) {
+                remainingTime = 0;
+            } else {
+                remainingTime = mins5 - remainingTime;
+            }
+            startTimer();
+        }
+
     }
 
     private void timeZoneVerification() {
