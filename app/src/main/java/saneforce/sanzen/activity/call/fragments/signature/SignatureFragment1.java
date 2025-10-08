@@ -119,7 +119,7 @@ public class SignatureFragment1 extends Fragment {
                         loadImageFromLocal();
                     }
                 }*/
-
+                break;
             case "edit_online":
                 if ((!imageName.isEmpty() || !filePath.isEmpty())) {
                     if (UtilityClass.isNetworkAvailable(context)) {
