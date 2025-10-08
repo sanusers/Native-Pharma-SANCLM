@@ -244,7 +244,15 @@ public class LoginActivity extends AppCompatActivity {
             binding.rlRejReason.setVisibility(View.VISIBLE);
             binding.rejectedReason.setText("Please try again after 5 minutes!");
             isTimerStarted = true;
-            remainingTime = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, "00:05:00");
+            String time = "00:05:00", loginTimer = SharedPref.getLoginTimer(LoginActivity.this);
+            if (!loginTimer.isEmpty()) {
+                try {
+                    time = String.format("00:%02d:00", Integer.parseInt(loginTimer));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            remainingTime = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, time);
             startTimer();
         }
     }
@@ -585,11 +593,21 @@ public class LoginActivity extends AppCompatActivity {
             binding.rlRejReason.setVisibility(View.VISIBLE);
             binding.rejectedReason.setText("Please try again after 5 minutes!");
             remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-            long mins5 = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_40, "05:00");
-            if (remainingTime > mins5) {
+
+            String time = "00:05:00", loginTimer = SharedPref.getLoginTimer(LoginActivity.this);
+            if (!loginTimer.isEmpty()) {
+                try {
+                    time = String.format("00:%02d:00", Integer.parseInt(loginTimer));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            long mins = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, time);
+            if (remainingTime > mins) {
                 remainingTime = 0;
             } else {
-                remainingTime = mins5 - remainingTime;
+                remainingTime = mins - remainingTime;
             }
             startTimer();
         }

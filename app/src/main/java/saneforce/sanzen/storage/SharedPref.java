@@ -475,6 +475,7 @@ public class SharedPref {
     public static final String TpIdPrevious = "tpIdPrevious";
     public static final String TpIdNext = "tpIdNext";
 
+    public static final String LOGIN_TIMER = "LoginTimer";
     public static final String LAST_LOGIN = "Last Login";
     public static final String LOGIN_FAILED_COUNT = "Login failed count";
     public static final String LOGIN_FAILED_TIME = "Login failed time";
@@ -846,6 +847,7 @@ public class SharedPref {
         editor.putString(DEVICE_NAME,jsonObject.optString("device_name"));
         editor.putString(LOGIN_DEVICE_REG_ID,jsonObject.optString("LoginDeviceRegId"));
         editor.putString(LOGIN_APP_DEVICE_ID,jsonObject.optString("Loginappdeviceid"));
+        editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
         editor.putString(REPORTING_TO_SF,jsonObject.optString("Reporting_To_SF"));
         editor.putString(UNLST_DOC_APP_NEED,jsonObject.optString("Unlst_Doc_App_need"));
 
@@ -3027,6 +3029,11 @@ public class SharedPref {
     public static String getLoginAppDeviceId(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_APP_DEVICE_ID, "");
     }
+
+    public static String getLoginTimer(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_TIMER, "");
+    }
+
     public static String getReportingToSf(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(REPORTING_TO_SF,"");
     }

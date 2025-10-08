@@ -373,28 +373,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
-        String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
-        if (signInTime.isEmpty() && !SharedPref.getIsSetupSynced(HomeDashBoard.this)) {
-            changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-        } else if(signInTime.isEmpty()) {
-            syncSetup();
-        } else {
-            try {
-                JSONObject jsonObject = new JSONObject(signInTime);
-                String date = jsonObject.optString("date");
-                Log.i("Login date", "onPostCreate: " + date);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-                LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
-                LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
-                if (givenDate.isBefore(ninetyDaysAgo)) {
-                    changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-                } else {
-                    System.out.println("The given date is within the last 90 days.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void syncSetup() {
@@ -453,7 +431,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                                     JSONObject jsonObject = new JSONObject(signInTime);
                                                     String date = jsonObject.optString("date");
                                                     Log.i("Login date", "onPostCreate: " + date);
-                                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+                                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_1);
                                                     LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
                                                     LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
                                                     if (givenDate.isBefore(ninetyDaysAgo)) {
@@ -609,10 +587,38 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
 
             CommonAlertBox.CheckLocationStatus(HomeDashBoard.this, gpsTrack);
-            if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
-                CheckingManatoryApprovals();
+
+            boolean isResetPasswordVisible = false;
+            String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
+            if (signInTime.isEmpty() && !SharedPref.getIsSetupSynced(HomeDashBoard.this)) {
+                isResetPasswordVisible = true;
+                changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+            } else if(signInTime.isEmpty()) {
+                syncSetup();
+            } else {
+                try {
+                    JSONObject jsonObject = new JSONObject(signInTime);
+                    String date = jsonObject.optString("date");
+                    Log.i("Login date", "onPostCreate: " + date);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_1);
+                    LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
+                    LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
+                    if (givenDate.isBefore(ninetyDaysAgo)) {
+                        isResetPasswordVisible = true;
+                        changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+                    } else {
+                        System.out.println("The given date is within the last 90 days.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            CheckedTpRange();
+            if (!isResetPasswordVisible) {
+                if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
+                    CheckingManatoryApprovals();
+                }
+                CheckedTpRange();
+            }
             checkAndSetEntryDate(this, true);
             if(isDcrFrom) {
                 binding.viewPager.setCurrentItem(1);
@@ -1323,7 +1329,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         //  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.FullScreencall();
+        try {
+            if (dialogPwdChange != null && dialogPwdChange.isShowing()) {
+                dialogPwdChange.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         dialogPwdChange = new Dialog(this);
+        dialogPwdChange.setCancelable(false);
 
         dialogPwdChange.setContentView(R.layout.change_password);
         Window window1 = dialogPwdChange.getWindow();
