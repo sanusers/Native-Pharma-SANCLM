@@ -428,11 +428,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                                 changePassword(HomeDashBoard.this.getString(R.string.reset_password));
                                             } else {
                                                 try {
-                                                    JSONObject jsonObject = new JSONObject(signInTime);
-                                                    String date = jsonObject.optString("date");
-                                                    Log.i("Login date", "onPostCreate: " + date);
+//                                                    JSONObject jsonObject = new JSONObject(signInTime);
+//                                                    String date = jsonObject.optString("date");
+//                                                    Log.i("Login date", "onPostCreate: " + date);
                                                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_1);
-                                                    LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
+                                                    LocalDateTime givenDate = LocalDateTime.parse(signInTime, formatter);
                                                     LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
                                                     if (givenDate.isBefore(ninetyDaysAgo)) {
                                                         changePassword(HomeDashBoard.this.getString(R.string.reset_password));
@@ -597,11 +597,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 syncSetup();
             } else {
                 try {
-                    JSONObject jsonObject = new JSONObject(signInTime);
-                    String date = jsonObject.optString("date");
-                    Log.i("Login date", "onPostCreate: " + date);
+//                    JSONObject jsonObject = new JSONObject(signInTime);
+//                    String date = jsonObject.optString("date");
+//                    Log.i("Login date", "onPostCreate: " + date);
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_1);
-                    LocalDateTime givenDate = LocalDateTime.parse(date, formatter);
+                    LocalDateTime givenDate = LocalDateTime.parse(signInTime, formatter);
                     LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
                     if (givenDate.isBefore(ninetyDaysAgo)) {
                         isResetPasswordVisible = true;
