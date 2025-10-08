@@ -120,7 +120,7 @@ public class TourPlanActivity extends AppCompatActivity {
     OneBuildModelClass.SessionList.WorkType holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
 
     LocalDate localDate;
-    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "";
+    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "",remarksNeed = "";
     private String drCap, chmCap, stkCap, unListDrCap, cipCap, hosCap, masters;
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable, isEdited;
@@ -856,7 +856,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    if (SharedPref.getTpObjectiveMandatory(this).equalsIgnoreCase("0") && oneBuildModelClass.getRemarks().isEmpty()) {
+                    if (remarksNeed.equalsIgnoreCase("0") && oneBuildModelClass.getRemarks().isEmpty()) {
                         isEmpty = true;
                         position = i;
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.need_remarks) + (i + 1));
@@ -1077,6 +1077,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                 }
                             }
                         }
+                        if (remarksNeed.equalsIgnoreCase("0") && modelClass.getRemarks().isEmpty()) {
+                            isEmpty = true;
+                            position = i;
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.need_remarks) + (i + 1));
+                            break;
+                        }
                     } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
                         if (FW_meetup_mandatory.equals("0")) { // "0"-- yes
                             if (drNeed.equals("0")) { // Dr meet up mandatory
@@ -1138,6 +1144,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                 break;
                             }
                         }
+                    }
+                    if (remarksNeed.equalsIgnoreCase("0") && modelClass.getRemarks().isEmpty()) {
+                        isEmpty = true;
+                        position = i;
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.need_remarks) + (i + 1));
+                        break;
                     }
                 }
 
@@ -1400,6 +1412,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 unListedDrNeed = jsonArray.getJSONObject(i).getString("UnDrNeed");
                 cipNeed = jsonArray.getJSONObject(i).getString("Cip_Need");
                 hospNeed = jsonArray.getJSONObject(i).getString("HospNeed");
+                remarksNeed = jsonArray.getJSONObject(i).optString("tp_objective_mandatory");
             }
             StringBuilder masters = new StringBuilder();
             if (drNeed.equalsIgnoreCase("0")) {
@@ -1558,6 +1571,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 unListedDrNeed = jsonArray.getJSONObject(i).getString("UnDrNeed");
                 cipNeed = jsonArray.getJSONObject(i).getString("Cip_Need");
                 hospNeed = jsonArray.getJSONObject(i).getString("HospNeed");
+                remarksNeed = jsonArray.getJSONObject(i).optString("tp_objective_mandatory");
             }
 
 
