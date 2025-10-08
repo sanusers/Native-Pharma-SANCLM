@@ -112,13 +112,8 @@ public class SignatureFragment1 extends Fragment {
             case "new":
                 if (imageName == null) {
                     signatureCanvas.clearCanvas();
-                } /*else {
-                    if (UtilityClass.isNetworkAvailable(context)) {
-                        loadImageFromS3(imageName);
-                    } else {
-                        loadImageFromLocal();
-                    }
-                }*/
+                }
+                break;
 
             case "edit_online":
                 if ((!imageName.isEmpty() || !filePath.isEmpty())) {
@@ -134,8 +129,8 @@ public class SignatureFragment1 extends Fragment {
                 }
                 break;
             case "edit_local":
-                if (!filePath.isEmpty() && !imageName.isEmpty()) {
-                    loadImageFromLocal();
+                if (/*!filePath.isEmpty() &&*/ !imageName.isEmpty()) {
+                    loadImageFromLocal(imageName);
                 }else{
                     Log.d("Edit local SignFrag", "onResume: "+"Filepath is empty");
                 }
@@ -212,7 +207,7 @@ public class SignatureFragment1 extends Fragment {
 
     public void loadImageFromS3(String fileName) {
         if (!fileName.equalsIgnoreCase("null")) {
-            File file = new File(context.getFilesDir(), fileName);
+            File file = new File(context.getExternalFilesDir(null) + "/Signature/", fileName);
             new AWSBucketsSign(context, fileName, file, 0, "", new S3DownloadFiles() {
                 @Override
                 public void fileDataAdd(int pos, Bitmap bitmap) {
@@ -222,7 +217,7 @@ public class SignatureFragment1 extends Fragment {
                         try (FileOutputStream fos = new FileOutputStream(file)) {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                             Log.d("S3ImageLoad", "Image stored locally at: " + file.getAbsolutePath());
-                            callSignCaptureImage.add(0,new CallSignCaptureImageList("",fileName));
+                            callSignCaptureImage.add(0,new CallSignCaptureImageList(file.getAbsolutePath(),fileName));
                         } catch (Exception e) {
                             Log.e("S3ImageLoad", "Error saving image locally: " + e.getMessage());
                         }
@@ -235,13 +230,13 @@ public class SignatureFragment1 extends Fragment {
                 }
             });
         } else {
-            loadImageFromLocal();
+            loadImageFromLocal(imageName);
         }
     }
 
     public void loadImageFromGlide(String fileName) {
         if (fileName != null && !fileName.equalsIgnoreCase("null")) {
-            File file = new File(context.getFilesDir(), fileName);
+            File file = new File(context.getExternalFilesDir(null) + "/Signature/", fileName);
 
             String imageUrl = SharedPref.getTagImageUrl(context) + "Signs/" + fileName;
 
@@ -257,11 +252,12 @@ public class SignatureFragment1 extends Fragment {
                                 Log.d("GlideImageLoad", "Image successfully loaded from Glide: " + fileName);
                                 try (FileOutputStream fos = new FileOutputStream(file)) {
                                     bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+                                    callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
                                     Log.d("GlideImageLoad", "Image stored locally at: " + file.getAbsolutePath());
                                 } catch (Exception e) {
                                     Log.e("GlideImageLoad", "Error saving image locally: " + e.getMessage());
                                 }
-                                signatureCanvas.setBackgroundBitmap(bitmap); //  same as your S3 method
+                                signatureCanvas.setBackgroundBitmap(bitmap);
                             } else {
                                 Log.e("GlideImageLoad", "Failed to load image via Glide: " + fileName + ", bitmap is null.");
                             }
@@ -273,21 +269,22 @@ public class SignatureFragment1 extends Fragment {
                         }
                     });
         } else {
-            loadImageFromLocal();
+            loadImageFromLocal(imageName);
         }
     }
 
 
 
-    public void loadImageFromLocal() {
-        if (!filePath.isEmpty() && !imageName.isEmpty()) {
-            File file = new File(filePath);
+    public void loadImageFromLocal(String fileName) {
+        if (/*!filePath.isEmpty() && */!imageName.isEmpty()) {
+            File file = new File(context.getExternalFilesDir(null) + "/Signature/",fileName);
+//            File file = new File(callSignCaptureImage.get(0).getFilepath());
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             signatureCanvas.setBackgroundBitmap(bitmap);
 
-            callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, filePath, bitmap, false));
+            callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
 
-            Log.d("SignatureFlow", "Loaded image from local: " + filePath);
+            Log.d("SignatureFlow", "Loaded image from local: " + fileName);
         } else {
             Log.d("TAG", "instance initializer: file path is empty");
         }

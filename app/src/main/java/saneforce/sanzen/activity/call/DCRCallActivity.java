@@ -1929,8 +1929,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     Log.d("jsonExtractOnline", "jsonExtractOnline: "+jsonEC);
                 }
             }
-            if (json.has("sign_Img") && !json.getString("sign_Img").isEmpty()) {
-                imageName = json.getString("sign_Img");
+            if (json.has("sign_Img") && !json.optString("sign_Img").isEmpty()) {
+                imageName = json.optString("sign_Img");
             }
 
             if (json.has("Dcr_activity") && !json.getString("Dcr_activity").equalsIgnoreCase("[]")) {
@@ -2246,8 +2246,8 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //Signature
-            if (json.has("sign_Img") && !json.getString("sign_Img").isEmpty()) {
-                imageName = json.getString("sign_Img");
+            if (json.has("sign_Img") && !json.optString("sign_Img").isEmpty()) {
+                imageName = json.optString("sign_Img");
             }
             //RCPA
             if (!json.getString("RCPAEntry").equalsIgnoreCase("[]")) {
@@ -2943,6 +2943,11 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             jsonSaveDcr.put("Remarks", jwOthersBinding.edRemarks.getText());
             if (isFromActivity.equalsIgnoreCase("edit_online")) {
+                jsonSaveDcr.put("amc", CallActivityCustDetails.get(0).getADetSlNo());
+                jsonSaveDcr.put("headerno",  CallActivityCustDetails.get(0).getTransNo());
+                jsonSaveDcr.put("detno",  CallActivityCustDetails.get(0).getADetSlNo());
+
+            } else if (isFromActivity.equalsIgnoreCase("edit_local")) {
                 jsonSaveDcr.put("amc", CallActivityCustDetails.get(0).getADetSlNo());
                 jsonSaveDcr.put("headerno",  CallActivityCustDetails.get(0).getTransNo());
                 jsonSaveDcr.put("detno",  CallActivityCustDetails.get(0).getADetSlNo());

@@ -1011,8 +1011,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         } else if (masterSyncItemModel.getSyncSuccess() == 1) {
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||*/
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
@@ -1020,19 +1020,21 @@ public class MasterSyncActivity extends AppCompatActivity {
                 binding.syncFailedImageDr.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||*/
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
                 binding.syncFailedImageChm.setVisibility(View.VISIBLE);
             }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")) {
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist")
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||*/
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")*/
+            ){
                 binding.syncFailedImageStk.setVisibility(View.VISIBLE);
             }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")) {
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr")
+                 /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||*/
+                 /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")*/
+        ) {
                 binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
@@ -1159,7 +1161,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
 */
             MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
-//            chemistModelArray.add(cheModel);
+            chemistModelArray.add(cheModel);
         /*    chemistModelArray.add(cheMas);*/
         /*    chemistModelArray.add(cheGeo);*/
             chemistModelArray.add(chemistCategory);

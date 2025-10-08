@@ -196,6 +196,11 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 Log.v("Call_Data1", "---" + e);
             }
         });
+
+//        holder.info.setOnClickListener(view -> {
+//
+//        }
+
     }
 
     private void goNextActivity(int position) {
@@ -397,6 +402,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         TextView tv_name, tv_category, tv_specialist, tv_area;
         ConstraintLayout constraint_main;
         View view_top;
+//        ImageView info;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -406,6 +412,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             tv_area = itemView.findViewById(R.id.txt_address);
             constraint_main = itemView.findViewById(R.id.constraint_main);
             view_top = itemView.findViewById(R.id.view_top);
+//            info = itemView.findViewById(R.id.tv_duration_info);
         }
     }
 

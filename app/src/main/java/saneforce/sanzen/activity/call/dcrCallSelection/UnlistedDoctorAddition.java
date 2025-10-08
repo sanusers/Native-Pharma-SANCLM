@@ -117,6 +117,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
     private int currentImageIndex = 0;
     static String TagImgNd = "";
     Util util;
+    String unlistedMobNeed = "0";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -181,56 +182,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         }
 
 
-//        JSONArray masterJsonArrayUlist1 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
         JSONArray masterJsonArrayUlist1 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-
-
-      /*  boolean isDuplicate = false;
-
-        try {
-            String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
-            String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
-            String enteredHQ = unlistedadditionbinding.txtSelectHq.getText().toString().trim();
-            String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
-            String enteredClass = unlistedadditionbinding.txtSelectClass.getText().toString().trim();
-            String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
-            String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
-
-            for (int i = 0; i < masterJsonArrayUlist1.length(); i++) {
-                JSONObject obj = masterJsonArrayUlist1.getJSONObject(i);
-
-                String name = obj.optString("Name", "").trim();
-                String territory = obj.optString("Town_Name", "").trim();
-                String hq = obj.optString("HQ", "").trim();
-                String spec = obj.optString("SpecialtyName", "").trim();
-                String cls = obj.optString("Doc_ClsCode", "").trim();
-                String cat = obj.optString("CategoryName", "").trim();
-                String quli = obj.optString("Doc_QuaName", "").trim();
-
-                // Check duplicate condition
-                if (enteredName.equalsIgnoreCase(name)
-                        && enteredTerritory.equalsIgnoreCase(territory)
-                        && enteredHQ.equalsIgnoreCase(hq)
-                        && enteredSpec.equalsIgnoreCase(spec)
-                        && enteredClass.equalsIgnoreCase(cls)
-                        && enteredCat.equalsIgnoreCase(cat)
-                        && enteredQuli.equalsIgnoreCase(quli)) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-
-            if (isDuplicate) {
-                commonUtilsMethods.showToastMessage(this, "Duplicate entry already exists!");
-                unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                return; // stop saving further
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-
         unlistedadditionbinding.btnUnlstsave.setOnClickListener(v -> {
             unlistedadditionbinding.btnUnlstsave.setEnabled(false);
             if (unlistedadditionbinding.edtDctr.getText().toString().isEmpty()) {
@@ -245,9 +197,10 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
                     String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
                     String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
-                    String enteredClass = unlistedadditionbinding.txtSelectClass.getText().toString().trim();
+                    String enteredHq =  String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this));/*unlistedadditionbinding.txtSelectHq.getText().toString().trim();*/
                     String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
                     String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
+                    String enteredPhone = unlistedadditionbinding.edtMob.getText().toString().trim();
 
                     for (int i = 0; i < masterJsonArrayUlist1.length(); i++) {
                         JSONObject obj = masterJsonArrayUlist1.getJSONObject(i);
@@ -255,17 +208,19 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         String name = obj.optString("Name", "").trim();
                         String territory = obj.optString("Town_Name", "").trim();
                         String spec = obj.optString("SpecialtyName", "").trim();
-                        String cls = obj.optString("Doc_ClsCode", "").trim();
+                        String drHQNm = obj.optString("SF_Code", "").trim();
                         String cat = obj.optString("CategoryName", "").trim();
                         String quli = obj.optString("Doc_QuaName", "").trim();
+                        String mob = obj.optString("DrMob", "").trim();
 
                         // Check duplicate condition (trim + ignore case)
                         if (enteredName.equalsIgnoreCase(name)
                                 && enteredTerritory.equalsIgnoreCase(territory)
                                 && enteredSpec.equalsIgnoreCase(spec)
-                                && enteredClass.equalsIgnoreCase(cls)
+                                && enteredHq.equalsIgnoreCase(drHQNm)
                                 && enteredCat.equalsIgnoreCase(cat)
-                                && enteredQuli.equalsIgnoreCase(quli)) {
+                                && enteredQuli.equalsIgnoreCase(quli)
+                                && enteredPhone.equalsIgnoreCase(mob)) {
                             isDuplicate = true;
                             break;
                         }
@@ -274,7 +229,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     if (isDuplicate) {
                         commonUtilsMethods.showToastMessage(this, "Duplicate entry already exists!");
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                        return; // stop saving further
+                        return;
                     }
 
                 } catch (Exception e) {
@@ -305,6 +260,9 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
                     unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
+                } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
+                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.moile_mand));
+                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                 } else {
                     Log.v("qualification_txt", "arent_empty");
                     unlistedadditionbinding.btnUnlstsave.setEnabled(false);
@@ -338,7 +296,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
-                        json.put("UniqueUnlistedDr", "0");
+                        json.put("Unlst_Doc_App_need",  String.valueOf(SharedPref.getUnlstDocAppNeed(this)));
                         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                             json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
                             json.put("DrHQNm", unlistedadditionbinding.txtSelectHq.getText().toString());
@@ -388,7 +346,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
                     String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
                     String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
-                    String enteredClass = unlistedadditionbinding.txtSelectClass.getText().toString().trim();
+                    String enteredPhone = unlistedadditionbinding.edtMob.getText().toString().trim();
                     String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
                     String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
 
@@ -398,7 +356,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         String name = obj.optString("Name", "").trim();
                         String territory = obj.optString("Town_Name", "").trim();
                         String spec = obj.optString("SpecialtyName", "").trim();
-                        String cls = obj.optString("Doc_ClsCode", "").trim();
+                        String mob = obj.optString("DrMob", "").trim();
                         String cat = obj.optString("CategoryName", "").trim();
                         String quli = obj.optString("Doc_QuaName", "").trim();
 
@@ -406,9 +364,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         if (enteredName.equalsIgnoreCase(name)
                                 && enteredTerritory.equalsIgnoreCase(territory)
                                 && enteredSpec.equalsIgnoreCase(spec)
-/*
-                                && enteredClass.equalsIgnoreCase(cls)
-*/
+                                && enteredPhone.equalsIgnoreCase(mob)
                                 && enteredCat.equalsIgnoreCase(cat)
                                 && enteredQuli.equalsIgnoreCase(quli)) {
                             isDuplicate = true;
@@ -453,6 +409,9 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
                     unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
+                } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
+                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.moile_mand));
+                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                 } else {
                     Log.v("qualification_txt", "arent_empty");
                     unlistedadditionbinding.btnUnlstsave.setEnabled(false);
@@ -486,6 +445,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
+                        json.put("Unlst_Doc_App_need",  String.valueOf(SharedPref.getUnlstDocAppNeed(this)));
                         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                             json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
                             json.put("DrHQNm", unlistedadditionbinding.txtSelectHq.getText().toString());

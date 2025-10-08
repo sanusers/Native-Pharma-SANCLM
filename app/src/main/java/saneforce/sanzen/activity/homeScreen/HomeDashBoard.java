@@ -230,7 +230,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         @Override
         public void run() {
             String currentTime = sdf.format(new Date()).toUpperCase();
-            binding.clock.setText(currentTime);
+//            binding.clock.setText(currentTime);
             handler.postDelayed(this, 1000);
             try {
 //                String checkInData = SharedPref.getDayCheckInData(HomeDashBoard.this);
@@ -695,6 +695,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods = new CommonUtilsMethods(HomeDashBoard.this);
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
+        binding.subDivision.setText(SharedPref.getSubDivisionNames(this));
         isDateSelectionClicked = false;
 
         if (SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")) {

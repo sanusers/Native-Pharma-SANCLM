@@ -501,6 +501,7 @@ public class SharedPref {
 
     public static final String REPORTING_TO_SF = "Reporting_To_SF";
     public static final String UNLST_DOC_APP_NEED = "Unlst_Doc_App_need";
+    public static final String SUBDIVISION_NAMES = "SubdivisionNames";
 
 
     public static SharedPreferences.Editor editor;
@@ -857,7 +858,7 @@ public class SharedPref {
             editor.putString(LOGIN_APP_DEVICE_ID, jsonObject.optString("Loginappdeviceid"));
             editor.putString(REPORTING_TO_SF, jsonObject.optString("Reporting_To_SF"));
             editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
-
+            editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
             editor.apply();
 
         } catch (Exception ignore) {
@@ -3130,5 +3131,7 @@ public class SharedPref {
     public static String getUnlstDocAppNeed(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(UNLST_DOC_APP_NEED,"");
     }
-
+    public static String getSubDivisionNames(Context context){
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SUBDIVISION_NAMES, "");
+    }
 }

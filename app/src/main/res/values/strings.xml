@@ -643,4 +643,6 @@
     <string name="draft_save"> Tour Plan Data Saved Successfully</string>
     <string name="need_remarks"> Enter Remarks in session </string>
     <string name="reset_password">Reset Password</string>
+    <string name="moile_mand"> Mobile Number Mandatory </string>
+    <string name="mob_mandt">Mobile <font color='#FF0000'>*</font></string>
 </resources>

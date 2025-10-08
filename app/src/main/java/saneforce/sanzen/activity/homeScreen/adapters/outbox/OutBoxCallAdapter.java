@@ -180,10 +180,12 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 } else if (menuItem.getItemId() == R.id.menuEdit) {
                     Intent intent = new Intent(context, DCRCallActivity.class);
                     DCRCallActivity.clickedLocalDate = outBoxCallLists.get(position).getDates();
-                    String selectedHQ = "", mProds = "";
+                    String selectedHQ = "", mProds = "",headerno = "",detno = "";
                     try {
                         JSONObject dcrDetail = new JSONObject(outBoxCallLists.get(position).getJsonData());
                         if (dcrDetail != null) {
+                            headerno = dcrDetail.optString("headerno");
+                            detno = dcrDetail.optString("detno");
                             selectedHQ = dcrDetail.optString("Rsf");
 //                            JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
                             JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
@@ -199,7 +201,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         e.printStackTrace();
                     }
                     CallActivityCustDetails = new ArrayList<>();
-                    CustList custList = new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, "", "", "", outBoxCallLists.get(position).getJsonData());
+                    CustList custList = new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, headerno, detno, "", outBoxCallLists.get(position).getJsonData());
                     custList.setMappedSlides(mProds);
                     CallActivityCustDetails.add(0, custList);
                     intent.putExtra(Constants.DETAILING_REQUIRED, "false");
