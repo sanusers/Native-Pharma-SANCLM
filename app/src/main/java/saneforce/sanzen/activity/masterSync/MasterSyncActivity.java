@@ -102,7 +102,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String rsf = "";
     boolean retrystatus = false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
+    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0,profileStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -125,6 +125,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> slideModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> profileModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
     public List<String> HQCODE_SYN = new ArrayList<>();
     public static ArrayList<String> SlideIds = new ArrayList<>();
@@ -547,6 +548,17 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
 
         });
+        binding.Profile.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.Profile);
+                binding.childSync.setText("Sync Profile");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(profileModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+
+        });
 
 
         binding.setup.setOnClickListener(view -> {
@@ -602,7 +614,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                             arrayList.addAll(subordinateModelArray);
                         } else if (binding.Other.isSelected()) {
                             arrayList.addAll(otherModelArray);
-                        } else if (binding.setup.isSelected()) {
+                        } else if (binding.Profile.isSelected()) {
+                            arrayList.addAll(profileModelArray);
+                        }else if (binding.setup.isSelected()) {
                             arrayList.addAll(setupModelArray);
                         }
 
@@ -714,6 +728,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
         QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
         SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
+        profileStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROFILE);
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
         if (doctorStatus == 1 || doctorGeoStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
             binding.syncFailedImageDr.setVisibility(View.VISIBLE);
@@ -765,6 +780,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
         if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
             binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+        }
+        if(profileStatus == 1){
+            binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
         }
         if (setupStatus == 1) {
             binding.syncFailedImageSet.setVisibility(View.VISIBLE);
@@ -1001,6 +1019,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                 } else {
                     binding.syncFailedImageOther.setVisibility(View.GONE);
                 }
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserdetails")) {
+                profileStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROFILE);
+                if(profileStatus == 1){
+                    binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
+                }else{
+                    binding.syncFailedImageProfile.setVisibility(View.GONE);
+                }
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                 setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
                 if (setupStatus == 1) {
@@ -1104,6 +1129,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
                 binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserdetails")) {
+                binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                 binding.syncFailedImageSet.setVisibility(View.VISIBLE);
@@ -1357,6 +1385,11 @@ public class MasterSyncActivity extends AppCompatActivity {
 //        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR_MAS, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
         MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
         otherModelArray.add(feedback);
+        //Profile
+        profileModelArray.clear();
+        MasterSyncItemModel profile = new MasterSyncItemModel(Constants.PROFILE, Constants.DOCTOR, "getuserdetails", Constants.PROFILE, profileStatus, false);
+        profileModelArray.add(profile);
+
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel Quiz = new MasterSyncItemModel(Constants.QUIZ, "AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
             otherModelArray.add(Quiz);
@@ -1395,6 +1428,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.slide.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.subordinate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.Other.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
+        binding.Profile.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.setup.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
 
         binding.listedDr.setSelected(false);
@@ -1414,6 +1448,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.slide.setSelected(false);
         binding.subordinate.setSelected(false);
         binding.Other.setSelected(false);
+        binding.Profile.setSelected(false);
         binding.setup.setSelected(false);
 
         view.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.greater_than_white, 0);
@@ -1460,6 +1495,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
                         } else if (binding.Other.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), otherModelArray, position);
+                        }else if (binding.Profile.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), profileModelArray, position);
                         } else if (binding.setup.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
@@ -1523,6 +1560,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             populateAdapter(subordinateModelArray);
         } else if (binding.Other.isSelected()) {
             populateAdapter(otherModelArray);
+        }else if (binding.Profile.isSelected()) {
+            populateAdapter(profileModelArray);
         } else if (binding.setup.isSelected()) {
             populateAdapter(setupModelArray);
         }
@@ -1561,6 +1600,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncAllModel.add(dcrModelArray);
                         masterSyncAllModel.add(slideModelArray);
                         masterSyncAllModel.add(otherModelArray);
+                        masterSyncAllModel.add(profileModelArray);
                         masterSyncAllModel.add(tpModelArray);
                         if (!navigateFrom.equalsIgnoreCase("Login")) {
                             masterSyncAllModel.add(setupModelArray);
@@ -1846,6 +1886,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
                                             activityDetailsDataDao.deleteAllData();
 //                                            syncIndividualActivityDetails();
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROFILE)) {
+                                            isDateSynced = true;
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.PROFILE, jsonArray.toString(), 2));
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
                                         for (int bean = 0; bean < input.length(); bean++) {

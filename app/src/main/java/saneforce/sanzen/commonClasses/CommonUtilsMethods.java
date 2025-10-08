@@ -159,7 +159,7 @@ public class CommonUtilsMethods {
 
             for (int i = start; i < end; i++) {
                 char c = source.charAt(i);
-                if (!Character.isLetterOrDigit(c) && c != '_' && !Character.isWhitespace(c)) {
+                if (!Character.isLetterOrDigit(c) && c != '_' && c != '@' && c != '!' && c != '#' && c != '$' && !Character.isWhitespace(c)) {
                     return "";
                 }
             }

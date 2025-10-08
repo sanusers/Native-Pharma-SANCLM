@@ -257,7 +257,15 @@ public class LoginActivity extends AppCompatActivity {
             binding.rlRejReason.setVisibility(View.VISIBLE);
             binding.rejectedReason.setText("Please try again after 5 minutes!");
             isTimerStarted = true;
-            remainingTime = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, "00:05:00");
+            String time = "00:05:00", loginTimer = SharedPref.getLoginTimer(LoginActivity.this);
+            if (!loginTimer.isEmpty()) {
+                try {
+                    time = String.format("00:%02d:00", Integer.parseInt(loginTimer));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            remainingTime = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, time);
             startTimer();
         }
     }
@@ -597,6 +605,36 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         timeZoneVerification();
         super.onResume();
+
+        int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
+        if (loginFailedCount == 5) {
+            isTimerStarted = true;
+            binding.password.setEnabled(false);
+            binding.userId.setEnabled(false);
+            binding.loginBtn.setEnabled(false);
+            binding.clearData.setEnabled(false);
+            binding.rlRejReason.setVisibility(View.VISIBLE);
+            binding.rejectedReason.setText("Please try again after 5 minutes!");
+            remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+
+            String time = "00:05:00", loginTimer = SharedPref.getLoginTimer(LoginActivity.this);
+            if (!loginTimer.isEmpty()) {
+                try {
+                    time = String.format("00:%02d:00", Integer.parseInt(loginTimer));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            long mins = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, time);
+            if (remainingTime > mins) {
+                remainingTime = 0;
+            } else {
+                remainingTime = mins - remainingTime;
+            }
+            startTimer();
+        }
+
     }
 
     private void timeZoneVerification() {

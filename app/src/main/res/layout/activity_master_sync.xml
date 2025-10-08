@@ -652,10 +652,37 @@
                         android:visibility="gone"/>
 
                     <TextView
-                        android:id="@+id/setup"
+                        android:id="@+id/Profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/Other"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@drawable/master_sync_selector_stroke"
+                        android:drawableEnd="@drawable/arrow_down"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_7sdp"
+                        android:text="Profile"
+                        android:textColor="@drawable/master_sync_selector_stroke"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageProfile"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/Other"
+                        android:layout_alignBottom="@id/Other"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/setup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/Profile"
                         android:layout_alignParentStart="true"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/master_sync_selector_stroke"

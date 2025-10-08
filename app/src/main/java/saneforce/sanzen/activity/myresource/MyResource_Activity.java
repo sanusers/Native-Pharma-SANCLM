@@ -448,6 +448,7 @@ public class MyResource_Activity extends AppCompatActivity {
             } else if (SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
                 listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
             }
+            listed_data.add(new Resourcemodel_class("Profile", "", "18"));
 
                 Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count + "---" + DocMas_count);
 

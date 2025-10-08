@@ -37,6 +37,7 @@ import saneforce.sanzen.activity.myresource.Categoryview.DateSyncActivity;
 import saneforce.sanzen.activity.myresource.StockBalanceview.StockBalanceScreen;
 import saneforce.sanzen.activity.myresource.callstatusview.Callsstatus_screenview;
 import saneforce.sanzen.activity.myresource.myresourcemodel.MyResourceInterface;
+import saneforce.sanzen.activity.myresource.profile.ProfileViewScreen;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -801,6 +802,12 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
                         Intent l3 = new Intent(context, StockBalanceScreen.class);
                         context.startActivity(l3);
+                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                        break;
+                    case ("18"):
+                        Intent profile = new Intent(context, ProfileViewScreen.class);
+                        context.startActivity(profile);
                         MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                         MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         break;

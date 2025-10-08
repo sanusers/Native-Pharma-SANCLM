@@ -488,6 +488,7 @@ public class SharedPref {
     public static final String TpIdPrevious = "tpIdPrevious";
     public static final String TpIdNext = "tpIdNext";
 
+    public static final String LOGIN_TIMER = "LoginTimer";
     public static final String LAST_LOGIN = "Last Login";
     public static final String LOGIN_FAILED_COUNT = "Login failed count";
     public static final String LOGIN_FAILED_TIME = "Login failed time";
@@ -498,10 +499,10 @@ public class SharedPref {
     public static final String DEVICE_NAME = "device_name";
     public static final String LOGIN_DEVICE_REG_ID = "LoginDeviceRegId";
     public static final String LOGIN_APP_DEVICE_ID = "Loginappdeviceid";
-
     public static final String REPORTING_TO_SF = "Reporting_To_SF";
     public static final String UNLST_DOC_APP_NEED = "Unlst_Doc_App_need";
     public static final String SUBDIVISION_NAMES = "SubdivisionNames";
+    public static final String SETUP_SYNCED = "setup_synced";
 
 
     public static SharedPreferences.Editor editor;
@@ -859,6 +860,9 @@ public class SharedPref {
             editor.putString(REPORTING_TO_SF, jsonObject.optString("Reporting_To_SF"));
             editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
             editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
+            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
+            editor.putString(WELCOME_SLIDES_PATH, "");
+
             editor.apply();
 
         } catch (Exception ignore) {
@@ -3125,6 +3129,11 @@ public class SharedPref {
     public static String getLoginAppDeviceId(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_APP_DEVICE_ID, "");
     }
+
+    public static String getLoginTimer(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_TIMER, "");
+    }
+
     public static String getReportingToSf(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(REPORTING_TO_SF,"");
     }
@@ -3133,5 +3142,13 @@ public class SharedPref {
     }
     public static String getSubDivisionNames(Context context){
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SUBDIVISION_NAMES, "");
+    }
+    public static void setIsSetupSynced(Context context, boolean isSynced) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(SETUP_SYNCED, isSynced).apply();
+    }
+    public static boolean getIsSetupSynced(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getBoolean(SETUP_SYNCED,false);
     }
 }

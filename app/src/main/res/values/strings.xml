@@ -645,4 +645,12 @@
     <string name="reset_password">Reset Password</string>
     <string name="moile_mand"> Mobile Number Mandatory </string>
     <string name="mob_mandt">Mobile <font color='#FF0000'>*</font></string>
+    <string name="division">Division</string>
+    <string name="sub_division">Sub Division</string>
+    <string name="dcr_start_dt">DCR Start Date</string>
+    <string name="tp_start_dt">TP Start Date</string>
+    <string name="dcr_rpt">DCR Reporting Manager</string>
+    <string name="tp_rpt">Tp Reporting Manager</string>
+    <string name="lev_rpt">Leave Reporting Manager</string>
+    <string name="tp_mand_range">TP Mandatory Range</string>
 </resources>

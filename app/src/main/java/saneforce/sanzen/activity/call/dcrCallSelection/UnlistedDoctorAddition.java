@@ -211,7 +211,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         String drHQNm = obj.optString("SF_Code", "").trim();
                         String cat = obj.optString("CategoryName", "").trim();
                         String quli = obj.optString("Doc_QuaName", "").trim();
-                        String mob = obj.optString("DrMob", "").trim();
+//                        String mob = obj.optString("DrMob", "").trim();
 
                         // Check duplicate condition (trim + ignore case)
                         if (enteredName.equalsIgnoreCase(name)
@@ -220,7 +220,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                                 && enteredHq.equalsIgnoreCase(drHQNm)
                                 && enteredCat.equalsIgnoreCase(cat)
                                 && enteredQuli.equalsIgnoreCase(quli)
-                                && enteredPhone.equalsIgnoreCase(mob)) {
+                                /*&& enteredPhone.equalsIgnoreCase(mob)*/) {
                             isDuplicate = true;
                             break;
                         }
@@ -260,10 +260,10 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
                     unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
-                } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
+                } /*else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
                     commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.moile_mand));
                     unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else {
+                }*/ else {
                     Log.v("qualification_txt", "arent_empty");
                     unlistedadditionbinding.btnUnlstsave.setEnabled(false);
                     JSONObject json = CommonUtilsMethods.CommonObjectParameter(this);
@@ -356,17 +356,20 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         String name = obj.optString("Name", "").trim();
                         String territory = obj.optString("Town_Name", "").trim();
                         String spec = obj.optString("SpecialtyName", "").trim();
-                        String mob = obj.optString("DrMob", "").trim();
                         String cat = obj.optString("CategoryName", "").trim();
                         String quli = obj.optString("Doc_QuaName", "").trim();
+//                        String mob = obj.optString("DrMob", "").trim();
 
                         // Check duplicate condition (trim + ignore case)
                         if (enteredName.equalsIgnoreCase(name)
                                 && enteredTerritory.equalsIgnoreCase(territory)
                                 && enteredSpec.equalsIgnoreCase(spec)
-                                && enteredPhone.equalsIgnoreCase(mob)
                                 && enteredCat.equalsIgnoreCase(cat)
-                                && enteredQuli.equalsIgnoreCase(quli)) {
+                                && enteredQuli.equalsIgnoreCase(quli)
+/*
+                                && enteredPhone.equalsIgnoreCase(mob)
+*/
+                        ) {
                             isDuplicate = true;
                             break;
                         }
