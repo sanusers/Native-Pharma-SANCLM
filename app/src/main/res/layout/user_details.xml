@@ -78,6 +78,15 @@
                 android:gravity="center"
                 android:textColor="#00C689"
                 android:textSize="@dimen/_6ssp" />
+            <TextView
+                android:id="@+id/reporting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:textColor="#00C689"
+                android:textSize="@dimen/_6ssp" />
 
 
         </LinearLayout>
