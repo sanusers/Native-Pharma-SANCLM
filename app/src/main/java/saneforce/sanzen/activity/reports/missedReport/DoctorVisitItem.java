@@ -1,7 +1,7 @@
 package saneforce.sanzen.activity.reports.missedReport;
 
-
-public class DoctorVisitItem {
+import java.io.Serializable;
+public class DoctorVisitItem implements Serializable {
     private String name;
     private String code;
     private String territory;
@@ -9,7 +9,7 @@ public class DoctorVisitItem {
     private String category;
     private String speciality;
     private String className;
-   // private String monthKey;
+    //private String monthKey;
     public DoctorVisitItem(String name, String territory,String code, String qualification,
                            String category, String speciality, String className) {
 
@@ -20,8 +20,13 @@ public class DoctorVisitItem {
         this.category = category;
         this.speciality = speciality;
         this.className = className;
-//        this.monthKey =monthKey;
+
+
+       //this.monthKey =monthKey;
     }
+
+
+
 
     public String getName() {
         return name;
@@ -50,6 +55,9 @@ public class DoctorVisitItem {
     public String getClassName() {
         return className;
     }
+
+
+
 //    public String getMonthKey(){
 //        return monthKey;
 //    }

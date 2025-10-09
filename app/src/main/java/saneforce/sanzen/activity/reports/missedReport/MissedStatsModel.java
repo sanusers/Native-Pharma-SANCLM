@@ -1,30 +1,72 @@
 package saneforce.sanzen.activity.reports.missedReport;
 
+import android.util.Log;
+
 import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.Set;
 
 public class MissedStatsModel {
 
     private JSONArray totalCustomers;
     private Set<String> uniqueCustomers;
+    private String type;// "Doctor", "Chemist", etc.
+    //private String month;
 
-    public MissedStatsModel(JSONArray totalCustomers, Set<String> uniqueCustomers) {
 
+    public MissedStatsModel( String type, JSONArray totalCustomers, Set<String> uniqueCustomers) {
+
+        this.type = type;
         this.totalCustomers = totalCustomers;
         this.uniqueCustomers = uniqueCustomers;
     }
-    public JSONArray getTotalCustomers() {
-        return totalCustomers; } public void setTotalCustomers(JSONArray totalCustomers){
 
+
+
+    public JSONArray getTotalCustomers() {
+        return totalCustomers;
+    }
+    public void setTotalCustomers(JSONArray totalCustomers){
         this.totalCustomers = totalCustomers;
     }
+
     public Set<String> getUniqueCustomers() {
         return uniqueCustomers;
+
     }
-    public void setUniqueCustomers(Set<String> uniqueCustomers) {
+    public void setUniqueCustomers(Set<String> uniqueCustomers){
         this.uniqueCustomers = uniqueCustomers;
     }
+    public String getType() {
+        return type;
+    }
+
+
+    //added
+    public JSONArray getMissedCustomers() {
+        JSONArray result = new JSONArray();
+        try {
+            for (int i = 0; i < totalCustomers.length(); i++) {
+                JSONObject custObj = totalCustomers.getJSONObject(i);
+                String custCode = custObj.optString("CustCode");
+
+                if (uniqueCustomers != null && !uniqueCustomers.contains(custCode)) {
+                    custObj.put("status", "missed");
+                    result.put(custObj);
+                    Log.d("DoctorVisitActivity", "Added missed doctor: " + custCode);
+                    Log.d("DoctorVisitActivity", "Current missed count: " + result.length());
+                }else{
+                    Log.d("TAG", "getMissedCustomers:"+ "uniqueCust is null");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }
+
 
 //public class MissedStatsModel implements Parcelable {
 //

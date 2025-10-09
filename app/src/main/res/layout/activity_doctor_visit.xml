@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".activity.reports.missedReport.DoctorVisitActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -44,34 +46,70 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/missedtittle"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/edittext_stroke"
-        android:fontFamily="@font/satoshi_medium"
-        android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/_10sdp"
-        android:textColor="@color/black"
-        android:text="Missed: 0"
-        android:textStyle="bold"
-        android:textSize="@dimen/_7sdp"
-        app:layout_constraintEnd_toStartOf="@id/cl_search_sort"
+    <LinearLayout
+        android:id="@+id/missed_visited_container"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_white_border_purple"
+        android:backgroundTint="@color/light_grey_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/doctorVisitScreen"
-        tools:ignore="SpUsage" />
+        app:layout_constraintEnd_toStartOf="@id/cl_search_sort">
+
+        <!-- Missed Count -->
+        <TextView
+            android:id="@+id/missedtittle"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_darkpurple_sharp_bottom_end"
+            android:gravity="center"
+            android:layout_margin="@dimen/_2sdp"
+            android:text="Missed: 0"
+            android:textColor="@color/white" />
+
+        <!-- Visited Count -->
+        <TextView
+            android:id="@+id/visitedtittle"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_margin="@dimen/_2sdp"
+            android:text="Visited: 0"
+            android:textColor="@color/dark_purple" />
+    </LinearLayout>
+
+
+    <!--    <TextView-->
+<!--        android:id="@+id/missedtittle"-->
+<!--        android:layout_width="@dimen/_120sdp"-->
+<!--        android:layout_height="@dimen/_25sdp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:background="@drawable/edittext_stroke"-->
+<!--        android:fontFamily="@font/satoshi_medium"-->
+<!--        android:gravity="start|center_vertical"-->
+<!--        android:paddingStart="@dimen/_10sdp"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:text="Missed: 0"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textSize="@dimen/_7sdp"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/cl_search_sort"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/doctorVisitScreen"-->
+<!--        tools:ignore="SpUsage" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_search_sort"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/missedtittle"
+        app:layout_constraintBottom_toBottomOf="@id/missed_visited_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/missedtittle"
+        app:layout_constraintStart_toEndOf="@id/missed_visited_container"
         app:layout_constraintTop_toBottomOf="@id/doctorVisitScreen">
 
         <EditText
@@ -174,14 +212,14 @@
         android:id="@+id/recyclerDoctorVisit"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="20dp"
         android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/missedtittle"
+        app:layout_constraintTop_toBottomOf="@id/missed_visited_container"
         app:layout_constraintVertical_bias="0"
         tools:listitem="@layout/item_doctor_visit"/>
     <TextView

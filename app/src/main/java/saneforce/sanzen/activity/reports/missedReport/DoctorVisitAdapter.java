@@ -23,13 +23,20 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
 
     private final Context context;
     private  List<DoctorVisitItem> doctorList;
-    private  List<DoctorVisitItem> fullList;
+   // private  List<DoctorVisitItem> fullList;
 
 
     public DoctorVisitAdapter(Context context, List<DoctorVisitItem> doctorList) {
         this.context = context;
-        this.doctorList = doctorList;
-        this.fullList = new ArrayList<>(doctorList);
+        this.doctorList = new ArrayList<>(doctorList);
+
+       //this.fullList = new ArrayList<>(doctorList);
+//        this.context = context;
+//        this.doctorList = new ArrayList<>(doctorList);
+//        this.doctorList.addAll(doctorList);
+//        //this.doctorList = doctorList;
+//        this.fullList = new ArrayList<>(doctorList);
+//        this.fullList.addAll(doctorList);
     }
 
     @NonNull
@@ -49,34 +56,23 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
         holder.category.setText(checkEmpty(item.getCategory()));
         holder.speciality.setText(checkEmpty(item.getSpeciality()));
         holder.className.setText(checkEmpty(item.getClassName()));
-
         holder.number.setText((position + 1) + ")");
-
         holder.itemView.setOnClickListener(v -> {
-            // Your click action here
+
         });
     }
-    //        holder.textDoctor.setText(item.getName());
-//        holder.textPlace.setText(item.getTerritory());
-//        holder.qualification.setText(item.getQualification());
-//        holder.category.setText(item.getCategory());
-//        holder.speciality.setText(item.getSpeciality());
-//        holder.className.setText(item.getClassName());
-//        holder.number.setText((position + 1) + ")");
-//        holder.itemView.setOnClickListener(v -> {
-//
-//            });
-//    }
     private String checkEmpty(String value) {
         return (value == null || value.trim().isEmpty()) ? "-" : value;
     }
 
     @Override
     public int getItemCount() {
+
         return doctorList.size();
     }
 
     @SuppressLint("NotifyDataSetChanged")
+
     public void filterList(ArrayList<DoctorVisitItem> filteredNames) {
         this.doctorList = filteredNames;
         notifyDataSetChanged();
@@ -98,13 +94,19 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
         }
     }
     public void updateData(List<DoctorVisitItem> newList) {
+        doctorList.clear();
+        doctorList.addAll(newList);
         Log.d("AdapterUpdate", "updateData called. Size: " + newList.size());
-
-        fullList.clear();
-        fullList = new ArrayList<>(newList);
-
         notifyDataSetChanged();
     }
+
+//        fullList.clear();
+//        fullList.addAll(newList);
+//        notifyDataSetChanged();
+//        doctorList.clear();
+//        doctorList.addAll(newList);
+//       fullList.clear();
+//        fullList = new ArrayList<>(newList);
 
 
 
@@ -117,11 +119,11 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
                 List<DoctorVisitItem> filteredResults = new ArrayList<>();
 
                 if (constraint == null || constraint.length() == 0) {
-                    filteredResults.addAll(fullList);
+                    filteredResults.addAll(doctorList);
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();
 
-                    for (DoctorVisitItem item : fullList) {
+                    for (DoctorVisitItem item : doctorList) {
                         if (item.getName() != null && item.getName().toLowerCase().contains(filterPattern)) {
                             filteredResults.add(item);
                         }
@@ -137,7 +139,7 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                doctorList.clear();
+              doctorList.clear();
                 doctorList.addAll((List<DoctorVisitItem>) results.values);
                 notifyDataSetChanged();
             }

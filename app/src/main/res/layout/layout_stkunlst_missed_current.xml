@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/layoutStkUnlstCurrent"
     android:background="@color/white">
@@ -8,21 +9,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="10"
         android:background="@color/white"
         android:orientation="horizontal"
         android:weightSum="2">
 
         <!-- Stockist Card -->
         <LinearLayout
+            android:id="@+id/stk_missed_currentnew"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
+            android:layout_height="353dp"
+            android:layout_margin="8dp"
             android:layout_weight="1"
             android:background="#fff"
-            android:visibility="visible"
-            android:id="@+id/stk_missed_currentnew"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,6 +37,7 @@
                     android:src="@drawable/map_stockist_img" />
 
                 <TextView
+                    android:id="@+id/stockiestTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -48,31 +49,18 @@
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_7ssp" />
             </RelativeLayout>
+            <!-- PieChart -->
             <FrameLayout
-                android:layout_width="@dimen/pie_chart_w"
-                android:layout_height="@dimen/pie_chart_h"
+                android:layout_width="165dp"
+                android:layout_height="165dp"
                 android:layout_gravity="center">
 
-                <ProgressBar
-                    android:id="@+id/pBarstknew"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:indeterminate="false"
-                    android:max="100"
-                    android:background="@drawable/progress_drawable"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_overlay" />
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pBar3"
+                    android:layout_width="165dp"
+                    android:layout_height="165dp"
+                    android:layout_gravity="center" />
 
-                <TextView
-                    android:id="@+id/pbar_stknewpercentage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="0%"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/satoshi_bold"/>
             </FrameLayout>
 
             <LinearLayout
@@ -95,7 +83,7 @@
                     <!-- Colored Box -->
                     <View
                         android:id="@+id/stknewvisitedcheck"
-                        android:layout_width="12dp"
+                        android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
                         android:background="@drawable/square_grey_border" />
@@ -144,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:background="@drawable/border_spinner_uneditable"
                 android:columnCount="3">
@@ -202,7 +190,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
+                        tools:text="20"
                         android:layout_marginTop="3dp"
                         android:textColor="@color/black" />
                 </LinearLayout>
@@ -231,7 +219,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
+                        tools:text="20"
                         android:layout_marginTop="3dp"
                         android:textColor="@color/black" />
                 </LinearLayout>
@@ -239,21 +227,21 @@
         </LinearLayout>
         <!-- Divider line -->
         <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
+            android:layout_width="3dp"
+            android:layout_height="343dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:background="@color/bg_grey_2" />
         <!-- Unlst Card -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_height="353dp"
             android:layout_weight="1"
-            android:visibility="visible"
+            android:layout_margin="8dp"
             android:id="@+id/unlst_missed_currentnew"
             android:background="@color/white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -279,31 +267,19 @@
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_7ssp" />
             </RelativeLayout>
+
             <FrameLayout
-                android:layout_width="@dimen/pie_chart_w"
-                android:layout_height="@dimen/pie_chart_h"
+                android:layout_width="165dp"
+                android:layout_height="165dp"
                 android:layout_gravity="center">
 
-                <ProgressBar
-                    android:id="@+id/pBarunlstnew"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:indeterminate="false"
-                    android:max="100"
-                    android:background="@drawable/progress_drawable"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_overlay" />
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pBar4"
+                    android:layout_width="165dp"
+                    android:layout_height="165dp"
+                    android:layout_gravity="center" />
 
-                <TextView
-                    android:id="@+id/pbar_unlstnewpercentage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="0%"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/satoshi_bold"/>
+
             </FrameLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -368,7 +344,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:background="@drawable/border_spinner_uneditable"
                 android:columnCount="3">
@@ -397,7 +373,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
+                        tools:text="20"
                         android:layout_marginTop="3dp"
                         android:textColor="@color/black" />
                 </LinearLayout>
@@ -426,7 +402,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
+                        tools:text="20"
                         android:layout_marginTop="3dp"
                         android:textColor="@color/black" />
                 </LinearLayout>
@@ -454,7 +430,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
+                        tools:text="20"
                         android:layout_marginTop="3dp"
                         android:textColor="@color/black" />
                 </LinearLayout>

@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.reports.missedReport;
 
+import static java.security.AccessController.getContext;
 import static saneforce.sanzen.R.*;
 
 import android.annotation.SuppressLint;
@@ -46,12 +47,16 @@ import saneforce.sanzen.databinding.ActivityMissedReportGraphBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class MissedReportGraph extends AppCompatActivity {
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private ActivityMissedReportGraphBinding binding;
-    private PieChart missedChart, missedChart2;
+    private String sfCode;
+    private  String date;
+
+    //private PieChart missedChart, missedChart2;
     ProgressBar pBarchmcurrent, pBarstkcurrent, pBarunlstcurrent, pBarstknewcurrent, pBarunlstnewcurrent;
     ProgressBar pBardrprev, pBarchmprev, pBarstkprev, pBarunlstprev, pBarstknewprev, pBarunlstnewprev;
     ProgressBar pBardrprev1, pBarchmprev1, pBarstkprev1, pBarunlstprev1, pBarstknewprev1, pBarunlstnewprev1;
@@ -81,6 +86,7 @@ public class MissedReportGraph extends AppCompatActivity {
     int visitedDoctorsCurrentMonth;
     int previousMonthMissed, visitedDoctorsPreviousMonth, prePreviousMonthMissed, uniqueDoctorsPreviousMonth;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         roomDB = RoomDB.getDatabase(this);
@@ -90,20 +96,11 @@ public class MissedReportGraph extends AppCompatActivity {
         setContentView(binding.getRoot());
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerDoctorMissedReports);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-      /*  OuterAdapter outerAdapter = new OuterAdapter(); // empty adapter
-        recyclerView.setAdapter(outerAdapter);
-
-// Optionally populate later
-        List<ListReport> data = new ArrayList<>();
-        outerAdapter.setData(data);*/
-
+        sfCode = SharedPref.getSfCode(this);
+         date = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5);
         //login name - cluster
         TextView headerTv = findViewById(R.id.Name);
-        headerTv.setText(SharedPref.getSfName(this) + " - " + SharedPref.getDsName(this)+ " - " + SharedPref.getHqNameMain(this));
+        headerTv.setText(SharedPref.getSfName(this) + " - " + SharedPref.getDsName(this) + " - " + SharedPref.getHqNameMain(this));
 
 //        doctorCard = findViewById(R.id.doctor_missed_previous);
 //        chemistCard = findViewById(R.id.chemist_missed_previous);
@@ -140,8 +137,7 @@ public class MissedReportGraph extends AppCompatActivity {
         stkunlstprev = findViewById(id.layoutStkUnlstPrev);
         drchmprev1 = findViewById(id.layoutDrChmPrev1);
         stkunlstprev1 = findViewById(id.layoutStkUnlstPrev1);
-        missedChart = findViewById(id.pBar);
-
+        //missedChart = findViewById(id.pBar);
 
         //     TextView Name = findViewById(R.id.name);
 //        String userName = SharedPref.getUserName(this);     // getter method
@@ -172,26 +168,27 @@ public class MissedReportGraph extends AppCompatActivity {
 
 
         //current drchm layout,stk,unlst hidden
-        drvisitcur = findViewById(id.visitedcheck);
-        drmissedcur = findViewById(id.missedcheck);
-//        chmvisitcur = findViewById(id.check_box_chmvisted);
-//        chmmissedcur = findViewById(id.check_box_chmmissed);
-//        stkvisitcur = findViewById(id.stkvisitedcheck);
-//        stkmissedcur = findViewById(id.stkmissedcheck);
-//        unlstvisitcur = findViewById(id.check_box_unlstvisted);
-        unlstmissedcur = findViewById(id.check_box_unlstmissed);
-        totaldrcur = findViewById(id.totalDrCnt);
-        totaldrvisited = findViewById(id.visitedCnt);
-        totaldrmissed = findViewById(id.missedCnt);
-//        totalchmcur = findViewById(id.totalchmCnt);
-//        totalchmvisited = findViewById(id.chmvisitedCnt);
-//        totalchmmissed = findViewById(id.chmmissedCnt);
-//        totalstkcur = findViewById(id.totalstkCnt);
-//        totalstkvisited = findViewById(id.stkvisitedCnt);
-//        totalstkmissed = findViewById(id.stkmissedCnt);
-        totalunlstcur = findViewById(id.totalunlstCnt);
-        totalunlstvisited = findViewById(id.unlstvisitedCnt);
-        totalunlstmissed = findViewById(id.unlstmissedCnt);
+//        drvisitcur = findViewById(id.visitedcheck);
+//        drmissedcur = findViewById(id.missedcheck);
+////        chmvisitcur = findViewById(id.check_box_chmvisted);
+////        chmmissedcur = findViewById(id.check_box_chmmissed);
+////        stkvisitcur = findViewById(id.stkvisitedcheck);
+////        stkmissedcur = findViewById(id.stkmissedcheck);
+////        unlstvisitcur = findViewById(id.check_box_unlstvisted);
+//        unlstmissedcur = findViewById(id.check_box_unlstmissed);
+//        totaldrcur = findViewById(id.totalDrCnt);
+//        totaldrvisited = findViewById(id.visitedCnt);
+//        totaldrmissed = findViewById(id.missedCnt);
+////        totalchmcur = findViewById(id.totalchmCnt);
+
+////        totalchmvisited = findViewById(id.chmvisitedCnt);
+////        totalchmmissed = findViewById(id.chmmissedCnt);
+////        totalstkcur = findViewById(id.totalstkCnt);
+////        totalstkvisited = findViewById(id.stkvisitedCnt);
+////        totalstkmissed = findViewById(id.stkmissedCnt);
+//        totalunlstcur = findViewById(id.totalunlstCnt);
+//        totalunlstvisited = findViewById(id.unlstvisitedCnt);
+//        totalunlstmissed = findViewById(id.unlstmissedCnt);
         //current stk,unlst layout
         stknewvisitcur = findViewById(id.stknewvisitedcheck);
         stknewmissedcur = findViewById(id.stknewmissedcheck);
@@ -293,15 +290,15 @@ public class MissedReportGraph extends AppCompatActivity {
         UnlstMissedprev1new = findViewById(id.unlst_missed_previous1new);
 
         //pBardrcurrent = findViewById(id.pBar);
-        missedChart = findViewById(id.pBar);
+        // missedChart = findViewById(id.pBar);
 //        pBarchmcurrent = findViewById(id.pBarchm);
 //        pBarstkcurrent = findViewById(id.pBarstk);
-        pBarunlstcurrent = findViewById(id.pBarunlst);
-        pBarstknewcurrent = findViewById(id.pBarstknew);
-        pBarunlstnewcurrent = findViewById(id.pBarunlstnew);
+        //pBarunlstcurrent = findViewById(id.pBarunlst);
+//        pBarstknewcurrent = findViewById(id.pBarstknew);
+//        pBarunlstnewcurrent = findViewById(id.pBarunlstnew);
 
         // pBardrprev = findViewById(id.pBar_prev);
-        missedChart2 = findViewById(id.pBar_prev);
+        // missedChart2 = findViewById(id.pBar_prev);
 //        pBarchmprev = findViewById(id.pBarchm_prev);
 //        pBarstkprev = findViewById(id.pBarstk_prev);
         pBarunlstprev = findViewById(id.pBarunlst_prev);
@@ -318,9 +315,9 @@ public class MissedReportGraph extends AppCompatActivity {
         // pbarcurrentpercentage = findViewById(id.pbar_percentage);
 //        pBarchmcurrentpercentage = findViewById(id.pbar_chmpercentage);
 //        pBarstkcurrentpercentage = findViewById(id.pbar_stkpercentage);
-        pBarunlstcurrentpercentage = findViewById(id.pbar_unlstpercentage);
-        pBarstknewcurrentpercentage = findViewById(id.pbar_stknewpercentage);
-        pBarunlstnewcurrentpercentage = findViewById(id.pbar_unlstnewpercentage);
+//        pBarunlstcurrentpercentage = findViewById(id.pbar_unlstpercentage);
+//        pBarstknewcurrentpercentage = findViewById(id.pbar_stknewpercentage);
+//        pBarunlstnewcurrentpercentage = findViewById(id.pbar_unlstnewpercentage);
 
         // pbarprevpercentage = findViewById(id.pbar_percentageprev);
 //        pBarchmprevpercentage = findViewById(id.pbar_chmpercentageprev);
@@ -336,191 +333,190 @@ public class MissedReportGraph extends AppCompatActivity {
         pBarstknewprev1percentage = findViewById(id.pbar_stknewpercentageprev1);
         pBarunlstnewprev1percentage = findViewById(id.pbar_unlstnewpercentageprev1);
 
-        String dr = SharedPref.getDrNeed(this);
-        String chm = SharedPref.getChmNeed(this);
-        String stk = SharedPref.getStkNeed(this);
-        String unl = SharedPref.getUnlNeed(this);
+//        String dr = SharedPref.getDrNeed(this);
+//        String chm = SharedPref.getChmNeed(this);
+//        String stk = SharedPref.getStkNeed(this);
+//        String unl = SharedPref.getUnlNeed(this);
+//
+//        boolean isDr = dr.equalsIgnoreCase("0");
+//        boolean isChm = chm.equalsIgnoreCase("0");
+//        boolean isStk = stk.equalsIgnoreCase("0");
+//        boolean isUnl = unl.equalsIgnoreCase("0");
+//
+//        // Build key → "1" if value == "0", else "0"
+//        String key = (isDr ? "1" : "0") +
+//                (isChm ? "1" : "0") +
+//                (isStk ? "1" : "0") +
+//                (isUnl ? "1" : "0");
+//
+//        switch (key) {
+////            case "0000":
+////                // none = "0"
+////                LoadDefaultZeroValues();
+////                break;
+//            case "1000":
+//                // only DrNeed = "0"
+//                LoadDrOnlyValues();
+//                break;
+//            case "0100":
+//                // only ChmNeed = "0"
+//                LoadChmOnlyValues();
+//                break;
+//            case "0010":
+//                // only StkNeed = "0"
+//                LoadStkOnlyValues();
+//                break;
+//            case "0001":
+//                // only UnlNeed = "0"
+//                LoadUnlstOnlyValues();
+//                break;
+//            case "1100":
+//                // DrNeed + ChmNeed = "0"
+//                LoadDrChmValues();
+//                break;
+//            case "1010":
+//                // DrNeed + StkNeed = "0"
+//                LoadDrStkValues();
+//                break;
+//            case "1001":
+//                // DrNeed + UnlNeed = "0"
+//                LoadDrUnlstValues();
+//                break;
+//            case "0110":
+//                // ChmNeed + StkNeed = "0"
+//                LoadChmStkValues();
+//                break;
+//            case "0101":
+//                // ChmNeed + UnlNeed = "0"
+//                LoadChmUnlstValues();
+//                break;
+//            case "0011":
+//                // StkNeed + UnlNeed = "0"
+//                LoadStkUnlstValues();
+//                break;
+//            case "1110":
+//                // DrNeed + ChmNeed + StkNeed = "0"
+//                LoadDrChmStkValues();
+//                break;
+//            case "1101":
+//                // DrNeed + ChmNeed + UnlNeed = "0"
+//                LoadDrChmUnlstValues();
+//                break;
+//            case "1011":
+//                // DrNeed + StkNeed + UnlNeed = "0"
+//                LoadDrStkUnlstValues();
+//                break;
+//            case "0111":
+//                // ChmNeed + StkNeed + UnlNeed = "0"
+//                LoadChmStkUnlstValues();
+//                break;
+//            case "1111":
+//                // All = "0"
+//                //LoadDrChmStkUnlstValues();
+//      LoadDrChmStkUnlstValues(missedChart, missedChart2, totalDoctors, uniqueDoctorsCurrentMonth, currentMonthMissed, previousMonthMissed);
+  //      LoadDrChmStkUnlstValues( totalDoctors, uniqueDoctorsCurrentMonth, currentMonthMissed, previousMonthMissed);
+//                break;
+//        }
 
-        boolean isDr = dr.equalsIgnoreCase("0");
-        boolean isChm = chm.equalsIgnoreCase("0");
-        boolean isStk = stk.equalsIgnoreCase("0");
-        boolean isUnl = unl.equalsIgnoreCase("0");
-
-        // Build key → "1" if value == "0", else "0"
-        String key = (isDr ? "1" : "0") +
-                (isChm ? "1" : "0") +
-                (isStk ? "1" : "0") +
-                (isUnl ? "1" : "0");
-
-        switch (key) {
-            case "0000":
-                // none = "0"
-                LoadDefaultZeroValues();
-                break;
-            case "1000":
-                // only DrNeed = "0"
-                LoadDrOnlyValues();
-                break;
-            case "0100":
-                // only ChmNeed = "0"
-                LoadChmOnlyValues();
-                break;
-            case "0010":
-                // only StkNeed = "0"
-                LoadStkOnlyValues();
-                break;
-            case "0001":
-                // only UnlNeed = "0"
-                LoadUnlstOnlyValues();
-                break;
-            case "1100":
-                // DrNeed + ChmNeed = "0"
-                LoadDrChmValues();
-                break;
-            case "1010":
-                // DrNeed + StkNeed = "0"
-                LoadDrStkValues();
-                break;
-            case "1001":
-                // DrNeed + UnlNeed = "0"
-                LoadDrUnlstValues();
-                break;
-            case "0110":
-                // ChmNeed + StkNeed = "0"
-                LoadChmStkValues();
-                break;
-            case "0101":
-                // ChmNeed + UnlNeed = "0"
-                LoadChmUnlstValues();
-                break;
-            case "0011":
-                // StkNeed + UnlNeed = "0"
-                LoadStkUnlstValues();
-                break;
-            case "1110":
-                // DrNeed + ChmNeed + StkNeed = "0"
-                LoadDrChmStkValues();
-                break;
-            case "1101":
-                // DrNeed + ChmNeed + UnlNeed = "0"
-                LoadDrChmUnlstValues();
-                break;
-            case "1011":
-                // DrNeed + StkNeed + UnlNeed = "0"
-                LoadDrStkUnlstValues();
-                break;
-            case "0111":
-                // ChmNeed + StkNeed + UnlNeed = "0"
-                LoadChmStkUnlstValues();
-                break;
-            case "1111":
-                // All = "0"
-                //LoadDrChmStkUnlstValues();
-
-                LoadDrChmStkUnlstValues(missedChart, missedChart2, totalDoctors, uniqueDoctorsCurrentMonth, currentMonthMissed, previousMonthMissed);
-                break;
-        }
-
-        DrMissedCurrent.setOnClickListener(v -> {
-            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
-            MissedReportGraph.this.startActivity(intentWeb);
-        });
-        DrMissedCurrentprev.setOnClickListener(v -> {
-            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
-            MissedReportGraph.this.startActivity(intentWeb);
-        });
-        DrMissedCurrentprev1.setOnClickListener(v -> {
-            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
-            MissedReportGraph.this.startActivity(intentWeb);
-        });
+//        DrMissedCurrent.setOnClickListener(v -> {
+//            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
+//            MissedReportGraph.this.startActivity(intentWeb);
+//        });
+//        DrMissedCurrentprev.setOnClickListener(v -> {
+//            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
+//            MissedReportGraph.this.startActivity(intentWeb);
+//        });
+//        DrMissedCurrentprev1.setOnClickListener(v -> {
+//            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
+//            MissedReportGraph.this.startActivity(intentWeb);
+//        });
         binding.imageBack.setOnClickListener(v -> {
             finish();
         });
 
-        // Add swipe listeners
-        setSwipeListener(binding.viewFlipper);
-        setSwipeListener(binding.viewFlipper2);
-        setSwipeListener(binding.viewFlipper3);
-    }
+//
+//        // Add swipe listeners
+////        setSwipeListener(binding.viewFlipper);
+////        setSwipeListener(binding.viewFlipper2);
+////        setSwipeListener(binding.viewFlipper3);
+//    }
 
 
-    public static void progressBarAnimation(final int max, ProgressBar pBar) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (max != 0) {
-                    while (pBarCount <= max) {
-                        try {
-                            pBar.setProgress(max);
-                        } catch (Exception e) {
-                        }
-                    }
-                } else {
-                    try {
-                        pBar.setProgress(0);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-    }
-
-
-
-
-    private void setSwipeListener(ViewFlipper flipper) {
-        flipper.setOnTouchListener(new View.OnTouchListener() {
-            float downX, downY;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        downX = event.getX();
-                        downY = event.getY();
-                        return true;
-
-                    case MotionEvent.ACTION_MOVE:
-                        float moveX = event.getX();
-                        float moveY = event.getY();
-                        float diffX = moveX - downX;
-                        float diffY = moveY - downY;
-
-                        if (Math.abs(diffX) > Math.abs(diffY)) {
-                            v.getParent().requestDisallowInterceptTouchEvent(true);
-                        }
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        float upX = event.getX();
-                        float deltaX = upX - downX; // 👉 Right swipe = positive, Left swipe = negative
-
-                        int currentIndex = flipper.getDisplayedChild();
-                        int childCount = flipper.getChildCount();
-
-                        if (Math.abs(deltaX) > 150) { // threshold
-                            if (deltaX < 0) { // 👉 Swipe Left → Next
-                                if (currentIndex < childCount - 1) {
-                                    flipper.setInAnimation(MissedReportGraph.this, R.anim.slide_in_right);
-                                    flipper.setOutAnimation(MissedReportGraph.this, R.anim.slide_out_left);
-                                    flipper.showNext();
-                                    return true;
-                                }
-                            } else { // 👉 Swipe Right → Previous
-                                if (currentIndex > 0) {
-                                    flipper.setInAnimation(MissedReportGraph.this, R.anim.slide_in_left);
-                                    flipper.setOutAnimation(MissedReportGraph.this, R.anim.slide_out_right);
-                                    flipper.showPrevious();
-                                    return true;
-                                }
-                            }
-                        }
-                        break;
-                }
-                return false;
-            }
-        });
+//    public static void progressBarAnimation(final int max, ProgressBar pBar) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (max != 0) {
+//                    while (pBarCount <= max) {
+//                        try {
+//                            pBar.setProgress(max);
+//                        } catch (Exception e) {
+//                        }
+//                    }
+//                } else {
+//                    try {
+//                        pBar.setProgress(0);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
+//    }
+//
+//
+//    private void setSwipeListener(ViewFlipper flipper) {
+//        flipper.setOnTouchListener(new View.OnTouchListener() {
+//            float downX, downY;
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        downX = event.getX();
+//                        downY = event.getY();
+//                        return true;
+//
+//                    case MotionEvent.ACTION_MOVE:
+//                        float moveX = event.getX();
+//                        float moveY = event.getY();
+//                        float diffX = moveX - downX;
+//                        float diffY = moveY - downY;
+//
+//                        if (Math.abs(diffX) > Math.abs(diffY)) {
+//                            v.getParent().requestDisallowInterceptTouchEvent(true);
+//                        }
+//                        break;
+//
+//                    case MotionEvent.ACTION_UP:
+//                        float upX = event.getX();
+//                        float deltaX = upX - downX; // 👉 Right swipe = positive, Left swipe = negative
+//
+//                        int currentIndex = flipper.getDisplayedChild();
+//                        int childCount = flipper.getChildCount();
+//
+//                        if (Math.abs(deltaX) > 150) { // threshold
+//                            if (deltaX < 0) { // 👉 Swipe Left → Next
+//                                if (currentIndex < childCount - 1) {
+//                                    flipper.setInAnimation(MissedReportGraph.this, R.anim.slide_in_right);
+//                                    flipper.setOutAnimation(MissedReportGraph.this, R.anim.slide_out_left);
+//                                    flipper.showNext();
+//                                    return true;
+//                                }
+//                            } else { // 👉 Swipe Right → Previous
+//                                if (currentIndex > 0) {
+//                                    flipper.setInAnimation(MissedReportGraph.this, R.anim.slide_in_left);
+//                                    flipper.setOutAnimation(MissedReportGraph.this, R.anim.slide_out_right);
+//                                    flipper.showPrevious();
+//                                    return true;
+//                                }
+//                            }
+//                        }
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
     }
 
     private void hideSystemBars() {
@@ -536,144 +532,144 @@ public class MissedReportGraph extends AppCompatActivity {
         }
     }
 
-    public void LoadDefaultZeroValues() {
-        binding.viewFlipper.setVisibility(View.GONE);
-        binding.viewFlipper2.setVisibility(View.GONE);
-        binding.viewFlipper3.setVisibility(View.GONE);
-    }
+//    public void LoadDefaultZeroValues() {
+//        binding.viewFlipper.setVisibility(View.GONE);
+//        binding.viewFlipper2.setVisibility(View.GONE);
+//        binding.viewFlipper3.setVisibility(View.GONE);
+//    }
 
-    public void LoadDrOnlyValues() {
-        ChmMissedCurrent.setVisibility(View.GONE);
-        ChmMissedprev.setVisibility(View.GONE);
-        ChmMissedprev1.setVisibility(View.GONE);
-        stkunlstcur.setVisibility(View.GONE);
-        stkunlstprev.setVisibility(View.GONE);
-        stkunlstprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadChmOnlyValues() {
-        DrMissedCurrent.setVisibility(View.GONE);
-        DrMissedCurrentprev.setVisibility(View.GONE);
-        DrMissedCurrentprev1.setVisibility(View.GONE);
-        stkunlstcur.setVisibility(View.GONE);
-        stkunlstprev.setVisibility(View.GONE);
-        stkunlstprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadStkOnlyValues() {
-        UnlstMissedCurrentnew.setVisibility(View.GONE);
-        UnlstMissedprevnew.setVisibility(View.GONE);
-        UnlstMissedprev1new.setVisibility(View.GONE);
-        drchmcur.setVisibility(View.GONE);
-        drchmprev.setVisibility(View.GONE);
-        drchmprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadUnlstOnlyValues() {
-        StkMissedCurrentnew.setVisibility(View.GONE);
-        StkMissedprevnew.setVisibility(View.GONE);
-        StkMissedprev1new.setVisibility(View.GONE);
-        drchmcur.setVisibility(View.GONE);
-        drchmprev.setVisibility(View.GONE);
-        drchmprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadDrChmValues() {
-        stkunlstcur.setVisibility(View.GONE);
-        stkunlstprev.setVisibility(View.GONE);
-        stkunlstprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadDrStkValues() {
-        ChmMissedCurrent.setVisibility(View.GONE);
-        StkMissedCurrent.setVisibility(View.VISIBLE);
-        ChmMissedprev.setVisibility(View.GONE);
-        StkMissedprev.setVisibility(View.VISIBLE);
-        ChmMissedprev1.setVisibility(View.GONE);
-        StkMissedprev1.setVisibility(View.VISIBLE);
-        stkunlstcur.setVisibility(View.GONE);
-        stkunlstprev.setVisibility(View.GONE);
-        stkunlstprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadDrUnlstValues() {
-        ChmMissedCurrent.setVisibility(View.GONE);
-        UnlstMissedCurrent.setVisibility(View.VISIBLE);
-        ChmMissedprev.setVisibility(View.GONE);
-        UnlstMissedprev.setVisibility(View.VISIBLE);
-        ChmMissedprev1.setVisibility(View.GONE);
-        UnlstMissedprev1.setVisibility(View.VISIBLE);
-        stkunlstcur.setVisibility(View.GONE);
-        stkunlstprev.setVisibility(View.GONE);
-        stkunlstprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadChmStkValues() {
-        DrMissedCurrent.setVisibility(View.GONE);
-        StkMissedCurrent.setVisibility(View.VISIBLE);
-        DrMissedCurrentprev.setVisibility(View.GONE);
-        StkMissedprev.setVisibility(View.VISIBLE);
-        DrMissedCurrentprev1.setVisibility(View.GONE);
-        StkMissedprev1.setVisibility(View.VISIBLE);
-        stkunlstcur.setVisibility(View.GONE);
-        stkunlstprev.setVisibility(View.GONE);
-        stkunlstprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadChmUnlstValues() {
-        DrMissedCurrent.setVisibility(View.GONE);
-        UnlstMissedCurrent.setVisibility(View.VISIBLE);
-        DrMissedCurrentprev.setVisibility(View.GONE);
-        UnlstMissedprev.setVisibility(View.VISIBLE);
-        DrMissedCurrentprev1.setVisibility(View.GONE);
-        UnlstMissedprev1.setVisibility(View.VISIBLE);
-        stkunlstcur.setVisibility(View.GONE);
-        stkunlstprev.setVisibility(View.GONE);
-        stkunlstprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadStkUnlstValues() {
-        drchmcur.setVisibility(View.GONE);
-        drchmprev.setVisibility(View.GONE);
-        drchmprev1.setVisibility(View.GONE);
-    }
-
-    public void LoadDrChmStkValues() {
-        UnlstMissedCurrentnew.setVisibility(View.GONE);
-        UnlstMissedprevnew.setVisibility(View.GONE);
-        UnlstMissedprev1new.setVisibility(View.GONE);
-    }
-
-    public void LoadDrChmUnlstValues() {
-        StkMissedCurrentnew.setVisibility(View.GONE);
-        StkMissedprevnew.setVisibility(View.GONE);
-        StkMissedprev1new.setVisibility(View.GONE);
-    }
-
-    public void LoadDrStkUnlstValues() {
-        ChmMissedCurrent.setVisibility(View.GONE);
-        StkMissedCurrent.setVisibility(View.VISIBLE);
-        ChmMissedprev.setVisibility(View.GONE);
-        StkMissedprev.setVisibility(View.VISIBLE);
-        ChmMissedprev1.setVisibility(View.GONE);
-        StkMissedprev1.setVisibility(View.VISIBLE);
-        StkMissedCurrentnew.setVisibility(View.GONE);
-        StkMissedprevnew.setVisibility(View.GONE);
-        StkMissedprev1new.setVisibility(View.GONE);
-    }
-
-    public void LoadChmStkUnlstValues() {
-        DrMissedCurrent.setVisibility(View.GONE);
-        DrMissedCurrentprev.setVisibility(View.GONE);
-        DrMissedCurrentprev1.setVisibility(View.GONE);
-        StkMissedCurrent.setVisibility(View.VISIBLE);
-        StkMissedCurrentnew.setVisibility(View.GONE);
-        StkMissedprev.setVisibility(View.VISIBLE);
-        StkMissedprevnew.setVisibility(View.GONE);
-        StkMissedprev1.setVisibility(View.VISIBLE);
-        StkMissedprev1new.setVisibility(View.GONE);
-    }
-    //public void LoadDrChmStkUnlstValues(PieChart pBardrcurrent, int totalDoctors, int uniqueDoctorsCurrentMonth, int currentMonthMissed) {
+//    public void LoadDrOnlyValues() {
+//        ChmMissedCurrent.setVisibility(View.GONE);
+//        ChmMissedprev.setVisibility(View.GONE);
+//        ChmMissedprev1.setVisibility(View.GONE);
+//        stkunlstcur.setVisibility(View.GONE);
+//        stkunlstprev.setVisibility(View.GONE);
+//        stkunlstprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadChmOnlyValues() {
+//        DrMissedCurrent.setVisibility(View.GONE);
+//        DrMissedCurrentprev.setVisibility(View.GONE);
+//        DrMissedCurrentprev1.setVisibility(View.GONE);
+//        stkunlstcur.setVisibility(View.GONE);
+//        stkunlstprev.setVisibility(View.GONE);
+//        stkunlstprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadStkOnlyValues() {
+//        UnlstMissedCurrentnew.setVisibility(View.GONE);
+//        UnlstMissedprevnew.setVisibility(View.GONE);
+//        UnlstMissedprev1new.setVisibility(View.GONE);
+//        drchmcur.setVisibility(View.GONE);
+//        drchmprev.setVisibility(View.GONE);
+//        drchmprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadUnlstOnlyValues() {
+//        StkMissedCurrentnew.setVisibility(View.GONE);
+//        StkMissedprevnew.setVisibility(View.GONE);
+//        StkMissedprev1new.setVisibility(View.GONE);
+//        drchmcur.setVisibility(View.GONE);
+//        drchmprev.setVisibility(View.GONE);
+//        drchmprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadDrChmValues() {
+//        stkunlstcur.setVisibility(View.GONE);
+//        stkunlstprev.setVisibility(View.GONE);
+//        stkunlstprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadDrStkValues() {
+//        ChmMissedCurrent.setVisibility(View.GONE);
+//        StkMissedCurrent.setVisibility(View.VISIBLE);
+//        ChmMissedprev.setVisibility(View.GONE);
+//        StkMissedprev.setVisibility(View.VISIBLE);
+//        ChmMissedprev1.setVisibility(View.GONE);
+//        StkMissedprev1.setVisibility(View.VISIBLE);
+//        stkunlstcur.setVisibility(View.GONE);
+//        stkunlstprev.setVisibility(View.GONE);
+//        stkunlstprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadDrUnlstValues() {
+//        ChmMissedCurrent.setVisibility(View.GONE);
+//        UnlstMissedCurrent.setVisibility(View.VISIBLE);
+//        ChmMissedprev.setVisibility(View.GONE);
+//        UnlstMissedprev.setVisibility(View.VISIBLE);
+//        ChmMissedprev1.setVisibility(View.GONE);
+//        UnlstMissedprev1.setVisibility(View.VISIBLE);
+//        stkunlstcur.setVisibility(View.GONE);
+//        stkunlstprev.setVisibility(View.GONE);
+//        stkunlstprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadChmStkValues() {
+//        DrMissedCurrent.setVisibility(View.GONE);
+//        StkMissedCurrent.setVisibility(View.VISIBLE);
+//        DrMissedCurrentprev.setVisibility(View.GONE);
+//        StkMissedprev.setVisibility(View.VISIBLE);
+//        DrMissedCurrentprev1.setVisibility(View.GONE);
+//        StkMissedprev1.setVisibility(View.VISIBLE);
+//        stkunlstcur.setVisibility(View.GONE);
+//        stkunlstprev.setVisibility(View.GONE);
+//        stkunlstprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadChmUnlstValues() {
+//        DrMissedCurrent.setVisibility(View.GONE);
+//        UnlstMissedCurrent.setVisibility(View.VISIBLE);
+//        DrMissedCurrentprev.setVisibility(View.GONE);
+//        UnlstMissedprev.setVisibility(View.VISIBLE);
+//        DrMissedCurrentprev1.setVisibility(View.GONE);
+//        UnlstMissedprev1.setVisibility(View.VISIBLE);
+//        stkunlstcur.setVisibility(View.GONE);
+//        stkunlstprev.setVisibility(View.GONE);
+//        stkunlstprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadStkUnlstValues() {
+//        drchmcur.setVisibility(View.GONE);
+//        drchmprev.setVisibility(View.GONE);
+//        drchmprev1.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadDrChmStkValues() {
+//        UnlstMissedCurrentnew.setVisibility(View.GONE);
+//        UnlstMissedprevnew.setVisibility(View.GONE);
+//        UnlstMissedprev1new.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadDrChmUnlstValues() {
+//        StkMissedCurrentnew.setVisibility(View.GONE);
+//        StkMissedprevnew.setVisibility(View.GONE);
+//        StkMissedprev1new.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadDrStkUnlstValues() {
+//        ChmMissedCurrent.setVisibility(View.GONE);
+//        StkMissedCurrent.setVisibility(View.VISIBLE);
+//        ChmMissedprev.setVisibility(View.GONE);
+//        StkMissedprev.setVisibility(View.VISIBLE);
+//        ChmMissedprev1.setVisibility(View.GONE);
+//        StkMissedprev1.setVisibility(View.VISIBLE);
+//        StkMissedCurrentnew.setVisibility(View.GONE);
+//        StkMissedprevnew.setVisibility(View.GONE);
+//        StkMissedprev1new.setVisibility(View.GONE);
+//    }
+//
+//    public void LoadChmStkUnlstValues() {
+//        DrMissedCurrent.setVisibility(View.GONE);
+//        DrMissedCurrentprev.setVisibility(View.GONE);
+//        DrMissedCurrentprev1.setVisibility(View.GONE);
+//        StkMissedCurrent.setVisibility(View.VISIBLE);
+//        StkMissedCurrentnew.setVisibility(View.GONE);
+//        StkMissedprev.setVisibility(View.VISIBLE);
+//        StkMissedprevnew.setVisibility(View.GONE);
+//        StkMissedprev1.setVisibility(View.VISIBLE);
+//        StkMissedprev1new.setVisibility(View.GONE);
+//    }
+//    //public void LoadDrChmStkUnlstValues(PieChart pBardrcurrent, int totalDoctors, int uniqueDoctorsCurrentMonth, int currentMonthMissed) {
 
     public void LoadDrChmStkUnlstValues(
             PieChart missedChart,
@@ -683,37 +679,37 @@ public class MissedReportGraph extends AppCompatActivity {
             int currentMonthMissed,
             int previousMonthMissed) {
 
-        float missedPercentage = (((float) currentMonthMissed / (float) totalDoctors) * 100.0f);
-        ArrayList<Integer> colors = new ArrayList<>();
-        // colors.add(Color.rgb(0, 144, 255));
-        colors.add(getResources().getColor(R.color.green_60));
-        colors.add(getResources().getColor(R.color.mildRed));
-        ArrayList<PieEntry> missedDataList = new ArrayList<>();
-        missedDataList.add(new PieEntry(100.0f - missedPercentage)); // visited
-        missedDataList.add(new PieEntry(missedPercentage, ""));      // missed
-        PieDataSet missedDataSet = new PieDataSet(missedDataList, "");
-        missedDataSet.setColors(colors);
-        PieData missedData = new PieData(missedDataSet);
-        missedData.setValueTextSize(0f);
-        missedData.setValueTextColor(Color.WHITE);
-        missedChart.setData(missedData);
-        missedChart.setUsePercentValues(true);
-        missedChart.setDrawHoleEnabled(true);
-        missedChart.setCenterTextSize(18f);
-        missedChart.setCenterTextColor(missedChart.getContext().getColor(R.color.black));
-        missedChart.setTransparentCircleRadius(30f);
-        missedChart.setHoleRadius(75f);
-        missedChart.animateXY(1400, 1400);
-        missedChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
-        missedChart.setCenterText(String.format("%.1f %%", missedPercentage));
-        Description description2 = missedChart.getDescription();
-        description2.setEnabled(false);
-        Legend legend2 = missedChart.getLegend();
-        legend2.setEnabled(false);
-        missedChart.invalidate();
-        totaldrcur.setText(String.valueOf(totalDoctors));
-        totaldrvisited.setText(String.valueOf(visitedDoctorsCurrentMonth));
-        totaldrmissed.setText(String.valueOf(currentMonthMissed));
+//        float missedPercentage = (((float) currentMonthMissed / (float) totalDoctors) * 100.0f);
+//        ArrayList<Integer> colors = new ArrayList<>();
+//        // colors.add(Color.rgb(0, 144, 255));
+//        colors.add(getResources().getColor(R.color.green_60));
+//        colors.add(getResources().getColor(R.color.mildRed));
+//        ArrayList<PieEntry> missedDataList = new ArrayList<>();
+//        missedDataList.add(new PieEntry(100.0f - missedPercentage)); // visited
+//        missedDataList.add(new PieEntry(missedPercentage, ""));      // missed
+//        PieDataSet missedDataSet = new PieDataSet(missedDataList, "");
+//        missedDataSet.setColors(colors);
+//        PieData missedData = new PieData(missedDataSet);
+//        missedData.setValueTextSize(0f);
+//        missedData.setValueTextColor(Color.WHITE);
+//        missedChart.setData(missedData);
+//        missedChart.setUsePercentValues(true);
+//        missedChart.setDrawHoleEnabled(true);
+//        missedChart.setCenterTextSize(18f);
+//        missedChart.setCenterTextColor(missedChart.getContext().getColor(R.color.black));
+//        missedChart.setTransparentCircleRadius(30f);
+//        missedChart.setHoleRadius(75f);
+//        missedChart.animateXY(1400, 1400);
+//        missedChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
+//        missedChart.setCenterText(String.format("%.1f %%", missedPercentage));
+//        Description description2 = missedChart.getDescription();
+//        description2.setEnabled(false);
+//        Legend legend2 = missedChart.getLegend();
+//        legend2.setEnabled(false);
+//        missedChart.invalidate();
+//        totaldrcur.setText(String.valueOf(totalDoctors));
+//        totaldrvisited.setText(String.valueOf(visitedDoctorsCurrentMonth));
+//        totaldrmissed.setText(String.valueOf(currentMonthMissed));
 
  /*       //Dr Current Month
 //        pBardrcurrent.setData(100);
@@ -757,38 +753,38 @@ public class MissedReportGraph extends AppCompatActivity {
         unlstnewvisitcur.setBackgroundColor(getColor(color.gray_med));
         unlstnewmissedcur.setBackgroundColor(getColor(color.backround_graey));
         //  }, 200);*/
-
-        float missedPercentage2 = (((float) previousMonthMissed / (float) totalDoctors) * 100.0f);
-        ArrayList<Integer> colors2 = new ArrayList<>();
-        colors.add(Color.rgb(0, 144, 255));
-        colors2.add(getResources().getColor(R.color.green_60));
-        colors2.add(getResources().getColor(R.color.mildRed));
-        ArrayList<PieEntry> missedDataList2 = new ArrayList<>();
-        missedDataList2.add(new PieEntry(100.0f - missedPercentage2)); // visited
-        missedDataList2.add(new PieEntry(missedPercentage, ""));      // missed
-        PieDataSet missedDataSet2 = new PieDataSet(missedDataList2, "");
-        missedDataSet2.setColors(colors);
-        PieData missedData2 = new PieData(missedDataSet2);
-        missedData2.setValueTextSize(0f);
-        missedData2.setValueTextColor(Color.WHITE);
-        missedChart2.setData(missedData2);
-        missedChart2.setUsePercentValues(true);
-        missedChart2.setDrawHoleEnabled(true);
-        missedChart2.setCenterTextSize(18f);
-        missedChart2.setCenterTextColor(missedChart.getContext().getColor(R.color.black));
-        missedChart2.setTransparentCircleRadius(30f);
-        missedChart2.setHoleRadius(70f);
-        missedChart2.animateXY(1400, 1400);
-        missedChart2.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
-        missedChart2.setCenterText(String.format("%.1f %%", missedPercentage));
-        Description description3 = missedChart2.getDescription();
-        description3.setEnabled(false);
-        Legend legend3 = missedChart2.getLegend();
-        legend3.setEnabled(false);
-        missedChart2.invalidate();
-        prevtotaldr.setText(String.valueOf(totalDoctors));
-        prevtotaldrvisited.setText(String.valueOf(visitedDoctorsPreviousMonth));
-        prevtotaldrmissed.setText(String.valueOf(previousMonthMissed));
+            // previous month sp
+//        float missedPercentage2 = (((float) previousMonthMissed / (float) totalDoctors) * 100.0f);
+//        ArrayList<Integer> colors2 = new ArrayList<>();
+//        colors.add(Color.rgb(0, 144, 255));
+//        colors2.add(getResources().getColor(R.color.green_60));
+//        colors2.add(getResources().getColor(R.color.mildRed));
+//        ArrayList<PieEntry> missedDataList2 = new ArrayList<>();
+//        missedDataList2.add(new PieEntry(100.0f - missedPercentage2)); // visited
+//        missedDataList2.add(new PieEntry(missedPercentage, ""));      // missed
+//        PieDataSet missedDataSet2 = new PieDataSet(missedDataList2, "");
+//        missedDataSet2.setColors(colors);
+//        PieData missedData2 = new PieData(missedDataSet2);
+//        missedData2.setValueTextSize(0f);
+//        missedData2.setValueTextColor(Color.WHITE);
+//        missedChart2.setData(missedData2);
+//        missedChart2.setUsePercentValues(true);
+//        missedChart2.setDrawHoleEnabled(true);
+//        missedChart2.setCenterTextSize(18f);
+//        missedChart2.setCenterTextColor(missedChart.getContext().getColor(R.color.black));
+//        missedChart2.setTransparentCircleRadius(30f);
+//        missedChart2.setHoleRadius(70f);
+//        missedChart2.animateXY(1400, 1400);
+//        missedChart2.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
+//        missedChart2.setCenterText(String.format("%.1f %%", missedPercentage));
+//        Description description3 = missedChart2.getDescription();
+//        description3.setEnabled(false);
+//        Legend legend3 = missedChart2.getLegend();
+//        legend3.setEnabled(false);
+//        missedChart2.invalidate();
+//        prevtotaldr.setText(String.valueOf(totalDoctors));
+//        prevtotaldrvisited.setText(String.valueOf(visitedDoctorsPreviousMonth));
+//        prevtotaldrmissed.setText(String.valueOf(previousMonthMissed));
 
 
         /*new Handler().postDelayed(() -> {
@@ -1101,6 +1097,7 @@ public class MissedReportGraph extends AppCompatActivity {
             //Doctor
             List<MissedStatsModel> dataList = new ArrayList<>();
             MissedStatsModel currentMonthDrStats = new MissedStatsModel(
+                    "1",
                     doctorArray,
                     currentMonthStats.uniqueDoctors);
 
@@ -1113,6 +1110,7 @@ public class MissedReportGraph extends AppCompatActivity {
 
 
             MissedStatsModel previousMonthDrStats = new MissedStatsModel(
+                    "1",
                     doctorArray,
                     previousMonthStats.uniqueDoctors);
 //                    String.valueOf(totalDoctors),
@@ -1125,6 +1123,7 @@ public class MissedReportGraph extends AppCompatActivity {
 //            );
 
             MissedStatsModel prePreviousMonthDrStats = new MissedStatsModel(
+                    "1",
                     doctorArray,
                     prePreviousMonthStats.uniqueDoctors);
 //                    String.valueOf(totalDoctors),
@@ -1138,7 +1137,8 @@ public class MissedReportGraph extends AppCompatActivity {
 
             //Chemist
             MissedStatsModel currentMonthCheStats = new MissedStatsModel(
-                    doctorArray,
+                    "2",
+                    chemistArray,
                     currentMonthStats.uniqueChemists);
 //                    String.valueOf(totalChemist),
 //                    String.valueOf(uniqueChemistCurrentMonth),
@@ -1150,7 +1150,8 @@ public class MissedReportGraph extends AppCompatActivity {
 //            );
 
             MissedStatsModel previousMonthCheStats = new MissedStatsModel(
-                    doctorArray,
+                    "2",
+                    chemistArray,
                     previousMonthStats.uniqueChemists);
 //                    String.valueOf(totalChemist),
 //                    String.valueOf(uniqueChemistPreviousMonth),
@@ -1162,8 +1163,9 @@ public class MissedReportGraph extends AppCompatActivity {
 //            );
 
             MissedStatsModel prePreviousMonthCheStats = new MissedStatsModel(
-                    doctorArray,
-                    previousMonthStats.uniqueChemists);
+                    "2",
+                    chemistArray,
+                    prePreviousMonthStats.uniqueChemists);
 //                    String.valueOf(totalChemist),
 //                    String.valueOf(uniqueChemistPre_PrevMonth),
 //                    String.valueOf(prePreviousMonthMissed),
@@ -1175,7 +1177,8 @@ public class MissedReportGraph extends AppCompatActivity {
             //Stk
 
             MissedStatsModel currentMonthStkStats = new MissedStatsModel(
-                    doctorArray,
+                    "3",
+                    stkArray,
                     currentMonthStats.uniqueStockiest);
 //                    String.valueOf(totalStk),
 //                    String.valueOf(uniqueStockiestCurrentMonth),
@@ -1186,7 +1189,8 @@ public class MissedReportGraph extends AppCompatActivity {
 //            );
 
             MissedStatsModel previousMonthStkStats = new MissedStatsModel(
-                    doctorArray,
+                    "3",
+                    stkArray,
                     previousMonthStats.uniqueStockiest);
 //                    String.valueOf(totalStk),
 //                    String.valueOf(uniqueStockiestPreviousMonth),
@@ -1198,8 +1202,9 @@ public class MissedReportGraph extends AppCompatActivity {
 //            );
 
             MissedStatsModel prePreviousMonthStkStats = new MissedStatsModel(
-                    doctorArray,
-                    previousMonthStats.uniqueStockiest);
+                    "3",
+                    stkArray,
+                    prePreviousMonthStats.uniqueStockiest);
 //                    String.valueOf(totalStk),
 //                    String.valueOf(uniqueStockiestPre_PrevMonth),
 //                    String.valueOf(prePreviousMonthMissed),
@@ -1210,7 +1215,8 @@ public class MissedReportGraph extends AppCompatActivity {
 
             //unlisted
             MissedStatsModel currentMonthUnlistedStats = new MissedStatsModel(
-                    doctorArray,
+                    "4",
+                    unlistedArray,
                     currentMonthStats.uniqueUnlisted);
 //                    String.valueOf(totalUnlisted),
 //                    String.valueOf(uniqueUnlistedCurrentMonth),
@@ -1222,7 +1228,8 @@ public class MissedReportGraph extends AppCompatActivity {
 //            );
 
             MissedStatsModel previousMonthUnlistedStats = new MissedStatsModel(
-                    doctorArray,
+                    "4",
+                    unlistedArray,
                     previousMonthStats.uniqueUnlisted);
 //                    String.valueOf(totalUnlisted),
 //                    String.valueOf(uniqueUnlistedPreviousMonth),
@@ -1234,8 +1241,9 @@ public class MissedReportGraph extends AppCompatActivity {
 //            );
 
             MissedStatsModel prePreviousMonthUnlistedStats = new MissedStatsModel(
-                    doctorArray,
-                    previousMonthStats.uniqueUnlisted);
+                    "4",
+                    unlistedArray,
+                    prePreviousMonthStats.uniqueUnlisted);
 //                    String.valueOf(totalUnlisted),
 //                    String.valueOf(uniqueUnlistedPre_PrevMonth),
 //                    String.valueOf(prePreviousMonthMissed),
@@ -1243,6 +1251,7 @@ public class MissedReportGraph extends AppCompatActivity {
 //                    formattedCallAvgPre_PreviousUnlisted,
 //                    formattedCallCvgPre_PreviousUnlisted
 //            );
+
             //Dr
             dataList.add(currentMonthDrStats);
             dataList.add(previousMonthDrStats);
@@ -1261,7 +1270,6 @@ public class MissedReportGraph extends AppCompatActivity {
             dataList.add(prePreviousMonthUnlistedStats);
             // Example monthData
 
-
        /*     InnerAdapter adapter = new InnerAdapter( MissedReportGraph.this,
                     dataListDoc,
                     dataListChm,
@@ -1272,10 +1280,44 @@ public class MissedReportGraph extends AppCompatActivity {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(adapter);*/
 
+            //current month
+            List<MissedStatsModel> currentMonthList = new ArrayList<>();
+            currentMonthList.add(currentMonthDrStats);
+            currentMonthList.add(currentMonthCheStats);
+            currentMonthList.add(currentMonthStkStats);
+            currentMonthList.add(currentMonthUnlistedStats);
+
+            //previous month
+            List<MissedStatsModel> previousMonthList = new ArrayList<>();
+            previousMonthList.add(previousMonthDrStats);
+            previousMonthList.add(previousMonthCheStats);
+            previousMonthList.add(previousMonthStkStats);
+            previousMonthList.add(previousMonthUnlistedStats);
+
+            //pre-previous month
+            List<MissedStatsModel> prePreviousMonthList = new ArrayList<>();
+            prePreviousMonthList.add(prePreviousMonthDrStats);
+            prePreviousMonthList.add(prePreviousMonthCheStats);
+            prePreviousMonthList.add(prePreviousMonthStkStats);
+            prePreviousMonthList.add(prePreviousMonthUnlistedStats);
+
+
+//   all months into  list
+            List<List<MissedStatsModel>> allMonthsFlatList = new ArrayList<>();
+            allMonthsFlatList.add(currentMonthList);
+            allMonthsFlatList.add(previousMonthList);
+            allMonthsFlatList.add(prePreviousMonthList);
+
+
+            OuterAdapter adapter = new OuterAdapter(this, allMonthsFlatList,sfCode,date);
+            RecyclerView recyclerView = findViewById(R.id.recyclerDoctorMissedReports);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(adapter);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
+    }
 }
 

@@ -48,6 +48,7 @@
         android:id="@+id/switch_txt"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_margin="8dp"
         android:layout_marginTop="17dp"
         android:background="@drawable/bg_white_border_purple"
         android:backgroundTint="@color/light_grey_1"
@@ -94,6 +95,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:gravity="start|center"
             android:paddingStart="@dimen/_10sdp"
+
             android:text="Sync to get Live Data!"
             android:textColor="@color/pink"
             android:textSize="@dimen/_6ssp" />
@@ -102,9 +104,86 @@
             android:id="@+id/view_one"
             android:layout_width="@dimen/_2sdp"
             android:layout_height="match_parent"
-            android:background="@drawable/view_pink_border" />
+            android:background="@drawable/view_pink_border"
+            tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/nameCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/note">
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:textColor="@color/txt_sample"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="bold"
+            tools:text="Wasim Jaffer Ahmeed - HQ - designation" />
+
+    </androidx.cardview.widget.CardView>
+
+
+    <!--    <TextView-->
+<!--        android:id="@+id/Name"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:gravity="center"-->
+<!--        android:layout_marginTop="@dimen/_3sdp"-->
+<!--        android:layout_marginStart="@dimen/_3sdp"-->
+<!--        android:layout_marginEnd="@dimen/_3sdp"-->
+<!--        android:padding="@dimen/_3sdp"-->
+<!--        android:textColor="@color/txt_sample"-->
+<!--        android:textSize="@dimen/_7ssp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/note"-->
+<!--        tools:text="Wasim Jaffer Ahmeed - HQ - designation" />-->
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerDoctorMissedReports"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/nameCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+
+    <!--    <LinearLayout&ndash;&gt;-->
+    <!--                        android:id="@+id/headerName"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:background="@color/white"-->
+    <!--                        android:gravity="center"-->
+    <!--                        android:orientation="horizontal"-->
+    <!--                        android:padding="@dimen/_5sdp"-->
+    <!--                        app:layout_constraintEnd_toStartOf="@+id/monthYear"-->
+    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+    <!--                        app:layout_constraintTop_toTopOf="parent">-->
+
+    <!--
+    <!-                    </LinearLayout>-->
+
+
 
     <!-- Row under toolbar (calendar + search) -->
     <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
@@ -235,208 +314,188 @@
     <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
     <!-- Scrollable content -->
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:fillViewport="true"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/my_toolbar">
-        <!-- Content layout BELOW toolbar -->
+    <!--    <ScrollView-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_marginTop="@dimen/_30sdp"-->
+    <!--        android:fillViewport="true"-->
+    <!--        android:padding="8dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/my_toolbar">-->
+    <!--        &lt;!&ndash; Content layout BELOW toolbar &ndash;&gt;-->
 
-        <RelativeLayout
-            android:id="@+id/content_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/my_toolbar">
+    <!--        <RelativeLayout-->
+    <!--            android:id="@+id/content_layout"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:background="@color/white"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/my_toolbar">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/bg_grey"
-                android:orientation="vertical">
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:background="@color/bg_grey"-->
+    <!--                android:orientation="vertical">-->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/bg_grey"
-                    android:padding="@dimen/_1sdp">
+    <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_marginTop="10dp"-->
+    <!--                    android:background="@color/bg_grey"-->
+    <!--                    android:padding="@dimen/_1sdp">-->
 
-                    <LinearLayout
-                        android:id="@+id/headerName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_5sdp"
-                        app:layout_constraintEnd_toStartOf="@+id/monthYear"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+    <!--
 
-                        <TextView
-                            android:id="@+id/Name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/satoshi_bold"
-                            android:textColor="@color/red_60"
-                            tools:text="Name" />
+    <!-                    <!- Month-Year (Right side) &ndash;&gt;-->
+    <!--                    <TextView-->
+    <!--                        android:id="@+id/monthYear"-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="39dp"-->
+    <!--                        android:background="@color/white"-->
+    <!--                        android:fontFamily="@font/satoshi_bold"-->
+    <!--                        android:gravity="center"-->
+    <!--                        android:paddingHorizontal="@dimen/_8sdp"-->
+    <!--                       android:text="Sep 2025"-->
+    <!--                        android:textColor="@color/txt_sample"-->
+    <!--                        android:textSize="@dimen/_6sdp"-->
+    <!--                        app:layout_constraintBottom_toBottomOf="@id/headerName"-->
+    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                        app:layout_constraintTop_toTopOf="@id/headerName" />-->
 
-                    </LinearLayout>
+    <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                    <!-- Month-Year (Right side) -->
-                    <TextView
-                        android:id="@+id/monthYear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="39dp"
-                        android:background="@color/white"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:gravity="center"
-                        android:paddingHorizontal="@dimen/_8sdp"
-                        android:text="Sep 2025"
-                        android:textColor="@color/txt_sample"
-                        android:textSize="@dimen/_6sdp"
-                        app:layout_constraintBottom_toBottomOf="@id/headerName"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/headerName" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- RecyclerView added here -->
+    <!--                &lt;!&ndash; RecyclerView added here &ndash;&gt;-->
 
 
-                <ViewFlipper
-                    android:id="@+id/viewFlipper"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+<!--                    <ViewFlipper-->
+<!--                        android:id="@+id/viewFlipper"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_marginTop="5dp"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent">-->
 
-                    <include layout="@layout/layout_drchm_missed_current" />
+<!--                        <include layout="@layout/layout_drchm_missed_current" />-->
 
 
-                    <include layout="@layout/layout_stkunlst_missed_current" />
-                </ViewFlipper>
+<!--                        <include layout="@layout/layout_stkunlst_missed_current" />-->
+<!--                    </ViewFlipper>-->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/bg_grey"
-                    android:padding="@dimen/_1sdp"
-                    android:visibility="gone">
-                    <!-- Name TextView -->
-                    <TextView
-                        android:id="@+id/nameprev"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:gravity="center"
-                        android:padding="@dimen/_5sdp"
-                        android:text="Wasim Jaffer Ahmeed - HQ - designation"
-                        android:textColor="@color/txt_sample"
-                        android:textSize="@dimen/_6sdp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/monthYearprev"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintHorizontal_weight="1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+    <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_marginTop="5dp"-->
+    <!--                    android:background="@color/bg_grey"-->
+    <!--                    android:padding="@dimen/_1sdp"-->
+    <!--                    android:visibility="gone">-->
+    <!--                    &lt;!&ndash; Name TextView &ndash;&gt;-->
+    <!--                    <TextView-->
+    <!--                        android:id="@+id/nameprev"-->
+    <!--                        android:layout_width="0dp"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:background="@color/white"-->
+    <!--                        android:fontFamily="@font/satoshi_bold"-->
+    <!--                        android:gravity="center"-->
+    <!--                        android:padding="@dimen/_5sdp"-->
+    <!--                        android:text="Wasim Jaffer Ahmeed - HQ - designation"-->
+    <!--                        android:textColor="@color/txt_sample"-->
+    <!--                        android:textSize="@dimen/_6sdp"-->
+    <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                        app:layout_constraintEnd_toStartOf="@id/monthYearprev"-->
+    <!--                        app:layout_constraintHorizontal_chainStyle="spread_inside"-->
+    <!--                        app:layout_constraintHorizontal_weight="1"-->
+    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+    <!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-                    <!-- Month-Year TextView -->
-                    <TextView
-                        android:id="@+id/monthYearprev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:padding="@dimen/_5sdp"
-                        android:text="Aug 2025"
-                        android:textColor="@color/txt_sample"
-                        android:textSize="@dimen/_6sdp"
-                        app:layout_constraintBottom_toBottomOf="@id/nameprev"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/nameprev" />
+    <!--                    &lt;!&ndash; Month-Year TextView &ndash;&gt;-->
+    <!--                    <TextView-->
+    <!--                        android:id="@+id/monthYearprev"-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:background="@color/white"-->
+    <!--                        android:fontFamily="@font/satoshi_bold"-->
+    <!--                        android:padding="@dimen/_5sdp"-->
+    <!--                        android:text="Aug 2025"-->
+    <!--                        android:textColor="@color/txt_sample"-->
+    <!--                        android:textSize="@dimen/_6sdp"-->
+    <!--                        app:layout_constraintBottom_toBottomOf="@id/nameprev"-->
+    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                        app:layout_constraintTop_toTopOf="@id/nameprev" />-->
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <ViewFlipper
-                    android:id="@+id/viewFlipper2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:visibility="gone">
+    <!--                <ViewFlipper-->
+    <!--                    android:id="@+id/viewFlipper2"-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="match_parent"-->
+    <!--                    android:layout_marginTop="5dp"-->
+    <!--                    android:visibility="gone">-->
 
-                    <include layout="@layout/layout_drchm_missed_previous" />
+    <!--                    <include layout="@layout/layout_drchm_missed_previous" />-->
 
-                    <include layout="@layout/layout_stkunlst_missed_previous" />
-                </ViewFlipper>
+    <!--                    <include layout="@layout/layout_stkunlst_missed_previous" />-->
+    <!--                </ViewFlipper>-->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/bg_grey"
-                    android:padding="@dimen/_1sdp"
-                    android:visibility="gone">
-                    <!-- Name TextView -->
-                    <TextView
-                        android:id="@+id/nameprev1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:gravity="center"
-                        android:padding="@dimen/_5sdp"
-                        android:text="Wasim Jaffer Ahmeed - HQ - designation"
-                        android:textColor="@color/txt_sample"
-                        android:textSize="@dimen/_6sdp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/monthYearprev1"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintHorizontal_weight="1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+    <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_marginTop="5dp"-->
+    <!--                    android:background="@color/bg_grey"-->
+    <!--                    android:padding="@dimen/_1sdp"-->
+    <!--                    android:visibility="gone">-->
+    <!--                    &lt;!&ndash; Name TextView &ndash;&gt;-->
+    <!--                    <TextView-->
+    <!--                        android:id="@+id/nameprev1"-->
+    <!--                        android:layout_width="0dp"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:background="@color/white"-->
+    <!--                        android:fontFamily="@font/satoshi_bold"-->
+    <!--                        android:gravity="center"-->
+    <!--                        android:padding="@dimen/_5sdp"-->
+    <!--                        android:text="Wasim Jaffer Ahmeed - HQ - designation"-->
+    <!--                        android:textColor="@color/txt_sample"-->
+    <!--                        android:textSize="@dimen/_6sdp"-->
+    <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                        app:layout_constraintEnd_toStartOf="@id/monthYearprev1"-->
+    <!--                        app:layout_constraintHorizontal_chainStyle="spread_inside"-->
+    <!--                        app:layout_constraintHorizontal_weight="1"-->
+    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+    <!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-                    <!-- Month-Year TextView -->
-                    <TextView
-                        android:id="@+id/monthYearprev1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:padding="@dimen/_5sdp"
-                        android:text="July 2025"
-                        android:textColor="@color/txt_sample"
-                        android:textSize="@dimen/_6sdp"
-                        app:layout_constraintBottom_toBottomOf="@id/nameprev1"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/nameprev1" />
+    <!--                    &lt;!&ndash; Month-Year TextView &ndash;&gt;-->
+    <!--                    <TextView-->
+    <!--                        android:id="@+id/monthYearprev1"-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:background="@color/white"-->
+    <!--                        android:fontFamily="@font/satoshi_bold"-->
+    <!--                        android:padding="@dimen/_5sdp"-->
+    <!--                        android:text="July 2025"-->
+    <!--                        android:textColor="@color/txt_sample"-->
+    <!--                        android:textSize="@dimen/_6sdp"-->
+    <!--                        app:layout_constraintBottom_toBottomOf="@id/nameprev1"-->
+    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                        app:layout_constraintTop_toTopOf="@id/nameprev1" />-->
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <ViewFlipper
-                    android:id="@+id/viewFlipper3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:visibility="gone">
+    <!--                <ViewFlipper-->
+    <!--                    android:id="@+id/viewFlipper3"-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="match_parent"-->
+    <!--                    android:layout_marginTop="5dp"-->
+    <!--                    android:visibility="gone">-->
 
-                    <include layout="@layout/layout_drchm_missed_previous2" />
+    <!--                    <include layout="@layout/layout_drchm_missed_previous2" />-->
 
-                    <include layout="@layout/layout_stkunlst_missed_previous2" />
-                </ViewFlipper>
-            </LinearLayout>
-        </RelativeLayout>
-    </ScrollView>
+    <!--                    <include layout="@layout/layout_stkunlst_missed_previous2" />-->
+    <!--                </ViewFlipper>-->
+    <!--            </LinearLayout>-->
+    <!--        </RelativeLayout>-->
+    <!--    </ScrollView>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

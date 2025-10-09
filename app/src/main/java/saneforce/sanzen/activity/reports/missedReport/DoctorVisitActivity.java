@@ -28,11 +28,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
@@ -52,7 +57,7 @@ import saneforce.sanzen.storage.SharedPref;
 public class DoctorVisitActivity extends AppCompatActivity {
     ActivityDoctorVisitBinding binding;
     DoctorVisitAdapter adapter;
-    final List<DoctorVisitItem> doctorList = new ArrayList<>();
+    List<DoctorVisitItem> doctorList = new ArrayList<>();
     Dialog dialogFilter;
     //AdapterDCRCallSelection adapterDCRCallSelection;
     RecyclerView rv_list;
@@ -73,10 +78,10 @@ public class DoctorVisitActivity extends AppCompatActivity {
     ListView lv_spec, lv_cate, lv_terr, lv_class;
     private MasterDataDao masterDataDao;
     private RoomDB roomDB;
+
     public void afterTextChanged(Editable editable) {
         filter(editable.toString());
     }
-
 
 
     @Override
@@ -87,6 +92,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         String drCaption = SharedPref.getDrCap(this);
         binding.toolbarTitle.setText(" Missed " + drCaption);
+        doctorList = new ArrayList<>();
         adapter = new DoctorVisitAdapter(this, doctorList);
         binding.recyclerDoctorVisit.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerDoctorVisit.setAdapter(adapter);
@@ -107,8 +113,14 @@ public class DoctorVisitActivity extends AppCompatActivity {
                     binding.searchClearIcon.setVisibility(View.GONE);
                 }
             }
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         binding.searchClearIcon.setOnClickListener(v -> {
@@ -120,34 +132,229 @@ public class DoctorVisitActivity extends AppCompatActivity {
             }
         });
 
+        String sfCode = getIntent().getStringExtra("sfcode");
+        String date = getIntent().getStringExtra("date");
+        String missedArrayString = getIntent().getStringExtra("missed_array");
+        loadDoctorData(missedArrayString, "missed");
 
-        String sfcode =getIntent().getStringExtra("sfcode" );
-        String date =getIntent().getStringExtra("date" );
-        //        String doctorArrayString = getIntent().getStringExtra("doctor_array");
-        DoctorVisitDao visitDao = roomDB.doctorVisitDao();
-        String doctorArrayString =visitDao.getVisitValues(sfcode, date);
-        if (doctorArrayString != null) {
-            try {
-                JSONArray jsonArray = new JSONArray(doctorArrayString);
+        binding.missedtittle.setOnClickListener(v -> {
+            binding.missedtittle.setBackgroundResource(R.drawable.bg_darkpurple_sharp_bottom_end);
+            binding.missedtittle.setTextColor(getResources().getColor(R.color.white));
+            binding.visitedtittle.setBackgroundResource(R.color.light_grey_1);
+            binding.visitedtittle.setTextColor(getResources().getColor(R.color.dark_purple));
+            loadDoctorData(missedArrayString, "missed");
+        });
+        binding.visitedtittle.setOnClickListener(v -> {
 
-                // Parse each JSON object into your DoctorVisitItem model
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject obj = jsonArray.getJSONObject(i);
-
-                    // Example assuming DoctorVisitItem has a constructor or setters:
-                    DoctorVisitItem item = new DoctorVisitItem(obj.optString("ListedDr_Name"), obj.optString("territory_Name"), obj.optString("ListedDrCode"), obj.optString("Doc_QuaName"), obj.optString("Doc_Cat_SName"), obj.optString("Doc_Special_SName"), obj.optString("Doc_ClsSName"));
-
-                    doctorList.add(item);
-                }
+            binding.visitedtittle.setBackgroundResource(R.drawable.bg_darkpurple_sharp_bottom_end);
+            binding.visitedtittle.setTextColor(getResources().getColor(R.color.white));
+            binding.missedtittle.setBackgroundResource(R.color.light_grey_1);
+            binding.missedtittle.setTextColor(getResources().getColor(R.color.dark_purple));
+            DoctorVisitTable visitData = roomDB.doctorVisitDao().getVisitBySfcodeAndDate(sfCode, date);
+            if (visitData != null) {
+                loadDoctorData(visitData.getValues(), "visited");
+            } else {
+                doctorList.clear();
                 adapter.updateData(doctorList);
+                binding.visitedtittle.setText("Visited: 0");
+            }
+        });
+    }
 
-                binding.missedtittle.setText("Missed: " + doctorList.size());
+    // Helper method to parse JSON array and update adapter
+    private void loadDoctorData(String jsonArrayString, String type) {
+        doctorList.clear();
+        String callSyncJson = masterDataDao.getDataByKey(Constants.CALL_SYNC);
+        Set<String> visitedCodes = new HashSet<>();
+
+        if (callSyncJson != null && !callSyncJson.trim().isEmpty()) {
+            try {
+                JSONArray callArray = new JSONArray(callSyncJson);
+                String selectedMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(new Date());
+                Log.d("DoctorVisitActivity", "Filtering visits for month: " + selectedMonth);
+
+                for (int i = 0; i < callArray.length(); i++) {
+                    JSONObject callObj = callArray.getJSONObject(i);
+
+                    String visitDate = callObj.optString("Date", "");
+                    String custCode = callObj.optString("CustCode", "").trim();
+
+                    // ✅ Skip empty or invalid entries
+                    if (custCode.isEmpty() || visitDate.isEmpty()) continue;
+
+                    // ✅ Only include visits from current month
+                    if (visitDate.startsWith(selectedMonth)) {
+                        visitedCodes.add(custCode);
+                    }
+                }
+
+                Log.d("DoctorVisitActivity", "Visited codes this month: " + visitedCodes.size());
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
+//        String callSyncJson = masterDataDao.getDataByKey(Constants.CALL_SYNC);
+//        Set<String> visitedCodes = new HashSet<>();
+//        if (callSyncJson != null && !callSyncJson.trim().isEmpty()) {
+//            try {
+//                JSONArray callArray = new JSONArray(callSyncJson);
+//                for (int i = 0; i < callArray.length(); i++) {
+//                    JSONObject callObj = callArray.getJSONObject(i);
+//                    String custCode = callObj.optString("CustCode", "");
+//                    if (!custCode.isEmpty()) visitedCodes.add(custCode);
+////                    String custCode = callArray.getJSONObject(i).optString("CustCode");
+////                    if (!custCode.isEmpty()) visitedCodes.add(custCode);
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        if (jsonArrayString == null || jsonArrayString.trim().isEmpty()) {
+            Log.d("DoctorVisitActivity", "JSON string is null or empty");
+            adapter.updateData(doctorList);
+            binding.recyclerDoctorVisit.setVisibility(View.GONE);
+            binding.noDoctor.setVisibility(View.VISIBLE);
+            return;
+        }
+        Log.d("DoctorVisitActivity", "loadDoctorData: " + jsonArrayString);
+
+        try {
+            JSONArray jsonArray = new JSONArray(jsonArrayString);
+            Log.d("DoctorVisitActivity", "JSON array length = " + jsonArray.length());
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                //added
+                String code = obj.optString("Code").trim();
+                if ("visited".equals(type) && !visitedCodes.contains(code)) continue;
+                if ("missed".equals(type) && visitedCodes.contains(code)) continue;
+                DoctorVisitItem item = new DoctorVisitItem(
+                        obj.optString("Name"),
+                        obj.optString("Town_Name"),
+                        obj.optString("Code"),
+                        obj.optString("DrDesig"),
+                        obj.optString("Category"),
+                        obj.optString("Specialty"),
+                        obj.optString("Doc_Class_ShortName")
+                );
+                doctorList.add(item);
+                Log.d("DoctorVisitActivity", "Added doctor: " + obj.optString("Name") + ", Code: " + code);
+            }
+            adapter.updateData(doctorList);
+
+            if (type.equals("missed")) {
+                binding.missedtittle.setText("Missed: " + doctorList.size());
+            } else {
+                binding.visitedtittle.setText("Visited: " + doctorList.size());
+            }
+
+            if (doctorList.isEmpty()) {
+                binding.recyclerDoctorVisit.setVisibility(View.GONE);
+                binding.noDoctor.setVisibility(View.VISIBLE);
+            } else {
+                binding.recyclerDoctorVisit.setVisibility(View.VISIBLE);
+                binding.noDoctor.setVisibility(View.GONE);
+            }
+
+        } catch (JSONException e) {
+            Log.e("DoctorVisitActivity", "JSON parsing error", e);
+        }
     }
+
+//    private void loadDoctorData(String jsonArrayString, String type) {
+//        if (jsonArrayString == null) return;
+//
+//    doctorList.clear();
+//        try {
+//            JSONArray jsonArray = new JSONArray(jsonArrayString);
+//            Log.d("DoctorVisitActivity", "JSON array length = " + jsonArray.length());
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONObject obj = jsonArray.getJSONObject(i);
+//                DoctorVisitItem item = new DoctorVisitItem(
+//                        obj.optString("ListedDr_Name"),
+//                        obj.optString("territory_Name"),
+//                        obj.optString("ListedDrCode"),
+//                        obj.optString("Doc_QuaName"),
+//                        obj.optString("Doc_Cat_SName"),
+//                        obj.optString("Doc_Special_SName"),
+//                        obj.optString("Doc_ClsSName")
+//                );
+//                doctorList.add(item);
+//                Log.d("DoctorVisitActivity", "doctorList size after adding = " + doctorList.size());
+//            }
+//            adapter.updateData(doctorList);
+//
+//            // Update counts
+//            if (type.equals("missed")) {
+//                binding.missedtittle.setText("Missed: " + doctorList.size());
+//            } else {
+//                binding.visitedtittle.setText("Visited: " + doctorList.size());
+//            }
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+//        binding.missedtittle.setOnClickListener(v -> finish());
+//        binding.visitedtittle.setOnClickListener(v -> finish());
+//
+//        if (missedArrayString != null) {
+//            // Only show missed doctors
+//            try {
+//                JSONArray jsonArray = new JSONArray(missedArrayString);
+//               // doctorList.clear(); // clear previous data
+//                for (int i = 0; i < jsonArray.length(); i++) {
+//                    JSONObject obj = jsonArray.getJSONObject(i);
+//
+//                    DoctorVisitItem item = new DoctorVisitItem(
+//                            obj.optString("ListedDr_Name"),
+//                            obj.optString("territory_Name"),
+//                            obj.optString("ListedDrCode"),
+//                            obj.optString("Doc_QuaName"),
+//                            obj.optString("Doc_Cat_SName"),
+//                            obj.optString("Doc_Special_SName"),
+//                            obj.optString("Doc_ClsSName")
+//                    );
+//
+//                    doctorList.add(item);
+//                }
+//                adapter.updateData(doctorList);
+//                binding.missedtittle.setText("Missed: " + doctorList.size());
+//
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            //     String doctorArrayString = getIntent().getStringExtra("doctor_array");
+//            DoctorVisitDao visitDao = roomDB.doctorVisitDao();
+//            String doctorArrayString = visitDao.getVisitValues(sfcode, date);
+//            if (doctorArrayString != null) {
+//                try {
+//                    JSONArray jsonArray = new JSONArray(doctorArrayString);
+//                    // Parse each JSON object into your DoctorVisitItem model
+//                    for (int i = 0; i < jsonArray.length(); i++) {
+//                        JSONObject obj = jsonArray.getJSONObject(i);
+//
+//                        // Example assuming DoctorVisitItem has a constructor or setters:
+//                        DoctorVisitItem item = new DoctorVisitItem(obj.optString("ListedDr_Name"), obj.optString("territory_Name"), obj.optString("ListedDrCode"), obj.optString("Doc_QuaName"), obj.optString("Doc_Cat_SName"), obj.optString("Doc_Special_SName"), obj.optString("Doc_ClsSName"));
+//
+//                        doctorList.add(item);
+//                    }
+//                    adapter.updateData(doctorList);
+//
+//                    binding.missedtittle.setText("Missed: " + doctorList.size());
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     private void customisedMissedFilter() {
         dialogFilter = new Dialog(this);
@@ -260,7 +467,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
                 constraintLayout.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.VISIBLE);
             } else {
-                getFilteredList( "Speciality");
+                getFilteredList("Speciality");
 
                 FillteredAdapter arrayAdapter = new FillteredAdapter(DoctorVisitActivity.this, filterSelectionList, clickedItem -> {
                     // specialityCode = clickedItem.getCode();
@@ -288,7 +495,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
                 constraintLayout.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.VISIBLE);
             } else {
-                getFilteredList( "Category");
+                getFilteredList("Category");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(DoctorVisitActivity.this, filterSelectionList, clickedItem -> {
                     //categoryCode = clickedItem.getCode();
                     categoryName = clickedItem.getName();
@@ -313,7 +520,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
                 constraintLayout.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.VISIBLE);
             } else {
-                getFilteredList( "Territory");
+                getFilteredList("Territory");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(DoctorVisitActivity.this, filterSelectionList, clickedItem -> {
                     // territoryCode = clickedItem.getCode();
                     territoryName = clickedItem.getName();
@@ -338,7 +545,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
                 constraintLayout.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.VISIBLE);
             } else {
-                getFilteredList( "Class");
+                getFilteredList("Class");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(DoctorVisitActivity.this, filterSelectionList, clickedItem -> {
                     //classCode = clickedItem.getCode();
                     className = clickedItem.getName();
@@ -368,7 +575,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
             } else if (requiredList.equalsIgnoreCase("Category")) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
             } else if (requiredList.equalsIgnoreCase("Territory")) {
-                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER +SharedPref.getSfCode(this)).getMasterSyncDataJsonArray();
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(this)).getMasterSyncDataJsonArray();
             } else if (requiredList.equalsIgnoreCase("Class")) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray();
             }
@@ -393,6 +600,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void filter(String text) {
         filteredNames = new ArrayList<>();
         List<DoctorVisitItem> baseList;
@@ -427,14 +635,13 @@ public class DoctorVisitActivity extends AppCompatActivity {
 //        adapter.filterList(filteredNames);
 //    }
 
-    public void Filtered () {
+    public void Filtered() {
         ArrayList<DoctorVisitItem> filterCusList = new ArrayList<>();
         if (!binding.searchET.getText().toString().isEmpty() && !filteredNames.isEmpty()) {
             filterCusList.addAll(filteredNames);
         } else {
             filterCusList.addAll(doctorList);
         }
-
 
 
 //        if (filteredNames != null && !filteredNames.isEmpty()) {
