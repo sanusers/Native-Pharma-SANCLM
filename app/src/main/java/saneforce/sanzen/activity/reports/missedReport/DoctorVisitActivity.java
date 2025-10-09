@@ -135,7 +135,9 @@ public class DoctorVisitActivity extends AppCompatActivity {
         String sfCode = getIntent().getStringExtra("sfcode");
         String date = getIntent().getStringExtra("date");
         String missedArrayString = getIntent().getStringExtra("missed_array");
+
         loadDoctorData(missedArrayString, "missed");
+        String visitArrayString = getIntent().getStringExtra("visit");
 
         binding.missedtittle.setOnClickListener(v -> {
             binding.missedtittle.setBackgroundResource(R.drawable.bg_darkpurple_sharp_bottom_end);
@@ -150,15 +152,15 @@ public class DoctorVisitActivity extends AppCompatActivity {
             binding.visitedtittle.setTextColor(getResources().getColor(R.color.white));
             binding.missedtittle.setBackgroundResource(R.color.light_grey_1);
             binding.missedtittle.setTextColor(getResources().getColor(R.color.dark_purple));
-            loadDoctorData(missedArrayString, "visited");
-            DoctorVisitTable visitData = roomDB.doctorVisitDao().getVisitBySfcodeAndDate(sfCode, date);
+            loadDoctorData(visitArrayString, "visited");
+        /*    DoctorVisitTable visitData = roomDB.doctorVisitDao().getVisitBySfcodeAndDate(sfCode, date);
             if (visitData != null) {
                 loadDoctorData(visitData.getValues(), "visited");
             } else {
                 doctorList.clear();
                 adapter.updateData(doctorList);
                 binding.visitedtittle.setText("Visited: 0");
-            }
+            }*/
         });
     }
 
@@ -181,14 +183,18 @@ public class DoctorVisitActivity extends AppCompatActivity {
                     String custCode = callObj.optString("CustCode", "").trim();
 
                     // ✅ Skip empty or invalid entries
-                    if (custCode.isEmpty() || visitDate.isEmpty()) continue;
+//                    if (!custCode.isEmpty() || !visitDate.isEmpty()) continue;
 
-                    // ✅ Only include visits from current month
                     if (visitDate.startsWith(selectedMonth)) {
                         visitedCodes.add(custCode);
+                        Log.d("DoctorVisitActivity", "Added visited: " + custCode + " (" + visitDate + ")");
                     }
+                    // ✅ Only include visits from current month
+//                    if (visitDate.startsWith(selectedMonth)) {
+//                        visitedCodes.add(custCode);
+//                    }
                 }
-
+                binding.recyclerDoctorVisit.setVisibility(View.GONE);
                 Log.d("DoctorVisitActivity", "Visited codes this month: " + visitedCodes.size());
 
             } catch (JSONException e) {
@@ -196,27 +202,11 @@ public class DoctorVisitActivity extends AppCompatActivity {
             }
         }
 
-//        String callSyncJson = masterDataDao.getDataByKey(Constants.CALL_SYNC);
-//        Set<String> visitedCodes = new HashSet<>();
-//        if (callSyncJson != null && !callSyncJson.trim().isEmpty()) {
-//            try {
-//                JSONArray callArray = new JSONArray(callSyncJson);
-//                for (int i = 0; i < callArray.length(); i++) {
-//                    JSONObject callObj = callArray.getJSONObject(i);
-//                    String custCode = callObj.optString("CustCode", "");
-//                    if (!custCode.isEmpty()) visitedCodes.add(custCode);
-////                    String custCode = callArray.getJSONObject(i).optString("CustCode");
-////                    if (!custCode.isEmpty()) visitedCodes.add(custCode);
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
 
         if (jsonArrayString == null || jsonArrayString.trim().isEmpty()) {
             Log.d("DoctorVisitActivity", "JSON string is null or empty");
             adapter.updateData(doctorList);
-            binding.recyclerDoctorVisit.setVisibility(View.GONE);
+
             binding.noDoctor.setVisibility(View.VISIBLE);
             return;
         }
@@ -230,8 +220,8 @@ public class DoctorVisitActivity extends AppCompatActivity {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 //added
                 String code = obj.optString("Code").trim();
-                if ("visited".equals(type) && !visitedCodes.contains(code)) continue;
-                if ("missed".equals(type) && visitedCodes.contains(code)) continue;
+//                if ("visited".equals(type) && !visitedCodes.contains(code)) continue;
+//                if ("missed".equals(type) && visitedCodes.contains(code)) continue;
                 DoctorVisitItem item = new DoctorVisitItem(
                         obj.optString("Name"),
                         obj.optString("Town_Name"),

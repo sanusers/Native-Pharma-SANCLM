@@ -228,6 +228,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                 try {
                     //Prepare array
                     JSONArray missedDoctors = doctor.getMissedCustomers();
+                    JSONArray visitDoctors = doctor.getVisitedCustomers();
 
                     Log.d("MissedDoctorsJSON", missedDoctors.toString());
                     Log.d("MissedDoctorsCount", "Length = " + missedDoctors.length());
@@ -236,9 +237,12 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                     RoomDB localRoomDB = RoomDB.getDatabase(context);
                     localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, missedDoctors.toString());
 
+                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitDoctors.toString());
+
                     // Pass to next activity
                     Intent intent = new Intent(context, DoctorVisitActivity.class);
                     intent.putExtra("missed_array", missedDoctors.toString());
+                    intent.putExtra("visit", visitDoctors.toString());
                     intent.putExtra("sfcode", sfCode);
                     intent.putExtra("date", date);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

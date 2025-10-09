@@ -84,6 +84,26 @@ public class MissedStatsModel {
         }
         return result;
     }
+
+
+    public JSONArray getVisitedCustomers() {
+        JSONArray result = new JSONArray();
+        try {
+            if (uniqueCustomers == null) return result;
+
+            for (int i = 0; i < totalCustomers.length(); i++) {
+                JSONObject custObj = totalCustomers.getJSONObject(i);
+                String custCode = custObj.optString("Code").trim();
+                if (uniqueCustomers.contains(custCode)) {
+                    custObj.put("status", "visited");
+                    result.put(custObj);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }
 //    public JSONArray getMissedCustomers() {
 //        JSONArray result = new JSONArray();
