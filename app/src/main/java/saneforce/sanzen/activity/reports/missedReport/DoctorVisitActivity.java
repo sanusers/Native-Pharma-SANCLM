@@ -150,6 +150,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
             binding.visitedtittle.setTextColor(getResources().getColor(R.color.white));
             binding.missedtittle.setBackgroundResource(R.color.light_grey_1);
             binding.missedtittle.setTextColor(getResources().getColor(R.color.dark_purple));
+            loadDoctorData(missedArrayString, "visited");
             DoctorVisitTable visitData = roomDB.doctorVisitDao().getVisitBySfcodeAndDate(sfCode, date);
             if (visitData != null) {
                 loadDoctorData(visitData.getValues(), "visited");

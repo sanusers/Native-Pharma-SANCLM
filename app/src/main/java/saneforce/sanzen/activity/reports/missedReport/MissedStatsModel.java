@@ -15,7 +15,7 @@ public class MissedStatsModel {
     //private String month;
 
 
-    public MissedStatsModel( String type, JSONArray totalCustomers, Set<String> uniqueCustomers) {
+    public MissedStatsModel(String type, JSONArray totalCustomers, Set<String> uniqueCustomers) {
 
         this.type = type;
         this.totalCustomers = totalCustomers;
@@ -23,11 +23,11 @@ public class MissedStatsModel {
     }
 
 
-
     public JSONArray getTotalCustomers() {
         return totalCustomers;
     }
-    public void setTotalCustomers(JSONArray totalCustomers){
+
+    public void setTotalCustomers(JSONArray totalCustomers) {
         this.totalCustomers = totalCustomers;
     }
 
@@ -35,9 +35,11 @@ public class MissedStatsModel {
         return uniqueCustomers;
 
     }
-    public void setUniqueCustomers(Set<String> uniqueCustomers){
+
+    public void setUniqueCustomers(Set<String> uniqueCustomers) {
         this.uniqueCustomers = uniqueCustomers;
     }
+
     public String getType() {
         return type;
     }
@@ -47,25 +49,64 @@ public class MissedStatsModel {
     public JSONArray getMissedCustomers() {
         JSONArray result = new JSONArray();
         try {
+            if (uniqueCustomers == null) {
+                Log.d("DoctorVisitActivity", "uniqueCustomers is null!");
+                return result;
+            }
+
             for (int i = 0; i < totalCustomers.length(); i++) {
                 JSONObject custObj = totalCustomers.getJSONObject(i);
-                String custCode = custObj.optString("CustCode");
+                String custCode = custObj.optString("Code").trim(); // "Code" not "CustCode"
 
-                if (uniqueCustomers != null && !uniqueCustomers.contains(custCode)) {
+                // Normalize: convert all codes to String
+                boolean isVisited = false;
+                for (String visitedCode : uniqueCustomers) {
+                    if (visitedCode.trim().equals(custCode)) {
+                        isVisited = true;
+                        break;
+                    }
+                }
+
+                if (!isVisited) {
                     custObj.put("status", "missed");
                     result.put(custObj);
                     Log.d("DoctorVisitActivity", "Added missed doctor: " + custCode);
-                    Log.d("DoctorVisitActivity", "Current missed count: " + result.length());
-                }else{
-                    Log.d("TAG", "getMissedCustomers:"+ "uniqueCust is null");
+                } else {
+                    //custObj.put("status", "visited");
+                    Log.d("DoctorVisitActivity", "Visited doctor: " + custCode);
                 }
             }
+
+            Log.d("DoctorVisitActivity", "Total missed doctors: " + result.length());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
 }
+//    public JSONArray getMissedCustomers() {
+//        JSONArray result = new JSONArray();
+//        try {
+//            for (int i = 0; i < totalCustomers.length(); i++) {
+//                JSONObject custObj = totalCustomers.getJSONObject(i);
+//                String custCode = custObj.optString("CustCode");
+//
+//                if (uniqueCustomers != null && !uniqueCustomers.contains(custCode)) {
+//                    custObj.put("status", "missed");
+//                    result.put(custObj);
+//                    Log.d("DoctorVisitActivity", "Added missed doctor: " + custCode);
+//                    Log.d("DoctorVisitActivity", "Current missed count: " + result.length());
+//                }else{
+//                    Log.d("TAG", "getMissedCustomers:"+ "uniqueCust is null");
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return result;
+//    }
+//}
 
 
 //public class MissedStatsModel implements Parcelable {
