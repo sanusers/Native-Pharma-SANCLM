@@ -121,7 +121,7 @@ public class TourPlanActivity extends AppCompatActivity {
     OneBuildModelClass.SessionList.WorkType holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
 
     LocalDate localDate;
-    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "",remarksNeed = "";
+    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "", remarksNeed = "";
     private String drCap, chmCap, stkCap, unListDrCap, cipCap, hosCap, masters;
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable, isEdited;
@@ -381,32 +381,32 @@ public class TourPlanActivity extends AppCompatActivity {
             });
         } else {
             binding.tvSync.setOnClickListener(new SafeClickListener() {
-                                                  @Override
-                                                  public void onSafeClick(View view) {
-                                                      NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                                                          @SuppressLint("NotifyDataSetChanged")
-                                                          @Override
-                                                          public void isNetworkAvailable(Boolean status) {
-                                                              if (status) {
-                                                                  binding.tvSync.setEnabled(false);
-                                                                  binding.progressBar.setVisibility(View.VISIBLE);
+                @Override
+                public void onSafeClick(View view) {
+                    NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void isNetworkAvailable(Boolean status) {
+                            if (status) {
+                                binding.tvSync.setEnabled(false);
+                                binding.progressBar.setVisibility(View.VISIBLE);
 
-                                                                  LocalDate localDate1 = LocalDate.now();
-                                                                  if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
-                                                                      get3MonthRemoteTPData("previous");
-                                                                  } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
-                                                                      get3MonthRemoteTPData("current");
-                                                                  } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
-                                                                      get3MonthRemoteTPData("next");
-                                                                  }
-                                                              } else {
-                                                                  commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
-                                                              }
+                                LocalDate localDate1 = LocalDate.now();
+                                if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
+                                    get3MonthRemoteTPData("previous");
+                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
+                                    get3MonthRemoteTPData("current");
+                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
+                                    get3MonthRemoteTPData("next");
+                                }
+                            } else {
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+                            }
 
-                                                          }
-                                                      });
-                                                      networkStatusTask.execute();
-                                                  }
+                        }
+                    });
+                    networkStatusTask.execute();
+                }
             });
         }
 
@@ -514,34 +514,34 @@ public class TourPlanActivity extends AppCompatActivity {
             });
         } else {
             binding.calendarPrevButton.setOnClickListener(new SafeClickListener() {
-                                                              @Override
-                                                              public void onSafeClick(View view) {
-                                                                  binding.calendarNextButton.setEnabled(true);
-                                                                  binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
-                                                                  localDate = localDate.minusMonths(1);
-                                                                  if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
-                                                                      binding.calendarPrevButton.setEnabled(false);
-                                                                      binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-                                                                  } else if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
-                                                                      binding.calendarPrevButton.setEnabled(false);
-                                                                      binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-                                                                  } else
-                                                                      binding.calendarPrevButton.setEnabled(true);
+                @Override
+                public void onSafeClick(View view) {
+                    binding.calendarNextButton.setEnabled(true);
+                    binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
+                    localDate = localDate.minusMonths(1);
+                    if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
+                        binding.calendarPrevButton.setEnabled(false);
+                        binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                    } else if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                        binding.calendarPrevButton.setEnabled(false);
+                        binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                    } else
+                        binding.calendarPrevButton.setEnabled(true);
 
-                                                                  if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
-                                                                      monthInAdapterFlag = 0;
-                                                                      if (dayWiseArrayCurrentMonth.size() == 0) {
-                                                                          dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
-                                                                      }
-                                                                      populateCalendarAdapter(dayWiseArrayCurrentMonth);
-                                                                  } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().minusMonths(1).getMonth().toString())) {
-                                                                      monthInAdapterFlag = -1;
-                                                                      if (dayWiseArrayPrevMonth.size() == 0) {
-                                                                          dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate);
-                                                                      }
-                                                                      populateCalendarAdapter(dayWiseArrayPrevMonth);
-                                                                  }
-                                                              }
+                    if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
+                        monthInAdapterFlag = 0;
+                        if (dayWiseArrayCurrentMonth.size() == 0) {
+                            dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
+                        }
+                        populateCalendarAdapter(dayWiseArrayCurrentMonth);
+                    } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().minusMonths(1).getMonth().toString())) {
+                        monthInAdapterFlag = -1;
+                        if (dayWiseArrayPrevMonth.size() == 0) {
+                            dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate);
+                        }
+                        populateCalendarAdapter(dayWiseArrayPrevMonth);
+                    }
+                }
             });
         }
 
@@ -1522,7 +1522,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         }
                     }
                 }
-            }else{
+            } else {
                 String[] holidayModeArray = holidayMode.split("");
                 weeklyOffDays = new ArrayList<>();
                 for (String str : holidayModeArray) {
@@ -3335,7 +3335,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     String changeStatus = "";
                     TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                     changeStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
-                    if (Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2")) {
+                    if (Objects.equals(changeStatus, "0") && !Objects.equals(changeStatus, "") || Objects.equals(changeStatus, "2") && !Objects.equals(changeStatus, "")) {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
                         Map<String, String> mapString = new HashMap<>();
                         Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
@@ -3352,7 +3352,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     boolean status = inner.getBoolean("Status");
                                     status = true;
                                     /*int data = inner.getInt("Data");*/
-                                    /*String message = inner.optString("Message", "");*/
+                                    String message = inner.optString("Message", "");
                                     if (response.body() != null && !response.body().isJsonNull() && status) {
                                         try {
                                             //JsonObject jsonObject = new JsonObject(response.body().toString());
