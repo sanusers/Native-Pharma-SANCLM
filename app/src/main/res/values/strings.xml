@@ -649,9 +649,13 @@
     <string name="sub_division">Sub Division</string>
     <string name="dcr_start_dt">DCR Start Date</string>
     <string name="tp_start_dt">TourPlan Start Date</string>
-    <string name="dcr_rpt">DCR Reporting Manager</string>
+    <string name="rpt_mgr"> Reporting Manager</string>
     <string name="tp_rpt">TourPlan Reporting Manager</string>
     <string name="lev_rpt">Leave Reporting Manager</string>
     <string name="tp_mand_range">TourPlan Mandatory Range</string>
-    <string name="hq1">HeadQuarters</string>
+    <string name="already_exist"> Already Exists </string>
+    <string name="state"> State </string>
+    <string name="employe_code"> Employee Code </string>
+    <string name="join_dt"> Joining Date </string>
+
 </resources>

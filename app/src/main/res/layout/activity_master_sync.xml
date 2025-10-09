@@ -672,8 +672,8 @@
                         android:layout_width="@dimen/_7sdp"
                         android:layout_height="@dimen/_7sdp"
                         android:src="@drawable/icon_sync_failed"
-                        android:layout_alignTop="@id/Other"
-                        android:layout_alignBottom="@id/Other"
+                        android:layout_alignTop="@id/Profile"
+                        android:layout_alignBottom="@id/Profile"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/_23sdp"
                         android:visibility="gone"/>

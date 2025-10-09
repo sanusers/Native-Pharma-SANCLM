@@ -36,8 +36,6 @@ public class ProfileViewScreen extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
-
-//        MasterDataTable profile = masterDataDao.getMasterDataTableOrNew(Constants.PROFILE);
         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.PROFILE).getMasterSyncDataJsonArray();
         if(jsonArray != null && jsonArray.length()>0){
             try {
@@ -47,50 +45,75 @@ public class ProfileViewScreen extends AppCompatActivity {
                 String sub_div = profileObject.optString("SubdivisionNames");
                 String hq = profileObject.optString("HQName");
                 String desig = profileObject.optString("Designation");
+                String state = profileObject.optString("StateName");
+                String emp_code = profileObject.optString("EmployeeCode");
+                String rpt_mgr = profileObject.optString("ReportingMgrName");
+                String phone = profileObject.optString("Mobile");
+                String email = profileObject.optString("Email");
 
-                JSONObject sfdcrDateObj = profileObject.optJSONObject("SFDCRDate");
-                String sfdcrDate = "";
-                if (sfdcrDateObj != null) {
-                    String fullDate = sfdcrDateObj.optString("date");
+                JSONObject joinDateObj = profileObject.optJSONObject("SF_JoiningDate");
+                String joinDate = "";
+                if (joinDateObj != null) {
+                    String fullDate = joinDateObj.optString("date");
                     if (fullDate.contains(" ")) {
-                        sfdcrDate = fullDate.split(" ")[0];
+                        joinDate = fullDate.split(" ")[0];
                     } else {
-                        sfdcrDate = fullDate;
+                        joinDate = fullDate;
                     }
                 }
-
-                JSONObject sftpDateObj = profileObject.optJSONObject("SFTPDate");
-                String sftpDate = "";
-                if (sftpDateObj != null) {
-                    String fullDate = sftpDateObj.optString("date");
+                JSONObject dobObj = profileObject.optJSONObject("DOB");
+                String dob = "";
+                if (dobObj != null) {
+                    String fullDate = dobObj.optString("date");
                     if (fullDate.contains(" ")) {
-                        sftpDate = fullDate.split(" ")[0];
+                        dob = fullDate.split(" ")[0];
                     } else {
-                        sftpDate = fullDate;
+                        dob = fullDate;
                     }
                 }
-
-                String dcr_rpt = profileObject.optString("DcrMgrName");
-                String tp_rpt = profileObject.optString("TpMgrName");
-                String lev_rpt = profileObject.optString("LeaveMgrName");
-                String tp_range = profileObject.optString("Tp_Start_Date") + "-" +profileObject.optString("Tp_End_Date");
+                JSONObject dowObj = profileObject.optJSONObject("DOW");
+                String dow = "";
+                if (dowObj != null) {
+                    String fullDate = dowObj.optString("date");
+                    if (fullDate.contains(" ")) {
+                        dow = fullDate.split(" ")[0];
+                    } else {
+                        dow = fullDate;
+                    }
+                }
 
                 activityProfileViewScreenBinding.userName.setText(name);
                 activityProfileViewScreenBinding.division.setText(div);
                 activityProfileViewScreenBinding.subDiv.setText(sub_div);
                 activityProfileViewScreenBinding.hq.setText(hq);
                 activityProfileViewScreenBinding.desigName.setText(desig);
-                activityProfileViewScreenBinding.startDtTxt.setText(sfdcrDate);
-                activityProfileViewScreenBinding.tpStartDtTxt.setText(sftpDate);
+                activityProfileViewScreenBinding.stateTxt.setText(state);
+                activityProfileViewScreenBinding.empCodeTxt.setText(emp_code);
+                activityProfileViewScreenBinding.rptMgrName.setText(rpt_mgr);
+                activityProfileViewScreenBinding.joinDtName.setText(joinDate);
+                activityProfileViewScreenBinding.phoneTxt.setText(phone);
+                activityProfileViewScreenBinding.emailTxt.setText(email);
+                activityProfileViewScreenBinding.dobTxt.setText(dob);
+                activityProfileViewScreenBinding.dowTxt.setText(dow);
 
 
-                activityProfileViewScreenBinding.dcrRptName.setText(dcr_rpt);
-                activityProfileViewScreenBinding.tpRptName.setText(tp_rpt);
+
+
+
+
+
+
+
+                /* String tp_rpt = profileObject.optString("TpMgrName");
+                String lev_rpt = profileObject.optString("LeaveMgrName");
+                String tp_range = "Every Month"+" "+profileObject.optString("Tp_Start_Date") + "-" +profileObject.optString("Tp_End_Date");
+*/
+
+                /*activityProfileViewScreenBinding.startDtTxt.setText(sfdcrDate);*/
+                /*activityProfileViewScreenBinding.tpStartDtTxt.setText(sftpDate);*/
+               /* activityProfileViewScreenBinding.tpRptName.setText(tp_rpt);
                 activityProfileViewScreenBinding.levRptName.setText(lev_rpt);
-                activityProfileViewScreenBinding.tpMandRangeTxt.setText(tp_range);
-
-
-
+                activityProfileViewScreenBinding.tpMandRangeTxt.setText(tp_range);*/
 
 
             } catch (JSONException e) {
