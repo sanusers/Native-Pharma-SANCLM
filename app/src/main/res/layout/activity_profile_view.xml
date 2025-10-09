@@ -57,9 +57,8 @@
             <ImageView
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_45sdp"
-                android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:src="@drawable/acount_img" />
+                android:src="@drawable/profileview" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -133,7 +132,7 @@
                             android:drawablePadding="@dimen/_5sdp"
                             android:imeOptions="actionDone"
                             android:maxLines="1"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:singleLine="true"
                             android:textColor="@color/black"
@@ -168,7 +167,7 @@
                             android:clickable="false"
                             android:focusable="false"
                             android:inputType="none"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6ssp" />
@@ -188,7 +187,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"
                             android:layout_marginTop="15dp"
-                            android:text="@string/hq1"
+                            android:text="@string/headquarter"
                             android:textColor="#000000" />
 
                         <TextView
@@ -202,7 +201,7 @@
                             android:clickable="false"
                             android:focusable="false"
                             android:inputType="none"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6ssp" />
@@ -244,7 +243,7 @@
                             android:drawablePadding="@dimen/_5sdp"
                             android:imeOptions="actionDone"
                             android:maxLines="1"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:singleLine="true"
                             android:textColor="@color/black"
@@ -260,16 +259,16 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/start_dt"
+                            android:id="@+id/state"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"
                             android:layout_marginTop="15dp"
-                            android:text="@string/dcr_start_dt"
+                            android:text="@string/state"
                             android:textColor="#000000" />
 
                         <TextView
-                            android:id="@+id/start_dt_txt"
+                            android:id="@+id/state_txt"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:layout_marginHorizontal="@dimen/_1sdp"
@@ -279,7 +278,7 @@
                             android:clickable="false"
                             android:focusable="false"
                             android:inputType="none"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6ssp" />
@@ -294,16 +293,16 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tp_start_dt"
+                            android:id="@+id/emp_code"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"
                             android:layout_marginTop="15dp"
-                            android:text="@string/tp_start_dt"
+                            android:text="@string/employe_code"
                             android:textColor="#000000" />
 
                         <TextView
-                            android:id="@+id/tp_start_dt_txt"
+                            android:id="@+id/emp_code_txt"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:layout_marginHorizontal="@dimen/_1sdp"
@@ -313,7 +312,7 @@
                             android:clickable="false"
                             android:focusable="false"
                             android:inputType="none"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6ssp" />
@@ -336,16 +335,16 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/dcr_rpt"
+                            android:id="@+id/rpt_mgr"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"
                             android:layout_marginTop="15dp"
-                            android:text="@string/dcr_rpt"
+                            android:text="@string/rpt_mgr"
                             android:textColor="#000000" />
 
                         <TextView
-                            android:id="@+id/dcr_rpt_name"
+                            android:id="@+id/rpt_mgr_name"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:layout_marginHorizontal="@dimen/_1sdp"
@@ -355,7 +354,7 @@
                             android:drawablePadding="@dimen/_5sdp"
                             android:imeOptions="actionDone"
                             android:maxLines="1"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:singleLine="true"
                             android:textColor="@color/black"
@@ -371,16 +370,16 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tp_rpt"
+                            android:id="@+id/join_dt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"
                             android:layout_marginTop="15dp"
-                            android:text="@string/tp_rpt"
+                            android:text="@string/join_dt"
                             android:textColor="#000000" />
 
                         <TextView
-                            android:id="@+id/tp_rpt_name"
+                            android:id="@+id/join_dt_name"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:layout_marginHorizontal="@dimen/_1sdp"
@@ -390,7 +389,7 @@
                             android:clickable="false"
                             android:focusable="false"
                             android:inputType="none"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6ssp" />
@@ -405,16 +404,16 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/lev_rpt"
+                            android:id="@+id/phone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"
                             android:layout_marginTop="15dp"
-                            android:text="@string/lev_rpt"
+                            android:text="@string/mobile"
                             android:textColor="#000000" />
 
                         <TextView
-                            android:id="@+id/lev_rpt_name"
+                            android:id="@+id/phone_txt"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:layout_marginHorizontal="@dimen/_1sdp"
@@ -424,7 +423,7 @@
                             android:clickable="false"
                             android:focusable="false"
                             android:inputType="none"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6ssp" />
@@ -447,16 +446,16 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tp_mand_range"
+                            android:id="@+id/email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"
                             android:layout_marginTop="15dp"
-                            android:text="@string/tp_mand_range"
+                            android:text="@string/email"
                             android:textColor="#000000" />
 
                         <TextView
-                            android:id="@+id/tp_mand_range_txt"
+                            android:id="@+id/email_txt"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:layout_marginHorizontal="@dimen/_1sdp"
@@ -466,7 +465,7 @@
                             android:drawablePadding="@dimen/_5sdp"
                             android:imeOptions="actionDone"
                             android:maxLines="1"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:singleLine="true"
                             android:textColor="@color/black"
@@ -482,30 +481,30 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tpp_rpt"
+                            android:id="@+id/dob"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
-                            android:text="@string/tp_rpt"
+                            android:layout_marginStart="@dimen/_1sdp"
+                            android:text="@string/Dateofbirth"
                             android:textColor="#000000"
-                            android:visibility="gone" />
+                            android:visibility="visible" />
 
                         <TextView
-                            android:id="@+id/tpp_rpt_name"
+                            android:id="@+id/dob_txt"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:layout_marginHorizontal="@dimen/_1sdp"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="@dimen/_1sdp"
-                            android:background="@drawable/border_shape_spinner"
+                            android:background="@drawable/bg_light_grey"
                             android:clickable="false"
                             android:focusable="false"
                             android:inputType="none"
-                            android:padding="5dp"
+                            android:padding="13dp"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_6ssp"
-                            android:visibility="gone" />
+                            android:textSize="@dimen/_6ssp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -517,16 +516,17 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/levv_rpt"
+                            android:id="@+id/dow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
-                            android:text="@string/lev_rpt"
+                            android:layout_marginStart="@dimen/_1sdp"
+                            android:text="@string/Dateofwedding"
                             android:textColor="#000000"
-                            android:visibility="gone" />
+                            android:visibility="visible" />
 
                         <TextView
-                            android:id="@+id/levv_rpt_name"
+                            android:id="@+id/dow_txt"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:layout_marginHorizontal="@dimen/_1sdp"
@@ -535,11 +535,11 @@
                             android:clickable="false"
                             android:focusable="false"
                             android:inputType="none"
-                            android:padding="5dp"
+                            android:padding="13dp"
+                            android:background="@drawable/bg_light_grey"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_6ssp"
-                            android:visibility="gone" />
+                            android:textSize="@dimen/_6ssp" />
                     </LinearLayout>
 
 

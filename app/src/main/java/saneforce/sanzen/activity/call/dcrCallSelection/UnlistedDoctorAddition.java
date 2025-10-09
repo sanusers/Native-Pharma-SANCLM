@@ -227,7 +227,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(this, "Duplicate entry already exists!");
+                        commonUtilsMethods.showToastMessage(this, SharedPref.getUNLcap(this)+""+R.string.already_exist);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         return;
                     }
@@ -376,7 +376,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(this, "Duplicate entry already exists!");
+                        commonUtilsMethods.showToastMessage(this, SharedPref.getUNLcap(this)+""+R.string.already_exist);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         return; // stop saving further
                     }
