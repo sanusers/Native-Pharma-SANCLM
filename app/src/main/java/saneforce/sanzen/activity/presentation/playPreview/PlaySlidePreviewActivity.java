@@ -81,6 +81,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                     case "mp4":
                     case "avi":
                     case "zip":
+                    case "htm": 
                     case "html": {
                         binding.playBtn.setVisibility(View.VISIBLE);
                         break;
@@ -277,6 +278,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 case "mp4":
                 case "avi":
                 case "zip":
+                case "htm": 
                 case "html": {
                     binding.playBtn.setVisibility(View.VISIBLE);
                     break;

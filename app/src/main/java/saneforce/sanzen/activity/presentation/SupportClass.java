@@ -63,7 +63,7 @@ public class SupportClass {
         File[] imgFiles = file.listFiles(((dir, filename) -> filename.contains(".png") || filename.contains(".jpg") || filename.contains(".jpeg")));
         File[] mp4Files = file.listFiles(((dir, filename) -> filename.contains(".mp4") || filename.contains(".avi")));
         File[] pdfFiles = file.listFiles(((dir, filename) -> filename.contains(".pdf")));
-        File[] htmlFiles = file.listFiles(((dir, filename) -> filename.contains(".html")));
+        File[] htmlFiles = file.listFiles(((dir, filename) -> filename.contains(".html") || filename.contains(".htm")));
 
         if(imgFiles != null && imgFiles.length>0)
             bitmap = generateBitmap(context, imgFiles[0], getFileExtension(imgFiles[0].getAbsolutePath()));
@@ -78,7 +78,6 @@ public class SupportClass {
     }
 
     public static String getFileFromZip(String filePath, String fileType) {
-
         String path = filePath.replaceAll(".zip", "");
         File file = new File(path);
         File[] files = file.listFiles(new FilenameFilter() {
@@ -87,7 +86,7 @@ public class SupportClass {
                 if(fileType.equalsIgnoreCase("image")) {
                     return filename.contains(".png") || filename.contains(".jpg");
                 }else if(fileType.equalsIgnoreCase("html")) {
-                    return filename.contains(".html");
+                    return filename.contains(".html") || filename.contains(".htm");
                 }
                 return false;
             }
@@ -258,7 +257,11 @@ public class SupportClass {
                 bitmap = getBitmapFromZip(context, sourceFilePath);
                 break;
             }
-            case "html":{
+            case "html": {
+                bitmap = getBitmapFromHTML(context, sourceFilePath);
+                break;
+            }
+            case "htm":{
                 bitmap = getBitmapFromHTML(context, sourceFilePath);
                 break;
 //                String html = "<html><body bgColor=\"white\"><p>Unable to create preview!</p></body></html>";
@@ -298,6 +301,7 @@ public class SupportClass {
             case "pdf":
             case "gif":
             case "html":
+            case "htm":
             case "zip":{
                 if(thumbnail.exists()) {
                     Glide.with(context).load(new File(thumbnail.getAbsolutePath())).downsample(DownsampleStrategy.FIT_CENTER).placeholder(R.drawable.baseline_cached_24).into(imageView);
