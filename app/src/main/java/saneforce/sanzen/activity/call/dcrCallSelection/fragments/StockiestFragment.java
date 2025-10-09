@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
@@ -610,6 +611,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
@@ -656,13 +658,13 @@ public class StockiestFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.v("fragment","---"+ "stockist");
-        View v = inflater.inflate(R.layout.fragment_stockiest, container, false);
-        rv_list = v.findViewById(R.id.rv_cust_list_selection);
-        ed_search = v.findViewById(R.id.search_cust);
-        iv_filter = v.findViewById(R.id.iv_filter);
-        tv_filter_count = v.findViewById(R.id.tv_filter_count);
-        tv_hqName = v.findViewById(R.id.tv_hq_name);
-        noStockist = v.findViewById(R.id.no_stockist);
+        View view = inflater.inflate(R.layout.fragment_stockiest, container, false);
+        rv_list = view.findViewById(R.id.rv_cust_list_selection);
+        ed_search = view.findViewById(R.id.search_cust);
+        iv_filter = view.findViewById(R.id.iv_filter);
+        tv_filter_count = view.findViewById(R.id.tv_filter_count);
+        tv_hqName = view.findViewById(R.id.tv_hq_name);
+        noStockist = view.findViewById(R.id.no_stockist);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
 
         roomDB = RoomDB.getDatabase(requireContext());
@@ -674,8 +676,11 @@ public class StockiestFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
 
-        iv_filter.setOnClickListener(view -> {
-            CustomizeFiltered();
+        iv_filter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                CustomizeFiltered();
+            }
         });
 
         ed_search.addTextChangedListener(new TextWatcher() {
@@ -696,7 +701,7 @@ public class StockiestFragment extends Fragment {
         });
 
         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-            tv_hqName.setOnClickListener(view -> {
+            tv_hqName.setOnClickListener(v -> {
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                     ArrayList<String> list = new ArrayList<>();
@@ -767,7 +772,7 @@ public class StockiestFragment extends Fragment {
             });
         }
 
-        return v;
+        return view;
     }
 
     private void getRequiredData() {
@@ -925,50 +930,64 @@ public class StockiestFragment extends Fragment {
         tvTerritory.setVisibility(View.VISIBLE);
 
         lv_terr = dialogFilter.findViewById(R.id.lv_territory);
-        img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
-
-        btn_apply.setOnClickListener(view1 -> Filtered());
-
-        btn_clear.setOnClickListener(view -> {
-            territoryCode = "";
-            territoryName = "";
-            tvTerritory.setText("");
-            tvTerritory.setHint(R.string.territory);
-        });
-
-        tvTerritory.setOnClickListener(view -> {
-            if (lv_terr.getVisibility() == View.VISIBLE) {
-                lv_terr.setVisibility(View.GONE);
-
-            } else {
-                filterSelectionList.clear();
-                try {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-                    Log.v("jsonArray", "--" + jsonArray.length());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"),jsonObject.getString("Code")));
-                    }
-
-                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                        territoryCode = clickedItem.getCode();
-                        territoryName = clickedItem.getName();
-                        tvTerritory.setText(clickedItem.getName());
-                        lv_terr.setVisibility(View.GONE);
-
-                    });
-                    lv_terr.setAdapter(arrayAdapter);
-                    lv_terr.setVisibility(View.VISIBLE);
-
-
-                } catch (Exception ignored) {
-
-                }
-
+        img_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogFilter.dismiss();
             }
         });
 
+        btn_apply.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Filtered();
+            }
+        });
 
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                territoryCode = "";
+                territoryName = "";
+                tvTerritory.setText("");
+                tvTerritory.setHint(R.string.territory);
+            }
+        });
+
+        tvTerritory.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (lv_terr.getVisibility() == View.VISIBLE) {
+                    lv_terr.setVisibility(View.GONE);
+
+                } else {
+                    filterSelectionList.clear();
+                    try {
+                        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+                        Log.v("jsonArray", "--" + jsonArray.length());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
+                        }
+
+                        FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                            territoryCode = clickedItem.getCode();
+                            territoryName = clickedItem.getName();
+                            tvTerritory.setText(clickedItem.getName());
+                            lv_terr.setVisibility(View.GONE);
+
+                        });
+                        lv_terr.setAdapter(arrayAdapter);
+                        lv_terr.setVisibility(View.VISIBLE);
+
+
+                    } catch (Exception ignored) {
+
+                    }
+
+                }
+            }
+        });
     }
 
     public void Filtered() {

@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
@@ -64,7 +65,7 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
         holder.town_name.setText(" " + app_adapt.getDoc_town() + " ");
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 UtilityClass.hideKeyboard((RemaindercallsActivity)context);
                 if (isFirstClick) {
                     // Perform action for the first click
@@ -97,7 +98,7 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
                         Log.d("REm_hq_code", RemaindercallsActivity.REm_hq_code);
                         intent12.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
-                        v.getContext().startActivity(intent12);
+                        view.getContext().startActivity(intent12);
 
 
 

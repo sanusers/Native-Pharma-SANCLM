@@ -13,6 +13,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.ArrayList;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 

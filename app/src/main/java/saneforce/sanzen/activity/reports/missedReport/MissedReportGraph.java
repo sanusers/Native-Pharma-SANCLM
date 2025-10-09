@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.visitMonitor.VisitFilter;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.ReportPagerAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
@@ -421,19 +422,19 @@ public class MissedReportGraph extends AppCompatActivity {
                 break;
         }
 
-        DrMissedCurrent.setOnClickListener(v -> {
+        DrMissedCurrent.setOnClickListener(view -> {
             Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
             MissedReportGraph.this.startActivity(intentWeb);
         });
-        DrMissedCurrentprev.setOnClickListener(v -> {
+        DrMissedCurrentprev.setOnClickListener(view -> {
             Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
             MissedReportGraph.this.startActivity(intentWeb);
         });
-        DrMissedCurrentprev1.setOnClickListener(v -> {
+        DrMissedCurrentprev1.setOnClickListener(view -> {
             Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
             MissedReportGraph.this.startActivity(intentWeb);
         });
-        binding.imageBack.setOnClickListener(v -> {
+        binding.imageBack.setOnClickListener(view -> {
             finish();
         });
 
@@ -474,7 +475,7 @@ public class MissedReportGraph extends AppCompatActivity {
             float downX, downY;
 
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View view, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         downX = event.getX();
@@ -488,7 +489,7 @@ public class MissedReportGraph extends AppCompatActivity {
                         float diffY = moveY - downY;
 
                         if (Math.abs(diffX) > Math.abs(diffY)) {
-                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                            view.getParent().requestDisallowInterceptTouchEvent(true);
                         }
                         break;
 

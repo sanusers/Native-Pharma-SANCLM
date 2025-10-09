@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.tp.TpApprovalActivity;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
@@ -56,9 +57,12 @@ public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.Vi
             holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.greater_than_purple));
         }
 
-        holder.constraint_main.setOnClickListener(view -> {
-            mListener.onItemClick(new TpModelList(tpModelLists.get(position).getCode(),tpModelLists.get(position).getName(),tpModelLists.get(position).getMonth(),tpModelLists.get(position).getYear(),tpModelLists.get(position).getMn()),holder.getBindingAdapterPosition());
-            notifyDataSetChanged();
+        holder.constraint_main.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                mListener.onItemClick(new TpModelList(tpModelLists.get(position).getCode(), tpModelLists.get(position).getName(), tpModelLists.get(position).getMonth(), tpModelLists.get(position).getYear(), tpModelLists.get(position).getMn()), holder.getBindingAdapterPosition());
+                notifyDataSetChanged();
+            }
         });
     }
 

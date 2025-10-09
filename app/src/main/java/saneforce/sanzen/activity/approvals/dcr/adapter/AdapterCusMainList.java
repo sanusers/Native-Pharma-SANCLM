@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewActivity;
 import saneforce.sanzen.activity.approvals.dcr.detailView.adapter.AdapterCusSingleList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
@@ -65,38 +66,41 @@ public class AdapterCusMainList extends RecyclerView.Adapter<AdapterCusMainList.
                 break;
         }
 
-        holder.card_view.setOnClickListener(view -> {
-            DcrDetailViewActivity.dcrDetailModelLists = new ArrayList<>();
-            for (int i = 0; i < dcrApprovalLists.size(); i++) {
-                DcrDetailViewActivity.dcrDetailModelLists.add(new DcrDetailModelList(dcrApprovalLists.get(i).getHq_name(), dcrApprovalLists.get(i).getName(), dcrApprovalLists.get(i).getCode(), dcrApprovalLists.get(i).getTypeCust(), dcrApprovalLists.get(i).getType(), dcrApprovalLists.get(i).getSdp_name(), dcrApprovalLists.get(i).getPob(), dcrApprovalLists.get(i).getRemark(), dcrApprovalLists.get(i).getJointWork(), dcrApprovalLists.get(i).getCall_feedback(), dcrApprovalLists.get(i).getModTime(), dcrApprovalLists.get(i).getVisitTime(),dcrApprovalLists.get(i).getDct_id(),dcrApprovalLists.get(i).getDcr_detial_id()));
-            }
-            DcrDetailViewActivity.SelectedCode = dcrApprovalLists.get(position).getCode();
-            Intent intent = new Intent(context, DcrDetailViewActivity.class);
-            intent.putExtra("cut_name", dcrApprovalLists.get(position).getName());
-            intent.putExtra("hq_name", dcrApprovalLists.get(position).getHq_name());
-            intent.putExtra("cus_cluster", dcrApprovalLists.get(position).getSdp_name());
-            intent.putExtra("cus_pob", dcrApprovalLists.get(position).getPob());
-            intent.putExtra("cus_jw", dcrApprovalLists.get(position).getJointWork());
-            intent.putExtra("cus_type", dcrApprovalLists.get(position).getType());
-            intent.putExtra("cus_fb", dcrApprovalLists.get(position).getCall_feedback());
-            intent.putExtra("cus_remark", dcrApprovalLists.get(position).getRemark());
-            intent.putExtra("cus_mod_time", dcrApprovalLists.get(position).getModTime());
-            intent.putExtra("cus_visit_time", dcrApprovalLists.get(position).getVisitTime());
-            intent.putExtra("dcr_id", dcrApprovalLists.get(position).getDct_id());
-            intent.putExtra("Details_id", dcrApprovalLists.get(position).getDcr_detial_id());
+        holder.card_view.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                DcrDetailViewActivity.dcrDetailModelLists = new ArrayList<>();
+                for (int i = 0; i < dcrApprovalLists.size(); i++) {
+                    DcrDetailViewActivity.dcrDetailModelLists.add(new DcrDetailModelList(dcrApprovalLists.get(i).getHq_name(), dcrApprovalLists.get(i).getName(), dcrApprovalLists.get(i).getCode(), dcrApprovalLists.get(i).getTypeCust(), dcrApprovalLists.get(i).getType(), dcrApprovalLists.get(i).getSdp_name(), dcrApprovalLists.get(i).getPob(), dcrApprovalLists.get(i).getRemark(), dcrApprovalLists.get(i).getJointWork(), dcrApprovalLists.get(i).getCall_feedback(), dcrApprovalLists.get(i).getModTime(), dcrApprovalLists.get(i).getVisitTime(), dcrApprovalLists.get(i).getDct_id(), dcrApprovalLists.get(i).getDcr_detial_id()));
+                }
+                DcrDetailViewActivity.SelectedCode = dcrApprovalLists.get(position).getCode();
+                Intent intent = new Intent(context, DcrDetailViewActivity.class);
+                intent.putExtra("cut_name", dcrApprovalLists.get(position).getName());
+                intent.putExtra("hq_name", dcrApprovalLists.get(position).getHq_name());
+                intent.putExtra("cus_cluster", dcrApprovalLists.get(position).getSdp_name());
+                intent.putExtra("cus_pob", dcrApprovalLists.get(position).getPob());
+                intent.putExtra("cus_jw", dcrApprovalLists.get(position).getJointWork());
+                intent.putExtra("cus_type", dcrApprovalLists.get(position).getType());
+                intent.putExtra("cus_fb", dcrApprovalLists.get(position).getCall_feedback());
+                intent.putExtra("cus_remark", dcrApprovalLists.get(position).getRemark());
+                intent.putExtra("cus_mod_time", dcrApprovalLists.get(position).getModTime());
+                intent.putExtra("cus_visit_time", dcrApprovalLists.get(position).getVisitTime());
+                intent.putExtra("dcr_id", dcrApprovalLists.get(position).getDct_id());
+                intent.putExtra("Details_id", dcrApprovalLists.get(position).getDcr_detial_id());
 
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            AdapterCusSingleList.ProductList = new ArrayList<>();
-            for (int i = 0; i < ProductList.size(); i++) {
-                AdapterCusSingleList.ProductList.add(new SaveCallProductList(ProductList.get(i).getCode(), ProductList.get(i).getName(), ProductList.get(i).getSample_qty(), ProductList.get(i).getRx_qty(), ProductList.get(i).getRcpa_qty(), ProductList.get(i).getPromoted()));
-            }
+                AdapterCusSingleList.ProductList = new ArrayList<>();
+                for (int i = 0; i < ProductList.size(); i++) {
+                    AdapterCusSingleList.ProductList.add(new SaveCallProductList(ProductList.get(i).getCode(), ProductList.get(i).getName(), ProductList.get(i).getSample_qty(), ProductList.get(i).getRx_qty(), ProductList.get(i).getRcpa_qty(), ProductList.get(i).getPromoted()));
+                }
 
-            AdapterCusSingleList.InputList = new ArrayList<>();
-            for (int j = 0; j < InputList.size(); j++) {
-                AdapterCusSingleList.InputList.add(new SaveCallInputList(InputList.get(j).getInp_code(), InputList.get(j).getInput_name(), InputList.get(j).getInp_qty()));
+                AdapterCusSingleList.InputList = new ArrayList<>();
+                for (int j = 0; j < InputList.size(); j++) {
+                    AdapterCusSingleList.InputList.add(new SaveCallInputList(InputList.get(j).getInp_code(), InputList.get(j).getInput_name(), InputList.get(j).getInp_qty()));
+                }
+                context.startActivity(intent);
             }
-            context.startActivity(intent);
         });
     }
 

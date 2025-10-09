@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentSelectFbSideBinding;
@@ -42,7 +43,7 @@ public class TherapistSelectionSide extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         selectTherapistSideBinding = FragmentSelectFbSideBinding.inflate(inflater);
-        View v = selectTherapistSideBinding.getRoot();
+        View view = selectTherapistSideBinding.getRoot();
         RoomDB roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -50,10 +51,10 @@ public class TherapistSelectionSide extends Fragment {
         SetupAdapter();
 
         selectTherapistSideBinding.tvTagHeader.setText(requireContext().getString(R.string.therapist_selection));
-        selectTherapistSideBinding.tvDummy.setOnClickListener(view -> {
+        selectTherapistSideBinding.tvDummy.setOnClickListener(v -> {
         });
 
-        selectTherapistSideBinding.imgClose.setOnClickListener(view -> {
+        selectTherapistSideBinding.imgClose.setOnClickListener(v -> {
             InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(selectTherapistSideBinding.imgClose.getWindowToken(), 0);
             selectTherapistSideBinding.searchList.setText("");
@@ -82,7 +83,7 @@ public class TherapistSelectionSide extends Fragment {
             }
         });
 
-        selectTherapistSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectTherapistSideBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             selectTherapistSideBinding.searchList.setText("");
             if (list_name.get(i).equalsIgnoreCase("All") && list_code.get(i).isEmpty()) {
                 getRequiredData(requireContext(), list_name.get(i), masterDataDao);

@@ -18,6 +18,7 @@ import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass
 import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.FragmentCommonPresentationBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
@@ -59,7 +60,12 @@ public class CommonPresentationFragment extends Fragment {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        binding.createPresentationBtn.setOnClickListener(v -> startActivity(new Intent(requireContext(), CreatePresentationActivity.class)));
+        binding.createPresentationBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                startActivity(new Intent(requireContext(), CreatePresentationActivity.class));
+            }
+        });
 
         populateAdapter();
     }

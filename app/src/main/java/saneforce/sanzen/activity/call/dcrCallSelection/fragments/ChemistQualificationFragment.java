@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -50,7 +51,7 @@ public class ChemistQualificationFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectchmqualiSideBinding = FragmentChemistqualificationBinding.inflate(inflater);
-        View v = selectchmqualiSideBinding.getRoot();
+        View view = selectchmqualiSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -59,16 +60,21 @@ public class ChemistQualificationFragment extends Fragment {
         qualiName = "";
         qualiCode = "";
         sel_qualicode=0;
-        selectchmqualiSideBinding.tvDummy.setOnClickListener(view -> {
+        selectchmqualiSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
 
-        selectchmqualiSideBinding.imgClose.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(selectchmqualiSideBinding.imgClose.getWindowToken(), 0);
-            selectchmqualiSideBinding.searchList.setText("");
-            chemistadditionbinding.fragmentSelectChmquali.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectchmqualiSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(selectchmqualiSideBinding.imgClose.getWindowToken(), 0);
+                selectchmqualiSideBinding.searchList.setText("");
+                chemistadditionbinding.fragmentSelectChmquali.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectchmqualiSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -97,7 +103,7 @@ public class ChemistQualificationFragment extends Fragment {
 //            chemistadditionbinding.txtSelectQua.setText(selectchmqualiSideBinding.selectListView.getItemAtPosition(i).toString());
 //            chemistadditionbinding.fragmentSelectChmquali.setVisibility(View.GONE);
 //        });
-        selectchmqualiSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectchmqualiSideBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             String selectedName = adapterView.getItemAtPosition(i).toString();
             int originalIndex = list_name.indexOf(selectedName);
             if (originalIndex != -1) {
@@ -110,7 +116,7 @@ public class ChemistQualificationFragment extends Fragment {
                 chemistadditionbinding.fragmentSelectChmquali.setVisibility(View.GONE);
             }
         });
-        return v;
+        return view;
     }
 
 

@@ -99,6 +99,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.adapter.ActivityAdapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
 import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
@@ -238,9 +239,9 @@ public class ActivityFragment extends Fragment {
 //            }
 //        });
 
-        fragmentActivityBinding.btnSubmit.setOnClickListener(new View.OnClickListener() {
+        fragmentActivityBinding.btnSubmit.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if(chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
                     saveActivity();
                 }else if(chosenActivityModelClass != null && savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
@@ -249,9 +250,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        fragmentActivityBinding.btnClearall.setOnClickListener(new View.OnClickListener() {
+        fragmentActivityBinding.btnClearall.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 showClearAlert();
             }
         });
@@ -268,12 +269,18 @@ public class ActivityFragment extends Fragment {
         TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         alertText.setText(R.string.already_saved_will_be_updated);
-        btn_yes.setOnClickListener(view12 -> {
-            saveActivity();
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                saveActivity();
+                dialog.dismiss();
+            }
         });
-        btn_no.setOnClickListener(view12 -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 
@@ -308,9 +315,12 @@ public class ActivityFragment extends Fragment {
             getActivityDetails(classGroup);
             dialog.dismiss();
         });
-        btn_no.setOnClickListener(view12 -> {
-            adapter.changeRowIndex(chosenActivityPosition);
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                adapter.changeRowIndex(chosenActivityPosition);
+                dialog.dismiss();
+            }
         });
     }
 
@@ -324,12 +334,18 @@ public class ActivityFragment extends Fragment {
         TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         alertText.setText(requireContext().getString(R.string.are_you_sure_you_want_to_clear));
-        btn_yes.setOnClickListener(view12 -> {
-            clearViews();
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                clearViews();
+                dialog.dismiss();
+            }
         });
-        btn_no.setOnClickListener(view12 -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 
@@ -735,10 +751,10 @@ public class ActivityFragment extends Fragment {
 
         textcharacter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideKeyboard(v);
-                    v.clearFocus();
+                    hideKeyboard(view);
+                    view.clearFocus();
                     return true;
                 }
                 return false;
@@ -837,10 +853,10 @@ public class ActivityFragment extends Fragment {
         });
         textnumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideKeyboard(v);
-                    v.clearFocus();
+                    hideKeyboard(view);
+                    view.clearFocus();
                     return true;
                 }
                 return false;
@@ -946,10 +962,10 @@ public class ActivityFragment extends Fragment {
         });
         textarea.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideKeyboard(v);
-                    v.clearFocus();
+                    hideKeyboard(view);
+                    view.clearFocus();
                     return true;
                 }
                 return false;
@@ -1047,9 +1063,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        textviewdate1.setOnClickListener(new View.OnClickListener() {
+        textviewdate1.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 final Calendar c = Calendar.getInstance();
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
@@ -1265,9 +1281,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        textviewfromdate.setOnClickListener(new View.OnClickListener() {
+        textviewfromdate.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 final Calendar c = Calendar.getInstance();
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
@@ -1343,9 +1359,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        textviewtodate.setOnClickListener(new View.OnClickListener() {
+        textviewtodate.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
                 if(fromdate.equals("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.select_from_date));
@@ -1686,9 +1702,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        textViewtime1.setOnClickListener(new View.OnClickListener() {
+        textViewtime1.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 final Calendar c = Calendar.getInstance();
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
@@ -1790,9 +1806,9 @@ public class ActivityFragment extends Fragment {
         });
         textLinearLayout4.setId(k + 34);
 
-        textviewfromtime.setOnClickListener(new View.OnClickListener() {
+        textviewfromtime.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 final Calendar c = Calendar.getInstance();
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
@@ -1866,9 +1882,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        textviewtotime.setOnClickListener(new View.OnClickListener() {
+        textviewtotime.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 String data = textviewfromtime.getText().toString();
                 if(data.equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_from_time));
@@ -2009,9 +2025,9 @@ public class ActivityFragment extends Fragment {
 
             }
         });
-        singlecomboedittext.setOnClickListener(new View.OnClickListener() {
+        singlecomboedittext.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 ArrayList<ActivityModelClass> mlist = new ArrayList<>();
                 try {
                     JSONArray jsonArray = new JSONArray(List.getInput());
@@ -2145,9 +2161,9 @@ public class ActivityFragment extends Fragment {
 
             }
         });
-        multicomboeditext.setOnClickListener(new View.OnClickListener() {
+        multicomboeditext.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 ArrayList<ActivityModelClass> mlist = new ArrayList<>();
                 String[] selectedIds = TextCode.getText().toString().split(",");
                 List<String> activityForList = Arrays.asList(selectedIds);
@@ -2251,7 +2267,7 @@ public class ActivityFragment extends Fragment {
         parentLayout.addView(textfileupload);
         parentLayout.addView(clearButton);
 
-        clearButton.setOnClickListener(v -> {
+        clearButton.setOnClickListener(view -> {
             if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
                 removeFile(textfileupload.getText().toString());
                 textfileupload.setText("");
@@ -2318,9 +2334,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        textfileupload.setOnClickListener(new View.OnClickListener() {
+        textfileupload.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 FilnameTet = textfileupload;
                 if(!CheckStoragePermission()) {
                     RequestStoragePermission();
@@ -2587,9 +2603,9 @@ public class ActivityFragment extends Fragment {
 //            e.printStackTrace();
 //        }
 
-        LabelText.setOnClickListener(new View.OnClickListener() {
+        LabelText.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
 //                LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
                 if(CommonUtilsMethods.isLocationEnabled(requireContext())) {
                     if(!CheckLocPermission()) {
@@ -2867,9 +2883,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        fragmentActivityBinding.slideScreen.txtClDone.setOnClickListener(new View.OnClickListener() {
+        fragmentActivityBinding.slideScreen.txtClDone.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if(isMultipleCheck) {
                     String lids = "";
                     for (int i = 0; i<mListId.size(); i++) {
@@ -2882,9 +2898,9 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        fragmentActivityBinding.slideScreen.cancelImg.setOnClickListener(new View.OnClickListener() {
+        fragmentActivityBinding.slideScreen.cancelImg.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 fragmentActivityBinding.mainLayout.closeDrawer(Gravity.RIGHT);
             }
         });

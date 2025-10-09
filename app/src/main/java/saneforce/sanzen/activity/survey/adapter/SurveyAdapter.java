@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.survey.model.SurveyModelClass;
 import saneforce.sanzen.utility.TimeUtils;
 
@@ -47,10 +48,13 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.ViewHolder
         holder.surveyName.setText(surveyModelClass.getSurveyName());
 //        holder.surveyExpireDate.setText(formatedDate);
         holder.surveyExpireDate.setVisibility(View.GONE);
-        holder.layout.setOnClickListener(view -> {
-            selectedPosition = position;
-            notifyDataSetChanged();
-            surveyClickListener.onSurveyClick(surveyModelClass, position);
+        holder.layout.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                selectedPosition = position;
+                notifyDataSetChanged();
+                surveyClickListener.onSurveyClick(surveyModelClass, position);
+            }
         });
 
         if (selectedPosition == position) {

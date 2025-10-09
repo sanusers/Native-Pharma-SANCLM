@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.DoctorBusinessModel;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -83,17 +84,23 @@ public class AdapterDoctorBusinessProduct extends RecyclerView.Adapter<AdapterDo
             holder.tv_specialist.setVisibility(View.GONE);
         }
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, cusListArrayList.get(position).getName()));
-
-        holder.constraint_main.setOnClickListener(view -> {
-            try
-            {
-                if (listener != null) {
-                    listener.onDoctorClicked(doctor, position);
-                }
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, cusListArrayList.get(position).getName());
             }
-            catch (Exception e) {
-                Log.v("Call_Data", "---" + e);
+        });
+
+        holder.constraint_main.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    if (listener != null) {
+                        listener.onDoctorClicked(doctor, position);
+                    }
+                } catch (Exception e) {
+                    Log.v("Call_Data", "---" + e);
+                }
             }
         });
     }

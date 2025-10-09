@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -50,22 +51,27 @@ public class GenderFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectgenderBinding = FragmentGenderBinding.inflate(inflater);
-        View v = selectgenderBinding.getRoot();
+        View view = selectgenderBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         SetupAdapter();
         genderName = "";
         //sel_categorycode=0;
-        selectgenderBinding.tvDummy.setOnClickListener(view -> {
+        selectgenderBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
 
-        selectgenderBinding.imgClose.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(selectgenderBinding.imgClose.getWindowToken(), 0);
-            selectgenderBinding.searchList.setText("");
-            activityProfilingBinding.fragmentSelectGender.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectgenderBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(selectgenderBinding.imgClose.getWindowToken(), 0);
+                selectgenderBinding.searchList.setText("");
+                activityProfilingBinding.fragmentSelectGender.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectgenderBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -85,14 +91,14 @@ public class GenderFragment extends Fragment {
             }
         });
 
-        selectgenderBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectgenderBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             genderName = list_name.get(i);
             selectgenderBinding.searchList.setText("");
             ProfilingActivity.gender= genderName;
             activityProfilingBinding.txtSelectGender.setText(selectgenderBinding.selectListView.getItemAtPosition(i).toString());
             activityProfilingBinding.fragmentSelectGender.setVisibility(View.GONE);
         });
-        return v;
+        return view;
     }
 
 

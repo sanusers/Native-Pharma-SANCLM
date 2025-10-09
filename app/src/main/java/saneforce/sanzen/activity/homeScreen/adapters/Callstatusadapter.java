@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.TreeSet;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.EventCalenderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -183,105 +184,107 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 //            holder.imageView.setVisibility(View.GONE);
         }
 
-        holder.relativeLayout.setOnClickListener(v -> {
-            if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
-                if (!list.getDateID().equalsIgnoreCase("")) {
-                    OneBuildModelClass oneBuildModelClass = null;
-                    String chosenDate = "";
-                    try {
-                        chosenDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", Integer.parseInt(list.getYear()), Integer.parseInt(list.getMonth()), Integer.parseInt(list.getDateID()));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+        holder.relativeLayout.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                    if (!list.getDateID().equalsIgnoreCase("")) {
+                        OneBuildModelClass oneBuildModelClass = null;
+                        String chosenDate = "";
                         try {
-                            String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, chosenDate);
-                            TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
-                            JSONArray tpDataArray = tourPlanOfflineDataTable.getTpDataJSONArray();
-                            String tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
-                            String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, chosenDate);
-                            if (tpDataArray.length() > 0 && tpApprovalStatus.equalsIgnoreCase("3")) {
-                                for (int i = 0; i < tpDataArray.length(); i++) {
-                                    JSONObject tpDataObj = tpDataArray.optJSONObject(i);
-                                    if (tpDataObj.optString("date").equalsIgnoreCase(date)) {
-                                        Type type = new TypeToken<OneBuildModelClass>() {
-                                        }.getType();
-                                        oneBuildModelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
-                                        break;
-                                    }
-                                }
-                            }
+                            chosenDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", Integer.parseInt(list.getYear()), Integer.parseInt(list.getMonth()), Integer.parseInt(list.getDateID()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                    if (list.getWorkTypeFlag().equalsIgnoreCase("W") && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
-                        if (oneBuildModelClass != null && !oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
-                            WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
-                            WorkPlanEntriesNeeded.addedDatesNeeded.clear();
-                            WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
-                        } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
-                            return;
+                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                            try {
+                                String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, chosenDate);
+                                TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
+                                JSONArray tpDataArray = tourPlanOfflineDataTable.getTpDataJSONArray();
+                                String tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                                String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, chosenDate);
+                                if (tpDataArray.length() > 0 && tpApprovalStatus.equalsIgnoreCase("3")) {
+                                    for (int i = 0; i < tpDataArray.length(); i++) {
+                                        JSONObject tpDataObj = tpDataArray.optJSONObject(i);
+                                        if (tpDataObj.optString("date").equalsIgnoreCase(date)) {
+                                            Type type = new TypeToken<OneBuildModelClass>() {
+                                            }.getType();
+                                            oneBuildModelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                                            break;
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } else if (list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
-                        if (oneBuildModelClass != null && !oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
-                            WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
-                            WorkPlanEntriesNeeded.addedDatesNeeded.clear();
-                            WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
-                        } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
-                            return;
+                        if (list.getWorkTypeFlag().equalsIgnoreCase("W") && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
+                            if (oneBuildModelClass != null && !oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
+                                WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
+                                WorkPlanEntriesNeeded.addedDatesNeeded.clear();
+                                WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
+                            } else {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
+                                return;
+                            }
+                        } else if (list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
+                            if (oneBuildModelClass != null && !oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
+                                WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
+                                WorkPlanEntriesNeeded.addedDatesNeeded.clear();
+                                WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
+                            } else {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
+                                return;
+                            }
                         }
-                    }
 //                else {
-                    boolean isApplicableDate = false;
-                    String monthConverted = "";
-                    if (!list.getMonth().isEmpty()) {
-                        monthConverted = list.getMonth();
-                        if (Integer.parseInt(list.getMonth()) < 10) {
-                            monthConverted = "0" + monthConverted;
+                        boolean isApplicableDate = false;
+                        String monthConverted = "";
+                        if (!list.getMonth().isEmpty()) {
+                            monthConverted = list.getMonth();
+                            if (Integer.parseInt(list.getMonth()) < 10) {
+                                monthConverted = "0" + monthConverted;
+                            }
                         }
-                    }
 
-                    String dayConverted = "";
-                    if (!list.getDateID().isEmpty()) {
-                        dayConverted = list.getDateID();
-                        if (Integer.parseInt(list.getDateID()) < 10) {
-                            dayConverted = "0" + dayConverted;
+                        String dayConverted = "";
+                        if (!list.getDateID().isEmpty()) {
+                            dayConverted = list.getDateID();
+                            if (Integer.parseInt(list.getDateID()) < 10) {
+                                dayConverted = "0" + dayConverted;
+                            }
                         }
-                    }
 
-                    String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
-                    if (selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && WorkPlanEntriesNeeded.datesNeeded != null && WorkPlanEntriesNeeded.datesNeeded.contains(selectedDate)) {
-                        isApplicableDate = true;
-                    }
-                    for (String date : dateStrings) {
-                        if (selectedDate.equalsIgnoreCase(date)) {
+                        String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
+                        if (selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && WorkPlanEntriesNeeded.datesNeeded != null && WorkPlanEntriesNeeded.datesNeeded.contains(selectedDate)) {
                             isApplicableDate = true;
-                            break;
                         }
-                    }
+                        for (String date : dateStrings) {
+                            if (selectedDate.equalsIgnoreCase(date)) {
+                                isApplicableDate = true;
+                                break;
+                            }
+                        }
 
-                    if (SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
-                    } else if (!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
-                    } else if (WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
-                    } else if (isApplicableDate) {
-                        SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
-                        HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
-                        HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                        HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
-                        HomeDashBoard.checkAndSetEntryDate(context, true);
-                    } else {
-                        Log.e("call status", "onBindViewHolder: ");
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
-                    }
+                        if (SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
+                        } else if (!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
+                        } else if (WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
+                        } else if (isApplicableDate) {
+                            SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
+                            HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
+                            HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                            HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
+                            HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
+                            HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
+                            HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
+                            HomeDashBoard.checkAndSetEntryDate(context, true);
+                        } else {
+                            Log.e("call status", "onBindViewHolder: ");
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                        }
 //                }
 
               /*  if (new Date().equals(strDate)) {
@@ -305,106 +308,106 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 } else {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
                 }*/
-                }
-            } else {
-
-                if (!list.getDateID().equalsIgnoreCase("")) {
-                    ModelClass modelClass = null;
-                    String chosenDate = "";
-                    try {
-                        chosenDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", Integer.parseInt(list.getYear()), Integer.parseInt(list.getMonth()), Integer.parseInt(list.getDateID()));
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                    if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                } else {
+
+                    if (!list.getDateID().equalsIgnoreCase("")) {
+                        ModelClass modelClass = null;
+                        String chosenDate = "";
                         try {
-                            String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, chosenDate);
-                            TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
-                            JSONArray tpDataArray = tourPlanOfflineDataTable.getTpDataJSONArray();
-                            String tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
-                            String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, chosenDate);
-                            if (tpDataArray.length() > 0 && tpApprovalStatus.equalsIgnoreCase("3")) {
-                                for (int i = 0; i < tpDataArray.length(); i++) {
-                                    JSONObject tpDataObj = tpDataArray.optJSONObject(i);
-                                    if (tpDataObj.optString("date").equalsIgnoreCase(date)) {
-                                        Type type = new TypeToken<ModelClass>() {
-                                        }.getType();
-                                        modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
-                                        break;
-                                    }
-                                }
-                            }
+                            chosenDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", Integer.parseInt(list.getYear()), Integer.parseInt(list.getMonth()), Integer.parseInt(list.getDateID()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                    if (list.getWorkTypeFlag().equalsIgnoreCase("W") && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
-                        if (modelClass != null && !modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
-                            WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
-                            WorkPlanEntriesNeeded.addedDatesNeeded.clear();
-                            WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
-                        } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
-                            return;
+                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                            try {
+                                String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, chosenDate);
+                                TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
+                                JSONArray tpDataArray = tourPlanOfflineDataTable.getTpDataJSONArray();
+                                String tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                                String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, chosenDate);
+                                if (tpDataArray.length() > 0 && tpApprovalStatus.equalsIgnoreCase("3")) {
+                                    for (int i = 0; i < tpDataArray.length(); i++) {
+                                        JSONObject tpDataObj = tpDataArray.optJSONObject(i);
+                                        if (tpDataObj.optString("date").equalsIgnoreCase(date)) {
+                                            Type type = new TypeToken<ModelClass>() {
+                                            }.getType();
+                                            modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                                            break;
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } else if (list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
-                        if (modelClass != null && !modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
-                            WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
-                            WorkPlanEntriesNeeded.addedDatesNeeded.clear();
-                            WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
-                        } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
-                            return;
+                        if (list.getWorkTypeFlag().equalsIgnoreCase("W") && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
+                            if (modelClass != null && !modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
+                                WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
+                                WorkPlanEntriesNeeded.addedDatesNeeded.clear();
+                                WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
+                            } else {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
+                                return;
+                            }
+                        } else if (list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
+                            if (modelClass != null && !modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
+                                WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
+                                WorkPlanEntriesNeeded.addedDatesNeeded.clear();
+                                WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
+                            } else {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
+                                return;
+                            }
                         }
-                    }
 //                else {
-                    boolean isApplicableDate = false;
-                    String monthConverted = "";
-                    if (!list.getMonth().isEmpty()) {
-                        monthConverted = list.getMonth();
-                        if (Integer.parseInt(list.getMonth()) < 10) {
-                            monthConverted = "0" + monthConverted;
+                        boolean isApplicableDate = false;
+                        String monthConverted = "";
+                        if (!list.getMonth().isEmpty()) {
+                            monthConverted = list.getMonth();
+                            if (Integer.parseInt(list.getMonth()) < 10) {
+                                monthConverted = "0" + monthConverted;
+                            }
                         }
-                    }
 
-                    String dayConverted = "";
-                    if (!list.getDateID().isEmpty()) {
-                        dayConverted = list.getDateID();
-                        if (Integer.parseInt(list.getDateID()) < 10) {
-                            dayConverted = "0" + dayConverted;
+                        String dayConverted = "";
+                        if (!list.getDateID().isEmpty()) {
+                            dayConverted = list.getDateID();
+                            if (Integer.parseInt(list.getDateID()) < 10) {
+                                dayConverted = "0" + dayConverted;
+                            }
                         }
-                    }
 
-                    String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
-                    if (selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && WorkPlanEntriesNeeded.datesNeeded != null && WorkPlanEntriesNeeded.datesNeeded.contains(selectedDate)) {
-                        isApplicableDate = true;
-                    }
-                    for (String date : dateStrings) {
-                        if (selectedDate.equalsIgnoreCase(date)) {
+                        String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
+                        if (selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && WorkPlanEntriesNeeded.datesNeeded != null && WorkPlanEntriesNeeded.datesNeeded.contains(selectedDate)) {
                             isApplicableDate = true;
-                            break;
                         }
-                    }
+                        for (String date : dateStrings) {
+                            if (selectedDate.equalsIgnoreCase(date)) {
+                                isApplicableDate = true;
+                                break;
+                            }
+                        }
 
-                    if (SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
-                    } else if (!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
-                    } else if (WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
-                    } else if (isApplicableDate) {
-                        SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
-                        HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
-                        HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                        HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
-                        HomeDashBoard.checkAndSetEntryDate(context, true);
-                    } else {
-                        Log.e("call status", "onBindViewHolder: ");
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
-                    }
+                        if (SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
+                        } else if (!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
+                        } else if (WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
+                        } else if (isApplicableDate) {
+                            SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
+                            HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
+                            HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                            HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
+                            HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
+                            HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
+                            HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
+                            HomeDashBoard.checkAndSetEntryDate(context, true);
+                        } else {
+                            Log.e("call status", "onBindViewHolder: ");
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                        }
 //                }
 
               /*  if (new Date().equals(strDate)) {
@@ -428,8 +431,8 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 } else {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
                 }*/
+                    }
                 }
-            }
            /* if (list.getDateID().equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy")) || list.getDateID() > CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy")) {
                 if (!list.getDateID().equalsIgnoreCase("")) {
                     HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
@@ -444,6 +447,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             } else {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.submit_checkin));
             }*/
+            }
         });
     }
 

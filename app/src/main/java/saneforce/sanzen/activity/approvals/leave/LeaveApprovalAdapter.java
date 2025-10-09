@@ -39,6 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -84,44 +85,60 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         holder.tv_leave_type.setText(leaveModelLists.get(position).getLeave_type());
         holder.tv_no_of_days.setText(leaveModelLists.get(position).getNo_of_days());
 
-        holder.btn_reject.setOnClickListener(view -> {
-            dialogReject = new Dialog(context);
-            dialogReject.setContentView(R.layout.popup_reject);
-            Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialogReject.setCancelable(false);
+        holder.btn_reject.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogReject = new Dialog(context);
+                dialogReject.setContentView(R.layout.popup_reject);
+                Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialogReject.setCancelable(false);
 
-            ImageView iv_close = dialogReject.findViewById(R.id.img_close);
-            EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
-            Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
-            Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
+                ImageView iv_close = dialogReject.findViewById(R.id.img_close);
+                EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
+                Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
+                Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
 
-            ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
+                ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
 
-            btn_cancel.setOnClickListener(view1 -> {
-                closeKeyBoard(view1);
-                ed_reason.setText("");
-                dialogReject.dismiss();
-            });
-            iv_close.setOnClickListener(view12 -> {
-                closeKeyBoard(view12);
-                ed_reason.setText("");
-                dialogReject.dismiss();
-            });
+                btn_cancel.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        closeKeyBoard(view);
+                        ed_reason.setText("");
+                        dialogReject.dismiss();
+                    }
+                });
+                iv_close.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        closeKeyBoard(view);
+                        ed_reason.setText("");
+                        dialogReject.dismiss();
+                    }
+                });
 
-            btn_reject.setOnClickListener(view13 -> {
-                if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
-                    closeKeyBoard(view13);
-                    RejectedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition(), ed_reason.getText().toString());
-                } else {
-                    closeKeyBoard(view13);
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject));
-                }
-
-            });
-            dialogReject.show();
+                btn_reject.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
+                            closeKeyBoard(view);
+                            RejectedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition(), ed_reason.getText().toString());
+                        } else {
+                            closeKeyBoard(view);
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject));
+                        }
+                    }
+                });
+                dialogReject.show();
+            }
         });
 
-        holder.btn_accept.setOnClickListener(view -> ApprovedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition()));
+        holder.btn_accept.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ApprovedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition());
+            }
+        });
 
 
     }

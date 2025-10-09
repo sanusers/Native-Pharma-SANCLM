@@ -115,6 +115,7 @@ import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustListAdapter;
@@ -348,111 +349,149 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Log.v("map_selected_tab", SelectedTab + "--" + from_tagging + "---" + SfType + "---" + SelectedHqCode);
 
-        mapsBinding.ivBack.setOnClickListener(view -> {
-            if (from_tagging.equalsIgnoreCase("not_tagging")) {
-                isTagged = false;
-                TagCustSelectionList.SelectedCustPos = "";
-                SelectedHqCode = "";
-                SelectedHqName = "";
-                if (SharedPref.getTaggedDcrCustomers(MapsActivity.this).isEmpty()) {
-                    getOnBackPressedDispatcher().onBackPressed();
+        mapsBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (from_tagging.equalsIgnoreCase("not_tagging")) {
+                    isTagged = false;
+                    TagCustSelectionList.SelectedCustPos = "";
+                    SelectedHqCode = "";
+                    SelectedHqName = "";
+                    if (SharedPref.getTaggedDcrCustomers(MapsActivity.this).isEmpty()) {
+                        getOnBackPressedDispatcher().onBackPressed();
+                    } else {
+                        showTaggedAlert();
+                    }
                 } else {
-                    showTaggedAlert();
+                    TagCustSelectionList.SelectedCustPos = "";
+                    finish();
                 }
-            } else {
-                TagCustSelectionList.SelectedCustPos = "";
-                finish();
             }
         });
 
-        mapsBinding.btnTag.setOnClickListener(view -> {
-            if (from_tagging.equalsIgnoreCase("tagging")) {
-                mapsBinding.imgRefreshMap.setVisibility(View.GONE);
-                if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty() || !mapsBinding.tvTaggedAddress.getText().toString().toLowerCase().contains("no address found")) {
-                    if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                        if (CheckCameraPermission()) {
-                            RequestCameraPermission();
+        mapsBinding.btnTag.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (from_tagging.equalsIgnoreCase("tagging")) {
+                    mapsBinding.imgRefreshMap.setVisibility(View.GONE);
+                    if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty() || !mapsBinding.tvTaggedAddress.getText().toString().toLowerCase().contains("no address found")) {
+                        if (GeoTagImageNeed.equalsIgnoreCase("0")) {
+                            if (CheckCameraPermission()) {
+                                RequestCameraPermission();
+                            } else {
+                                // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                captureFile();
+                                //  } else captureFileLower();
+                            }
                         } else {
-                            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            captureFile();
-                            //  } else captureFileLower();
+                            DisplayDialog();
                         }
                     } else {
-                        DisplayDialog();
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.not_able_to_find_address));
+                        Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
+                        startActivity(intent1);
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.not_able_to_find_address));
                     Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
                     startActivity(intent1);
                 }
-            } else {
-                Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
-                startActivity(intent1);
             }
         });
 
-        mapsBinding.imgRvRight.setOnClickListener(view -> {
-            mapsBinding.tagginglistlayout.setVisibility(View.GONE);
-            mapsBinding.imgRvRight.setVisibility(View.GONE);
-            mapsBinding.imgRvLeft.setVisibility(View.VISIBLE);
-        });
-
-        mapsBinding.imgRvLeft.setOnClickListener(view -> {
-            mapsBinding.tagginglistlayout.setVisibility(View.VISIBLE);
-            mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
-            mapsBinding.imgRvLeft.setVisibility(View.GONE);
-        });
-
-        mapsBinding.tagTvDoctor.setOnClickListener(view -> {
-            if (SfType.equalsIgnoreCase("1")) TabSelected("D", SfCode);
-            else TabSelected("D", SelectedHqCode);
-        });
-
-        mapsBinding.tagTvChemist.setOnClickListener(view -> {
-            if (SfType.equalsIgnoreCase("1")) TabSelected("C", SfCode);
-            else TabSelected("C", SelectedHqCode);
-        });
-
-        mapsBinding.tagTvStockist.setOnClickListener(view -> {
-            if (SfType.equalsIgnoreCase("1")) TabSelected("S", SfCode);
-            else TabSelected("S", SelectedHqCode);
-        });
-
-        mapsBinding.tagTvUndr.setOnClickListener(view -> {
-            if (SfType.equalsIgnoreCase("1")) TabSelected("U", SfCode);
-            else TabSelected("U", SelectedHqCode);
-        });
-
-        mapsBinding.tagTvCip.setOnClickListener(view -> {
-            if (SfType.equalsIgnoreCase("1")) TabSelected("CIP", SfCode);
-            else TabSelected("CIP", SelectedHqCode);
-        });
-
-        mapsBinding.tagTvHospital.setOnClickListener(view -> {
-            if (SfType.equalsIgnoreCase("1")) TabSelected("H", SfCode);
-            else TabSelected("H", SelectedHqCode);
-        });
-
-        mapsBinding.imgRefreshMap.setOnClickListener(view -> {
-            if (CurrentLoc()) {
-                lat = gpsTrack.getLatitude();
-                lng = gpsTrack.getLongitude();
-                LatLng latLng = new LatLng(lat, lng);
-                Log.d("TAG", "refresh Map: " + lat + " , " + lng);
-                if (mMap != null) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
-                    addCircle(mMap);
-                }
-                if (from_tagging.equalsIgnoreCase("tagging")) {
-                    mapsBinding.tvCustName.setText(cust_name);
-                    mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
-                    marker = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
-                }
-
+        mapsBinding.imgRvRight.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                mapsBinding.tagginglistlayout.setVisibility(View.GONE);
+                mapsBinding.imgRvRight.setVisibility(View.GONE);
+                mapsBinding.imgRvLeft.setVisibility(View.VISIBLE);
             }
         });
 
-        mapsBinding.imgCurLoc.setOnClickListener(view -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f)));
+        mapsBinding.imgRvLeft.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                mapsBinding.tagginglistlayout.setVisibility(View.VISIBLE);
+                mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
+                mapsBinding.imgRvLeft.setVisibility(View.GONE);
+            }
+        });
+
+        mapsBinding.tagTvDoctor.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SfType.equalsIgnoreCase("1")) TabSelected("D", SfCode);
+                else TabSelected("D", SelectedHqCode);
+            }
+        });
+
+        mapsBinding.tagTvChemist.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SfType.equalsIgnoreCase("1")) TabSelected("C", SfCode);
+                else TabSelected("C", SelectedHqCode);
+            }
+        });
+
+        mapsBinding.tagTvStockist.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SfType.equalsIgnoreCase("1")) TabSelected("S", SfCode);
+                else TabSelected("S", SelectedHqCode);
+            }
+        });
+
+        mapsBinding.tagTvUndr.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SfType.equalsIgnoreCase("1")) TabSelected("U", SfCode);
+                else TabSelected("U", SelectedHqCode);
+            }
+        });
+
+        mapsBinding.tagTvCip.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SfType.equalsIgnoreCase("1")) TabSelected("CIP", SfCode);
+                else TabSelected("CIP", SelectedHqCode);
+            }
+        });
+
+        mapsBinding.tagTvHospital.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SfType.equalsIgnoreCase("1")) TabSelected("H", SfCode);
+                else TabSelected("H", SelectedHqCode);
+            }
+        });
+
+        mapsBinding.imgRefreshMap.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (CurrentLoc()) {
+                    lat = gpsTrack.getLatitude();
+                    lng = gpsTrack.getLongitude();
+                    LatLng latLng = new LatLng(lat, lng);
+                    Log.d("TAG", "refresh Map: " + lat + " , " + lng);
+                    if (mMap != null) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
+                        addCircle(mMap);
+                    }
+                    if (from_tagging.equalsIgnoreCase("tagging")) {
+                        mapsBinding.tvCustName.setText(cust_name);
+                        mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
+                        marker = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
+                    }
+
+                }
+            }
+        });
+
+        mapsBinding.imgCurLoc.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
+            }
+        });
     }
 
     private void showTaggedAlert() {
@@ -469,13 +508,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String taggedCustomers = SharedPref.getTaggedDcrCustomers(MapsActivity.this);
         taggedCustomers = taggedCustomers.replaceAll("\\^\\^", ", ");
         alertText.setText("You have tagged  " + taggedCustomers + "\nKindly sync!");
-        btn_yes.setOnClickListener(view -> {
-            SharedPref.setTaggedDcrCustomers(MapsActivity.this, "");
-            dialog.dismiss();
-            getOnBackPressedDispatcher().onBackPressed();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SharedPref.setTaggedDcrCustomers(MapsActivity.this, "");
+                dialog.dismiss();
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
-        btn_no.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 
@@ -824,35 +869,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (JSONException ignored) {
         }
 
-        btn_confirm.setOnClickListener(view -> {     // need to keep an s3 setup here check throughly
-            if (UtilityClass.isNetworkAvailable(this)) {
-                progressBar.setVisibility(View.VISIBLE);
-                btn_confirm.setEnabled(false);
-                btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
-                if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    if(SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-                        CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
-                        tag_Image();
-                    }else{
-                        CallImageAPI(jsonImage.toString(),jsonObject.toString(), progressBar);
+        btn_confirm.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {    // need to keep an s3 setup here check throughly
+                if (UtilityClass.isNetworkAvailable(MapsActivity.this)) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    btn_confirm.setEnabled(false);
+                    btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
+                    if (GeoTagImageNeed.equalsIgnoreCase("0")) {
+                        if (SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                            CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
+                            tag_Image();
+                        } else {
+                            CallImageAPI(jsonImage.toString(), jsonObject.toString(), progressBar);
+                        }
+                    } else {
+                        CallAPIGeo(jsonObject.toString(), progressBar);
                     }
                 } else {
-                    CallAPIGeo(jsonObject.toString(), progressBar);
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network));
                 }
-            } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
             }
-
         });
 
-        btn_cancel.setOnClickListener(view -> {
-            dialogTagCust.dismiss();
-            mapsBinding.btnTag.setText(R.string.tag);
-            mapsBinding.imgRefreshMap.setVisibility(View.GONE);
-            mapsBinding.tvTaggedAddress.setVisibility(View.VISIBLE);
-            mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
-            mapsBinding.imgRvRight.setVisibility(View.GONE);
-            mapsBinding.tagginglistlayout.setVisibility(View.GONE);
+        btn_cancel.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogTagCust.dismiss();
+                mapsBinding.btnTag.setText(R.string.tag);
+                mapsBinding.imgRefreshMap.setVisibility(View.GONE);
+                mapsBinding.tvTaggedAddress.setVisibility(View.VISIBLE);
+                mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
+                mapsBinding.imgRvRight.setVisibility(View.GONE);
+                mapsBinding.tagginglistlayout.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -2327,7 +2377,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     }
                                 });
                             }
-                            closeButton.setOnClickListener(v -> dialog.dismiss());
+                            closeButton.setOnClickListener(new SafeClickListener() {
+                                @Override
+                                public void onSafeClick(View view) {
+                                    dialog.dismiss();
+                                }
+                            });
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -2369,7 +2424,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 progressBar.setVisibility(View.GONE);
                                 dialog.show();
                             }
-                            closeButton.setOnClickListener(v -> dialog.dismiss());
+                            closeButton.setOnClickListener(view -> dialog.dismiss());
                         }
                     });
                 }
@@ -2471,8 +2526,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             masterSyncUpdateBinding.pendingImg.setVisibility(View.VISIBLE);
             masterSyncUpdateBinding.closeBtn.setVisibility(View.VISIBLE);
         }
-        masterSyncUpdateBinding.closeBtn.setOnClickListener(v -> {
-            customDialog.dismiss();
+        masterSyncUpdateBinding.closeBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                customDialog.dismiss();
+            }
         });
     }
 

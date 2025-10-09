@@ -18,6 +18,7 @@ import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectio
 import saneforce.sanzen.activity.presentation.presentation.ShowSideScreenListener;
 import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationAdapter;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.FragmentCustomerPresentationBinding;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -60,11 +61,14 @@ public class UnListedDoctorPresentationFragment extends Fragment {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        binding.createPresentationBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR);
+        binding.createPresentationBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
+                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR);
 //            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR_MAS);
-            startActivity(intent);
+                startActivity(intent);
+            }
         });
 
         populateAdapter();

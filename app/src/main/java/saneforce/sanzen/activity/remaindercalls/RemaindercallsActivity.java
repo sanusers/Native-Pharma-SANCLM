@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityRemaindercallsBinding;
@@ -93,7 +94,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
         remcallbinding.townname.setText(SharedPref.getHqName(this));
 
 
-            remcallbinding.townname.setOnClickListener(v -> {
+            remcallbinding.townname.setOnClickListener(view -> {
                 if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                     show_hq();
                     remcallbinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);

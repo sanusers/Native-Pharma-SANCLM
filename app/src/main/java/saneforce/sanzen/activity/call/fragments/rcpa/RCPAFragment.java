@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.rcpa.RCPAChemistAdapter;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedProdList;
@@ -45,7 +46,7 @@ public class RCPAFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rcpaBinding = FragmentRcpaBinding.inflate(getLayoutInflater());
-        View v = rcpaBinding.getRoot();
+        View view = rcpaBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
@@ -70,69 +71,72 @@ public class RCPAFragment extends Fragment {
             CheCode = DCRCallActivity.CallActivityCustDetails.get(0).getCode();
         }
 
-        rcpaBinding.btnAddRcpa.setOnClickListener(view -> {
-            if (rcpaBinding.tvSelectChemist.getText().toString().isEmpty() || rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select")) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist));
-            } else if (rcpaBinding.tvSelectProduct.getText().toString().isEmpty() || rcpaBinding.tvSelectProduct.getText().toString().equalsIgnoreCase("Select")) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_prd));
-            } else if (rcpaBinding.edQty.getText() == null || (rcpaBinding.edQty.getText().toString().isEmpty())) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_qty));
-            } else if(Integer.parseInt(rcpaBinding.edQty.getText().toString()) < 0) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_must_be_greater_than_0));
-            } else {
-                rcpaBinding.llNoRcpa.setVisibility(View.GONE);
-                rcpaBinding.rvRcpaChemistList.setVisibility(View.VISIBLE);
-
-                ProductSelectedList.add(new RCPAAddedProdList(cheName, CheCode, PrdName, PrdCode, rcpaBinding.edQty.getText().toString(), rcpaBinding.tvRate.getText().toString(), rcpaBinding.tvValue.getText().toString(), rcpaBinding.tvValue.getText().toString()));
-
-                double getTotalValue = 0.0;
-                ArrayList<Double> double_data = new ArrayList<>();
-                if (!ProductSelectedList.isEmpty()) {
-                    for (int i = 0; i < ProductSelectedList.size(); i++) {
-                        if (ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(CheCode)) {
-                            double_data.add(Double.parseDouble(ProductSelectedList.get(i).getTotalPrdValue()));
-                        }
-                    }
+        rcpaBinding.btnAddRcpa.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (rcpaBinding.tvSelectChemist.getText().toString().isEmpty() || rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select")) {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist));
+                } else if (rcpaBinding.tvSelectProduct.getText().toString().isEmpty() || rcpaBinding.tvSelectProduct.getText().toString().equalsIgnoreCase("Select")) {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_prd));
+                } else if (rcpaBinding.edQty.getText() == null || (rcpaBinding.edQty.getText().toString().isEmpty())) {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_qty));
+                } else if (Integer.parseInt(rcpaBinding.edQty.getText().toString()) < 0) {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_must_be_greater_than_0));
                 } else {
-                    ChemistSelectedList.add(new CustList(cheName, CheCode, rcpaBinding.tvValue.getText().toString(), ""));
-                }
+                    rcpaBinding.llNoRcpa.setVisibility(View.GONE);
+                    rcpaBinding.rvRcpaChemistList.setVisibility(View.VISIBLE);
 
-                if (!double_data.isEmpty()) {
-                    for (int i = 0; i < double_data.size(); i++) {
-                        getTotalValue = getTotalValue + double_data.get(i);
+                    ProductSelectedList.add(new RCPAAddedProdList(cheName, CheCode, PrdName, PrdCode, rcpaBinding.edQty.getText().toString(), rcpaBinding.tvRate.getText().toString(), rcpaBinding.tvValue.getText().toString(), rcpaBinding.tvValue.getText().toString()));
+
+                    double getTotalValue = 0.0;
+                    ArrayList<Double> double_data = new ArrayList<>();
+                    if (!ProductSelectedList.isEmpty()) {
+                        for (int i = 0; i < ProductSelectedList.size(); i++) {
+                            if (ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(CheCode)) {
+                                double_data.add(Double.parseDouble(ProductSelectedList.get(i).getTotalPrdValue()));
+                            }
+                        }
+                    } else {
+                        ChemistSelectedList.add(new CustList(cheName, CheCode, rcpaBinding.tvValue.getText().toString(), ""));
                     }
-                }
 
-                double valueRounded = Math.round(getTotalValue * 100D) / 100D;
-
-                ChemistSelectedList.add(new CustList(cheName, CheCode, String.valueOf(valueRounded), ""));
-
-                int count = ChemistSelectedList.size();
-                for (int i = 0; i < count; i++) {
-                    for (int j = i + 1; j < count; j++) {
-                        if (ChemistSelectedList.get(i).getCode().equalsIgnoreCase(ChemistSelectedList.get(j).getCode())) {
-                            String value = ChemistSelectedList.get(j).getTotalRcpa();
-                            ChemistSelectedList.remove(j--);
-                            ChemistSelectedList.set(i, new CustList(cheName, CheCode, value, ""));
-                            count--;
+                    if (!double_data.isEmpty()) {
+                        for (int i = 0; i < double_data.size(); i++) {
+                            getTotalValue = getTotalValue + double_data.get(i);
                         }
                     }
+
+                    double valueRounded = Math.round(getTotalValue * 100D) / 100D;
+
+                    ChemistSelectedList.add(new CustList(cheName, CheCode, String.valueOf(valueRounded), ""));
+
+                    int count = ChemistSelectedList.size();
+                    for (int i = 0; i < count; i++) {
+                        for (int j = i + 1; j < count; j++) {
+                            if (ChemistSelectedList.get(i).getCode().equalsIgnoreCase(ChemistSelectedList.get(j).getCode())) {
+                                String value = ChemistSelectedList.get(j).getTotalRcpa();
+                                ChemistSelectedList.remove(j--);
+                                ChemistSelectedList.set(i, new CustList(cheName, CheCode, value, ""));
+                                count--;
+                            }
+                        }
+                    }
+
+                    if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+                        rcpaBinding.tvSelectChemist.setText(getResources().getString(R.string.select));
+                    }
+
+                    rcpaBinding.tvSelectProduct.setText(getResources().getString(R.string.select));
+                    rcpaBinding.edQty.setText("");
+                    rcpaBinding.tvRate.setText("");
+                    rcpaBinding.tvValue.setText("");
+
+                    rcpaChemistAdapter = new RCPAChemistAdapter(requireActivity(), requireContext(), ChemistSelectedList, ProductSelectedList, RCPASelectCompSide.rcpa_comp_list);
+                    RecyclerView.LayoutManager mLayoutManagerChe = new LinearLayoutManager(getActivity());
+                    rcpaBinding.rvRcpaChemistList.setLayoutManager(mLayoutManagerChe);
+                    commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);
+                    rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
                 }
-
-                if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
-                    rcpaBinding.tvSelectChemist.setText(getResources().getString(R.string.select));
-                }
-
-                rcpaBinding.tvSelectProduct.setText(getResources().getString(R.string.select));
-                rcpaBinding.edQty.setText("");
-                rcpaBinding.tvRate.setText("");
-                rcpaBinding.tvValue.setText("");
-
-                rcpaChemistAdapter = new RCPAChemistAdapter(requireActivity(), requireContext(), ChemistSelectedList, ProductSelectedList, RCPASelectCompSide.rcpa_comp_list);
-                RecyclerView.LayoutManager mLayoutManagerChe = new LinearLayoutManager(getActivity());
-                rcpaBinding.rvRcpaChemistList.setLayoutManager(mLayoutManagerChe);
-                commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);
-                rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
             }
         });
 
@@ -177,31 +181,36 @@ public class RCPAFragment extends Fragment {
             }
         });
 
-        rcpaBinding.tvSelectChemist.setOnClickListener(view -> {
-            dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.VISIBLE);
-            try {
-                selectChemistSideBinding.searchList.setText("");
-                selectChemistSideBinding.selectListView.scrollToPosition(0);
-            } catch (Exception ignored) {
-            }
-        });
-
-
-        rcpaBinding.tvSelectProduct.setOnClickListener(view -> {
-            if (!rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select") && !rcpaBinding.tvSelectChemist.getText().toString().isEmpty()) {
-                dcrCallBinding.fragmentSelectProductSide.setVisibility(View.VISIBLE);
+        rcpaBinding.tvSelectChemist.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.VISIBLE);
                 try {
-                    selectProductSideBinding.searchList.setText("");
-                    selectProductSideBinding.selectListView.scrollToPosition(0);
+                    selectChemistSideBinding.searchList.setText("");
+                    selectChemistSideBinding.selectListView.scrollToPosition(0);
                 } catch (Exception ignored) {
-
                 }
-
-            } else {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist));
             }
-
         });
-        return v;
+
+
+        rcpaBinding.tvSelectProduct.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select") && !rcpaBinding.tvSelectChemist.getText().toString().isEmpty()) {
+                    dcrCallBinding.fragmentSelectProductSide.setVisibility(View.VISIBLE);
+                    try {
+                        selectProductSideBinding.searchList.setText("");
+                        selectProductSideBinding.selectListView.scrollToPosition(0);
+                    } catch (Exception ignored) {
+
+                    }
+
+                } else {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist));
+                }
+            }
+        });
+        return view;
     }
 }

@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingModelList;
 
 public class call_statusadapter extends RecyclerView.Adapter<call_statusadapter.ViewHolder> {

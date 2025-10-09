@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.AddInputAdditionalCall;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
@@ -51,22 +52,27 @@ public class AddCallSelectInpSide extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectInputSideBinding = FragmentAcSelectInputSideBinding.inflate(inflater);
-        View v = selectInputSideBinding.getRoot();
+        View view = selectInputSideBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        selectInputSideBinding.tvDummy.setOnClickListener(view -> {
+        selectInputSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
-        selectInputSideBinding.btnOk.setOnClickListener(view -> {
-            for (int i = 0; i < SelectACInputAdapter.callInputListAdapter.size(); i++) {
-                if (SelectACInputAdapter.callInputListAdapter.get(i).isCheckedItem()) {
-                    addedInpList.add(new AddInputAdditionalCall(Selected_name, Selected_code, SelectACInputAdapter.callInputListAdapter.get(i).getName(), SelectACInputAdapter.callInputListAdapter.get(i).getCode(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), "1"));
+        selectInputSideBinding.btnOk.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                for (int i = 0; i < SelectACInputAdapter.callInputListAdapter.size(); i++) {
+                    if (SelectACInputAdapter.callInputListAdapter.get(i).isCheckedItem()) {
+                        addedInpList.add(new AddInputAdditionalCall(Selected_name, Selected_code, SelectACInputAdapter.callInputListAdapter.get(i).getName(), SelectACInputAdapter.callInputListAdapter.get(i).getCode(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), "1"));
+                    }
                 }
+                commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);
+                callDetailsSideBinding.rvAddInputsAdditional.setAdapter(AdditionalCallDetailedSide.adapterInputAdditionalCall);
+                AdditionalCallDetailedSide.adapterInputAdditionalCall.notifyDataSetChanged();
+                dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE);
             }
-            commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);
-            callDetailsSideBinding.rvAddInputsAdditional.setAdapter(AdditionalCallDetailedSide.adapterInputAdditionalCall);
-            AdditionalCallDetailedSide.adapterInputAdditionalCall.notifyDataSetChanged();
-            dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE);
         });
 
         selectACInputAdapter = new SelectACInputAdapter(requireContext(), callInputList);
@@ -76,7 +82,7 @@ public class AddCallSelectInpSide extends Fragment {
         selectInputSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         selectInputSideBinding.selectListView.setAdapter(selectACInputAdapter);
 
-        selectInputSideBinding.imgClose.setOnClickListener(view -> {
+        selectInputSideBinding.imgClose.setOnClickListener(v -> {
             dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE);
             UtilityClass.hideKeyboard(requireActivity());
         });
@@ -98,7 +104,7 @@ public class AddCallSelectInpSide extends Fragment {
             }
         });
 
-        return v;
+        return view;
     }
 
     private void filterInp(String text) {

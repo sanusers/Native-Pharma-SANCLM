@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPAFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectCompSide;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedCompList;
@@ -74,27 +75,30 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
         }
 
 
-        holder.img_del.setOnClickListener(view -> {
-            ChemCode = chemistNames.get(position).getCode();
-            removeAt(position);
-            for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
-                if (RCPASelectCompSide.rcpa_comp_list.get(i).getChem_Code().equalsIgnoreCase(ChemCode)) {
-                    RCPASelectCompSide.rcpa_comp_list.remove(i);
-                    i--;
+        holder.img_del.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ChemCode = chemistNames.get(position).getCode();
+                removeAt(position);
+                for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
+                    if (RCPASelectCompSide.rcpa_comp_list.get(i).getChem_Code().equalsIgnoreCase(ChemCode)) {
+                        RCPASelectCompSide.rcpa_comp_list.remove(i);
+                        i--;
+                    }
                 }
-            }
 
-            for (int i = 0; i < RCPAFragment.ProductSelectedList.size(); i++) {
-                if (RCPAFragment.ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(ChemCode)) {
-                    RCPAFragment.ProductSelectedList.remove(i);
-                    i--;
+                for (int i = 0; i < RCPAFragment.ProductSelectedList.size(); i++) {
+                    if (RCPAFragment.ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(ChemCode)) {
+                        RCPAFragment.ProductSelectedList.remove(i);
+                        i--;
+                    }
                 }
-            }
 
-            for (int i = 0; i < ChemistSelectedList.size(); i++) {
-                if (ChemistSelectedList.get(i).getCode().equalsIgnoreCase(ChemCode)) {
-                    ChemistSelectedList.remove(i);
-                    i--;
+                for (int i = 0; i < ChemistSelectedList.size(); i++) {
+                    if (ChemistSelectedList.get(i).getCode().equalsIgnoreCase(ChemCode)) {
+                        ChemistSelectedList.remove(i);
+                        i--;
+                    }
                 }
             }
         });

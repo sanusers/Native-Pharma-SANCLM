@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -52,7 +53,7 @@ public class CategoryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectcatSideBinding = FragmentCategoryBinding.inflate(inflater);
-        View v = selectcatSideBinding.getRoot();
+        View view = selectcatSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -61,16 +62,21 @@ public class CategoryFragment extends Fragment {
         categoryName = "";
         categoryCode = "";
         sel_categorycode=0;
-        selectcatSideBinding.tvDummy.setOnClickListener(view -> {
+        selectcatSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
 
-        selectcatSideBinding.imgClose.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(selectcatSideBinding.imgClose.getWindowToken(), 0);
-            selectcatSideBinding.searchList.setText("");
-            unlistedadditionbinding.fragmentSelectCat.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectcatSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(selectcatSideBinding.imgClose.getWindowToken(), 0);
+                selectcatSideBinding.searchList.setText("");
+                unlistedadditionbinding.fragmentSelectCat.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectcatSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -99,7 +105,7 @@ public class CategoryFragment extends Fragment {
 //            unlistedadditionbinding.txtSelectCategory.setText(selectcatSideBinding.selectListView.getItemAtPosition(i).toString());
 //            unlistedadditionbinding.fragmentSelectCat.setVisibility(View.GONE);
 //        });
-        selectcatSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectcatSideBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             String selectedName = adapterView.getItemAtPosition(i).toString();
             int originalIndex = list_name.indexOf(selectedName);
             if (originalIndex != -1) {
@@ -112,7 +118,7 @@ public class CategoryFragment extends Fragment {
                 unlistedadditionbinding.fragmentSelectCat.setVisibility(View.GONE);
             }
         });
-        return v;
+        return view;
     }
 
 

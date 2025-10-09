@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.sanzen.activity.map.custSelection.CustList;
@@ -91,9 +92,19 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
         }
 
 
-        holder.tv_company.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, holder.tv_company.getText().toString()));
+        holder.tv_company.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, holder.tv_company.getText().toString());
+            }
+        });
 
-        holder.tv_brand.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, holder.tv_brand.getText().toString()));
+        holder.tv_brand.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, holder.tv_brand.getText().toString());
+            }
+        });
 
 
         holder.ed_qty.setKeyImeChangeListener((keyCode, event) -> {
@@ -102,7 +113,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
             }
         });
 
-        holder.ed_qty.setOnEditorActionListener((v, actionId, event) -> {
+        holder.ed_qty.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(holder.ed_qty.getWindowToken(), 0);
@@ -191,74 +202,89 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
             }
         });
 
-        holder.img_remarks.setOnClickListener(view -> {
-            dialogRemarks = new Dialog(context);
-            dialogRemarks.setContentView(R.layout.popup_remarks);
-            Objects.requireNonNull(dialogRemarks.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialogRemarks.setCancelable(false);
+        holder.img_remarks.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogRemarks = new Dialog(context);
+                dialogRemarks.setContentView(R.layout.popup_remarks);
+                Objects.requireNonNull(dialogRemarks.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialogRemarks.setCancelable(false);
 
-            ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
-            EditText ed_remark = dialogRemarks.findViewById(R.id.ed_remark);
-            Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
-            Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
-            ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark)});
+                ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
+                EditText ed_remark = dialogRemarks.findViewById(R.id.ed_remark);
+                Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
+                Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
+                ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark)});
 
-            if (!CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks().isEmpty()) {
-                ed_remark.setText(CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks());
-            }
+                if (!CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks().isEmpty()) {
+                    ed_remark.setText(CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks());
+                }
 
-            iv_close.setOnClickListener(view1 -> {
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
-                ed_remark.setText("");
-                dialogRemarks.dismiss();
-            });
+                iv_close.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
+                        ed_remark.setText("");
+                        dialogRemarks.dismiss();
+                    }
+                });
 
-            btn_clear.setOnClickListener(view12 -> {
-                ed_remark.setText("");
-                ed_remark.setHint("Type your Remarks");
-            });
+                btn_clear.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        ed_remark.setText("");
+                        ed_remark.setHint("Type your Remarks");
+                    }
+                });
 
-            btn_save.setOnClickListener(view13 -> {
-                if (!TextUtils.isEmpty(ed_remark.getText().toString())) {
-                    CompetitorList.set(holder.getBindingAdapterPosition(), new RCPAAddedCompList(CompetitorList.get(holder.getBindingAdapterPosition()).getChem_names(), CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getQty(), CompetitorList.get(holder.getBindingAdapterPosition()).getRate(), CompetitorList.get(holder.getBindingAdapterPosition()).getValue(), ed_remark.getText().toString(), CompetitorList.get(holder.getBindingAdapterPosition()).getTotalPrdValue()));
-                    for (int i = 0; i < rcpa_comp_list.size(); i++) {
-                        if (CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code().equalsIgnoreCase(rcpa_comp_list.get(i).getComp_product_code()) && CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code().equalsIgnoreCase(rcpa_comp_list.get(i).getComp_company_code()) && CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code().equalsIgnoreCase(rcpa_comp_list.get(i).getPrd_code()) && CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code().equalsIgnoreCase(rcpa_comp_list.get(i).getChem_Code())) {
-                            rcpa_comp_list.set(i, new RCPAAddedCompList(CompetitorList.get(holder.getBindingAdapterPosition()).getChem_names(), CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getQty(), CompetitorList.get(holder.getBindingAdapterPosition()).getRate(), CompetitorList.get(holder.getBindingAdapterPosition()).getValue(), ed_remark.getText().toString(), CompetitorList.get(holder.getBindingAdapterPosition()).getTotalPrdValue()));
-                            break;
+                btn_save.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        if (!TextUtils.isEmpty(ed_remark.getText().toString())) {
+                            CompetitorList.set(holder.getBindingAdapterPosition(), new RCPAAddedCompList(CompetitorList.get(holder.getBindingAdapterPosition()).getChem_names(), CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getQty(), CompetitorList.get(holder.getBindingAdapterPosition()).getRate(), CompetitorList.get(holder.getBindingAdapterPosition()).getValue(), ed_remark.getText().toString(), CompetitorList.get(holder.getBindingAdapterPosition()).getTotalPrdValue()));
+                            for (int i = 0; i < rcpa_comp_list.size(); i++) {
+                                if (CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code().equalsIgnoreCase(rcpa_comp_list.get(i).getComp_product_code()) && CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code().equalsIgnoreCase(rcpa_comp_list.get(i).getComp_company_code()) && CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code().equalsIgnoreCase(rcpa_comp_list.get(i).getPrd_code()) && CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code().equalsIgnoreCase(rcpa_comp_list.get(i).getChem_Code())) {
+                                    rcpa_comp_list.set(i, new RCPAAddedCompList(CompetitorList.get(holder.getBindingAdapterPosition()).getChem_names(), CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getQty(), CompetitorList.get(holder.getBindingAdapterPosition()).getRate(), CompetitorList.get(holder.getBindingAdapterPosition()).getValue(), ed_remark.getText().toString(), CompetitorList.get(holder.getBindingAdapterPosition()).getTotalPrdValue()));
+                                    break;
+                                }
+                            }
+                            dialogRemarks.dismiss();
+                            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_remarks_0));
+                            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_remarks));
                         }
                     }
-                    dialogRemarks.dismiss();
-                    holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_0));
-                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
-                } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_remarks));
-                }
-            });
-            dialogRemarks.show();
+                });
+                dialogRemarks.show();
+            }
         });
 
 
-        holder.img_del.setOnClickListener(view -> {
-            try {
-                Log.v("deleting_comb", holder.tv_comp_code.getText().toString() + "---" + holder.tv_brand_code.getText().toString() + "---" + CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code() + "---" + CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code());
-                String BrandCode = holder.tv_brand_code.getText().toString();
-                String CompanyCode = holder.tv_comp_code.getText().toString();
-                String PrdCode = CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code();
-                String CheCode = CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code();
+        holder.img_del.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    Log.v("deleting_comb", holder.tv_comp_code.getText().toString() + "---" + holder.tv_brand_code.getText().toString() + "---" + CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code() + "---" + CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code());
+                    String BrandCode = holder.tv_brand_code.getText().toString();
+                    String CompanyCode = holder.tv_comp_code.getText().toString();
+                    String PrdCode = CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code();
+                    String CheCode = CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code();
 
-                for (int i = 0; i < rcpa_comp_list.size(); i++) {
-                    if (rcpa_comp_list.get(i).getComp_product_code().equalsIgnoreCase(BrandCode) && rcpa_comp_list.get(i).getComp_company_code().equalsIgnoreCase(CompanyCode) && rcpa_comp_list.get(i).getPrd_code().equalsIgnoreCase(PrdCode) && rcpa_comp_list.get(i).getChem_Code().equalsIgnoreCase(CheCode)) {
-                        rcpa_comp_list.remove(i);
-                        break;
+                    for (int i = 0; i < rcpa_comp_list.size(); i++) {
+                        if (rcpa_comp_list.get(i).getComp_product_code().equalsIgnoreCase(BrandCode) && rcpa_comp_list.get(i).getComp_company_code().equalsIgnoreCase(CompanyCode) && rcpa_comp_list.get(i).getPrd_code().equalsIgnoreCase(PrdCode) && rcpa_comp_list.get(i).getChem_Code().equalsIgnoreCase(CheCode)) {
+                            rcpa_comp_list.remove(i);
+                            break;
+                        }
                     }
+
+                    updateTotalValues();
+
+                } catch (Exception e) {
+                    Log.e("deleting_comb", "--remove--" + e);
                 }
-
-                updateTotalValues();
-
-            } catch (Exception e) {
-                Log.e("deleting_comb", "--remove--" + e);
             }
         });
     }

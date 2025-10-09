@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityProfileViewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
@@ -123,8 +124,11 @@ public class ProfileViewScreen extends AppCompatActivity {
 
 
 
-        activityProfileViewScreenBinding.ivBack.setOnClickListener(view -> {
-            getOnBackPressedDispatcher().onBackPressed();
+        activityProfileViewScreenBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
 

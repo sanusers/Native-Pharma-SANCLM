@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
@@ -125,13 +126,16 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_rx.setText(app_adapt.getRes_rx());
             }
 
-            holder.Res_Name.setOnClickListener(view -> {
-                MyResource_Activity.datalist = app_adapt.getDcr_code();
+            holder.Res_Name.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    MyResource_Activity.datalist = app_adapt.getDcr_code();
 
-                if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(FillteredList.get(position));
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(FillteredList.get(position));
+                    }
+                    MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
                 }
-                MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
             });
 //adapter click to activity without intent or referec activity screen  in android java
 
@@ -351,12 +355,15 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 }
             });
 
-            holder.Res_View.setOnClickListener(v -> {
-                Log.d("latlong1", app_adapt.Latitude + "--" + app_adapt.Latitude + "--" + app_adapt.getRes_id() + "--" + app_adapt.getDcr_name());
-                if (app_adapt.Latitude.equals("") || app_adapt.Latitude.equals("null")) {
+            holder.Res_View.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    Log.d("latlong1", app_adapt.Latitude + "--" + app_adapt.Latitude + "--" + app_adapt.getRes_id() + "--" + app_adapt.getDcr_name());
+                    if (app_adapt.Latitude.equals("") || app_adapt.Latitude.equals("null")) {
 
-                } else {
-                    sidelistViewInterface.OnCilckItem(hqcode, app_adapt.getDcr_code(), Resource_adapter.rec_val);
+                    } else {
+                        sidelistViewInterface.OnCilckItem(hqcode, app_adapt.getDcr_code(), Resource_adapter.rec_val);
+                    }
                 }
             });
 

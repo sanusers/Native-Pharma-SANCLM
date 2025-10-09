@@ -45,6 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.map.MapsActivity;
@@ -189,29 +190,41 @@ public class TagCustSelectionList extends AppCompatActivity {
             SetHqAdapter();
         }
 
-        binding.dummyView.setOnClickListener(view -> {
-        });
-
-        binding.txtSelectedHq.setOnClickListener(view -> {
-            hideKeyboard();
-            if (binding.constraintHqList.getVisibility() == View.VISIBLE) {
-                binding.constraintHqList.setVisibility(View.GONE);
-                binding.dummyView.setVisibility(View.GONE);
-            } else {
-                binding.constraintHqList.setVisibility(View.VISIBLE);
-                binding.dummyView.setVisibility(View.VISIBLE);
+        binding.dummyView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
             }
         });
 
-        binding.imgClose.setOnClickListener(view -> {
-            hideKeyboard();
-            binding.constraintHqList.setVisibility(View.GONE);
-            binding.dummyView.setVisibility(View.GONE);
+        binding.txtSelectedHq.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                hideKeyboard();
+                if (binding.constraintHqList.getVisibility() == View.VISIBLE) {
+                    binding.constraintHqList.setVisibility(View.GONE);
+                    binding.dummyView.setVisibility(View.GONE);
+                } else {
+                    binding.constraintHqList.setVisibility(View.VISIBLE);
+                    binding.dummyView.setVisibility(View.VISIBLE);
+                }
+            }
         });
 
-        binding.clrSearchCustTxt.setOnClickListener(view -> {
-            binding.searchCust.setText("");
-            hideKeyboard();
+        binding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                hideKeyboard();
+                binding.constraintHqList.setVisibility(View.GONE);
+                binding.dummyView.setVisibility(View.GONE);
+            }
+        });
+
+        binding.clrSearchCustTxt.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                binding.searchCust.setText("");
+                hideKeyboard();
+            }
         });
 
 
@@ -257,12 +270,15 @@ public class TagCustSelectionList extends AppCompatActivity {
             }
         });
 
-        binding.ivBack.setOnClickListener(view -> {
-            hideKeyboard();
-            Intent intent = new Intent(TagCustSelectionList.this, MapsActivity.class);
-            intent.putExtra("from", "not_tagging");
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+        binding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                hideKeyboard();
+                Intent intent = new Intent(TagCustSelectionList.this, MapsActivity.class);
+                intent.putExtra("from", "not_tagging");
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         });
 
         binding.hqListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

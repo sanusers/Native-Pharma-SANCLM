@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.reports;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicSubMenuAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
@@ -48,9 +50,12 @@ public class DynamicSubMenuActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         backArrow = findViewById(R.id.backArrow);
 
-        backArrow.setOnClickListener(v -> {
-            //show_exit_alert();
-            finish();
+        backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                //show_exit_alert();
+                finish();
+            }
         });
 
         String title = getIntent().getStringExtra("title");

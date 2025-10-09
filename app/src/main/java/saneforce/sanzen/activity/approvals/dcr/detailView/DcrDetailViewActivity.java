@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.detailView.adapter.AdapterCusSingleList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
@@ -362,12 +363,18 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
 
         SetUpCusListAdapter();
 
-        dcrDetailViewBinding.ivBack.setOnClickListener(view -> {
-            finish();
+        dcrDetailViewBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                finish();
+            }
         });
 
-        dcrDetailViewBinding.btnBack.setOnClickListener(view -> {
-            finish();
+        dcrDetailViewBinding.btnBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                finish();
+            }
         });
 
         dcrDetailViewBinding.searchDcr.addTextChangedListener(new TextWatcher() {

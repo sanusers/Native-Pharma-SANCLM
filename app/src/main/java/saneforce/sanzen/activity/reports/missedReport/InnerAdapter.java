@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerAdapterViewHolder> {
 

@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AdditionalCallFragment;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.SaveAdditionalCall;
@@ -94,7 +95,12 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
             holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
         }
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, checked_arrayList.get(position).getName()));
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, checked_arrayList.get(position).getName());
+            }
+        });
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {

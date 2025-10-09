@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -72,9 +73,9 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         holder.textView.setText(editModelClass.getName());
         holder.checkBox.setChecked(editModelClass.isChecked());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 int position = holder.getAbsoluteAdapterPosition();
                 if (position == RecyclerView.NO_POSITION) return;
 

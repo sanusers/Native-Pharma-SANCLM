@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.Quiz.model.QuizModelClass;
 import saneforce.sanzen.activity.Quiz.model.QuizQuesNoModel;
 
@@ -59,8 +60,11 @@ public class QuizCountAdapter extends RecyclerView.Adapter<QuizCountAdapter.View
             holder.txt_questno.setTextColor(ContextCompat.getColor(context, R.color.black));
         }
 
-        holder.linearLayout.setOnClickListener(view -> {
-            questionClickListener.onClick(quizQuesNoModel);
+        holder.linearLayout.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                questionClickListener.onClick(quizQuesNoModel);
+            }
         });
     }
 

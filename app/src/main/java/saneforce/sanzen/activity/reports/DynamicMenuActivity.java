@@ -33,6 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -67,9 +68,12 @@ public class DynamicMenuActivity extends AppCompatActivity {
 
         gridView = findViewById(R.id.gridView);
         backArrow = findViewById(R.id.backArrow);
-        binding.backArrow.setOnClickListener(view -> {
-            Intent intent = new Intent(DynamicMenuActivity.this,ReportsActivity.class);
-            startActivity(intent);
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(DynamicMenuActivity.this, ReportsActivity.class);
+                startActivity(intent);
+            }
         });
 
         dynamicAdapter = new DynamicAdapter( menuList, this);

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 
 public class weekoff_adapter extends RecyclerView.Adapter<weekoff_adapter.ViewHolder> {

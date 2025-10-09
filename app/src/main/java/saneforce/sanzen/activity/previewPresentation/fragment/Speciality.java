@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -342,7 +343,7 @@ public class Speciality extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         specialityPreviewBinding = FragmentSpecialityPreviewBinding.inflate(inflater);
-        View v = specialityPreviewBinding.getRoot();
+        View view = specialityPreviewBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -398,7 +399,7 @@ public class Speciality extends Fragment {
             Collections.sort(SlideSpecialityList, Collections.reverseOrder(new BrandMatrix.SortByName()));
         });
 
-        return v;
+        return view;
     }
 
     private BrandModelClass.Product getProductData(JSONObject productObject, String priority) {

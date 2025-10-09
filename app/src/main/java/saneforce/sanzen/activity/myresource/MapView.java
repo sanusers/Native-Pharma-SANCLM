@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 //import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddtion;
 import saneforce.sanzen.activity.call.dcrCallSelection.MapsAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.UnlistedDoctorAddition;
@@ -125,9 +126,12 @@ public class MapView extends AppCompatActivity implements OnMapReadyCallback, Go
 //            lng = mMap.getCameraPosition().target.longitude;
 //            activitymapview.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapView.this, lat, lng, false));
 //        });
-        activitymapview.ivBack.setOnClickListener(view -> {
-            getOnBackPressedDispatcher().onBackPressed();
-            finish();
+        activitymapview.ivBack.setOnClickListener(new SafeClickListener() {
+                                                      @Override
+                                                      public void onSafeClick(View view) {
+                                                          getOnBackPressedDispatcher().onBackPressed();
+                                                          finish();
+                                                      }
         });
 
 //        binding.btnTag.setOnClickListener(view -> {

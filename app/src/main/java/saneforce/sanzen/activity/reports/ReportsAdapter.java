@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 //import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 import saneforce.sanzen.activity.reports.visitMonitor.VisitMonitorActivity;
 import saneforce.sanzen.activity.reports.missedReport.MissedReport;
@@ -79,27 +80,29 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
             }
         }
 
-        holder.itemView.setOnClickListener(view -> {
-            if (name.equalsIgnoreCase("Dash Board")) {
-                Intent intentWeb = new Intent(context, ReportWebActivity.class);
-                context.startActivity(intentWeb);
-            } else if (name.equalsIgnoreCase("Missed Report")) {
-                //Intent intentWeb= new Intent(context, MissedReport.class);
-                Intent intentWeb= new Intent(context, MissedReportGraph.class);
-                context.startActivity(intentWeb);
-            } else if (name.equalsIgnoreCase("Day Report")) {
-                ReportsActivity activity = (ReportsActivity) context;
-                activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
-            } else if (SharedPref.getDynamicOptionNeed(context).equalsIgnoreCase("0") && name.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))) {
-                ReportsActivity activity = (ReportsActivity) context;
-                activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                activity.getDynamicData();
-            }else if (name.equalsIgnoreCase("Visit Monitor")){
-                Intent intent = new Intent(context, VisitMonitorActivity.class);
-                context.startActivity(intent);
+        holder.itemView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (name.equalsIgnoreCase("Dash Board")) {
+                    Intent intentWeb = new Intent(context, ReportWebActivity.class);
+                    context.startActivity(intentWeb);
+                } else if (name.equalsIgnoreCase("Missed Report")) {
+                    //Intent intentWeb= new Intent(context, MissedReport.class);
+                    Intent intentWeb = new Intent(context, MissedReportGraph.class);
+                    context.startActivity(intentWeb);
+                } else if (name.equalsIgnoreCase("Day Report")) {
+                    ReportsActivity activity = (ReportsActivity) context;
+                    activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                    activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
+                } else if (SharedPref.getDynamicOptionNeed(context).equalsIgnoreCase("0") && name.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))) {
+                    ReportsActivity activity = (ReportsActivity) context;
+                    activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                    activity.getDynamicData();
+                } else if (name.equalsIgnoreCase("Visit Monitor")) {
+                    Intent intent = new Intent(context, VisitMonitorActivity.class);
+                    context.startActivity(intent);
+                }
             }
-
         });
     }
 

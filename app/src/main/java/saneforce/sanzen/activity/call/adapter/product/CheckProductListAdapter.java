@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
@@ -129,7 +130,12 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             holder.tv_priority.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_priority));
         }
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, callCommonCheckedListArrayList.get(position).getName()));
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, callCommonCheckedListArrayList.get(position).getName());
+            }
+        });
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if(holder.checkBox.isPressed()) {

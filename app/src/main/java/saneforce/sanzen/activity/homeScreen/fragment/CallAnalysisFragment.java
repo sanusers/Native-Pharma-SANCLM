@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.view.CustomMarkerView;
 import saneforce.sanzen.activity.homeScreen.view.ImageLineChartRenderer;
@@ -134,7 +135,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("Fragment_STATUS", "OnResume");
         callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
-        View v = callAnalysisBinding.getRoot();
+        View view = callAnalysisBinding.getRoot();
 //        setScreenDesign();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
@@ -144,7 +145,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         masterDataDao = db.masterDataDao();
 //        previousDate = dateFormat.format(new Date());
 //        handler.post(updateClock);
-        return v;
+        return view;
     }
 
     @Override
@@ -839,9 +840,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View view) {
 
-        switch (v.getId()){
+        switch (view.getId()){
 
             case R.id.ll_doc_child:
                 callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtDocName.getText().toString(), getString(R.string.calls)));

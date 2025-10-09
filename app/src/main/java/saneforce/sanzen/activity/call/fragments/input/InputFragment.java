@@ -42,7 +42,7 @@ public class InputFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentInputBinding = FragmentInputBinding.inflate(inflater);
-        View v = fragmentInputBinding.getRoot();
+        View view = fragmentInputBinding.getRoot();
         dummyAdapter();
         changeCaption();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -69,7 +69,7 @@ public class InputFragment extends Fragment {
                 filter(editable.toString());
             }
         });
-        return v;
+        return view;
     }
 
     private void dummyAdapter() {

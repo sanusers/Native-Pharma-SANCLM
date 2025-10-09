@@ -50,6 +50,7 @@ import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.fragments.signature.SignatureCanvas;
 import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -112,38 +113,44 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
             Log.d("imgFile", "signImg: " + "image file doesn't exists in external file storage");
         }
 
-        holder.imgView.setOnClickListener(v -> {
-            File imgFile1 = new File(signModelClasses.get(position).getFilePath());
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile1.getAbsolutePath());
-            showImage(myBitmap);
+        holder.imgView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                File imgFile1 = new File(signModelClasses.get(position).getFilePath());
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile1.getAbsolutePath());
+                showImage(myBitmap);
+            }
         });
 
-        holder.tvMenu.setOnClickListener(v -> {
-            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
-            popup.inflate(R.menu.sign_call_menu);
+        holder.tvMenu.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
+                popup.inflate(R.menu.sign_call_menu);
 
-            popup.setOnMenuItemClickListener(menuItem -> {
-                if (menuItem.getItemId() == R.id.menuSync) {
-                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
-                        CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
-                    }else{
-                        CallSignImageApi(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
-                    }
-
-                    if (UtilityClass.isNetworkAvailable(context)) {
-                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    if (menuItem.getItemId() == R.id.menuSync) {
+                        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                             CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
-                        }else{
+                        } else {
                             CallSignImageApi(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
                         }
-                    } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+
+                        if (UtilityClass.isNetworkAvailable(context)) {
+                            if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                                CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
+                            } else {
+                                CallSignImageApi(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
+                            }
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        }
                     }
-                }
-                return true;
-            });
-            popup.show();
+                    return true;
+                });
+                popup.show();
+            }
         });
     }
 

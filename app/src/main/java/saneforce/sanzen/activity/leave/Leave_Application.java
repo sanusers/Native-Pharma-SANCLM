@@ -78,6 +78,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -160,11 +161,14 @@ public class Leave_Application extends AppCompatActivity {
         leavebinding.edAddress.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edAddress)});
 
 //        l_sideview.closeDrawer(Gravity.RIGHT);
-        leavebinding.leavebackArrow.setOnClickListener(v -> {
-            //  onBackPressed();
-            getOnBackPressedDispatcher().onBackPressed();
+        leavebinding.leavebackArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                //  onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
           /*  Intent l = new Intent(Leave_Application.this, HomeDashBoard.class);
             startActivity(l);*/
+            }
         });
 
         String colorText = "<font color=\"#85929e\">" + "Leave Date From" + "</font>"
@@ -178,112 +182,130 @@ public class Leave_Application extends AppCompatActivity {
         leavebinding.HeadTodate.setText(Html.fromHtml(colorText1));
         leavebinding.HeadLtype.setText(Html.fromHtml(colorText2));
 
-        close_sideview.setOnClickListener(v -> {
-            leavebinding.leaveSide.closeDrawer(GravityCompat.END);
-            hideKeyboard(Leave_Application.this);
+        close_sideview.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                leavebinding.leaveSide.closeDrawer(GravityCompat.END);
+                hideKeyboard(Leave_Application.this);
+            }
         });
         leave_applydates();
 
 
         leavebinding.LeaveType.setText("Leave Type");
-        leavebinding.etFromDate.setOnClickListener(v -> {
-            Intent tp = new Intent(Leave_Application.this, CalendarActivity.class);
-            tp.putExtra("selectefromdDate", "1");
-            startActivity(tp);
-        });
-
-
-        leavebinding.etToDate.setOnClickListener(v -> {
-            if(!leavebinding.etFromDate.getText().toString().equals("")) {
+        leavebinding.etFromDate.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
                 Intent tp = new Intent(Leave_Application.this, CalendarActivity.class);
-                tp.putExtra("selectefromdDate", "2");
+                tp.putExtra("selectefromdDate", "1");
                 startActivity(tp);
-            }else {
-                commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_from_date));
             }
         });
 
-        leavebinding.LeaveType.setOnClickListener(v -> {
-            if(leavebinding.etFromDate.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.select_from_date));
-            }else if(leavebinding.etToDate.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.select_to_date));
-            }else {
-                if(UtilityClass.isNetworkAvailable(this)) {
-                    showalert_leavetype();
-                }else {
-                    commonUtilsMethods.showToastMessage(this, "Please Check Your Internet Connection");
+
+        leavebinding.etToDate.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!leavebinding.etFromDate.getText().toString().equals("")) {
+                    Intent tp = new Intent(Leave_Application.this, CalendarActivity.class);
+                    tp.putExtra("selectefromdDate", "2");
+                    startActivity(tp);
+                } else {
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_from_date));
                 }
             }
-            closeKeyboard();
         });
 
-        leavebinding.tlAttachment.setOnClickListener(v -> {
-            if(leavebinding.etFromDate.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.select_from_date));
-            }else if(leavebinding.etToDate.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.select_to_date));
-            }else {
-                if(!CheckStoragePermission()) {
-                    RequestStoragePermission();
-                }else {
-                    Open_Storage();
+        leavebinding.LeaveType.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (leavebinding.etFromDate.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_from_date));
+                } else if (leavebinding.etToDate.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_to_date));
+                } else {
+                    if (UtilityClass.isNetworkAvailable(Leave_Application.this)) {
+                        showalert_leavetype();
+                    } else {
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, "Please Check Your Internet Connection");
+                    }
                 }
+                closeKeyboard();
             }
-            closeKeyboard();
         });
 
-        leavebinding.submitLeave.setOnClickListener(v -> {
-            if(leavebinding.etFromDate.getText().toString().equals("")) {
-                CommonUtilsMethods.showToastMessage(this, getString(R.string.select_from_date));
-            }else if(leavebinding.etToDate.getText().toString().equals("")) {
-                CommonUtilsMethods.showToastMessage(this, getString(R.string.select_to_date));
-            }else if(leavebinding.LeaveType.getText().toString().equals("")) {
-                CommonUtilsMethods.showToastMessage(this, getString(R.string.select_leave_type));
-            }else if(leavebinding.edReason.getText().toString().isEmpty() || leavebinding.edReason.getText().toString().equalsIgnoreCase("")) {
-                CommonUtilsMethods.showToastMessage(this, getString(R.string.enter_reason_for_leave));
-            }else if(leavebinding.tlAttachment.getVisibility() == View.VISIBLE && leavebinding.txtAttachement.getText().toString().isEmpty()){
-                CommonUtilsMethods.showToastMessage(this, "Select Attachment");
-            }else {
-                if (UtilityClass.isNetworkAvailable(this)) {
-                    if (leavebinding.tlAttachment.getVisibility() == View.VISIBLE && !leavebinding.txtAttachement.getText().toString().isEmpty()) {
-                        JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(this);
-                        try {
-                            jsonImage.put("tableName", "uploadphoto");
-                            jsonImage.put("sfcode", SharedPref.getSfCode(this));
-                            jsonImage.put("division_code", SharedPref.getDivisionCode(this));
-                            File file = null;
-                            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                                file = new File(this.getExternalFilesDir(null) + "/LeaveAttachment/");
-                            } else {
-                                Log.e("File Creation", "captureFile: No media mounted");
-                            }
-                            if (file != null && !file.exists()) {
-                                if (!file.mkdirs()) {
-                                    Log.e("File Creation", "Directory Creation Failed.");
-                                }
-                            }
-                            File destinationFile = new File(file, leavebinding.txtAttachement.getText().toString());
+        leavebinding.tlAttachment.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (leavebinding.etFromDate.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_from_date));
+                } else if (leavebinding.etToDate.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_to_date));
+                } else {
+                    if (!CheckStoragePermission()) {
+                        RequestStoragePermission();
+                    } else {
+                        Open_Storage();
+                    }
+                }
+                closeKeyboard();
+            }
+        });
+
+        leavebinding.submitLeave.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (leavebinding.etFromDate.getText().toString().equals("")) {
+                    CommonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_from_date));
+                } else if (leavebinding.etToDate.getText().toString().equals("")) {
+                    CommonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_to_date));
+                } else if (leavebinding.LeaveType.getText().toString().equals("")) {
+                    CommonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_leave_type));
+                } else if (leavebinding.edReason.getText().toString().isEmpty() || leavebinding.edReason.getText().toString().equalsIgnoreCase("")) {
+                    CommonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.enter_reason_for_leave));
+                } else if (leavebinding.tlAttachment.getVisibility() == View.VISIBLE && leavebinding.txtAttachement.getText().toString().isEmpty()) {
+                    CommonUtilsMethods.showToastMessage(Leave_Application.this, "Select Attachment");
+                } else {
+                    if (UtilityClass.isNetworkAvailable(Leave_Application.this)) {
+                        if (leavebinding.tlAttachment.getVisibility() == View.VISIBLE && !leavebinding.txtAttachement.getText().toString().isEmpty()) {
+                            JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(Leave_Application.this);
                             try {
-                                if (!destinationFile.createNewFile()) {
-                                    Log.e("File Creation", "Destination File Creation Failed.");
+                                jsonImage.put("tableName", "uploadphoto");
+                                jsonImage.put("sfcode", SharedPref.getSfCode(Leave_Application.this));
+                                jsonImage.put("division_code", SharedPref.getDivisionCode(Leave_Application.this));
+                                File file = null;
+                                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                                    file = new File(Leave_Application.this.getExternalFilesDir(null) + "/LeaveAttachment/");
+                                } else {
+                                    Log.e("File Creation", "captureFile: No media mounted");
                                 }
-                                attachmentFilePath = destinationFile.getAbsolutePath();
-                            } catch (IOException e) {
+                                if (file != null && !file.exists()) {
+                                    if (!file.mkdirs()) {
+                                        Log.e("File Creation", "Directory Creation Failed.");
+                                    }
+                                }
+                                File destinationFile = new File(file, leavebinding.txtAttachement.getText().toString());
+                                try {
+                                    if (!destinationFile.createNewFile()) {
+                                        Log.e("File Creation", "Destination File Creation Failed.");
+                                    }
+                                    attachmentFilePath = destinationFile.getAbsolutePath();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            saveAttachment(attachmentFilePath, jsonImage.toString());
+                        } else {
+                            Submit();
                         }
-                        saveAttachment(attachmentFilePath, jsonImage.toString());
-                    } else {
-                        Submit();
                     }
                 }
             }
         });
 
-        AvailableLeave(this);
+        AvailableLeave(Leave_Application.this);
 
     }
 
@@ -1220,7 +1242,7 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     private void onClickListener() {
-        leavebinding.leaveStatusSync.setOnClickListener(v -> {
+        leavebinding.leaveStatusSync.setOnClickListener(view -> {
             List_LeaveDates.clear();
             leavebinding.etFromDate.setText("");
             leavebinding.etToDate.setText("");

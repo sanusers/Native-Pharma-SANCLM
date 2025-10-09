@@ -50,6 +50,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
@@ -186,14 +187,14 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         getRequiredData();
         populateAdapters();
         activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-        activityStandardTourPlanBinding.backArrow.setOnClickListener(v -> {
+        activityStandardTourPlanBinding.backArrow.setOnClickListener(view -> {
             SharedPref.setTpSKIPDate(StandardTourPlanActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
             getOnBackPressedDispatcher().onBackPressed();
         });
 
         activityStandardTourPlanBinding.checkUnplannedVisits.setOnClickListener(view -> startActivity(new Intent(StandardTourPlanActivity.this, UnplannedVisitActivity.class)));
 
-        activityStandardTourPlanBinding.sendToApproval.setOnClickListener(v -> {
+        activityStandardTourPlanBinding.sendToApproval.setOnClickListener(view -> {
             if(UtilityClass.isNetworkAvailable(this)) {
                 if(!stpOfflineDataDao.isNonSyncAvailable()) {
                     sendToApproval();
@@ -209,7 +210,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
         activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
 
-        activityStandardTourPlanBinding.tvSync.setOnClickListener(v -> {
+        activityStandardTourPlanBinding.tvSync.setOnClickListener(view -> {
             syncSTP();
         });
     }
@@ -1136,7 +1137,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
             btn_cancel.setOnClickListener(view12 -> dialogFilter.dismiss());
 
-            tvTo.setOnClickListener(v -> {
+            tvTo.setOnClickListener(view -> {
                 if(lv_to.getVisibility() == View.VISIBLE) {
                     lv_to.setVisibility(View.GONE);
                     constraintLayout.setVisibility(View.VISIBLE);
@@ -1155,7 +1156,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 }
             });
 
-            btn_proceed.setOnClickListener(v -> {
+            btn_proceed.setOnClickListener(view -> {
                 showSwapConfirmDialog(id, caption, swapCode, swapName);
                 dialogFilter.dismiss();
             });

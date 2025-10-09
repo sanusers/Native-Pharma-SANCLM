@@ -31,6 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -127,12 +128,15 @@ public class ApprovalsActivity extends AppCompatActivity {
         }
 
 
-        approvalsBinding.ivBack.setOnClickListener(view -> {
-            if(SharedPref.getSfType(ApprovalsActivity.this).equalsIgnoreCase("2")&& SharedPref.getApprMandatoryNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
-                 SharedPref.setApprovalSKIPDate(ApprovalsActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+        approvalsBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getSfType(ApprovalsActivity.this).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
+                    SharedPref.setApprovalSKIPDate(ApprovalsActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+                }
+                getOnBackPressedDispatcher().onBackPressed();
             }
-            getOnBackPressedDispatcher().onBackPressed();
-            });
+        });
 
         // approvalsBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(ApprovalsActivity.this, HomeDashBoard.class)));
     }

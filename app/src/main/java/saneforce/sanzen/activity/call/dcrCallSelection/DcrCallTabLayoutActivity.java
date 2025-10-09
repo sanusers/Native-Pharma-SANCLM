@@ -35,6 +35,7 @@ import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.CallDcrSelectionBinding;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -237,12 +238,17 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
         dcrSelectionBinding.imgLocation.setOnClickListener(new CommonUtilsMethods.DoubleClickListener() {
             @Override
-            public void onDoubleClick(View v) {
+            public void onDoubleClick(View view) {
                 setGpsTrack();
             }
         });
 
-        dcrSelectionBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+        dcrSelectionBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
 
     }
 

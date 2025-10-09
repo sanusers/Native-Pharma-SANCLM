@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.jwOthers.AdapterCallCaptureImage;
 import saneforce.sanzen.activity.call.adapter.jwOthers.AdapterCallJointWorkList;
@@ -139,7 +140,7 @@ public class JWOthersFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jwOthersBinding = FragmentJwothersBinding.inflate(inflater);
-        View v = jwOthersBinding.getRoot();
+        View view = jwOthersBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         dcrDocDataDao = roomDB.dcrDocDataDao();
         masterDataDao = roomDB.masterDataDao();
@@ -226,34 +227,47 @@ public class JWOthersFragment extends Fragment {
         }
 
 
-        jwOthersBinding.tvFeedback.setOnClickListener(view -> dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE));
-
-        jwOthersBinding.btnAddJw.setOnClickListener(view -> {
-            dcrCallBinding.fragmentSelectJwSide.setVisibility(View.VISIBLE);
-            HideKeyboard();
-        });
-
-        jwOthersBinding.tvFeedback.setOnClickListener(view -> {
-            HideKeyboard();
-            dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
-        });
-
-        jwOthersBinding.btnAddImgCapture.setOnClickListener(view -> {
-            if (callCaptureImageLists.size() < 2) {
-                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED )
-                        {
-                    requestMultiplePermissionsLauncher.launch(new String[]{
-                            Manifest.permission.CAMERA,});
-                } else {
-                    captureFile();
-
-                }
-            } else {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_add_more_images));
+        jwOthersBinding.tvFeedback.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
             }
         });
-        return v;
+
+        jwOthersBinding.btnAddJw.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dcrCallBinding.fragmentSelectJwSide.setVisibility(View.VISIBLE);
+                HideKeyboard();
+            }
+        });
+
+        jwOthersBinding.tvFeedback.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                HideKeyboard();
+                dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
+            }
+        });
+
+        jwOthersBinding.btnAddImgCapture.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (callCaptureImageLists.size() < 2) {
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        requestMultiplePermissionsLauncher.launch(new String[]{
+                                Manifest.permission.CAMERA,});
+                    } else {
+                        captureFile();
+
+                    }
+                } else {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_add_more_images));
+                }
+            }
+        });
+        return view;
     }
 
     private void HideKeyboard() {

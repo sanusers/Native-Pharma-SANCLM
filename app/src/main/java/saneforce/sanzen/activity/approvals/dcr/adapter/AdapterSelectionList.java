@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.AdapterModel;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
 
@@ -99,11 +100,14 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
         }
 
 
-        holder.tv_name.setOnClickListener(view -> {
-            lastSelectedPosition = selectedPosition;
-            selectedPosition = holder.getBindingAdapterPosition();
-            notifyItemChanged(lastSelectedPosition);
-            notifyItemChanged(selectedPosition);
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                lastSelectedPosition = selectedPosition;
+                selectedPosition = holder.getBindingAdapterPosition();
+                notifyItemChanged(lastSelectedPosition);
+                notifyItemChanged(selectedPosition);
+            }
         });
     }
 

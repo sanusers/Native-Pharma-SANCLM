@@ -40,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
@@ -93,10 +94,13 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         masterDataDao = RoomDB.getDatabase(TpDeviationApprovalActivity.this).masterDataDao();
         CallTpDeviationAPI();
 
-        tpDeviationApprovalBinding.ivBack.setOnClickListener(v -> {
-            Intent intent = new Intent(TpDeviationApprovalActivity.this, ApprovalsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        tpDeviationApprovalBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(TpDeviationApprovalActivity.this, ApprovalsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
         });
 
         tpDeviationApprovalBinding.searchTpDeviation.addTextChangedListener(new TextWatcher() {
@@ -119,32 +123,35 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         tpDeviationApprovalBinding.tpDeviationApprovalNavigation.tpDrawerCloseIcon.setOnClickListener(view -> tpDeviationApprovalBinding.tpDeviationApprovalDrawer.closeDrawer(GravityCompat.END));
         tpDeviationApprovalBinding.tpDeviationApprovalNavigation.planDate.setVisibility(View.GONE);
 
-        tpDeviationApprovalBinding.ivFilter.setOnClickListener(v -> {
-            Context wrapper = new ContextThemeWrapper(TpDeviationApprovalActivity.this, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, tpDeviationApprovalBinding.ivFilter, Gravity.END);
-            popup.getMenu().add(1, 1, 1, "By Name      A - Z");
-            popup.getMenu().add(2, 2, 2, "By Name      Z - A");
-            popup.getMenu().add(3, 3, 3, "By Date      1 2 3");
-            popup.getMenu().add(4, 4, 4, "By Date      3 2 1");
-            popup.setOnMenuItemClickListener(menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case 1:
-                        sortData(SortType.NAME_ASCENDING);
-                        break;
-                    case 2:
-                        sortData(SortType.NAME_DESCENDING);
-                        break;
-                    case 3:
-                        sortData(SortType.DATE_ASCENDING);
-                        break;
-                    case 4:
-                        sortData(SortType.DATE_DESCENDING);
-                        break;
-                }
-                tpDeviationAdapter.filterList(tpDeviationModelLists);
-                return true;
-            });
-            popup.show();
+        tpDeviationApprovalBinding.ivFilter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Context wrapper = new ContextThemeWrapper(TpDeviationApprovalActivity.this, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, tpDeviationApprovalBinding.ivFilter, Gravity.END);
+                popup.getMenu().add(1, 1, 1, "By Name      A - Z");
+                popup.getMenu().add(2, 2, 2, "By Name      Z - A");
+                popup.getMenu().add(3, 3, 3, "By Date      1 2 3");
+                popup.getMenu().add(4, 4, 4, "By Date      3 2 1");
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    switch (menuItem.getItemId()) {
+                        case 1:
+                            sortData(SortType.NAME_ASCENDING);
+                            break;
+                        case 2:
+                            sortData(SortType.NAME_DESCENDING);
+                            break;
+                        case 3:
+                            sortData(SortType.DATE_ASCENDING);
+                            break;
+                        case 4:
+                            sortData(SortType.DATE_DESCENDING);
+                            break;
+                    }
+                    tpDeviationAdapter.filterList(tpDeviationModelLists);
+                    return true;
+                });
+                popup.show();
+            }
         });
     }
 

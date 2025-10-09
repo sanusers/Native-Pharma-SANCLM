@@ -39,6 +39,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
@@ -73,11 +74,11 @@ public class HospitalFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.v("fragment", "---" + "hospital");
-        View v = inflater.inflate(R.layout.fragment_hos, container, false);
-        rv_list = v.findViewById(R.id.rv_cust_list_selection);
-        ed_search = v.findViewById(R.id.search_cust);
-        iv_filter = v.findViewById(R.id.iv_filter);
-        tv_hqName = v.findViewById(R.id.tv_hq_name);
+        View view = inflater.inflate(R.layout.fragment_hos, container, false);
+        rv_list = view.findViewById(R.id.rv_cust_list_selection);
+        ed_search = view.findViewById(R.id.search_cust);
+        iv_filter = view.findViewById(R.id.iv_filter);
+        tv_hqName = view.findViewById(R.id.tv_hq_name);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
@@ -89,20 +90,33 @@ public class HospitalFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
 
-        iv_filter.setOnClickListener(view -> {
+        iv_filter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 
-            dialogFilter = new Dialog(requireContext());
-            dialogFilter.setContentView(R.layout.popup_dcr_filter);
-            Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialogFilter.setCancelable(false);
-            dialogFilter.show();
+                dialogFilter = new Dialog(requireContext());
+                dialogFilter.setContentView(R.layout.popup_dcr_filter);
+                Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialogFilter.setCancelable(false);
+                dialogFilter.show();
 
-            img_close = dialogFilter.findViewById(R.id.img_close);
-            btn_apply = dialogFilter.findViewById(R.id.btn_apply);
+                img_close = dialogFilter.findViewById(R.id.img_close);
+                btn_apply = dialogFilter.findViewById(R.id.btn_apply);
 
-            img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
+                img_close.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        dialogFilter.dismiss();
+                    }
+                });
 
-            btn_apply.setOnClickListener(view1 -> dialogFilter.dismiss());
+                btn_apply.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        dialogFilter.dismiss();
+                    }
+                });
+            }
         });
 
         ed_search.addTextChangedListener(new TextWatcher() {
@@ -123,7 +137,7 @@ public class HospitalFragment extends Fragment {
         });
 
         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-            tv_hqName.setOnClickListener(view -> {
+            tv_hqName.setOnClickListener(v -> {
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                     ArrayList<String> list = new ArrayList<>();
@@ -197,7 +211,7 @@ public class HospitalFragment extends Fragment {
             });
         }
 
-        return v;
+        return view;
     }
 
     public void SetupAdapter() {

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.survey.model.SurveyOptionsModelClass;
 
 public class SurveySideAdapter extends RecyclerView.Adapter<SurveySideAdapter.ViewHolder> {
@@ -54,8 +55,11 @@ public class SurveySideAdapter extends RecyclerView.Adapter<SurveySideAdapter.Vi
             }
         }else {
             holder.checkBox.setVisibility(View.GONE);
-            holder.tvOption.setOnClickListener(view -> {
-                checkBoxClickListener.onChecked(filteredOptionsList.get(position));
+            holder.tvOption.setOnClickListener(new SafeClickListener() {
+                                                   @Override
+                                                   public void onSafeClick(View view) {
+                                                       checkBoxClickListener.onChecked(filteredOptionsList.get(position));
+                                                   }
             });
         }
 

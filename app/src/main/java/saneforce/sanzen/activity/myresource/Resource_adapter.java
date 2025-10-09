@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.Cate_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.DateSyncActivity;
@@ -84,20 +85,22 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
         holder.username.setText(app_adapt.getListed_data());
         holder.usercount.setText(app_adapt.getListed_count());
         listedres = app_adapt.getListed_data();
-        holder.list_resource.setOnClickListener(v -> {
-            et_Custsearch.getText().clear();
-            MyResource_Activity.binding.drawerLayout.setVisibility(View.VISIBLE);
-            MyResource_Activity.headtext_id.setText(app_adapt.getListed_data());
-            Log.d("list_postion", app_adapt.getListed_data() + "####" + app_adapt.getVal_pos());
+        holder.list_resource.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                et_Custsearch.getText().clear();
+                MyResource_Activity.binding.drawerLayout.setVisibility(View.VISIBLE);
+                MyResource_Activity.headtext_id.setText(app_adapt.getListed_data());
+                Log.d("list_postion", app_adapt.getListed_data() + "####" + app_adapt.getVal_pos());
 
-            try {
-                Log.d("list_postion_1", app_adapt.getListed_data());
-                MyResource_Activity.Key = "";
-                listresource.clear();
-                search_list.clear();
+                try {
+                    Log.d("list_postion_1", app_adapt.getListed_data());
+                    MyResource_Activity.Key = "";
+                    listresource.clear();
+                    search_list.clear();
 
 
-                switch (app_adapt.getVal_pos()) {
+                    switch (app_adapt.getVal_pos()) {
 
 
                         case ("1"):
@@ -581,243 +584,244 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
                         break;*/
 
-                    case ("5"):
+                        case ("5"):
 
 
-                        break;
+                            break;
 
-                    case ("6"):
+                        case ("6"):
 
 
-                        break;
-                    case ("7"):
-                        rec_val = "I";
-                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.INPUT);
-                        JSONArray jsoninput = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
-                        String input_val = "";
-                        Valcount = "1";
+                            break;
+                        case ("7"):
+                            rec_val = "I";
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.INPUT);
+                            JSONArray jsoninput = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
+                            String input_val = "";
+                            Valcount = "1";
 
-                        if (jsoninput.length() > 0) {
-                            for (int i = 0; i < jsoninput.length(); i++) {
-                                JSONObject jsonObject = jsoninput.getJSONObject(i);
+                            if (jsoninput.length() > 0) {
+                                for (int i = 0; i < jsoninput.length(); i++) {
+                                    JSONObject jsonObject = jsoninput.getJSONObject(i);
 
-                                if (!input_val.equals(jsonObject.getString("Code")) && (!jsonObject.getString("Code").equals("-1"))) {
-                                    String custom_name = (jsonObject.getString("Name"));
-                                    JSONObject jsonFDate = new JSONObject(jsonObject.getString("EffF"));
-                                    JSONObject jsonTDate = new JSONObject(jsonObject.getString("EffT"));
+                                    if (!input_val.equals(jsonObject.getString("Code")) && (!jsonObject.getString("Code").equals("-1"))) {
+                                        String custom_name = (jsonObject.getString("Name"));
+                                        JSONObject jsonFDate = new JSONObject(jsonObject.getString("EffF"));
+                                        JSONObject jsonTDate = new JSONObject(jsonObject.getString("EffT"));
 
-                                    String frm_date = jsonFDate.getString("date");
-                                    String[] Frm_val = frm_date.split(" ");
-                                    String to_date = jsonTDate.getString("date");
-                                    String[] Toval = to_date.split(" ");
+                                        String frm_date = jsonFDate.getString("date");
+                                        String[] Frm_val = frm_date.split(" ");
+                                        String to_date = jsonTDate.getString("date");
+                                        String[] Toval = to_date.split(" ");
 
-                                    listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", Frm_val[0], Toval[0], "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                        listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", Frm_val[0], Toval[0], "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                    }
                                 }
                             }
-                        }
-                        MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                        search_list.addAll(listresource);
-                        myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                        break;
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+                            break;
 
-                    case ("8"):
-                        rec_val = "P";
-                        Valcount = "1";
+                        case ("8"):
+                            rec_val = "P";
+                            Valcount = "1";
 
-                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.PRODUCT);
-                        JSONArray jsonproduct = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray();
-                        Log.d("listedpro", String.valueOf(jsonproduct));
-                        String product_val = "";
-                        if (jsonproduct.length() > 0) {
-                            for (int i = 0; i < jsonproduct.length(); i++) {
-                                JSONObject jsonObject = jsonproduct.getJSONObject(i);
-                                if (!product_val.equals(jsonObject.getString("Code")) && (!jsonObject.getString("Code").equals("-1"))) {
-                                    String custom_name = (jsonObject.getString("Name"));
-                                    String product_type = (jsonObject.getString("Product_Mode"));
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.PRODUCT);
+                            JSONArray jsonproduct = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray();
+                            Log.d("listedpro", String.valueOf(jsonproduct));
+                            String product_val = "";
+                            if (jsonproduct.length() > 0) {
+                                for (int i = 0; i < jsonproduct.length(); i++) {
+                                    JSONObject jsonObject = jsonproduct.getJSONObject(i);
+                                    if (!product_val.equals(jsonObject.getString("Code")) && (!jsonObject.getString("Code").equals("-1"))) {
+                                        String custom_name = (jsonObject.getString("Name"));
+                                        String product_type = (jsonObject.getString("Product_Mode"));
 
-                                    listresource.add(new Resourcemodel_class("", custom_name, "", product_type, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                        listresource.add(new Resourcemodel_class("", custom_name, "", product_type, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                    }
                                 }
                             }
-                        }
-                        MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                        search_list.addAll(listresource);
-                        myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                        break;
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+                            break;
 
-                    case ("9"):
-                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CLUSTER) + synhqval1;
-                        JSONArray jsonculst = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray();
-                        String culst_val = "";
-                        Valcount = "";
-                        Valcount = "1";
-                        if (jsonculst.length() > 0) {
-                            for (int i = 0; i < jsonculst.length(); i++) {
-                                JSONObject jsonObject = jsonculst.getJSONObject(i);
-                                if (!culst_val.equals(jsonObject.getString("Code"))) {
+                        case ("9"):
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CLUSTER) + synhqval1;
+                            JSONArray jsonculst = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray();
+                            String culst_val = "";
+                            Valcount = "";
+                            Valcount = "1";
+                            if (jsonculst.length() > 0) {
+                                for (int i = 0; i < jsonculst.length(); i++) {
+                                    JSONObject jsonObject = jsonculst.getJSONObject(i);
+                                    if (!culst_val.equals(jsonObject.getString("Code"))) {
 //                                culst_val = jsonObject.getString("Code");
-                                    String custom_name = (jsonObject.getString("Name"));
-                                    listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                        String custom_name = (jsonObject.getString("Name"));
+                                        listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                    }
                                 }
                             }
-                        }
 
-                        MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                        search_list.addAll(listresource);
-                        myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                        break;
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+                            break;
 
-                    case ("10"):
+                        case ("10"):
 
-                        MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
-                        Intent l = new Intent(context, weekoff_viewscreen.class);
-                        context.startActivity(l);
-                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
-                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        break;
+                            MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
+                            Intent l = new Intent(context, weekoff_viewscreen.class);
+                            context.startActivity(l);
+                            MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                            MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                            break;
 
-                    case ("11")://Cate_viewscreen
+                        case ("11")://Cate_viewscreen
 
-                        Intent l2 = new Intent(context, Cate_viewscreen.class);
-                        context.startActivity(l2);
-                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
-                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                            Intent l2 = new Intent(context, Cate_viewscreen.class);
+                            context.startActivity(l2);
+                            MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                            MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-                        break;
+                            break;
 
-                    case ("12"):
-                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.WORK_TYPE);
-                        JSONArray jsonWorkType = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
-                        String workType_al = "";
-                        String TPDCR = "";
-                        Valcount = "1";
-                        if (jsonWorkType.length() > 0) {
-                            for (int bean = 0; bean < jsonWorkType.length(); bean++) {
-                                JSONObject jsonObject = jsonWorkType.getJSONObject(bean);
-                                String workType = jsonObject.getString("Name");
-                                String tpDcr = jsonObject.getString("TP_DCR");
-                                if (tpDcr.equals("T")) {
-                                    TPDCR = "TP";
-                                } else {
-                                    TPDCR = "TP , DCR";
-                                }
+                        case ("12"):
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.WORK_TYPE);
+                            JSONArray jsonWorkType = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+                            String workType_al = "";
+                            String TPDCR = "";
+                            Valcount = "1";
+                            if (jsonWorkType.length() > 0) {
+                                for (int bean = 0; bean < jsonWorkType.length(); bean++) {
+                                    JSONObject jsonObject = jsonWorkType.getJSONObject(bean);
+                                    String workType = jsonObject.getString("Name");
+                                    String tpDcr = jsonObject.getString("TP_DCR");
+                                    if (tpDcr.equals("T")) {
+                                        TPDCR = "TP";
+                                    } else {
+                                        TPDCR = "TP , DCR";
+                                    }
 //                                System.out.println("jsonObjectWorkType--->" + jsonObject);
-                                listresource.add(new Resourcemodel_class("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", workType, TPDCR, "workType", "", "", "", "", "", "", ""));
-                            }
-                        }
-                        MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                        search_list.addAll(listresource);
-                        myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                        break;
-
-                    case ("13"):
-                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.LEAVE_STATUS);
-                        JSONArray leaveStatus = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
-                        if (leaveStatus.length() > 0) {
-                            for (int bean = 0; bean < leaveStatus.length(); bean++) {
-                                JSONObject jsonObject = leaveStatus.getJSONObject(bean);
-                                String leaveType = jsonObject.getString("Leave_Type_Code");
-                                String eligible = jsonObject.getString("Elig");
-                                String available = jsonObject.getString("Avail");
-                                String taken = jsonObject.getString("Taken");
-                                int eligibleCount = Integer.parseInt(eligible);
-                                int availableCount = Integer.parseInt(available);
-                                int takenCount = Integer.parseInt(taken);
-                                if (availableCount < 0) {
-                                    available = "0";
+                                    listresource.add(new Resourcemodel_class("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", workType, TPDCR, "workType", "", "", "", "", "", "", ""));
                                 }
-                                if (eligibleCount < takenCount) {
-                                    taken = eligible;
-                                }
-                                listresource.add(new Resourcemodel_class("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "leaveStatus", leaveType, eligible, available, taken, "", "", ""));
-
                             }
-                        }
-                        MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                        search_list.addAll(listresource);
-                        myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                        break;
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+                            break;
 
-                    case ("14"):
+                        case ("13"):
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.LEAVE_STATUS);
+                            JSONArray leaveStatus = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
+                            if (leaveStatus.length() > 0) {
+                                for (int bean = 0; bean < leaveStatus.length(); bean++) {
+                                    JSONObject jsonObject = leaveStatus.getJSONObject(bean);
+                                    String leaveType = jsonObject.getString("Leave_Type_Code");
+                                    String eligible = jsonObject.getString("Elig");
+                                    String available = jsonObject.getString("Avail");
+                                    String taken = jsonObject.getString("Taken");
+                                    int eligibleCount = Integer.parseInt(eligible);
+                                    int availableCount = Integer.parseInt(available);
+                                    int takenCount = Integer.parseInt(taken);
+                                    if (availableCount < 0) {
+                                        available = "0";
+                                    }
+                                    if (eligibleCount < takenCount) {
+                                        taken = eligible;
+                                    }
+                                    listresource.add(new Resourcemodel_class("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "leaveStatus", leaveType, eligible, available, taken, "", "", ""));
 
-                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.VISIT_CONTROL);
-                        JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
+                                }
+                            }
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+                            break;
+
+                        case ("14"):
+
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.VISIT_CONTROL);
+                            JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
 //                            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
 //                        JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + synhqval1).getMasterSyncDataJsonArray();
-                        JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
+                            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
 
-                        uniqueValues.clear();
-                        idCounts.clear();
-                        Valcount = "2";
+                            uniqueValues.clear();
+                            idCounts.clear();
+                            Valcount = "2";
 
-                        listed = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_31, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                        pos_check = "2";
-                        if (jsonvst_ctl.length() > 0) {
-                            for (int i = 0; i < jsonvst_ctl.length(); i++) {
-                                JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
-                                for (int i1 = 0; i1 < jsonvst_Doc.length(); i1++) {
-                                    JSONObject jsonObject1 = jsonvst_Doc.getJSONObject(i1);
-                                    String docval1 = jsonObject1.getString("Code");
+                            listed = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_31, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                            pos_check = "2";
+                            if (jsonvst_ctl.length() > 0) {
+                                for (int i = 0; i < jsonvst_ctl.length(); i++) {
+                                    JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
+                                    for (int i1 = 0; i1 < jsonvst_Doc.length(); i1++) {
+                                        JSONObject jsonObject1 = jsonvst_Doc.getJSONObject(i1);
+                                        String docval1 = jsonObject1.getString("Code");
 
 
-                                    if (docval1.equalsIgnoreCase(jsonObject.getString("CustCode")) && listed.equals(jsonObject.getString("Mnth"))) {
-                                        if (uniqueValues.add(docval1)) {
-                                            String max_vistcount = jsonObject1.getString("Tlvst");
-                                            String custom_name = ((jsonObject.getString("CustName")));
-                                            String custom_id = ((jsonObject.getString("CustCode")));
-                                            String town_name = ((jsonObject.getString("town_name")));
-                                            String Dcr_count = (jsonObject.getString("Dcr_flag"));
-                                            String vist_ctrlDate = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, (jsonObject.getString("Dcr_dt"))));
-                                            String Vist_Date = vist_ctrlDate;
-                                            String result = custom_name;
-                                            Log.d("doc_list", result);
+                                        if (docval1.equalsIgnoreCase(jsonObject.getString("CustCode")) && listed.equals(jsonObject.getString("Mnth"))) {
+                                            if (uniqueValues.add(docval1)) {
+                                                String max_vistcount = jsonObject1.getString("Tlvst");
+                                                String custom_name = ((jsonObject.getString("CustName")));
+                                                String custom_id = ((jsonObject.getString("CustCode")));
+                                                String town_name = ((jsonObject.getString("town_name")));
+                                                String Dcr_count = (jsonObject.getString("Dcr_flag"));
+                                                String vist_ctrlDate = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, (jsonObject.getString("Dcr_dt"))));
+                                                String Vist_Date = vist_ctrlDate;
+                                                String result = custom_name;
+                                                Log.d("doc_list", result);
 
-                                            listresource.add(new Resourcemodel_class("", custom_name, custom_id, town_name, "", Vist_Date, "", Dcr_count, listed, "", max_vistcount, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                                listresource.add(new Resourcemodel_class("", custom_name, custom_id, town_name, "", Vist_Date, "", Dcr_count, listed, "", max_vistcount, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
 
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                        search_list.addAll(listresource);
-                        myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                        break;
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+                            break;
 
-                    case ("15"):
-                        MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
-                        Intent l1 = new Intent(context, Callsstatus_screenview.class);
-                        context.startActivity(l1);
-                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
-                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        break;
+                        case ("15"):
+                            MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
+                            Intent l1 = new Intent(context, Callsstatus_screenview.class);
+                            context.startActivity(l1);
+                            MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                            MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                            break;
 
-                    case ("16"):
-                        MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
-                        Intent intent = new Intent(context, DateSyncActivity.class);
-                        context.startActivity(intent);
-                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
-                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        break;
-                    case ("17")://Stock Balance
+                        case ("16"):
+                            MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
+                            Intent intent = new Intent(context, DateSyncActivity.class);
+                            context.startActivity(intent);
+                            MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                            MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                            break;
+                        case ("17")://Stock Balance
 
-                        Intent l3 = new Intent(context, StockBalanceScreen.class);
-                        context.startActivity(l3);
-                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
-                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        break;
-                    case ("18"):
-                        Intent profile = new Intent(context, ProfileViewScreen.class);
-                        context.startActivity(profile);
-                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
-                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + app_adapt.getListed_data());
+                            Intent l3 = new Intent(context, StockBalanceScreen.class);
+                            context.startActivity(l3);
+                            MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                            MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                            break;
+                        case ("18"):
+                            Intent profile = new Intent(context, ProfileViewScreen.class);
+                            context.startActivity(profile);
+                            MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                            MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + app_adapt.getListed_data());
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         });
 

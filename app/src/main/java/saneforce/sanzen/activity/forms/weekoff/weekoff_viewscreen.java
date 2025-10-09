@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.forms.weekoff;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class weekoff_viewscreen extends AppCompatActivity {
 
@@ -32,8 +34,11 @@ public class weekoff_viewscreen extends AppCompatActivity {
         back_btn = findViewById(R.id.iv_back);
 
 
-        back_btn.setOnClickListener(v -> {
-            finish();
+        back_btn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                finish();
+            }
         });
 
         Holiday_fragment holidayfragment = new Holiday_fragment();

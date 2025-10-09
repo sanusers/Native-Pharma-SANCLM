@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class DynamicWebActivity extends AppCompatActivity {
@@ -127,8 +128,11 @@ public class DynamicWebActivity extends AppCompatActivity {
             }
         });
 
-        iv_back.setOnClickListener(v -> {
-            finish();
+        iv_back.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                finish();
+            }
         });
 
         filePickerLauncher = registerForActivityResult(

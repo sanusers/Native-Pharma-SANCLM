@@ -28,11 +28,11 @@ public class StockProductBalance extends Fragment {
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         bindingDoccate = ActivityCateDoctorviewBinding.inflate(getLayoutInflater());
-        View v = bindingDoccate.getRoot();
+        View view = bindingDoccate.getRoot();
         roomDB= RoomDB.getDatabase(requireContext());
         masterDataDao=roomDB.masterDataDao();
         Productview();
-        return v;
+        return view;
     }
 
     public void Productview() {

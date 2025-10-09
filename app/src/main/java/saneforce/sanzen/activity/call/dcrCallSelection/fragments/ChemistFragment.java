@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
@@ -790,6 +791,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
@@ -842,15 +844,15 @@ public class ChemistFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.v("fragment", "---" + "chemist");
-        View v = inflater.inflate(R.layout.fragment_chemist, container, false);
-        rv_list = v.findViewById(R.id.rv_cust_list_selection);
-        ed_search = v.findViewById(R.id.search_cust);
-        iv_filter = v.findViewById(R.id.iv_filter);
-        tv_filter_count = v.findViewById(R.id.tv_filter_count);
-        tv_hqName = v.findViewById(R.id.tv_hq_name);
-        noChemist = v.findViewById(R.id.no_chemist);
+        View view = inflater.inflate(R.layout.fragment_chemist, container, false);
+        rv_list = view.findViewById(R.id.rv_cust_list_selection);
+        ed_search = view.findViewById(R.id.search_cust);
+        iv_filter = view.findViewById(R.id.iv_filter);
+        tv_filter_count = view.findViewById(R.id.tv_filter_count);
+        tv_hqName = view.findViewById(R.id.tv_hq_name);
+        noChemist = view.findViewById(R.id.no_chemist);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
-        btn_addchm=v.findViewById(R.id.add_chm);
+        btn_addchm=view.findViewById(R.id.add_chm);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
@@ -869,12 +871,18 @@ public class ChemistFragment extends Fragment {
         else{
             btn_addchm.setVisibility(View.GONE);
         }
-        btn_addchm.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), ChemistAddition.class);
-            activityResultLauncher.launch(intent);
+        btn_addchm.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(getContext(), ChemistAddition.class);
+                activityResultLauncher.launch(intent);
+            }
         });
-        iv_filter.setOnClickListener(view -> {
-            CustomizeFiltered();
+        iv_filter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                CustomizeFiltered();
+            }
         });
 
         ed_search.addTextChangedListener(new TextWatcher() {
@@ -895,7 +903,7 @@ public class ChemistFragment extends Fragment {
         });
 
         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-            tv_hqName.setOnClickListener(view -> {
+            tv_hqName.setOnClickListener(v -> {
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                     ArrayList<String> list = new ArrayList<>();
@@ -966,7 +974,7 @@ public class ChemistFragment extends Fragment {
             });
         }
 
-        return v;
+        return view;
     }
 
     private void getRequiredData() {
@@ -1227,78 +1235,97 @@ public class ChemistFragment extends Fragment {
         tvCate.setVisibility(View.VISIBLE);
         constraintLayout=dialogFilter.findViewById(R.id.constraint_btns);
 
-        img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
-
-        btn_apply.setOnClickListener(view1 -> Filtered());
-
-        btn_clear.setOnClickListener(view -> {
-            TerritoryCode = "";
-            categoryCode = "";
-            territoryName = "";
-            categoryName = "";
-            tvTerritory.setText("");
-            tvCate.setText("");
-        });
-
-        tvTerritory.setOnClickListener(view -> {
-            lv_cate.setVisibility(View.GONE);
-            if (lv_terr.getVisibility() == View.VISIBLE) {
-                lv_terr.setVisibility(View.GONE);
-
-            } else {
-                filterSelectionList.clear();
-                try {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-                    Log.v("jsonArray", "--" + jsonArray.length());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"),jsonObject.getString("Code")));
-                    }
-
-                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                        TerritoryCode = clickedItem.getCode();
-                        territoryName = clickedItem.getName();
-                        tvTerritory.setText(clickedItem.getName());
-                        lv_terr.setVisibility(View.GONE);
-
-                    });
-                    lv_terr.setAdapter(arrayAdapter);
-                    lv_terr.setVisibility(View.VISIBLE);
-
-                } catch (Exception ignored) {
-
-                }
-
+        img_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogFilter.dismiss();
             }
         });
 
-        tvCate.setOnClickListener(view -> {
-            lv_terr.setVisibility(View.GONE);
-            if (lv_cate.getVisibility() == View.VISIBLE) {
+        btn_apply.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Filtered();
+            }
+        });
+
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                TerritoryCode = "";
+                categoryCode = "";
+                territoryName = "";
+                categoryName = "";
+                tvTerritory.setText("");
+                tvCate.setText("");
+            }
+        });
+
+        tvTerritory.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
                 lv_cate.setVisibility(View.GONE);
-                constraintLayout.setVisibility(View.VISIBLE);
-            } else {
-                try {
+                if (lv_terr.getVisibility() == View.VISIBLE) {
+                    lv_terr.setVisibility(View.GONE);
+
+                } else {
                     filterSelectionList.clear();
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
-                    Log.v("jsonArray", "--" + jsonArray.length());
-                    for (int i = 0; i<jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
+                    try {
+                        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+                        Log.v("jsonArray", "--" + jsonArray.length());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
+                        }
+
+                        FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                            TerritoryCode = clickedItem.getCode();
+                            territoryName = clickedItem.getName();
+                            tvTerritory.setText(clickedItem.getName());
+                            lv_terr.setVisibility(View.GONE);
+
+                        });
+                        lv_terr.setAdapter(arrayAdapter);
+                        lv_terr.setVisibility(View.VISIBLE);
+
+                    } catch (Exception ignored) {
+
                     }
-                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                        categoryCode = clickedItem.getCode();
-                        categoryName = clickedItem.getName();
-                        tvCate.setText(clickedItem.getName());
-                        lv_cate.setVisibility(View.GONE);
-                        constraintLayout.setVisibility(View.VISIBLE);
-                    });
-                    lv_cate.setAdapter(arrayAdapter);
-                    lv_cate.setVisibility(View.VISIBLE);
-                    constraintLayout.setVisibility(View.INVISIBLE);
-                } catch (Exception e){
-                    Log.e("Chemist Call Selection", "CustomizeFiltered: " + e.getMessage());
-                    e.printStackTrace();
+
+                }
+            }
+        });
+
+        tvCate.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                lv_terr.setVisibility(View.GONE);
+                if (lv_cate.getVisibility() == View.VISIBLE) {
+                    lv_cate.setVisibility(View.GONE);
+                    constraintLayout.setVisibility(View.VISIBLE);
+                } else {
+                    try {
+                        filterSelectionList.clear();
+                        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
+                        Log.v("jsonArray", "--" + jsonArray.length());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
+                        }
+                        FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                            categoryCode = clickedItem.getCode();
+                            categoryName = clickedItem.getName();
+                            tvCate.setText(clickedItem.getName());
+                            lv_cate.setVisibility(View.GONE);
+                            constraintLayout.setVisibility(View.VISIBLE);
+                        });
+                        lv_cate.setAdapter(arrayAdapter);
+                        lv_cate.setVisibility(View.VISIBLE);
+                        constraintLayout.setVisibility(View.INVISIBLE);
+                    } catch (Exception e) {
+                        Log.e("Chemist Call Selection", "CustomizeFiltered: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
             }
         });

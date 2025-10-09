@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
@@ -92,8 +93,8 @@ public class DoctorVisitActivity extends AppCompatActivity {
         binding.recyclerDoctorVisit.setAdapter(adapter);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
-        binding.imageBack.setOnClickListener(v -> finish());
-        binding.missedfilter.setOnClickListener(v -> {
+        binding.imageBack.setOnClickListener(view -> finish());
+        binding.missedfilter.setOnClickListener(view -> {
             customisedMissedFilter();
         });
         binding.searchET.addTextChangedListener(new TextWatcher() {
@@ -111,7 +112,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) {}
         });
 
-        binding.searchClearIcon.setOnClickListener(v -> {
+        binding.searchClearIcon.setOnClickListener(view -> {
             binding.searchET.setText("");
             binding.searchClearIcon.setVisibility(View.GONE);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

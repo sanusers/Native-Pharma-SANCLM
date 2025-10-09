@@ -44,6 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityUploadModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -100,38 +101,43 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
             holder.imgView.setImageBitmap(myBitmap);
         }
 
-        holder.imgView.setOnClickListener(v -> {
-            File imgFile1 = new File(activityUploadModelClassList.get(position).getFilePath());
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile1.getAbsolutePath());
-            showImage(myBitmap);
+        holder.imgView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                File imgFile1 = new File(activityUploadModelClassList.get(position).getFilePath());
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile1.getAbsolutePath());
+                showImage(myBitmap);
+            }
         });
 
-        holder.tvMenu.setOnClickListener(v -> {
-            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
-            popup.inflate(R.menu.ec_call_menu);
-            MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
-            deleteMenu.setVisible(offlineDaySubmitDao.getDaySubmit(activityUploadModelClassList.get(position).getActivityDate()) == null);
-            popup.setOnMenuItemClickListener(menuItem -> {
-                if(menuItem.getItemId() == R.id.menuSync) {
-                    if(UtilityClass.isNetworkAvailable(context)) {
-                        CallImageApi(holder.getAbsoluteAdapterPosition(), activityUploadModelClassList.get(position));
-                    }else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
-                    }
-                }else if(menuItem.getItemId() == R.id.menuDelete) {
-                    Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                    TextView btn_no = dialog.findViewById(R.id.btn_no);
-                    TextView titte = dialog.findViewById(R.id.ed_alert_msg);
-                    titte.setText(R.string.are_you_sure_to_delete);
+        holder.tvMenu.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
+                popup.inflate(R.menu.ec_call_menu);
+                MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
+                deleteMenu.setVisible(offlineDaySubmitDao.getDaySubmit(activityUploadModelClassList.get(position).getActivityDate()) == null);
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    if (menuItem.getItemId() == R.id.menuSync) {
+                        if (UtilityClass.isNetworkAvailable(context)) {
+                            CallImageApi(holder.getAbsoluteAdapterPosition(), activityUploadModelClassList.get(position));
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        }
+                    } else if (menuItem.getItemId() == R.id.menuDelete) {
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                        TextView btn_no = dialog.findViewById(R.id.btn_no);
+                        TextView titte = dialog.findViewById(R.id.ed_alert_msg);
+                        titte.setText(R.string.are_you_sure_to_delete);
 
-                    btn_yes.setOnClickListener(view -> {
-                        dialog.dismiss();
+                        btn_yes.setOnClickListener(view1 -> {
+                            dialog.dismiss();
 //                        try {
 //                            JSONObject jsonObject;
 //                            for (int i = 0; i<listDates.size(); i++) {
@@ -159,25 +165,29 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
 //                            outBoxHeaderAdapter.notifyDataSetChanged();
 //                        } catch (Exception ignored) {
 //                        }
-                        File fileDelete = new File(activityUploadModelClassList.get(position).getFilePath());
-                        if(fileDelete.exists()) {
-                            if(fileDelete.delete()) {
-                                System.out.println("file Deleted :" + activityUploadModelClassList.get(position).getFilePath());
-                            }else {
-                                System.out.println("file not Deleted :" + activityUploadModelClassList.get(position).getFilePath());
+                            File fileDelete = new File(activityUploadModelClassList.get(position).getFilePath());
+                            if (fileDelete.exists()) {
+                                if (fileDelete.delete()) {
+                                    System.out.println("file Deleted :" + activityUploadModelClassList.get(position).getFilePath());
+                                } else {
+                                    System.out.println("file not Deleted :" + activityUploadModelClassList.get(position).getFilePath());
+                                }
                             }
-                        }
-                        activityUploadDataDao.deleteUploadActivity(activityUploadModelClassList.get(position).getId(), activityUploadModelClassList.get(position).getActivityID());
-                        removeAt(position);
-                    });
+                            activityUploadDataDao.deleteUploadActivity(activityUploadModelClassList.get(position).getId(), activityUploadModelClassList.get(position).getActivityID());
+                            removeAt(position);
+                        });
 
-                    btn_no.setOnClickListener(view -> {
-                        dialog.dismiss();
-                    });
-                }
-                return true;
-            });
-            popup.show();
+                        btn_no.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                    return true;
+                });
+                popup.show();
+            }
         });
     }
 

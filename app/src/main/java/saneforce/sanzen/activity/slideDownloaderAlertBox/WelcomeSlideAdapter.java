@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -125,28 +126,30 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
             rl_title_layout = itemView.findViewById(R.id.rl_calender_syn);
 
 
-            reload_img.setOnClickListener(view -> {
-                int position = getAdapterPosition();
-                if (UtilityClass.isNetworkAvailable(activity)) {
-                    MasterSyncActivity.isSingleWelcomeSlideDownloadingStatus=true;
-                    text_download_size.setText("Downloading");
-                    String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getWelcomeSlideUrl(activity) + list.get(position).getName();
-                    Log.e("DownloadingAPI", url);
-                    Data inputData = new Data.Builder()
-                            .putString("Flag", "2")
-                            .putString("file_url", url)
-                            .putString("Slide_name", list.get(position).getName())
-                            .putString("FilePosition", list.get(position).getListSlidePosition())
-                            .build();
+            reload_img.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    int position = getAdapterPosition();
+                    if (UtilityClass.isNetworkAvailable(activity)) {
+                        MasterSyncActivity.isSingleWelcomeSlideDownloadingStatus = true;
+                        text_download_size.setText("Downloading");
+                        String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getWelcomeSlideUrl(activity) + list.get(position).getName();
+                        Log.e("DownloadingAPI", url);
+                        Data inputData = new Data.Builder()
+                                .putString("Flag", "2")
+                                .putString("file_url", url)
+                                .putString("Slide_name", list.get(position).getName())
+                                .putString("FilePosition", list.get(position).getListSlidePosition())
+                                .build();
 
-                    OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(WelcomeSlideDownloadWorker.class)
-                            .setInputData(inputData)
-                            .build();
-                    WorkManager workManager = WorkManager.getInstance(activity);
-                    workManager.enqueue(fileDownloadRequest);
-                }
-                else {
-                    commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                        OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(WelcomeSlideDownloadWorker.class)
+                                .setInputData(inputData)
+                                .build();
+                        WorkManager workManager = WorkManager.getInstance(activity);
+                        workManager.enqueue(fileDownloadRequest);
+                    } else {
+                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                    }
                 }
             });
         }

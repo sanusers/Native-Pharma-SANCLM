@@ -13,6 +13,7 @@ import androidx.viewpager.widget.ViewPager;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 
@@ -41,8 +42,11 @@ public class BottomPreviewDetailedAdapter extends RecyclerView.Adapter<BottomPre
 
         holder.itemView.setSelected(viewPager.getCurrentItem() == holder.getAbsoluteAdapterPosition());
 
-        holder.itemView.setOnClickListener(view -> {
-            viewPager.setCurrentItem(holder.getAbsoluteAdapterPosition());
+        holder.itemView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                viewPager.setCurrentItem(holder.getAbsoluteAdapterPosition());
+            }
         });
     }
 

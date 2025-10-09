@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -47,36 +48,42 @@ public class HomeBrands extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homePreviewBinding = FragmentHomePreviewBinding.inflate(inflater);
-        View v = homePreviewBinding.getRoot();
+        View view = homePreviewBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         getRequiredData();
 
-        homePreviewBinding.tvAz.setOnClickListener(v13 -> {
-            homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
-            homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-            homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
-            homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
-            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideHomeBrandList, Comparator.comparing(BrandModelClass::getBrandName));
+        homePreviewBinding.tvAz.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+                homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+                homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+                previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+                homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+                homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+                Collections.sort(SlideHomeBrandList, Comparator.comparing(BrandModelClass::getBrandName));
+            }
         });
 
-        homePreviewBinding.tvZa.setOnClickListener(v12 -> {
-            homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
-            homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-            homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
-            homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
-            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideHomeBrandList, Collections.reverseOrder(new BrandMatrix.SortByName()));
+        homePreviewBinding.tvZa.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+                homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+                homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+                previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+                homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+                homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+                Collections.sort(SlideHomeBrandList, Collections.reverseOrder(new BrandMatrix.SortByName()));
+            }
         });
         
-        return v;
+        return view;
     }
 
     private void getRequiredData() {

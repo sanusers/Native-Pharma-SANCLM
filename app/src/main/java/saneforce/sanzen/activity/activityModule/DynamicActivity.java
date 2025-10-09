@@ -100,6 +100,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.adapter.ActivityAdapter;
 import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
@@ -224,36 +225,45 @@ public class DynamicActivity extends AppCompatActivity {
 //            });
 //        });
 
-        binding.backArrow.setOnClickListener(v -> {
-            if (DynamicActivity.isEdited) {
-                Dialog dialog = new Dialog(DynamicActivity.this);
-                dialog.setContentView(R.layout.dcr_cancel_alert);
-                dialog.setCancelable(false);
-                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
-                TextView btn_no = dialog.findViewById(R.id.btn_no);
-                alertText.setText(R.string.are_you_sure_you_want_to_exit);
-                btn_yes.setOnClickListener(view12 -> {
-                    dialog.dismiss();
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (DynamicActivity.isEdited) {
+                    Dialog dialog = new Dialog(DynamicActivity.this);
+                    dialog.setContentView(R.layout.dcr_cancel_alert);
+                    dialog.setCancelable(false);
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                    TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+                    TextView btn_no = dialog.findViewById(R.id.btn_no);
+                    alertText.setText(R.string.are_you_sure_you_want_to_exit);
+                    btn_yes.setOnClickListener(new SafeClickListener() {
+                        @Override
+                        public void onSafeClick(View view) {
+                            dialog.dismiss();
+                            getOnBackPressedDispatcher().onBackPressed();
+                            IsFromDCR = true;
+                            HomeDashBoard.isDcrFrom = true;
+                            Intent intent = new Intent(DynamicActivity.this, HomeDashBoard.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    btn_no.setOnClickListener(new SafeClickListener() {
+                        @Override
+                        public void onSafeClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+                } else {
                     getOnBackPressedDispatcher().onBackPressed();
                     IsFromDCR = true;
-                    HomeDashBoard.isDcrFrom=true;
+                    HomeDashBoard.isDcrFrom = true;
                     Intent intent = new Intent(DynamicActivity.this, HomeDashBoard.class);
                     startActivity(intent);
                     finish();
-                });
-                btn_no.setOnClickListener(view12 -> {
-                    dialog.dismiss();
-                });
-            } else {
-                getOnBackPressedDispatcher().onBackPressed();
-                IsFromDCR = true;
-                HomeDashBoard.isDcrFrom=true;
-                Intent intent = new Intent(DynamicActivity.this, HomeDashBoard.class);
-                startActivity(intent);
-                finish();
+                }
             }
         });
 
@@ -263,12 +273,25 @@ public class DynamicActivity extends AppCompatActivity {
             binding.rlheadquates.setVisibility(View.GONE);
         }
 
-        binding.rlheadquates.setOnClickListener(view -> showHQ());
+        binding.rlheadquates.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                showHQ();
+            }
+        });
 
-        binding.btnSubmit.setOnClickListener(view -> saveActivity());
+        binding.btnSubmit.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                saveActivity();
+            }
+        });
 
-        binding.btnClearall.setOnClickListener(v -> {
-            showClearAlert();
+        binding.btnClearall.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                showClearAlert();
+            }
         });
     }
 
@@ -294,17 +317,23 @@ public class DynamicActivity extends AppCompatActivity {
         TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         alertText.setText(String.format("%s Want to change %s.\nYour entered %s details will be cleared", DynamicActivity.this.getString(R.string.are_you_sure), SharedPref.getActivityCap(DynamicActivity.this), SharedPref.getActivityCap(DynamicActivity.this)));
-        btn_yes.setOnClickListener(view12 -> {
-            binding.namechooseActivity.setText(classGroup.getActivityName());
-            binding.llActivityDetailsView.removeAllViews();
-            chosenActivityModelClass = classGroup;
-            chosenActivityPosition = position;
-            getActivityDetails(classGroup);
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                binding.namechooseActivity.setText(classGroup.getActivityName());
+                binding.llActivityDetailsView.removeAllViews();
+                chosenActivityModelClass = classGroup;
+                chosenActivityPosition = position;
+                getActivityDetails(classGroup);
+                dialog.dismiss();
+            }
         });
-        btn_no.setOnClickListener(view12 -> {
-            adapter.changeRowIndex(chosenActivityPosition);
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                adapter.changeRowIndex(chosenActivityPosition);
+                dialog.dismiss();
+            }
         });
     }
 
@@ -318,12 +347,18 @@ public class DynamicActivity extends AppCompatActivity {
         TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         alertText.setText(DynamicActivity.this.getString(R.string.are_you_sure_you_want_to_clear));
-        btn_yes.setOnClickListener(view12 -> {
-            clearViews();
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                clearViews();
+                dialog.dismiss();
+            }
         });
-        btn_no.setOnClickListener(view12 -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 
@@ -857,10 +892,10 @@ public class DynamicActivity extends AppCompatActivity {
 
         textcharacter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideKeyboard(v);
-                    v.clearFocus();
+                    hideKeyboard(view);
+                    view.clearFocus();
                     return true;
                 }
                 return false;
@@ -934,10 +969,10 @@ public class DynamicActivity extends AppCompatActivity {
         });
         textnumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideKeyboard(v);
-                    v.clearFocus();
+                    hideKeyboard(view);
+                    view.clearFocus();
                     return true;
                 }
                 return false;
@@ -1019,10 +1054,10 @@ public class DynamicActivity extends AppCompatActivity {
         });
         textarea.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideKeyboard(v);
-                    v.clearFocus();
+                    hideKeyboard(view);
+                    view.clearFocus();
                     return true;
                 }
                 return false;
@@ -1096,9 +1131,9 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        textviewdate1.setOnClickListener(new View.OnClickListener() {
+        textviewdate1.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 final Calendar c = Calendar.getInstance();
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
@@ -1279,9 +1314,9 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        textviewfromdate.setOnClickListener(new View.OnClickListener() {
+        textviewfromdate.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 final Calendar c = Calendar.getInstance();
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
@@ -1329,9 +1364,9 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        textviewtodate.setOnClickListener(new View.OnClickListener() {
+        textviewtodate.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
                 if (fromdate.equals("")) {
                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date));
@@ -1609,9 +1644,9 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        textViewtime1.setOnClickListener(new View.OnClickListener() {
+        textViewtime1.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 final Calendar c = Calendar.getInstance();
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
@@ -1702,9 +1737,9 @@ public class DynamicActivity extends AppCompatActivity {
         });
         textLinearLayout4.setId(k + 34);
 
-        textviewfromtime.setOnClickListener(new View.OnClickListener() {
+        textviewfromtime.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 final Calendar c = Calendar.getInstance();
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
@@ -1750,9 +1785,9 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        textviewtotime.setOnClickListener(new View.OnClickListener() {
+        textviewtotime.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 String data = textviewfromtime.getText().toString();
                 if (data.equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_from_time));
@@ -1853,9 +1888,9 @@ public class DynamicActivity extends AppCompatActivity {
                 ActivityViewItem.get(k).setCodes(Idview.getText().toString());
             }
         });
-        singlecomboedittext.setOnClickListener(new View.OnClickListener() {
+        singlecomboedittext.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 ArrayList<ActivityModelClass> mlist = new ArrayList<>();
                 try {
                     JSONArray jsonArray = new JSONArray(List.getInput());
@@ -1949,9 +1984,9 @@ public class DynamicActivity extends AppCompatActivity {
                 ActivityViewItem.get(k).setCodes(TextCode.getText().toString());
             }
         });
-        multicomboeditext.setOnClickListener(new View.OnClickListener() {
+        multicomboeditext.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 ArrayList<ActivityModelClass> mlist = new ArrayList<>();
                 String[] selectedIds = TextCode.getText().toString().split(",");
                 List<String> activityForList = Arrays.asList(selectedIds);
@@ -2054,10 +2089,13 @@ public class DynamicActivity extends AppCompatActivity {
         parentLayout.addView(textfileupload);
         parentLayout.addView(clearButton);
 
-        clearButton.setOnClickListener(v -> {
-            if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
-                removeFile(textfileupload.getText().toString());
-                textfileupload.setText("");
+        clearButton.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                    removeFile(textfileupload.getText().toString());
+                    textfileupload.setText("");
+                }
             }
         });
 
@@ -2088,9 +2126,9 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        textfileupload.setOnClickListener(new View.OnClickListener() {
+        textfileupload.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 FilnameTet = textfileupload;
                 if (!CheckStoragePermission()) {
                     RequestStoragePermission();
@@ -2260,9 +2298,9 @@ public class DynamicActivity extends AppCompatActivity {
         else
             ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "Lat  :" + latitude + " " + "Long  :" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-        LabelText.setOnClickListener(new View.OnClickListener() {
+        LabelText.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if(CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
                     if(!CheckLocPermission()) {
                         RequestLocationPermission();
@@ -2516,9 +2554,9 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        binding.slideScreen.txtClDone.setOnClickListener(new View.OnClickListener() {
+        binding.slideScreen.txtClDone.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (isMultipleCheck) {
                     String lids = "";
                     for (int i = 0; i < mListId.size(); i++) {
@@ -2531,9 +2569,9 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        binding.slideScreen.cancelImg.setOnClickListener(new View.OnClickListener() {
+        binding.slideScreen.cancelImg.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 binding.mainLayout.closeDrawer(Gravity.RIGHT);
             }
         });
@@ -3341,10 +3379,16 @@ public class DynamicActivity extends AppCompatActivity {
         TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         alertText.setText("");
-        btn_yes.setOnClickListener(view12 -> {
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+            }
         });
-        btn_no.setOnClickListener(view12 -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 

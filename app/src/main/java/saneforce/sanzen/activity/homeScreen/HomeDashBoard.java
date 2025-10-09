@@ -98,6 +98,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
@@ -306,29 +307,35 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //        });
 
         // Play / Pause
-        binding.btnPlayPause.setOnClickListener(v -> {
-            if (youTubePlayer != null) {
-                if (isPlaying) {
-                    youTubePlayer.pause();
-                    binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_play);
-                } else {
-                    youTubePlayer.play();
-                    binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+        binding.btnPlayPause.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (youTubePlayer != null) {
+                    if (isPlaying) {
+                        youTubePlayer.pause();
+                        binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                    } else {
+                        youTubePlayer.play();
+                        binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                    }
+                    isPlaying = !isPlaying;
                 }
-                isPlaying = !isPlaying;
             }
         });
 
         // Close
-        binding.btnClose.setOnClickListener(v -> {
-            if (youTubePlayer != null) {
-                youTubePlayer.pause();
-                isPlaying = false;
-                youTubePlayer = null;
-            }
+        binding.btnClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (youTubePlayer != null) {
+                    youTubePlayer.pause();
+                    isPlaying = false;
+                    youTubePlayer = null;
+                }
 //            binding.youtubePlayerView.release();
 //            getLifecycle().removeObserver(binding.youtubePlayerView);
-            binding.floatingPlayer.setVisibility(View.GONE);
+                binding.floatingPlayer.setVisibility(View.GONE);
+            }
         });
 
         // Dragging
@@ -387,14 +394,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             float dX, dY;
             int lastAction;
 
-            @Override public boolean onTouch(View v, MotionEvent event) {
+            @Override public boolean onTouch(View view, MotionEvent event) {
                 View root = binding.getRoot(); // <-- your root container id
                 if (root == null) return false;
 
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
                         // Prevent parent (e.g., RecyclerView/ScrollView) from stealing events
-                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        view.getParent().requestDisallowInterceptTouchEvent(true);
                         dX = binding.floatingPlayer.getX() - event.getRawX();
                         dY = binding.floatingPlayer.getY() - event.getRawY();
                         lastAction = MotionEvent.ACTION_DOWN;
@@ -420,7 +427,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     }
 
                     case MotionEvent.ACTION_UP:
-                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        view.getParent().requestDisallowInterceptTouchEvent(false);
                         return lastAction == MotionEvent.ACTION_MOVE;
 
                     default:
@@ -831,13 +838,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        binding.imgChat.setOnClickListener(view -> {
-            ContinuousLogCollector.stopLogging(getApplicationContext());
+        binding.imgChat.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ContinuousLogCollector.stopLogging(getApplicationContext());
 //            startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
+            }
         });
 
-        binding.imgNotification.setOnClickListener(view -> {
-            showNotificationPopup();
+        binding.imgNotification.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                showNotificationPopup();
+            }
         });
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -942,15 +955,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });
-        binding.backArrow.setOnClickListener(v -> {
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 
-            if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
-                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+                if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                    binding.myDrawerLayout.closeDrawer(GravityCompat.START);
 
-            } else {
-                binding.myDrawerLayout.openDrawer(GravityCompat.START);
-                binding.backArrow.setBackgroundResource(R.drawable.cross_img);
+                } else {
+                    binding.myDrawerLayout.openDrawer(GravityCompat.START);
+                    binding.backArrow.setBackgroundResource(R.drawable.cross_img);
+                }
             }
         });
     }
@@ -965,7 +981,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         notificationPopupWindow.setOutsideTouchable(true);
 
         ImageView ivClearAll = popupView.findViewById(R.id.iv_clear_all);
-        ivClearAll.setOnClickListener(view -> notificationViewModel.clearAll());
+        ivClearAll.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                notificationViewModel.clearAll();
+            }
+        });
 
         TextView tvNoNewNotification = popupView.findViewById(R.id.tv_no_notification);
         RecyclerView rvNotification = popupView.findViewById(R.id.rv_notification);
@@ -1068,7 +1089,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         tvLong.setText(String.valueOf(longitude));
         tvAddress.setText(address);
 
-        btnClose.setOnClickListener(v -> dialogAfterCheckIn.dismiss());
+        btnClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogAfterCheckIn.dismiss();
+            }
+        });
 
         if (!HomeDashBoard.this.isFinishing()) {
             dialogAfterCheckIn.show();
@@ -1345,15 +1371,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         LinearLayout l_click = popupView.findViewById(R.id.change_passwrd);
         LinearLayout user_logout = popupView.findViewById(R.id.user_logout);
 
-        user_logout.setOnClickListener(v -> {
-            SharedPref.saveLoginState(HomeDashBoard.this, false);
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            //    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully")
+        user_logout.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SharedPref.saveLoginState(HomeDashBoard.this, false);
+                Intent intent = new Intent(HomeDashBoard.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                //    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully")
 //            commonUtilsMethods.showToastMessage(HomeDashBoard.this, HomeDashBoard.this.getString(R.string.logout_successfully));
-            Toast.makeText(HomeDashBoard.this, getString(R.string.logout_successfully), Toast.LENGTH_LONG).show();
-            finish();
+                Toast.makeText(HomeDashBoard.this, getString(R.string.logout_successfully), Toast.LENGTH_LONG).show();
+                finish();
+            }
         });
 
         user_name.setText(SharedPref.getSfName(this));
@@ -1367,14 +1396,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             l_click.setVisibility(View.GONE);
         }
 
-        l_click.setOnClickListener(v -> {
-            if (UtilityClass.isNetworkAvailable(this)) {
-                popupWindow.dismiss();
-                changePassword(HomeDashBoard.this.getString(R.string.change_password));
-            } else {
-                commonUtilsMethods.showToastMessage(this, "Please Check The Internet Connection");
+        l_click.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                    popupWindow.dismiss();
+                    changePassword(HomeDashBoard.this.getString(R.string.change_password));
+                } else {
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, "Please Check The Internet Connection");
+                }
             }
-
         });
         popupWindow.setOutsideTouchable(true);
         popupWindow.update();
@@ -1521,70 +1552,84 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         String password = SharedPref.getLoginUserPwd(this).toLowerCase();
 //        System.out.println("loginPassword--->"+password);
 
-        old_view.setOnClickListener(v -> {
-            if (!old_password.getText().toString().equals("")) {
+        old_view.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!old_password.getText().toString().equals("")) {
 
-                if (passwordNotVisible == 1) {
-                    old_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    old_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_hide));
-                    passwordNotVisible = 0;
-                } else {
-                    old_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    old_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_visible));
-                    passwordNotVisible = 1;
-                }
-                old_password.setSelection(old_password.length());
-            }
-        });
-
-        newPass_view.setOnClickListener(v -> {
-            if (!new_password.getText().toString().equals("")) {
-                if (passwordNotVisible1 == 1) {
-                    new_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    remain_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    newPass_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_hide));
-                    passwordNotVisible1 = 0;
-                } else {
-                    new_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    remain_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    newPass_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_visible));
-                    passwordNotVisible1 = 1;
-                }
-                new_password.setSelection(new_password.length());
-            }
-        });
-
-
-        update.setOnClickListener(v -> {
-            if (old_password.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_old_pwd));
-            } else if (new_password.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_new_pwd));
-            } else if (remain_password.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_repeat_pwd));
-            } else {
-                if (!password.equals(old_password.getText().toString().toLowerCase())) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.chk_old_pwd));
-                } else if (!new_password.getText().toString().toLowerCase().equals(remain_password.getText().toString().toLowerCase())) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_not_match));
-                } else if (new_password.getText().toString().toLowerCase().equals(password)) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.change_new_password));
-                } else {
-                    try {
-                        if (UtilityClass.isNetworkAvailable(this)) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar);
-                        } else {
-                            commonUtilsMethods.showToastMessage(this, "Please check Your Internet Connection");
-                        }
-                    } catch (Exception ignored) {
+                    if (passwordNotVisible == 1) {
+                        old_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        old_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_hide));
+                        passwordNotVisible = 0;
+                    } else {
+                        old_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        old_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_visible));
+                        passwordNotVisible = 1;
                     }
-
+                    old_password.setSelection(old_password.length());
                 }
             }
         });
 
-        cls_but.setOnClickListener(v -> dialogPwdChange.dismiss());
+        newPass_view.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!new_password.getText().toString().equals("")) {
+                    if (passwordNotVisible1 == 1) {
+                        new_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        remain_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        newPass_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_hide));
+                        passwordNotVisible1 = 0;
+                    } else {
+                        new_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        remain_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        newPass_view.setImageDrawable(ContextCompat.getDrawable(HomeDashBoard.this, R.drawable.eye_visible));
+                        passwordNotVisible1 = 1;
+                    }
+                    new_password.setSelection(new_password.length());
+                }
+            }
+        });
+
+
+        update.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (old_password.getText().toString().equals("")) {
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_old_pwd));
+                } else if (new_password.getText().toString().equals("")) {
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_new_pwd));
+                } else if (remain_password.getText().toString().equals("")) {
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_repeat_pwd));
+                } else {
+                    if (!password.equals(old_password.getText().toString().toLowerCase())) {
+                        CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.chk_old_pwd));
+                    } else if (!new_password.getText().toString().toLowerCase().equals(remain_password.getText().toString().toLowerCase())) {
+                        CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_not_match));
+                    } else if (new_password.getText().toString().toLowerCase().equals(password)) {
+                        CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.change_new_password));
+                    } else {
+                        try {
+                            if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                                progressBar.setVisibility(View.VISIBLE);
+                                CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar);
+                            } else {
+                                CommonUtilsMethods.showToastMessage(HomeDashBoard.this, "Please check Your Internet Connection");
+                            }
+                        } catch (Exception ignored) {
+                        }
+
+                    }
+                }
+            }
+        });
+
+        cls_but.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogPwdChange.dismiss();
+            }
+        });
 
         dialogPwdChange.setCanceledOnTouchOutside(false);
         dialogPwdChange.show();
@@ -1993,8 +2038,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     @SuppressLint({"NonConstantResourceId", "NotifyDataSetChanged"})
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.rl_calender_syn:
                 binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
                 callAPIDateSync();
@@ -2485,7 +2530,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private void onClickListener() {
         binding.imgLocation.setOnClickListener(new CommonUtilsMethods.DoubleClickListener() {
             @Override
-            public void onDoubleClick(View v) {
+            public void onDoubleClick(View view) {
                 setGpsTrack();
             }
         });
@@ -2565,11 +2610,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         customDialog.setView(timezoneBinding.getRoot());
         customDialog.setCancelable(false);
         customDialog.show();
-        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            HomeDashBoard.this.finishAffinity();
-            System.exit(0);
+        timezoneBinding.btnOpenSettings.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                HomeDashBoard.this.finishAffinity();
+                System.exit(0);
+            }
         });
     }
 

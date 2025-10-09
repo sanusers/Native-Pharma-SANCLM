@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.homeScreen.notification;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ItemNotificationBinding;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
@@ -65,7 +67,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             holder.binding.llNotificationMain.setBackgroundColor(context.getColor(R.color.white));
         }
 
-        holder.binding.ivDelete.setOnClickListener(view -> deleteClickListener.deleteClick(notificationDataTable));
+        holder.binding.ivDelete.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                deleteClickListener.deleteClick(notificationDataTable);
+            }
+        });
 
     }
 

@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.presentation.ShowSideScreenListener;
 import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationAdapter;

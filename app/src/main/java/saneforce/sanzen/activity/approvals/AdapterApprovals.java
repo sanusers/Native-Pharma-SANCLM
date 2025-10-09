@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingActivity;
 import saneforce.sanzen.activity.approvals.leave.LeaveApprovalActivity;
@@ -46,49 +47,52 @@ public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.View
         holder.tv_name.setText(approval_list.get(position).getName());
         holder.tv_count.setText(approval_list.get(position).getCount());
 
-        holder.constraintMain.setOnClickListener(view -> {
-            if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.leave_approvals))) {
-                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
-                    context.startActivity(new Intent(context, LeaveApprovalActivity.class));
-                } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.leave_ap_not_available));
-                }
-            } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_approvals))) {
+        holder.constraintMain.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.leave_approvals))) {
+                    if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                        context.startActivity(new Intent(context, LeaveApprovalActivity.class));
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.leave_ap_not_available));
+                    }
+                } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_approvals))) {
 
-                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
-                    context.startActivity(new Intent(context, TpApprovalActivity.class));
-                } else {
-                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.tp_ap_not_available));
-                }
+                    if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                        context.startActivity(new Intent(context, TpApprovalActivity.class));
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.tp_ap_not_available));
+                    }
 
-            } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_deviation))) {
+                } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_deviation))) {
 
-                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
-                    context.startActivity(new Intent(context, TpDeviationApprovalActivity.class));
-                } else {
-                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.tpdevication_ap_not_available));
-                }
-            } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.dcr_approvals))) {
-                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
-                    context.startActivity(new Intent(context, DcrApprovalActivity.class));
-                } else {
-                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.dcr_ap_not_available));
-                }
+                    if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                        context.startActivity(new Intent(context, TpDeviationApprovalActivity.class));
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.tpdevication_ap_not_available));
+                    }
+                } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.dcr_approvals))) {
+                    if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                        context.startActivity(new Intent(context, DcrApprovalActivity.class));
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.dcr_ap_not_available));
+                    }
 
-            } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.geo_tagging))) {
-                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
-                    context.startActivity(new Intent(context, GeoTaggingActivity.class));
-                } else {
-                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.geoTagging_ap_not_available));
-                }
+                } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.geo_tagging))) {
+                    if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                        context.startActivity(new Intent(context, GeoTaggingActivity.class));
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.geoTagging_ap_not_available));
+                    }
 
-            } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.standard_tour_plan))) {
-                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
-                    context.startActivity(new Intent(context, STPApprovalActivity.class));
-                } else {
-                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.stp_ap_not_available));
-                }
+                } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.standard_tour_plan))) {
+                    if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                        context.startActivity(new Intent(context, STPApprovalActivity.class));
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.stp_ap_not_available));
+                    }
 
+                }
             }
         });
     }

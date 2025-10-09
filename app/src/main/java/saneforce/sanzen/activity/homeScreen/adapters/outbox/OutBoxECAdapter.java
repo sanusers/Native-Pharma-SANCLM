@@ -56,6 +56,7 @@ import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -112,108 +113,117 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             holder.imgView.setImageBitmap(myBitmap);
         }
 
-        holder.imgView.setOnClickListener(v -> {
-            File imgFile1 = new File(ecModelClasses.get(position).getFilePath());
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile1.getAbsolutePath());
-            showImage(myBitmap);
+        holder.imgView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                File imgFile1 = new File(ecModelClasses.get(position).getFilePath());
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile1.getAbsolutePath());
+                showImage(myBitmap);
+            }
         });
 
-        holder.tvMenu.setOnClickListener(v -> {
-            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
-            popup.inflate(R.menu.ec_call_menu);
-            MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
+        holder.tvMenu.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
+                popup.inflate(R.menu.ec_call_menu);
+                MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
 //            if(offlineDaySubmitDao.getDaySubmit(ecModelClasses.get(position).getDates()) != null) {
                 deleteMenu.setVisible(false);
 //            } else {
 //                deleteMenu.setVisible(true);
 //            }
-            popup.setOnMenuItemClickListener(menuItem -> {
-                if (menuItem.getItemId() == R.id.menuSync) {
-                    EcModelClass ecModelClass = ecModelClasses.get(position);
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    if (menuItem.getItemId() == R.id.menuSync) {
+                        EcModelClass ecModelClass = ecModelClasses.get(position);
 //                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
 //                        CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
 //                    }else {
 //                        CallSendAPIImage(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
 //                    }
-                    if (UtilityClass.isNetworkAvailable(context)) {
-                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
-                            CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
-                        }else{
-                            CallSendAPIImage(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
-                        }
-                    } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
-                    }
-                } else if (menuItem.getItemId() == R.id.menuDelete) {
-                    Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                    TextView btn_yes=dialog.findViewById(R.id.btn_yes);
-                    TextView btn_no=dialog.findViewById(R.id.btn_no);
-                    TextView titte=dialog.findViewById(R.id.ed_alert_msg);
-                    titte.setText(R.string.are_you_sure_to_delete);
-
-                    btn_yes.setOnClickListener(view -> {
-                        dialog.dismiss();
-                        try {
-                            JSONObject jsonObject;
-                            jsonObject = new JSONObject(callOfflineDataDao.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
-                            JSONArray jsonArray = jsonObject.getJSONArray("EventCapture");
-                            for (int i = 0; i<jsonArray.length(); i++) {
-                                JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
-                                if(jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
-                                    jsonArray.remove(i);
-                                    break;
-                                }
+                        if (UtilityClass.isNetworkAvailable(context)) {
+                            if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                                CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                            } else {
+                                CallSendAPIImage(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
                             }
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        }
+                    } else if (menuItem.getItemId() == R.id.menuDelete) {
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                        TextView btn_no = dialog.findViewById(R.id.btn_no);
+                        TextView titte = dialog.findViewById(R.id.ed_alert_msg);
+                        titte.setText(R.string.are_you_sure_to_delete);
 
-                            for (int i = 0; i<listDates.size(); i++) {
-                                if(listDates.get(i).getGroupName().equalsIgnoreCase(ecModelClasses.get(position).getDates())) {
-                                    for (int j = 0; j<listDates.get(i).getChildItems().get(2).getOutBoxCallLists().size(); j++) {
-                                        OutBoxCallList outBoxCallList = listDates.get(i).getChildItems().get(2).getOutBoxCallLists().get(j);
-                                        if(outBoxCallList.getCusCode().equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
-                                            jsonObject = new JSONObject(outBoxCallList.getJsonData());
-                                            for (int m = 0; m<jsonArray.length(); m++) {
-                                                JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
-                                                if(jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
-                                                    jsonArray.remove(i);
-                                                    break;
+                        btn_yes.setOnClickListener(view1 -> {
+                            dialog.dismiss();
+                            try {
+                                JSONObject jsonObject;
+                                jsonObject = new JSONObject(callOfflineDataDao.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
+                                JSONArray jsonArray = jsonObject.getJSONArray("EventCapture");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
+                                    if (jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                        jsonArray.remove(i);
+                                        break;
+                                    }
+                                }
+
+                                for (int i = 0; i < listDates.size(); i++) {
+                                    if (listDates.get(i).getGroupName().equalsIgnoreCase(ecModelClasses.get(position).getDates())) {
+                                        for (int j = 0; j < listDates.get(i).getChildItems().get(2).getOutBoxCallLists().size(); j++) {
+                                            OutBoxCallList outBoxCallList = listDates.get(i).getChildItems().get(2).getOutBoxCallLists().get(j);
+                                            if (outBoxCallList.getCusCode().equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                                jsonObject = new JSONObject(outBoxCallList.getJsonData());
+                                                for (int m = 0; m < jsonArray.length(); m++) {
+                                                    JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
+                                                    if (jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                                        jsonArray.remove(i);
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
 
-                            callOfflineDataDao.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
-                            outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
-                            commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
-                            outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
-                            outBoxHeaderAdapter.notifyDataSetChanged();
-                        } catch (Exception ignored) {
-                        }
-                        File fileDelete = new File(ecModelClasses.get(position).getFilePath());
-                        if(fileDelete.exists()) {
-                            if(fileDelete.delete()) {
+                                callOfflineDataDao.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
+                                outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
+                                commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
+                                outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+                                outBoxHeaderAdapter.notifyDataSetChanged();
+                            } catch (Exception ignored) {
+                            }
+                            File fileDelete = new File(ecModelClasses.get(position).getFilePath());
+                            if (fileDelete.exists()) {
+                                if (fileDelete.delete()) {
 //                                System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
-                            }else {
+                                } else {
 //                                System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
+                                }
                             }
-                        }
-                        callOfflineECDataDao.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
-                        removeAt(position);
-                    });
+                            callOfflineECDataDao.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
+                            removeAt(position);
+                        });
 
-                    btn_no.setOnClickListener(view -> {
-                        dialog.dismiss();
-                    });
-                }
-                return true;
-            });
-            popup.show();
+                        btn_no.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                    return true;
+                });
+                popup.show();
+            }
         });
     }
 

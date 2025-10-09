@@ -41,6 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
@@ -117,101 +118,107 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             holder.imageView.setImageResource(R.drawable.tp_hospital_icon);
         }
 
-        holder.menu.setOnClickListener(v -> {
-            if (UtilityClass.isNetworkAvailable(context)) {
-                final String checkInOutNeed;
-                switch (type) {
-                    case "1":
-                        checkInOutNeed = SharedPref.getCustSrtNd(context);
-                        break;
-                    case "2":
-                        checkInOutNeed = SharedPref.getChmSrtNd(context);
-                        break;
-                    case "4":
-                        checkInOutNeed = SharedPref.getUnlistSrtNd(context);
-                        break;
-                    case "5":
-                        checkInOutNeed = SharedPref.getCipSrtNd(context);
-                        break;
-                    default:
-                        checkInOutNeed = "1";
-                        break;
-                }
-                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
-                popupMenu.getMenuInflater().inflate(R.menu.call_online_menu, popupMenu.getMenu());
-                MenuItem delete = popupMenu.getMenu().findItem(R.id.menuDelete);
-                delete.setVisible(SharedPref.getEditCallDelNeed(context).equalsIgnoreCase("0"));
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(menuItem -> {
-                    if (menuItem.getItemId() == R.id.menuEdit) {
-                        CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID(), checkInOutNeed);
-                    } else if (menuItem.getItemId() == R.id.menuDelete) {
-                        Dialog dialog = new Dialog(context);
-                        dialog.setContentView(R.layout.dcr_cancel_alert);
-                        dialog.setCancelable(false);
-                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        dialog.show();
-                        TextView btn_yes=dialog.findViewById(R.id.btn_yes);
-                        TextView btn_no=dialog.findViewById(R.id.btn_no);
-                        TextView titte=dialog.findViewById(R.id.ed_alert_msg);
-                        titte.setText(R.string.are_you_sure_to_delete);
-
-                        btn_yes.setOnClickListener(view12 -> {
-                            dialog.dismiss();
-                            try {
-                                dialogTransparent.show();
-                                Log.d("Validation", "onBindViewHolder: " + callslist.getProduct() + " --> " + callslist.getInput());
-                                UpdateInputSample(callslist.getProduct(), callslist.getInput());
-                                CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode(), checkInOutNeed);
-                                String mMdata= masterDataDao.getDataByKey(Constants.CALL_SYNC);
-                                JSONArray jsonArray = new JSONArray(mMdata);
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
-                                        jsonArray.remove(i);
-                                        break;
-                                    }
-                                }
-                                MasterDataTable data = new MasterDataTable();
-                                data.setMasterKey(Constants.CALL_SYNC);
-                                data.setMasterValues(jsonArray.toString());
-                                data.setSyncStatus(0);
-                                MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
-                                if (mNChecked != null) {
-                                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
-                                } else {
-                                    masterDataDao.insert(data);
-                                }
-                                CallDataRestClass.resetcallValues(context);
-
-                                new CountDownTimer(250, 250) {
-                                    public void onTick(long millisUntilFinished) {
-                                    }
-
-                                    public void onFinish() {
-                                        removeAt(holder.getAbsoluteAdapterPosition());
-                                        dialogTransparent.dismiss();
-                                    }
-                                }.start();
-
-                            } catch (Exception e) {
-                                Log.v("DeleteCall", "---" + e);
-                                dialogTransparent.dismiss();
-                            }
-
-                        });
-
-                        btn_no.setOnClickListener(view12 -> {
-                            dialog.dismiss();
-                        });
-
+        holder.menu.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    final String checkInOutNeed;
+                    switch (type) {
+                        case "1":
+                            checkInOutNeed = SharedPref.getCustSrtNd(context);
+                            break;
+                        case "2":
+                            checkInOutNeed = SharedPref.getChmSrtNd(context);
+                            break;
+                        case "4":
+                            checkInOutNeed = SharedPref.getUnlistSrtNd(context);
+                            break;
+                        case "5":
+                            checkInOutNeed = SharedPref.getCipSrtNd(context);
+                            break;
+                        default:
+                            checkInOutNeed = "1";
+                            break;
                     }
-                    return true;
-                });
-                popupMenu.show();
-            } else {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                    PopupMenu popupMenu = new PopupMenu(wrapper, view, Gravity.END);
+                    popupMenu.getMenuInflater().inflate(R.menu.call_online_menu, popupMenu.getMenu());
+                    MenuItem delete = popupMenu.getMenu().findItem(R.id.menuDelete);
+                    delete.setVisible(SharedPref.getEditCallDelNeed(context).equalsIgnoreCase("0"));
+                    popupMenu.show();
+                    popupMenu.setOnMenuItemClickListener(menuItem -> {
+                        if (menuItem.getItemId() == R.id.menuEdit) {
+                            CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID(), checkInOutNeed);
+                        } else if (menuItem.getItemId() == R.id.menuDelete) {
+                            Dialog dialog = new Dialog(context);
+                            dialog.setContentView(R.layout.dcr_cancel_alert);
+                            dialog.setCancelable(false);
+                            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.show();
+                            TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                            TextView btn_no = dialog.findViewById(R.id.btn_no);
+                            TextView titte = dialog.findViewById(R.id.ed_alert_msg);
+                            titte.setText(R.string.are_you_sure_to_delete);
+
+                            btn_yes.setOnClickListener(view12 -> {
+                                dialog.dismiss();
+                                try {
+                                    dialogTransparent.show();
+                                    Log.d("Validation", "onBindViewHolder: " + callslist.getProduct() + " --> " + callslist.getInput());
+                                    UpdateInputSample(callslist.getProduct(), callslist.getInput());
+                                    CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode(), checkInOutNeed);
+                                    String mMdata = masterDataDao.getDataByKey(Constants.CALL_SYNC);
+                                    JSONArray jsonArray = new JSONArray(mMdata);
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
+                                            jsonArray.remove(i);
+                                            break;
+                                        }
+                                    }
+                                    MasterDataTable data = new MasterDataTable();
+                                    data.setMasterKey(Constants.CALL_SYNC);
+                                    data.setMasterValues(jsonArray.toString());
+                                    data.setSyncStatus(0);
+                                    MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                    if (mNChecked != null) {
+                                        masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
+                                    } else {
+                                        masterDataDao.insert(data);
+                                    }
+                                    CallDataRestClass.resetcallValues(context);
+
+                                    new CountDownTimer(250, 250) {
+                                        public void onTick(long millisUntilFinished) {
+                                        }
+
+                                        public void onFinish() {
+                                            removeAt(holder.getAbsoluteAdapterPosition());
+                                            dialogTransparent.dismiss();
+                                        }
+                                    }.start();
+
+                                } catch (Exception e) {
+                                    Log.v("DeleteCall", "---" + e);
+                                    dialogTransparent.dismiss();
+                                }
+
+                            });
+
+                            btn_no.setOnClickListener(new SafeClickListener() {
+                                @Override
+                                public void onSafeClick(View view) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                        }
+                        return true;
+                    });
+                    popupMenu.show();
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                }
             }
         });
     }

@@ -58,6 +58,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.detailing.LoadBitmap;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
@@ -137,10 +138,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         SupportClass.setThumbnail(context, productArrayList.get(position).getSlideName(), imageView);
         container.addView(sliderLayout);
 
-        rl_rightView.setOnClickListener(v -> {
-            File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(position).getSlideName());
-            String fileFormat = SupportClass.getFileExtension(productArrayList.get(position).getSlideName());
-            popupScribbling(productArrayList.get(position).getSlideName(), productArrayList.get(position).getSlideId(), file.toString(), fileFormat);
+        rl_rightView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(position).getSlideName());
+                String fileFormat = SupportClass.getFileExtension(productArrayList.get(position).getSlideName());
+                popupScribbling(productArrayList.get(position).getSlideName(), productArrayList.get(position).getSlideId(), file.toString(), fileFormat);
+            }
         });
         resetTimer();
         sliderLayout.setOnTouchListener((view, event) -> {
@@ -244,26 +248,57 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         layoutParams.width = width - 80;
         rlay.setLayoutParams(layoutParams);
 
-        img_close.setOnClickListener(view -> dialog.dismiss());
-
-        erase.setOnClickListener(view -> {
-            paintviews.erase();
+        img_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
 
-        submit.setOnClickListener(view -> captureCanvasScreen(slideName, canvas_lay, dialog, path));
-        sq.setOnClickListener(view -> paintviews.addRectangle());
-        cir.setOnClickListener(view -> paintviews.addCircle());
-
-        pen_black.setOnClickListener(view -> {
-            paintviews.changePaintColor(1);
+        erase.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                paintviews.erase();
+            }
         });
 
-        pen_red.setOnClickListener(view -> {
-            paintviews.changePaintColor(2);
+        submit.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                captureCanvasScreen(slideName, canvas_lay, dialog, path);
+            }
+        });
+        sq.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                paintviews.addRectangle();
+            }
+        });
+        cir.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) { paintviews.addCircle();
+            }
         });
 
-        pen_green.setOnClickListener(view -> {
-            paintviews.changePaintColor(3);
+        pen_black.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                paintviews.changePaintColor(1);
+            }
+        });
+
+        pen_red.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                paintviews.changePaintColor(2);
+            }
+        });
+
+        pen_green.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                paintviews.changePaintColor(3);
+            }
         });
 
         try {
@@ -419,20 +454,29 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         Button btnClear = dialog.findViewById(R.id.btn_clear);
         Button btnSave = dialog.findViewById(R.id.btn_save);
 
-        btnSave.setOnClickListener(v -> {
-            slideScribble.set(scribblePos, new StoreImageTypeUrl(slideScribble.get(scribblePos).getSlideNam(), slideScribble.get(scribblePos).getSlideid(), slideScribble.get(scribblePos).isLike(), slideScribble.get(scribblePos).isDisLike(), edt_feed.getText().toString(), slideScribble.get(scribblePos).getScribble()));
-            dialog.dismiss();
+        btnSave.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                slideScribble.set(scribblePos, new StoreImageTypeUrl(slideScribble.get(scribblePos).getSlideNam(), slideScribble.get(scribblePos).getSlideid(), slideScribble.get(scribblePos).isLike(), slideScribble.get(scribblePos).isDisLike(), edt_feed.getText().toString(), slideScribble.get(scribblePos).getScribble()));
+                dialog.dismiss();
+            }
         });
 
-        btnClear.setOnClickListener(v -> {
-            edt_feed.setText("");
-            edt_feed.setHint(context.getResources().getString(R.string.type_your_feedback_here));
+        btnClear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                edt_feed.setText("");
+                edt_feed.setHint(context.getResources().getString(R.string.type_your_feedback_here));
+            }
         });
 
-        img_close.setOnClickListener(view -> {
-            edt_feed.setText("");
-            edt_feed.setHint(context.getResources().getString(R.string.type_your_feedback_here));
-            dialog.dismiss();
+        img_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                edt_feed.setText("");
+                edt_feed.setHint(context.getResources().getString(R.string.type_your_feedback_here));
+                dialog.dismiss();
+            }
         });
     }
 
@@ -476,90 +520,112 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         }
 
 
-        rl_paint.setOnClickListener(view -> popupPaint(slideName, path));
-
-        rl_like.setOnClickListener(v -> {
-            if(Objects.equals(rl_like.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_green)).getConstantState())) {
-                rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.green_full));
-                rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_pink));
-                slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, true, false, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
-            }else {
-                rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_green));
+        rl_paint.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                popupPaint(slideName, path);
             }
         });
 
-        rl_dislike.setOnClickListener(v -> {
-            if(Objects.equals(rl_dislike.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_pink)).getConstantState())) {
-                rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.pink_full));
-                rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_green));
-                slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, false, true, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
-            }else {
-                rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_pink));
-            }
-        });
-
-        rl_comments.setOnClickListener(v -> commentsPopup());
-
-        rl_share.setOnClickListener(v -> {
-            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            final File photoFile = new File(String.valueOf(path));
-            switch (fileFormat){
-                case "jpg":
-                case "png":
-                case "gif":
-                case "jpeg":{
-                    try {
-                        shareIntent.setType("image/jpg");
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
-                        context.startActivity(Intent.createChooser(shareIntent, "Share image using"));
-                    } catch (Exception e) {
-                        shareImage(photoFile, fileFormat);
-                    }
-                    return;
-                }
-                case "avi":
-                case "mp4":{
-                    try {
-                        ContentValues content = new ContentValues(4);
-                        content.put(MediaStore.Video.VideoColumns.DATE_ADDED, System.currentTimeMillis() / 1000);
-                        content.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-                        content.put(MediaStore.Video.Media.DATA, path);
-
-                        ContentResolver resolver = context.getContentResolver();
-                        Uri uri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, content);
-
-                        shareIntent.setType("video/*");
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                        context.startActivity(Intent.createChooser(shareIntent, "Share Video"));
-                    } catch (Exception e) {
-                        shareImage(photoFile, fileFormat);
-                    }
-                    return;
-                }
-                case "pdf":{
-                    try {
-                        shareIntent.setType("application/pdf");
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
-                        context.startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
-                    } catch (Exception e) {
-                        shareImage(photoFile, fileFormat);
-                    }
-                    return;
-                }
-                case "zip":{
-                    try {
-                        shareIntent.setType("application/zip");
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
-                        context.startActivity(shareIntent);
-                    } catch (Exception e) {
-                        shareImage(photoFile, fileFormat);
-                    }
+        rl_like.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (Objects.equals(rl_like.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_green)).getConstantState())) {
+                    rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.green_full));
+                    rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_pink));
+                    slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, true, false, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
+                } else {
+                    rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_green));
                 }
             }
         });
 
-        rl_stop.setOnClickListener(v -> {
-            handleStopDetailing();
+        rl_dislike.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (Objects.equals(rl_dislike.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_pink)).getConstantState())) {
+                    rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.pink_full));
+                    rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_green));
+                    slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, false, true, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
+                } else {
+                    rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_pink));
+                }
+            }
+        });
+
+        rl_comments.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commentsPopup();
+            }
+        });
+
+        rl_share.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                final File photoFile = new File(String.valueOf(path));
+                switch (fileFormat) {
+                    case "jpg":
+                    case "png":
+                    case "gif":
+                    case "jpeg": {
+                        try {
+                            shareIntent.setType("image/jpg");
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
+                            context.startActivity(Intent.createChooser(shareIntent, "Share image using"));
+                        } catch (Exception e) {
+                            shareImage(photoFile, fileFormat);
+                        }
+                        return;
+                    }
+                    case "avi":
+                    case "mp4": {
+                        try {
+                            ContentValues content = new ContentValues(4);
+                            content.put(MediaStore.Video.VideoColumns.DATE_ADDED, System.currentTimeMillis() / 1000);
+                            content.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                            content.put(MediaStore.Video.Media.DATA, path);
+
+                            ContentResolver resolver = context.getContentResolver();
+                            Uri uri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, content);
+
+                            shareIntent.setType("video/*");
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                            context.startActivity(Intent.createChooser(shareIntent, "Share Video"));
+                        } catch (Exception e) {
+                            shareImage(photoFile, fileFormat);
+                        }
+                        return;
+                    }
+                    case "pdf": {
+                        try {
+                            shareIntent.setType("application/pdf");
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
+                            context.startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
+                        } catch (Exception e) {
+                            shareImage(photoFile, fileFormat);
+                        }
+                        return;
+                    }
+                    case "zip": {
+                        try {
+                            shareIntent.setType("application/zip");
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
+                            context.startActivity(shareIntent);
+                        } catch (Exception e) {
+                            shareImage(photoFile, fileFormat);
+                        }
+                    }
+                }
+            }
+        });
+
+        rl_stop.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                handleStopDetailing();
+            }
         });
 
 

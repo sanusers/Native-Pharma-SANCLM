@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
@@ -153,9 +154,12 @@ public class PresentationActivity extends AppCompatActivity {
 
 //        populateAdapter();
 
-        binding.backArrow.setOnClickListener(view -> {
-            selectedPosition = 0;
-            getOnBackPressedDispatcher().onBackPressed();
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+                                                 @Override
+                                                 public void onSafeClick(View view) {
+                                                     selectedPosition = 0;
+                                                     getOnBackPressedDispatcher().onBackPressed();
+                                                 }
         });
 
 //        binding.createPresentationBtn.setOnClickListener(view -> startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class)));
@@ -185,8 +189,11 @@ public class PresentationActivity extends AppCompatActivity {
 
         PresentationDataTable presentationDataTable = presentationDataDao.getPresentationData(presentationName);
 
-        binding.navigationView.imgSideClose.setOnClickListener(v -> {
-            closeDrawer();
+        binding.navigationView.imgSideClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                closeDrawer();
+            }
         });
 
         String selectedCap = "";
@@ -280,14 +287,17 @@ public class PresentationActivity extends AppCompatActivity {
         binding.navigationView.rvSide.setLayoutManager(new LinearLayoutManager(this));
         sideScreenAdapter.notifyDataSetChanged();
 
-        binding.navigationView.btnEdit.setOnClickListener(view -> {
-            Intent intent = new Intent(PresentationActivity.this, CustomerSelectionActivity.class);
-            intent.putExtra(CustomerSelectionActivity.PRESENTATION_NAME, presentationName);
-            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, customerType);
-            intent.putExtra(CustomerSelectionActivity.HEAD_QUARTER_CODE, presentationDataTable.getHeadquarterCode());
-            intent.putExtra(CustomerSelectionActivity.IS_FROM, "edit");
-            startActivity(intent);
-            closeDrawer();
+        binding.navigationView.btnEdit.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(PresentationActivity.this, CustomerSelectionActivity.class);
+                intent.putExtra(CustomerSelectionActivity.PRESENTATION_NAME, presentationName);
+                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, customerType);
+                intent.putExtra(CustomerSelectionActivity.HEAD_QUARTER_CODE, presentationDataTable.getHeadquarterCode());
+                intent.putExtra(CustomerSelectionActivity.IS_FROM, "edit");
+                startActivity(intent);
+                closeDrawer();
+            }
         });
     }
 

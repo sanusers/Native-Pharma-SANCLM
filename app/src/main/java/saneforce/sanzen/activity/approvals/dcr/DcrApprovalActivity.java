@@ -58,6 +58,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.AdapterModel;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
@@ -404,63 +405,80 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
         });
 
-        dcrCallApprovalBinding.ivBack.setOnClickListener(view -> {
-            SelectedSfCode = "";
-            SelectedActivityDate = "";
-            Intent intent = new Intent(DcrApprovalActivity.this, ApprovalsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        dcrCallApprovalBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SelectedSfCode = "";
+                SelectedActivityDate = "";
+                Intent intent = new Intent(DcrApprovalActivity.this, ApprovalsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
         });
 
-        dcrCallApprovalBinding.btnApproved.setOnClickListener(view -> {
-            if (UtilityClass.isNetworkAvailable(this)) {
-                CallApprovalApi();
-            } else {
-                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
+        dcrCallApprovalBinding.btnApproved.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (UtilityClass.isNetworkAvailable(DcrApprovalActivity.this)) {
+                    CallApprovalApi();
+                } else {
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
+                }
             }
         });
 
 
-        dcrCallApprovalBinding.btnReject.setOnClickListener(view -> {
-            dialogReject = new Dialog(DcrApprovalActivity.this);
-            dialogReject.setContentView(R.layout.popup_reject);
-            Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialogReject.setCancelable(false);
+        dcrCallApprovalBinding.btnReject.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogReject = new Dialog(DcrApprovalActivity.this);
+                dialogReject.setContentView(R.layout.popup_reject);
+                Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialogReject.setCancelable(false);
 
-            ImageView iv_close = dialogReject.findViewById(R.id.img_close);
-            EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
-            Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
-            Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
+                ImageView iv_close = dialogReject.findViewById(R.id.img_close);
+                EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
+                Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
+                Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
 
-            ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason,250)});
+                ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason, 250)});
 
-            btn_cancel.setOnClickListener(view1 -> {
-                ed_reason.setText("");
-                UtilityClass.hideKeyboard(DcrApprovalActivity.this);
-                dialogReject.dismiss();
-            });
-
-            iv_close.setOnClickListener(view12 -> {
-                ed_reason.setText("");
-                UtilityClass.hideKeyboard(this);
-                dialogReject.dismiss();
-            });
-
-            btn_reject.setOnClickListener(view14 -> {
-                if (UtilityClass.isNetworkAvailable(this)) {
-                    if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
-                        rejectApproval(ed_reason.getText().toString());
-                    } else {
-                        commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+                btn_cancel.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        ed_reason.setText("");
+                        UtilityClass.hideKeyboard(DcrApprovalActivity.this);
+                        dialogReject.dismiss();
                     }
-                } else {
-                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
-                }
-                UtilityClass.hideKeyboard(DcrApprovalActivity.this);
-            });
-            dialogReject.show();
-        });
+                });
 
+                iv_close.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        ed_reason.setText("");
+                        UtilityClass.hideKeyboard(DcrApprovalActivity.this);
+                        dialogReject.dismiss();
+                    }
+                });
+
+                btn_reject.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        if (UtilityClass.isNetworkAvailable(DcrApprovalActivity.this)) {
+                            if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
+                                rejectApproval(ed_reason.getText().toString());
+                            } else {
+                                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+                            }
+                        } else {
+                            commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
+                        }
+                        UtilityClass.hideKeyboard(DcrApprovalActivity.this);
+                    }
+                });
+                dialogReject.show();
+            }
+        });
     }
 
     private void rejectApproval(String toString) {

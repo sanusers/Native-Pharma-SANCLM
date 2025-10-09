@@ -33,6 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -299,7 +300,7 @@ public class CallsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = CallsFragmentBinding.inflate(inflater, container, false);
-        View v = binding.getRoot();
+        View view = binding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         Mcontext = requireContext();
@@ -330,153 +331,161 @@ public class CallsFragment extends Fragment {
         binding.recyelerview.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        binding.rlSyncCall.setOnClickListener(v12 -> {
-            if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
-                CommonAlertBox.ApprovalAlert(requireActivity());
-            }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
-                CommonAlertBox.TpAlert(requireActivity());
-            }else {
-                if(UtilityClass.isNetworkAvailable(requireContext())) {
-                    binding.rlSyncCall.setEnabled(false);
-                    CallTodayCallsAPI(requireContext(), apiInterface, true);
-                }else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+        binding.rlSyncCall.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+                    CommonAlertBox.ApprovalAlert(requireActivity());
+                } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
+                    CommonAlertBox.TpAlert(requireActivity());
+                } else {
+                    if (UtilityClass.isNetworkAvailable(requireContext())) {
+                        binding.rlSyncCall.setEnabled(false);
+                        CallTodayCallsAPI(requireContext(), apiInterface, true);
+                    } else {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    }
                 }
             }
-
         });
 
-        binding.TvAddActivty.setOnClickListener(view -> {
+        binding.TvAddActivty.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 //            if(UtilityClass.isNetworkAvailable(requireContext())){
 //            if(HomeDashBoard.selectedDate == null || (HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().isEmpty())){
 //                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
 //            }else
-            if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
-                CommonAlertBox.ApprovalAlert(requireActivity());
-            }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
-                CommonAlertBox.TpAlert(requireActivity());
-            }else {
-                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                if (SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+                    CommonAlertBox.ApprovalAlert(requireActivity());
+                } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
+                    CommonAlertBox.TpAlert(requireActivity());
+                } else {
+                    JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-                try {
-                    if(workTypeArray.length()>0) {
-                        JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
-                        String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
-                        Date FirstPlanDate = sdf.parse(DayPlanDate1);
-                        String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                        Date CurentDate = sdf.parse(CurrentDate);
-                        if(workTypeArray.length()>1) {
-                            JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
-                            String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
-                            Date SecondPlanDate = sdf.parse(DayPlanDate2);
-                            if((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
-                                startActivity(new Intent(requireActivity(), DynamicActivity.class));
-                            }else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                    try {
+                        if (workTypeArray.length() > 0) {
+                            JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
+                            String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                            Date FirstPlanDate = sdf.parse(DayPlanDate1);
+                            String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                            Date CurentDate = sdf.parse(CurrentDate);
+                            if (workTypeArray.length() > 1) {
+                                JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
+                                String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                                Date SecondPlanDate = sdf.parse(DayPlanDate2);
+                                if ((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
+                                    startActivity(new Intent(requireActivity(), DynamicActivity.class));
+                                } else {
+                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                                }
+                            } else {
+                                if (FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
+                                    startActivity(new Intent(requireActivity(), DynamicActivity.class));
+                                } else {
+                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                                }
                             }
-                        }else {
-                            if(FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
-                                startActivity(new Intent(requireActivity(), DynamicActivity.class));
-                            }else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                            }
+                        } else {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                         }
-                    }else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
 
+                    }
                 }
-            }
 //        }else {
 //                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
 //            }
+            }
         });
 
-        binding.tvAddCall.setOnClickListener(view -> {
-            if(HomeDashBoard.selectedDate == null || HomeDashBoard.selectedDate.toString().isEmpty()) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-            }else if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
-                CommonAlertBox.ApprovalAlert(requireActivity());
-            }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
-                CommonAlertBox.TpAlert(requireActivity());
-            }
+        binding.tvAddCall.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (HomeDashBoard.selectedDate == null || HomeDashBoard.selectedDate.toString().isEmpty()) {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                } else if (SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+                    CommonAlertBox.ApprovalAlert(requireActivity());
+                } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
+                    CommonAlertBox.TpAlert(requireActivity());
+                }
 //            else if(CheckInOutManager.isCheckedId(requireContext())) {
 //                WorkPlanFragment.showCheckInDialog();
 //                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
 //            }
-            else {
-                if(SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
-                    if(SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                    }else if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !CheckInOutManager.isCheckedIn(requireContext())
-                            && HomeDashBoard.selectedDate != null
-                            && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
-//                        WorkPlanFragment.showCheckInDialog();
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-                    }else if(WorkPlanFragment.isFromTP) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                    }else if(WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
-                    }else {
-                        startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-                    }
-                }else {
-                    JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    try {
-                        if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !CheckInOutManager.isCheckedIn(requireContext())
+                else {
+                    if (SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
+                        if (SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                        } else if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !CheckInOutManager.isCheckedIn(requireContext())
                                 && HomeDashBoard.selectedDate != null
                                 && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
-//                            WorkPlanFragment.showCheckInDialog();
+//                        WorkPlanFragment.showCheckInDialog();
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-                        }else if(WorkPlanFragment.isFromTP && WorkPlanFragment.binding.txtSave.isEnabled()) {
+                        } else if (WorkPlanFragment.isFromTP) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                        }else if(WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
+                        } else if (WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
                             commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
-                        }else if(workTypeArray.length()>0) {
-                            JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
-                            String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
-                            String FWFlg1 = FirstSeasonDayPlanObject.getString("FWFlg");
-                            Date FirstPlanDate = sdf.parse(DayPlanDate1);
-                            String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                            Date CurentDate = sdf.parse(CurrentDate);
-                            if(workTypeArray.length()>1) {
-                                JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
-                                String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
-                                String FWFlg2 = SecondSeasonDayPlanObject.getString("FWFlg");
-                                Date SecondPlanDate = sdf.parse(DayPlanDate2);
-                                if((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
-                                    if(!FWFlg1.equalsIgnoreCase("F") && (!FWFlg2.equalsIgnoreCase("F")))
-                                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.unable_to_add_call_for_non_field_work));
-                                    else
-                                        startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-                                }else {
-                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                                }
-                            }else {
-                                if(FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
-                                    if(!FWFlg1.equalsIgnoreCase("F"))
-                                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.unable_to_add_call_for_non_field_work));
-                                    else
-                                        startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-                                }else {
-                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                                }
-                            }
-                        }else {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_submit_field_work));
+                        } else {
+                            startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        try {
+                            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !CheckInOutManager.isCheckedIn(requireContext())
+                                    && HomeDashBoard.selectedDate != null
+                                    && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+//                            WorkPlanFragment.showCheckInDialog();
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
+                            } else if (WorkPlanFragment.isFromTP && WorkPlanFragment.binding.txtSave.isEnabled()) {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                            } else if (WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
+                                commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
+                            } else if (workTypeArray.length() > 0) {
+                                JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
+                                String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                                String FWFlg1 = FirstSeasonDayPlanObject.getString("FWFlg");
+                                Date FirstPlanDate = sdf.parse(DayPlanDate1);
+                                String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                                Date CurentDate = sdf.parse(CurrentDate);
+                                if (workTypeArray.length() > 1) {
+                                    JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
+                                    String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                                    String FWFlg2 = SecondSeasonDayPlanObject.getString("FWFlg");
+                                    Date SecondPlanDate = sdf.parse(DayPlanDate2);
+                                    if ((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
+                                        if (!FWFlg1.equalsIgnoreCase("F") && (!FWFlg2.equalsIgnoreCase("F")))
+                                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.unable_to_add_call_for_non_field_work));
+                                        else
+                                            startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                                    } else {
+                                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                                    }
+                                } else {
+                                    if (FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
+                                        if (!FWFlg1.equalsIgnoreCase("F"))
+                                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.unable_to_add_call_for_non_field_work));
+                                        else
+                                            startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                                    } else {
+                                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                                    }
+                                }
+                            } else {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_submit_field_work));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         });
 
-        return v;
+        return view;
     }
 
     @Override

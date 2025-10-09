@@ -47,6 +47,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -104,7 +105,7 @@ public class MissedReport extends AppCompatActivity {
 
         if (SharedPref.getSfType(this).equals("2")) {
             binding.headquarters.setVisibility(View.VISIBLE);
-            binding.headquarters.setOnClickListener(v -> {
+            binding.headquarters.setOnClickListener(view -> {
                 if (selectedDate == null || selectedDate.isEmpty()) {
                     Toast.makeText(MissedReport.this, "Please select month", Toast.LENGTH_SHORT).show();
                     return;
@@ -165,7 +166,7 @@ public class MissedReport extends AppCompatActivity {
             }
         });
 
-        binding.searchClearIcon.setOnClickListener(v -> {
+        binding.searchClearIcon.setOnClickListener(view -> {
             binding.searchET.setText("");
             binding.searchClearIcon.setVisibility(View.GONE);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -181,7 +182,7 @@ public class MissedReport extends AppCompatActivity {
 
 //        binding.boxCombined.setVisibility(View.GONE);
 
-        binding.imageBack.setOnClickListener(v -> {
+        binding.imageBack.setOnClickListener(view -> {
             RoomDB.databaseWriteExecutor.execute(() -> {
                 RoomDB db = RoomDB.getDatabase(MissedReport.this);
                 db.missedDao().deleteAll();        // Clear missed data
@@ -195,7 +196,7 @@ public class MissedReport extends AppCompatActivity {
 //            showMonthYearPicker(binding.calender);
 //            finish();
 //        });
-        binding.calender.setOnClickListener(v -> showMonthYearPicker(binding.calender));
+        binding.calender.setOnClickListener(view -> showMonthYearPicker(binding.calender));
 //        binding.doctorStatsLayout.setOnClickListener(v -> {
 //            Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
 //            startActivity(intent);
@@ -205,7 +206,7 @@ public class MissedReport extends AppCompatActivity {
         hideSystemBars();
         TextView monthYearTextView = findViewById(R.id.calender);
 
-        monthYearTextView.setOnClickListener(v ->
+        monthYearTextView.setOnClickListener(view ->
 
                 showMonthYearPicker(monthYearTextView));
     }
@@ -351,7 +352,7 @@ public class MissedReport extends AppCompatActivity {
         monthDialog = builder.create();
 //        AlertDialog dialog = builder.create();
         monthDialog.setCanceledOnTouchOutside(false);
-        crossImage.setOnClickListener(v -> monthDialog.dismiss());
+        crossImage.setOnClickListener(view -> monthDialog.dismiss());
         monthDialog.show();
 
         // When item is clicked, set to TextView and close dialog

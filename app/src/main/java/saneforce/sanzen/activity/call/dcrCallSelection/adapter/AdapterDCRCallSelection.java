@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -132,7 +133,12 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             holder.tv_specialist.setVisibility(View.GONE);
         }
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, cusListArrayList.get(position).getName()));
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, cusListArrayList.get(position).getName());
+            }
+        });
 
         for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
             if (cusListArrayList.get(position). getType().equalsIgnoreCase("3")) {
@@ -156,44 +162,47 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             }
         }
 
-        holder.constraint_main.setOnClickListener(view -> {
-            try {
-                boolean isVisitedToday = false;
-                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+        holder.constraint_main.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    boolean isVisitedToday = false;
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString()) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
-                        isVisitedToday = true;
-                        break;
-                    }
-                }
-
-                if (!isVisitedToday) {
-                    if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
-                        int count = 0;
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            if (jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())
-                                    && TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, jsonObject.getString("Dcr_dt"))
-                                    .equals(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, HomeDashBoard.selectedDate.toString()))) {
-                                count++;
-                            }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString()) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
+                            isVisitedToday = true;
+                            break;
                         }
-                        if (count < Integer.parseInt(cusListArrayList.get(position).getTotalVisitCount())) {
-                            goNextActivity(position);
+                    }
+
+                    if (!isVisitedToday) {
+                        if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
+                            int count = 0;
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())
+                                        && TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, jsonObject.getString("Dcr_dt"))
+                                        .equals(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, HomeDashBoard.selectedDate.toString()))) {
+                                    count++;
+                                }
+                            }
+                            if (count < Integer.parseInt(cusListArrayList.get(position).getTotalVisitCount())) {
+                                goNextActivity(position);
+                            } else {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
+                            }
                         } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
+                            goNextActivity(position);
                         }
                     } else {
-                        goNextActivity(position);
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited));
                     }
-                } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.v("Call_Data1", "---" + e);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.v("Call_Data1", "---" + e);
             }
         });
 
@@ -255,7 +264,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     break;
             }
             tvTitle.setText(String.format("%s %s", customerCaption, context.getString(R.string.check_in)));
-            refreshLocation.setOnClickListener(v -> {
+            refreshLocation.setOnClickListener(view -> {
                 try {
                     btnCheckIN.setEnabled(false);
                     stopClock();
@@ -285,15 +294,21 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 }
             });
             dialogCheckIn.show();
-            img_Close.setOnClickListener(v -> {
-                stopClock();
-                dialogCheckIn.dismiss();
+            img_Close.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    stopClock();
+                    dialogCheckIn.dismiss();
+                }
             });
 
-            btnCheckIN.setOnClickListener(v -> {
-                stopClock();
-                commonUtilsMethods.showToastMessage(context, "Check In Successfully");
-                changeActivity(position);
+            btnCheckIN.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    stopClock();
+                    commonUtilsMethods.showToastMessage(context, "Check In Successfully");
+                    changeActivity(position);
+                }
             });
         } else {
             changeActivity(position);
@@ -353,12 +368,18 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         btn_yes.setText(content.getResources().getString(R.string.ok));
         content.setText("You have been idle for 2 minutes. Kindly Re-Check-In");
 
-        btn_yes.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
 
-        btn_no.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 

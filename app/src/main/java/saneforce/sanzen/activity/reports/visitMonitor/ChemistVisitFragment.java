@@ -36,6 +36,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -83,20 +84,20 @@ public class ChemistVisitFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.adapter_doctor_visit_report, container, false);
+        View view = inflater.inflate(R.layout.adapter_doctor_visit_report, container, false);
 
-        TextView chemistVst = v.findViewById(R.id.custTxt);
-        TextView totalChmTxt = v.findViewById(R.id.totalCust);
-        TextView monthTxt = v.findViewById(R.id.monthTxt);
-        TextView totalChmCnt = v.findViewById(R.id.totalCustCnt);
-        TextView visitedCnt = v.findViewById(R.id.visitedCnt);
-        TextView missedCnt = v.findViewById(R.id.missedCnt);
-        TextView FWDaysCnt = v.findViewById(R.id.FWDaysCnt);
-        TextView callAvgCnt = v.findViewById(R.id.callAvgCnt);
-        TextView callCvgCnt = v.findViewById(R.id.callCvgCnt);
-        ImageView ChemistImage = v.findViewById(R.id.custImg);
+        TextView chemistVst = view.findViewById(R.id.custTxt);
+        TextView totalChmTxt = view.findViewById(R.id.totalCust);
+        TextView monthTxt = view.findViewById(R.id.monthTxt);
+        TextView totalChmCnt = view.findViewById(R.id.totalCustCnt);
+        TextView visitedCnt = view.findViewById(R.id.visitedCnt);
+        TextView missedCnt = view.findViewById(R.id.missedCnt);
+        TextView FWDaysCnt = view.findViewById(R.id.FWDaysCnt);
+        TextView callAvgCnt = view.findViewById(R.id.callAvgCnt);
+        TextView callCvgCnt = view.findViewById(R.id.callCvgCnt);
+        ImageView ChemistImage = view.findViewById(R.id.custImg);
 
-        barChart  = v.findViewById(R.id.barChartVisit);
+        barChart  = view.findViewById(R.id.barChartVisit);
 
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
@@ -162,7 +163,7 @@ public class ChemistVisitFragment extends Fragment {
             );*/
         }
 
-        return v;
+        return view;
     }
 
 

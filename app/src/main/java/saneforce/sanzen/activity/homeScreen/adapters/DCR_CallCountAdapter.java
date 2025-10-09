@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class DCR_CallCountAdapter extends RecyclerView.Adapter<DCR_CallCountAdapter.listDataViewholider> {
 

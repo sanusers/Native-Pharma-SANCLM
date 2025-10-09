@@ -33,6 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.MultiClusterAdapter;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.OnClusterClicklistener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
@@ -104,7 +105,7 @@ public class AddListActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getRequiredData();
 
-        activityAddListBinding.backArrow.setOnClickListener(v -> {
+        activityAddListBinding.backArrow.setOnClickListener(view -> {
             strClusterID = "";
             strClusterName = "";
             clusterChangeClearDCRSelection();
@@ -112,7 +113,7 @@ public class AddListActivity extends AppCompatActivity {
             super.onBackPressed();
         });
 
-        activityAddListBinding.btnCancel.setOnClickListener(v -> {
+        activityAddListBinding.btnCancel.setOnClickListener(view -> {
             strClusterID = "";
             strClusterName = "";
             clusterChangeClearDCRSelection();
@@ -120,7 +121,7 @@ public class AddListActivity extends AppCompatActivity {
             super.onBackPressed();
         });
 
-        activityAddListBinding.btnSave.setOnClickListener(v -> {
+        activityAddListBinding.btnSave.setOnClickListener(view -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }
@@ -139,7 +140,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.selectedClusters.setOnClickListener(v -> {
+        activityAddListBinding.selectedClusters.setOnClickListener(view -> {
             isRouteSelected = true;
             if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
                 commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
@@ -150,7 +151,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.tagTvDoctor.setOnClickListener(v -> {
+        activityAddListBinding.tagTvDoctor.setOnClickListener(view -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
@@ -163,7 +164,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.tagTvChemist.setOnClickListener(v -> {
+        activityAddListBinding.tagTvChemist.setOnClickListener(view -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
@@ -176,7 +177,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.tagTvStockist.setOnClickListener(v -> {
+        activityAddListBinding.tagTvStockist.setOnClickListener(view -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
@@ -188,7 +189,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.tagTvUndr.setOnClickListener(v -> {
+        activityAddListBinding.tagTvUndr.setOnClickListener(view -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
@@ -200,7 +201,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.tagTvCip.setOnClickListener(v -> {
+        activityAddListBinding.tagTvCip.setOnClickListener(view -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
@@ -211,7 +212,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.tagTvHospital.setOnClickListener(v -> {
+        activityAddListBinding.tagTvHospital.setOnClickListener(view -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
@@ -223,7 +224,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.btnClear.setOnClickListener(v -> {
+        activityAddListBinding.btnClear.setOnClickListener(view -> {
             if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
                 commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
@@ -837,7 +838,7 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
-        activityAddListBinding.stpAddListNavigation.txtClDone.setOnClickListener(v -> {
+        activityAddListBinding.stpAddListNavigation.txtClDone.setOnClickListener(view -> {
             activityAddListBinding.stpDrawer.closeDrawer(GravityCompat.END);
             UtilityClass.hideKeyboard(this);
             if(!selectedClusterList.isEmpty()) {

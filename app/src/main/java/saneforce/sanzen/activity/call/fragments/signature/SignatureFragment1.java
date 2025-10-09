@@ -32,6 +32,7 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.CallSignCaptureImageList;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSignatureBinding;
@@ -79,19 +80,24 @@ public class SignatureFragment1 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("SignatureFragment", "onCreateView()");
         signatureBinding = FragmentSignatureBinding.inflate(inflater, container, false);
-        View v = signatureBinding.getRoot();
+        View view = signatureBinding.getRoot();
         if (signatureCanvas == null) {
             signatureCanvas = signatureBinding.signLyt;
         }
-        clearButton = v.findViewById(R.id.clr_btn);
-        return v;
+        clearButton = view.findViewById(R.id.clr_btn);
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        clearButton.setOnClickListener(v1 -> clearSignature());
+        clearButton.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                clearSignature();
+            }
+        });
         if (savedInstanceState != null) {
             callSignCaptureImage = savedInstanceState.getParcelableArrayList("SIGNATURE");
 

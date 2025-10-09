@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.ThumbnailTask;
 
 public class SupportClass {

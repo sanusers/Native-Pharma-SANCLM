@@ -18,6 +18,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class Forms_activity extends AppCompatActivity {
@@ -57,8 +58,11 @@ public class Forms_activity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
-        backArrow.setOnClickListener(v -> {
-            getOnBackPressedDispatcher().onBackPressed();
+        backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
         frmlisted_data.clear();

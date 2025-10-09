@@ -43,7 +43,7 @@ public class ProductFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         productsBinding = FragmentProductsBinding.inflate(inflater);
-        View v = productsBinding.getRoot();
+        View view = productsBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         if(DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
@@ -73,7 +73,7 @@ public class ProductFragment extends Fragment {
                 filter(editable.toString());
             }
         });
-        return v;
+        return view;
     }
 
     private void HiddenVisibleFunction() {

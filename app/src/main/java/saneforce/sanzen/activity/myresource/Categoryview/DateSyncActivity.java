@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.myresource.callstatusview.call_statusadapter;
 import saneforce.sanzen.activity.myresource.callstatusview.callstatus_model;
 import saneforce.sanzen.activity.myresource.myresourceadapter.DateSyncAdapter;
@@ -49,7 +50,12 @@ public class DateSyncActivity extends AppCompatActivity {
         onClickListener();
     }
     private void onClickListener(){
-        dateSyncBinding.backArrow.setOnClickListener(v -> {finish();});
+        dateSyncBinding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                finish();
+            }
+        });
     }
     private void dateSyncData(){
         try {

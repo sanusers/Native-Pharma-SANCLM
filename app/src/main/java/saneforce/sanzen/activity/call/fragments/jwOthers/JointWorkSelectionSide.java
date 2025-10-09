@@ -35,6 +35,7 @@ import saneforce.sanzen.activity.call.adapter.jwOthers.JwAdapter;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSelectJwSideBinding;
 import saneforce.sanzen.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
@@ -61,7 +62,7 @@ public class JointWorkSelectionSide extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectJwSideBinding = FragmentSelectJwSideBinding.inflate(inflater);
-        View v = selectJwSideBinding.getRoot();
+        View view = selectJwSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         dcrDocDataDao = roomDB.dcrDocDataDao();
         masterDataDao = roomDB.masterDataDao();
@@ -70,39 +71,48 @@ public class JointWorkSelectionSide extends Fragment {
 
         SetupAdapter();
 
-        selectJwSideBinding.tvDummy.setOnClickListener(view -> {
+        selectJwSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+            }
         });
 
-        selectJwSideBinding.btnOk.setOnClickListener(view -> {
-            for (int j = 0; j < JwList.size(); j++) {
-                if (JwList.get(j).isCheckedItem()) {
-                    callAddedJointList.add(new CallCommonCheckedList(JwList.get(j).getName(), JwList.get(j).getCode()));
-                }
-            }
-
-            int count = callAddedJointList.size();
-            for (int i = 0; i < count; i++) {
-                for (int j = i + 1; j < count; j++) {
-                    if (callAddedJointList.get(i).getCode().equalsIgnoreCase(callAddedJointList.get(j).getCode())) {
-                        callAddedJointList.set(i, new CallCommonCheckedList(callAddedJointList.get(i).getName(), callAddedJointList.get(i).getCode()));
-                        callAddedJointList.remove(j--);
-                        count--;
-                    } else {
-                        callAddedJointList.set(i, new CallCommonCheckedList(callAddedJointList.get(i).getName(), callAddedJointList.get(i).getCode()));
+        selectJwSideBinding.btnOk.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                for (int j = 0; j < JwList.size(); j++) {
+                    if (JwList.get(j).isCheckedItem()) {
+                        callAddedJointList.add(new CallCommonCheckedList(JwList.get(j).getName(), JwList.get(j).getCode()));
                     }
                 }
+
+                int count = callAddedJointList.size();
+                for (int i = 0; i < count; i++) {
+                    for (int j = i + 1; j < count; j++) {
+                        if (callAddedJointList.get(i).getCode().equalsIgnoreCase(callAddedJointList.get(j).getCode())) {
+                            callAddedJointList.set(i, new CallCommonCheckedList(callAddedJointList.get(i).getName(), callAddedJointList.get(i).getCode()));
+                            callAddedJointList.remove(j--);
+                            count--;
+                        } else {
+                            callAddedJointList.set(i, new CallCommonCheckedList(callAddedJointList.get(i).getName(), callAddedJointList.get(i).getCode()));
+                        }
+                    }
+                }
+                selectJwSideBinding.searchJw.setText("");
+                dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+                AssignRecyclerView(getActivity(), context, callAddedJointList, JwList);
             }
-            selectJwSideBinding.searchJw.setText("");
-            dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
-            AssignRecyclerView(getActivity(), context, callAddedJointList, JwList);
         });
 
-        selectJwSideBinding.imgClose.setOnClickListener(view -> {
-            SetupAdapter();
-            selectJwSideBinding.searchJw.setText("");
-            dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectJwSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SetupAdapter();
+                selectJwSideBinding.searchJw.setText("");
+                dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
 
@@ -122,7 +132,7 @@ public class JointWorkSelectionSide extends Fragment {
                 filter(editable.toString());
             }
         });
-        return v;
+        return view;
     }
 
 

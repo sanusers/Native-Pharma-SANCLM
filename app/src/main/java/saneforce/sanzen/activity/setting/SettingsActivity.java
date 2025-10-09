@@ -40,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -85,31 +86,34 @@ public class SettingsActivity extends AppCompatActivity {
             binding.etLicenseKey.setText(SharedPref.getSaveLicenseSetting(getApplicationContext()));
         }
 
-        binding.btnSaveSettings.setOnClickListener(view -> {
+        binding.btnSaveSettings.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 
-            UtilityClass.hideKeyboard(SettingsActivity.this);
-            url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
-            licenseKey = binding.etLicenseKey.getText().toString().trim();
-            deviceId = binding.tvDeviceId.getText().toString();
+                UtilityClass.hideKeyboard(SettingsActivity.this);
+                url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
+                licenseKey = binding.etLicenseKey.getText().toString().trim();
+                deviceId = binding.tvDeviceId.getText().toString();
 
-            if (url.isEmpty()) {
-                binding.etWebUrl.requestFocus();
-                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_url));
-            } else if (licenseKey.isEmpty()) {
-                binding.etLicenseKey.requestFocus();
-                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_license));
-            } else {
-
-                SharedPref.Loginsite(getApplicationContext(), url);
-                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                    if (checkURL(url)) {
-                        Log.i("settings", "onCreate: " + url + "\nLink: " + "https://" + url );
-                        configuration("https://" + url );
-                    } else {
-                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
-                    }
+                if (url.isEmpty()) {
+                    binding.etWebUrl.requestFocus();
+                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_url));
+                } else if (licenseKey.isEmpty()) {
+                    binding.etLicenseKey.requestFocus();
+                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_license));
                 } else {
-                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.no_network));
+
+                    SharedPref.Loginsite(getApplicationContext(), url);
+                    if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                        if (checkURL(url)) {
+                            Log.i("settings", "onCreate: " + url + "\nLink: " + "https://" + url);
+                            configuration("https://" + url);
+                        } else {
+                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                        }
+                    } else {
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.no_network));
+                    }
                 }
             }
         });

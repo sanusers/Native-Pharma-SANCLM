@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentSelectFbSideBinding;
@@ -52,7 +53,7 @@ public class SpecialitySelectionSide extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectSpecialitySideBinding = FragmentSelectFbSideBinding.inflate(inflater);
-        View v = selectSpecialitySideBinding.getRoot();
+        View view = selectSpecialitySideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -60,11 +61,11 @@ public class SpecialitySelectionSide extends Fragment {
         SetupAdapter();
 
         selectSpecialitySideBinding.tvTagHeader.setText(requireContext().getString(R.string.speciality_selection));
-        selectSpecialitySideBinding.tvDummy.setOnClickListener(view -> {
+        selectSpecialitySideBinding.tvDummy.setOnClickListener(v -> {
         });
 
 
-        selectSpecialitySideBinding.imgClose.setOnClickListener(view -> {
+        selectSpecialitySideBinding.imgClose.setOnClickListener(v -> {
             InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(selectSpecialitySideBinding.imgClose.getWindowToken(), 0);
             selectSpecialitySideBinding.searchList.setText("");
@@ -89,7 +90,7 @@ public class SpecialitySelectionSide extends Fragment {
             }
         });
 
-        selectSpecialitySideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectSpecialitySideBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             selectSpecialitySideBinding.searchList.setText("");
             if (list_name.get(i).equalsIgnoreCase("All") && list_code.get(i).isEmpty()) {
                 getRequiredData(requireContext(), list_name.get(i), masterDataDao);
@@ -99,7 +100,7 @@ public class SpecialitySelectionSide extends Fragment {
             previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
             previewBinding.fragmentSelectSpecialistSide.setVisibility(View.GONE);
         });
-        return v;
+        return view;
     }
 
 

@@ -53,6 +53,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
@@ -155,72 +156,74 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             holder.tvStatus.setText(status);
         }
 
-        holder.tvMenu.setOnClickListener(v -> {
-            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
-            popup.inflate(R.menu.call_menu);
-            MenuItem editMenu = popup.getMenu().findItem(R.id.menuEdit);
-            MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
-            editMenu.setVisible(!status.equalsIgnoreCase(Constants.DUPLICATE_CALL));
-            if(offlineDaySubmitDao.getDaySubmit(outBoxCallLists.get(position).getDates()) != null) {
-                editMenu.setVisible(false);
-                deleteMenu.setVisible(false);
-            } else {
-                editMenu.setVisible(true);
-                deleteMenu.setVisible(true);
-            }
-            popup.setOnMenuItemClickListener(menuItem -> {
-                if (menuItem.getItemId() == R.id.menuSync) {
-                    if (UtilityClass.isNetworkAvailable(context)) {
-                        OutBoxCallList outBoxCallList = outBoxCallLists.get(position);
-                        CallAPI(holder.getAbsoluteAdapterPosition(), outBoxCallList, outBoxCallLists.get(position).getJsonData(), outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getSyncCount());
-                    } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
-                    }
-                } else if (menuItem.getItemId() == R.id.menuEdit) {
-                    Intent intent = new Intent(context, DCRCallActivity.class);
-                    DCRCallActivity.clickedLocalDate = outBoxCallLists.get(position).getDates();
-                    String selectedHQ = "", mProds = "",headerno = "",detno = "";
-                    try {
-                        JSONObject dcrDetail = new JSONObject(outBoxCallLists.get(position).getJsonData());
-                        if (dcrDetail != null) {
-                            headerno = dcrDetail.optString("headerno");
-                            detno = dcrDetail.optString("detno");
-                            selectedHQ = dcrDetail.optString("Rsf");
+        holder.tvMenu.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
+                popup.inflate(R.menu.call_menu);
+                MenuItem editMenu = popup.getMenu().findItem(R.id.menuEdit);
+                MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
+                editMenu.setVisible(!status.equalsIgnoreCase(Constants.DUPLICATE_CALL));
+                if (offlineDaySubmitDao.getDaySubmit(outBoxCallLists.get(position).getDates()) != null) {
+                    editMenu.setVisible(false);
+                    deleteMenu.setVisible(false);
+                } else {
+                    editMenu.setVisible(true);
+                    deleteMenu.setVisible(true);
+                }
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    if (menuItem.getItemId() == R.id.menuSync) {
+                        if (UtilityClass.isNetworkAvailable(context)) {
+                            OutBoxCallList outBoxCallList = outBoxCallLists.get(position);
+                            CallAPI(holder.getAbsoluteAdapterPosition(), outBoxCallList, outBoxCallLists.get(position).getJsonData(), outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getSyncCount());
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        }
+                    } else if (menuItem.getItemId() == R.id.menuEdit) {
+                        Intent intent = new Intent(context, DCRCallActivity.class);
+                        DCRCallActivity.clickedLocalDate = outBoxCallLists.get(position).getDates();
+                        String selectedHQ = "", mProds = "", headerno = "", detno = "";
+                        try {
+                            JSONObject dcrDetail = new JSONObject(outBoxCallLists.get(position).getJsonData());
+                            if (dcrDetail != null) {
+                                headerno = dcrDetail.optString("headerno");
+                                detno = dcrDetail.optString("detno");
+                                selectedHQ = dcrDetail.optString("Rsf");
 //                            JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
-                            JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
-                            for (int i = 0; i < drMas.length(); i++) {
-                                JSONObject drObj = drMas.optJSONObject(i);
-                                if (drObj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
-                                    mProds = drObj.optString("MProd");
-                                    break;
+                                JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
+                                for (int i = 0; i < drMas.length(); i++) {
+                                    JSONObject drObj = drMas.optJSONObject(i);
+                                    if (drObj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
+                                        mProds = drObj.optString("MProd");
+                                        break;
+                                    }
                                 }
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    CallActivityCustDetails = new ArrayList<>();
-                    CustList custList = new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, headerno, detno, "", outBoxCallLists.get(position).getJsonData());
-                    custList.setMappedSlides(mProds);
-                    CallActivityCustDetails.add(0, custList);
-                    intent.putExtra(Constants.DETAILING_REQUIRED, "false");
-                    intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_local");
-                    intent.putExtra("remainder_save", "0");
-                    intent.putExtra("hq_code", "" );
+                        CallActivityCustDetails = new ArrayList<>();
+                        CustList custList = new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, headerno, detno, "", outBoxCallLists.get(position).getJsonData());
+                        custList.setMappedSlides(mProds);
+                        CallActivityCustDetails.add(0, custList);
+                        intent.putExtra(Constants.DETAILING_REQUIRED, "false");
+                        intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_local");
+                        intent.putExtra("remainder_save", "0");
+                        intent.putExtra("hq_code", "");
 
-                    context.startActivity(intent);
-                } else if (menuItem.getItemId() == R.id.menuDelete) {
-                    Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                    TextView btn_yes=dialog.findViewById(R.id.btn_yes);
-                    TextView btn_no=dialog.findViewById(R.id.btn_no);
-                    TextView titte=dialog.findViewById(R.id.ed_alert_msg);
-                    titte.setText(R.string.are_you_sure_to_delete);
-                    btn_yes.setOnClickListener(view -> {
+                        context.startActivity(intent);
+                    } else if (menuItem.getItemId() == R.id.menuDelete) {
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                        TextView btn_no = dialog.findViewById(R.id.btn_no);
+                        TextView titte = dialog.findViewById(R.id.ed_alert_msg);
+                        titte.setText(R.string.are_you_sure_to_delete);
+                        btn_yes.setOnClickListener(view1 -> {
 //                        if (UtilityClass.isNetworkAvailable(context) && !status.equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
 //                            dialog.dismiss();
 //                        } else {
@@ -297,15 +300,19 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             }
                             removeAt(position);
 //                        }
-                    });
+                        });
 
-                    btn_no.setOnClickListener(view -> {
-                        dialog.dismiss();
-                    });
-                }
-                return true;
-            });
-            popup.show();
+                        btn_no.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                    return true;
+                });
+                popup.show();
+            }
         });
 
     }

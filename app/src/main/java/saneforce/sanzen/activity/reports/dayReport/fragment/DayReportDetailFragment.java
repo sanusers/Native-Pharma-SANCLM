@@ -38,6 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.fragments.jwOthers.FeedbackSelectionSide;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
@@ -118,51 +119,76 @@ public class DayReportDetailFragment extends Fragment {
             }
         });
 
-        binding.searchClearIcon.setOnClickListener(view -> binding.searchET.setText(""));
-
-        binding.doctor.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                setSelection(binding.doctor);
-                getData("1", Constants.DOCTOR);
+        binding.searchClearIcon.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                binding.searchET.setText("");
             }
         });
 
-        binding.all.setOnClickListener(v -> {
-
-        });
-
-        binding.chemist.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                setSelection(binding.chemist);
-                getData("2", Constants.CHEMIST);
+        binding.doctor.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    setSelection(binding.doctor);
+                    getData("1", Constants.DOCTOR);
+                }
             }
         });
 
-        binding.stockiest.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                setSelection(binding.stockiest);
-                getData("3", Constants.STOCKIEST);
+        binding.all.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
             }
         });
 
-        binding.unDr.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                setSelection(binding.unDr);
-                getData("4", Constants.UNLISTED_DOCTOR);
+        binding.chemist.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    setSelection(binding.chemist);
+                    getData("2", Constants.CHEMIST);
+                }
             }
         });
 
-        binding.cip.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                setSelection(binding.cip);
-                getData("5", Constants.CIP);
+        binding.stockiest.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    setSelection(binding.stockiest);
+                    getData("3", Constants.STOCKIEST);
+                }
             }
         });
 
-        binding.hosp.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                setSelection(binding.hosp);
-                getData("6", Constants.HOSPITAL);
+        binding.unDr.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    setSelection(binding.unDr);
+                    getData("4", Constants.UNLISTED_DOCTOR);
+                }
+            }
+        });
+
+        binding.cip.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    setSelection(binding.cip);
+                    getData("5", Constants.CIP);
+                }
+            }
+        });
+
+        binding.hosp.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    setSelection(binding.hosp);
+                    getData("6", Constants.HOSPITAL);
+                }
             }
         });
 

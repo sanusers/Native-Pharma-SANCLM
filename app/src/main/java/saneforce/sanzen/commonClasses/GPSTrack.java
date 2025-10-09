@@ -30,6 +30,7 @@ import com.google.android.gms.location.Priority;
 
 import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.splash.SplashScreen;
 
@@ -102,10 +103,13 @@ public class GPSTrack implements LocationListener {
                         CommonAlertBox.dialog.dismiss();
                     }
                 }
-                btnOk.setOnClickListener(v -> {
-                    dialog.dismiss();
-                    activity.finishAffinity();
-                    System.exit(0);
+                btnOk.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        dialog.dismiss();
+                        activity.finishAffinity();
+                        System.exit(0);
+                    }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -205,10 +209,13 @@ public class GPSTrack implements LocationListener {
                                     CommonAlertBox.dialog.dismiss();
                                 }
                             }
-                            btnOk.setOnClickListener(v -> {
-                                dialog.dismiss();
-                                activity.finishAffinity();
-                                System.exit(0);
+                            btnOk.setOnClickListener(new SafeClickListener() {
+                                @Override
+                                public void onSafeClick(View view) {
+                                    dialog.dismiss();
+                                    activity.finishAffinity();
+                                    System.exit(0);
+                                }
                             });
                         } catch (Exception e) {
                             e.printStackTrace();

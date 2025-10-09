@@ -45,6 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -79,21 +80,26 @@ public class DrSelectionSide extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         drSelectionSideBinding = FragmentDrSelectionSideBinding.inflate(inflater);
-        View v = drSelectionSideBinding.getRoot();
+        View view = drSelectionSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         SetDrAdapter();
 
-        drSelectionSideBinding.tvDummy.setOnClickListener(view -> {
+        drSelectionSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
-        drSelectionSideBinding.imgClose.setOnClickListener(v1 -> {
-            hideKeyboard();
-            drSelectionSideBinding.searchList.setText("");
-            drSelectionSideBinding.selectListView.scrollToPosition(0);
-            previewBinding.fragmentSelectDrSide.setVisibility(View.GONE);
+        drSelectionSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                hideKeyboard();
+                drSelectionSideBinding.searchList.setText("");
+                drSelectionSideBinding.selectListView.scrollToPosition(0);
+                previewBinding.fragmentSelectDrSide.setVisibility(View.GONE);
+            }
         });
 
 
@@ -117,7 +123,7 @@ public class DrSelectionSide extends Fragment {
                 }
             }
         });
-        return v;
+        return view;
     }
 
 
@@ -349,17 +355,20 @@ public class DrSelectionSide extends Fragment {
             }
 
 
-            holder.tvName.setOnClickListener(v -> {
-                if (SelectedTab.equalsIgnoreCase("Spec")) {
-                    specialityPreviewBinding.tvSelectDoctor.setText(String.format("%s - %s", callDrList.get(position).getName(), callDrList.get(position).getSpecialist()));
-                    getSelectedSpec(context, callDrList.get(position).getSpecialistCode(), callDrList.get(position).getSpecialist(), masterDataDao);
-                } else if (SelectedTab.equalsIgnoreCase("Matrix")) {
-                    brandMatrixBinding.tvSelectDoctor.setText(callDrList.get(position).getName());
-                    getSelectedMatrix(context, callDrList.get(position).getMappedBrands(), callDrList.get(position).getMappedSlides(), masterDataDao);
+            holder.tvName.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    if (SelectedTab.equalsIgnoreCase("Spec")) {
+                        specialityPreviewBinding.tvSelectDoctor.setText(String.format("%s - %s", callDrList.get(position).getName(), callDrList.get(position).getSpecialist()));
+                        getSelectedSpec(context, callDrList.get(position).getSpecialistCode(), callDrList.get(position).getSpecialist(), masterDataDao);
+                    } else if (SelectedTab.equalsIgnoreCase("Matrix")) {
+                        brandMatrixBinding.tvSelectDoctor.setText(callDrList.get(position).getName());
+                        getSelectedMatrix(context, callDrList.get(position).getMappedBrands(), callDrList.get(position).getMappedSlides(), masterDataDao);
+                    }
+                    drSelectionSideBinding.searchList.setText("");
+                    drSelectionSideBinding.selectListView.scrollToPosition(0);
+                    previewBinding.fragmentSelectDrSide.setVisibility(View.GONE);
                 }
-                drSelectionSideBinding.searchList.setText("");
-                drSelectionSideBinding.selectListView.scrollToPosition(0);
-                previewBinding.fragmentSelectDrSide.setVisibility(View.GONE);
             });
         }
 

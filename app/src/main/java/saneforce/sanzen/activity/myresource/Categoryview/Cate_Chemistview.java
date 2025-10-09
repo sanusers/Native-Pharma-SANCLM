@@ -33,9 +33,9 @@ public class Cate_Chemistview extends Fragment {
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = ActivityCateChemistviewBinding.inflate(inflater);
-        View v = binding.getRoot();
+        View view = binding.getRoot();
         initialization();
-        return v;
+        return view;
     }
 
     private void initialization() {

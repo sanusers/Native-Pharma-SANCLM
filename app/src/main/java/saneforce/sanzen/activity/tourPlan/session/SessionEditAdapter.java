@@ -50,6 +50,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
@@ -1021,11 +1022,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             });
 
             holder.remarks.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
+                public boolean onTouch(View view, MotionEvent event) {
                     if (holder.remarks.hasFocus()) {
-                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        view.getParent().requestDisallowInterceptTouchEvent(true);
                         if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
-                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            view.getParent().requestDisallowInterceptTouchEvent(false);
                             return true;
                         }
                     }
@@ -2011,11 +2012,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             });
 
             holder.remarks.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
+                public boolean onTouch(View view, MotionEvent event) {
                     if (holder.remarks.hasFocus()) {
-                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        view.getParent().requestDisallowInterceptTouchEvent(true);
                         if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
-                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            view.getParent().requestDisallowInterceptTouchEvent(false);
                             return true;
                         }
                     }

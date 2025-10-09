@@ -23,6 +23,7 @@ import com.google.android.play.core.install.model.UpdateAvailability;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 
 public class InAppUpdate {
@@ -196,8 +197,11 @@ public class InAppUpdate {
         Button installBtn = installUpdateDialog.findViewById(R.id.install_btn);
         installUpdateDialog.show();
 
-        installBtn.setOnClickListener(view -> {
-            installUpdateDialog.dismiss();
+        installBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                installUpdateDialog.dismiss();
+            }
         });
     }
 
@@ -210,8 +214,11 @@ public class InAppUpdate {
     private void popupSnackbarForCompleteUpdate(View rootView) {
         Snackbar snackbar = Snackbar.make(rootView, "New app is ready!", Snackbar.LENGTH_INDEFINITE);
 
-        snackbar.setAction("Install", view -> {
-            startInstalling();
+        snackbar.setAction("Install", new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                startInstalling();
+            }
         });
 
         snackbar.setActionTextColor(activity.getResources().getColor(R.color.green_60));

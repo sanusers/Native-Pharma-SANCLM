@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.URLEncoder;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.ActivityQuizAssertViewBinding;
 import saneforce.sanzen.storage.SharedPref;
@@ -59,13 +60,19 @@ public class QuizAssertViewActivity extends AppCompatActivity {
 
         setUpViews();
 
-        binding.close.setOnClickListener(view -> {
-            setResult(RESULT_OK);
-            finish();
+        binding.close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                setResult(RESULT_OK);
+                finish();
+            }
         });
 
-        binding.retry.setOnClickListener(view -> {
-            setUpViews();
+        binding.retry.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                setUpViews();
+            }
         });
 
     }

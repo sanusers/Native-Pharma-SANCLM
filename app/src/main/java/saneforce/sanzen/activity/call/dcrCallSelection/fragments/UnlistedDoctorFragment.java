@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.UnlistedDoctorAddition;
@@ -911,6 +912,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.UnlistedDoctorAddition;
@@ -962,14 +964,14 @@ public class UnlistedDoctorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.v("fragment", "---" + "unlisted");
-        View v = inflater.inflate(R.layout.fragment_unlisted_doctor, container, false);
-        rv_list = v.findViewById(R.id.rv_cust_list_selection);
-        ed_search = v.findViewById(R.id.search_cust);
-        iv_filter = v.findViewById(R.id.iv_filter);
-        tv_hqName = v.findViewById(R.id.tv_hq_name);
-        btn_add=v.findViewById(R.id.add_unlst);
-        tv_filterCount = v.findViewById(R.id.tv_filter_count);
-        noULDoctor = v.findViewById(R.id.no_unlisted_doctor);
+        View view = inflater.inflate(R.layout.fragment_unlisted_doctor, container, false);
+        rv_list = view.findViewById(R.id.rv_cust_list_selection);
+        ed_search = view.findViewById(R.id.search_cust);
+        iv_filter = view.findViewById(R.id.iv_filter);
+        tv_hqName = view.findViewById(R.id.tv_hq_name);
+        btn_add=view.findViewById(R.id.add_unlst);
+        tv_filterCount = view.findViewById(R.id.tv_filter_count);
+        noULDoctor = view.findViewById(R.id.no_unlisted_doctor);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
@@ -986,15 +988,24 @@ public class UnlistedDoctorFragment extends Fragment {
         } else {
             btn_add.setVisibility(View.GONE);
         }
-        iv_filter.setOnClickListener(view -> {
-            CustomizeFiltered();
+        iv_filter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                CustomizeFiltered();
+            }
         });
-        btn_add.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), UnlistedDoctorAddition.class);
-            activityResultLauncher.launch(intent);
+        btn_add.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(getContext(), UnlistedDoctorAddition.class);
+                activityResultLauncher.launch(intent);
+            }
         });
-        iv_filter.setOnClickListener(view -> {
-            CustomizeFiltered();
+        iv_filter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                CustomizeFiltered();
+            }
         });
 
         ed_search.addTextChangedListener(new TextWatcher() {
@@ -1015,7 +1026,7 @@ public class UnlistedDoctorFragment extends Fragment {
         });
 
         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-            tv_hqName.setOnClickListener(view -> {
+            tv_hqName.setOnClickListener(v -> {
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                     ArrayList<String> list = new ArrayList<>();
@@ -1086,7 +1097,7 @@ public class UnlistedDoctorFragment extends Fragment {
             });
         }
 
-        return v;
+        return view;
     }
 
     private void getRequiredData() {
@@ -1294,9 +1305,16 @@ public class UnlistedDoctorFragment extends Fragment {
         }
 
         constraintLayout=dialogFilter.findViewById(R.id.constraint_btns);
-        img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
+        img_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogFilter.dismiss();
+            }
+        });
 
-        btn_clear.setOnClickListener(view15 -> {
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
             specialityCode = "";
             territoryCode = "";
             categoryCode = "";
@@ -1313,148 +1331,166 @@ public class UnlistedDoctorFragment extends Fragment {
             tvTerritory.setHint(R.string.territory);
             tvCate.setHint(R.string.category);
             tvClass.setHint(R.string.class_filter);
+            }
         });
         tvSpec.setText(specialityName);
         tvTerritory.setText(territoryName);
         tvCate.setText(categoryName);
         tvClass.setText(className);
 
-        tv_add_condition.setOnClickListener(view13 -> {
-            if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
-                tvClass.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.GONE);
-            } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE) {
-                tvTerritory.setVisibility(View.VISIBLE);
-                img_del.setVisibility(View.VISIBLE);
+        tv_add_condition.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
+                    tvClass.setVisibility(View.VISIBLE);
+                    tv_add_condition.setVisibility(View.GONE);
+                } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE) {
+                    tvTerritory.setVisibility(View.VISIBLE);
+                    img_del.setVisibility(View.VISIBLE);
+                }
             }
         });
 
-        img_del.setOnClickListener(view14 -> {
-            if(!classCode.isEmpty()) {
-                classCode = "";
-                className = "";
-            }
-            else if(!territoryCode.isEmpty()) {
-                territoryCode = "";
-                territoryName = "";
-            }
-            if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvClass.getVisibility() == View.INVISIBLE) {
-                tvTerritory.setVisibility(View.GONE);
-                img_del.setVisibility(View.GONE);
-                tvTerritory.setHint(R.string.territory);
-            } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
-                tvClass.setVisibility(View.INVISIBLE);
-                tv_add_condition.setVisibility(View.VISIBLE);
-                tvClass.setHint(R.string.class_filter);
-            }
-        });
-
-        tvSpec.setOnClickListener(view -> {
-            lv_class.setVisibility(View.GONE);
-            lv_cate.setVisibility(View.GONE);
-            lv_terr.setVisibility(View.GONE);
-            if (lv_spec.getVisibility() == View.VISIBLE) {
-                lv_spec.setVisibility(View.GONE);
-                constraintLayout.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.VISIBLE);
-            } else {
-                getFilterList("Speciality");
-
-                FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                    specialityCode = clickedItem.getCode();
-                    specialityName = clickedItem.getName();
-                    tvSpec.setText(clickedItem.getName());
-                    lv_spec.setVisibility(View.GONE);
+        img_del.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!classCode.isEmpty()) {
+                    classCode = "";
+                    className = "";
+                } else if (!territoryCode.isEmpty()) {
+                    territoryCode = "";
+                    territoryName = "";
+                }
+                if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvClass.getVisibility() == View.INVISIBLE) {
+                    tvTerritory.setVisibility(View.GONE);
+                    img_del.setVisibility(View.GONE);
+                    tvTerritory.setHint(R.string.territory);
+                } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
+                    tvClass.setVisibility(View.INVISIBLE);
                     tv_add_condition.setVisibility(View.VISIBLE);
-                    constraintLayout.setVisibility(View.VISIBLE);
-                });
-                lv_spec.setAdapter(arrayAdapter);
-                lv_spec.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.INVISIBLE);
-                constraintLayout.setVisibility(View.INVISIBLE);
+                    tvClass.setHint(R.string.class_filter);
+                }
             }
         });
 
-        tvCate.setOnClickListener(view -> {
-            lv_class.setVisibility(View.GONE);
-            lv_spec.setVisibility(View.GONE);
-            lv_terr.setVisibility(View.GONE);
-            if (lv_cate.getVisibility() == View.VISIBLE) {
-                lv_cate.setVisibility(View.GONE);
-                constraintLayout.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.VISIBLE);
-            } else {
-                getFilterList("Category");
-                FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                    categoryCode = clickedItem.getCode();
-                    categoryName = clickedItem.getName();
-                    tvCate.setText(clickedItem.getName());
-                    lv_cate.setVisibility(View.GONE);
-                    tv_add_condition.setVisibility(View.VISIBLE);
-                    constraintLayout.setVisibility(View.VISIBLE);
-                });
-                lv_cate.setAdapter(arrayAdapter);
-                lv_cate.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.INVISIBLE);
-                constraintLayout.setVisibility(View.INVISIBLE);
-            }
-
-        });
-
-        tvTerritory.setOnClickListener(view -> {
-            lv_class.setVisibility(View.GONE);
-            lv_cate.setVisibility(View.GONE);
-            lv_spec.setVisibility(View.GONE);
-            if (lv_terr.getVisibility() == View.VISIBLE) {
-                lv_terr.setVisibility(View.GONE);
-                constraintLayout.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.VISIBLE);
-            } else {
-                getFilterList("Territory");
-                FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                    territoryCode = clickedItem.getCode();
-                    territoryName = clickedItem.getName();
-                    tvTerritory.setText(clickedItem.getName());
-                    lv_terr.setVisibility(View.GONE);
-                    tv_add_condition.setVisibility(View.VISIBLE);
-                    constraintLayout.setVisibility(View.VISIBLE);
-                });
-                lv_terr.setAdapter(arrayAdapter);
-                lv_terr.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.INVISIBLE);
-                constraintLayout.setVisibility(View.INVISIBLE);
-            }
-
-        });
-
-        tvClass.setOnClickListener(view -> {
-            lv_spec.setVisibility(View.GONE);
-            lv_cate.setVisibility(View.GONE);
-            lv_terr.setVisibility(View.GONE);
-            if (lv_class.getVisibility() == View.VISIBLE) {
+        tvSpec.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
                 lv_class.setVisibility(View.GONE);
-                constraintLayout.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.VISIBLE);
-            } else {
-                getFilterList("Class");
-                FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                    classCode = clickedItem.getCode();
-                    className = clickedItem.getName();
-                    tvClass.setText(clickedItem.getName());
-                    lv_class.setVisibility(View.GONE);
-                    tv_add_condition.setVisibility(View.VISIBLE);
+                lv_cate.setVisibility(View.GONE);
+                lv_terr.setVisibility(View.GONE);
+                if (lv_spec.getVisibility() == View.VISIBLE) {
+                    lv_spec.setVisibility(View.GONE);
                     constraintLayout.setVisibility(View.VISIBLE);
-                });
-                lv_class.setAdapter(arrayAdapter);
-                lv_class.setVisibility(View.VISIBLE);
-                tv_add_condition.setVisibility(View.INVISIBLE);
-                constraintLayout.setVisibility(View.INVISIBLE);
-            }
+                    tv_add_condition.setVisibility(View.VISIBLE);
+                } else {
+                    getFilterList("Speciality");
 
+                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                        specialityCode = clickedItem.getCode();
+                        specialityName = clickedItem.getName();
+                        tvSpec.setText(clickedItem.getName());
+                        lv_spec.setVisibility(View.GONE);
+                        tv_add_condition.setVisibility(View.VISIBLE);
+                        constraintLayout.setVisibility(View.VISIBLE);
+                    });
+                    lv_spec.setAdapter(arrayAdapter);
+                    lv_spec.setVisibility(View.VISIBLE);
+                    tv_add_condition.setVisibility(View.INVISIBLE);
+                    constraintLayout.setVisibility(View.INVISIBLE);
+                }
+            }
         });
 
-        btn_apply.setOnClickListener(view1 -> {
-            Filtered();
+        tvCate.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                lv_class.setVisibility(View.GONE);
+                lv_spec.setVisibility(View.GONE);
+                lv_terr.setVisibility(View.GONE);
+                if (lv_cate.getVisibility() == View.VISIBLE) {
+                    lv_cate.setVisibility(View.GONE);
+                    constraintLayout.setVisibility(View.VISIBLE);
+                    tv_add_condition.setVisibility(View.VISIBLE);
+                } else {
+                    getFilterList("Category");
+                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                        categoryCode = clickedItem.getCode();
+                        categoryName = clickedItem.getName();
+                        tvCate.setText(clickedItem.getName());
+                        lv_cate.setVisibility(View.GONE);
+                        tv_add_condition.setVisibility(View.VISIBLE);
+                        constraintLayout.setVisibility(View.VISIBLE);
+                    });
+                    lv_cate.setAdapter(arrayAdapter);
+                    lv_cate.setVisibility(View.VISIBLE);
+                    tv_add_condition.setVisibility(View.INVISIBLE);
+                    constraintLayout.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        tvTerritory.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                lv_class.setVisibility(View.GONE);
+                lv_cate.setVisibility(View.GONE);
+                lv_spec.setVisibility(View.GONE);
+                if (lv_terr.getVisibility() == View.VISIBLE) {
+                    lv_terr.setVisibility(View.GONE);
+                    constraintLayout.setVisibility(View.VISIBLE);
+                    tv_add_condition.setVisibility(View.VISIBLE);
+                } else {
+                    getFilterList("Territory");
+                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                        territoryCode = clickedItem.getCode();
+                        territoryName = clickedItem.getName();
+                        tvTerritory.setText(clickedItem.getName());
+                        lv_terr.setVisibility(View.GONE);
+                        tv_add_condition.setVisibility(View.VISIBLE);
+                        constraintLayout.setVisibility(View.VISIBLE);
+                    });
+                    lv_terr.setAdapter(arrayAdapter);
+                    lv_terr.setVisibility(View.VISIBLE);
+                    tv_add_condition.setVisibility(View.INVISIBLE);
+                    constraintLayout.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        tvClass.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                lv_spec.setVisibility(View.GONE);
+                lv_cate.setVisibility(View.GONE);
+                lv_terr.setVisibility(View.GONE);
+                if (lv_class.getVisibility() == View.VISIBLE) {
+                    lv_class.setVisibility(View.GONE);
+                    constraintLayout.setVisibility(View.VISIBLE);
+                    tv_add_condition.setVisibility(View.VISIBLE);
+                } else {
+                    getFilterList("Class");
+                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                        classCode = clickedItem.getCode();
+                        className = clickedItem.getName();
+                        tvClass.setText(clickedItem.getName());
+                        lv_class.setVisibility(View.GONE);
+                        tv_add_condition.setVisibility(View.VISIBLE);
+                        constraintLayout.setVisibility(View.VISIBLE);
+                    });
+                    lv_class.setAdapter(arrayAdapter);
+                    lv_class.setVisibility(View.VISIBLE);
+                    tv_add_condition.setVisibility(View.INVISIBLE);
+                    constraintLayout.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        btn_apply.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Filtered();
+            }
         });
 
     }

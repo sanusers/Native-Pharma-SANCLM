@@ -22,6 +22,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.ReportsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -44,16 +45,16 @@ public class ApprovedCallsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_approved_calls, container, false);
+        View view = inflater.inflate(R.layout.fragment_approved_calls, container, false);
 
-        recyclerView = v.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
 //        ActivityVisitMonitorBinding.inflate(inflater.)
 
 
 
-        return v;
+        return view;
 
     }
 

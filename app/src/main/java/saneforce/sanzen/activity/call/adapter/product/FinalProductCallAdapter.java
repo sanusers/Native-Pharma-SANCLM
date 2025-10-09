@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
@@ -255,20 +256,28 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             }
         });
 
-        holder.tv_prd_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, productListArrayList.get(position).getName()));
-
-        holder.ed_samplesQty.setOnClickListener(view -> {
-            if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(holder.ed_samplesQty.getWindowToken(), 0);
-                holder.ed_samplesQty.setShowSoftInputOnFocus(false);
-                holder.ed_samplesQty.setCursorVisible(false);
-                holder.ed_samplesQty.setFocusableInTouchMode(false);
-                holder.ed_samplesQty.setFocusable(false);
+        holder.tv_prd_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, productListArrayList.get(position).getName());
             }
         });
 
-        holder.ed_samplesQty.setOnTouchListener((v, event) -> {
+        holder.ed_samplesQty.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(holder.ed_samplesQty.getWindowToken(), 0);
+                    holder.ed_samplesQty.setShowSoftInputOnFocus(false);
+                    holder.ed_samplesQty.setCursorVisible(false);
+                    holder.ed_samplesQty.setFocusableInTouchMode(false);
+                    holder.ed_samplesQty.setFocusable(false);
+                }
+            }
+        });
+
+        holder.ed_samplesQty.setOnTouchListener((view, event) -> {
             if (SampleValidation.equalsIgnoreCase("1")) {
                 if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
                     if (SamQtyRestriction.equalsIgnoreCase("0")) {
@@ -380,14 +389,17 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         });
 
 
-        holder.ed_rxQty.setOnClickListener(view -> {
-            if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(holder.ed_rxQty.getWindowToken(), 0);
-                holder.ed_rxQty.setShowSoftInputOnFocus(false);
-                holder.ed_rxQty.setCursorVisible(false);
-                holder.ed_rxQty.setFocusableInTouchMode(false);
-                holder.ed_rxQty.setFocusable(false);
+        holder.ed_rxQty.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(holder.ed_rxQty.getWindowToken(), 0);
+                    holder.ed_rxQty.setShowSoftInputOnFocus(false);
+                    holder.ed_rxQty.setCursorVisible(false);
+                    holder.ed_rxQty.setFocusableInTouchMode(false);
+                    holder.ed_rxQty.setFocusable(false);
+                }
             }
         });
 
@@ -490,32 +502,35 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             }
         }
 
-        holder.img_del_prd.setOnClickListener(view -> {
-            try {
-                for (int j = 0; j < callCommonCheckedListArrayList.size(); j++) {
-                    if (callCommonCheckedListArrayList.get(j).getCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
-                        callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), callCommonCheckedListArrayList.get(j).getCode(), callCommonCheckedListArrayList.get(j).getStock_balance(), false, callCommonCheckedListArrayList.get(j).getCategory(), callCommonCheckedListArrayList.get(j).getCategoryExtra(), callCommonCheckedListArrayList.get(j).getPriorityCodes()));
-                        break;
-                    }
-                }
-
-                for (int i = 0; i < StockSample.size(); i++) {
-                    int currentBalance;
-                    if (StockSample.get(i).getStockCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
-                        if (productListArrayList.get(position).getSample_qty().equalsIgnoreCase("0") || productListArrayList.get(position).getSample_qty().isEmpty()) {
-                            currentBalance = Integer.parseInt(StockSample.get(i).getCurrentStock());
-                        } else {
-                            currentBalance = Integer.parseInt(StockSample.get(i).getCurrentStock()) + Integer.parseInt(productListArrayList.get(position).getSample_qty());
+        holder.img_del_prd.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    for (int j = 0; j < callCommonCheckedListArrayList.size(); j++) {
+                        if (callCommonCheckedListArrayList.get(j).getCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
+                            callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), callCommonCheckedListArrayList.get(j).getCode(), callCommonCheckedListArrayList.get(j).getStock_balance(), false, callCommonCheckedListArrayList.get(j).getCategory(), callCommonCheckedListArrayList.get(j).getCategoryExtra(), callCommonCheckedListArrayList.get(j).getPriorityCodes()));
+                            break;
                         }
-                        StockSample.set(i, new CallCommonCheckedList(StockSample.get(i).getStockCode(), StockSample.get(i).getActualStock(), String.valueOf(currentBalance)));
                     }
-                }
 
-                checkProductListAdapter = new CheckProductListAdapter(activity, context, callCommonCheckedListArrayList, productListArrayList);
-                commonUtilsMethods.recycleTestWithDivider(ProductFragment.productsBinding.rvCheckDataList);
-                ProductFragment.productsBinding.rvCheckDataList.setAdapter(checkProductListAdapter);
-                removeAt(position);
-            } catch (Exception ignored) {
+                    for (int i = 0; i < StockSample.size(); i++) {
+                        int currentBalance;
+                        if (StockSample.get(i).getStockCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
+                            if (productListArrayList.get(position).getSample_qty().equalsIgnoreCase("0") || productListArrayList.get(position).getSample_qty().isEmpty()) {
+                                currentBalance = Integer.parseInt(StockSample.get(i).getCurrentStock());
+                            } else {
+                                currentBalance = Integer.parseInt(StockSample.get(i).getCurrentStock()) + Integer.parseInt(productListArrayList.get(position).getSample_qty());
+                            }
+                            StockSample.set(i, new CallCommonCheckedList(StockSample.get(i).getStockCode(), StockSample.get(i).getActualStock(), String.valueOf(currentBalance)));
+                        }
+                    }
+
+                    checkProductListAdapter = new CheckProductListAdapter(activity, context, callCommonCheckedListArrayList, productListArrayList);
+                    commonUtilsMethods.recycleTestWithDivider(ProductFragment.productsBinding.rvCheckDataList);
+                    ProductFragment.productsBinding.rvCheckDataList.setAdapter(checkProductListAdapter);
+                    removeAt(position);
+                } catch (Exception ignored) {
+                }
             }
         });
     }

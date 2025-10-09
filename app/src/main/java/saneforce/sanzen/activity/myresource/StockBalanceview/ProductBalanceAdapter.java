@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class ProductBalanceAdapter  extends   RecyclerView.Adapter<ProductBalanceAdapter.ViewHolder> {
     Context context;

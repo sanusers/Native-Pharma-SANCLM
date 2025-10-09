@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityWebReportsBinding;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -47,7 +48,12 @@ public class ReportWebActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
-        binding.backArrow.setOnClickListener(view -> onBackPressed());
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                onBackPressed();
+            }
+        });
         progressDialog = CommonUtilsMethods.createProgressDialog(this);
         PopulateWebView();
     }

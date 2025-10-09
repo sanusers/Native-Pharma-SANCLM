@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
 import saneforce.sanzen.utility.TimeUtils;
 
@@ -64,17 +65,26 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         }else {
             holder.imgView.setVisibility(View.GONE);
         }
-        holder.imgView.setOnClickListener(v -> {
-            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " +TimeUtils.timeConverter(callDetailingLists.get(position).getStartTime())  +"<br><br>"+ " End Time  : " +TimeUtils.timeConverter(callDetailingLists.get(position).getEndTime()));
-            showTimelinePopUp(v,initialGuideTex);
+        holder.imgView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + TimeUtils.timeConverter(callDetailingLists.get(position).getStartTime()) + "<br><br>" + " End Time  : " + TimeUtils.timeConverter(callDetailingLists.get(position).getEndTime()));
+                showTimelinePopUp(view, initialGuideTex);
+            }
         });
 
-        holder.TxtFeedback.setOnClickListener(v -> {
-            popUp(holder.TxtFeedback,callDetailingLists.get(position).getFeedbk());
+        holder.TxtFeedback.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                popUp(holder.TxtFeedback, callDetailingLists.get(position).getFeedbk());
+            }
         });
 
-        holder.txtbrandName.setOnClickListener(v -> {
-            popUp(holder.txtbrandName,callDetailingLists.get(position).getProduct_Name());
+        holder.txtbrandName.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                popUp(holder.txtbrandName, callDetailingLists.get(position).getProduct_Name());
+            }
         });
     }
 
@@ -134,7 +144,7 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
             popupWindow.dismiss();
         });
     }
-    private void popUp(View v, String name) {
+    private void popUp(View view, String name) {
         PopupWindow popup = new PopupWindow(context);
         View layout = LayoutInflater.from(context).inflate(R.layout.popup_text, null);
         popup.setContentView(layout);
@@ -142,6 +152,6 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         TextView tv_name = layout.findViewById(R.id.tv_name);
         tv_name.setText(name);
         popup.setOutsideTouchable(true);
-        popup.showAsDropDown(v);
+        popup.showAsDropDown(view);
     }
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.fragment.DayReportFragment;
 import saneforce.sanzen.databinding.ActivityReportFragContainerBinding;
@@ -38,7 +39,12 @@ public class ReportFragContainerActivity extends AppCompatActivity {
         title = binding.title;
         initialization();
 
-        binding.backArrow.setOnClickListener(view -> onBackPressed());
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                onBackPressed();
+            }
+        });
 
     }
 

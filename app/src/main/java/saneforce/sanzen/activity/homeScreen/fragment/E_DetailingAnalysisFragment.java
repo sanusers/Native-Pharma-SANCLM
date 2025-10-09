@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
@@ -33,15 +34,15 @@ public class E_DetailingAnalysisFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.e_detailing_analysis, container, false);
+        View view = inflater.inflate(R.layout.e_detailing_analysis, container, false);
         Log.v("fragment", "Edetailing");
-        doc_layout = v.findViewById(R.id.ll_doc_child);
-        che_layout = v.findViewById(R.id.ll_che_child);
-        stokiest_layout = v.findViewById(R.id.ll_stock_child);
-        unlistered_layout = v.findViewById(R.id.ll_unli_child);
-        ll_analyis_layout = v.findViewById(R.id.ll_analyis_layout);
-        ll_grap_layout = v.findViewById(R.id.ll_grap_layout);
-        e_detailing_layout = v.findViewById(R.id.e_detailing_layout);
+        doc_layout = view.findViewById(R.id.ll_doc_child);
+        che_layout = view.findViewById(R.id.ll_che_child);
+        stokiest_layout = view.findViewById(R.id.ll_stock_child);
+        unlistered_layout = view.findViewById(R.id.ll_unli_child);
+        ll_analyis_layout = view.findViewById(R.id.ll_analyis_layout);
+        ll_grap_layout = view.findViewById(R.id.ll_grap_layout);
+        e_detailing_layout = view.findViewById(R.id.e_detailing_layout);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
@@ -66,7 +67,7 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
         ll_analyis_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View view, MotionEvent event) {
 
                 HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
                 return false;
@@ -76,14 +77,14 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
         ll_grap_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View view, MotionEvent event) {
                 HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
                 return false;
             }
         });
 
 
-        return v;
+        return view;
     }
     public void onDestroyView() {
 

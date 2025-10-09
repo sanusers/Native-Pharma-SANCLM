@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
 
 public class Forms_adapter extends RecyclerView.Adapter<Forms_adapter.ViewHolder> {
@@ -40,10 +41,13 @@ public class Forms_adapter extends RecyclerView.Adapter<Forms_adapter.ViewHolder
         holder. flview_name.setText(frm_listed.getForms_name());
         holder.Frm_imgs.setImageResource(frm_listed.getViewlist());
 
-        holder.list_resource.setOnClickListener(v -> {
-            if(frm_listed.getForms_name().equals("Holiday / Weekly off")){
-                Intent l = new Intent(context, weekoff_viewscreen.class);
-                context.startActivity(l);
+        holder.list_resource.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (frm_listed.getForms_name().equals("Holiday / Weekly off")) {
+                    Intent l = new Intent(context, weekoff_viewscreen.class);
+                    context.startActivity(l);
+                }
             }
         });
 

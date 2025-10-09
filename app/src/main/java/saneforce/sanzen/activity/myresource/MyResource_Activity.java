@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.myresource.myresourcemodel.MyResourceInterface;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -109,9 +110,12 @@ public class MyResource_Activity extends AppCompatActivity {
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString("Origin");
         }
-        binding.backArrow.setOnClickListener(v -> {
-            UtilityClass.hideKeyboard(this);
-            getOnBackPressedDispatcher().onBackPressed();
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                UtilityClass.hideKeyboard(MyResource_Activity.this);
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
         Log.d("div_name", SharedPref.getDesigCode(this) + "--" + SharedPref.getDesig(this));
         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
@@ -119,15 +123,21 @@ public class MyResource_Activity extends AppCompatActivity {
             binding.hqHead.setText(SharedPref.getHqName(MyResource_Activity.this));
         }
 
-        binding.hqView.setOnClickListener(v -> {
-            syn_hq();
+        binding.hqView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                syn_hq();
+            }
         });
         Resource_list(SharedPref.getHqCode(this));
 
-        close_sideview.setOnClickListener(v -> {
-            binding.drawerLayout.closeDrawer(GravityCompat.END);
-            et_Custsearch.getText().clear();
-            UtilityClass.hideKeyboard(this);
+        close_sideview.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                binding.drawerLayout.closeDrawer(GravityCompat.END);
+                et_Custsearch.getText().clear();
+                UtilityClass.hideKeyboard(MyResource_Activity.this);
+            }
         });
 
         et_Custsearch.addTextChangedListener(new TextWatcher() {

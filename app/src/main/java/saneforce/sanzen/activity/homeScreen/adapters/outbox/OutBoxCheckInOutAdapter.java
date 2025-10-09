@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
 
 public class OutBoxCheckInOutAdapter extends RecyclerView.Adapter<OutBoxCheckInOutAdapter.ViewHolder> {

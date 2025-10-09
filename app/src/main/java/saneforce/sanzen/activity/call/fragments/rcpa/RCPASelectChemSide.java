@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.map.custSelection.CustList;
@@ -54,7 +55,7 @@ public class RCPASelectChemSide extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectChemistSideBinding = FragmentSelectChemistSideBinding.inflate(inflater);
-        View v = selectChemistSideBinding.getRoot();
+        View view = selectChemistSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -62,12 +63,17 @@ public class RCPASelectChemSide extends Fragment {
         AddChemistData();
 
 
-        selectChemistSideBinding.tvDummy.setOnClickListener(view -> {
+        selectChemistSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
-        selectChemistSideBinding.imgClose.setOnClickListener(view -> {
-            dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectChemistSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectChemistSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -86,7 +92,7 @@ public class RCPASelectChemSide extends Fragment {
                 filterChe(editable.toString());
             }
         });
-        return v;
+        return view;
     }
 
     private void AddChemistData() {

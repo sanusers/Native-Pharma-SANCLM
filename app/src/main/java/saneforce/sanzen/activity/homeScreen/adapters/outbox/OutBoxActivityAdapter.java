@@ -38,6 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -105,48 +106,57 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
             holder.tvStatus.setText(status);
         }
 
-        holder.tvMenu.setOnClickListener(v -> {
-            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
-            popup.inflate(R.menu.call_menu);
-            MenuItem editMenu = popup.getMenu().findItem(R.id.menuEdit);
-            MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
-            editMenu.setVisible(false);
-            deleteMenu.setVisible(offlineDaySubmitDao.getDaySubmit(activityModelClassList.get(position).getActivityDate()) == null);
-            popup.setOnMenuItemClickListener(menuItem -> {
-                if (menuItem.getItemId() == R.id.menuSync) {
-                    if (UtilityClass.isNetworkAvailable(context)) {
-                        ActivityModelClass activityModelClass = activityModelClassList.get(position);
-                        CallAPI(holder.getAbsoluteAdapterPosition(), activityModelClass);
-                    } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+        holder.tvMenu.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
+                popup.inflate(R.menu.call_menu);
+                MenuItem editMenu = popup.getMenu().findItem(R.id.menuEdit);
+                MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
+                editMenu.setVisible(false);
+                deleteMenu.setVisible(offlineDaySubmitDao.getDaySubmit(activityModelClassList.get(position).getActivityDate()) == null);
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    if (menuItem.getItemId() == R.id.menuSync) {
+                        if (UtilityClass.isNetworkAvailable(context)) {
+                            ActivityModelClass activityModelClass = activityModelClassList.get(position);
+                            CallAPI(holder.getAbsoluteAdapterPosition(), activityModelClass);
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        }
+                    } else if (menuItem.getItemId() == R.id.menuDelete) {
+
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                        TextView btn_no = dialog.findViewById(R.id.btn_no);
+                        TextView titte = dialog.findViewById(R.id.ed_alert_msg);
+                        titte.setText(R.string.are_you_sure_to_delete);
+
+                        btn_yes.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                activityOfflineDataDao.deleteOfflineActivity(activityModelClassList.get(position).getId());
+                                activityUploadDataDao.deleteUploadActivity(activityModelClassList.get(position).getId());
+                                dialog.dismiss();
+                                removeAt(position);
+                            }
+                        });
+
+                        btn_no.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
                     }
-                } else if (menuItem.getItemId() == R.id.menuDelete) {
-
-                    Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                    TextView btn_yes=dialog.findViewById(R.id.btn_yes);
-                    TextView btn_no=dialog.findViewById(R.id.btn_no);
-                    TextView titte=dialog.findViewById(R.id.ed_alert_msg);
-                    titte.setText(R.string.are_you_sure_to_delete);
-
-                    btn_yes.setOnClickListener(view -> {
-                        activityOfflineDataDao.deleteOfflineActivity(activityModelClassList.get(position).getId());
-                        activityUploadDataDao.deleteUploadActivity(activityModelClassList.get(position).getId());
-                        dialog.dismiss();
-                        removeAt(position);
-                    });
-
-                    btn_no.setOnClickListener(view -> {
-                        dialog.dismiss();
-                    });
-                }
-                return true;
-            });
-            popup.show();
+                    return true;
+                });
+                popup.show();
+            }
         });
 
     }

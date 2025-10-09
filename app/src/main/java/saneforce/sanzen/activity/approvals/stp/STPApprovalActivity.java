@@ -36,6 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
@@ -108,14 +109,27 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
 
         getRequiredData();
         CallSTPListApi();
-        stpApprovalBinding.ivBack.setOnClickListener(view -> {
-            Intent intent = new Intent(STPApprovalActivity.this, ApprovalsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        stpApprovalBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(STPApprovalActivity.this, ApprovalsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
         });
 
-        stpApprovalBinding.btnApproved.setOnClickListener(v -> tpApproval());
-        stpApprovalBinding.btnReject.setOnClickListener(v -> DisplayDialog());
+        stpApprovalBinding.btnApproved.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                tpApproval();
+            }
+        });
+        stpApprovalBinding.btnReject.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                DisplayDialog();
+            }
+        });
 
         stpApprovalBinding.searchStp.addTextChangedListener(new TextWatcher() {
             @Override
@@ -365,21 +379,30 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
         Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
         Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
         ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
-        btn_cancel.setOnClickListener(view1 -> {
-            ed_reason.setText("");
-            dialogReject.dismiss();
+        btn_cancel.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ed_reason.setText("");
+                dialogReject.dismiss();
+            }
         });
 
-        iv_close.setOnClickListener(view12 -> {
-            ed_reason.setText("");
-            dialogReject.dismiss();
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ed_reason.setText("");
+                dialogReject.dismiss();
+            }
         });
 
-        btn_reject.setOnClickListener(view13 -> {
-            if(!TextUtils.isEmpty(ed_reason.getText().toString())) {
-                stpReject(ed_reason.getText().toString());
-            }else {
-                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+        btn_reject.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
+                    stpReject(ed_reason.getText().toString());
+                } else {
+                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+                }
             }
         });
         dialogReject.show();
