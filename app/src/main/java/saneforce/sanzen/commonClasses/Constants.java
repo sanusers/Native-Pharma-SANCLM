@@ -13,7 +13,7 @@ public class Constants {
     //----------------------------------------------------
     //Master sync table key names
     public static final String DOCTOR = "Doctor_";
-    public static final String DOCTOR_GEO = "Listed Doctor Geo";
+//    public static final String DOCTOR_GEO = "Listed Doctor Geo";
 //    public static final String DOCTOR_MAS = "Listed Doctor Master";
     public static final String SPECIALITY = "Speciality";
     public static final String QUALIFICATION = "Qualification";
@@ -25,13 +25,13 @@ public class Constants {
     public static final String FEEDBACK = "Feedback";
     public static final String UNLISTED_DOCTOR = "Unlisted_Doctor_";
 //    public static final String UNLISTED_DOCTOR_MAS = "Unlisted Doctor Master";
-    public static final String UNLISTED_DOCTOR_GEO = "Unlisted Doctor Geo";
+//    public static final String UNLISTED_DOCTOR_GEO = "Unlisted Doctor Geo";
     public static final String CHEMIST = "Chemist_";
 //    public static final String CHEMIST_MAS = "Chemist Master";
-    public static final String CHEMIST_GEO = "Chemist Geo";
+//    public static final String CHEMIST_GEO = "Chemist Geo";
     public static final String STOCKIEST = "Stockiest_";
 //    public static final String STOCKIEST_MAS = "Stockiest Master";
-    public static final String STOCKIEST_GEO = "Stockiest Geo";
+//    public static final String STOCKIEST_GEO = "Stockiest Geo";
     public static final String HOSPITAL = "Hospital_";
     public static final String CIP = "Cip_";
     public static final String PROFILE = "Profile";

@@ -1008,6 +1008,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+/*
     public void updateMasterData(String selectedTab, String json) {
         System.out.println("Enters updateMasterData");
         try {
@@ -1024,7 +1025,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             String tableKey = "";
             switch (selectedTab) {
 
-               /* case "D":
+               */
+/* case "D":
                     JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + taggedHQ).getMasterSyncDataJsonArray();
                     JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj = new HashMap<>();
@@ -1173,9 +1175,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     masterJsonArray = new JSONArray(docObj_Unlist.values());
                     addTaggedCustomer(SharedPref.getUNLcap(MapsActivity.this));
-                    break;*/
+                    break;*//*
 
-                          case "D":
+
+                    case "D":
                     masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
                     addTaggedCustomer(SharedPref.getDrCap(MapsActivity.this));
                     tableKey = Constants.DOCTOR + taggedHQ;
@@ -1447,6 +1450,142 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             e.printStackTrace();
         }
     }
+*/
+private void updateMasterData(String selectedTab, String json) {
+    try {
+        JSONArray masterJsonArray = new JSONArray();
+        JSONObject tagJsonObject = new JSONObject(json);
+        String custCode = tagJsonObject.optString("cuscode");
+        String custName = tagJsonObject.optString("cust_name");
+        String latitude = tagJsonObject.optString("lat");
+        String longitude = tagJsonObject.optString("long");
+        String address = tagJsonObject.optString("addr");
+        String imageName = tagJsonObject.optString("image_name");
+        String taggedHQ = tagJsonObject.optString("tagged_cust_HQ");
+        String tableKey = "";
+        switch (selectedTab){
+            case "D":
+                masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
+                addTaggedCustomer(SharedPref.getDrCap(MapsActivity.this));
+                tableKey = Constants.DOCTOR + taggedHQ;
+                break;
+            case "C":
+                masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + taggedHQ).getMasterSyncDataJsonArray();
+                addTaggedCustomer(SharedPref.getChmCap(MapsActivity.this));
+                tableKey = Constants.CHEMIST + taggedHQ;
+                break;
+            case "S":
+                masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + taggedHQ).getMasterSyncDataJsonArray();
+                addTaggedCustomer(SharedPref.getStkCap(MapsActivity.this));
+                tableKey = Constants.STOCKIEST + taggedHQ;
+                break;
+            case "U":
+                masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
+                addTaggedCustomer(SharedPref.getUNLcap(MapsActivity.this));
+                tableKey = Constants.UNLISTED_DOCTOR + taggedHQ;
+                break;
+            case "H":
+                masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + taggedHQ).getMasterSyncDataJsonArray();
+                addTaggedCustomer(SharedPref.getHospCaption(MapsActivity.this));
+                tableKey = Constants.HOSPITAL + taggedHQ;
+                break;
+            case "CIP":
+                masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CIP + taggedHQ).getMasterSyncDataJsonArray();
+                addTaggedCustomer(SharedPref.getCipCaption(MapsActivity.this));
+                tableKey = Constants.CIP + taggedHQ;
+                break;
+        }
+        ArrayList<JSONObject> custJsonObjects = new ArrayList<>();
+        JSONArray newMasterJsonArray = new JSONArray();
+        int index = -1;
+        for (int i = 0; i<masterJsonArray.length(); i++) {
+            JSONObject jsonObject = masterJsonArray.optJSONObject(i);
+            String masterCustCode = jsonObject.optString("Code");
+            if(masterCustCode.equalsIgnoreCase(custCode)) {
+                custJsonObjects.add(jsonObject);
+                if(index == -1) {
+                    index = i;
+                }
+            }else {
+                newMasterJsonArray.put(jsonObject);
+            }
+        }
+        if(!custJsonObjects.isEmpty()) {
+            String tagCount = custJsonObjects.get(0).optString("GEOTagCnt");
+            int taggedCount = 0, taggedSize = custJsonObjects.size();
+            if(!tagCount.isEmpty()) {
+                taggedCount = Integer.parseInt(tagCount);
+            }
+            JSONObject jsonObject = new JSONObject(custJsonObjects.get(0).toString());
+            jsonObject.put("GEOTagCnt", "1");
+            if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                jsonObject.put("cust_status", "1");
+            } else {
+                jsonObject.put("cust_status", "0");
+            }
+            switch (selectedTab) {
+                case "D":
+                    jsonObject.put("Lat", latitude);
+                    jsonObject.put("Long", longitude);
+                    jsonObject.put("Addrs", address);
+                    break;
+                case "C":
+                    jsonObject.put("lat", latitude);
+                    jsonObject.put("long", longitude);
+                    jsonObject.put("addrs", address);
+                    break;
+                case "S":
+                    jsonObject.put("lat", latitude);
+                    jsonObject.put("long", longitude);
+                    jsonObject.put("addrs", address);
+                    break;
+                case "U":
+                    jsonObject.put("lat", latitude);
+                    jsonObject.put("long", longitude);
+                    jsonObject.put("addr", address);
+                    break;
+                case "H":
+                    jsonObject.put("Lat", latitude);
+                    jsonObject.put("Long", longitude);
+                    jsonObject.put("Addrs", address);
+                    break;
+                case "CIP":
+                    jsonObject.put("Lat", latitude);
+                    jsonObject.put("Long", longitude);
+                    jsonObject.put("Addrs", address);
+                    break;
+            }
+            if(!imageName.isEmpty()) {
+                jsonObject.put("img_name", imageName);
+            } else {
+                jsonObject.put("img_name", "noimage.png");
+            }
+            if(taggedCount == 0 && taggedSize == 1) {
+                custJsonObjects.remove(0);
+                custJsonObjects.add(0, jsonObject);
+            } else {
+//                    jsonObject.put("GEOTagCnt", String.valueOf(taggedSize + 1));
+//                    jsonObject.put("uRwID", String.valueOf(custJsonObjects.size()));
+//                    for (int i = 0; i<custJsonObjects.size(); i++) {
+//                        JSONObject jsonObject1 = custJsonObjects.get(i);
+//                        jsonObject1.put("GEOTagCnt", String.valueOf(taggedSize + 1));
+//                        jsonObject1.put("uRwID", String.valueOf(i+1));
+//                        custJsonObjects.remove(i);
+//                        custJsonObjects.add(i, jsonObject1);
+//                    }
+                custJsonObjects.add(0, jsonObject);
+            }
+            Log.d("testtag", "updateMasterData: " + Arrays.toString(custJsonObjects.toArray()));
+            JSONArray finalMasterJsonArray = insertJsonObjects(newMasterJsonArray, custJsonObjects, index);
+            Log.e("testtag", "updateMasterData: " + finalMasterJsonArray);
+            masterDataDao.saveMasterSyncData(new MasterDataTable(tableKey, finalMasterJsonArray.toString(), 1));
+            showToast(selectedTab);
+            finish();
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 
     private void addTaggedCustomer(String caption) {
         try {

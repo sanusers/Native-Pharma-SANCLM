@@ -25,6 +25,7 @@ import java.util.logging.Handler;
 import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.storage.SharedPref;
@@ -34,6 +35,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
     ArrayList<EventCaptureModelClass>  List;
     Context context;
 
+    ProgressDialog progressDialog;
     public EventDetailsCapture(ArrayList<EventCaptureModelClass> list, Context context) {
         List = list;
         this.context = context;
@@ -55,10 +57,11 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
          holder.Imageview.setOnClickListener(new SafeClickListener() {
              @Override
              public void onSafeClick(View view) {
-
-                 ProgressDialog progressDialog = new ProgressDialog(context);
+                 progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                 Log.e("TAG", "onSafeClick: "+"111" );
+                 progressDialog.show();
+//                 ProgressDialog progressDialog = new ProgressDialog(context);
                  if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
-                     progressDialog.show();
                      AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                      View view1 = LayoutInflater.from(context).inflate(R.layout.eventimageitem, null);
                      dialog.setView(view1);

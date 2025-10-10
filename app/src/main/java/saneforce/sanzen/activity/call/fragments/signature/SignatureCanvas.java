@@ -124,23 +124,27 @@ public class SignatureCanvas extends View {
     public String getSignature() {
 
         imageName = DCRCallActivity.CallActivityCustDetails.get(0).getCode();
-        this.imageName = "Sign" + SfCode + "_" + imageName + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
+        if(imageName != null) {
+            this.imageName = "Sign" + SfCode + "_" + imageName + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
 
-        File file = null;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            file = new File(getContext().getExternalFilesDir(null) + "/Signature/");
-        } else {
-            Log.d("Storage", "getSignaturePath: Storage not mounted");
+            File file = null;
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                file = new File(getContext().getExternalFilesDir(null) + "/Signature/");
+            } else {
+                Log.d("Storage", "getSignaturePath: Storage not mounted");
+            }
+            if (file != null && !file.exists() && !file.mkdirs()) {
+                Log.e("SignatureFlow", "Directory Created.");
+            } else if (file != null) {
+                Log.e("SignatureFlow", "Directory Creation failed or already exists.");
+            } else {
+                Log.e("SignatureFlow", "File object is null.");
+            }
+
+            File destinationFile = new File(file, imageName);
+            destinationFilePath = destinationFile.getAbsolutePath();
+            return destinationFilePath;
         }
-        if (file != null && !file.exists() && !file.mkdirs()) {
-            Log.e("SignatureFlow", "Directory Created.");
-        } else if (file != null) {
-            Log.e("SignatureFlow", "Directory Creation failed or already exists.");
-        } else {
-            Log.e("SignatureFlow", "File object is null.");
-        }
-        File destinationFile = new File(file, imageName);
-        destinationFilePath = destinationFile.getAbsolutePath();
         return destinationFilePath;
     }
 

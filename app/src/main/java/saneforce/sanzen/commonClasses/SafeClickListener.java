@@ -4,7 +4,7 @@ import android.util.Log;
 import android.view.View;
 
 public abstract class SafeClickListener implements View.OnClickListener {
-    private static final long MIN_CLICK_INTERVAL = 1000; // in ms
+    private static final long MIN_CLICK_INTERVAL = 5000; // in ms
     private long lastClickTime;
 
     public abstract void onSafeClick(View view);

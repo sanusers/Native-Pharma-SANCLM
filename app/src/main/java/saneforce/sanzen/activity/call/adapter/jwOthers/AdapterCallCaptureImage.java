@@ -202,6 +202,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         holder.img_view.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
+                Log.e("TAG", "onSafeClick: "+"on safe click " );
                 progressBar = CommonUtilsMethods.createProgressDialog(context);
                 progressBar.show();
                 if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
@@ -216,9 +217,10 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                             break;
                         case "edit_online":
                             if (UtilityClass.isNetworkAvailable(context)) {
+                                progressBar.show();
                                 if (callCaptureImageList.isNewlyAdded()) {
                                     showImage(callCaptureImageList.getImg_view());
-                                    progressBar.dismiss();
+
                                 } else {
                                     ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
                                 }
@@ -317,7 +319,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     holder.img_view.setImageBitmap(bitmap);
                     holder.img_view.setVisibility(View.VISIBLE);
                     showImage(bitmap);
-                    progressBar.dismiss();
+//                    progressBar.dismiss();
                 } else {
                     Log.d("bitmap image", "Failed to load image, bitmap is null.");
                     holder.img_view.setVisibility(View.GONE);
@@ -336,6 +338,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + systemImgName).fitCenter().into(imageView);
         builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
         builder.show();
+        progressBar.dismiss();
     }
 
     @Override
@@ -352,6 +355,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
             imageView.setImageBitmap(img_view);
             builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
             builder.show();
+            progressBar.dismiss();
     }
 
     public void removeAt(int position) {

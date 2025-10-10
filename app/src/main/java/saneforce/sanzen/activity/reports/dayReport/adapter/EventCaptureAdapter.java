@@ -54,6 +54,9 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
         holder.Remarks.setText(EventList.get(position).getRemarks());
 
         if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+            if(holder.progressBar != null) {
+                holder.progressBar.setVisibility(View.VISIBLE);
+            }
 
             String imageName = EventList.get(position).getEventimg().replace("photos/", "");
             String fileName = imageName;
@@ -75,7 +78,7 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
                         } else {
                             Log.d("bitmap image", "Failed to load image, bitmap is null.");
                             if(holder.progressBar != null) {
-                                holder.progressBar.setVisibility(View.VISIBLE);
+                                holder.progressBar.setVisibility(View.GONE);
                             }
                         }
                     }

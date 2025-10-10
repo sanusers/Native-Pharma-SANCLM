@@ -709,7 +709,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.e("test", "res : " + response.body());
-                                progressDialog.dismiss();
                                 try {
                                     if(response.body() != null && response.isSuccessful()) {
                                         JSONArray jsonArray = new JSONArray();
@@ -721,6 +720,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                             if(EventCaptureData.size()>0) {
                                                 setEventCaptureData(EventCaptureData);
                                             }else {
+                                                progressDialog.dismiss();
                                                 commonUtilsMethods.showToastMessage(context, " Event Capture Not Available");
                                             }
                                         }
@@ -756,11 +756,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         View view = LayoutInflater.from(context).inflate(R.layout.dayreport_eventcapture_image_layout, null);
         dialog.setView(view);
         RecyclerView recyclerView = view.findViewById(R.id.recyelerview);
-        EventCaptureAdapter adapter = new EventCaptureAdapter(context, List);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        EventCaptureAdapter adapter = new EventCaptureAdapter(context, List);
         recyclerView.setAdapter(adapter);
         AlertDialog dialog1 = dialog.create();
         dialog1.show();
+        progressDialog.dismiss();
     }
 
     public void SignatureAPICall(int position){
@@ -799,6 +800,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                             if(SignatureData.size()>0){
                                                 setSignatureData(SignatureData);
                                             }else {
+                                                progressDialog.dismiss();
                                                 commonUtilsMethods.showToastMessage(context, " Signature Not Available");
                                             }
 

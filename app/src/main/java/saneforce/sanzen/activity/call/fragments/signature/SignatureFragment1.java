@@ -122,7 +122,7 @@ public class SignatureFragment1 extends Fragment {
                 break;
 
             case "edit_online":
-                if ((!imageName.isEmpty() || !filePath.isEmpty())) {
+                if ((!imageName.isEmpty()  || !filePath.isEmpty() )) {
                     if (UtilityClass.isNetworkAvailable(context)) {
                         if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                             loadImageFromS3(imageName);
@@ -223,7 +223,9 @@ public class SignatureFragment1 extends Fragment {
                         try (FileOutputStream fos = new FileOutputStream(file)) {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                             Log.d("S3ImageLoad", "Image stored locally at: " + file.getAbsolutePath());
-                            callSignCaptureImage.add(0,new CallSignCaptureImageList(file.getAbsolutePath(),fileName));
+                            if(!imageName.equalsIgnoreCase("null")) {
+                                callSignCaptureImage.add(0, new CallSignCaptureImageList(file.getAbsolutePath(), fileName));
+                            }
                         } catch (Exception e) {
                             Log.e("S3ImageLoad", "Error saving image locally: " + e.getMessage());
                         }
@@ -258,7 +260,9 @@ public class SignatureFragment1 extends Fragment {
                                 Log.d("GlideImageLoad", "Image successfully loaded from Glide: " + fileName);
                                 try (FileOutputStream fos = new FileOutputStream(file)) {
                                     bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-                                    callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
+                                     if(!imageName.equalsIgnoreCase("null")) {
+                                        callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
+                                    }
                                     Log.d("GlideImageLoad", "Image stored locally at: " + file.getAbsolutePath());
                                 } catch (Exception e) {
                                     Log.e("GlideImageLoad", "Error saving image locally: " + e.getMessage());

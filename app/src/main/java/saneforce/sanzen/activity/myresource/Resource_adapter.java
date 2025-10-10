@@ -101,8 +101,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
 
                     switch (app_adapt.getVal_pos()) {
-
-
                         case ("1"):
                             rec_val = "D";
                             MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR + synhqval1);
@@ -113,45 +111,215 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             if (jsonArray.length() > 0) {
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    if (!docval.equals(jsonObject.getString("Code"))) {
-                                        docval = jsonObject.getString("Code");
-                                        String custom_name = (jsonObject.getString("Name"));
-                                        String category = (jsonObject.getString("Category"));
-                                        String CategoryCode = (jsonObject.getString("CategoryCode"));
-                                        String SpecialtyCode = (jsonObject.getString("SpecialtyCode"));
-                                        String specialty = (jsonObject.getString("Specialty"));
-                                        String cluster = (jsonObject.getString("Town_Name"));
-                                        String Lat = (jsonObject.getString("Lat"));
-                                        String Long = (jsonObject.getString("Long"));
-                                        String Addrs = (jsonObject.getString("ResAddr"));
-                                        String Mobile = (jsonObject.getString("Mobile"));
-                                        String Phone = (jsonObject.getString("Phone"));
+                                    if (!docval.equals(jsonObject.optString("Code"))) {
+                                        docval = jsonObject.optString("Code");
+                                        String custom_name = (jsonObject.optString("Name"));
+                                        String category = (jsonObject.optString("Category"));
+                                        String CategoryCode = (jsonObject.optString("CategoryCode"));
+                                        String SpecialtyCode = (jsonObject.optString("SpecialtyCode"));
+                                        String specialty = (jsonObject.optString("Specialty"));
+                                        String cluster = (jsonObject.optString("Town_Name"));
+                                        String Lat = (jsonObject.optString("Lat"));
+                                        String Long = (jsonObject.optString("Long"));
+                                        String Addrs = (jsonObject.optString("ResAddr"));
+                                        String Mobile = (jsonObject.optString("Mobile"));
+                                        String Phone = (jsonObject.optString("Phone"));
                                         JSONObject dobObject = jsonObject.getJSONObject("DctrDOB");
-                                        String DOBDate = (dobObject.getString("date"));
+                                        String DOBDate = (dobObject.optString("date"));
                                         String DOB = DOBDate.split(" ")[0];
                                         JSONObject dowObject = jsonObject.getJSONObject("DctrDOW");
-                                        String DOWDate = (dowObject.getString("date"));
+                                        String DOWDate = (dowObject.optString("date"));
                                         String DOW = DOWDate.split(" ")[0];
-                                        String DrEmail = (jsonObject.getString("DrEmail"));
-                                        String Qual = (jsonObject.getString("DrDesig"));
-                                        String Qual_code = (jsonObject.getString("DocQuacode"));
-                                        String ListedDr_Sex = (jsonObject.getString("ListedDr_Sex"));
-                                        String Town_Code = (jsonObject.getString("Town_Code"));
-                                        String Town_Name = (jsonObject.getString("Town_Name"));
-                                        String Tag_count = (jsonObject.getString("GEOTagCnt"));
-                                        String Max_count = (jsonObject.getString("Geototal"));
-                                        String Class = (jsonObject.getString("Doc_Class_ShortName"));
+                                        String DrEmail = (jsonObject.optString("DrEmail"));
+                                        String Qual = (jsonObject.optString("DrDesig"));
+                                        String Qual_code = (jsonObject.optString("DocQuacode"));
+                                        String ListedDr_Sex = (jsonObject.optString("ListedDr_Sex"));
+                                        String Town_Code = (jsonObject.optString("Town_Code"));
+                                        String Town_Name = (jsonObject.optString("Town_Name"));
+                                        String Tag_count = (jsonObject.optString("GEOTagCnt"));
+                                        String Max_count = (jsonObject.optString("MaxGeoMap"));
+                                        String Class=(jsonObject.optString("Doc_Class_ShortName"));
                                         Log.e("dcr_doctorTown_Name", Town_Name);
 
-                                        listresource.add(new Resourcemodel_class(docval, custom_name, cluster, category, CategoryCode, Class, SpecialtyCode, specialty, Lat, Long, docval, MyResource_Activity.Key, Qual, Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D", "", "", "", "", "", "", "", Tag_count, Max_count, Qual_code));
+                                        listresource.add(new Resourcemodel_class(docval, custom_name, cluster, category, CategoryCode, Class, SpecialtyCode, specialty, Lat, Long, docval, MyResource_Activity.Key, Qual, Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D", "", "", "", "", "", "", "",Tag_count,Max_count,Qual_code));
+
 
                                     }
                                 }
                             }
                             MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
                             search_list.addAll(listresource);
-                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+                            myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                             break;
+
+                        case ("2"):
+                            rec_val = "C";
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST + synhqval1);
+                            JSONArray jsonchemist = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + synhqval1).getMasterSyncDataJsonArray();
+                            String chmval = "";
+                            Valcount = "";
+                            if (jsonchemist.length() > 0) {
+                                for (int i = 0; i < jsonchemist.length(); i++) {
+                                    JSONObject jsonObject = jsonchemist.getJSONObject(i);
+                                    if (!chmval.equals(jsonObject.optString("Code"))) {
+                                        chmval = jsonObject.optString("Code");
+                                        String custom_name = (jsonObject.optString("Name"));
+                                        String Code = (jsonObject.optString("Code"));
+                                        String cluster = (jsonObject.optString("Town_Name"));
+                                        String Catcode=(jsonObject.optString("Chm_cat"));
+                                        String Lat = (jsonObject.optString("lat"));
+                                        String Long = (jsonObject.optString("long"));
+                                        String Tag_count = (jsonObject.optString("GEOTagCnt"));
+                                        String Max_count = (jsonObject.optString("MaxGeoMap"));
+                                        String Chemists_Mobile = (jsonObject.optString("Chemists_Mobile"));
+                                        String Chemists_Phone = (jsonObject.optString("Chemists_Phone"));
+                                        String Chemists_Email = (jsonObject.optString("Chemists_Email"));
+                                        String addrs = (jsonObject.optString("Addr"));
+
+
+                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", Catcode, "", "", "", Lat, Long, chmval, MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C", "", "", "", "", "", "", "",Tag_count,Max_count,""));
+
+                                    }
+                                }
+                            }
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
+                            break;
+
+                        case ("3"):
+                            rec_val = "S";
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST + synhqval1);
+                            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + synhqval1).getMasterSyncDataJsonArray();
+                            String strck_val = "";
+                            Valcount = "";
+                            if (jsonstock.length() > 0) {
+                                for (int i = 0; i < jsonstock.length(); i++) {
+                                    JSONObject jsonObject = jsonstock.getJSONObject(i);
+                                    if (!strck_val.equals(jsonObject.optString("Code"))) {
+                                        strck_val = jsonObject.optString("Code");
+                                        String Code = (jsonObject.optString("Code"));
+                                        String custom_name = (jsonObject.optString("Name"));
+                                        String cluster = (jsonObject.optString("Town_Name"));
+                                        String Lat = (jsonObject.optString("lat"));
+                                        String Long = (jsonObject.optString("long"));
+                                        String Tag_count = (jsonObject.optString("GEOTagCnt"));
+                                        String Max_count = (jsonObject.optString("MaxGeoMap"));
+
+                                        String Stockiest_Phone = (jsonObject.optString("Stockiest_Phone"));
+                                        String Stockiest_Mobile = (jsonObject.optString("Stockiest_Mobile"));
+                                        String Stockiest_Email = (jsonObject.optString("Stockiest_Email"));
+                                        String Addr = (jsonObject.optString("Addr"));
+
+
+                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, strck_val, MyResource_Activity.Key, "", Addr, "", "", Stockiest_Mobile, Stockiest_Phone, Stockiest_Email, "", "", "", "S", "", "", "", "", "", "", "",Tag_count,Max_count,""));
+
+
+                                    }
+                                }
+                            }
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
+                            break;
+
+                        case ("4"):
+                            rec_val = "U";
+                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + synhqval1);
+                            JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + synhqval1).getMasterSyncDataJsonArray();
+                            String unlist_val = "";
+                            Valcount = "";
+                            if (jsonunlisted.length() > 0) {
+                                for (int i = 0; i < jsonunlisted.length(); i++) {
+                                    JSONObject jsonObject = jsonunlisted.getJSONObject(i);
+
+                                    if (!unlist_val.equals(jsonObject.optString("Code"))) {
+                                        unlist_val = jsonObject.optString("Code");
+                                        String Code = jsonObject.optString("Code");
+                                        String custom_name = (jsonObject.optString("Name"));
+                                        String cluster = (jsonObject.optString("Town_Name"));
+                                        String category = (jsonObject.optString("CategoryName"));
+                                        String specialty = (jsonObject.optString("SpecialtyName"));
+                                        String Lat = (jsonObject.optString("lat"));
+                                        String Long = (jsonObject.optString("long"));
+                                        String quacode = (jsonObject.optString("Qual"));
+//                                    String DOB = (jsonObject.optString("DOB"));
+//                                    String DOW = (jsonObject.optString("DOW"));
+                                        JSONObject dobObject = jsonObject.getJSONObject("UnlstDOB");
+                                        String DOBDate = (dobObject.optString("date"));
+                                        String DOB = DOBDate.split(" ")[0];
+                                        JSONObject dowObject = jsonObject.getJSONObject("UnlstDOW");
+                                        String DOWDate = (dowObject.optString("date"));
+                                        String DOW = DOWDate.split(" ")[0];
+                                        String Category = (jsonObject.optString("Category"));
+                                        String Tag_count = (jsonObject.optString("GEOTagCnt"));
+                                        String Max_count = (jsonObject.optString("MaxGeoMap"));
+
+                                        String Specialty = (jsonObject.optString("Specialty"));
+                                        String Qual = (jsonObject.optString("Doc_QuaName"));
+                                        String Email = (jsonObject.optString("Email"));
+                                        String Mobile = (jsonObject.optString("Mobile"));
+                                        String Phone = (jsonObject.optString("Phone"));
+                                        String addr = (jsonObject.optString("Addrs"));
+
+                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, category, Category, "", Specialty, specialty, Lat, Long, unlist_val, MyResource_Activity.Key, Qual, addr, DOB, DOW, Mobile, Phone, Email, "", "", cluster, "U", "", "", "", "", "", "", "", Tag_count,Max_count,quacode));
+                                    }
+                                }
+                            }
+                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                            search_list.addAll(listresource);
+                            myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
+                            break;
+
+//                    /*    case ("1"):
+//                            rec_val = "D";
+//                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR + synhqval1);
+//                            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
+//                            Valcount = "";
+//                            String docval = "";
+//                            pos_check = "";
+//                            if (jsonArray.length() > 0) {
+//                                for (int i = 0; i < jsonArray.length(); i++) {
+//                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                                    if (!docval.equals(jsonObject.getString("Code"))) {
+//                                        docval = jsonObject.getString("Code");
+//                                        String custom_name = (jsonObject.getString("Name"));
+//                                        String category = (jsonObject.getString("Category"));
+//                                        String CategoryCode = (jsonObject.getString("CategoryCode"));
+//                                        String SpecialtyCode = (jsonObject.getString("SpecialtyCode"));
+//                                        String specialty = (jsonObject.getString("Specialty"));
+//                                        String cluster = (jsonObject.getString("Town_Name"));
+//                                        String Lat = (jsonObject.getString("Lat"));
+//                                        String Long = (jsonObject.getString("Long"));
+//                                        String Addrs = (jsonObject.getString("ResAddr"));
+//                                        String Mobile = (jsonObject.getString("Mobile"));
+//                                        String Phone = (jsonObject.getString("Phone"));
+//                                        JSONObject dobObject = jsonObject.getJSONObject("DctrDOB");
+//                                        String DOBDate = (dobObject.getString("date"));
+//                                        String DOB = DOBDate.split(" ")[0];
+//                                        JSONObject dowObject = jsonObject.getJSONObject("DctrDOW");
+//                                        String DOWDate = (dowObject.getString("date"));
+//                                        String DOW = DOWDate.split(" ")[0];
+//                                        String DrEmail = (jsonObject.getString("DrEmail"));
+//                                        String Qual = (jsonObject.getString("DrDesig"));
+//                                        String Qual_code = (jsonObject.getString("DocQuacode"));
+//                                        String ListedDr_Sex = (jsonObject.getString("ListedDr_Sex"));
+//                                        String Town_Code = (jsonObject.getString("Town_Code"));
+//                                        String Town_Name = (jsonObject.getString("Town_Name"));
+//                                        String Tag_count = (jsonObject.getString("GEOTagCnt"));
+//                                        String Max_count = (jsonObject.getString("Geototal"));
+//                                        String Class = (jsonObject.getString("Doc_Class_ShortName"));
+//                                        Log.e("dcr_doctorTown_Name", Town_Name);
+//
+//                                        listresource.add(new Resourcemodel_class(docval, custom_name, cluster, category, CategoryCode, Class, SpecialtyCode, specialty, Lat, Long, docval, MyResource_Activity.Key, Qual, Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D", "", "", "", "", "", "", "", Tag_count, Max_count, Qual_code));
+//
+//                                    }
+//                                }
+//                            }
+//                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+//                            search_list.addAll(listresource);
+//                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+//                            break;*/
                     /*case ("1"):
                         rec_val = "D";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + synhqval1);
@@ -240,40 +408,40 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
                         break;
 */
-                        case ("2"):
-                            rec_val = "C";
-                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST + synhqval1);
-                            JSONArray jsonchemist = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + synhqval1).getMasterSyncDataJsonArray();
-                            String chmval = "";
-                            Valcount = "";
-                            if (jsonchemist.length() > 0) {
-                                for (int i = 0; i < jsonchemist.length(); i++) {
-                                    JSONObject jsonObject = jsonchemist.getJSONObject(i);
-                                    if (!chmval.equals(jsonObject.getString("Code"))) {
-                                        chmval = jsonObject.getString("Code");
-                                        String custom_name = (jsonObject.getString("Name"));
-                                        String Code = (jsonObject.getString("Code"));
-                                        String cluster = (jsonObject.getString("Town_Name"));
-                                        String Catcode = (jsonObject.getString("Chm_cat"));
-                                        String Lat = (jsonObject.getString("lat"));
-                                        String Long = (jsonObject.getString("long"));
-                                        String Tag_count = (jsonObject.getString("GEOTagCnt"));
-                                        String Max_count = (jsonObject.getString("Geototal"));
-                                        String Chemists_Mobile = (jsonObject.getString("Chemists_Mobile"));
-                                        String Chemists_Phone = (jsonObject.getString("Chemists_Phone"));
-                                        String Chemists_Email = (jsonObject.getString("Chemists_Email"));
-                                        String addrs = (jsonObject.getString("Addr"));
-
-
-                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", Catcode, "", "", "", Lat, Long, chmval, MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C", "", "", "", "", "", "", "", Tag_count, Max_count, ""));
-
-                                    }
-                                }
-                            }
-                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                            search_list.addAll(listresource);
-                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                            break;
+// /*                       case ("2"):
+//                            rec_val = "C";
+//                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST + synhqval1);
+//                            JSONArray jsonchemist = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + synhqval1).getMasterSyncDataJsonArray();
+//                            String chmval = "";
+//                            Valcount = "";
+//                            if (jsonchemist.length() > 0) {
+//                                for (int i = 0; i < jsonchemist.length(); i++) {
+//                                    JSONObject jsonObject = jsonchemist.getJSONObject(i);
+//                                    if (!chmval.equals(jsonObject.getString("Code"))) {
+//                                        chmval = jsonObject.getString("Code");
+//                                        String custom_name = (jsonObject.getString("Name"));
+//                                        String Code = (jsonObject.getString("Code"));
+//                                        String cluster = (jsonObject.getString("Town_Name"));
+//                                        String Catcode = (jsonObject.optString("Chm_cat"));
+//                                        String Lat = (jsonObject.getString("lat"));
+//                                        String Long = (jsonObject.getString("long"));
+//                                        String Tag_count = (jsonObject.getString("GEOTagCnt"));
+//                                        String Max_count = (jsonObject.getString("Geototal"));
+//                                        String Chemists_Mobile = (jsonObject.getString("Chemists_Mobile"));
+//                                        String Chemists_Phone = (jsonObject.getString("Chemists_Phone"));
+//                                        String Chemists_Email = (jsonObject.getString("Chemists_Email"));
+//                                        String addrs = (jsonObject.getString("Addr"));
+//
+//
+//                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", Catcode, "", "", "", Lat, Long, chmval, MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C", "", "", "", "", "", "", "", Tag_count, Max_count, ""));
+//
+//                                    }
+//                                }
+//                            }
+//                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+//                            search_list.addAll(listresource);
+//                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+//                            break;*/
                    /* case ("2"):
                         rec_val = "C";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + synhqval1);
@@ -346,41 +514,41 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
                         break;
 */
-                        case ("3"):
-                            rec_val = "S";
-                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST + synhqval1);
-                            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + synhqval1).getMasterSyncDataJsonArray();
-                            String strck_val = "";
-                            Valcount = "";
-                            if (jsonstock.length() > 0) {
-                                for (int i = 0; i < jsonstock.length(); i++) {
-                                    JSONObject jsonObject = jsonstock.getJSONObject(i);
-                                    if (!strck_val.equals(jsonObject.getString("Code"))) {
-                                        strck_val = jsonObject.getString("Code");
-                                        String Code = (jsonObject.getString("Code"));
-                                        String custom_name = (jsonObject.getString("Name"));
-                                        String cluster = (jsonObject.getString("Town_Name"));
-                                        String Lat = (jsonObject.getString("lat"));
-                                        String Long = (jsonObject.getString("long"));
-                                        String Tag_count = (jsonObject.getString("GEOTagedCnt"));
-                                        String Max_count = (jsonObject.getString("Geototal"));
-
-                                        String Stockiest_Phone = (jsonObject.getString("Stockiest_Phone"));
-                                        String Stockiest_Mobile = (jsonObject.getString("Stockiest_Mobile"));
-                                        String Stockiest_Email = (jsonObject.getString("Stockiest_Email"));
-                                        String Addr = (jsonObject.getString("Addr"));
-
-
-                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, strck_val, MyResource_Activity.Key, "", Addr, "", "", Stockiest_Mobile, Stockiest_Phone, Stockiest_Email, "", "", "", "S", "", "", "", "", "", "", "", Tag_count, Max_count, ""));
-
-
-                                    }
-                                }
-                            }
-                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                            search_list.addAll(listresource);
-                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                            break;
+//                    /*    case ("3"):
+//                            rec_val = "S";
+//                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST + synhqval1);
+//                            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + synhqval1).getMasterSyncDataJsonArray();
+//                            String strck_val = "";
+//                            Valcount = "";
+//                            if (jsonstock.length() > 0) {
+//                                for (int i = 0; i < jsonstock.length(); i++) {
+//                                    JSONObject jsonObject = jsonstock.getJSONObject(i);
+//                                    if (!strck_val.equals(jsonObject.getString("Code"))) {
+//                                        strck_val = jsonObject.getString("Code");
+//                                        String Code = (jsonObject.getString("Code"));
+//                                        String custom_name = (jsonObject.getString("Name"));
+//                                        String cluster = (jsonObject.getString("Town_Name"));
+//                                        String Lat = (jsonObject.getString("lat"));
+//                                        String Long = (jsonObject.getString("long"));
+//                                        String Tag_count = (jsonObject.getString("GEOTagedCnt"));
+//                                        String Max_count = (jsonObject.getString("Geototal"));
+//
+//                                        String Stockiest_Phone = (jsonObject.getString("Stockiest_Phone"));
+//                                        String Stockiest_Mobile = (jsonObject.getString("Stockiest_Mobile"));
+//                                        String Stockiest_Email = (jsonObject.getString("Stockiest_Email"));
+//                                        String Addr = (jsonObject.getString("Addr"));
+//
+//
+//                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, strck_val, MyResource_Activity.Key, "", Addr, "", "", Stockiest_Mobile, Stockiest_Phone, Stockiest_Email, "", "", "", "S", "", "", "", "", "", "", "", Tag_count, Max_count, ""));
+//
+//
+//                                    }
+//                                }
+//                            }
+//                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+//                            search_list.addAll(listresource);
+//                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+//                            break;*/
                   /*  case ("3"):
                         rec_val = "S";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + synhqval1);
@@ -456,53 +624,53 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
                         break;*/
 
-                        case ("4"):
-                            rec_val = "U";
-                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + synhqval1);
-                            JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + synhqval1).getMasterSyncDataJsonArray();
-                            String unlist_val = "";
-                            Valcount = "";
-                            if (jsonunlisted.length() > 0) {
-                                for (int i = 0; i < jsonunlisted.length(); i++) {
-                                    JSONObject jsonObject = jsonunlisted.getJSONObject(i);
-
-                                    if (!unlist_val.equals(jsonObject.getString("Code"))) {
-                                        unlist_val = jsonObject.getString("Code");
-                                        String Code = jsonObject.getString("Code");
-                                        String custom_name = (jsonObject.getString("Name"));
-                                        String cluster = (jsonObject.getString("Town_Name"));
-                                        String category = (jsonObject.getString("CategoryName"));
-                                        String specialty = (jsonObject.getString("SpecialtyName"));
-                                        String Lat = (jsonObject.getString("lat"));
-                                        String Long = (jsonObject.getString("long"));
-                                        String quacode = (jsonObject.getString("Qual"));
-//                                    String DOB = (jsonObject.getString("DOB"));
-//                                    String DOW = (jsonObject.getString("DOW"));
-                                        JSONObject dobObject = jsonObject.getJSONObject("UnlstDOB");
-                                        String DOBDate = (dobObject.getString("date"));
-                                        String DOB = DOBDate.split(" ")[0];
-                                        JSONObject dowObject = jsonObject.getJSONObject("UnlstDOW");
-                                        String DOWDate = (dowObject.getString("date"));
-                                        String DOW = DOWDate.split(" ")[0];
-                                        String Category = (jsonObject.getString("Category"));
-                                        String Tag_count = (jsonObject.getString("GEOTagedCnt"));
-                                        String Max_count = (jsonObject.getString("Geototal"));
-
-                                        String Specialty = (jsonObject.getString("Specialty"));
-                                        String Qual = (jsonObject.getString("Doc_QuaName"));
-                                        String Email = (jsonObject.getString("Email"));
-                                        String Mobile = (jsonObject.getString("Mobile"));
-                                        String Phone = (jsonObject.getString("Phone"));
-                                        String addr = (jsonObject.getString("Addrs"));
-
-                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, category, Category, "", Specialty, specialty, Lat, Long, unlist_val, MyResource_Activity.Key, Qual, addr, DOB, DOW, Mobile, Phone, Email, "", "", cluster, "U", "", "", "", "", "", "", "", Tag_count, Max_count, quacode));
-                                    }
-                                }
-                            }
-                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-                            search_list.addAll(listresource);
-                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
-                            break;
+//                     /*   case ("4"):
+//                            rec_val = "U";
+//                            MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + synhqval1);
+//                            JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + synhqval1).getMasterSyncDataJsonArray();
+//                            String unlist_val = "";
+//                            Valcount = "";
+//                            if (jsonunlisted.length() > 0) {
+//                                for (int i = 0; i < jsonunlisted.length(); i++) {
+//                                    JSONObject jsonObject = jsonunlisted.getJSONObject(i);
+//
+//                                    if (!unlist_val.equals(jsonObject.getString("Code"))) {
+//                                        unlist_val = jsonObject.getString("Code");
+//                                        String Code = jsonObject.getString("Code");
+//                                        String custom_name = (jsonObject.getString("Name"));
+//                                        String cluster = (jsonObject.getString("Town_Name"));
+//                                        String category = (jsonObject.getString("CategoryName"));
+//                                        String specialty = (jsonObject.getString("SpecialtyName"));
+//                                        String Lat = (jsonObject.getString("lat"));
+//                                        String Long = (jsonObject.getString("long"));
+//                                        String quacode = (jsonObject.getString("Qual"));
+////                                    String DOB = (jsonObject.getString("DOB"));
+////                                    String DOW = (jsonObject.getString("DOW"));
+//                                        JSONObject dobObject = jsonObject.getJSONObject("UnlstDOB");
+//                                        String DOBDate = (dobObject.getString("date"));
+//                                        String DOB = DOBDate.split(" ")[0];
+//                                        JSONObject dowObject = jsonObject.getJSONObject("UnlstDOW");
+//                                        String DOWDate = (dowObject.getString("date"));
+//                                        String DOW = DOWDate.split(" ")[0];
+//                                        String Category = (jsonObject.getString("Category"));
+//                                        String Tag_count = (jsonObject.getString("GEOTagedCnt"));
+//                                        String Max_count = (jsonObject.getString("Geototal"));
+//
+//                                        String Specialty = (jsonObject.getString("Specialty"));
+//                                        String Qual = (jsonObject.getString("Doc_QuaName"));
+//                                        String Email = (jsonObject.getString("Email"));
+//                                        String Mobile = (jsonObject.getString("Mobile"));
+//                                        String Phone = (jsonObject.getString("Phone"));
+//                                        String addr = (jsonObject.getString("Addrs"));
+//
+//                                        listresource.add(new Resourcemodel_class(Code, custom_name, cluster, category, Category, "", Specialty, specialty, Lat, Long, unlist_val, MyResource_Activity.Key, Qual, addr, DOB, DOW, Mobile, Phone, Email, "", "", cluster, "U", "", "", "", "", "", "", "", Tag_count, Max_count, quacode));
+//                                    }
+//                                }
+//                            }
+//                            MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+//                            search_list.addAll(listresource);
+//                            myResourceInterface.onclickItem(listresource, Valcount, synhqval1);
+//                            break;*/
                    /* case ("4"):
                         rec_val = "U";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + synhqval1);

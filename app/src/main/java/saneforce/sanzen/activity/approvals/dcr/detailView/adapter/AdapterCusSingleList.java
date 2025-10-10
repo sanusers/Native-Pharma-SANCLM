@@ -290,7 +290,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.e("test", "res : " + response.body());
-                                progressDialog.dismiss();
+
                                 try {
                                     if (response.body() != null && response.isSuccessful()) {
                                         JSONArray jsonArray = new JSONArray();
@@ -305,6 +305,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             }else {
                                                 dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                                 dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
+                                                progressDialog.dismiss();
                                                 commonUtilsMethods.showToastMessage(context, "No Event Capture");
                                             }
 
@@ -350,6 +351,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
          adapter =new EventDetailsCapture(List,context);
          dcrDetailViewBinding.rvEventListview.setLayoutManager(new LinearLayoutManager(context));
          dcrDetailViewBinding.rvEventListview.setAdapter(adapter);
+        progressDialog.dismiss();
 
 
     }
@@ -378,7 +380,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.e("test", "res : " + response.body());
-                                progressDialog.dismiss();
+
                                 try {
                                     if (response.body() != null && response.isSuccessful()) {
                                         JSONArray jsonArray = new JSONArray();
@@ -391,6 +393,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             if(SignatureData.size()>0){
                                                 setSignatureData(SignatureData);
                                             }else {
+                                                progressDialog.dismiss();
                                                 commonUtilsMethods.showToastMessage(context, " Signature Not Available");
                                             }
 
@@ -433,6 +436,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
         recyclerView.setAdapter(signadapter);
         AlertDialog dialog1=dialog.create();
         dialog1.show();
+        progressDialog.dismiss();
 
     }
 
