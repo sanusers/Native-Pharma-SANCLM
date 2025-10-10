@@ -339,6 +339,16 @@ public class TagCustSelectionList extends AppCompatActivity {
                     HqCodeList.add(code);
                 }
             }
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonHQList = jsonArray.getJSONObject(i);
+//                System.out.println("jsonHQList--->"+jsonHQList);
+                String name = jsonHQList.optString("name", "");
+                String code = jsonHQList.optString("id", "");
+                if (!WorkPlanFragment.mHQCode1.contains(code) && !WorkPlanFragment.mHQCode2.contains(code)) {
+                    HqNameList.add(name);
+                    HqCodeList.add(code);
+                }
+            }
 
             arrayAdapter = new ArrayAdapter<>(TagCustSelectionList.this, R.layout.listview_items, HqNameList);
             binding.hqListView.setAdapter(arrayAdapter);
