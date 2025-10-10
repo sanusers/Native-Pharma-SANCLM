@@ -75,14 +75,17 @@ public class AsOnCallsFragment extends Fragment {
             int uniqueDoctorsPre_PrevMonth = prePreviousMonthStats.uniqueDoctors.size();
 
             int uniqueChemistCurrentMonth = currentMonthStats.uniqueChemists.size();
+            Log.d("TAG", "UniqueChe Cur Month: "+uniqueChemistCurrentMonth);
             int uniqueChemistPreviousMonth = previousMonthStats.uniqueChemists.size();
             int uniqueChemistPre_PrevMonth = prePreviousMonthStats.uniqueChemists.size();
 
             int uniqueStockiestCurrentMonth = currentMonthStats.uniqueStockiest.size();
+            Log.d("TAG", "UniqueStk Cur Month: "+uniqueStockiestCurrentMonth);
             int uniqueStockiestPreviousMonth = previousMonthStats.uniqueStockiest.size();
             int uniqueStockiestPre_PrevMonth = previousMonthStats.uniqueStockiest.size();
 
             int uniqueUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
+            Log.d("TAG", "UniqueUnlist Cur Month: "+uniqueUnlistedCurrentMonth);
             int uniqueUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
             int uniqueUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
 

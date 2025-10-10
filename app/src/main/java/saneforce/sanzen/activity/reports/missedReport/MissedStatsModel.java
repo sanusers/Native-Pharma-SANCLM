@@ -11,7 +11,7 @@ public class MissedStatsModel {
 
     private JSONArray totalCustomers;
     private Set<String> uniqueCustomers;
-    private String type;// "Doctor", "Chemist", etc.
+    private String type;// "Doctor", "Chemist","Stockiest",Unlisted"
     //private String month;
 
 

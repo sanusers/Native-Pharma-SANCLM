@@ -22,15 +22,16 @@ import saneforce.sanzen.activity.map.custSelection.CustList;
 public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.ViewHolder> {
 
     private final Context context;
-    private  List<DoctorVisitItem> doctorList;
-   // private  List<DoctorVisitItem> fullList;
+    private List<DoctorVisitItem> doctorList;
+    private final String type;
+    // private  List<DoctorVisitItem> fullList;
 
 
-    public DoctorVisitAdapter(Context context, List<DoctorVisitItem> doctorList) {
+    public DoctorVisitAdapter(Context context, List<DoctorVisitItem> doctorList, String type) {
         this.context = context;
         this.doctorList = new ArrayList<>(doctorList);
-
-       //this.fullList = new ArrayList<>(doctorList);
+        this.type = type;
+        //this.fullList = new ArrayList<>(doctorList);
 //        this.context = context;
 //        this.doctorList = new ArrayList<>(doctorList);
 //        this.doctorList.addAll(doctorList);
@@ -48,19 +49,75 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+// Always show Name and Place
         DoctorVisitItem item = doctorList.get(position);
         holder.textDoctor.setText(checkEmpty(item.getName()));
         holder.textPlace.setText(checkEmpty(item.getTerritory()));
-        holder.qualification.setText(checkEmpty(item.getQualification()));
-        holder.category.setText(checkEmpty(item.getCategory()));
-        holder.speciality.setText(checkEmpty(item.getSpeciality()));
-        holder.className.setText(checkEmpty(item.getClassName()));
-        holder.number.setText((position + 1) + ")");
-        holder.itemView.setOnClickListener(v -> {
+        holder.textDoctor.setVisibility(View.VISIBLE);
+        holder.textPlace.setVisibility(View.VISIBLE);
 
-        });
+        // Type-specific visibility
+        switch (type) {
+            case "1": // Doctor → show all fields
+                holder.qualification.setText(checkEmpty(item.getQualification()));
+                holder.category.setText(checkEmpty(item.getCategory()));
+                holder.speciality.setText(checkEmpty(item.getSpeciality()));
+                holder.className.setText(checkEmpty(item.getClassName()));
+
+                holder.qualification.setVisibility(View.VISIBLE);
+                holder.category.setVisibility(View.VISIBLE);
+                holder.speciality.setVisibility(View.VISIBLE);
+                holder.className.setVisibility(View.VISIBLE);
+                break;
+
+            case "2": // Chemist → show Name, Place, Category
+                holder.category.setText(checkEmpty(item.getCategory()));
+
+                holder.qualification.setVisibility(View.GONE);
+                holder.category.setVisibility(View.VISIBLE);
+                holder.speciality.setVisibility(View.GONE);
+                holder.className.setVisibility(View.GONE);
+                break;
+            case "3": // Stockist → only Name & Place
+                holder.qualification.setVisibility(View.GONE);
+                holder.category.setVisibility(View.GONE);
+                holder.speciality.setVisibility(View.GONE);
+                holder.className.setVisibility(View.GONE);
+                break;
+
+            case "4": // Unlisted → Name, Place, Category, Specialty
+                holder.category.setText(checkEmpty(item.getCategory()));
+                holder.speciality.setText(checkEmpty(item.getSpeciality()));
+
+                holder.qualification.setVisibility(View.GONE);
+                holder.category.setVisibility(View.VISIBLE);
+                holder.speciality.setVisibility(View.VISIBLE);
+                holder.className.setVisibility(View.GONE);
+                break;
+
+            default: // fallback → only Name & Place
+                holder.qualification.setVisibility(View.GONE);
+                holder.category.setVisibility(View.GONE);
+                holder.speciality.setVisibility(View.GONE);
+                holder.className.setVisibility(View.GONE);
+                break;
+        }
+
+        holder.number.setText((position + 1) + ")");
     }
+//        DoctorVisitItem item = doctorList.get(position);
+//        holder.textDoctor.setText(checkEmpty(item.getName()));
+//        holder.textPlace.setText(checkEmpty(item.getTerritory()));
+//        holder.qualification.setText(checkEmpty(item.getQualification()));
+//        holder.category.setText(checkEmpty(item.getCategory()));
+//        holder.speciality.setText(checkEmpty(item.getSpeciality()));
+//        holder.className.setText(checkEmpty(item.getClassName()));
+//        holder.number.setText((position + 1) + ")");
+//        holder.itemView.setOnClickListener(v -> {
+//
+//        });
+
+
     private String checkEmpty(String value) {
         return (value == null || value.trim().isEmpty()) ? "-" : value;
     }
@@ -80,7 +137,7 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textDoctor, textPlace;
-        TextView qualification, category, speciality, className,number;
+        TextView qualification, category, speciality, className, number;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -93,6 +150,7 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
             number = itemView.findViewById(R.id.number);
         }
     }
+
     public void updateData(List<DoctorVisitItem> newList) {
         doctorList.clear();
         doctorList.addAll(newList);
@@ -107,7 +165,6 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
 //        doctorList.addAll(newList);
 //       fullList.clear();
 //        fullList = new ArrayList<>(newList);
-
 
 
     public Filter getFilter() {
@@ -139,7 +196,7 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-              doctorList.clear();
+                doctorList.clear();
                 doctorList.addAll((List<DoctorVisitItem>) results.values);
                 notifyDataSetChanged();
             }

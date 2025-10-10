@@ -75,8 +75,8 @@ public class OuterAdapter extends RecyclerView.Adapter<OuterAdapter.OuterViewHol
                 holder.monthTxt.setText(formattedDate2);
                 break;
         }
-
-        InnerAdapter innerAdapter = new InnerAdapter(holder.itemView.getContext(), monthList,sfCode,date);
+        String monthName = holder.monthTxt.getText().toString();
+        InnerAdapter innerAdapter = new InnerAdapter(holder.itemView.getContext(), monthList,sfCode,date,monthName);
         holder.innerRecycler.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
         holder.innerRecycler.setAdapter(innerAdapter);
     }

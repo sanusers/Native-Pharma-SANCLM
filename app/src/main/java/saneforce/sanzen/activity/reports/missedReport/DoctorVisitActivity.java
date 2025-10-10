@@ -90,10 +90,50 @@ public class DoctorVisitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDoctorVisitBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        String drCaption = SharedPref.getDrCap(this);
-        binding.toolbarTitle.setText(" Missed " + drCaption);
+        String clickedType = getIntent().getStringExtra("clicked_type");
+        String selectedMonth = getIntent().getStringExtra("selected_month");
+
+        if (selectedMonth == null || selectedMonth.isEmpty()) {
+            selectedMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(new Date());
+        }
+
+        String typeCaption;
+
+        if (clickedType != null) {
+            switch (clickedType) {
+                case "1":
+                    typeCaption = SharedPref.getDrCap(this);
+                    break;
+                case "2":
+                    typeCaption = SharedPref.getChmCap(this);
+                    break;
+                case "3":
+                    typeCaption = SharedPref.getStkCap(this);
+                    break;
+                case "4":
+                    typeCaption = SharedPref.getUNLcap(this);
+                    break;
+                default:
+                    typeCaption = SharedPref.getDrCap(this);
+                    break;
+            }
+        } else {
+            typeCaption = SharedPref.getDrCap(this);
+        }
+
+        binding.toolbarTitle.setText("Missed " + typeCaption + " - " + selectedMonth);
+
+//        String drCaption = SharedPref.getDrCap(this);
+//        String selectedMonth = getIntent().getStringExtra("selected_month");
+//
+//        if (selectedMonth == null || selectedMonth.isEmpty()) {
+//            selectedMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(new Date());
+//        }
+//
+//        binding.toolbarTitle.setText(" Missed " + drCaption+ " - " + selectedMonth);
+
         doctorList = new ArrayList<>();
-        adapter = new DoctorVisitAdapter(this, doctorList);
+        adapter = new DoctorVisitAdapter(this, doctorList,clickedType);
         binding.recyclerDoctorVisit.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerDoctorVisit.setAdapter(adapter);
         roomDB = RoomDB.getDatabase(this);
@@ -135,10 +175,17 @@ public class DoctorVisitActivity extends AppCompatActivity {
         String sfCode = getIntent().getStringExtra("sfcode");
         String date = getIntent().getStringExtra("date");
         String missedArrayString = getIntent().getStringExtra("missed_array");
-
         loadDoctorData(missedArrayString, "missed");
         String visitArrayString = getIntent().getStringExtra("visit");
+        try {
+            JSONArray missedArray = new JSONArray(missedArrayString);
+            JSONArray visitArray = new JSONArray(visitArrayString);
 
+            binding.missedtittle.setText("Missed: " + missedArray.length());
+            binding.visitedtittle.setText("Visited: " + visitArray.length());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         binding.missedtittle.setOnClickListener(v -> {
             binding.missedtittle.setBackgroundResource(R.drawable.bg_darkpurple_sharp_bottom_end);
             binding.missedtittle.setTextColor(getResources().getColor(R.color.white));

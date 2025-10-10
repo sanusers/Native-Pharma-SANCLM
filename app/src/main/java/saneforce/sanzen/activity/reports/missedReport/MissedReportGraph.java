@@ -54,7 +54,7 @@ public class MissedReportGraph extends AppCompatActivity {
     private MasterDataDao masterDataDao;
     private ActivityMissedReportGraphBinding binding;
     private String sfCode;
-    private  String date;
+    private String date;
 
     //private PieChart missedChart, missedChart2;
     ProgressBar pBarchmcurrent, pBarstkcurrent, pBarunlstcurrent, pBarstknewcurrent, pBarunlstnewcurrent;
@@ -82,10 +82,22 @@ public class MissedReportGraph extends AppCompatActivity {
     TextView totalstknewcur, totalstknewvisited, totalstknewmissed, totalunlstnewcur, totalunlstnewvisited, totalunlstnewmissed;
     TextView totalstkprevcur, totalstkprevvisited, totalstkprevmissed, totalunlstprevcur, totalunlstprevvisited, totalunlstprevmissed;
     TextView totalstkprev1cur, totalstkprev1visited, totalstkprev1missed, totalunlstprev1cur, totalunlstprev1visited, totalunlstprev1missed;
+//Doctor
     int uniqueDoctorsCurrentMonth, totalDoctors, currentMonthMissed;
     int visitedDoctorsCurrentMonth;
     int previousMonthMissed, visitedDoctorsPreviousMonth, prePreviousMonthMissed, uniqueDoctorsPreviousMonth;
-
+//chemist
+    int uniqueChemistCurrentMonth, totalChemist, currentMonthMissedChe;
+    int visitedChemistCurrentMonth;
+    int previousMonthMissedChe, visitedChemistPreviousMonth, prePreviousMonthMissedChe, uniqueChemistPreviousMonth;
+//stockiest
+    int uniqueStockistCurrentMonth, totalStockist, currentMonthMissedStk;
+    int visitedStockistCurrentMonth;
+    int previousMonthMissedStk, visitedStockistPreviousMonth, prePreviousMonthMissedStk, uniqueStockistPreviousMonth;
+//unlisted
+    int uniqueUnlistedCurrentMonth,totalUnlisted,currentMonthMissedUnlisted;
+    int visitedUnlistedCurrentMonth;
+    int previousMonthMissedUnlisted,visitedUnlistedPreviousMonth,prePreviousMonthMissedUnlisted,uniqueUnlistedPreviousMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +109,7 @@ public class MissedReportGraph extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         sfCode = SharedPref.getSfCode(this);
-         date = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5);
+        date = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5);
         //login name - cluster
         TextView headerTv = findViewById(R.id.Name);
         headerTv.setText(SharedPref.getSfName(this) + " - " + SharedPref.getDsName(this) + " - " + SharedPref.getHqNameMain(this));
@@ -414,7 +426,7 @@ public class MissedReportGraph extends AppCompatActivity {
 //                // All = "0"
 //                //LoadDrChmStkUnlstValues();
 //      LoadDrChmStkUnlstValues(missedChart, missedChart2, totalDoctors, uniqueDoctorsCurrentMonth, currentMonthMissed, previousMonthMissed);
-  //      LoadDrChmStkUnlstValues( totalDoctors, uniqueDoctorsCurrentMonth, currentMonthMissed, previousMonthMissed);
+        //      LoadDrChmStkUnlstValues( totalDoctors, uniqueDoctorsCurrentMonth, currentMonthMissed, previousMonthMissed);
 //                break;
 //        }
 
@@ -753,7 +765,7 @@ public class MissedReportGraph extends AppCompatActivity {
         unlstnewvisitcur.setBackgroundColor(getColor(color.gray_med));
         unlstnewmissedcur.setBackgroundColor(getColor(color.backround_graey));
         //  }, 200);*/
-            // previous month sp
+        // previous month sp
 //        float missedPercentage2 = (((float) previousMonthMissed / (float) totalDoctors) * 100.0f);
 //        ArrayList<Integer> colors2 = new ArrayList<>();
 //        colors.add(Color.rgb(0, 144, 255));
@@ -890,16 +902,16 @@ public class MissedReportGraph extends AppCompatActivity {
             uniqueDoctorsPreviousMonth = previousMonthStats.uniqueDoctors.size();
             int uniqueDoctorsPre_PrevMonth = prePreviousMonthStats.uniqueDoctors.size();
 
-            int uniqueChemistCurrentMonth = currentMonthStats.uniqueChemists.size();
-            int uniqueChemistPreviousMonth = previousMonthStats.uniqueChemists.size();
+            uniqueChemistCurrentMonth = currentMonthStats.uniqueChemists.size();
+            uniqueChemistPreviousMonth = previousMonthStats.uniqueChemists.size();
             int uniqueChemistPre_PrevMonth = prePreviousMonthStats.uniqueChemists.size();
 
-            int uniqueStockiestCurrentMonth = currentMonthStats.uniqueStockiest.size();
-            int uniqueStockiestPreviousMonth = previousMonthStats.uniqueStockiest.size();
+            uniqueStockistCurrentMonth = currentMonthStats.uniqueStockiest.size();
+            uniqueStockistPreviousMonth = previousMonthStats.uniqueStockiest.size();
             int uniqueStockiestPre_PrevMonth = previousMonthStats.uniqueStockiest.size();
 
-            int uniqueUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
-            int uniqueUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
+             uniqueUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
+            uniqueUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
             int uniqueUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
 
             //added total doctor
@@ -909,38 +921,52 @@ public class MissedReportGraph extends AppCompatActivity {
             int visitedDoctorsPre_PrevMonth = 0;
 
 
-            //total visit
+            //added total visit
+            totalChemist = 0;
+            visitedChemistPreviousMonth = 0;
+            int visitedChemistPre_PrevMonth = 0;
+
+            //added totalstockiest
+            totalStockist = 0;
+            visitedStockistPreviousMonth = 0;
+            int visitedStockistPre_PrevMonth = 0;
+
+            //total unlisted
+            totalUnlisted = 0;
+            visitedUnlistedPreviousMonth = 0;
             visitedDoctorsCurrentMonth = currentMonthStats.visitedDoctors.size();
             visitedDoctorsPreviousMonth = previousMonthStats.visitedDoctors.size();
             visitedDoctorsPre_PrevMonth = prePreviousMonthStats.visitedDoctors.size();
 
-            int visitedChemistCurrentMonth = currentMonthStats.visitedChemists.size();
-            int visitedChemistPreviousMonth = previousMonthStats.visitedChemists.size();
-            int visitedChemistPre_PrevMonth = prePreviousMonthStats.visitedChemists.size();
+            visitedChemistCurrentMonth = currentMonthStats.visitedChemists.size();
+            visitedChemistPreviousMonth = previousMonthStats.visitedChemists.size();
+            visitedChemistPre_PrevMonth = prePreviousMonthStats.visitedChemists.size();
 
-            int visitedStockiestCurrentMonth = currentMonthStats.visitedStockiest.size();
-            int visitedStockiestPreviousMonth = previousMonthStats.visitedStockiest.size();
-            int visitedStockiestPre_PrevMonth = previousMonthStats.visitedStockiest.size();
+            visitedStockistCurrentMonth = currentMonthStats.visitedStockiest.size();
+            visitedStockistPreviousMonth = previousMonthStats.visitedStockiest.size();
+            visitedStockistPre_PrevMonth = previousMonthStats.visitedStockiest.size();
 
-            int visitedUnlistedCurrentMonth = currentMonthStats.visitedUnlisted.size();
-            int visitedUnlistedPreviousMonth = currentMonthStats.visitedUnlisted.size();
+           visitedUnlistedCurrentMonth = currentMonthStats.visitedUnlisted.size();
+            visitedUnlistedPreviousMonth = currentMonthStats.visitedUnlisted.size();
             int visitedUnlistedPre_PrevMonth = currentMonthStats.visitedUnlisted.size();
 
+
+            //doctor
             String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(this));
             JSONArray doctorArray = new JSONArray(doctorData);
             totalDoctors = doctorArray.length();
-//            int currentMonthMissed = totalDoctors - visitedDoctorsCurrentMonth;
-//            int previousMonthMissed = totalDoctors - visitedDoctorsPreviousMonth;
-//            int prePreviousMonthMissed = totalDoctors - visitedDoctorsPre_PrevMonth;
 
+            //chemist
             String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + SharedPref.getHqCode(this));
             JSONArray chemistArray = new JSONArray(chemistData);
-            int totalChemist = chemistArray.length();
+            totalChemist = chemistArray.length();
 
+            //stockiest
             String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + SharedPref.getHqCode(this));
             JSONArray stkArray = new JSONArray(stkData);
             int totalStk = stkArray.length();
 
+            //unlisted
             String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(this));
             JSONArray unlistedArray = new JSONArray(unlistedData);
             int totalUnlisted = unlistedArray.length();
@@ -952,17 +978,17 @@ public class MissedReportGraph extends AppCompatActivity {
             previousMonthMissed = totalDoctors - uniqueDoctorsPreviousMonth;
             prePreviousMonthMissed = totalDoctors - uniqueDoctorsPre_PrevMonth;
             //che
-            int currentMonthMissedChe = totalChemist - uniqueChemistCurrentMonth;
-            int previousMonthMissedChe = totalChemist - uniqueChemistPreviousMonth;
-            int prePreviousMonthMissedChe = totalChemist - uniqueChemistPre_PrevMonth;
+            currentMonthMissedChe = totalChemist - uniqueChemistCurrentMonth;
+            previousMonthMissedChe = totalChemist - uniqueChemistPreviousMonth;
+            prePreviousMonthMissedChe = totalChemist - uniqueChemistPre_PrevMonth;
             //Stk
-            int currentMonthMissedStk = totalStk - uniqueStockiestCurrentMonth;
-            int previousMonthMissedStk = totalStk - uniqueStockiestPreviousMonth;
-            int prePreviousMonthMissedStk = totalStk - uniqueStockiestPre_PrevMonth;
+            currentMonthMissedStk = totalStk - uniqueStockistCurrentMonth;
+            previousMonthMissedStk = totalStk - uniqueStockistPreviousMonth;
+            prePreviousMonthMissedStk = totalStk - uniqueStockiestPre_PrevMonth;
             //Unlist
-            int currentMonthMissedUnlisted = totalUnlisted - uniqueUnlistedCurrentMonth;
-            int previousMonthMissedUnlisted = totalUnlisted - uniqueUnlistedPreviousMonth;
-            int prePreviousMonthMissedUnlisted = totalUnlisted - uniqueUnlistedPre_PrevMonth;
+            currentMonthMissedUnlisted = totalUnlisted - uniqueUnlistedCurrentMonth;
+            previousMonthMissedUnlisted = totalUnlisted - uniqueUnlistedPreviousMonth;
+             prePreviousMonthMissedUnlisted = totalUnlisted - uniqueUnlistedPre_PrevMonth;
 
             //FWDays
             int fwDaysCurrentMonth = currentMonthStats.FWDays.size();
@@ -1007,13 +1033,13 @@ public class MissedReportGraph extends AppCompatActivity {
             double callAvgPreviousMonthStk;
             double callAvgPrePrevMonthStk;
 
-            callAvgCurrentMonthStk = (double) visitedStockiestCurrentMonth / fwDaysCurrentMonth;
+            callAvgCurrentMonthStk = (double) visitedStockistCurrentMonth / fwDaysCurrentMonth;
             @SuppressLint("DefaultLocale") String formattedCallAvgCurrentStk = String.format("%.1f", callAvgCurrentMonthStk);
 
-            callAvgPreviousMonthStk = (double) visitedStockiestPreviousMonth / fwDaysPreviousMonth;
+            callAvgPreviousMonthStk = (double) visitedStockistPreviousMonth / fwDaysPreviousMonth;
             @SuppressLint("DefaultLocale") String formattedCallAvgPreviousStk = String.format("%.1f", callAvgPreviousMonthStk);
 
-            callAvgPrePrevMonthStk = (double) visitedStockiestPre_PrevMonth / fwDaysPrePreviousMonth;
+            callAvgPrePrevMonthStk = (double) visitedStockistPre_PrevMonth / fwDaysPrePreviousMonth;
             @SuppressLint("DefaultLocale") String formattedCallAvgPre_PreviousStk = String.format("%.1f", callAvgPrePrevMonthStk);
 
             //Unlisted
@@ -1309,7 +1335,7 @@ public class MissedReportGraph extends AppCompatActivity {
             allMonthsFlatList.add(prePreviousMonthList);
 
 
-            OuterAdapter adapter = new OuterAdapter(this, allMonthsFlatList,sfCode,date);
+            OuterAdapter adapter = new OuterAdapter(this, allMonthsFlatList, sfCode, date);
             RecyclerView recyclerView = findViewById(R.id.recyclerDoctorMissedReports);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(adapter);
