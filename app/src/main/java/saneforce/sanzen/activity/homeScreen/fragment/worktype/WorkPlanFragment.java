@@ -4375,68 +4375,64 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.cardPlan2.setVisibility(View.GONE);
                     binding.llDeviation.setVisibility(View.GONE);
                 }
-            } else if(!dateType.isEmpty() && !UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+            } else if (!dateType.isEmpty() && !dateType.equalsIgnoreCase("Missed") && !dateType.equalsIgnoreCase("Planning") && !UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
                 Log.e("TAG", "setUpWorkPlan: skip" + HomeDashBoard.selectedDate.toString());
-                if (!dateType.equalsIgnoreCase("Missed")) {
-                    Dialog dialog = new Dialog(requireContext());
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    if (dialog.getWindow() != null) {
-                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    }
-                    if (!dialog.isShowing()) {
-                        dialog.show();
-                    }
-                    TextView content = dialog.findViewById(R.id.ed_alert_msg);
-                    content.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen._6sdp));
-                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                    TextView btn_no = dialog.findViewById(R.id.btn_no);
-                    btn_yes.setText(requireContext().getResources().getString(R.string.proceed));
-                    btn_yes.setAllCaps(true);
-                    btn_no.setText(requireContext().getResources().getString(R.string.continuee));
+                Dialog dialog = new Dialog(requireContext());
+                dialog.setContentView(R.layout.dcr_cancel_alert);
+                dialog.setCancelable(false);
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                if (!dialog.isShowing()) {
+                    dialog.show();
+                }
+                TextView content = dialog.findViewById(R.id.ed_alert_msg);
+                content.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen._6sdp));
+                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                TextView btn_no = dialog.findViewById(R.id.btn_no);
+                btn_yes.setText(requireContext().getResources().getString(R.string.proceed));
+                btn_yes.setAllCaps(true);
+                btn_no.setText(requireContext().getResources().getString(R.string.continuee));
 
-                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                SpannableStringBuilder builder = new SpannableStringBuilder();
 
-                    String nextDate = "";
-                    if (WorkPlanEntriesNeeded.datesNeeded.size() > 1) {
-                        nextDate = " (" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, List.copyOf(WorkPlanEntriesNeeded.datesNeeded).get(1)) + ")";
+                String nextDate = "";
+                if (WorkPlanEntriesNeeded.datesNeeded.size() > 1) {
+                    nextDate = " (" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, List.copyOf(WorkPlanEntriesNeeded.datesNeeded).get(1)) + ")";
+                }
+                String[] items = {"No network to get 'Work Plan' for " + dateType + " date(" + HomeDashBoard.binding.textDate.getText().toString() + ")",
+                        "Click '" + requireContext().getResources().getString(R.string.proceed).toUpperCase() + "' to work on Next date" + nextDate,
+                        "Connect to network and click '" + requireContext().getResources().getString(R.string.continuee) + "' to continue selected date"};
+
+                for (String item : items) {
+                    SpannableString spannable = new SpannableString(item + "\n");
+                    spannable.setSpan(new BulletSpan(20), 0, spannable.length(), 0);
+                    builder.append(spannable);
+                }
+                content.setText(builder);
+
+                btn_yes.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        WorkPlanEntriesNeeded.skipDates.add(HomeDashBoard.selectedDate.toString());
+                        HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                        dialog.dismiss();
                     }
-                    String[] items = {"No network to get 'Work Plan' for " + dateType + " date(" + HomeDashBoard.binding.textDate.getText().toString() + ")",
-                            "Click '" + requireContext().getResources().getString(R.string.proceed).toUpperCase() + "' to work on Next date" + nextDate,
-                            "Connect to network and click '" + requireContext().getResources().getString(R.string.continuee) + "' to continue selected date"};
+                });
 
-                    for (String item : items) {
-                        SpannableString spannable = new SpannableString(item + "\n");
-                        spannable.setSpan(new BulletSpan(20), 0, spannable.length(), 0);
-                        builder.append(spannable);
-                    }
-                    content.setText(builder);
-
-                    btn_yes.setOnClickListener(new SafeClickListener() {
-                        @Override
-                        public void onSafeClick(View view) {
-                            WorkPlanEntriesNeeded.skipDates.add(HomeDashBoard.selectedDate.toString());
-                            HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                btn_no.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        if (UtilityClass.isNetworkAvailable(requireContext())) {
+                            syncMyDayPlan(false);
                             dialog.dismiss();
+                        } else {
+                            commonUtilsMethods.showToastMessage(requireContext(), requireContext().getResources().getString(R.string.no_network));
                         }
-                    });
-
-                    btn_no.setOnClickListener(new SafeClickListener() {
-                        @Override
-                        public void onSafeClick(View view) {
-                            if (UtilityClass.isNetworkAvailable(requireContext())) {
-                                syncMyDayPlan(false);
-                                dialog.dismiss();
-                            } else {
-                                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getResources().getString(R.string.no_network));
-                            }
-                        }
-                    });
-                }
-            } else if(!dateType.isEmpty() && UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
-                if (!dateType.equalsIgnoreCase("Missed") && !dateType.equalsIgnoreCase("Planning")) {
-                    syncMyDayPlan(false);
-                }
+                    }
+                });
+            } else if (!dateType.isEmpty() && !dateType.equalsIgnoreCase("Missed") && !dateType.equalsIgnoreCase("Planning") && UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+                syncMyDayPlan(false);
             } else if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0") && tpDataObj != null && HomeDashBoard.selectedDate != null) {
                 SharedPref.setTpDcrDeviatedDate(requireContext(), "");
                 Type type = new TypeToken<OneBuildModelClass>() {
