@@ -67,7 +67,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             String date = oneBuildModelClass.getDayNo();
             holder.dateNo.setText(date);
             if (!date.isEmpty() && oneBuildModelClass.getSessionList() != null && !oneBuildModelClass.getSessionList().isEmpty() && oneBuildModelClass.getSessionList().get(0).getWorkType() != null  && !oneBuildModelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) { //if work type is not empty means tour plan added for the date
-                holder.cornerImage.setVisibility(View.VISIBLE);
+                holder.cornerImage.setVisibility(View.INVISIBLE);
                 fwFlag = oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg();
                 for (OneBuildModelClass.SessionList sessionList: oneBuildModelClass.getSessionList()) {
                     if (sessionList.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
