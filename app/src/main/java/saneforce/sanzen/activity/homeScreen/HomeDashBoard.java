@@ -1612,7 +1612,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         try {
                             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
                                 progressBar.setVisibility(View.VISIBLE);
-                                CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar);
+                                CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar, title);
                             } else {
                                 CommonUtilsMethods.showToastMessage(HomeDashBoard.this, "Please check Your Internet Connection");
                             }
@@ -1635,7 +1635,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         dialogPwdChange.show();
     }
 
-    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd, ProgressBar progressBar) {
+    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd, ProgressBar progressBar, String title) {
         JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jj.put("tableName", "savechpwd");
@@ -1665,7 +1665,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             SharedPref.saveLoginPwd(HomeDashBoard.this, confirmPwd);
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_changed_successfully));
 //                            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
-                            commonUtilsMethods.loginNavigation(HomeDashBoard.this);
+                            if (title.equalsIgnoreCase(HomeDashBoard.this.getString(R.string.reset_password))) {
+                                SharedPref.saveLoginState(HomeDashBoard.this, false);
+                                Intent intent = new Intent(HomeDashBoard.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finishAffinity();
+                            } else {
+                                commonUtilsMethods.loginNavigation(HomeDashBoard.this);
+                            }
                             dialogPwdChange.dismiss();
                         } else {
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, js.getString("msg"));

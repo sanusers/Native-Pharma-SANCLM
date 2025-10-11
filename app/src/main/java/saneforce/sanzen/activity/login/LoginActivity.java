@@ -285,6 +285,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void startTimer() {
         try {
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+            }
             countDownTimer = new CountDownTimer(remainingTime, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
