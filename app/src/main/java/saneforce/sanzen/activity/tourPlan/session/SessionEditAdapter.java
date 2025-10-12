@@ -83,7 +83,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     private SessionMultiHQItemAdapter sessionMultiHQItemAdapter = new SessionMultiHQItemAdapter();
     String sfCode = "", division_code = "", sfType = "", designation = "", state_code = "", subdivision_code = "";
     int synccount = 0;
-    String jwNeed = "", drNeed = "", chemistNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", FW_meetup_mandatory = "", holidayEditable = "", weeklyOffEditable = "";
+    String jwNeed = "", drNeed = "", chemistNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", FW_meetup_mandatory = "", holidayEditable = "", weeklyOffEditable = "",remarksNeed = "";
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
@@ -120,6 +120,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 FW_meetup_mandatory = jsonArray.getJSONObject(i).getString("FW_meetup_mandatory");
                 holidayEditable = jsonArray.getJSONObject(i).getString("Holiday_Editable");
                 weeklyOffEditable = jsonArray.getJSONObject(i).getString("Weeklyoff_Editable");
+                remarksNeed = jsonArray.getJSONObject(i).optString("tp_objective_mandatory");
 
             }
         } catch (JSONException e) {
@@ -151,7 +152,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 FW_meetup_mandatory = jsonArray.getJSONObject(i).getString("FW_meetup_mandatory");
                 holidayEditable = jsonArray.getJSONObject(i).getString("Holiday_Editable");
                 weeklyOffEditable = jsonArray.getJSONObject(i).getString("Weeklyoff_Editable");
-            }
+                remarksNeed = jsonArray.getJSONObject(i).optString("tp_objective_mandatory");            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

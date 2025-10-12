@@ -223,7 +223,7 @@ public class SignatureFragment1 extends Fragment {
                         try (FileOutputStream fos = new FileOutputStream(file)) {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                             Log.d("S3ImageLoad", "Image stored locally at: " + file.getAbsolutePath());
-                            if(!imageName.equalsIgnoreCase("null")) {
+                            if(!fileName.equalsIgnoreCase("null")) {
                                 callSignCaptureImage.add(0, new CallSignCaptureImageList(file.getAbsolutePath(), fileName));
                             }
                         } catch (Exception e) {
@@ -260,7 +260,7 @@ public class SignatureFragment1 extends Fragment {
                                 Log.d("GlideImageLoad", "Image successfully loaded from Glide: " + fileName);
                                 try (FileOutputStream fos = new FileOutputStream(file)) {
                                     bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-                                     if(!imageName.equalsIgnoreCase("null")) {
+                                     if(!fileName.equalsIgnoreCase("null")) {
                                         callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
                                     }
                                     Log.d("GlideImageLoad", "Image stored locally at: " + file.getAbsolutePath());

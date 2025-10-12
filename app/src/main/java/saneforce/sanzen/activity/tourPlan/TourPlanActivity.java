@@ -297,6 +297,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 populateCalenderAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
 
             } else {
+                dayWiseArrayCurrentMonthOneBuild.clear();
                 dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                 populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
             }
@@ -354,7 +355,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 public void onSafeClick(View view) {
 //                handler.post(runnable);
                     NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                        @SuppressLint("NotifyDataSetChanged")
+//                        @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void isNetworkAvailable(Boolean status) {
                             if (status) {
@@ -384,7 +385,6 @@ public class TourPlanActivity extends AppCompatActivity {
                 @Override
                 public void onSafeClick(View view) {
                     NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                        @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void isNetworkAvailable(Boolean status) {
                             if (status) {
@@ -445,6 +445,8 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (dayWiseArrayNextMonthOneBuild.size() == 0) {
                             dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                         }
+                        dayWiseArrayNextMonthOneBuild.clear();
+                        dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                         populateCalenderAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
                     }
 
@@ -503,6 +505,8 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (dayWiseArrayPreviousMonthOneBuild.size() == 0) {
                             dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                         }
+                        dayWiseArrayPreviousMonthOneBuild.clear();
+                        dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                         populateCalenderAdapterOneBuild(dayWiseArrayPreviousMonthOneBuild);
                     }
 
@@ -887,7 +891,8 @@ public class TourPlanActivity extends AppCompatActivity {
                             for (int i = 0; i < dayWiseArrayCurrentMonthOneBuild.size(); i++) {
                                 if (dayWiseArrayCurrentMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
                                     dayWiseArrayCurrentMonthOneBuild.remove(i);
-                                    dayWiseArrayCurrentMonthOneBuild.add(i, dataModelOneBuild); // removed and replaced the object with updated session data
+                                    dayWiseArrayCurrentMonthOneBuild.add(i, dataModelOneBuild);
+                                    calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
                                     break;
                                 }
                             }
@@ -900,7 +905,8 @@ public class TourPlanActivity extends AppCompatActivity {
                             for (int i = 0; i < dayWiseArrayNextMonthOneBuild.size(); i++) {
                                 if (dayWiseArrayNextMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
                                     dayWiseArrayNextMonthOneBuild.remove(i);
-                                    dayWiseArrayNextMonthOneBuild.add(i, dataModelOneBuild); // removed and replaced the object with updated session data
+                                    dayWiseArrayNextMonthOneBuild.add(i, dataModelOneBuild);
+                                    calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
                                     break;
                                 }
                             }
@@ -912,7 +918,8 @@ public class TourPlanActivity extends AppCompatActivity {
                             for (int i = 0; i < dayWiseArrayPreviousMonthOneBuild.size(); i++) {
                                 if (dayWiseArrayPreviousMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
                                     dayWiseArrayPreviousMonthOneBuild.remove(i);
-                                    dayWiseArrayPreviousMonthOneBuild.add(i, dataModelOneBuild); // removed and replaced the object with updated session data
+                                    dayWiseArrayPreviousMonthOneBuild.add(i, dataModelOneBuild);
+                                    calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
                                     break;
                                 }
                             }
@@ -925,6 +932,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                         if (isEdited) {
                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Updated Successfully");
+                            calendarAdapter.notifyDataSetChanged();
                             isEdited = false;
                         } else {
                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Saved Successfully");
@@ -2496,16 +2504,19 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.tpNavigation.sessionEdit.setEnabled(false);
                 binding.rejectedReasonTxt.setText("");
                 binding.rejectionReasonLayout.setVisibility(View.GONE);
+                calendarAdapter.notifyDataSetChanged();
                 break;
             case "3":  //Approved by manager
                 binding.rejectionReasonLayout.setVisibility(View.GONE);
                 binding.rejectedReasonTxt.setText(reason);
                 binding.tpNavigation.sessionEdit.setEnabled(false);
+                calendarAdapter.notifyDataSetChanged();
                 break;
             case "2":  //Rejected by manager
                 binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
                 binding.rejectedReasonTxt.setText(reason);
+                calendarAdapter.notifyDataSetChanged();
                 break;
             case "":
             case "0":
@@ -2513,6 +2524,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.rejectionReasonLayout.setVisibility(View.GONE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
                 binding.rejectedReasonTxt.setText("");
+                calendarAdapter.notifyDataSetChanged();
+
                 break;
         }
 
@@ -2523,28 +2536,33 @@ public class TourPlanActivity extends AppCompatActivity {
             case "0": {
                 binding.tpStatusTxt.setText(Constants.STATUS_0);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                calendarAdapter.notifyDataSetChanged();
                 break;
             }
             case "-1": {
                 binding.tpStatusTxt.setText(Constants.STATUS_4);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                calendarAdapter.notifyDataSetChanged();
                 break;
             }
             case "1": {
                 binding.tpStatusTxt.setText(Constants.STATUS_1);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                calendarAdapter.notifyDataSetChanged();
                 break;
             }
             case "2": {
                 binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.tpStatusTxt.setText(Constants.STATUS_2);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
+                calendarAdapter.notifyDataSetChanged();
 //                SetTpRangeStatus();
                 break;
             }
             case "3": {
                 binding.tpStatusTxt.setText(Constants.STATUS_3);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                calendarAdapter.notifyDataSetChanged();
                 SetTpRangeStatus();
                 break;
             }
@@ -2553,8 +2571,8 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
             binding.rejectedReasonTxt.setText("");
             binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
+            calendarAdapter.notifyDataSetChanged();
         }
-
     }
 
     public void scrollToPosition(int position, boolean fieldEmpty) {
