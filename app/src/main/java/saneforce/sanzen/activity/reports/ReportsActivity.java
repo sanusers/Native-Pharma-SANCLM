@@ -34,6 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 //import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
@@ -78,9 +79,12 @@ public class ReportsActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         populateAdapter();
-        binding.backArrow.setOnClickListener(view -> {
-            Intent intent = new Intent(ReportsActivity.this, HomeDashBoard.class);
-            startActivity(intent);
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(ReportsActivity.this, HomeDashBoard.class);
+                startActivity(intent);
+            }
         });
 
     }
@@ -91,8 +95,8 @@ public class ReportsActivity extends AppCompatActivity {
        /* arrayList.add("Monthly Report");
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");*/
-        arrayList.add("Visit Monitor");
-        arrayList.add("Missed Report");
+//        arrayList.add("Visit Monitor");
+//        arrayList.add("Missed Report");
         if (SharedPref.getDashboard(this).equals("0")){
             arrayList.add("Dash Board");
         }

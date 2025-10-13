@@ -25,6 +25,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -84,31 +86,34 @@ public class SettingsActivity extends AppCompatActivity {
             binding.etLicenseKey.setText(SharedPref.getSaveLicenseSetting(getApplicationContext()));
         }
 
-        binding.btnSaveSettings.setOnClickListener(view -> {
+        binding.btnSaveSettings.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 
-            UtilityClass.hideKeyboard(SettingsActivity.this);
-            url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
-            licenseKey = binding.etLicenseKey.getText().toString().trim();
-            deviceId = binding.tvDeviceId.getText().toString();
+                UtilityClass.hideKeyboard(SettingsActivity.this);
+                url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
+                licenseKey = binding.etLicenseKey.getText().toString().trim();
+                deviceId = binding.tvDeviceId.getText().toString();
 
-            if (url.isEmpty()) {
-                binding.etWebUrl.requestFocus();
-                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_url));
-            } else if (licenseKey.isEmpty()) {
-                binding.etLicenseKey.requestFocus();
-                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_license));
-            } else {
-
-                SharedPref.Loginsite(getApplicationContext(), url);
-                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                    if (checkURL(url)) {
-                        Log.i("settings", "onCreate: " + url + "\nLink: " + "https://" + url );
-                        configuration("https://" + url );
-                    } else {
-                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
-                    }
+                if (url.isEmpty()) {
+                    binding.etWebUrl.requestFocus();
+                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_url));
+                } else if (licenseKey.isEmpty()) {
+                    binding.etLicenseKey.requestFocus();
+                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_license));
                 } else {
-                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.no_network));
+
+                    SharedPref.Loginsite(getApplicationContext(), url);
+                    if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                        if (checkURL(url)) {
+                            Log.i("settings", "onCreate: " + url + "\nLink: " + "https://" + url);
+                            configuration("https://" + url);
+                        } else {
+                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                        }
+                    } else {
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.no_network));
+                    }
                 }
             }
         });
@@ -264,82 +269,163 @@ public class SettingsActivity extends AppCompatActivity {
         binding.configurationPB.setVisibility(View.VISIBLE);
 
         try {
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
-            Call<JsonArray> call = apiInterface.configuration("/Apps/ConfigiOS.json");
-            call.enqueue(new Callback<JsonArray>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-                    Log.d("setting", "onResponse: " + response.isSuccessful() + "\n" + response.body());
-                    Log.d("setting", "onResponse: " + response.message() );
-                    Log.d("setting", "onResponse: " + response.errorBody() );
-                    Log.d("setting", "onResponse: " + response.headers());
-                    if (response.isSuccessful()) {
-                        Log.e("test", "success : " + response.body().toString());
-                        JSONArray jsonArray = null;
-                        try {
-                            jsonArray = new JSONArray(response.body().toString());
-                            boolean licenseKeyValid = false;
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObj = jsonArray.getJSONObject(i);
-                                if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
-                                    JSONObject config = new JSONObject(jsonObj.getString("config"));
-                                    divisionCode = config.getString("division");
-                                    baseWebUrl = config.getString("weburl");
-                                    phpPathUrl = config.getString("appurl");
-                                    reportsUrl = config.getString("reportUrl");
-                                    slidesUrl = config.getString("slideurl");
-                                    logoUrl = config.getString("logoimg");
-                                    optionFiles = config.getString("optionFiles");
+            if (enteredUrl.contains("saneforce.com")) {
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), "https://mapi.san.one");
+                Call<JsonElement> call = apiInterface.getOneBuildConfig("/api/Configuration/Detail-Config");
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        Log.d("setting", "onResponse: " + response.isSuccessful() + "\n" + response.body());
+                        Log.d("setting", "onResponse: " + response.message());
+                        Log.d("setting", "onResponse: " + response.errorBody());
+                        Log.d("setting", "onResponse: " + response.headers());
+                        if (response.isSuccessful()) {
+                            Log.e("test", "success : " + response.body().toString());
+                            JSONArray jsonArray = null;
+                            try {
+                                jsonArray = new JSONArray(response.body().toString());
+                                boolean licenseKeyValid = false;
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObj = jsonArray.getJSONObject(i);
+                                    if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
+                                        JSONObject config = new JSONObject(jsonObj.getString("config"));
+                                        divisionCode = config.getString("division");
+                                        baseWebUrl = config.getString("weburl");
+                                        phpPathUrl = config.getString("appurl");
+                                        reportsUrl = config.getString("reportUrl");
+                                        slidesUrl = config.getString("slideurl");
+                                        logoUrl = config.getString("logoimg");
+                                        optionFiles = config.getString("optionFiles");
 
-                                    String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
-                                    String urlData = web_url_getText + phpPathUrl;
-                                    String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
+                                        String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
+                                        String urlData = web_url_getText + phpPathUrl;
+                                        String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
 
-                                    SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
-                                    SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
+                                        SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
+                                        SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
-                                    String[] splitUrl = logoUrl.split("/");
-                                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, logoUrl, optionFiles, true);
-                                    SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
-                                    downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
-                                    licenseKeyValid = true;
-                                    SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
-                                    SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
-                                    break;
+                                        String[] splitUrl = logoUrl.split("/");
+                                        SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, logoUrl, optionFiles, true);
+                                        SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
+                                        downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
+                                        licenseKeyValid = true;
+                                        SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
+                                        SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
+                                        break;
+                                    }
                                 }
-                            }
 
-                            if (!licenseKeyValid){
+                                if (!licenseKeyValid) {
                                     binding.configurationPB.setVisibility(View.GONE);
                                     binding.btnSaveSettings.setEnabled(true);
-                                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));}
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                                    CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            SharedPref.Loginsite(getApplicationContext(), url);
+                        } else {
+                            binding.btnSaveSettings.setEnabled(true);
+                            CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            binding.configurationPB.setVisibility(View.GONE);
                         }
-                        SharedPref.Loginsite(getApplicationContext(), url);
-                    } else {
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable throwable) {
+                        Log.e("test", "failed : " + throwable.toString());
+                        throwable.printStackTrace();
                         binding.btnSaveSettings.setEnabled(true);
-                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
-                        binding.configurationPB.setVisibility(View.GONE);
+                        hitCount++;
+                        if (hitCount < 2) {
+                            configuration("http://mapi.san.one");
+                        } else {
+                            binding.configurationPB.setVisibility(View.GONE);
+                            CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            Log.e("test", "hit count is : " + hitCount);
+                            hitCount = 0;
+                        }
+                    }
+                });
+            } else {
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
+                Call<JsonArray> call = apiInterface.configuration("/Apps/ConfigiOS.json");
+                call.enqueue(new Callback<JsonArray>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                        Log.d("setting", "onResponse: " + response.isSuccessful() + "\n" + response.body());
+                        Log.d("setting", "onResponse: " + response.message());
+                        Log.d("setting", "onResponse: " + response.errorBody());
+                        Log.d("setting", "onResponse: " + response.headers());
+                        if (response.isSuccessful()) {
+                            Log.e("test", "success : " + response.body().toString());
+                            JSONArray jsonArray = null;
+                            try {
+                                jsonArray = new JSONArray(response.body().toString());
+                                boolean licenseKeyValid = false;
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObj = jsonArray.getJSONObject(i);
+                                    if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
+                                        JSONObject config = new JSONObject(jsonObj.getString("config"));
+                                        divisionCode = config.getString("division");
+                                        baseWebUrl = config.getString("weburl");
+                                        phpPathUrl = config.getString("appurl");
+                                        reportsUrl = config.getString("reportUrl");
+                                        slidesUrl = config.getString("slideurl");
+                                        logoUrl = config.getString("logoimg");
+                                        optionFiles = config.getString("optionFiles");
+
+                                        String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
+                                        String urlData = web_url_getText + phpPathUrl;
+                                        String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
+
+                                        SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
+                                        SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
+
+                                        String[] splitUrl = logoUrl.split("/");
+                                        SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, logoUrl, optionFiles, true);
+                                        SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
+                                        downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
+                                        licenseKeyValid = true;
+                                        SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
+                                        SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
+                                        break;
+                                    }
+                                }
+
+                                if (!licenseKeyValid) {
+                                    binding.configurationPB.setVisibility(View.GONE);
+                                    binding.btnSaveSettings.setEnabled(true);
+                                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            SharedPref.Loginsite(getApplicationContext(), url);
+                        } else {
+                            binding.btnSaveSettings.setEnabled(true);
+                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            binding.configurationPB.setVisibility(View.GONE);
+                        }
+
                     }
 
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                    Log.e("test", "failed : " + t.toString());
-                    binding.btnSaveSettings.setEnabled(true);
-                    hitCount++;
-                    if (hitCount < 2) {
-                        configuration("http://" + url + "/apps/");
-                    } else {
-                        binding.configurationPB.setVisibility(View.GONE);
-                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
-                        Log.e("test", "hit count is : " + hitCount);
-                        hitCount = 0;
+                    @Override
+                    public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                        Log.e("test", "failed : " + t.toString());
+                        binding.btnSaveSettings.setEnabled(true);
+                        hitCount++;
+                        if (hitCount < 2) {
+                            configuration("http://" + url + "/apps/");
+                        } else {
+                            binding.configurationPB.setVisibility(View.GONE);
+                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            Log.e("test", "hit count is : " + hitCount);
+                            hitCount = 0;
+                        }
                     }
-                }
-            });
+                });
+            }
         } catch (Exception exception) {
             commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
             exception.printStackTrace();

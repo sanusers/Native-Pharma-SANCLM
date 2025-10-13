@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.createPresentation.slide.ImageSelectionInterface;
@@ -56,9 +57,12 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
 
         arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(holder.getAbsoluteAdapterPosition() + 1);
 
-        holder.deleteIcon.setOnClickListener(view -> {
-            arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(false);
-            imageSelectionInterface.imageSelection(arrayList,holder.getAbsoluteAdapterPosition());
+        holder.deleteIcon.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(false);
+                imageSelectionInterface.imageSelection(arrayList, holder.getAbsoluteAdapterPosition());
+            }
         });
 
         holder.dragIcon.setOnTouchListener((view, motionEvent) -> {

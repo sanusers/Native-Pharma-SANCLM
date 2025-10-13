@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportRcpaModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
@@ -75,23 +76,23 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
 
 
 
-        holder.prdName.setOnClickListener(v -> {
-            popUp(v, rcpaList.get(position).getOPName());
+        holder.prdName.setOnClickListener(view -> {
+            popUp(view, rcpaList.get(position).getOPName());
         });
-        holder.CompetitorName.setOnClickListener(v -> {
-            popUp(v, rcpaList.get(position).getChmName());
+        holder.CompetitorName.setOnClickListener(view -> {
+            popUp(view, rcpaList.get(position).getChmName());
         });
-        holder.CompetitorProductName.setOnClickListener(v -> {
-            popUp(v, rcpaList.get(position).getCompPName());
+        holder.CompetitorProductName.setOnClickListener(view -> {
+            popUp(view, rcpaList.get(position).getCompPName());
         });
-        holder.comName.setOnClickListener(v -> {
-            popUp(v, rcpaList.get(position).getCompName());
+        holder.comName.setOnClickListener(view -> {
+            popUp(view, rcpaList.get(position).getCompName());
         });
-        holder.img_remarks.setOnClickListener(v -> {
-            popUp(v, rcpaList.get(position).getCPRemarks());
+        holder.img_remarks.setOnClickListener(view -> {
+            popUp(view, rcpaList.get(position).getCPRemarks());
         });
-        holder.infoView.setOnClickListener(v -> {
-            ratePopUp(v,rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPQty(),rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPValue(),rcpaList.get(position).getCPQty(),rcpaList.get(position).getCPRate(),rcpaList.get(position).getCPValue(),totalvalue);
+        holder.infoView.setOnClickListener(view -> {
+            ratePopUp(view,rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPQty(),rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPValue(),rcpaList.get(position).getCPQty(),rcpaList.get(position).getCPRate(),rcpaList.get(position).getCPValue(),totalvalue);
             notifyDataSetChanged();
         });
     }
@@ -124,7 +125,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         }
     }
 
-    private void popUp(View v, String name) {
+    private void popUp(View view, String name) {
         PopupWindow popup = new PopupWindow(context);
         View layout = LayoutInflater.from(context).inflate(R.layout.popup_text, null);
         popup.setContentView(layout);
@@ -132,12 +133,12 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         TextView tv_name = layout.findViewById(R.id.tv_name);
         tv_name.setText(name);
         popup.setOutsideTouchable(true);
-        popup.showAsDropDown(v);
+        popup.showAsDropDown(view);
     }
 
 
 
-    private void ratePopUp(View v,String rate,String opQty,String opRate,String opValue,String cpQty,String cpRate,String cpValue,String totValue) {
+    private void ratePopUp(View view,String rate,String opQty,String opRate,String opValue,String cpQty,String cpRate,String cpValue,String totValue) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.dialog_rcpa_rate, null);
         PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, false);
@@ -156,12 +157,12 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         txtCompRate.setText(cpRate);
         textCompValue.setText(cpValue);
         textTotal.setText(totValue);
-        v.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        int infoViewWidth = v.getMeasuredWidth();
+        int infoViewWidth = view.getMeasuredWidth();
         int popupWidth = popupView.getMeasuredWidth();
         int xOffset = infoViewWidth - popupWidth;
-        popupWindow.showAsDropDown(v, xOffset, 0);
+        popupWindow.showAsDropDown(view, xOffset, 0);
     }
 
     private static boolean isInteger(String value) {

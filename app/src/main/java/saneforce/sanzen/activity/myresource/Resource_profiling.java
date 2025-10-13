@@ -66,6 +66,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 
 import saneforce.sanzen.activity.login.LoginActivity;
@@ -280,94 +281,103 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         Dcrname.setText(docname);
 
 
-        dob_date.setOnClickListener(v -> {
-            final Calendar c = Calendar.getInstance(Locale.getDefault());
-            int mYear = c.get(Calendar.YEAR);
-            int mMonth = c.get(Calendar.MONTH);
-            int mDay = c.get(Calendar.DAY_OF_MONTH);
+        dob_date.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                final Calendar c = Calendar.getInstance(Locale.getDefault());
+                int mYear = c.get(Calendar.YEAR);
+                int mMonth = c.get(Calendar.MONTH);
+                int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    Resource_profiling.this,
-                    //   R.style.CustomDatePickerDialogTheme,
-                    (view, year, monthOfYear, dayOfMonth) -> {
-                        if ((monthOfYear + 1) < 10) {
-                            if (dayOfMonth < 10) {
-                                dob_dt = year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth;
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        Resource_profiling.this,
+                        //   R.style.CustomDatePickerDialogTheme,
+                        (v, year, monthOfYear, dayOfMonth) -> {
+                            if ((monthOfYear + 1) < 10) {
+                                if (dayOfMonth < 10) {
+                                    dob_dt = year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth;
+                                } else {
+                                    dob_dt = year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                }
                             } else {
-                                dob_dt = year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                if (dayOfMonth < 10) {
+                                    dob_dt = year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth;
+                                } else {
+                                    dob_dt = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                }
                             }
-                        } else {
-                            if (dayOfMonth < 10) {
-                                dob_dt = year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth;
-                            } else {
-                                dob_dt = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                            DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            String inputDateStr = dob_dt;
+                            try {
+                                dob_date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_11, TimeUtils.FORMAT_14, inputDateStr));
+                                dateBefore = inputFormat.parse(dob_dt);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
-                        }
-                        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        String inputDateStr = dob_dt;
-                        try {
-                            dob_date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_11, TimeUtils.FORMAT_14, inputDateStr));
-                            dateBefore = inputFormat.parse(dob_dt);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    },
-                    mYear, mMonth, mDay
-            );
+                        },
+                        mYear, mMonth, mDay
+                );
 
-            datePickerDialog.show();
+                datePickerDialog.show();
+            }
         });
 
-        dow_date.setOnClickListener(v -> {
+        dow_date.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 
-            final Calendar c = Calendar.getInstance(Locale.getDefault());
-            int mYear = c.get(Calendar.YEAR);
-            int mMonth = c.get(Calendar.MONTH);
-            int mDay = c.get(Calendar.DAY_OF_MONTH);
-            DatePickerDialog datePickerDialog = new DatePickerDialog(Resource_profiling.this,
-                    (view, year, monthOfYear, dayOfMonth) -> {
-                        if ((monthOfYear + 1) < 10) {
-                            if (dayOfMonth < 10) {
-                                dow_dt = year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth;
-                            } else {
-                                dow_dt = year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth;
-                            }
-                        } else {
-                            if (dayOfMonth < 10) {
-                                dow_dt = year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth;
-                            } else {
-                                dow_dt = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                            }
-                        }
-                        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        String inputDateStr = dow_dt;
-                        Date date = null;
-                        try {
-                            date = inputFormat.parse(inputDateStr);
-                            dow_date.setText((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_11, TimeUtils.FORMAT_14, inputDateStr)));//
-                            dateBefore = inputFormat.parse(dow_dt);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                final Calendar c = Calendar.getInstance(Locale.getDefault());
+                int mYear = c.get(Calendar.YEAR);
+                int mMonth = c.get(Calendar.MONTH);
+                int mDay = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Resource_profiling.this,
+                                                                         (v, year, monthOfYear, dayOfMonth) -> {
+                                                                             if ((monthOfYear + 1) < 10) {
+                                                                                 if (dayOfMonth < 10) {
+                                                                                     dow_dt = year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth;
+                                                                                 } else {
+                                                                                     dow_dt = year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                                                                 }
+                                                                             } else {
+                                                                                 if (dayOfMonth < 10) {
+                                                                                     dow_dt = year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth;
+                                                                                 } else {
+                                                                                     dow_dt = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                                                                 }
+                                                                             }
+                                                                             DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                                                             String inputDateStr = dow_dt;
+                                                                             Date date = null;
+                                                                             try {
+                                                                                 date = inputFormat.parse(inputDateStr);
+                                                                                 dow_date.setText((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_11, TimeUtils.FORMAT_14, inputDateStr)));//
+                                                                                 dateBefore = inputFormat.parse(dow_dt);
+                                                                             } catch (
+                                                                                     ParseException e) {
+                                                                                 e.printStackTrace();
+                                                                             }
 
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-
+                                                                         }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
         });
 
 
-        clear_all.setOnClickListener(view -> {
-            Qualification.setText("");
-            Speciality.setText("");
-            Category.setText("");
-            dob_date.setText("");
-            dow_date.setText("");
-            main_address.setText("");
-            RP_mobile.setText("");
-            RP_phone.setText("");
-            email1.setText("");
-            city.setText("");
-            district.setText("");
+        clear_all.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Qualification.setText("");
+                Speciality.setText("");
+                Category.setText("");
+                dob_date.setText("");
+                dow_date.setText("");
+                main_address.setText("");
+                RP_mobile.setText("");
+                RP_phone.setText("");
+                email1.setText("");
+                city.setText("");
+                district.setText("");
+            }
         });
 
 //        tag_clk.setOnClickListener(view -> {
@@ -381,8 +391,11 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
 //            startActivity(visit);
 //        });
 
-        close_sideview.setOnClickListener(view -> {
-            Resource_profiling.drawer_Layout12.closeDrawer(GravityCompat.END);
+        close_sideview.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Resource_profiling.drawer_Layout12.closeDrawer(GravityCompat.END);
+            }
         });
 
         if (!Resource_adapter.rec_val.equals("D")) {
@@ -390,44 +403,59 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         }
 
 
-        Qualification.setOnClickListener(view -> {
-            headtext_id.setText("Qualification");
-            sidelisted_data("Q");
-            drawer_Layout12.openDrawer(GravityCompat.END);
+        Qualification.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                headtext_id.setText("Qualification");
+                sidelisted_data("Q");
+                drawer_Layout12.openDrawer(GravityCompat.END);
+            }
         });
-        Speciality.setOnClickListener(view -> {
-            headtext_id.setText("Speciality");
-            sidelisted_data("S");
-            drawer_Layout12.openDrawer(GravityCompat.END);
+        Speciality.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                headtext_id.setText("Speciality");
+                sidelisted_data("S");
+                drawer_Layout12.openDrawer(GravityCompat.END);
+            }
         });
-        Category.setOnClickListener(view -> {
-            headtext_id.setText("Category");
-            sidelisted_data("C");
-            drawer_Layout12.openDrawer(GravityCompat.END);
-        });
-
-        submit_profil.setOnClickListener(view -> {
-            String email = email1.getText().toString().trim();
-
-            if (Qualification.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(this, this.getString(R.string.select_qualification));
-            } else if (Speciality.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(this, this.getString(R.string.select_speciality));
-            } else if (Category.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(this, this.getString(R.string.select_category));
-            } else if (!email.isEmpty()) {
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    commonUtilsMethods.showToastMessage(this, this.getString(R.string.mail_not_valid));
-                } else {
-                    submit_profiling();
-                }
-            } else {
-                submit_profiling();
+        Category.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                headtext_id.setText("Category");
+                sidelisted_data("C");
+                drawer_Layout12.openDrawer(GravityCompat.END);
             }
         });
 
-        backArrow.setOnClickListener(view -> {
-            finish();
+        submit_profil.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                String email = email1.getText().toString().trim();
+
+                if (Qualification.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_qualification));
+                } else if (Speciality.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_speciality));
+                } else if (Category.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_category));
+                } else if (!email.isEmpty()) {
+                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.mail_not_valid));
+                    } else {
+                        submit_profiling();
+                    }
+                } else {
+                    submit_profiling();
+                }
+            }
+        });
+
+        backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                finish();
+            }
         });
 
 

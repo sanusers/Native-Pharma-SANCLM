@@ -54,6 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.Quiz.AssertDownloadAlert.AssertDownloadAdapter;
 import saneforce.sanzen.activity.Quiz.AssertDownloadAlert.AssertDownloadService;
 import saneforce.sanzen.activity.Quiz.AssertDownloadAlert.AssertDownloadViewModel;
@@ -178,72 +179,93 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
 
-        binding.backArrow.setOnClickListener(v -> {
-            if(SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")
-                    && isQuizAvailable
-                    && (!SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
-                    || SharedPref.getQuizAttempts(QuizActivity.this)>0) ) {
-                noBackAlert();
-            }else {
-                if(isStarted) {
-                    backAlert();
-                }else {
-                    pauseTimer();
-                    isStarted = false;
-                    isBackPressed = true;
-                    getOnBackPressedDispatcher().onBackPressed();
-                    finish();
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")
+                        && isQuizAvailable
+                        && (!SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
+                        || SharedPref.getQuizAttempts(QuizActivity.this) > 0)) {
+                    noBackAlert();
+                } else {
+                    if (isStarted) {
+                        backAlert();
+                    } else {
+                        pauseTimer();
+                        isStarted = false;
+                        isBackPressed = true;
+                        getOnBackPressedDispatcher().onBackPressed();
+                        finish();
+                    }
                 }
             }
         });
 
-        binding.btnskip.setOnClickListener(v -> {
-            if(SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")
-                    && isQuizAvailable
-                    && (!SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
-                    || SharedPref.getQuizAttempts(QuizActivity.this)>0) ) {
-                noBackAlert();
-            }else {
-                if(isStarted) {
-                    backAlert();
-                }else {
-                    pauseTimer();
-                    isStarted = false;
-                    isBackPressed = true;
-                    getOnBackPressedDispatcher().onBackPressed();
-                    finish();
+        binding.btnskip.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")
+                        && isQuizAvailable
+                        && (!SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
+                        || SharedPref.getQuizAttempts(QuizActivity.this) > 0)) {
+                    noBackAlert();
+                } else {
+                    if (isStarted) {
+                        backAlert();
+                    } else {
+                        pauseTimer();
+                        isStarted = false;
+                        isBackPressed = true;
+                        getOnBackPressedDispatcher().onBackPressed();
+                        finish();
+                    }
                 }
             }
         });
 
-        binding.llDownloadAsserts.setOnClickListener(v -> {
-            callDownloadAssertAPI();
+        binding.llDownloadAsserts.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                callDownloadAssertAPI();
+            }
         });
 
         binding.btnpreview.setAlpha(0.5f);
-        binding.btnpreview.setOnClickListener(view -> {
-            if(QuestionNumber != 0) {
-                QuestionNumber = QuestionNumber - 1;
-                setQuestion(QuestionNumber);
+        binding.btnpreview.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (QuestionNumber != 0) {
+                    QuestionNumber = QuestionNumber - 1;
+                    setQuestion(QuestionNumber);
+                }
             }
         });
 
-        binding.btnNext.setOnClickListener(view -> {
-            if(QuestionNumber<mQuizList.size() - 1) {
-                QuestionNumber = QuestionNumber + 1;
-                setQuestion(QuestionNumber);
+        binding.btnNext.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (QuestionNumber < mQuizList.size() - 1) {
+                    QuestionNumber = QuestionNumber + 1;
+                    setQuestion(QuestionNumber);
+                }
             }
         });
 
-        binding.startQuizBtn.setOnClickListener(view -> {
-            binding.rlStartQuiz.setVisibility(View.GONE);
-            binding.rlQuizMain.setVisibility(View.VISIBLE);
-            isStarted = true;
-            populateData();
+        binding.startQuizBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                binding.rlStartQuiz.setVisibility(View.GONE);
+                binding.rlQuizMain.setVisibility(View.VISIBLE);
+                isStarted = true;
+                populateData();
+            }
         });
 
-        binding.btnSave.setOnClickListener(view -> {
-            validate();
+        binding.btnSave.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                validate();
+            }
         });
 
     }
@@ -303,14 +325,20 @@ public class QuizActivity extends AppCompatActivity {
         content.setText(String.format("%s is Mandatory.\nKindly Sync by clicking \"%s\"", quizCap, getString(R.string.try_again)));
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
-            callSyncAPI();
-            dialogBackConfirmation.dismiss();
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                callSyncAPI();
+                dialogBackConfirmation.dismiss();
+            }
         });
-        btn_clear.setOnClickListener(view -> {
-            SharedPref.setSelectedDateCal(QuizActivity.this, "");
-            dialogBackConfirmation.dismiss();
-            finish();
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SharedPref.setSelectedDateCal(QuizActivity.this, "");
+                dialogBackConfirmation.dismiss();
+                finish();
+            }
         });
         dialogBackConfirmation.show();
     }
@@ -380,8 +408,11 @@ public class QuizActivity extends AppCompatActivity {
             dialog.show();
         }
 
-        cancel_img.setOnClickListener(view -> {
-            dialog.dismiss();
+        cancel_img.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
 
         AssertDownloadViewModel assertDownloadViewModel = new ViewModelProvider(this).get(AssertDownloadViewModel.class);
@@ -455,13 +486,24 @@ public class QuizActivity extends AppCompatActivity {
         content.setText(quizCap + " is Mandatory. Cannot go back");
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
-            dialogBackConfirmation.dismiss();
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogBackConfirmation.dismiss();
+            }
         });
-        btn_clear.setOnClickListener(view -> {
-            dialogBackConfirmation.dismiss();
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogBackConfirmation.dismiss();
+            }
         });
-        iv_close.setOnClickListener(view -> dialogBackConfirmation.dismiss());
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogBackConfirmation.dismiss();
+            }
+        });
         dialogBackConfirmation.show();
     }
 
@@ -483,17 +525,28 @@ public class QuizActivity extends AppCompatActivity {
         content.setText(String.format("%s started, Cannot go back", quizCap));
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 //            pauseTimer();
 //            isStarted = false;
-            dialogBackConfirmation.dismiss();
+                dialogBackConfirmation.dismiss();
 //            getOnBackPressedDispatcher().onBackPressed();
 //            finish();
+            }
         });
-        btn_clear.setOnClickListener(view -> {
-            dialogBackConfirmation.dismiss();
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogBackConfirmation.dismiss();
+            }
         });
-        iv_close.setOnClickListener(view -> dialogBackConfirmation.dismiss());
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogBackConfirmation.dismiss();
+            }
+        });
         dialogBackConfirmation.show();
     }
 
@@ -545,15 +598,26 @@ public class QuizActivity extends AppCompatActivity {
 //        }
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
-            submitQuiz();
-            dialogOptionSelection.dismiss();
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                submitQuiz();
+                dialogOptionSelection.dismiss();
+            }
         });
-        btn_clear.setOnClickListener(view -> {
-            dialogOptionSelection.dismiss();
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogOptionSelection.dismiss();
 //            resumeTimer();
+            }
         });
-        iv_close.setOnClickListener(view -> dialogOptionSelection.dismiss());
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogOptionSelection.dismiss();
+            }
+        });
         dialogOptionSelection.show();
     }
 
@@ -609,26 +673,32 @@ public class QuizActivity extends AppCompatActivity {
             retry.setVisibility(View.VISIBLE);
         }
 
-        retry.setOnClickListener(view -> {
-            getData();
-            quizResultDialog.dismiss();
+        retry.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getData();
+                quizResultDialog.dismiss();
+            }
         });
 
-        iv_close.setOnClickListener(view -> {
-            try {
-                binding.rlStartQuiz.setVisibility(View.VISIBLE);
-                binding.rlQuizMain.setVisibility(View.GONE);
-                masterDataDao.updateData(Constants.QUIZ, "[]");
-                quizAssertsDao.deleteAllData();
-                File file = new File(this.getExternalFilesDir(null) + "/QuizAsserts");
-                if(file.exists()) {
-                    cleanDirectory(file);
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    binding.rlStartQuiz.setVisibility(View.VISIBLE);
+                    binding.rlQuizMain.setVisibility(View.GONE);
+                    masterDataDao.updateData(Constants.QUIZ, "[]");
+                    quizAssertsDao.deleteAllData();
+                    File file = new File(QuizActivity.this.getExternalFilesDir(null) + "/QuizAsserts");
+                    if (file.exists()) {
+                        cleanDirectory(file);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                quizResultDialog.dismiss();
+                finish();
             }
-            quizResultDialog.dismiss();
-            finish();
         });
 
         if(!isFinishing()) {
@@ -827,12 +897,18 @@ public class QuizActivity extends AppCompatActivity {
         content.setText(String.format("%s submit failed.\n\"%s\" to submit", quizCap, getString(R.string.try_again)));
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
-            callSaveAPI();
-            dialogBackConfirmation.dismiss();
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                callSaveAPI();
+                dialogBackConfirmation.dismiss();
+            }
         });
-        btn_clear.setOnClickListener(view -> {
-            dialogBackConfirmation.dismiss();
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogBackConfirmation.dismiss();
+            }
         });
         dialogBackConfirmation.show();
     }

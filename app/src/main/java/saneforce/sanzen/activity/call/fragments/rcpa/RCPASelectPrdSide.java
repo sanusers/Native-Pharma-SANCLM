@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -48,17 +49,21 @@ public class RCPASelectPrdSide extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectProductSideBinding = FragmentSelectProductSideBinding.inflate(inflater);
-        View v = selectProductSideBinding.getRoot();
+        View view = selectProductSideBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         AddProductsData();
 
-        selectProductSideBinding.tvDummy.setOnClickListener(view -> {
+        selectProductSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
-        selectProductSideBinding.imgClose.setOnClickListener(view -> {
+        selectProductSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+            UtilityClass.hideKeyboard(requireActivity());}
         });
 
         selectProductSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -77,7 +82,7 @@ public class RCPASelectPrdSide extends Fragment {
                 filterPrd(editable.toString());
             }
         });
-        return v;
+        return view;
     }
 
     private void AddProductsData() {
