@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class WorkplanListAdapter extends BaseAdapter {
 

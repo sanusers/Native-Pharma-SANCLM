@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpDetailedModel;
 
 public class TpApprovalDetailedAdapter extends RecyclerView.Adapter<TpApprovalDetailedAdapter.ViewHolder> {
@@ -94,13 +95,15 @@ public class TpApprovalDetailedAdapter extends RecyclerView.Adapter<TpApprovalDe
         holder.tvWtName.setText(wtName);
 
 
-        holder.cardView.setOnClickListener(v -> {
-            if (holder.cardView.isPressed()) {
-                if (holder.rvViewDetailed.getVisibility() == View.VISIBLE) {
-                    SelectedDay = "";
-                } else {
-                    SelectedDay = tpDetailedList.get(position).getDayNo();
-                }
+        holder.cardView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (holder.cardView.isPressed()) {
+                    if (holder.rvViewDetailed.getVisibility() == View.VISIBLE) {
+                        SelectedDay = "";
+                    } else {
+                        SelectedDay = tpDetailedList.get(position).getDayNo();
+                    }
             /*    if (holder.rvViewDetailed.getVisibility() == View.VISIBLE) {
                     holder.rvViewDetailed.setVisibility(View.GONE);
                     holder.listArrow.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.drop_down));
@@ -122,8 +125,9 @@ public class TpApprovalDetailedAdapter extends RecyclerView.Adapter<TpApprovalDe
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
                 holder.rvViewDetailed.setLayoutManager(mLayoutManager);
                 holder.rvViewDetailed.setAdapter(tpClickViewDetailsAdapter);*/
-                notifyDataSetChanged();
-                //  }
+                    notifyDataSetChanged();
+                    //  }
+                }
             }
         });
     }

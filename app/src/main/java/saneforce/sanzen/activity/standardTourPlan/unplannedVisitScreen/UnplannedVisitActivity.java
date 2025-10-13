@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.NoDataModel;
@@ -60,41 +61,41 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getRequiredData();
 
-        activityUnplannedVisitBinding.backArrow.setOnClickListener(v -> super.onBackPressed());
+        activityUnplannedVisitBinding.backArrow.setOnClickListener(view -> super.onBackPressed());
 
-        activityUnplannedVisitBinding.tagTvDoctor.setOnClickListener(v -> {
+        activityUnplannedVisitBinding.tagTvDoctor.setOnClickListener(view -> {
 //            selectedDCR = Constants.DOCTOR;
             selectedDCR = Constants.DOCTOR_MAS;
             updateDCRSelectionUI();
             populateDcrData();
         });
 
-        activityUnplannedVisitBinding.tagTvChemist.setOnClickListener(v -> {
+        activityUnplannedVisitBinding.tagTvChemist.setOnClickListener(view -> {
 //            selectedDCR = Constants.CHEMIST;
             selectedDCR = Constants.CHEMIST_MAS;
             updateDCRSelectionUI();
             populateDcrData();
         });
 
-        activityUnplannedVisitBinding.tagTvStockist.setOnClickListener(v -> {
+        activityUnplannedVisitBinding.tagTvStockist.setOnClickListener(view -> {
             selectedDCR = Constants.STOCKIEST;
             updateDCRSelectionUI();
             populateDcrData();
         });
 
-        activityUnplannedVisitBinding.tagTvUndr.setOnClickListener(v -> {
+        activityUnplannedVisitBinding.tagTvUndr.setOnClickListener(view -> {
             selectedDCR = Constants.UNLISTED_DOCTOR;
             updateDCRSelectionUI();
             populateDcrData();
         });
 
-        activityUnplannedVisitBinding.tagTvCip.setOnClickListener(v -> {
+        activityUnplannedVisitBinding.tagTvCip.setOnClickListener(view -> {
             selectedDCR = Constants.CIP;
             updateDCRSelectionUI();
             populateDcrData();
         });
 
-        activityUnplannedVisitBinding.tagTvHospital.setOnClickListener(v -> {
+        activityUnplannedVisitBinding.tagTvHospital.setOnClickListener(view -> {
             selectedDCR = Constants.HOSPITAL;
             updateDCRSelectionUI();
             populateDcrData();

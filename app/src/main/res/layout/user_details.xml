@@ -41,7 +41,7 @@
                 android:layout_height="@dimen/_35sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:src="@drawable/acount_img" />
+                android:src="@drawable/profileview" />
 
         </LinearLayout>
 

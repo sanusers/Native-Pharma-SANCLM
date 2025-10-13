@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.ReportPagerAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 

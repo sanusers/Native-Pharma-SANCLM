@@ -65,6 +65,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -531,36 +532,41 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         });
 
 
-        HomeDashBoard.binding.llNav.txtClDone.setOnClickListener(v -> {
-            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
-            UtilityClass.hideKeyboard(requireActivity());
-            if (!listSelectedCluster.isEmpty()) {
-                String selectedUsers = "", selectedId = "";
-                strClusterName = "";
-                strClusterID = "";
-                for (Multicheckclass_clust multiCheckClassCluster : multiple_cluster_list) {
-                    if (multiCheckClassCluster.isChecked()) {
-                        selectedUsers = selectedUsers + multiCheckClassCluster.getStrname() + ",";
-                        selectedId = selectedId + multiCheckClassCluster.getStrid() + ",";
-                        strClusterID = selectedId;
-                        strClusterName = selectedUsers;
+        HomeDashBoard.binding.llNav.txtClDone.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+                UtilityClass.hideKeyboard(requireActivity());
+                if (!listSelectedCluster.isEmpty()) {
+                    String selectedUsers = "", selectedId = "";
+                    strClusterName = "";
+                    strClusterID = "";
+                    for (Multicheckclass_clust multiCheckClassCluster : multiple_cluster_list) {
+                        if (multiCheckClassCluster.isChecked()) {
+                            selectedUsers = selectedUsers + multiCheckClassCluster.getStrname() + ",";
+                            selectedId = selectedId + multiCheckClassCluster.getStrid() + ",";
+                            strClusterID = selectedId;
+                            strClusterName = selectedUsers;
+                        }
                     }
-                }
-                if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
-                    mTowncode1 = strClusterID;
-                    mTownname1 = strClusterName;
-                    binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
-                    chk_cluster = mTowncode1;
-                } else {
-                    mTowncode2 = strClusterID;
-                    mTownname2 = strClusterName;
-                    binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
-                    chk_cluster = mTowncode2;
+                    if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
+                        mTowncode1 = strClusterID;
+                        mTownname1 = strClusterName;
+                        binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
+                        chk_cluster = mTowncode1;
+                    } else {
+                        mTowncode2 = strClusterID;
+                        mTownname2 = strClusterName;
+                        binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
+                        chk_cluster = mTowncode2;
+                    }
                 }
             }
         });
 
-        HomeDashBoard.binding.llNav.cancelImg.setOnClickListener(view -> {
+        HomeDashBoard.binding.llNav.cancelImg.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 //            if(DayPlanCount.equalsIgnoreCase("1")){
 //                if(binding.txtCluster1.getText().toString().isEmpty()){
 //                    for (Multicheckclass_clust multicheckclassClust : multiple_cluster_list) {
@@ -574,10 +580,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                    }
 //                }
 //            }
-            if ((DayPlanCount.equalsIgnoreCase("1") && mTowncode1.isEmpty()) || (DayPlanCount.equalsIgnoreCase("2") && mTowncode2.isEmpty())) {
-                chk_cluster = "";
+                if ((DayPlanCount.equalsIgnoreCase("1") && mTowncode1.isEmpty()) || (DayPlanCount.equalsIgnoreCase("2") && mTowncode2.isEmpty())) {
+                    chk_cluster = "";
+                }
+                HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
             }
-            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
         });
     }
 
@@ -649,19 +656,25 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        HomeDashBoard.binding.llNav.txtClDone.setOnClickListener(v -> {
-            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
-            UtilityClass.hideKeyboard(requireActivity());
-            strClusterName = "";
-            strClusterID = "";
-            updateSelectedClusters();
+        HomeDashBoard.binding.llNav.txtClDone.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+                UtilityClass.hideKeyboard(requireActivity());
+                strClusterName = "";
+                strClusterID = "";
+                updateSelectedClusters();
+            }
         });
 
-        HomeDashBoard.binding.llNav.cancelImg.setOnClickListener(view -> {
-            if((DayPlanCount.equalsIgnoreCase("1") && mTowncode1.isEmpty()) || (DayPlanCount.equalsIgnoreCase("2") && mTowncode2.isEmpty())) {
-                chk_cluster = "";
+        HomeDashBoard.binding.llNav.cancelImg.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if ((DayPlanCount.equalsIgnoreCase("1") && mTowncode1.isEmpty()) || (DayPlanCount.equalsIgnoreCase("2") && mTowncode2.isEmpty())) {
+                    chk_cluster = "";
+                }
+                HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
             }
-            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
         });
     }
 
@@ -845,40 +858,43 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        HomeDashBoard.binding.llNav.txtClDone.setOnClickListener(v -> {
-            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
-            UtilityClass.hideKeyboard(requireActivity());
-            if(!listSelectedHQ.isEmpty()) {
-                String selectedHQNames = "", selectedHQCodes = "";
-                strHQName = "";
-                strHQCode = "";
-                for (Multicheckclass_clust multiCheckClassCluster : multiple_hq_list) {
-                    if(multiCheckClassCluster.isChecked()) {
-                        selectedHQNames = selectedHQNames + multiCheckClassCluster.getStrname() + ",";
-                        selectedHQCodes = selectedHQCodes + multiCheckClassCluster.getStrid() + ",";
-                        strHQCode = selectedHQCodes;
-                        strHQName = selectedHQNames;
+        HomeDashBoard.binding.llNav.txtClDone.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+                UtilityClass.hideKeyboard(requireActivity());
+                if (!listSelectedHQ.isEmpty()) {
+                    String selectedHQNames = "", selectedHQCodes = "";
+                    strHQName = "";
+                    strHQCode = "";
+                    for (Multicheckclass_clust multiCheckClassCluster : multiple_hq_list) {
+                        if (multiCheckClassCluster.isChecked()) {
+                            selectedHQNames = selectedHQNames + multiCheckClassCluster.getStrname() + ",";
+                            selectedHQCodes = selectedHQCodes + multiCheckClassCluster.getStrid() + ",";
+                            strHQCode = selectedHQCodes;
+                            strHQName = selectedHQNames;
+                        }
                     }
-                }
 //                TextCL.setText("");
-                TextHQ.setText(CommonUtilsMethods.removeLastComma(strHQName).replaceAll(",", " , "));
-                if(EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
-                    mHQCode1 = strHQCode;
-                    mHQName1 = strHQName;
+                    TextHQ.setText(CommonUtilsMethods.removeLastComma(strHQName).replaceAll(",", " , "));
+                    if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
+                        mHQCode1 = strHQCode;
+                        mHQName1 = strHQName;
 //                    binding.txtCluster1.setText(CommonUtilsMethods.removeLastComma(strHQName.trim()));
-                    chk_hq = mHQCode1;
-                }else {
-                    mHQCode2 = strHQCode;
-                    mHQName2 = strHQName;
+                        chk_hq = mHQCode1;
+                    } else {
+                        mHQCode2 = strHQCode;
+                        mHQName2 = strHQName;
 //                    binding.txtCluster1.setText(CommonUtilsMethods.removeLastComma(strHQName.trim()));
-                    chk_hq = mHQCode2;
+                        chk_hq = mHQCode2;
+                    }
+                    listSelectedCluster.clear();
+                    multiple_cluster_list.clear();
+                    multiHQExpandItems.clear();
+                    prepareMultiHQClusters();
+                    updateSelectedClusters();
+                    checkAndSyncMasters(CommonUtilsMethods.removeDollar(strHQCode), false);
                 }
-                listSelectedCluster.clear();
-                multiple_cluster_list.clear();
-                multiHQExpandItems.clear();
-                prepareMultiHQClusters();
-                updateSelectedClusters();
-                checkAndSyncMasters(CommonUtilsMethods.removeDollar(strHQCode), false);
             }
         });
 
@@ -1224,14 +1240,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     @SuppressLint("NonConstantResourceId")
     @Override
-    public void onClick(View v) {
+    public void onClick(View view) {
         long currentTime = System.currentTimeMillis();
         if(currentTime - lastClickTime<1000) {
             return; // Ignore fast click
         }
         lastClickTime = currentTime;
         try {
-            switch (v.getId()) {
+            switch (view.getId()) {
                 case R.id.close_rejected_reason:
                     binding.rlRejReason.setVisibility(View.GONE);
                     binding.rejectedReason.setText("");
@@ -1408,20 +1424,26 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     TextView btn_no = dialog.findViewById(R.id.btn_no);
                     TextView title = dialog.findViewById(R.id.ed_alert_msg);
                     title.setText(R.string.are_you_sure_to_delete);
-                    btn_yes.setOnClickListener(view -> {
-                        dialog.dismiss();
-                        binding.txtSave.setEnabled(false);
-                        binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
-                        binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
-                        binding.txtWorktype2.setText("");
-                        binding.txtCluster2.setText("");
-                        binding.txtheadquaters2.setText("");
-                        DayPlanCount = "1";
-                        binding.cardPlan2.setVisibility(View.GONE);
+                    btn_yes.setOnClickListener(new SafeClickListener() {
+                        @Override
+                        public void onSafeClick(View view) {
+                            dialog.dismiss();
+                            binding.txtSave.setEnabled(false);
+                            binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
+                            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
+                            binding.txtWorktype2.setText("");
+                            binding.txtCluster2.setText("");
+                            binding.txtheadquaters2.setText("");
+                            DayPlanCount = "1";
+                            binding.cardPlan2.setVisibility(View.GONE);
+                        }
                     });
 
-                    btn_no.setOnClickListener(view -> {
-                        dialog.dismiss();
+                    btn_no.setOnClickListener(new SafeClickListener() {
+                        @Override
+                        public void onSafeClick(View view) {
+                            dialog.dismiss();
+                        }
                     });
                     break;
 
@@ -1796,31 +1818,40 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         content.setVisibility(View.INVISIBLE);
         ed_remarks.setVisibility(View.VISIBLE);
 
-        btn_save.setOnClickListener(view -> {
-            if (UtilityClass.isNetworkAvailable(requireContext())) {
-                remarks = ed_remarks.getText().toString().trim();
-                if (!remarks.isEmpty() && remarks.length() > 2) {
-                    dialogRemarks.dismiss();
-                    remarks = remarks.replaceAll("'", "");
-                    Log.e("Deviation Remarks", "Deviation remark : " + remarks);
-                    submitDeviation();
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (UtilityClass.isNetworkAvailable(requireContext())) {
+                    remarks = ed_remarks.getText().toString().trim();
+                    if (!remarks.isEmpty() && remarks.length() > 2) {
+                        dialogRemarks.dismiss();
+                        remarks = remarks.replaceAll("'", "");
+                        Log.e("Deviation Remarks", "Deviation remark : " + remarks);
+                        submitDeviation();
 //                saveOrUpdateWorkPlan();
-                } else if (remarks.isEmpty()) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
+                    } else if (remarks.isEmpty()) {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
+                    } else {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters));
+                    }
                 } else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                 }
-            } else {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
             }
         });
 
-        btn_clear.setOnClickListener(view -> {
-            dialogRemarks.dismiss();
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogRemarks.dismiss();
+            }
         });
 
-        iv_close.setOnClickListener(view -> {
-            dialogRemarks.dismiss();
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogRemarks.dismiss();
+            }
         });
 
         dialogRemarks.show();
@@ -2038,99 +2069,108 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         imgClose = dialogCheckIn.findViewById(R.id.img_close);
         btnCheckIn = dialogCheckIn.findViewById(R.id.btn_checkin);
 
-        imgClose.setOnClickListener(v -> {
-            stopClock();
-            dialogCheckIn.dismiss();
-            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
-            SharedPref.setDayCheckInData(requireContext(), "");
+        imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                stopClock();
+                dialogCheckIn.dismiss();
+                SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                SharedPref.setDayCheckInData(requireContext(), "");
+            }
         });
 
         ProgressBar progressBar = dialogCheckIn.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
 
         RelativeLayout refreshLocation = dialogCheckIn.findViewById(R.id.rl_refresh_location);
-        refreshLocation.setOnClickListener(v -> {
-            try {
-                btnCheckIn.setEnabled(false);
-                stopClock();
-                startClock(tvDateTime, dialogCheckIn, "Check-In");
-                progressBar.setVisibility(View.VISIBLE);
-                gpsTrack = new GPSTrack(requireActivity());
-                gpsTrack.setLocationChangeListener(location -> {
-                    try {
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                        if(UtilityClass.isNetworkAvailable(requireContext())) {
-                            address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
-                        }else {
-                            address = getString(R.string.no_address_found);
-                        }
+        refreshLocation.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    btnCheckIn.setEnabled(false);
+                    stopClock();
+                    startClock(tvDateTime, dialogCheckIn, "Check-In");
+                    progressBar.setVisibility(View.VISIBLE);
+                    gpsTrack = new GPSTrack(requireActivity());
+                    gpsTrack.setLocationChangeListener(location -> {
+                        try {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            if (UtilityClass.isNetworkAvailable(requireContext())) {
+                                address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
+                            } else {
+                                address = getString(R.string.no_address_found);
+                            }
 
-                        tvLat.setText(String.valueOf(latitude));
-                        tvLong.setText(String.valueOf(longitude));
-                        tvAddress.setText(address);
-                        progressBar.setVisibility(View.GONE);
-                        btnCheckIn.setEnabled(true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
+                            tvLat.setText(String.valueOf(latitude));
+                            tvLong.setText(String.valueOf(longitude));
+                            tvAddress.setText(address);
+                            progressBar.setVisibility(View.GONE);
+                            btnCheckIn.setEnabled(true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        btnCheckIn.setOnClickListener(v -> {
-            stopClock();
-            SharedPref.setCheckInTime(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-            jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
-            try {
-                jsonCheck.put("tableName", "saveCheckin_out");
-                jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
-                jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()).replaceAll(",", ""));
-                jsonCheck.put("lat", latitude);
-                jsonCheck.put("long", longitude);
-                jsonCheck.put("address", address);
-                jsonCheck.put("update", "0");
-                jsonCheck.put("Check_In", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                jsonCheck.put("Check_Out", "");
-                jsonCheck.put("DateTime", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                jsonCheck.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
-                Log.v("CheckInOut", "--json--" + jsonCheck.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            SharedPref.setDayCheckInData(requireContext(), jsonCheck.toString());
-            try {
-                JSONObject checkInObj = new JSONObject();
-                checkInObj.put("id", "");
-                checkInObj.put("status", "1");
-                checkInObj.put("Start_Lat", latitude);
-                checkInObj.put("Start_Long", longitude);
-                checkInObj.put("Start_addres", address);
-                JSONObject date = new JSONObject();
-                date.put("date", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                checkInObj.put("Start_Time", date);
-                date = new JSONObject();
-                date.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
-                checkInObj.put("Activity_Date", date);
-                Log.v("CheckIn Object", checkInObj.toString());
-                JSONArray jsonArray = new JSONArray();
-                jsonArray.put(checkInObj);
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHECK_IN, jsonArray.toString(), 2));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if(UtilityClass.isNetworkAvailable(requireContext()) && !outboxUtil.isOutBoxNonSyncDataAvailable()) {
-                progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
-                CallCheckInAPI(saveWorkPlan);
-            }else {
-                SharedPref.setCheckTodayCheckInOut(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
-                offlineCheckInOutDataDao.saveCheckIn(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-                SetupOutBoxAdapter(requireActivity(), requireContext());
-                dialogCheckIn.dismiss();
-                onSaveClicked();
+        btnCheckIn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                stopClock();
+                SharedPref.setCheckInTime(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
+                try {
+                    jsonCheck.put("tableName", "saveCheckin_out");
+                    jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
+                    jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()).replaceAll(",", ""));
+                    jsonCheck.put("lat", latitude);
+                    jsonCheck.put("long", longitude);
+                    jsonCheck.put("address", address);
+                    jsonCheck.put("update", "0");
+                    jsonCheck.put("Check_In", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                    jsonCheck.put("Check_Out", "");
+                    jsonCheck.put("DateTime", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                    jsonCheck.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+                    Log.v("CheckInOut", "--json--" + jsonCheck.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                SharedPref.setDayCheckInData(requireContext(), jsonCheck.toString());
+                try {
+                    JSONObject checkInObj = new JSONObject();
+                    checkInObj.put("id", "");
+                    checkInObj.put("status", "1");
+                    checkInObj.put("Start_Lat", latitude);
+                    checkInObj.put("Start_Long", longitude);
+                    checkInObj.put("Start_addres", address);
+                    JSONObject date = new JSONObject();
+                    date.put("date", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                    checkInObj.put("Start_Time", date);
+                    date = new JSONObject();
+                    date.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                    checkInObj.put("Activity_Date", date);
+                    Log.v("CheckIn Object", checkInObj.toString());
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.put(checkInObj);
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHECK_IN, jsonArray.toString(), 2));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (UtilityClass.isNetworkAvailable(requireContext()) && !outboxUtil.isOutBoxNonSyncDataAvailable()) {
+                    progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
+                    CallCheckInAPI(saveWorkPlan);
+                } else {
+                    SharedPref.setCheckTodayCheckInOut(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+                    offlineCheckInOutDataDao.saveCheckIn(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                    SetupOutBoxAdapter(requireActivity(), requireContext());
+                    dialogCheckIn.dismiss();
+                    onSaveClicked();
 //                CallDialogAfterCheckIn();
+                }
             }
         });
         if (!requireActivity().isFinishing()) {
@@ -2443,10 +2483,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                deleteSession(sessionType, "Edit");
 //                createDeleteJson(sessionType);
                 if (mWTCode1.equalsIgnoreCase(previousWTCode1) && mWTCode2.equalsIgnoreCase(previousWTCode2) && !isFromTP) {
-                    CallsFragment.syncCalls();
-                    updateLocalWPData();
-                    setUpWorkPlan();
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.work_plan_updated_successfully));
+                    workPlanEditSubmit();
+//                    CallsFragment.syncCalls();
+//                    updateLocalWPData();
+//                    setUpWorkPlan();
+//                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.work_plan_updated_successfully));
                 }else {
                     callDeleteWP(sessionType, "Edit");
                 }
@@ -3001,42 +3042,48 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         tv_dateTime = dialogCheckOut.findViewById(R.id.txt_date_time);
         tvLatLong = dialogCheckOut.findViewById(R.id.txt_lat_lng);
         ImageView imgClose = dialogCheckOut.findViewById(R.id.img_close);
-        imgClose.setOnClickListener(v -> {
-            stopClock();
-            dialogCheckOut.dismiss();
+        imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                stopClock();
+                dialogCheckOut.dismiss();
+            }
         });
 
         ProgressBar progressBar = dialogCheckOut.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
 
         RelativeLayout refreshLocation = dialogCheckOut.findViewById(R.id.rl_refresh_location);
-        refreshLocation.setOnClickListener(v -> {
-            try {
-                btnCheckOut.setEnabled(false);
-                stopClock();
-                startClock(tv_dateTime, dialogCheckOut, "Check-Out");
-                progressBar.setVisibility(View.VISIBLE);
-                gpsTrack = new GPSTrack(requireActivity());
-                gpsTrack.setLocationChangeListener(location -> {
-                    try {
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                        if(UtilityClass.isNetworkAvailable(requireContext())) {
-                            address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
-                        }else {
-                            address = getString(R.string.no_address_found);
-                        }
+        refreshLocation.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    btnCheckOut.setEnabled(false);
+                    stopClock();
+                    startClock(tv_dateTime, dialogCheckOut, "Check-Out");
+                    progressBar.setVisibility(View.VISIBLE);
+                    gpsTrack = new GPSTrack(requireActivity());
+                    gpsTrack.setLocationChangeListener(location -> {
+                        try {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            if (UtilityClass.isNetworkAvailable(requireContext())) {
+                                address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
+                            } else {
+                                address = getString(R.string.no_address_found);
+                            }
 
-                        tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", latitude, longitude));
-                        tv_address.setText(address);
-                        btnCheckOut.setEnabled(true);
-                        progressBar.setVisibility(View.GONE);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
+                            tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", latitude, longitude));
+                            tv_address.setText(address);
+                            btnCheckOut.setEnabled(true);
+                            progressBar.setVisibility(View.GONE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -3046,24 +3093,26 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", latitude, longitude));
         tv_address.setText(address);
 
-        btnCheckOut.setOnClickListener(v -> {
-            try {
-                jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
-                jsonCheck.put("tableName", "saveCheckin_out");
-                jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
-                jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()));
-                jsonCheck.put("lat", latitude);
-                jsonCheck.put("long", longitude);
-                jsonCheck.put("address", address);
-                jsonCheck.put("update", "1");
-                jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
-                jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
-                jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
-                jsonCheck.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
-                Log.v("CheckInOut", "--json--" + jsonCheck);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        btnCheckOut.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
+                    jsonCheck.put("tableName", "saveCheckin_out");
+                    jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
+                    jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()));
+                    jsonCheck.put("lat", latitude);
+                    jsonCheck.put("long", longitude);
+                    jsonCheck.put("address", address);
+                    jsonCheck.put("update", "1");
+                    jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
+                    jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
+                    jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
+                    jsonCheck.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+                    Log.v("CheckInOut", "--json--" + jsonCheck);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 //            if(UtilityClass.isNetworkAvailable(requireContext())) {
 //                progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
 //                CallCheckOutAPI();
@@ -3071,10 +3120,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                SharedPref.setCheckInTime(requireContext(), "");
 //                SharedPref.setCheckDateTodayPlan(requireContext(), "");
 //                offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-            stopClock();
-            dialogCheckOut.dismiss();
-            remarksAlertBox();
+                stopClock();
+                dialogCheckOut.dismiss();
+                remarksAlertBox();
 //            }
+            }
         });
 
         dialogCheckOut.show();
@@ -3134,12 +3184,18 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_yes.setText(content.getResources().getString(R.string.ok));
         content.setText("You have been idle for 2 minutes. Kindly Re-" + text);
 
-        btn_yes.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
 
-        btn_no.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 
@@ -3200,10 +3256,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     btn_clear.setVisibility(View.INVISIBLE);
                                     ed_remarks.setVisibility(View.INVISIBLE);
                                     iv_close.setVisibility(View.GONE);
-                                    btn_save.setOnClickListener(view -> {
-                                        insMode = "1";
-                                        saveOrUpdateWorkPlan(false);
-                                        deviationConfirmation.dismiss();
+                                    btn_save.setOnClickListener(new SafeClickListener() {
+                                        @Override
+                                        public void onSafeClick(View view) {
+                                            insMode = "1";
+                                            saveOrUpdateWorkPlan(false);
+                                            deviationConfirmation.dismiss();
+                                        }
                                     });
 //                                    btn_clear.setOnClickListener(view -> {
 //                                        disableSession1();
@@ -3229,6 +3288,103 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    binding.progress.setVisibility(View.GONE);
+                    EditSession = "";
+                    setUpWorkPlan();
+                    Log.e("VALUES", String.valueOf(t));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            binding.progress.setVisibility(View.GONE);
+            EditSession = "";
+        }
+    }
+
+    public void workPlanEditSubmit() {
+        try {
+            binding.progress.setVisibility(View.VISIBLE);
+            jsonObject.put("tableName", "dayplan_edit");
+            Log.e("todayCallList:Object", jsonObject.toString());
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "edit/dayplan");
+            Call<JsonElement> saveMyDayPlan = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+            saveMyDayPlan.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    Log.d("todayCallList:Code", response.code() + " - " + response);
+                    binding.progress.setVisibility(View.GONE);
+                    EditSession = "";
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
+                            if (json.getString("success").equalsIgnoreCase("true")) {
+                                SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
+                                if (DayPlanCount.equalsIgnoreCase("1")) {
+                                    if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
+                                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
+                                } else if (DayPlanCount.equalsIgnoreCase("2")) {
+                                    if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
+                                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
+                                }
+                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                CallsFragment.syncCalls();
+                                updateLocalWPData();
+//                                if (option.equalsIgnoreCase("Edit")) {
+//                                    syncMyDayPlan(false);
+//                                }
+                            }
+                            else {
+//                                if (json.optBoolean("update")) {
+//                                    Dialog deviationConfirmation = new Dialog(requireActivity());
+//                                    deviationConfirmation.setContentView(R.layout.popup_remarks);
+//                                    Objects.requireNonNull(deviationConfirmation.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                                    deviationConfirmation.setCancelable(false);
+//                                    ImageView iv_close = deviationConfirmation.findViewById(R.id.img_close);
+//                                    EditText ed_remarks = deviationConfirmation.findViewById(R.id.ed_remark);
+//                                    TextView heading = deviationConfirmation.findViewById(R.id.tv_head);
+//                                    TextView content = deviationConfirmation.findViewById(R.id.content);
+//                                    Button btn_clear = deviationConfirmation.findViewById(R.id.btn_clear);
+//                                    Button btn_save = deviationConfirmation.findViewById(R.id.btn_save);
+//                                    heading.setText(R.string.alert);
+//                                    btn_save.setText(requireContext().getString(R.string.ok));
+//                                    btn_clear.setText(requireContext().getString(R.string.cancel));
+//                                    content.setText(json.optString("Msg"));
+//                                    content.setVisibility(View.VISIBLE);
+//                                    btn_clear.setVisibility(View.INVISIBLE);
+//                                    ed_remarks.setVisibility(View.INVISIBLE);
+//                                    iv_close.setVisibility(View.GONE);
+//                                    btn_save.setOnClickListener(view -> {
+//                                        insMode = "1";
+//                                        saveOrUpdateWorkPlan(false);
+//                                        deviationConfirmation.dismiss();
+//                                    });
+////                                    btn_clear.setOnClickListener(view -> {
+////                                        disableSession1();
+////                                        if(DayPlanCount.equalsIgnoreCase("2")) {
+////                                            disableSession2();
+////                                        }
+////                                        enableSave();
+////                                        setUpWorkPlan();
+////                                        deviationConfirmation.dismiss();
+////                                    });
+////                                    iv_close.setOnClickListener(view -> deviationConfirmation.dismiss());
+//                                    deviationConfirmation.show();
+//                                }else {
+                                    setUpWorkPlan();
+                                    commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+//                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("Workplan", "onResponse: " + e.getMessage());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
                     binding.progress.setVisibility(View.GONE);
                     EditSession = "";
                     setUpWorkPlan();
@@ -4218,62 +4374,64 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.cardPlan2.setVisibility(View.GONE);
                     binding.llDeviation.setVisibility(View.GONE);
                 }
-            } else if(!dateType.isEmpty() && !UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+            } else if (!dateType.isEmpty() && !dateType.equalsIgnoreCase("Missed") && !dateType.equalsIgnoreCase("Planning") && !UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
                 Log.e("TAG", "setUpWorkPlan: skip" + HomeDashBoard.selectedDate.toString());
-                if (!dateType.equalsIgnoreCase("Missed")) {
-                    Dialog dialog = new Dialog(requireContext());
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    if (dialog.getWindow() != null) {
-                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    }
-                    if (!dialog.isShowing()) {
-                        dialog.show();
-                    }
-                    TextView content = dialog.findViewById(R.id.ed_alert_msg);
-                    content.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen._6sdp));
-                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                    TextView btn_no = dialog.findViewById(R.id.btn_no);
-                    btn_yes.setText(requireContext().getResources().getString(R.string.proceed));
-                    btn_yes.setAllCaps(true);
-                    btn_no.setText(requireContext().getResources().getString(R.string.continuee));
+                Dialog dialog = new Dialog(requireContext());
+                dialog.setContentView(R.layout.dcr_cancel_alert);
+                dialog.setCancelable(false);
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                if (!dialog.isShowing()) {
+                    dialog.show();
+                }
+                TextView content = dialog.findViewById(R.id.ed_alert_msg);
+                content.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen._6sdp));
+                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                TextView btn_no = dialog.findViewById(R.id.btn_no);
+                btn_yes.setText(requireContext().getResources().getString(R.string.proceed));
+                btn_yes.setAllCaps(true);
+                btn_no.setText(requireContext().getResources().getString(R.string.continuee));
 
-                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                SpannableStringBuilder builder = new SpannableStringBuilder();
 
-                    String nextDate = "";
-                    if (WorkPlanEntriesNeeded.datesNeeded.size() > 1) {
-                        nextDate = " (" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, List.copyOf(WorkPlanEntriesNeeded.datesNeeded).get(1)) + ")";
-                    }
-                    String[] items = {"No network to get 'Work Plan' for " + dateType + " date(" + HomeDashBoard.binding.textDate.getText().toString() + ")",
-                            "Click '" + requireContext().getResources().getString(R.string.proceed).toUpperCase() + "' to work on Next date" + nextDate,
-                            "Connect to network and click '" + requireContext().getResources().getString(R.string.continuee) + "' to continue selected date"};
+                String nextDate = "";
+                if (WorkPlanEntriesNeeded.datesNeeded.size() > 1) {
+                    nextDate = " (" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, List.copyOf(WorkPlanEntriesNeeded.datesNeeded).get(1)) + ")";
+                }
+                String[] items = {"No network to get 'Work Plan' for " + dateType + " date(" + HomeDashBoard.binding.textDate.getText().toString() + ")",
+                        "Click '" + requireContext().getResources().getString(R.string.proceed).toUpperCase() + "' to work on Next date" + nextDate,
+                        "Connect to network and click '" + requireContext().getResources().getString(R.string.continuee) + "' to continue selected date"};
 
-                    for (String item : items) {
-                        SpannableString spannable = new SpannableString(item + "\n");
-                        spannable.setSpan(new BulletSpan(20), 0, spannable.length(), 0);
-                        builder.append(spannable);
-                    }
-                    content.setText(builder);
+                for (String item : items) {
+                    SpannableString spannable = new SpannableString(item + "\n");
+                    spannable.setSpan(new BulletSpan(20), 0, spannable.length(), 0);
+                    builder.append(spannable);
+                }
+                content.setText(builder);
 
-                    btn_yes.setOnClickListener(view -> {
+                btn_yes.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
                         WorkPlanEntriesNeeded.skipDates.add(HomeDashBoard.selectedDate.toString());
                         HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
                         dialog.dismiss();
-                    });
+                    }
+                });
 
-                    btn_no.setOnClickListener(view -> {
+                btn_no.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
                         if (UtilityClass.isNetworkAvailable(requireContext())) {
                             syncMyDayPlan(false);
                             dialog.dismiss();
                         } else {
                             commonUtilsMethods.showToastMessage(requireContext(), requireContext().getResources().getString(R.string.no_network));
                         }
-                    });
-                }
-            } else if(!dateType.isEmpty() && UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
-                if (!dateType.equalsIgnoreCase("Missed") && !dateType.equalsIgnoreCase("Planning")) {
-                    syncMyDayPlan(false);
-                }
+                    }
+                });
+            } else if (!dateType.isEmpty() && !dateType.equalsIgnoreCase("Missed") && !dateType.equalsIgnoreCase("Planning") && UtilityClass.isNetworkAvailable(requireContext()) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+                syncMyDayPlan(false);
             } else if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0") && tpDataObj != null && HomeDashBoard.selectedDate != null) {
                 SharedPref.setTpDcrDeviatedDate(requireContext(), "");
                 Type type = new TypeToken<OneBuildModelClass>() {
@@ -4974,8 +5132,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         dialogAcknowledge(dialogRemarks);
         dialogRemarks.show();
 
-        iv_close.setOnClickListener(view -> {
-            dialogRemarks.dismiss();
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogRemarks.dismiss();
+            }
         });
 
     }
@@ -4992,21 +5153,27 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         content.setVisibility(View.GONE);
         heading.setText(requireContext().getString(R.string.remarks));
         ed_remarks.setVisibility(View.VISIBLE);
-        btn_save.setOnClickListener(view -> {
-            String remarks = ed_remarks.getText().toString().trim();
-            if (!remarks.isEmpty() && remarks.length() > 2) {
-                dialogRemarks.dismiss();
-                remarks = remarks.replaceAll("'", "");
-                Log.e("Remarks", "remark : " + remarks);
-                finalSubmit(remarks);
-            } else if (remarks.isEmpty()) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
-            } else {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters));
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                String remarks = ed_remarks.getText().toString().trim();
+                if (!remarks.isEmpty() && remarks.length() > 2) {
+                    dialogRemarks.dismiss();
+                    remarks = remarks.replaceAll("'", "");
+                    Log.e("Remarks", "remark : " + remarks);
+                    finalSubmit(remarks);
+                } else if (remarks.isEmpty()) {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
+                } else {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters));
+                }
             }
         });
-        btn_clear.setOnClickListener(view -> {
-            ed_remarks.setText("");
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ed_remarks.setText("");
+            }
         });
     }
 
@@ -5022,11 +5189,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_clear.setText(requireContext().getString(R.string.no));
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
-            dialogFinalSubmit(dialogRemarks);
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogFinalSubmit(dialogRemarks);
+            }
         });
-        btn_clear.setOnClickListener(view -> {
-            dialogRemarks.dismiss();
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogRemarks.dismiss();
+            }
         });
     }
 
@@ -5052,15 +5225,26 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
-            dialogEditOrDeleteConfirmation(sessionType, "Edit");
-            dialogOptionSelection.dismiss();
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogEditOrDeleteConfirmation(sessionType, "Edit");
+                dialogOptionSelection.dismiss();
+            }
         });
-        btn_clear.setOnClickListener(view -> {
-            dialogEditOrDeleteConfirmation(sessionType, "Delete");
-            dialogOptionSelection.dismiss();
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogEditOrDeleteConfirmation(sessionType, "Delete");
+                dialogOptionSelection.dismiss();
+            }
         });
-        iv_close.setOnClickListener(view -> dialogOptionSelection.dismiss());
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogOptionSelection.dismiss();
+            }
+        });
         dialogOptionSelection.show();
     }
 
@@ -5090,28 +5274,39 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
-            if (option.equalsIgnoreCase("Edit")) {
-                if (sessionType.equals("1")) {
-                    EditSession = "1";
-                    enableEditSession1();
-                    dialogEditDeleteConfirmation.dismiss();
-                } else {
-                    EditSession = "2";
-                    enableEditSession2();
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (option.equalsIgnoreCase("Edit")) {
+                    if (sessionType.equals("1")) {
+                        EditSession = "1";
+                        enableEditSession1();
+                        dialogEditDeleteConfirmation.dismiss();
+                    } else {
+                        EditSession = "2";
+                        enableEditSession2();
+                        dialogEditDeleteConfirmation.dismiss();
+                    }
+                    createDeleteJson(sessionType, "1");
+                } else if (option.equalsIgnoreCase("Delete")) {
+                    deleteSession(sessionType, "Delete");
                     dialogEditDeleteConfirmation.dismiss();
                 }
-                createDeleteJson(sessionType, "1");
-            } else if (option.equalsIgnoreCase("Delete")) {
-                deleteSession(sessionType, "Delete");
+            }
+        });
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                EditSession = "";
                 dialogEditDeleteConfirmation.dismiss();
             }
         });
-        btn_clear.setOnClickListener(view -> {
-            EditSession = "";
-            dialogEditDeleteConfirmation.dismiss();
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogEditDeleteConfirmation.dismiss();
+            }
         });
-        iv_close.setOnClickListener(view -> dialogEditDeleteConfirmation.dismiss());
         dialogEditDeleteConfirmation.show();
     }
 
@@ -5132,23 +5327,34 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         content.setText(String.format("%s %s %s", getString(R.string.edit_delete_session), getString(R.string.edit), workTypeName));
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
-        btn_save.setOnClickListener(view -> {
-            if(sessionType.equals("1")) {
-                EditSession = "1";
-                enableEditFW1();
-                dialogEditDeleteConfirmation.dismiss();
-            }else {
-                EditSession = "2";
-                enableEditFW2();
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (sessionType.equals("1")) {
+                    EditSession = "1";
+                    enableEditFW1();
+                    dialogEditDeleteConfirmation.dismiss();
+                } else {
+                    EditSession = "2";
+                    enableEditFW2();
+                    dialogEditDeleteConfirmation.dismiss();
+                }
+                createDeleteJson(sessionType, "1");
+            }
+        });
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                EditSession = "";
                 dialogEditDeleteConfirmation.dismiss();
             }
-            createDeleteJson(sessionType, "1");
         });
-        btn_clear.setOnClickListener(view -> {
-            EditSession = "";
-            dialogEditDeleteConfirmation.dismiss();
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogEditDeleteConfirmation.dismiss();
+            }
         });
-        iv_close.setOnClickListener(view -> dialogEditDeleteConfirmation.dismiss());
         dialogEditDeleteConfirmation.show();
     }
 

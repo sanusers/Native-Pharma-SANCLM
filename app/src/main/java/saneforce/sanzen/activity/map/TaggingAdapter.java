@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHolder> {
     Context context;
@@ -55,21 +56,24 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
             holder.img_info.setImageDrawable(context.getResources().getDrawable(R.drawable.info_icon_purple));
         }
 
-        holder.constraint_main.setOnClickListener(view -> {
-            holder.img_info.setImageDrawable(context.getResources().getDrawable(R.drawable.info_icon_pink));
-            LatLng latLng = new LatLng(Double.parseDouble(taggedMapLists.get(position).getLat()), Double.parseDouble(taggedMapLists.get(position).getLng()));
-            //MapsActivity.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20.0f));
-            MapsActivity.marker = MapsActivity.mMap.addMarker(new MarkerOptions().position(latLng).snippet(taggedMapLists.get(position).getName() + "&" +
-                            taggedMapLists.get(position).getAddr() + "$" + taggedMapLists.get(position).getCode() + "%" + taggedMapLists.get(position).getLat() + "#" + taggedMapLists.get(position).getLng() + "^" +
-                            taggedMapLists.get(position).getImageName()).
-                    icon(MapsActivity.BitmapFromVector(context, R.drawable.marker_map)));
+        holder.constraint_main.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                holder.img_info.setImageDrawable(context.getResources().getDrawable(R.drawable.info_icon_pink));
+                LatLng latLng = new LatLng(Double.parseDouble(taggedMapLists.get(position).getLat()), Double.parseDouble(taggedMapLists.get(position).getLng()));
+                //MapsActivity.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20.0f));
+                MapsActivity.marker = MapsActivity.mMap.addMarker(new MarkerOptions().position(latLng).snippet(taggedMapLists.get(position).getName() + "&" +
+                                                                                                                       taggedMapLists.get(position).getAddr() + "$" + taggedMapLists.get(position).getCode() + "%" + taggedMapLists.get(position).getLat() + "#" + taggedMapLists.get(position).getLng() + "^" +
+                                                                                                                       taggedMapLists.get(position).getImageName()).
+                                                                          icon(MapsActivity.BitmapFromVector(context, R.drawable.marker_map)));
 
-            if (MapsActivity.marker != null) {
-                MapsActivity.marker.showInfoWindow();
+                if (MapsActivity.marker != null) {
+                    MapsActivity.marker.showInfoWindow();
+                }
+                MapsActivity.taggedMapListArrayList.set(position, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(position).getName(), MapsActivity.taggedMapListArrayList.get(position).getType(), MapsActivity.taggedMapListArrayList.get(position).getAddr(), MapsActivity.taggedMapListArrayList.get(position).getCode(), true, MapsActivity.taggedMapListArrayList.get(position).getLat(), MapsActivity.taggedMapListArrayList.get(position).getLng(), MapsActivity.taggedMapListArrayList.get(position).getImageName(), MapsActivity.taggedMapListArrayList.get(position).getMeters()));
+                notifyDataSetChanged();
+                mapsBinding.rvList.scrollToPosition(position);
             }
-            MapsActivity.taggedMapListArrayList.set(position, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(position).getName(), MapsActivity.taggedMapListArrayList.get(position).getType(), MapsActivity.taggedMapListArrayList.get(position).getAddr(), MapsActivity.taggedMapListArrayList.get(position).getCode(), true, MapsActivity.taggedMapListArrayList.get(position).getLat(), MapsActivity.taggedMapListArrayList.get(position).getLng(), MapsActivity.taggedMapListArrayList.get(position).getImageName(), MapsActivity.taggedMapListArrayList.get(position).getMeters()));
-            notifyDataSetChanged();
-            mapsBinding.rvList.scrollToPosition(position);
         });
     }
 

@@ -34,6 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.network.ApiInterface;
@@ -103,12 +104,25 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
         }
         holder.tv_date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, tpDeviationModelLists.get(position).getDate()));
         holder.tv_deviationRemarks.setText(tpDeviationModelLists.get(position).getDeviationRemarks());
-        holder.tv_view_plan.setOnClickListener(view -> {
-            viewPlanClickListener.onClick(tpDeviationModelLists.get(position));
+        holder.tv_view_plan.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                viewPlanClickListener.onClick(tpDeviationModelLists.get(position));
+            }
         });
 
-        holder.btn_approve.setOnClickListener(view -> CallApprovedTpDeviation(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), tpDeviationModelLists.get(position).getDate(), "4"));
-        holder.btn_reject.setOnClickListener(view -> showRemarksAlert(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), tpDeviationModelLists.get(position).getDate(), "2"));
+        holder.btn_approve.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                CallApprovedTpDeviation(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), tpDeviationModelLists.get(position).getDate(), "4");
+            }
+        });
+        holder.btn_reject.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                showRemarksAlert(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), tpDeviationModelLists.get(position).getDate(), "2");
+                }
+        });
     }
 
     private void showRemarksAlert(String sfName, String sfCode, String slNo, int position, String date, String status) {
@@ -122,23 +136,32 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
         Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
         Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
         ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
-        btn_cancel.setOnClickListener(view1 -> {
-            ed_reason.setText("");
-            dialogReject.dismiss();
-        });
-
-        iv_close.setOnClickListener(view12 -> {
-            ed_reason.setText("");
-            dialogReject.dismiss();
-        });
-
-        btn_reject.setOnClickListener(view13 -> {
-            if(!TextUtils.isEmpty(ed_reason.getText().toString())) {
-                CallRejectedTpDeviation(sfName, sfCode, slNo, position, status, date, ed_reason.getText().toString());
-            }else {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject));
+        btn_cancel.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ed_reason.setText("");
+                dialogReject.dismiss();
             }
-            dialogReject.dismiss();
+        });
+
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ed_reason.setText("");
+                dialogReject.dismiss();
+            }
+        });
+
+        btn_reject.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
+                    CallRejectedTpDeviation(sfName, sfCode, slNo, position, status, date, ed_reason.getText().toString());
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject));
+                }
+                dialogReject.dismiss();
+            }
         });
         dialogReject.show();
     }

@@ -77,12 +77,12 @@ import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
-//import saneforce.sanzen.commonClasses.Keys;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityUnlistedadditionBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -118,6 +118,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
     private int currentImageIndex = 0;
     static String TagImgNd = "";
     Util util;
+    String unlistedMobNeed = "0";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -244,313 +245,324 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
                     String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
                     String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
-                    String enteredClass = unlistedadditionbinding.txtSelectClass.getText().toString().trim();
+                    String enteredHq = String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this));/*unlistedadditionbinding.txtSelectHq.getText().toString().trim();*/
                     String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
                     String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
 
-                    for (int i = 0; i < masterJsonArrayUlist1.length(); i++) {
-                        JSONObject obj = masterJsonArrayUlist1.getJSONObject(i);
+                        for (int i = 0; i < masterJsonArrayUlist1.length(); i++) {
+                            JSONObject obj = masterJsonArrayUlist1.getJSONObject(i);
 
-                        String name = obj.optString("Name", "").trim();
-                        String territory = obj.optString("Town_Name", "").trim();
-                        String spec = obj.optString("SpecialtyName", "").trim();
-                        String cls = obj.optString("Doc_ClsCode", "").trim();
-                        String cat = obj.optString("CategoryName", "").trim();
-                        String quli = obj.optString("Doc_QuaName", "").trim();
+                            String name = obj.optString("Name", "").trim();
+                            String territory = obj.optString("Town_Name", "").trim();
+                            String spec = obj.optString("SpecialtyName", "").trim();
+                            String drHQNm = obj.optString("SF_Code", "").trim();
+                            String cat = obj.optString("CategoryName", "").trim();
+                            String quli = obj.optString("Doc_QuaName", "").trim();
+//                        String mob = obj.optString("DrMob", "").trim();
 
-                        // Check duplicate condition (trim + ignore case)
-                        if (enteredName.equalsIgnoreCase(name)
-                                && enteredTerritory.equalsIgnoreCase(territory)
-                                && enteredSpec.equalsIgnoreCase(spec)
-                                && enteredClass.equalsIgnoreCase(cls)
-                                && enteredCat.equalsIgnoreCase(cat)
-                                && enteredQuli.equalsIgnoreCase(quli)) {
-                            isDuplicate = true;
-                            break;
+                            // Check duplicate condition (trim + ignore case)
+                            if (enteredName.equalsIgnoreCase(name)
+                                    && enteredTerritory.equalsIgnoreCase(territory)
+                                    && enteredSpec.equalsIgnoreCase(spec)
+                                    && enteredHq.equalsIgnoreCase(drHQNm)
+                                    && enteredCat.equalsIgnoreCase(cat)
+                                    && enteredQuli.equalsIgnoreCase(quli)
+                                /*&& enteredPhone.equalsIgnoreCase(mob)*/) {
+                                isDuplicate = true;
+                                break;
+                            }
                         }
-                    }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(this, "Duplicate entry already exists!");
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+""+R.string.already_exist);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                        return; // stop saving further
+                        return;
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                    return;
-                }
-                if (unlistedadditionbinding.txtSelectHq.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.headquarter));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (unlistedadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.territory));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (unlistedadditionbinding.txtSelectSpec.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.speciality));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (unlistedadditionbinding.txtSelectCategory.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.category));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (unlistedadditionbinding.txtSelectClass.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.clases));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (unlistedadditionbinding.txtSelectQua.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.qualifications));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (!unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
-                        TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-
-                } else {
-                    Log.v("qualification_txt", "arent_empty");
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(false);
-                    JSONObject json = CommonUtilsMethods.CommonObjectParameter(this);
-                    try {
-
-                        SfName = SharedPref.getSfName(this);
-                        DivCode = SharedPref.getDivisionCode(this);
-                        json.put("tableName", "savenew_master");
-                        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                            SfCode = SharedPref.getHqCode(this);
-                        } else {
-                            SfCode = SharedPref.getSfCode(this);
-                        }
-                        json.put("sfcode", SfCode);
-                        json.put("division_code", DivCode);
-                        json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
-                        json.put("DeviceID", SharedPref.getDeviceId(UnlistedDoctorAddition.this));
-                        json.put("DrName", unlistedadditionbinding.edtDctr.getText().toString());
-                        json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(UnlistedDoctorAddition.this)));
-                        json.put("DrqulNm", unlistedadditionbinding.txtSelectQua.getText().toString());
-                        json.put("DrClsCd", String.valueOf(SharedPref.getSelectedClass(UnlistedDoctorAddition.this)));
-                        json.put("DrClsNm", unlistedadditionbinding.txtSelectClass.getText().toString());
-                        json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(UnlistedDoctorAddition.this)));
-                        json.put("DrCatNm", unlistedadditionbinding.txtSelectCategory.getText().toString());
-                        json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(UnlistedDoctorAddition.this)));
-                        json.put("DrSpcNm", unlistedadditionbinding.txtSelectSpec.getText().toString());
-                        json.put("DrAddr", unlistedadditionbinding.edtHomeaddr.getText().toString());
-                        json.put("DrHospAddr", unlistedadditionbinding.edtHospaddr.getText().toString());
-                        json.put("DrClusNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
-                        json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
-                        json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
-                        json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
-                        json.put("UniqueUnlistedDr", "0");
-                        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                            json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
-                            json.put("DrHQNm", unlistedadditionbinding.txtSelectHq.getText().toString());
-                        } else {
-                            json.put("DrHQCd", SfCode);
-                            json.put("DrHQNm", SfName);
-                        }
-                        json.put("key", SharedPref.getSaveLicenseSetting(UnlistedDoctorAddition.this));
-                        json.put("DrType", "U");
-                        if (!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")) {
-                            json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString() + " 00:00:00");
-                        } else {
-                            json.put("DrDOB", "-");
-                        }
-                        if (!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")) {
-                            json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString() + " 00:00:00");
-                        } else {
-                            json.put("DrDOW", "-");
-                        }
-                        json.put("DrPhone", unlistedadditionbinding.edtPhone.getText().toString());
-                        json.put("DrMob", unlistedadditionbinding.edtMob.getText().toString());
-                        json.put("imagePath", destinationFilePath);
-                        json.put("imageName", imageName);
-
-                        if (SharedPref.getGeoChk(this).equalsIgnoreCase("0") && !unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")) {
-                            gpsTrack = new GPSTrack(this);
-                            latitude = gpsTrack.getLatitude();
-                            longitude = gpsTrack.getLongitude();
-                            json.put("DrLat", String.valueOf(latitude));
-                            json.put("DrLong", String.valueOf(longitude));
-                        } else {
-                            json.put("DrLat", "");
-                            json.put("DrLong", "");
-                        }
-                        json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(UnlistedDoctorAddition.this));
-                        Log.v("printing_add_dr", json.toString());
-                        unlistedadditionbinding.btnUnlstsave.setEnabled(false);
-                        addDoctor(json.toString());
                     } catch (Exception e) {
-                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         e.printStackTrace();
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                        return;
                     }
-                }
-            } else if (SharedPref.getSfType(this).equalsIgnoreCase("1")) {
-                boolean isDuplicate = false;
-                try {
-                    String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
-                    String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
-                    String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
-                    String enteredClass = unlistedadditionbinding.txtSelectClass.getText().toString().trim();
-                    String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
-                    String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
+                    if (unlistedadditionbinding.txtSelectHq.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.headquarter));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (unlistedadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.territory));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (unlistedadditionbinding.txtSelectSpec.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.speciality));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (unlistedadditionbinding.txtSelectCategory.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.category));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (unlistedadditionbinding.txtSelectClass.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.clases));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (unlistedadditionbinding.txtSelectQua.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.qualifications));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (!unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
+                            TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
-                    for (int i = 0; i < masterJsonArrayUlist1.length(); i++) {
-                        JSONObject obj = masterJsonArrayUlist1.getJSONObject(i);
+                    } /*else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
+                    commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.moile_mand));
+                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                }*/ else {
+                        Log.v("qualification_txt", "arent_empty");
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(false);
+                        JSONObject json = CommonUtilsMethods.CommonObjectParameter(UnlistedDoctorAddition.this);
+                        try {
 
-                        String name = obj.optString("Name", "").trim();
-                        String territory = obj.optString("Town_Name", "").trim();
-                        String spec = obj.optString("SpecialtyName", "").trim();
-                        String cls = obj.optString("Doc_ClsCode", "").trim();
-                        String cat = obj.optString("CategoryName", "").trim();
-                        String quli = obj.optString("Doc_QuaName", "").trim();
+                            SfName = SharedPref.getSfName(UnlistedDoctorAddition.this);
+                            DivCode = SharedPref.getDivisionCode(UnlistedDoctorAddition.this);
+                            json.put("tableName", "savenew_master");
+                            if (SharedPref.getSfType(UnlistedDoctorAddition.this).equalsIgnoreCase("2")) {
+                                SfCode = SharedPref.getHqCode(UnlistedDoctorAddition.this);
+                            } else {
+                                SfCode = SharedPref.getSfCode(UnlistedDoctorAddition.this);
+                            }
+                            json.put("sfcode", SfCode);
+                            json.put("division_code", DivCode);
+                            json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
+                            json.put("DeviceID", SharedPref.getDeviceId(UnlistedDoctorAddition.this));
+                            json.put("DrName", unlistedadditionbinding.edtDctr.getText().toString());
+                            json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(UnlistedDoctorAddition.this)));
+                            json.put("DrqulNm", unlistedadditionbinding.txtSelectQua.getText().toString());
+                            json.put("DrClsCd", String.valueOf(SharedPref.getSelectedClass(UnlistedDoctorAddition.this)));
+                            json.put("DrClsNm", unlistedadditionbinding.txtSelectClass.getText().toString());
+                            json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(UnlistedDoctorAddition.this)));
+                            json.put("DrCatNm", unlistedadditionbinding.txtSelectCategory.getText().toString());
+                            json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(UnlistedDoctorAddition.this)));
+                            json.put("DrSpcNm", unlistedadditionbinding.txtSelectSpec.getText().toString());
+                            json.put("DrAddr", unlistedadditionbinding.edtHomeaddr.getText().toString());
+                            json.put("DrHospAddr", unlistedadditionbinding.edtHospaddr.getText().toString());
+                            json.put("DrClusNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
+                            json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
+                            json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
+                            json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
+                            json.put("Unlst_Doc_App_need", String.valueOf(SharedPref.getUnlstDocAppNeed(UnlistedDoctorAddition.this)));
+                            if (SharedPref.getSfType(UnlistedDoctorAddition.this).equalsIgnoreCase("2")) {
+                                json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
+                                json.put("DrHQNm", unlistedadditionbinding.txtSelectHq.getText().toString());
+                            } else {
+                                json.put("DrHQCd", SfCode);
+                                json.put("DrHQNm", SfName);
+                            }
+                            json.put("key", SharedPref.getSaveLicenseSetting(UnlistedDoctorAddition.this));
+                            json.put("DrType", "U");
+                            if (!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")) {
+                                json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString() + " 00:00:00");
+                            } else {
+                                json.put("DrDOB", "-");
+                            }
+                            if (!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")) {
+                                json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString() + " 00:00:00");
+                            } else {
+                                json.put("DrDOW", "-");
+                            }
+                            json.put("DrPhone", unlistedadditionbinding.edtPhone.getText().toString());
+                            json.put("DrMob", unlistedadditionbinding.edtMob.getText().toString());
+                            json.put("imagePath", destinationFilePath);
+                            json.put("imageName", imageName);
 
-                        // Check duplicate condition (trim + ignore case)
-                        if (enteredName.equalsIgnoreCase(name)
-                                && enteredTerritory.equalsIgnoreCase(territory)
-                                && enteredSpec.equalsIgnoreCase(spec)
-/*
-                                && enteredClass.equalsIgnoreCase(cls)
-*/
-                                && enteredCat.equalsIgnoreCase(cat)
-                                && enteredQuli.equalsIgnoreCase(quli)) {
-                            isDuplicate = true;
-                            break;
+                            if (SharedPref.getGeoChk(UnlistedDoctorAddition.this).equalsIgnoreCase("0") && !unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")) {
+                                gpsTrack = new GPSTrack(UnlistedDoctorAddition.this);
+                                latitude = gpsTrack.getLatitude();
+                                longitude = gpsTrack.getLongitude();
+                                json.put("DrLat", String.valueOf(latitude));
+                                json.put("DrLong", String.valueOf(longitude));
+                            } else {
+                                json.put("DrLat", "");
+                                json.put("DrLong", "");
+                            }
+                            json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(UnlistedDoctorAddition.this));
+                            Log.v("printing_add_dr", json.toString());
+                            unlistedadditionbinding.btnUnlstsave.setEnabled(false);
+                            addDoctor(json.toString());
+                        } catch (Exception e) {
+                            unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                            e.printStackTrace();
                         }
                     }
+                } else if (SharedPref.getSfType(UnlistedDoctorAddition.this).equalsIgnoreCase("1")) {
+                    boolean isDuplicate = false;
+                    try {
+                        String enteredName = unlistedadditionbinding.edtDctr.getText().toString().trim();
+                        String enteredTerritory = unlistedadditionbinding.txtSelectTerritory.getText().toString().trim();
+                        String enteredSpec = unlistedadditionbinding.txtSelectSpec.getText().toString().trim();
+                        String enteredPhone = unlistedadditionbinding.edtMob.getText().toString().trim();
+                        String enteredCat = unlistedadditionbinding.txtSelectCategory.getText().toString().trim();
+                        String enteredQuli = unlistedadditionbinding.txtSelectQua.getText().toString().trim();
+
+                        for (int i = 0; i < masterJsonArrayUlist1.length(); i++) {
+                            JSONObject obj = masterJsonArrayUlist1.getJSONObject(i);
+
+                            String name = obj.optString("Name", "").trim();
+                            String territory = obj.optString("Town_Name", "").trim();
+                            String spec = obj.optString("SpecialtyName", "").trim();
+                            String cat = obj.optString("CategoryName", "").trim();
+                            String quli = obj.optString("Doc_QuaName", "").trim();
+//                        String mob = obj.optString("DrMob", "").trim();
+
+                            // Check duplicate condition (trim + ignore case)
+                            if (enteredName.equalsIgnoreCase(name)
+                                    && enteredTerritory.equalsIgnoreCase(territory)
+                                    && enteredSpec.equalsIgnoreCase(spec)
+                                    && enteredCat.equalsIgnoreCase(cat)
+                                    && enteredQuli.equalsIgnoreCase(quli)
+/*
+                                && enteredPhone.equalsIgnoreCase(mob)
+*/
+                            ) {
+                                isDuplicate = true;
+                                break;
+                            }
+                        }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(this, "Duplicate entry already exists!");
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+""+R.string.already_exist);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         return; // stop saving further
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                    return;
-                }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                        return;
+                    }
 
-                if (unlistedadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
-                    if (SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
-                        commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster));
+                    if (unlistedadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
+                        if (SharedPref.getClusterCap(UnlistedDoctorAddition.this).isEmpty() || SharedPref.getClusterCap(UnlistedDoctorAddition.this) == null) {
+                            commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster));
+                            unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                        } else {
+                            commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(UnlistedDoctorAddition.this));
+                            unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                        }
+                    } else if (unlistedadditionbinding.txtSelectSpec.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.speciality));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (unlistedadditionbinding.txtSelectCategory.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.category));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (unlistedadditionbinding.txtSelectClass.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.clases));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (unlistedadditionbinding.txtSelectQua.getText().toString().isEmpty()) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.qualifications));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                    } else if (!unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
+                            TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand));
+                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+
+                    } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.moile_mand));
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else {
-                        commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(this));
-                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                    }
-                } else if (unlistedadditionbinding.txtSelectSpec.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.speciality));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (unlistedadditionbinding.txtSelectCategory.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.category));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (unlistedadditionbinding.txtSelectClass.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.clases));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (unlistedadditionbinding.txtSelectQua.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.qualifications));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                } else if (!unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
-                        TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-
-                } else {
-                    Log.v("qualification_txt", "arent_empty");
-                    unlistedadditionbinding.btnUnlstsave.setEnabled(false);
-                    JSONObject json = CommonUtilsMethods.CommonObjectParameter(this);
-                    try {
-
-                        SfName = SharedPref.getSfName(this);
-                        DivCode = SharedPref.getDivisionCode(this);
-                        json.put("tableName", "savenew_master");
-                        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                            SfCode = SharedPref.getHqCode(this);
-                        } else {
-                            SfCode = SharedPref.getSfCode(this);
-                        }
-                        json.put("sfcode", SfCode);
-                        json.put("division_code", DivCode);
-                        json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
-                        json.put("DeviceID", SharedPref.getDeviceId(UnlistedDoctorAddition.this));
-                        json.put("DrName", unlistedadditionbinding.edtDctr.getText().toString());
-                        json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(UnlistedDoctorAddition.this)));
-                        json.put("DrqulNm", unlistedadditionbinding.txtSelectQua.getText().toString());
-                        json.put("DrClsCd", String.valueOf(SharedPref.getSelectedClass(UnlistedDoctorAddition.this)));
-                        json.put("DrClsNm", unlistedadditionbinding.txtSelectClass.getText().toString());
-                        json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(UnlistedDoctorAddition.this)));
-                        json.put("DrCatNm", unlistedadditionbinding.txtSelectCategory.getText().toString());
-                        json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(UnlistedDoctorAddition.this)));
-                        json.put("DrSpcNm", unlistedadditionbinding.txtSelectSpec.getText().toString());
-                        json.put("DrAddr", unlistedadditionbinding.edtHomeaddr.getText().toString());
-                        json.put("DrHospAddr", unlistedadditionbinding.edtHospaddr.getText().toString());
-                        json.put("DrClusNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
-                        json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
-                        json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
-                        json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
-                        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                            json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
-                            json.put("DrHQNm", unlistedadditionbinding.txtSelectHq.getText().toString());
-                        } else {
-                            json.put("DrHQCd", SfCode);
-                            json.put("DrHQNm", SfName);
-                        }
-                        json.put("key", SharedPref.getSaveLicenseSetting(UnlistedDoctorAddition.this));
-                        json.put("DrType", "U");
-                        if (!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")) {
-                            json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString() + " 00:00:00");
-                        } else {
-                            json.put("DrDOB", "");
-                        }
-                        if (!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")) {
-                            json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString() + " 00:00:00");
-                        } else {
-                            json.put("DrDOW", "");
-                        }
-                        json.put("DrPhone", unlistedadditionbinding.edtPhone.getText().toString());
-                        json.put("DrMob", unlistedadditionbinding.edtMob.getText().toString());
-                        json.put("imagePaths", destinationFilePath);
-                        json.put("imageName", imageName);
-
-                        if (SharedPref.getGeoChk(this).equalsIgnoreCase("0") && !unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")) {
-                            gpsTrack = new GPSTrack(this);
-                            latitude = gpsTrack.getLatitude();
-                            longitude = gpsTrack.getLongitude();
-                            json.put("DrLat", String.valueOf(latitude));
-                            json.put("DrLong", String.valueOf(longitude));
-                        } else {
-                            json.put("DrLat", "");
-                            json.put("DrLong", "");
-                        }
-                        json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(UnlistedDoctorAddition.this));
-                        Log.v("printing_add_dr", json.toString());
+                        Log.v("qualification_txt", "arent_empty");
                         unlistedadditionbinding.btnUnlstsave.setEnabled(false);
-                        addDoctor(json.toString());
-                    } catch (Exception e) {
-                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                        e.printStackTrace();
+                        JSONObject json = CommonUtilsMethods.CommonObjectParameter(UnlistedDoctorAddition.this);
+                        try {
+
+                            SfName = SharedPref.getSfName(UnlistedDoctorAddition.this);
+                            DivCode = SharedPref.getDivisionCode(UnlistedDoctorAddition.this);
+                            json.put("tableName", "savenew_master");
+                            if (SharedPref.getSfType(UnlistedDoctorAddition.this).equalsIgnoreCase("2")) {
+                                SfCode = SharedPref.getHqCode(UnlistedDoctorAddition.this);
+                            } else {
+                                SfCode = SharedPref.getSfCode(UnlistedDoctorAddition.this);
+                            }
+                            json.put("sfcode", SfCode);
+                            json.put("division_code", DivCode);
+                            json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
+                            json.put("DeviceID", SharedPref.getDeviceId(UnlistedDoctorAddition.this));
+                            json.put("DrName", unlistedadditionbinding.edtDctr.getText().toString());
+                            json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(UnlistedDoctorAddition.this)));
+                            json.put("DrqulNm", unlistedadditionbinding.txtSelectQua.getText().toString());
+                            json.put("DrClsCd", String.valueOf(SharedPref.getSelectedClass(UnlistedDoctorAddition.this)));
+                            json.put("DrClsNm", unlistedadditionbinding.txtSelectClass.getText().toString());
+                            json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(UnlistedDoctorAddition.this)));
+                            json.put("DrCatNm", unlistedadditionbinding.txtSelectCategory.getText().toString());
+                            json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(UnlistedDoctorAddition.this)));
+                            json.put("DrSpcNm", unlistedadditionbinding.txtSelectSpec.getText().toString());
+                            json.put("DrAddr", unlistedadditionbinding.edtHomeaddr.getText().toString());
+                            json.put("DrHospAddr", unlistedadditionbinding.edtHospaddr.getText().toString());
+                            json.put("DrClusNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
+                            json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
+                            json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
+                            json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
+                            json.put("Unlst_Doc_App_need", String.valueOf(SharedPref.getUnlstDocAppNeed(UnlistedDoctorAddition.this)));
+                            if (SharedPref.getSfType(UnlistedDoctorAddition.this).equalsIgnoreCase("2")) {
+                                json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
+                                json.put("DrHQNm", unlistedadditionbinding.txtSelectHq.getText().toString());
+                            } else {
+                                json.put("DrHQCd", SfCode);
+                                json.put("DrHQNm", SfName);
+                            }
+                            json.put("key", SharedPref.getSaveLicenseSetting(UnlistedDoctorAddition.this));
+                            json.put("DrType", "U");
+                            if (!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")) {
+                                json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString() + " 00:00:00");
+                            } else {
+                                json.put("DrDOB", "");
+                            }
+                            if (!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")) {
+                                json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString() + " 00:00:00");
+                            } else {
+                                json.put("DrDOW", "");
+                            }
+                            json.put("DrPhone", unlistedadditionbinding.edtPhone.getText().toString());
+                            json.put("DrMob", unlistedadditionbinding.edtMob.getText().toString());
+                            json.put("imagePaths", destinationFilePath);
+                            json.put("imageName", imageName);
+
+                            if (SharedPref.getGeoChk(UnlistedDoctorAddition.this).equalsIgnoreCase("0") && !unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")) {
+                                gpsTrack = new GPSTrack(UnlistedDoctorAddition.this);
+                                latitude = gpsTrack.getLatitude();
+                                longitude = gpsTrack.getLongitude();
+                                json.put("DrLat", String.valueOf(latitude));
+                                json.put("DrLong", String.valueOf(longitude));
+                            } else {
+                                json.put("DrLat", "");
+                                json.put("DrLong", "");
+                            }
+                            json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(UnlistedDoctorAddition.this));
+                            Log.v("printing_add_dr", json.toString());
+                            unlistedadditionbinding.btnUnlstsave.setEnabled(false);
+                            addDoctor(json.toString());
+                        } catch (Exception e) {
+                            unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
+
         });
         unlistedadditionbinding.btnUnlstcancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 handleCancel();
             }
         });
         unlistedadditionbinding.adddrClose.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 handleCancel();
             }
         });
         unlistedadditionbinding.dobCalendarIcon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 showDatePickerDialogforDOB();
             }
         });
         unlistedadditionbinding.edtDob.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(unlistedadditionbinding.edtDob.getWindowToken(), 0);
@@ -604,13 +616,13 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         });
         unlistedadditionbinding.dowCalenderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 showDatePickerDialogforDOW();
             }
         });
         unlistedadditionbinding.edtDow.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(unlistedadditionbinding.edtDow.getWindowToken(), 0);
@@ -619,17 +631,20 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             }
         });
         // OnClickListener for image capture
-        unlistedadditionbinding.dctrimage.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.CAMERA});
-            } else {
-                captureFile();
+        unlistedadditionbinding.dctrimage.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (ContextCompat.checkSelfPermission(UnlistedDoctorAddition.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.CAMERA});
+                } else {
+                    captureFile();
+                }
             }
         });
 
-        unlistedadditionbinding.btnMap.setOnClickListener(new View.OnClickListener() {
+        unlistedadditionbinding.btnMap.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(UnlistedDoctorAddition.this)) {
                     Intent intent = new Intent(UnlistedDoctorAddition.this, MapsAddition.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -645,7 +660,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
         unlistedadditionbinding.txtSelectQua.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -657,7 +672,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
         unlistedadditionbinding.txtSelectCategory.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -669,7 +684,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
         unlistedadditionbinding.txtSelectClass.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -681,7 +696,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
         unlistedadditionbinding.txtSelectSpec.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -693,7 +708,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
         unlistedadditionbinding.txtSelectTerritory.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -713,7 +728,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         });
         unlistedadditionbinding.txtSelectHq.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -723,21 +738,24 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             }
         });
 
-        unlistedadditionbinding.imgClearTag.setOnClickListener(view -> {
-            unlistedadditionbinding.edtGeotagaddr.setText("");
-            unlistedadditionbinding.layout7.setVisibility(View.GONE);
-            destinationFilePath = "";
-            imageName = "";
-            unlistedadditionbinding.dctrimage.setImageBitmap(null);
-            unlistedadditionbinding.dctrimage.setImageResource(R.drawable.ic_camera);
-            unlistedadditionbinding.dctrimage.setOnClickListener(v -> {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.CAMERA});
-                } else {
-                    captureFile();
-                }
-            });
-            view.setVisibility(View.GONE);
+        unlistedadditionbinding.imgClearTag.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                unlistedadditionbinding.edtGeotagaddr.setText("");
+                unlistedadditionbinding.layout7.setVisibility(View.GONE);
+                destinationFilePath = "";
+                imageName = "";
+                unlistedadditionbinding.dctrimage.setImageBitmap(null);
+                unlistedadditionbinding.dctrimage.setImageResource(R.drawable.ic_camera);
+                unlistedadditionbinding.dctrimage.setOnClickListener(view1 -> {
+                    if (ContextCompat.checkSelfPermission(UnlistedDoctorAddition.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.CAMERA});
+                    } else {
+                        captureFile();
+                    }
+                });
+                view.setVisibility(View.GONE);
+            }
         });
 
     }
@@ -1075,7 +1093,12 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         unlistedadditionbinding.dctrimage.setTag(destinationFilePath);
 
                         // Set click listener to show image popup
-                        unlistedadditionbinding.dctrimage.setOnClickListener(view -> showImagePopup(destinationFilePath));
+                        unlistedadditionbinding.dctrimage.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                showImagePopup(destinationFilePath);
+                            }
+                        });
 
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                         Log.d("Camera", "onActivityResult: Canceled");
@@ -1112,7 +1135,12 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         params.gravity = Gravity.TOP;  // Aligns the popup to the top
         params.y = 150;  // Moves it 150 pixels downward (adjust as needed)
         dialog.getWindow().setAttributes(params);
-        closeButton.setOnClickListener(v -> dialog.dismiss()); // Close popup when clicked
+        closeButton.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
+        }); // Close popup when clicked
     }
 
     private void CallImageAPI(String jsonImage, String file) {
@@ -1270,12 +1298,18 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
 
-        btn_yes.setOnClickListener(view12 -> {
-            getOnBackPressedDispatcher().onBackPressed();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
-        btn_no.setOnClickListener(view12 -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
 
     }

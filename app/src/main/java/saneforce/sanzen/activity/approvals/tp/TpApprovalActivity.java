@@ -39,6 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
@@ -107,18 +108,31 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         getRequiredData();
         CallTpListApi();
-        tpApprovalBinding.ivBack.setOnClickListener(view -> {
-            SelectedSfCode = "";
-            SelectedMonth = "";
-            SelectedYear = "";
-            SelectedDay = "";
-            Intent intent = new Intent(TpApprovalActivity.this, ApprovalsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        tpApprovalBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SelectedSfCode = "";
+                SelectedMonth = "";
+                SelectedYear = "";
+                SelectedDay = "";
+                Intent intent = new Intent(TpApprovalActivity.this, ApprovalsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
         });
 
-        tpApprovalBinding.btnApproved.setOnClickListener(v -> tpApproval());
-        tpApprovalBinding.btnReject.setOnClickListener(v -> DisplayDialog());
+        tpApprovalBinding.btnApproved.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                tpApproval();
+            }
+        });
+        tpApprovalBinding.btnReject.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                DisplayDialog();
+            }
+        });
 
 
         tpApprovalBinding.searchTp.addTextChangedListener(new TextWatcher() {
@@ -216,21 +230,30 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
         Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
         ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
-        btn_cancel.setOnClickListener(view1 -> {
-            ed_reason.setText("");
-            dialogReject.dismiss();
+        btn_cancel.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ed_reason.setText("");
+                dialogReject.dismiss();
+            }
         });
 
-        iv_close.setOnClickListener(view12 -> {
-            ed_reason.setText("");
-            dialogReject.dismiss();
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ed_reason.setText("");
+                dialogReject.dismiss();
+            }
         });
 
-        btn_reject.setOnClickListener(view13 -> {
-            if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
-                tpReject(ed_reason.getText().toString());
-            } else {
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_enter_reason_for_reject));
+        btn_reject.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
+                    tpReject(ed_reason.getText().toString());
+                } else {
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+                }
             }
         });
         dialogReject.show();
