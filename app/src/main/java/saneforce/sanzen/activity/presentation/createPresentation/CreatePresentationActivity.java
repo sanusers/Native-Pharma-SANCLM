@@ -106,18 +106,15 @@ public class CreatePresentationActivity extends AppCompatActivity {
             }
         });
 
-        binding.playBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!selectedSlideArrayList.isEmpty()) {
-                    Intent intent = new Intent(CreatePresentationActivity.this, PlaySlidePreviewActivity.class);
-                    String data = new Gson().toJson(selectedSlideArrayList);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("slideBundle", data);
-                    bundle.putString("position", String.valueOf(0));
-                    intent.putExtra("bundle", bundle);
-                    startActivity(intent);
-                }
+        binding.playBtn.setOnClickListener(view -> {
+            if (!selectedSlideArrayList.isEmpty()) {
+                Intent intent = new Intent(CreatePresentationActivity.this, PlaySlidePreviewActivity.class);
+                String data = new Gson().toJson(selectedSlideArrayList);
+                Bundle bundle = new Bundle();
+                bundle.putString("slideBundle", data);
+                bundle.putString("position", String.valueOf(0));
+                intent.putExtra("bundle", bundle);
+                startActivity(intent);
             }
         });
 
