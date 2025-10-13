@@ -2,7 +2,7 @@
 <network-security-config xmlns:tools="http://schemas.android.com/tools">
     <base-config cleartextTrafficPermitted="true"
         tools:ignore="InsecureBaseConfiguration" />
-    <domain-config cleartextTrafficPermitted="true"
+ <!--   <domain-config cleartextTrafficPermitted="true"
         tools:ignore="NetworkSecurityConfig" >
         <domain includeSubdomains = "true">mankind.saneforce.com</domain>
         <trust-anchors>
@@ -10,5 +10,5 @@
             <certificates src = "@raw/certificate"/>
         </trust-anchors>
 
-    </domain-config>
+    </domain-config>-->
 </network-security-config>

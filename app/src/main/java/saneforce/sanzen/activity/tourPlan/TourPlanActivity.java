@@ -942,6 +942,11 @@ public class TourPlanActivity extends AppCompatActivity {
                         scrollToPosition(position, true);
                     }
 //                }
+                binding.tpStatusTxt.setText(Constants.STATUS_0);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                binding.rejectionReasonLayout.setVisibility(View.GONE);
+                binding.tpNavigation.sessionEdit.setEnabled(true);
+                binding.rejectedReasonTxt.setText("");
             });
 //Edit
             binding.tpNavigation.sessionEdit.setOnClickListener(new SafeClickListener() {
@@ -1230,6 +1235,12 @@ public class TourPlanActivity extends AppCompatActivity {
                     } else {
                         scrollToPosition(position, true);
                     }
+                    binding.tpStatusTxt.setText(Constants.STATUS_0);
+                    binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                    binding.rejectionReasonLayout.setVisibility(View.GONE);
+                    binding.tpNavigation.sessionEdit.setEnabled(true);
+                    binding.rejectedReasonTxt.setText("");
+
                 }
             });
 
@@ -2468,7 +2479,7 @@ public class TourPlanActivity extends AppCompatActivity {
         if (!isDataAvailable) {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
             binding.rejectedReasonTxt.setText("");
-            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
+            binding.tpStatusTxt.setText(Constants.STATUS_0);
         }
 
     }
@@ -2570,7 +2581,7 @@ public class TourPlanActivity extends AppCompatActivity {
         if (!isDataAvailable) {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
             binding.rejectedReasonTxt.setText("");
-            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
+            binding.tpStatusTxt.setText(Constants.STATUS_0);
             calendarAdapter.notifyDataSetChanged();
         }
     }
@@ -4176,8 +4187,7 @@ public class TourPlanActivity extends AppCompatActivity {
         saveTpLocalOneBuild(dayWiseSaveTp, day, monthName, "0");
     }
 
-    private ArrayList<ModelClass.SessionList.SubClass> addExtraData(String
-                                                                            Name, String Code) {
+    private ArrayList<ModelClass.SessionList.SubClass> addExtraData(String Name, String Code) {
         String[] arrName = Name.split(",");
         String[] arrCode = Code.split(",");
         ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
@@ -4299,7 +4309,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         }
                                         default: {
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
-                                            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
+                                            binding.tpStatusTxt.setText(Constants.STATUS_0);
                                             break;
                                         }
                                     }
@@ -4401,7 +4411,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         }
                                         default: {
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
-                                            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
+                                            binding.tpStatusTxt.setText(Constants.STATUS_0);
                                             break;
                                         }
                                     }
