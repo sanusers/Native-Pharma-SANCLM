@@ -7,13 +7,17 @@ import android.annotation.SuppressLint;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -58,6 +62,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
@@ -113,6 +118,9 @@ public class TourPlanActivity extends AppCompatActivity {
 
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
+
+    List<String> draftDates = new ArrayList<>();
+
     ModelClass.SessionList.WorkType weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType();
     ModelClass.SessionList.WorkType holidayWorkTypeModel = new ModelClass.SessionList.WorkType();
 
@@ -413,6 +421,44 @@ public class TourPlanActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(view ->  {
 
+            if(!draftDates.isEmpty()){
+                Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dcr_cancel_alert);
+                dialog.setCancelable(false);
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                TextView alert_msg = dialog.findViewById(R.id.ed_alert_msg);
+                alert_msg.setText(R.string.draft_alert);
+                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                TextView btn_no = dialog.findViewById(R.id.btn_no);
+                btn_yes.setOnClickListener(view1 -> {
+                    LocalDate localDate1 = LocalDate.now();
+                    if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
+                        getDraftSaveOneBuild("previous", dayWiseArrayPreviousMonthOneBuild, isFrom,true);
+                        get3MonthRemoteTPDataOneBuild("previous");
+                        get3MonthRemoteTPDataOneBuild("previous");
+                    } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
+                        getDraftSaveOneBuild("current", dayWiseArrayCurrentMonthOneBuild, isFrom, true);
+                        get3MonthRemoteTPDataOneBuild("current");
+                        get3MonthRemoteTPDataOneBuild("current");
+                    } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
+                        getDraftSaveOneBuild("next", dayWiseArrayNextMonthOneBuild, isFrom, true);
+                        get3MonthRemoteTPDataOneBuild("next");
+                        get3MonthRemoteTPDataOneBuild("next");
+                    }
+                    draftDates.clear();
+                    dialog.dismiss();
+                });
+
+                btn_no.setOnClickListener(view1 -> {
+                    getOnBackPressedDispatcher().onBackPressed();
+                    finish();
+                    dialog.dismiss();
+                });
+
+
+            }else{
+
                 if (SharedPref.getTpMandatoryNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getTpNeed(TourPlanActivity.this).equalsIgnoreCase("0") &&
                         !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("-1") &&
                         !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("-1")) {
@@ -421,6 +467,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                 getOnBackPressedDispatcher().onBackPressed();
                 finish();
+            }
 
         });
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
@@ -947,6 +994,15 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.rejectionReasonLayout.setVisibility(View.GONE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
                 binding.rejectedReasonTxt.setText("");
+                draftDates.clear();
+                LocalDate localDate1 = LocalDate.now();
+                if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
+                    draftDates.add(dayNo);
+                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
+                    draftDates.add(dayNo);
+                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
+                    draftDates.add(dayNo);
+                }
             });
 //Edit
             binding.tpNavigation.sessionEdit.setOnClickListener(new SafeClickListener() {
@@ -3400,8 +3456,9 @@ public class TourPlanActivity extends AppCompatActivity {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-
-
+                                        draftDates.clear();
+                                        get3MonthRemoteTPDataOneBuild(isClickedName);
+                                        get3MonthRemoteTPDataOneBuild(isClickedName);
                                     } else {
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                                         SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
