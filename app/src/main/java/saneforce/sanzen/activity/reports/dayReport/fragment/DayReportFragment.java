@@ -49,6 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.CalendarAdapter;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
@@ -102,7 +103,12 @@ public class DayReportFragment extends Fragment {
         populateAdapter();
         onClickListener();
 
-        binding.calender.setOnClickListener(view -> calendarDialog());
+        binding.calender.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                calendarDialog();
+            }
+        });
 
         binding.searchET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -243,23 +249,29 @@ public class DayReportFragment extends Fragment {
             localDate = LocalDate.parse(binding.calender.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
             nextArrow.setEnabled(false);
             nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-            prevArrow.setOnClickListener(view1 -> {
-                nextArrow.setEnabled(true);
-                nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
-                localDate = localDate.minusMonths(1);
-                monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
-                daysArrayList = daysInMonthArray(localDate);
-                populateCalendarAdapter(recyclerView);
+            prevArrow.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    nextArrow.setEnabled(true);
+                    nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
+                    localDate = localDate.minusMonths(1);
+                    monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
+                    daysArrayList = daysInMonthArray(localDate);
+                    populateCalendarAdapter(recyclerView);
+                }
             });
 
-            nextArrow.setOnClickListener(view12 -> {
-                localDate = localDate.plusMonths(1);
-                monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
-                daysArrayList = daysInMonthArray(localDate);
-                populateCalendarAdapter(recyclerView);
-                if (LocalDate.now().equals(localDate)) {
-                    nextArrow.setEnabled(false);
-                    nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
+            nextArrow.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    localDate = localDate.plusMonths(1);
+                    monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
+                    daysArrayList = daysInMonthArray(localDate);
+                    populateCalendarAdapter(recyclerView);
+                    if (LocalDate.now().equals(localDate)) {
+                        nextArrow.setEnabled(false);
+                        nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
+                    }
                 }
             });
             populateCalendarAdapter(recyclerView);
@@ -375,7 +387,7 @@ public class DayReportFragment extends Fragment {
         binding.dayReportRecView.setAdapter(dayReportAdapter);
     }
     private void onClickListener(){
-        binding.sortIcon.setOnClickListener(v -> {
+        binding.sortIcon.setOnClickListener(view -> {
             Context wrapper = new ContextThemeWrapper(getContext(), R.style.popupMenuStyle);
             final PopupMenu popup = new PopupMenu(wrapper, binding.sortIcon, Gravity.END);
             popup.getMenu().add(1, 1, 1, "By Name      A - Z");

@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
@@ -77,23 +78,29 @@ public class CustomPresentationFragment extends Fragment {
         binding = FragmentCustomPresentationBinding.inflate(inflater);
         uiInitialisation();
 
-        binding.playBtn.setOnClickListener(view -> {
-            if (!selectedSlideArrayList.isEmpty()) {
-                Intent intent = new Intent(requireContext(), PlaySlideDetailing.class);
-                String data = new Gson().toJson(selectedSlideArrayList);
-                Bundle bundle = new Bundle();
-                bundle.putString("slideBundle", data);
-                bundle.putString("position", String.valueOf(0));
-                intent.putExtra("bundle", bundle);
-                startActivity(intent);
+        binding.playBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!selectedSlideArrayList.isEmpty()) {
+                    Intent intent = new Intent(requireContext(), PlaySlideDetailing.class);
+                    String data = new Gson().toJson(selectedSlideArrayList);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("slideBundle", data);
+                    bundle.putString("position", String.valueOf(0));
+                    intent.putExtra("bundle", bundle);
+                    startActivity(intent);
+                }
             }
         });
-        binding.clearBtn.setOnClickListener(view -> {
-            if (!selectedSlideArrayList.isEmpty()) {
-                selectedSlideArrayList.clear();
-                savedPresentation.clear();
-                brandProductArrayList.clear();
-                uiInitialisation();
+        binding.clearBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!selectedSlideArrayList.isEmpty()) {
+                    selectedSlideArrayList.clear();
+                    savedPresentation.clear();
+                    brandProductArrayList.clear();
+                    uiInitialisation();
+                }
             }
         });
         return binding.getRoot();

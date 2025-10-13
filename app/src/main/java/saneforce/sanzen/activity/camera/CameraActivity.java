@@ -42,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -188,50 +189,65 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             }
         });
 
-        activityCameraBinding.close.setOnClickListener(view -> {
-            isImageCaptured = false;
-            finish();
-        });
-
-        activityCameraBinding.flash.setOnClickListener(view -> {
-            isFlashEnabled = !isFlashEnabled;
-            openCamera();
-        });
-
-        activityCameraBinding.capture.setOnClickListener(view -> {
-            if(isImageCaptured) {
+        activityCameraBinding.close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
                 isImageCaptured = false;
-                openCamera();
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    activityCameraBinding.capture.setTooltipText("Capture");
-                }
-                activityCameraBinding.capturedImage.setImageBitmap(null);
-                activityCameraBinding.capturedImage.setVisibility(View.GONE);
-                activityCameraBinding.save.setVisibility(View.GONE);
-                activityCameraBinding.cameraPreview.setVisibility(View.VISIBLE);
-                activityCameraBinding.capture.setImageResource(R.drawable.ic_camera);
-//                commonUtilsMethods.showToastMessage(this, "Now you can capture image...");
-            }else {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    activityCameraBinding.capture.setTooltipText("Retake");
-                }
-                captureImage();
+                finish();
             }
         });
 
-        activityCameraBinding.save.setOnClickListener(view -> {
-            activityCameraBinding.options.setVisibility(View.GONE);
-            new Handler().postDelayed(() -> {
-                captureImageWithLocation();
-                isImageCaptured = false;
-                setResult(RESULT_OK);
-                finish();
-            }, 1000);
+        activityCameraBinding.flash.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                isFlashEnabled = !isFlashEnabled;
+                openCamera();
+            }
         });
 
-        activityCameraBinding.switchCamera.setOnClickListener(view -> {
-            isBackCameraOpen = !isBackCameraOpen;
-            openCamera();
+        activityCameraBinding.capture.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (isImageCaptured) {
+                    isImageCaptured = false;
+                    openCamera();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        activityCameraBinding.capture.setTooltipText("Capture");
+                    }
+                    activityCameraBinding.capturedImage.setImageBitmap(null);
+                    activityCameraBinding.capturedImage.setVisibility(View.GONE);
+                    activityCameraBinding.save.setVisibility(View.GONE);
+                    activityCameraBinding.cameraPreview.setVisibility(View.VISIBLE);
+                    activityCameraBinding.capture.setImageResource(R.drawable.ic_camera);
+//                commonUtilsMethods.showToastMessage(this, "Now you can capture image...");
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        activityCameraBinding.capture.setTooltipText("Retake");
+                    }
+                    captureImage();
+                }
+            }
+        });
+
+        activityCameraBinding.save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                activityCameraBinding.options.setVisibility(View.GONE);
+                new Handler().postDelayed(() -> {
+                    captureImageWithLocation();
+                    isImageCaptured = false;
+                    setResult(RESULT_OK);
+                    finish();
+                }, 1000);
+            }
+        });
+
+        activityCameraBinding.switchCamera.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                isBackCameraOpen = !isBackCameraOpen;
+                openCamera();
+            }
         });
     }
 

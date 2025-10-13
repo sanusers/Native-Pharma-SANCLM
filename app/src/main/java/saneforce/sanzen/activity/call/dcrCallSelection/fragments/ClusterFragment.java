@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -52,7 +53,7 @@ public class ClusterFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectclusterSideBinding = FragmentClusterBinding.inflate(inflater);
-        View v = selectclusterSideBinding.getRoot();
+        View view = selectclusterSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -61,16 +62,21 @@ public class ClusterFragment extends Fragment {
         clusterName = "";
         clusterCode = "";
         sel_clustercode=0;
-        selectclusterSideBinding.tvDummy.setOnClickListener(view -> {
+        selectclusterSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
 
-        selectclusterSideBinding.imgClose.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(selectclusterSideBinding.imgClose.getWindowToken(), 0);
-            selectclusterSideBinding.searchList.setText("");
-            unlistedadditionbinding.fragmentSelectCluster.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectclusterSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(selectclusterSideBinding.imgClose.getWindowToken(), 0);
+                selectclusterSideBinding.searchList.setText("");
+                unlistedadditionbinding.fragmentSelectCluster.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectclusterSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -99,7 +105,7 @@ public class ClusterFragment extends Fragment {
 //            unlistedadditionbinding.txtSelectTerritory.setText(selectclusterSideBinding.selectListView.getItemAtPosition(i).toString());
 //            unlistedadditionbinding.fragmentSelectCluster.setVisibility(View.GONE);
 //        });
-        selectclusterSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectclusterSideBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             String selectedName = adapterView.getItemAtPosition(i).toString();
             int originalIndex = list_name.indexOf(selectedName);
             if (originalIndex != -1) {
@@ -112,7 +118,7 @@ public class ClusterFragment extends Fragment {
                 unlistedadditionbinding.fragmentSelectCluster.setVisibility(View.GONE);
             }
         });
-        return v;
+        return view;
     }
 
 

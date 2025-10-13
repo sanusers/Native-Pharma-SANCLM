@@ -19,6 +19,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
@@ -43,10 +44,13 @@ public class CommonAlertBox {
                 alert.setView(alertLayout);
                 dialog = alert.create();
                 dialog.show();
-                btnOk.setOnClickListener(v -> {
-                    activity.finishAffinity();
-                    System.exit(0);
-                    dialog.dismiss();
+                btnOk.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        activity.finishAffinity();
+                        System.exit(0);
+                        dialog.dismiss();
+                    }
                 });
             } else {
                 getlocation_status(activity);
@@ -113,13 +117,16 @@ public class CommonAlertBox {
         alert.setView(alertLayout);
         AlertDialog dialog = alert.create();
         dialog.show();
-        btn_yes.setOnClickListener(v -> {
+        btn_yes.setOnClickListener(view -> {
             Intent intent = new Intent(activity, TourPlanActivity.class);
             activity.startActivity(intent);
             dialog.dismiss();
         });
-        btn_no.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
 
     }
@@ -136,14 +143,17 @@ public class CommonAlertBox {
         alert.setView(alertLayout);
         AlertDialog dialog = alert.create();
         dialog.show();
-        btn_yes.setOnClickListener(v -> {
+        btn_yes.setOnClickListener(view -> {
             SharedPref.setApprovalsCounts(activity, "false");
             Intent intent = new Intent(activity, ApprovalsActivity.class);
             activity.startActivity(intent);
             dialog.dismiss();
         });
-        btn_no.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 
@@ -171,10 +181,13 @@ public class CommonAlertBox {
                                 alert.setView(alertLayout);
                                 AlertDialog dialog = alert.create();
                                 dialog.show();
-                                btnOk.setOnClickListener(v -> {
-                                    activity.finishAffinity();
-                                    System.exit(0);
-                                    dialog.dismiss();
+                                btnOk.setOnClickListener(new SafeClickListener() {
+                                    @Override
+                                    public void onSafeClick(View view) {
+                                        activity.finishAffinity();
+                                        System.exit(0);
+                                        dialog.dismiss();
+                                    }
                                 });
                             }
                         } catch (Exception e) {
@@ -206,11 +219,14 @@ public class CommonAlertBox {
         AlertDialog dialog = alert.create();
         dialog.setCancelable(false);
         dialog.show();
-        btn_yes.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, HomeDashBoard.class);
-            activity.startActivity(intent);
-            activity.finishAffinity();
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(activity, HomeDashBoard.class);
+                activity.startActivity(intent);
+                activity.finishAffinity();
+                dialog.dismiss();
+            }
         });
     }
 
@@ -229,9 +245,12 @@ public class CommonAlertBox {
         AlertDialog dialog = alert.create();
         dialog.setCancelable(false);
         dialog.show();
-        btn_yes.setOnClickListener(v -> {
-            HomeDashBoard.binding.viewPager.setCurrentItem(2);
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                HomeDashBoard.binding.viewPager.setCurrentItem(2);
+                dialog.dismiss();
+            }
         });
     }
 

@@ -32,6 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.myresource.Resource_profiling;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -84,39 +85,41 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
 
         holder.itemTitle.setText(app_adapt.getDoc_name());
 
-        holder.itemTitle.setOnClickListener(view -> {
-            Log.d("itemTitle", app_adapt.getDoc_name());
-            if (!Resource_profiling.profil_val.equals("")) {
-                Resource_profiling.drawer_Layout12.closeDrawer(GravityCompat.END);
-                if (pos.equals("Q")) {
-                    Resource_profiling.Qual_code = app_adapt.getDoc_code();
-                    Resource_profiling.Qualification.setText(app_adapt.getDoc_name());
-                } else if (pos.equals("S")) {
-                    Resource_profiling.spec_code = app_adapt.getDoc_code();
-                    Resource_profiling.Speciality.setText(app_adapt.getDoc_name());
-                } else if (pos.equals("C")) {
-                    Resource_profiling.cate_code = app_adapt.getDoc_code();
-                    Resource_profiling.Category.setText(app_adapt.getDoc_name());
-                }
-            } else {
-                RemaindercallsActivity.remcallbinding.townname.setText(app_adapt.getDoc_name());
-                RemaindercallsActivity.REm_hq_code = app_adapt.getDoc_code();
-                String hqcode = SharedPref.getDcrdoc_hqcode(context);
-                Log.d("hqlist_data", hqcode+"--"+ app_adapt.getDoc_code());
-                RemaindercallsActivity.slt_hq.add(hqcode);
-                if (RemaindercallsActivity.slt_hq.size() != 0) {
-                    for (int v = 0; v < RemaindercallsActivity.slt_hq.size(); v++) {
-                        if (RemaindercallsActivity.slt_hq.get(v).equals("Doctor_" + app_adapt.getDoc_code())) {
-                            show_hq("Doctor_" + app_adapt.getDoc_code());
-                            Vals = "A";
+        holder.itemTitle.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Log.d("itemTitle", app_adapt.getDoc_name());
+                if (!Resource_profiling.profil_val.equals("")) {
+                    Resource_profiling.drawer_Layout12.closeDrawer(GravityCompat.END);
+                    if (pos.equals("Q")) {
+                        Resource_profiling.Qual_code = app_adapt.getDoc_code();
+                        Resource_profiling.Qualification.setText(app_adapt.getDoc_name());
+                    } else if (pos.equals("S")) {
+                        Resource_profiling.spec_code = app_adapt.getDoc_code();
+                        Resource_profiling.Speciality.setText(app_adapt.getDoc_name());
+                    } else if (pos.equals("C")) {
+                        Resource_profiling.cate_code = app_adapt.getDoc_code();
+                        Resource_profiling.Category.setText(app_adapt.getDoc_name());
+                    }
+                } else {
+                    RemaindercallsActivity.remcallbinding.townname.setText(app_adapt.getDoc_name());
+                    RemaindercallsActivity.REm_hq_code = app_adapt.getDoc_code();
+                    String hqcode = SharedPref.getDcrdoc_hqcode(context);
+                    Log.d("hqlist_data", hqcode + "--" + app_adapt.getDoc_code());
+                    RemaindercallsActivity.slt_hq.add(hqcode);
+                    if (RemaindercallsActivity.slt_hq.size() != 0) {
+                        for (int v = 0; v < RemaindercallsActivity.slt_hq.size(); v++) {
+                            if (RemaindercallsActivity.slt_hq.get(v).equals("Doctor_" + app_adapt.getDoc_code())) {
+                                show_hq("Doctor_" + app_adapt.getDoc_code());
+                                Vals = "A";
+                            }
                         }
                     }
+                    if (Vals.equals("")) {
+                        getData(app_adapt.getDoc_code());
+                    }
+                    RemaindercallsActivity.remcallbinding.drawerLayout.closeDrawer(GravityCompat.END);
                 }
-                if (Vals.equals("")) {
-                    getData(app_adapt.getDoc_code());
-                }
-                RemaindercallsActivity.remcallbinding.drawerLayout.closeDrawer(GravityCompat.END);
-
             }
         });
     }

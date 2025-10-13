@@ -48,6 +48,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
@@ -188,7 +189,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        binding.backArrow.setOnClickListener(v -> finish());
+        binding.backArrow.setOnClickListener(view -> finish());
 
         if(isFrom.equalsIgnoreCase("edit") && !presentationName.isEmpty()) {
             presentationDataTable = presentationDataDao.getPresentationData(presentationName);
@@ -200,7 +201,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             binding.btnNext.setText(getString(R.string.next));
         }
 
-        binding.btnNext.setOnClickListener(v -> {
+        binding.btnNext.setOnClickListener(view -> {
             if(selectedCustomerCodes.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, "Please select any " + selectedCustomerCaption);
             }else {
@@ -234,16 +235,22 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             }
         });
 
-        binding.ivFilter.setOnClickListener(view -> {
-            CustomizeFiltered();
+        binding.ivFilter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                CustomizeFiltered();
+            }
         });
 
-        binding.constraintHq.setOnClickListener(view -> {
-            if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                if(!selectedCustomerCodes.isEmpty()) {
-                    changeHQAlert();
-                } else {
-                    showHQSelection();
+        binding.constraintHq.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getSfType(CustomerSelectionActivity.this).equalsIgnoreCase("2")) {
+                    if (!selectedCustomerCodes.isEmpty()) {
+                        changeHQAlert();
+                    } else {
+                        showHQSelection();
+                    }
                 }
             }
         });

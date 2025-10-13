@@ -59,6 +59,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.storage.SharedPref;
@@ -159,7 +160,7 @@ public class CommonUtilsMethods {
 
             for (int i = start; i < end; i++) {
                 char c = source.charAt(i);
-                if (!Character.isLetterOrDigit(c) && c != '_' && !Character.isWhitespace(c)) {
+                if (!Character.isLetterOrDigit(c) && c != '_' && c != '@' && c != '!' && c != '#' && c != '$' && !Character.isWhitespace(c)) {
                     return "";
                 }
             }
@@ -514,12 +515,15 @@ public class CommonUtilsMethods {
         customDialog.setView(timezoneBinding.getRoot());
         customDialog.setCancelable(false);
         customDialog.show();
-        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {
-            customDialog.dismiss();
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            context.finishAffinity();
-            System.exit(0);
+        timezoneBinding.btnOpenSettings.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                customDialog.dismiss();
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                context.finishAffinity();
+                System.exit(0);
+            }
         });
     }
 
@@ -592,15 +596,15 @@ public class CommonUtilsMethods {
         private long lastClickTime = 0;
 
         @Override
-        public void onClick(View v) {
+        public void onClick(View view) {
             long clickTime = System.currentTimeMillis();
             if(clickTime - lastClickTime<DOUBLE_CLICK_TIME_DELTA) {
-                onDoubleClick(v);
+                onDoubleClick(view);
             }
             lastClickTime = clickTime;
         }
 
-        public void onDoubleClick(View v) {
+        public void onDoubleClick(View view) {
         }
     }
 

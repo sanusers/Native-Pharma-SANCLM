@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
@@ -154,26 +155,26 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         }
 
 
-        holder.drIcon.setOnClickListener(v -> {
+        holder.drIcon.setOnClickListener(view -> {
             popUp(holder.drIcon,SharedPref.getDrCap(context));
 
         });
-        holder.cheIcon.setOnClickListener(v -> {
+        holder.cheIcon.setOnClickListener(view -> {
             popUp(holder.cheIcon,SharedPref.getChmCap(context));
 
         });
-        holder.stockIcon.setOnClickListener(v -> {
+        holder.stockIcon.setOnClickListener(view -> {
             popUp(holder.stockIcon,SharedPref.getStkCap(context));
 
         });
-        holder.unDrIcon.setOnClickListener(v -> {
+        holder.unDrIcon.setOnClickListener(view -> {
             popUp(holder.unDrIcon,SharedPref.getUNLcap(context));
 
         });
 
         holder.remarks.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 popUp(holder.remarks,dayReportModel.getRemarks());
              }
         });
@@ -230,44 +231,53 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.green_10)));
         }
 
-        holder.checkInMarker.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapViewActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("INLat", dayReportModel.getStart_lat());
-            bundle.putString("INLong", dayReportModel.getStart_lang());
-            bundle.putString("OUTLat", dayReportModel.getEnd_lat());
-            bundle.putString("OUTLong", dayReportModel.getEnd_lang());
-            bundle.putString("INDateTime", dayReportModel.getIntime());
-            bundle.putString("OUTDateTime", dayReportModel.getOuttime());
-            bundle.putString("INAddress", dayReportModel.getInaddress());
-            bundle.putString("OUTAddress", dayReportModel.getOutaddress());
-            bundle.putString("title", context.getString(R.string.day_check_in) + " Out ( " + dayReportModel.getRptdate() + " )");
-            bundle.putBoolean("ISCheckIN", true);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
+        holder.checkInMarker.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(context, MapViewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("INLat", dayReportModel.getStart_lat());
+                bundle.putString("INLong", dayReportModel.getStart_lang());
+                bundle.putString("OUTLat", dayReportModel.getEnd_lat());
+                bundle.putString("OUTLong", dayReportModel.getEnd_lang());
+                bundle.putString("INDateTime", dayReportModel.getIntime());
+                bundle.putString("OUTDateTime", dayReportModel.getOuttime());
+                bundle.putString("INAddress", dayReportModel.getInaddress());
+                bundle.putString("OUTAddress", dayReportModel.getOutaddress());
+                bundle.putString("title", context.getString(R.string.day_check_in) + " Out ( " + dayReportModel.getRptdate() + " )");
+                bundle.putBoolean("ISCheckIN", true);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
         });
 
-        holder.checkOutMarker.setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            Intent intent = new Intent(context, MapViewActivity.class);
-            bundle.putString("INLat", dayReportModel.getStart_lat());
-            bundle.putString("INLong", dayReportModel.getStart_lang());
-            bundle.putString("OUTLat", dayReportModel.getEnd_lat());
-            bundle.putString("OUTLong", dayReportModel.getEnd_lang());
-            bundle.putString("INDateTime", dayReportModel.getIntime());
-            bundle.putString("OUTDateTime", dayReportModel.getOuttime());
-            bundle.putString("INAddress", dayReportModel.getInaddress());
-            bundle.putString("OUTAddress", dayReportModel.getOutaddress());
-            bundle.putString("title", context.getString(R.string.day_check_in) + " Out ( " + dayReportModel.getRptdate() + " )");
-            bundle.putBoolean("ISCheckIN", false);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
+        holder.checkOutMarker.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Bundle bundle = new Bundle();
+                Intent intent = new Intent(context, MapViewActivity.class);
+                bundle.putString("INLat", dayReportModel.getStart_lat());
+                bundle.putString("INLong", dayReportModel.getStart_lang());
+                bundle.putString("OUTLat", dayReportModel.getEnd_lat());
+                bundle.putString("OUTLong", dayReportModel.getEnd_lang());
+                bundle.putString("INDateTime", dayReportModel.getIntime());
+                bundle.putString("OUTDateTime", dayReportModel.getOuttime());
+                bundle.putString("INAddress", dayReportModel.getInaddress());
+                bundle.putString("OUTAddress", dayReportModel.getOutaddress());
+                bundle.putString("title", context.getString(R.string.day_check_in) + " Out ( " + dayReportModel.getRptdate() + " )");
+                bundle.putBoolean("ISCheckIN", false);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
         });
 
-        holder.arrow.setOnClickListener(view -> {
-            dataViewModel.saveDetailedData(new Gson().toJson(dayReportModel));
-            ReportFragContainerActivity activity = (ReportFragContainerActivity) context;
-            activity.loadFragment(new DayReportDetailFragment());
+        holder.arrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dataViewModel.saveDetailedData(new Gson().toJson(dayReportModel));
+                ReportFragContainerActivity activity = (ReportFragContainerActivity) context;
+                activity.loadFragment(new DayReportDetailFragment());
+            }
         });
 
     }
@@ -392,7 +402,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         };
     }
 
-    private void popUp(View v, String name) {
+    private void popUp(View view, String name) {
         PopupWindow popup = new PopupWindow(context);
         View layout = LayoutInflater.from(context).inflate(R.layout.popup_text, null);
         popup.setContentView(layout);
@@ -400,7 +410,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         TextView tv_name = layout.findViewById(R.id.tv_name);
         tv_name.setText(name);
         popup.setOutsideTouchable(true);
-        popup.showAsDropDown(v);
+        popup.showAsDropDown(view);
     }
 
 }

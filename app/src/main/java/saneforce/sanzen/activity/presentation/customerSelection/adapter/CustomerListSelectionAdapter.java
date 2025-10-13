@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -72,15 +73,23 @@ public class CustomerListSelectionAdapter extends RecyclerView.Adapter<CustomerL
         }
         holder.view_top.setVisibility(View.GONE);
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, customerDataModel.getName()));
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, customerDataModel.getName());
+            }
+        });
 
-        holder.constraint_main.setOnClickListener(view -> {
-            customerSelectionListener.onSelect(customerDataModel);
-            customerDataModel.setSelected(!customerDataModel.isSelected());
-            if(customerDataModel.isSelected()) {
-                holder.iv_selected_tick.setVisibility(View.VISIBLE);
-            }else {
-                holder.iv_selected_tick.setVisibility(View.GONE);
+        holder.constraint_main.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                customerSelectionListener.onSelect(customerDataModel);
+                customerDataModel.setSelected(!customerDataModel.isSelected());
+                if (customerDataModel.isSelected()) {
+                    holder.iv_selected_tick.setVisibility(View.VISIBLE);
+                } else {
+                    holder.iv_selected_tick.setVisibility(View.GONE);
+                }
             }
         });
 

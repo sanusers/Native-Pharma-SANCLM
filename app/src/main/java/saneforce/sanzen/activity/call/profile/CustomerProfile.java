@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -183,41 +184,47 @@ public class CustomerProfile extends AppCompatActivity {
         });
 
 
-        btn_skip.setOnClickListener(view -> {
-            Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
-            intent1.putExtra(Constants.DETAILING_REQUIRED, "false");
-            intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
-            intent1.putExtra("remainder_save", "0");
-            intent1.putExtra("hq_code", "");
-            intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
+        btn_skip.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
+                intent1.putExtra(Constants.DETAILING_REQUIRED, "false");
+                intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
+                intent1.putExtra("remainder_save", "0");
+                intent1.putExtra("hq_code", "");
+                intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
 
-            //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
-            startActivity(intent1);
+                //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+                startActivity(intent1);
+            }
         });
 
-        btn_start.setOnClickListener(view -> {
-            if (HomeDashBoard.selectedDate != null) {
-                Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
-                intent.putExtra("from", "call");
-                intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());
-                intent.putExtra("cus_code", CallActivityCustDetails.get(0).getCode());
-                PlaySlideDetailing.SpecialityCodePlay = CallActivityCustDetails.get(0).getSpecialistCode();
-                PlaySlideDetailing.MappedBrandsPlay = CallActivityCustDetails.get(0).getMappedBrands();
-                PlaySlideDetailing.MappedSlidesPlay = CallActivityCustDetails.get(0).getMappedSlides();
-                intent.putExtra("SpecialityCode", CallActivityCustDetails.get(0).getSpecialistCode());
-                intent.putExtra("SpecialityName", CallActivityCustDetails.get(0).getSpecialist());
-                intent.putExtra("MappedProdCode", CallActivityCustDetails.get(0).getMappedBrands());
-                intent.putExtra("MappedSlideCode", CallActivityCustDetails.get(0).getMappedSlides());
-                intent.putExtra("CusType", CallActivityCustDetails.get(0).getType());
-                intent.putExtra("CheckInJsonObject", checkInJsonObject.toString());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            } else {
-                startActivity(new Intent(this, HomeDashBoard.class));
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
-                finish();
+        btn_start.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (HomeDashBoard.selectedDate != null) {
+                    Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
+                    intent.putExtra("from", "call");
+                    intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());
+                    intent.putExtra("cus_code", CallActivityCustDetails.get(0).getCode());
+                    PlaySlideDetailing.SpecialityCodePlay = CallActivityCustDetails.get(0).getSpecialistCode();
+                    PlaySlideDetailing.MappedBrandsPlay = CallActivityCustDetails.get(0).getMappedBrands();
+                    PlaySlideDetailing.MappedSlidesPlay = CallActivityCustDetails.get(0).getMappedSlides();
+                    intent.putExtra("SpecialityCode", CallActivityCustDetails.get(0).getSpecialistCode());
+                    intent.putExtra("SpecialityName", CallActivityCustDetails.get(0).getSpecialist());
+                    intent.putExtra("MappedProdCode", CallActivityCustDetails.get(0).getMappedBrands());
+                    intent.putExtra("MappedSlideCode", CallActivityCustDetails.get(0).getMappedSlides());
+                    intent.putExtra("CusType", CallActivityCustDetails.get(0).getType());
+                    intent.putExtra("CheckInJsonObject", checkInJsonObject.toString());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else {
+                    startActivity(new Intent(CustomerProfile.this, HomeDashBoard.class));
+                    CommonUtilsMethods.showToastMessage(CustomerProfile.this, getString(R.string.please_try_again));
+                    finish();
+                }
             }
         });
 
@@ -243,31 +250,30 @@ public class CustomerProfile extends AppCompatActivity {
             btn_start.setVisibility(View.GONE);
         }
 
-        if(!SharedPref.getOneBuild(this).equalsIgnoreCase("0")) {
-            String skipNeed;
-            switch (CallActivityCustDetails.get(0).getType()) {
-                case "1":
-                    skipNeed = SharedPref.getSkipDetailingDr(this);
-                    break;
-                case "2":
-                    skipNeed = SharedPref.getSkipDetailingChe(this);
-                    break;
-                case "3":
-                    skipNeed = SharedPref.getSkipDetailingStk(this);
-                    break;
-                case "4":
-                    skipNeed = SharedPref.getSkipDetailingUndr(this);
-                    break;
-                default:
-                    skipNeed = "0";
-                    break;
-            }
-            if (skipNeed.equalsIgnoreCase("0")) {
-                btn_skip.setVisibility(View.VISIBLE);
-            } else {
-                btn_skip.setVisibility(View.GONE);
-            }
+        String skipNeed;
+        switch (CallActivityCustDetails.get(0).getType()) {
+            case "1":
+                skipNeed = SharedPref.getSkipDetailingDr(this);
+                break;
+            case "2":
+                skipNeed = SharedPref.getSkipDetailingChe(this);
+                break;
+            case "3":
+                skipNeed = SharedPref.getSkipDetailingStk(this);
+                break;
+            case "4":
+                skipNeed = SharedPref.getSkipDetailingUndr(this);
+                break;
+            default:
+                skipNeed = "0";
+                break;
         }
+        if (skipNeed.equalsIgnoreCase("0")) {
+            btn_skip.setVisibility(View.VISIBLE);
+        } else {
+            btn_skip.setVisibility(View.GONE);
+        }
+
 
         img_back.setOnClickListener(view -> finish());
     }

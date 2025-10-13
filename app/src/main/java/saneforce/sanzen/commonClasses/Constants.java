@@ -34,6 +34,7 @@ public class Constants {
     public static final String STOCKIEST_GEO = "Stockiest Geo";
     public static final String HOSPITAL = "Hospital_";
     public static final String CIP = "Cip_";
+    public static final String PROFILE = "Profile";
 
     //Leave
     public static final String LEAVE = "Leave Type";

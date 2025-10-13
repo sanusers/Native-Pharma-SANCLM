@@ -42,6 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.dcr.detailView.adapter.InputAdapter;
 import saneforce.sanzen.activity.approvals.dcr.detailView.adapter.ProductAdapter;
 import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
@@ -362,125 +363,146 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             holder.view5.setVisibility(View.GONE);
         }
 
-        holder.viewMore.setOnClickListener(view -> {
-            if(holder.expandLayout.getVisibility() == View.VISIBLE) {
-                holder.viewMoreTxt.setText(R.string.view_more);
-                holder.viewMoreArrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                holder.expandLayout.setVisibility(View.GONE);
-            }else {
-                if(!dataModel.getProducts().isEmpty()) {
-                    holder.rvPrd.setVisibility(View.VISIBLE);
-                    holder.PrdLayout.setVisibility(View.VISIBLE);
-                    productPromoted = getList(dataModel.getPromoted_product());
-                    productAdapter = new ProductAdapter(context, getProductList(dataModel.getProducts()), reportOf);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-                    holder.rvPrd.setLayoutManager(mLayoutManager);
-                    commonUtilsMethods.recycleTestWithDivider(holder.rvPrd);
-                    holder.rvPrd.setNestedScrollingEnabled(false);
-                    holder.rvPrd.setAdapter(productAdapter);
+        holder.viewMore.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (holder.expandLayout.getVisibility() == View.VISIBLE) {
+                    holder.viewMoreTxt.setText(R.string.view_more);
+                    holder.viewMoreArrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                    holder.expandLayout.setVisibility(View.GONE);
+                } else {
+                    if (!dataModel.getProducts().isEmpty()) {
+                        holder.rvPrd.setVisibility(View.VISIBLE);
+                        holder.PrdLayout.setVisibility(View.VISIBLE);
+                        productPromoted = getList(dataModel.getPromoted_product());
+                        productAdapter = new ProductAdapter(context, getProductList(dataModel.getProducts()), reportOf);
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+                        holder.rvPrd.setLayoutManager(mLayoutManager);
+                        commonUtilsMethods.recycleTestWithDivider(holder.rvPrd);
+                        holder.rvPrd.setNestedScrollingEnabled(false);
+                        holder.rvPrd.setAdapter(productAdapter);
+                    }
+                    if (!dataModel.getGifts().isEmpty()) {
+                        holder.rvInput.setVisibility(View.VISIBLE);
+                        holder.InpLayout.setVisibility(View.VISIBLE);
+                        inputAdapter = new InputAdapter(context, getInputList(dataModel.getGifts()));
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+                        holder.rvInput.setLayoutManager(mLayoutManager);
+                        commonUtilsMethods.recycleTestWithDivider(holder.rvInput);
+                        holder.rvInput.setNestedScrollingEnabled(false);
+                        holder.rvInput.setAdapter(inputAdapter);
+                    }
+                    holder.viewMoreTxt.setText(R.string.view_less);
+                    holder.viewMoreArrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                    holder.expandLayout.setVisibility(View.VISIBLE);
                 }
-                if(!dataModel.getGifts().isEmpty()) {
-                    holder.rvInput.setVisibility(View.VISIBLE);
-                    holder.InpLayout.setVisibility(View.VISIBLE);
-                    inputAdapter = new InputAdapter(context, getInputList(dataModel.getGifts()));
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-                    holder.rvInput.setLayoutManager(mLayoutManager);
-                    commonUtilsMethods.recycleTestWithDivider(holder.rvInput);
-                    holder.rvInput.setNestedScrollingEnabled(false);
-                    holder.rvInput.setAdapter(inputAdapter);
+            }
+        });
+
+        holder.checkInMarker.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(context, MapViewActivity.class);
+                Bundle bundle = new Bundle();
+                if (dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty()) {
+                    String[] inLatLng = dataModel.getCin_loc().split(":");
+                    bundle.putString("INLat", inLatLng[0]);
+                    bundle.putString("INLong", inLatLng[1]);
                 }
-                holder.viewMoreTxt.setText(R.string.view_less);
-                holder.viewMoreArrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
-                holder.expandLayout.setVisibility(View.VISIBLE);
+                if (dataModel.getCout_loc() != null && !dataModel.getCout_loc().isEmpty()) {
+                    String[] outLatLng = dataModel.getCout_loc().split(":");
+                    bundle.putString("OUTLat", outLatLng[0]);
+                    bundle.putString("OUTLong", outLatLng[1]);
+                }
+                bundle.putString("INDateTime", dataModel.getCheckin());
+                bundle.putString("OUTDateTime", dataModel.getCheckout());
+                bundle.putString("INAddress", dataModel.getCheckin_addrs());
+                bundle.putString("OUTAddress", dataModel.getCheckout_addrs());
+                bundle.putString("title", dataModel.getName());
+                bundle.putBoolean("ISCheckIN", true);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
         });
 
-        holder.checkInMarker.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapViewActivity.class);
-            Bundle bundle = new Bundle();
-            if(dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty()) {
-                String[] inLatLng = dataModel.getCin_loc().split(":");
-                bundle.putString("INLat", inLatLng[0]);
-                bundle.putString("INLong", inLatLng[1]);
+        holder.checkOutMarker.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(context, MapViewActivity.class);
+                Bundle bundle = new Bundle();
+                if (dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty()) {
+                    String[] inLatLng = dataModel.getCin_loc().split(":");
+                    bundle.putString("INLat", inLatLng[0]);
+                    bundle.putString("INLong", inLatLng[1]);
+                }
+                if (dataModel.getCout_loc() != null && !dataModel.getCout_loc().isEmpty()) {
+                    String[] outLatLng = dataModel.getCout_loc().split(":");
+                    bundle.putString("OUTLat", outLatLng[0]);
+                    bundle.putString("OUTLong", outLatLng[1]);
+                }
+                bundle.putString("INDateTime", dataModel.getCheckin());
+                bundle.putString("OUTDateTime", dataModel.getCheckout());
+                bundle.putString("INAddress", dataModel.getCheckin_addrs());
+                bundle.putString("OUTAddress", dataModel.getCheckout_addrs());
+                bundle.putString("title", dataModel.getName());
+                bundle.putBoolean("ISCheckIN", false);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
-            if(dataModel.getCout_loc() != null && !dataModel.getCout_loc().isEmpty()) {
-                String[] outLatLng = dataModel.getCout_loc().split(":");
-                bundle.putString("OUTLat", outLatLng[0]);
-                bundle.putString("OUTLong", outLatLng[1]);
-            }
-            bundle.putString("INDateTime", dataModel.getCheckin());
-            bundle.putString("OUTDateTime", dataModel.getCheckout());
-            bundle.putString("INAddress", dataModel.getCheckin_addrs());
-            bundle.putString("OUTAddress", dataModel.getCheckout_addrs());
-            bundle.putString("title", dataModel.getName());
-            bundle.putBoolean("ISCheckIN", true);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
         });
 
-        holder.checkOutMarker.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapViewActivity.class);
-            Bundle bundle = new Bundle();
-            if(dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty()) {
-                String[] inLatLng = dataModel.getCin_loc().split(":");
-                bundle.putString("INLat", inLatLng[0]);
-                bundle.putString("INLong", inLatLng[1]);
+        holder.EventLayout.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                EvetCapureAPICall(position);
             }
-            if(dataModel.getCout_loc() != null && !dataModel.getCout_loc().isEmpty()) {
-                String[] outLatLng = dataModel.getCout_loc().split(":");
-                bundle.putString("OUTLat", outLatLng[0]);
-                bundle.putString("OUTLong", outLatLng[1]);
+        });
+        holder.SignLayout.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SignatureAPICall(position);
             }
-            bundle.putString("INDateTime", dataModel.getCheckin());
-            bundle.putString("OUTDateTime", dataModel.getCheckout());
-            bundle.putString("INAddress", dataModel.getCheckin_addrs());
-            bundle.putString("OUTAddress", dataModel.getCheckout_addrs());
-            bundle.putString("title", dataModel.getName());
-            bundle.putBoolean("ISCheckIN", false);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
         });
 
-        holder.EventLayout.setOnClickListener(view -> {
-            EvetCapureAPICall(position);
-        });
-        holder.SignLayout.setOnClickListener(view ->{
-            SignatureAPICall(position);
-        });
-
-        holder.rcpaLayoutitle.setOnClickListener(view -> {
-            rcpaList.clear();
-            if(holder.rcpaLayout.getVisibility() == View.VISIBLE) {
-                holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                holder.rcpaLayout.setVisibility(View.GONE);
-            }else {
-                holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
-                if(rcpaList.size()>0) {
-                    if(dataModel.getTrans_Detail_Slno().equalsIgnoreCase(rcpadataid)) {
-                        holder.rcpaLayout.setVisibility(View.VISIBLE);
-                    }else {
+        holder.rcpaLayoutitle.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                rcpaList.clear();
+                if (holder.rcpaLayout.getVisibility() == View.VISIBLE) {
+                    holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                    holder.rcpaLayout.setVisibility(View.GONE);
+                } else {
+                    holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                    if (rcpaList.size() > 0) {
+                        if (dataModel.getTrans_Detail_Slno().equalsIgnoreCase(rcpadataid)) {
+                            holder.rcpaLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            Rcpagetdata(holder.rvRcpa, holder.rcpaLayout, position);
+                        }
+                    } else {
                         Rcpagetdata(holder.rvRcpa, holder.rcpaLayout, position);
                     }
-                }else {
-                    Rcpagetdata(holder.rvRcpa, holder.rcpaLayout, position);
                 }
             }
         });
 
-        holder.SlidercpaLayoutitle.setOnClickListener(view -> {
-            if(holder.slideDetailsLayout.getVisibility() == View.VISIBLE) {
-                holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.click_logo));
-                holder.slideDetailsLayout.setVisibility(View.GONE);
-            }else {
-                if(callDetailingLists.size()>0) {
-                    holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
-                    if(dataModel.getTrans_Detail_Slno().equalsIgnoreCase(Slededataid)) {
-                        holder.slideDetailsLayout.setVisibility(View.VISIBLE);
-                    }else {
+        holder.SlidercpaLayoutitle.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (holder.slideDetailsLayout.getVisibility() == View.VISIBLE) {
+                    holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.click_logo));
+                    holder.slideDetailsLayout.setVisibility(View.GONE);
+                } else {
+                    if (callDetailingLists.size() > 0) {
+                        holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                        if (dataModel.getTrans_Detail_Slno().equalsIgnoreCase(Slededataid)) {
+                            holder.slideDetailsLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            SldeDetails(holder.rvSlideDetails, holder.slideDetailsLayout, position, holder);
+                        }
+                    } else {
                         SldeDetails(holder.rvSlideDetails, holder.slideDetailsLayout, position, holder);
                     }
-                }else {
-                    SldeDetails(holder.rvSlideDetails, holder.slideDetailsLayout, position, holder);
                 }
             }
         });
@@ -687,7 +709,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.e("test", "res : " + response.body());
-                                progressDialog.dismiss();
                                 try {
                                     if(response.body() != null && response.isSuccessful()) {
                                         JSONArray jsonArray = new JSONArray();
@@ -699,6 +720,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                             if(EventCaptureData.size()>0) {
                                                 setEventCaptureData(EventCaptureData);
                                             }else {
+                                                progressDialog.dismiss();
                                                 commonUtilsMethods.showToastMessage(context, " Event Capture Not Available");
                                             }
                                         }
@@ -734,11 +756,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         View view = LayoutInflater.from(context).inflate(R.layout.dayreport_eventcapture_image_layout, null);
         dialog.setView(view);
         RecyclerView recyclerView = view.findViewById(R.id.recyelerview);
-        EventCaptureAdapter adapter = new EventCaptureAdapter(context, List);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        EventCaptureAdapter adapter = new EventCaptureAdapter(context, List);
         recyclerView.setAdapter(adapter);
         AlertDialog dialog1 = dialog.create();
         dialog1.show();
+        progressDialog.dismiss();
     }
 
     public void SignatureAPICall(int position){
@@ -777,6 +800,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                             if(SignatureData.size()>0){
                                                 setSignatureData(SignatureData);
                                             }else {
+                                                progressDialog.dismiss();
                                                 commonUtilsMethods.showToastMessage(context, " Signature Not Available");
                                             }
 

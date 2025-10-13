@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -102,56 +103,65 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 holder.tv_view.setVisibility(View.GONE);
             }
 
-        holder.tv_name.setOnClickListener(view -> {
-            commonUtilsMethods.displayPopupWindow(context, view, custListArrayList.get(position).getName());
-        });
-
-
-        holder.constraint_main.setOnClickListener(view -> {
-            if (UtilityClass.isNetworkAvailable(context)) {
-                if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
-                    Intent intent = new Intent(context, MapsActivity.class);
-                    intent.putExtra("from", "tagging");
-                    intent.putExtra("cus_name", custListArrayList.get(position).getName());
-                    intent.putExtra("cus_code", custListArrayList.get(position).getCode());
-                    intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
-                    intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    TagCustSelectionList.SelectedCustPos = custListArrayList.get(position).getPosition();
-                    //  SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
-                    context.startActivity(intent);
-                } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.exceed_tag_limit));
-                }
-            }else {
-                commonUtilsMethods.showToastMessage(context,context.getString(R.string.no_network));
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, custListArrayList.get(position).getName());
             }
         });
 
-        holder.tv_view.setOnClickListener(view -> {
-            if(Integer.parseInt(custListArrayList.get(position).getTag())>=1){
-                /* (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag()))*/
-               // Toast.makeText(context, "First Tag & View", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(context, MapsActivity.class);
-                getCustListNew.clear();
-                for (int m = 0; m < custListArrayListNew.size(); m++) {
-                    if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
-                        if (!custListArrayListNew.get(m).getLatitude().isEmpty() && !custListArrayListNew.get(m).getLongitude().isEmpty()) {
-                            getCustListNew.add(new CustList(custListArrayListNew.get(m).getLatitude(), custListArrayListNew.get(m).getLongitude(), custListArrayListNew.get(m).getAddress()));
-                        } else {
-                            getCustListNew.add(new CustList(custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress()));
+
+        holder.constraint_main.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
+                        Intent intent = new Intent(context, MapsActivity.class);
+                        intent.putExtra("from", "tagging");
+                        intent.putExtra("cus_name", custListArrayList.get(position).getName());
+                        intent.putExtra("cus_code", custListArrayList.get(position).getCode());
+                        intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
+                        intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        TagCustSelectionList.SelectedCustPos = custListArrayList.get(position).getPosition();
+                        //  SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
+                        context.startActivity(intent);
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.exceed_tag_limit));
+                    }
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                }
+            }
+        });
+
+        holder.tv_view.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (Integer.parseInt(custListArrayList.get(position).getTag()) >= 1) {
+                    /* (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag()))*/
+                    // Toast.makeText(context, "First Tag & View", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, MapsActivity.class);
+                    getCustListNew.clear();
+                    for (int m = 0; m < custListArrayListNew.size(); m++) {
+                        if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
+                            if (!custListArrayListNew.get(m).getLatitude().isEmpty() && !custListArrayListNew.get(m).getLongitude().isEmpty()) {
+                                getCustListNew.add(new CustList(custListArrayListNew.get(m).getLatitude(), custListArrayListNew.get(m).getLongitude(), custListArrayListNew.get(m).getAddress()));
+                            } else {
+                                getCustListNew.add(new CustList(custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress()));
+                            }
                         }
                     }
-                }
-                intent.putExtra("from", "view_tagged");
-                intent.putExtra("cus_name", custListArrayList.get(position).getName());
-                intent.putExtra("cus_add", custListArrayList.get(position).getAddress());
-                intent.putExtra("geoTagStatus",custListArrayList.get(position).getGeoTagStatus());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            } else {
+                    intent.putExtra("from", "view_tagged");
+                    intent.putExtra("cus_name", custListArrayList.get(position).getName());
+                    intent.putExtra("cus_add", custListArrayList.get(position).getAddress());
+                    intent.putExtra("geoTagStatus", custListArrayList.get(position).getGeoTagStatus());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } else {
 
+                }
             }
         });
         setVisibility(selectedTap,holder);

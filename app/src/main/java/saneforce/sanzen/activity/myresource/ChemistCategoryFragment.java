@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -50,7 +51,7 @@ public class ChemistCategoryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectchmcatSideBinding = FragmentChemistcategoryResourceBinding.inflate(inflater);
-        View v = selectchmcatSideBinding.getRoot();
+        View view = selectchmcatSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -59,16 +60,21 @@ public class ChemistCategoryFragment extends Fragment {
         categoryName = "";
         categoryCode = "";
         sel_categorycode=0;
-        selectchmcatSideBinding.tvDummy.setOnClickListener(view -> {
+        selectchmcatSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
 
-        selectchmcatSideBinding.imgClose.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(selectchmcatSideBinding.imgClose.getWindowToken(), 0);
-            selectchmcatSideBinding.searchList.setText("");
-            activityProfilingBinding.fragmentSelectChmcat.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectchmcatSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(selectchmcatSideBinding.imgClose.getWindowToken(), 0);
+                selectchmcatSideBinding.searchList.setText("");
+                activityProfilingBinding.fragmentSelectChmcat.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectchmcatSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -88,7 +94,7 @@ public class ChemistCategoryFragment extends Fragment {
             }
         });
 
-        selectchmcatSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectchmcatSideBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             categoryCode = list_code.get(i);
             categoryName = list_name.get(i);
             sel_categorycode= Integer.parseInt(list_code.get(i));
@@ -98,7 +104,7 @@ public class ChemistCategoryFragment extends Fragment {
             activityProfilingBinding.txtSelectChmcat.setText(selectchmcatSideBinding.selectListView.getItemAtPosition(i).toString());
             activityProfilingBinding.fragmentSelectChmcat.setVisibility(View.GONE);
         });
-        return v;
+        return view;
     }
 
 
