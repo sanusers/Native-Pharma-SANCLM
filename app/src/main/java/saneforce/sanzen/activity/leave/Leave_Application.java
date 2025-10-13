@@ -874,11 +874,11 @@ public class Leave_Application extends AppCompatActivity {
         try {
             String attachmentStr = data.optString("attchment");
             int attachment = attachmentStr.isEmpty()?0:Integer.parseInt(attachmentStr);
-            if (attachment == 0) {
-                leavebinding.tlAttachment.setVisibility(View.VISIBLE);
-            } else {
+//            if (attachment == 0) {
+//                leavebinding.tlAttachment.setVisibility(View.VISIBLE);
+//            } else {
                 leavebinding.tlAttachment.setVisibility(View.GONE);
-            }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

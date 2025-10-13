@@ -283,7 +283,11 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                             HomeDashBoard.checkAndSetEntryDate(context, true);
                         } else {
                             Log.e("call status", "onBindViewHolder: ");
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                            if (list.getWorkTypeFlag().equalsIgnoreCase("L")) {
+                                commonUtilsMethods.showToastMessage(context, "Leave applied for this date");
+                            } else {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                            }
                         }
 //                }
 
@@ -406,7 +410,11 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                             HomeDashBoard.checkAndSetEntryDate(context, true);
                         } else {
                             Log.e("call status", "onBindViewHolder: ");
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                            if (list.getWorkTypeFlag().equalsIgnoreCase("L")) {
+                                commonUtilsMethods.showToastMessage(context, "Leave applied for this date");
+                            } else {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                            }
                         }
 //                }
 
@@ -450,7 +458,6 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             }
         });
     }
-
 
     @Override
     public int getItemCount() {

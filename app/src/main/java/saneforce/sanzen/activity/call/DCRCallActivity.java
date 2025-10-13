@@ -3292,7 +3292,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     if (SfType.equalsIgnoreCase("1")) {
                         TodayPlanSfCode = SfCode;
                     } else {
-                        TodayPlanSfCode = SharedPref.getHqCode(this);
+                        TodayPlanSfCode = DcrCallTabLayoutActivity.TodayPlanSfCode;
                         if (TodayPlanSfCode.isEmpty()) {
                             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                             for (int i = 0; i < 1; i++) {

@@ -4050,6 +4050,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
                             }
 
+                            NeedClusterFlag1 = true;
                             binding.rlcluster1.setVisibility(View.VISIBLE);
                             binding.txtWorktype1.setText(mWTName1);
                             binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(mTownname1).replaceAll(",", " , ")));
@@ -4265,6 +4266,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     binding.rlheadquates2.setVisibility(View.GONE);
                                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                                 }
+
+                                NeedClusterFlag2 = true;
                                 binding.rlcluster2.setVisibility(View.VISIBLE);
                                 binding.txtWorktype2.setText(mWTName2);
                                 binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(mTownname2).replaceAll(",", " , ")));
@@ -4761,7 +4764,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONArray resultArray = new JSONArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (!jsonObject.getString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString()) || jsonObject.optString("CustType").equalsIgnoreCase("0")) {
+                if (HomeDashBoard.selectedDate != null && !jsonObject.getString("Dcr_dt").equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4,HomeDashBoard.binding.textDate.getText().toString())) || jsonObject.optString("CustType").equalsIgnoreCase("0")) {
                     resultArray.put(jsonArray.optJSONObject(i));
                 }
             }

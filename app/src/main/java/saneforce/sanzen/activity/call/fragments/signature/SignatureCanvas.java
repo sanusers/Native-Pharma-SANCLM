@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 
 import androidx.annotation.Nullable;
 
@@ -37,7 +38,10 @@ public class SignatureCanvas extends View {
     SignatureCanvas signatureCanvas;
     String destinationFilePath;
     private boolean isSigned = false;
-
+    private float downX, downY;
+    private float startX, startY;
+    private boolean moved = false;
+    private static final float TOUCH_TOLERANCE = 4f;
 
     public SignatureCanvas(Context context) {
         super(context);
@@ -85,41 +89,102 @@ public class SignatureCanvas extends View {
         }
     }
 
+    //    @SuppressLint("ClickableViewAccessibility")
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        switch(event.getAction() & MotionEvent.ACTION_MASK){
+//            case MotionEvent.ACTION_DOWN:
+//                path.moveTo(event.getX(),event.getY());
+//                break;
+//
+//            case MotionEvent.ACTION_MOVE:
+//                ++count;
+//                try{
+//                    commonSharedPreference = new CommonSharedPreference(getContext());
+//                    commonSharedPreference.setValueToPreference("signCount",String.valueOf(count));
+//                }catch (Exception e){
+//
+//                }
+//                path.lineTo(event.getX(),event.getY());
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                break;
+//        }
+//        invalidate();
+//        return true;
+//    }
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch(event.getAction() & MotionEvent.ACTION_MASK){
+        ViewParent parent = getParent();
+        try {
+            while (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(true);
+                parent = parent.getParent();
+            }
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        float x = event.getX();
+        float y = event.getY();
+
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                path.moveTo(event.getX(),event.getY());
+                ++count;
+                downX = x;
+                downY = y;
+                startX = x;
+                startY = y;
+                moved = false;
+                path.moveTo(x, y);
+                invalidate();
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 ++count;
-                try{
-                    commonSharedPreference = new CommonSharedPreference(getContext());
-                    commonSharedPreference.setValueToPreference("signCount",String.valueOf(count));
-                }catch (Exception e){
-
+                float dx = Math.abs(x - startX);
+                float dy = Math.abs(y - startY);
+                if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+                    moved = true;
+                    path.lineTo(x, y);
+                    startX = x;
+                    startY = y;
                 }
-                path.lineTo(event.getX(),event.getY());
+                invalidate();
                 break;
+
             case MotionEvent.ACTION_UP:
+                ++count;
+                if (!moved) {
+                    path.addCircle(downX, downY, paint.getStrokeWidth() / 2, Path.Direction.CW);
+                }
+                invalidate();
+                getParent().requestDisallowInterceptTouchEvent(false);
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+                getParent().requestDisallowInterceptTouchEvent(false);
                 break;
         }
         invalidate();
         return true;
     }
+
     public Bitmap setSignatureBitmap(Bitmap bitmap) {
         return bitmap;
     }
+
     public Path getSignaturePath(){
         return path;
     }
+
     public void setSignaturePath(Path newPath) {
         this.path = newPath;
         invalidate();
     }
-
 
     public String getSignature() {
 
