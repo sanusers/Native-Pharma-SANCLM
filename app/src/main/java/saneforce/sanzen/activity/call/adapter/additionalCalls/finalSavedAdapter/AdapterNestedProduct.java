@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.AddSampleAdditionalCall;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
@@ -45,7 +46,12 @@ public class AdapterNestedProduct extends RecyclerView.Adapter<AdapterNestedProd
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_sam_name.setText(nestedProduct.get(position).getPrd_name());
 
-        holder.tv_sam_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, nestedProduct.get(position).getPrd_name()));
+        holder.tv_sam_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, nestedProduct.get(position).getPrd_name());
+            }
+        });
 
         boolean isSampleNeed = false;
         if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {

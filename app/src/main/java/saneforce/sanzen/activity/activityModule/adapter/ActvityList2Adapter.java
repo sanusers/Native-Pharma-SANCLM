@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
 import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
 
@@ -61,8 +62,11 @@ public class ActvityList2Adapter extends RecyclerView.Adapter<ActvityList2Adapte
 
 
         if(!isMultiple){
-            holder.txtHq.setOnClickListener(view -> {
-                checkBoxInterface.Checked(filteredList.get(position));
+            holder.txtHq.setOnClickListener(new SafeClickListener() {
+                                                @Override
+                                                public void onSafeClick(View view) {
+                                                    checkBoxInterface.Checked(filteredList.get(position));
+                                                }
             });
         }
 

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.fragments.activity.ActivityFragment;
@@ -64,9 +65,9 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             holder.imgOffline.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.red_60)));
         }
 
-        holder.layout.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
 
 //                if (DynamicActivity.isEdited) {
 //                    Dialog dialog = new Dialog(context);

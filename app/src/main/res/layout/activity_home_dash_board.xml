@@ -52,13 +52,22 @@
                         android:textSize="@dimen/_8ssp"
                         android:textStyle="bold" />
 
-                    <TextView
+                  <!--  <TextView
                         android:id="@+id/clock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:format12Hour="dd-MM-yyyy hh:mm:ss a"
                         tools:text="01-01-2025 10:00 AM"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_5ssp"
+                        android:textStyle="bold" />-->
+                    <TextView
+                        android:id="@+id/subDivision"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/san_media_pvt_ltd"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp"
                         android:textStyle="bold" />

@@ -39,6 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewActivity;
@@ -155,71 +156,85 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
         holder.tv_date.setVisibility(View.INVISIBLE);
         holder.tv_name.setText(dcrApprovalNames.get(position).getName());
 
-        holder.constraint_main.setOnClickListener(view -> {
-            EventCaptureData.clear();
-            rcpaList.clear();
-            callDetailingLists.clear();
-            dcrDetailViewBinding.rcpaLayout.setVisibility(View.GONE);
-            dcrDetailViewBinding.sldLayout.setVisibility(View.GONE);
-            if (adapter != null)
-                adapter.notifyDataSetChanged();
-            dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
-            listenerApproval.onClickDcrDetail(new DcrDetailModelList(dcrApprovalNames.get(position).getHq_name(), dcrApprovalNames.get(position).getName(), dcrApprovalNames.get(position).getCode(), dcrApprovalNames.get(position).getTypeCust(), dcrApprovalNames.get(position).getType(), dcrApprovalNames.get(position).getSdp_name(), dcrApprovalNames.get(position).getPob(), dcrApprovalNames.get(position).getRemark(), dcrApprovalNames.get(position).getJointWork(), dcrApprovalNames.get(position).getCall_feedback(), dcrApprovalNames.get(position).getModTime(), dcrApprovalNames.get(position).getVisitTime(),dcrApprovalNames.get(position).getDct_id(),dcrApprovalNames.get(position).getDcr_detial_id()));
-            notifyDataSetChanged();
-        });
-
-        dcrDetailViewBinding.constraintMainCapImg.setOnClickListener(view -> {
-
-            if(dcrDetailViewBinding.constraintTagIc.getVisibility()==View.VISIBLE){
-                dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
-            }else {
-                if(EventCaptureData.size()>0){
-                    dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
-                    dcrDetailViewBinding.constraintTagIc.setVisibility(View.VISIBLE);
-                }else {
-                    EvetCapureAPICall();
-                }
-
-            }
-
-
-
-        });
-
-        dcrDetailViewBinding.sign.setOnClickListener(view -> {
-            SignatureAPICall();
-        });
-        dcrDetailViewBinding.constraintMainRcpa.setOnClickListener(view -> {
-
-            if(dcrDetailViewBinding.rcpaLayout.getVisibility()==View.VISIBLE){
-                dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+        holder.constraint_main.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                EventCaptureData.clear();
+                rcpaList.clear();
+                callDetailingLists.clear();
                 dcrDetailViewBinding.rcpaLayout.setVisibility(View.GONE);
-            }else {
-                dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
-                if(rcpaList.size()>0){
-                    dcrDetailViewBinding.rcpaLayout.setVisibility(View.VISIBLE);
-                }else {
-                    Rcpagetdata(dcrDetailViewBinding.Rcparecyelerview,dcrDetailViewBinding.rcpaLayout,position);
+                dcrDetailViewBinding.sldLayout.setVisibility(View.GONE);
+                if (adapter != null)
+                    adapter.notifyDataSetChanged();
+                dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
+                listenerApproval.onClickDcrDetail(new DcrDetailModelList(dcrApprovalNames.get(position).getHq_name(), dcrApprovalNames.get(position).getName(), dcrApprovalNames.get(position).getCode(), dcrApprovalNames.get(position).getTypeCust(), dcrApprovalNames.get(position).getType(), dcrApprovalNames.get(position).getSdp_name(), dcrApprovalNames.get(position).getPob(), dcrApprovalNames.get(position).getRemark(), dcrApprovalNames.get(position).getJointWork(), dcrApprovalNames.get(position).getCall_feedback(), dcrApprovalNames.get(position).getModTime(), dcrApprovalNames.get(position).getVisitTime(), dcrApprovalNames.get(position).getDct_id(), dcrApprovalNames.get(position).getDcr_detial_id()));
+                notifyDataSetChanged();
+            }
+        });
+
+        dcrDetailViewBinding.constraintMainCapImg.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+
+                if (dcrDetailViewBinding.constraintTagIc.getVisibility() == View.VISIBLE) {
+                    dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                    dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
+                } else {
+                    if (EventCaptureData.size() > 0) {
+                        dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                        dcrDetailViewBinding.constraintTagIc.setVisibility(View.VISIBLE);
+                    } else {
+                        EvetCapureAPICall();
+                    }
+
                 }
+
 
             }
         });
 
+        dcrDetailViewBinding.sign.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SignatureAPICall();
+            }
+        });
+        dcrDetailViewBinding.constraintMainRcpa.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 
-        dcrDetailViewBinding.constraintMainSld.setOnClickListener(view -> {
+                if (dcrDetailViewBinding.rcpaLayout.getVisibility() == View.VISIBLE) {
+                    dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                    dcrDetailViewBinding.rcpaLayout.setVisibility(View.GONE);
+                } else {
+                    dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                    if (rcpaList.size() > 0) {
+                        dcrDetailViewBinding.rcpaLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        Rcpagetdata(dcrDetailViewBinding.Rcparecyelerview, dcrDetailViewBinding.rcpaLayout, position);
+                    }
 
-            if(dcrDetailViewBinding.sldLayout.getVisibility()==View.VISIBLE){
-                dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                dcrDetailViewBinding.sldLayout.setVisibility(View.GONE);
-            }else {
-                dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
-                if(callDetailingLists.size()>0){
-                    dcrDetailViewBinding.sldLayout.setVisibility(View.VISIBLE);
-                }else {
-                    SldeDetails(dcrDetailViewBinding.sldarecyelerviwew,dcrDetailViewBinding.sldLayout,position);
                 }
+            }
+        });
 
+
+        dcrDetailViewBinding.constraintMainSld.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+
+                if (dcrDetailViewBinding.sldLayout.getVisibility() == View.VISIBLE) {
+                    dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                    dcrDetailViewBinding.sldLayout.setVisibility(View.GONE);
+                } else {
+                    dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                    if (callDetailingLists.size() > 0) {
+                        dcrDetailViewBinding.sldLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        SldeDetails(dcrDetailViewBinding.sldarecyelerviwew, dcrDetailViewBinding.sldLayout, position);
+                    }
+
+                }
             }
         });
 
@@ -275,7 +290,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.e("test", "res : " + response.body());
-                                progressDialog.dismiss();
+
                                 try {
                                     if (response.body() != null && response.isSuccessful()) {
                                         JSONArray jsonArray = new JSONArray();
@@ -290,6 +305,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             }else {
                                                 dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                                 dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
+                                                progressDialog.dismiss();
                                                 commonUtilsMethods.showToastMessage(context, "No Event Capture");
                                             }
 
@@ -335,6 +351,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
          adapter =new EventDetailsCapture(List,context);
          dcrDetailViewBinding.rvEventListview.setLayoutManager(new LinearLayoutManager(context));
          dcrDetailViewBinding.rvEventListview.setAdapter(adapter);
+        progressDialog.dismiss();
 
 
     }
@@ -363,7 +380,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.e("test", "res : " + response.body());
-                                progressDialog.dismiss();
+
                                 try {
                                     if (response.body() != null && response.isSuccessful()) {
                                         JSONArray jsonArray = new JSONArray();
@@ -376,6 +393,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             if(SignatureData.size()>0){
                                                 setSignatureData(SignatureData);
                                             }else {
+                                                progressDialog.dismiss();
                                                 commonUtilsMethods.showToastMessage(context, " Signature Not Available");
                                             }
 
@@ -418,6 +436,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
         recyclerView.setAdapter(signadapter);
         AlertDialog dialog1=dialog.create();
         dialog1.show();
+        progressDialog.dismiss();
 
     }
 

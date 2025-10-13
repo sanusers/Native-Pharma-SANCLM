@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AdditionalCallDetailedSide;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.AddSampleAdditionalCall;
@@ -95,9 +96,14 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
         } else {
             holder.tv_sample_stock.setVisibility(View.GONE);
         }
-        holder.tv_select_sample.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, addedProductList.get(position).getPrd_name()));
+        holder.tv_select_sample.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, addedProductList.get(position).getPrd_name());
+            }
+        });
 
-        holder.edt_sam_qty.setOnTouchListener((v, event) -> {
+        holder.edt_sam_qty.setOnTouchListener((view, event) -> {
             if (SampleValidation.equalsIgnoreCase("1")) {
                 if (addedProductList.get(position).getCategory().equalsIgnoreCase("Sample") || addedProductList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
                     if (SamQtyRestriction.equalsIgnoreCase("0")) {
@@ -158,29 +164,32 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
             }
         });
 
-        holder.img_del_sample.setOnClickListener(view -> {
-            if (FinalAdditionalCallAdapter.New_Edit.equalsIgnoreCase("Edit")) {
-                for (int j = 0; j < AdditionalCallDetailedSide.editedPrdList.size(); j++) {
-                    if (AdditionalCallDetailedSide.editedPrdList.get(j).getPrd_code().equalsIgnoreCase(addedProductList.get(position).getPrd_code())) {
-                        AdditionalCallDetailedSide.editedPrdList.remove(j);
-                        break;
+        holder.img_del_sample.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (FinalAdditionalCallAdapter.New_Edit.equalsIgnoreCase("Edit")) {
+                    for (int j = 0; j < AdditionalCallDetailedSide.editedPrdList.size(); j++) {
+                        if (AdditionalCallDetailedSide.editedPrdList.get(j).getPrd_code().equalsIgnoreCase(addedProductList.get(position).getPrd_code())) {
+                            AdditionalCallDetailedSide.editedPrdList.remove(j);
+                            break;
+                        }
                     }
-                }
-                if (SampleValidation.equalsIgnoreCase("1")) {
-                    for (int i = 0; i < StockSample.size(); i++) {
-                        int currentBalance;
-                        if (StockSample.get(i).getStockCode().equalsIgnoreCase(addedProductList.get(position).getPrd_code())) {
-                            if (addedProductList.get(position).getSample_qty().equalsIgnoreCase("0") || addedProductList.get(position).getSample_qty().isEmpty()) {
-                                currentBalance = Integer.parseInt(StockSample.get(i).getCurrentStock());
-                            } else {
-                                currentBalance = Integer.parseInt(StockSample.get(i).getCurrentStock()) + Integer.parseInt(addedProductList.get(position).getSample_qty());
+                    if (SampleValidation.equalsIgnoreCase("1")) {
+                        for (int i = 0; i < StockSample.size(); i++) {
+                            int currentBalance;
+                            if (StockSample.get(i).getStockCode().equalsIgnoreCase(addedProductList.get(position).getPrd_code())) {
+                                if (addedProductList.get(position).getSample_qty().equalsIgnoreCase("0") || addedProductList.get(position).getSample_qty().isEmpty()) {
+                                    currentBalance = Integer.parseInt(StockSample.get(i).getCurrentStock());
+                                } else {
+                                    currentBalance = Integer.parseInt(StockSample.get(i).getCurrentStock()) + Integer.parseInt(addedProductList.get(position).getSample_qty());
+                                }
+                                StockSample.set(i, new CallCommonCheckedList(StockSample.get(i).getStockCode(), StockSample.get(i).getActualStock(), String.valueOf(currentBalance)));
                             }
-                            StockSample.set(i, new CallCommonCheckedList(StockSample.get(i).getStockCode(), StockSample.get(i).getActualStock(), String.valueOf(currentBalance)));
                         }
                     }
                 }
+                removeAt(position);
             }
-            removeAt(position);
         });
     }
 

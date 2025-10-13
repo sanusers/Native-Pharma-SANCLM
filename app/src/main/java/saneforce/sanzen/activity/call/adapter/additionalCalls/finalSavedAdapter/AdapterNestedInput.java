@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.AddInputAdditionalCall;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
@@ -41,7 +42,12 @@ public class AdapterNestedInput extends RecyclerView.Adapter<AdapterNestedInput.
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_inp_name.setText(nestedInput.get(position).getInput_name());
 
-        holder.tv_inp_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, nestedInput.get(holder.getBindingAdapterPosition()).getInput_name()));
+        holder.tv_inp_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, nestedInput.get(holder.getBindingAdapterPosition()).getInput_name());
+            }
+        });
 
         if (nestedInput.get(position).getInp_qty().isEmpty()) {
             holder.tv_inp_qty.setText("0");
