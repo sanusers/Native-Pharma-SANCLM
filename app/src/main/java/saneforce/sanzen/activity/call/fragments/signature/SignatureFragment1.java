@@ -92,11 +92,8 @@ public class SignatureFragment1 extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        clearButton.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        clearButton.setOnClickListener( v -> {
                 clearSignature();
-            }
         });
         if (savedInstanceState != null) {
             callSignCaptureImage = savedInstanceState.getParcelableArrayList("SIGNATURE");
