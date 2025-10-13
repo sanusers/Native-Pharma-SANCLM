@@ -131,13 +131,13 @@ public class MyResource_Activity extends AppCompatActivity {
         });
         Resource_list(SharedPref.getHqCode(this));
 
-        close_sideview.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        close_sideview.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 binding.drawerLayout.closeDrawer(GravityCompat.END);
                 et_Custsearch.getText().clear();
                 UtilityClass.hideKeyboard(MyResource_Activity.this);
-            }
+//            }
         });
 
         et_Custsearch.addTextChangedListener(new TextWatcher() {

@@ -230,7 +230,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+""+R.string.already_exist);
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+" "+getResources().getString(R.string.already_exist));
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         return;
                     }
@@ -379,7 +379,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+""+R.string.already_exist);
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+" "+getResources().getString(R.string.already_exist));
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         return; // stop saving further
                     }
@@ -415,10 +415,10 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand));
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
-                    } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
+                    }/* else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
                         commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.moile_mand));
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
-                    } else {
+                    }*/ else {
                         Log.v("qualification_txt", "arent_empty");
                         unlistedadditionbinding.btnUnlstsave.setEnabled(false);
                         JSONObject json = CommonUtilsMethods.CommonObjectParameter(UnlistedDoctorAddition.this);

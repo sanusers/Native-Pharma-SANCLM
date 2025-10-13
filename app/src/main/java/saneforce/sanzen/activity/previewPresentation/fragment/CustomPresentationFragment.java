@@ -92,16 +92,16 @@ public class CustomPresentationFragment extends Fragment {
                 }
             }
         });
-        binding.clearBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.clearBtn.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 if (!selectedSlideArrayList.isEmpty()) {
                     selectedSlideArrayList.clear();
                     savedPresentation.clear();
                     brandProductArrayList.clear();
                     uiInitialisation();
                 }
-            }
+//            }
         });
         return binding.getRoot();
     }

@@ -20,10 +20,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
@@ -35,8 +48,10 @@ public class FileDownloadWorker extends Worker {
     RoomDB roomDB;
     SlidesDao slidesDao;
     String TAG="Downloading Task";
+    Context context;
     public FileDownloadWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        this.context = context;
     }
 
     @SuppressLint("WrongThread")
@@ -61,7 +76,42 @@ public class FileDownloadWorker extends Worker {
 
      try {
 
+        /* TrustManager[] trustAllCerts = new TrustManager[]{
+                 new X509TrustManager() {
+                     public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+                     public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+                     public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+                 }
+         };
 
+         SSLContext sslContext = SSLContext.getInstance("TLS");
+         sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+         HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+//  Disable hostname verification
+         HostnameVerifier allHostsValid = (hostname, session) -> true;
+         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);*/
+
+         InputStream caInput = context.getResources().openRawResource(R.raw.saneforce);
+         CertificateFactory cf = CertificateFactory.getInstance("X.509");
+         Certificate ca = cf.generateCertificate(caInput);
+         caInput.close();
+
+// Create a KeyStore with our trusted CAs
+         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+         keyStore.load(null, null);
+         keyStore.setCertificateEntry("ca", ca);
+
+// Create a TrustManager that trusts the CAs in our KeyStore
+         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+         tmf.init(keyStore);
+
+// Create an SSLContext that uses our TrustManager
+         SSLContext sslContext = SSLContext.getInstance("TLS");
+         sslContext.init(null, tmf.getTrustManagers(), new SecureRandom());
+
+// Set default SSLSocketFactory
+         HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
             URL url = new URL(url1);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
