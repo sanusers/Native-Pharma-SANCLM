@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.stp.model.STPDetailedModel;
 
 public class STPApprovalDetailedAdapter extends RecyclerView.Adapter<STPApprovalDetailedAdapter.ViewHolder> {
@@ -57,14 +58,17 @@ public class STPApprovalDetailedAdapter extends RecyclerView.Adapter<STPApproval
             holder.listArrow.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.drop_down));
         }
 
-        holder.cardView.setOnClickListener(v -> {
-            if(holder.cardView.isPressed()) {
-                if(holder.rvViewDetailed.getVisibility() == View.VISIBLE) {
-                    selectedDay = "";
-                }else {
-                    selectedDay = stpDetailedModels.get(position).getDayPlanShortName();
+        holder.cardView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (holder.cardView.isPressed()) {
+                    if (holder.rvViewDetailed.getVisibility() == View.VISIBLE) {
+                        selectedDay = "";
+                    } else {
+                        selectedDay = stpDetailedModels.get(position).getDayPlanShortName();
+                    }
+                    notifyDataSetChanged();
                 }
-                notifyDataSetChanged();
             }
         });
     }

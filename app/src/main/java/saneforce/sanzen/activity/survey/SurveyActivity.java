@@ -51,6 +51,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
@@ -134,7 +135,7 @@ public class SurveyActivity extends AppCompatActivity {
         syncProgressDialog.setCancelable(false);
         syncProgressDialog.setIndeterminate(true);
 
-        surveyBinding.backArrow.setOnClickListener(v -> {
+        surveyBinding.backArrow.setOnClickListener(view -> {
             if(validateAnswerMap()) {
                 Dialog dialog = new Dialog(this);
                 dialog.setContentView(R.layout.dcr_cancel_alert);
@@ -176,9 +177,12 @@ public class SurveyActivity extends AppCompatActivity {
         surveyBinding.rvSurveyList.setLayoutManager(new LinearLayoutManager(this));
         surveyBinding.rvSurveyList.setAdapter(surveyAdapter);
 
-        surveyBinding.tvSurveyName.setOnClickListener(view -> {
-            if(chosenSurveyModelClass != null && chosenSurveyModelClass.getSurveyName() != null && !chosenSurveyModelClass.getSurveyName().isEmpty()) {
-                commonUtilsMethods.displayPopupWindow(this, view, chosenSurveyModelClass.getSurveyName());
+        surveyBinding.tvSurveyName.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (chosenSurveyModelClass != null && chosenSurveyModelClass.getSurveyName() != null && !chosenSurveyModelClass.getSurveyName().isEmpty()) {
+                    commonUtilsMethods.displayPopupWindow(SurveyActivity.this, view, chosenSurveyModelClass.getSurveyName());
+                }
             }
         });
 
@@ -215,60 +219,65 @@ public class SurveyActivity extends AppCompatActivity {
             }
         });
 
-        surveyBinding.rlCustomerType.setOnClickListener(view -> {
-            if(SharedPref.getSfType(this).equalsIgnoreCase("2") && surveyBinding.tvHeadquarters.getText().toString().isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.select_head_quarter));
-            }else {
-                ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
-                try {
-                    List<String> customerTypeList = new ArrayList<>();
-                    if(drNeed) {
-                        customerTypeList.add(drCap);
-                    }
-                    if(chmNeed) {
-                        customerTypeList.add(chmCap);
-                    }
+        surveyBinding.rlCustomerType.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getSfType(SurveyActivity.this).equalsIgnoreCase("2") && surveyBinding.tvHeadquarters.getText().toString().isEmpty()) {
+                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.select_head_quarter));
+                } else {
+                    ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
+                    try {
+                        List<String> customerTypeList = new ArrayList<>();
+                        if (drNeed) {
+                            customerTypeList.add(drCap);
+                        }
+                        if (chmNeed) {
+                            customerTypeList.add(chmCap);
+                        }
 //                if(stkNeed) {
 //                    customerTypeList.add(stkCap);
 //                }
 //                if(hosNeed) {
 //                    customerTypeList.add(hosCap);
 //                }
-                    if(!customerTypeList.isEmpty()) {
-                        for (int i = 0; i<customerTypeList.size(); i++) {
-                            mList.add(new SurveyOptionsModelClass(customerTypeList.get(i), String.valueOf(i + 1), false));
+                        if (!customerTypeList.isEmpty()) {
+                            for (int i = 0; i < customerTypeList.size(); i++) {
+                                mList.add(new SurveyOptionsModelClass(customerTypeList.get(i), String.valueOf(i + 1), false));
+                            }
+                            ShowMasterListPopup(surveyBinding.tvCustomerType, mList, getString(R.string.customer_type));
                         }
-                        ShowMasterListPopup(surveyBinding.tvCustomerType, mList, getString(R.string.customer_type));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         });
 
-        surveyBinding.rlCustomer.setOnClickListener(view -> {
-            if(surveyBinding.tvCustomerType.getText().toString().isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.select_customer_type));
-            }else {
-                ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
-                try {
-                    if(selectedCustomerType.equalsIgnoreCase(drCap)) {
-                        for (DoctorModel doctorModel : doctorModelHashMap.values()) {
-                            if(chosenSurveyModelClass != null
-                                    && (chosenSurveyModelClass.getDrCat().toLowerCase().contains(doctorModel.getCategoryCode())
-                                    || chosenSurveyModelClass.getDrCls().toLowerCase().contains(doctorModel.getClassCode())
-                                    || chosenSurveyModelClass.getDrSpl().toLowerCase().contains(doctorModel.getSpecialtyCode()))) {
-                                mList.add(new SurveyOptionsModelClass(doctorModel.getName(), doctorModel.getCode(), false));
+        surveyBinding.rlCustomer.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (surveyBinding.tvCustomerType.getText().toString().isEmpty()) {
+                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.select_customer_type));
+                } else {
+                    ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
+                    try {
+                        if (selectedCustomerType.equalsIgnoreCase(drCap)) {
+                            for (DoctorModel doctorModel : doctorModelHashMap.values()) {
+                                if (chosenSurveyModelClass != null
+                                        && (chosenSurveyModelClass.getDrCat().toLowerCase().contains(doctorModel.getCategoryCode())
+                                        || chosenSurveyModelClass.getDrCls().toLowerCase().contains(doctorModel.getClassCode())
+                                        || chosenSurveyModelClass.getDrSpl().toLowerCase().contains(doctorModel.getSpecialtyCode()))) {
+                                    mList.add(new SurveyOptionsModelClass(doctorModel.getName(), doctorModel.getCode(), false));
+                                }
+                            }
+                        } else if (selectedCustomerType.equalsIgnoreCase(chmCap)) {
+                            for (ChemistModel chemistModel : chemistModelHashMap.values()) {
+                                if (chosenSurveyModelClass != null
+                                        && chosenSurveyModelClass.getChmCat().toLowerCase().contains(chemistModel.getCategoryCode())) {
+                                    mList.add(new SurveyOptionsModelClass(chemistModel.getName(), chemistModel.getCode(), false));
+                                }
                             }
                         }
-                    }else if(selectedCustomerType.equalsIgnoreCase(chmCap)) {
-                        for (ChemistModel chemistModel : chemistModelHashMap.values()) {
-                            if(chosenSurveyModelClass != null
-                                    && chosenSurveyModelClass.getChmCat().toLowerCase().contains(chemistModel.getCategoryCode())) {
-                                mList.add(new SurveyOptionsModelClass(chemistModel.getName(), chemistModel.getCode(), false));
-                            }
-                        }
-                    }
 //                    else if(selectedCustomerType.equalsIgnoreCase(stkCap)) {
 //                        for (StockistModel stockistModel : stockistModelHashMap.values()) {
 //                            mList.add(new SurveyOptionsModelClass(stockistModel.getName(), stockistModel.getCode(), false));
@@ -278,25 +287,29 @@ public class SurveyActivity extends AppCompatActivity {
 //                            mList.add(new SurveyOptionsModelClass(hospitalModel.getName(), hospitalModel.getCode(), false));
 //                        }
 //                    }
-                    Collections.sort(mList, Comparator.comparing(SurveyOptionsModelClass::getName));
-                    ShowMasterListPopup(surveyBinding.tvCustomer, mList, selectedCustomerType);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        Collections.sort(mList, Comparator.comparing(SurveyOptionsModelClass::getName));
+                        ShowMasterListPopup(surveyBinding.tvCustomer, mList, selectedCustomerType);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
 
-        surveyBinding.btnSubmit.setOnClickListener(view -> {
-            if(validateAnswerMap()) {
-                if(UtilityClass.isNetworkAvailable(this)) {
-                    if(validateAndCreateJSON()) {
-                        callSaveAPI();
+        surveyBinding.btnSubmit.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (validateAnswerMap()) {
+                    if (UtilityClass.isNetworkAvailable(SurveyActivity.this)) {
+                        if (validateAndCreateJSON()) {
+                            callSaveAPI();
+                        }
+                    } else {
+                        commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.please_check_your_internet_connection));
                     }
-                }else {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection));
+                } else {
+                    commonUtilsMethods.showToastMessage(SurveyActivity.this, "Please fill at-least any one question");
                 }
-            } else {
-                commonUtilsMethods.showToastMessage(this, "Please fill at-least any one question");
             }
         });
 
@@ -763,10 +776,10 @@ public class SurveyActivity extends AppCompatActivity {
             }
         });
 
-        textcharacter.setOnEditorActionListener((v, actionId, event) -> {
+        textcharacter.setOnEditorActionListener((view, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                hideKeyboard(v);
-                v.clearFocus();
+                hideKeyboard(view);
+                view.clearFocus();
                 return true;
             }
             return false;
@@ -839,10 +852,10 @@ public class SurveyActivity extends AppCompatActivity {
                 answerMap.put(surveyDetailsModelClass.getQuestionID(), textnumber.getText().toString());
             }
         });
-        textnumber.setOnEditorActionListener((v, actionId, event) -> {
+        textnumber.setOnEditorActionListener((view, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                hideKeyboard(v);
-                v.clearFocus();
+                hideKeyboard(view);
+                view.clearFocus();
                 return true;
             }
             return false;

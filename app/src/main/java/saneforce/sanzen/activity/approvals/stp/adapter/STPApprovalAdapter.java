@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 
@@ -61,10 +62,13 @@ public class STPApprovalAdapter extends RecyclerView.Adapter<STPApprovalAdapter.
             holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.greater_than_purple));
         }
 
-        holder.constraint_main.setOnClickListener(view -> {
-            setSelectedSFCode(stpModelLists.get(position).getCode(), position);
-            mListener.onSTPItemClick(new STPModelList(stpModelLists.get(position).getName(), stpModelLists.get(position).getCode(), stpModelLists.get(position).getDivCode()), holder.getBindingAdapterPosition());
-            notifyDataSetChanged();
+        holder.constraint_main.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                setSelectedSFCode(stpModelLists.get(position).getCode(), position);
+                mListener.onSTPItemClick(new STPModelList(stpModelLists.get(position).getName(), stpModelLists.get(position).getCode(), stpModelLists.get(position).getDivCode()), holder.getBindingAdapterPosition());
+                notifyDataSetChanged();
+            }
         });
     }
 

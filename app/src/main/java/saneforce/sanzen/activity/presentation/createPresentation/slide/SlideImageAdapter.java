@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 
@@ -51,10 +52,13 @@ public class SlideImageAdapter extends RecyclerView.Adapter<SlideImageAdapter.My
             holder.imageView.setImageAlpha(255);
         }
 
-        holder.itemView.setOnClickListener(view -> {
-            arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(!product.isImageSelected());
-            arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(-1);
-            imageSelectionInterface.imageSelection(arrayList,holder.getAbsoluteAdapterPosition());
+        holder.itemView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(!product.isImageSelected());
+                arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(-1);
+                imageSelectionInterface.imageSelection(arrayList, holder.getAbsoluteAdapterPosition());
+            }
         });
 
     }

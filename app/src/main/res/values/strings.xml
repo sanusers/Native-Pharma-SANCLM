@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">Set 3.2.2</string>
+    <string name="app_version" translatable="false">Set 3.2.3</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -643,4 +643,19 @@
     <string name="draft_save"> Tour Plan Data Saved Successfully</string>
     <string name="need_remarks"> Enter Remarks in session </string>
     <string name="reset_password">Reset Password</string>
+    <string name="moile_mand"> Mobile Number Mandatory </string>
+    <string name="mob_mandt">Mobile <font color='#FF0000'>*</font></string>
+    <string name="division">Division</string>
+    <string name="sub_division">Sub Division</string>
+    <string name="dcr_start_dt">DCR Start Date</string>
+    <string name="tp_start_dt">TourPlan Start Date</string>
+    <string name="rpt_mgr"> Reporting Manager</string>
+    <string name="tp_rpt">TourPlan Reporting Manager</string>
+    <string name="lev_rpt">Leave Reporting Manager</string>
+    <string name="tp_mand_range">TourPlan Mandatory Range</string>
+    <string name="already_exist"> Already Exists </string>
+    <string name="state"> State </string>
+    <string name="employe_code"> Employee Code </string>
+    <string name="join_dt"> Joining Date </string>
+
 </resources>

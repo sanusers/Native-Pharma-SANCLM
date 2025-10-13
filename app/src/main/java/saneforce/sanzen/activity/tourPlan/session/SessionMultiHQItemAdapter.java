@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
 import saneforce.sanzen.commonClasses.Constants;
@@ -100,10 +101,13 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
 
         void bind(MultiHQHeaderModelClass item) {
             title.setText(item.getName());
-            itemView.setOnClickListener(v -> {
-                item.setExpanded(!item.isExpanded());
-                updateDisplayList();
-                notifyDataSetChanged();
+            itemView.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    item.setExpanded(!item.isExpanded());
+                    updateDisplayList();
+                    notifyDataSetChanged();
+                }
             });
             if(item.isExpanded()) {
                 arrow.setImageResource(R.drawable.up_arrow);

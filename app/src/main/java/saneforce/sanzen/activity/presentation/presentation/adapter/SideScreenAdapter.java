@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.CustomerDataItemBinding;
@@ -56,11 +57,17 @@ public class SideScreenAdapter extends RecyclerView.Adapter<SideScreenAdapter.Vi
         holder.binding.tvName.setText(customerDataModel.getName());
         holder.binding.checkBox.setChecked(customerDataModel.isSelected());
         holder.binding.tvCluster.setText(customerDataModel.getClusterName());
-        holder.binding.tvName.setOnClickListener(view -> {
-            new CommonUtilsMethods(context).displayPopupWindow(context, view, customerDataModel.getName());
+        holder.binding.tvName.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                new CommonUtilsMethods(context).displayPopupWindow(context, view, customerDataModel.getName());
+            }
         });
-        holder.binding.tvCluster.setOnClickListener(view -> {
-            new CommonUtilsMethods(context).displayPopupWindow(context, view, customerDataModel.getClusterName());
+        holder.binding.tvCluster.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                new CommonUtilsMethods(context).displayPopupWindow(context, view, customerDataModel.getClusterName());
+            }
         });
 //        List<String> customerDetailsList = getCustomerDetailsList(customerDataModel);
 //        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.item_textview, customerDetailsList) {

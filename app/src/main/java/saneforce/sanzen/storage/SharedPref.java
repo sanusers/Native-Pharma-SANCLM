@@ -459,7 +459,7 @@ public class SharedPref {
 
     public static final String HOLIDAY_AUTOPOST_NEED = "Holiday_AutoPost_Need";
     public static final String WEEKOFF_AUTOPOST_NEED = "Weekoff_AutoPost_Need";
-//    public static final String TAGGED_ADDRESS = "tggedaddress";
+    //    public static final String TAGGED_ADDRESS = "tggedaddress";
     public static final String PROFILING_NEED = "DrProfile";
 
     public static final String QUIZ_DATE = "Quiz Date";
@@ -488,6 +488,7 @@ public class SharedPref {
     public static final String TpIdPrevious = "tpIdPrevious";
     public static final String TpIdNext = "tpIdNext";
 
+    public static final String LOGIN_TIMER = "LoginTimer";
     public static final String LAST_LOGIN = "Last Login";
     public static final String LOGIN_FAILED_COUNT = "Login failed count";
     public static final String LOGIN_FAILED_TIME = "Login failed time";
@@ -498,6 +499,11 @@ public class SharedPref {
     public static final String DEVICE_NAME = "device_name";
     public static final String LOGIN_DEVICE_REG_ID = "LoginDeviceRegId";
     public static final String LOGIN_APP_DEVICE_ID = "Loginappdeviceid";
+    public static final String REPORTING_TO_SF = "Reporting_To_SF";
+    public static final String UNLST_DOC_APP_NEED = "Unlst_Doc_App_need";
+    public static final String SUBDIVISION_NAMES = "SubdivisionNames";
+    public static final String SETUP_SYNCED = "setup_synced";
+
 
     public static SharedPreferences.Editor editor;
 
@@ -510,349 +516,354 @@ public class SharedPref {
     public static void InsertLogInData(Context context, JSONObject jsonObject) {
         try {
 
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(SF_CODE, jsonObject.optString("SF_Code"));
-        editor.putString(SF_NAME, jsonObject.optString("SF_Name"));
-        editor.putString(SF_PASSWORD, jsonObject.optString("SF_Password"));
-        editor.putString(SF_TYPE, jsonObject.optString("sf_type"));
-        editor.putString(DESIG_CODE, jsonObject.optString("desig_Code"));
-        editor.putString(DIVISION_NAME, jsonObject.optString("Division_name"));
-        editor.putString(DESIG, jsonObject.optString("Desig"));
-       // editor.putString(HQ_NAME, jsonObject.optString("HQName"));
-        editor.putString(SF_STAT, jsonObject.optString("SFStat"));
-        editor.putString(DIVISION_CODE, jsonObject.optString("Division_Code"));
-        editor.putString(T_BASE, jsonObject.optString("TBase"));
-        editor.putString(GEO_CHK, jsonObject.optString("GeoChk"));
-        editor.putString(GEO_NEED, jsonObject.optString("GeoNeed"));
-        editor.putString(CHM_NEED, jsonObject.optString("ChmNeed"));
-        editor.putString(STK_NEED, jsonObject.optString("StkNeed"));
-        editor.putString(UNL_NEED, jsonObject.optString("UNLNeed"));
-        editor.putString(DP_NEED, jsonObject.optString("DPNeed"));
-        editor.putString(DI_NEED, jsonObject.optString("DINeed"));
-        editor.putString(CHM_RX_QTY, jsonObject.optString("ChmRxQty"));
-        editor.putString(HOS_POB_MD, jsonObject.optString("HosPOBMd"));
-        editor.putString(HOS_POB_ND, jsonObject.optString("HosPOBNd"));
-        editor.putString(SAMPLE_VALIDATION, jsonObject.optString("sample_validation"));
-        editor.putString(INPUT_VALIDATION, jsonObject.optString("input_validation"));
-        editor.putString(DOC_BUSINESS_PRODUCT, jsonObject.optString("doc_business_product"));
-        editor.putString(DOC_BUSINESS_VALUE, jsonObject.optString("doc_business_value"));
-        editor.putString(DCR_DOC_BUSINESS_PRODUCT, jsonObject.optString("dcr_doc_business_product"));
-         editor.putString(DR_MAPPINGPRODUCT, jsonObject.optString("Dr_mappingproduct"));
-        editor.putString(CP_NEED, jsonObject.optString("CPNeed"));
-        editor.putString(CI_NEED, jsonObject.optString("CINeed"));
-        editor.putString(CMPGN_NEED, jsonObject.optString("CmpgnNeed"));
-        editor.putString(SP_NEED, jsonObject.optString("SPNeed"));
-        editor.putString(SI_NEED, jsonObject.optString("SINeed"));
-        editor.putString(VST_ND, jsonObject.optString("VstNd"));
-        editor.putString(MSD_ENTRY, jsonObject.optString("MsdEntry"));
-        editor.putString(NP_NEED, jsonObject.optString("NPNeed"));
-        editor.putString(NI_NEED, jsonObject.optString("NINeed"));
-        editor.putString(CAT_NEED, jsonObject.optString("Catneed"));
-        editor.putString(CHM_AD_QTY, jsonObject.optString("chm_ad_qty"));
-        editor.putString(CAMP_NEED, jsonObject.optString("Campneed"));
-        editor.putString(CHE_BASE, jsonObject.optString("CHEBase"));
-        editor.putString(DR_CAP, jsonObject.optString("DrCap"));
-        editor.putString(CHM_CAP, jsonObject.optString("ChmCap"));
-        editor.putString(STK_CAP, jsonObject.optString("StkCap"));
-        editor.putString(NL_CAP, jsonObject.optString("NLCap"));
-        editor.putString(USER_N, jsonObject.optString("UserN"));
-        editor.putString(PASS, jsonObject.optString("Pass"));
-        editor.putString(DR_RX_Q_CAP, jsonObject.optString("DrRxQCap"));
-        editor.putString(CHM_RCPA_MD, jsonObject.optString("ChmRcpaMd"));
-        editor.putString(CHM_RCPA_MD_MGR, jsonObject.optString("ChmRcpaMd_Mgr"));
-        editor.putString(DR_SMP_Q_CAP, jsonObject.optString("DrSmpQCap"));
-        editor.putString(DR_RX_ND, jsonObject.optString("DrRxNd"));
-        editor.putString(APPROVE_NEED, jsonObject.optString("Approveneed"));
-        editor.putString(EXPENSENEED, jsonObject.optString("Expenseneed"));
-        editor.putString(TERRITORY_VST_ND, jsonObject.optString("Territory_VstNd"));
-        editor.putString(TRAVEL_DISTANCE_NEED, jsonObject.optString("travelDistance_Need"));
-        editor.putString(ANDROID_APP, jsonObject.optString("Android_App"));
-        editor.putString(IOS_APP, jsonObject.optString("ios_app"));
-        editor.putString(DOC_INPUT_CAPTION, jsonObject.optString("Doc_Input_caption"));
-        editor.putString(CHM_INPUT_CAPTION, jsonObject.optString("Chm_Input_caption"));
-        editor.putString(DASHBOARD, jsonObject.optString("dashboard"));
-        editor.putString(SRT_ND, jsonObject.optString("SrtNd"));
-        editor.putString(UL_STK_NEED, jsonObject.optString("Ul_stk_Need"));
-        editor.putString(UL_STK_MANDATORY, jsonObject.optString("Ul_stk_Mandatory"));
-        editor.putString(TP_NEW, jsonObject.optString("tp_new"));
-        editor.putString(TAXNAME_CAPTION, jsonObject.optString("Taxname_caption"));
-        editor.putString(SURVEY_ND, jsonObject.optString("SurveyNd"));
-        editor.putString(ST_STK_NEED, jsonObject.optString("st_stk_Need"));
-        editor.putString(ST_STK_MANDATORY, jsonObject.optString("st_stk_Mandatory"));
-        editor.putString(SRT_MAND_ND, jsonObject.optString("SrtMandNd"));
-        editor.putString(SINGLE_ACTIVITY, jsonObject.optString("single_activity"));
-        editor.putString(QUIZ_NEED_MANDT, jsonObject.optString("quiz_need_mandt"));
-        editor.putString(QUIZ_HEADING, jsonObject.optString("quiz_heading"));
-        editor.putString(QUICKADD, jsonObject.optString("quickadd"));
-        editor.putString(PRODUCT_RATE_EDITABLE, jsonObject.optString("Product_Rate_Editable"));
-        editor.putString(OFFLINE_LOGIN, jsonObject.optString("offlineLogin"));
-        editor.putString(OFFICEWORK_HOME, jsonObject.optString("officework_home"));
-        editor.putString(HOSP_DCR, jsonObject.optString("hosp_dcr"));
-        editor.putString(DR_POLICY, jsonObject.optString("DrPolicy"));
-        editor.putString(DOC_STK_NEED, jsonObject.optString("Doc_stk_Need"));
-        editor.putString(DOC_STK_MANDATORY, jsonObject.optString("Doc_stk_Mandatory"));
-        editor.putString(CUST_SRT_ND, jsonObject.optString("CustSrtNd"));
-        editor.putString(CHM_STK_NEED, jsonObject.optString("Chm_stk_Need"));
-        editor.putString(CHM_STK_MANDATORY, jsonObject.optString("Chm_stk_Mandatory"));
-        editor.putString(ADD_DR, jsonObject.optString("addDr"));
-        editor.putString(ACTIVITY_NEED, jsonObject.optString("activityneed"));
-        editor.putString(SF_EMAIL, jsonObject.optString("sfEmail"));
-        editor.putString(SF_MOBILE, jsonObject.optString("sfMobile"));
-        editor.putString(DS_NAME, jsonObject.optString("DS_name"));
-        editor.putString(ACTIVITY_ND, jsonObject.optString("ActivityNd"));
-        editor.putString(ACTIVITY_MAND, jsonObject.optString("activityMand"));
-        editor.putString(SEQUENTIAL_DCR, jsonObject.optString("sequential_dcr"));
-        editor.putString(MYDAYPLAN_NEED, jsonObject.optString("mydayplan_need"));
-        editor.putString(MISSED_DATE_MAND, jsonObject.optString("missedDateMand"));
-        editor.putString(MEDIA_TRANS_NEED, jsonObject.optString("mediaTrans_Need"));
-        editor.putString(DR_SMP_Q_MD, jsonObject.optString("DrSmpQMd"));
-        editor.putString(DR_RX_Q_MD, jsonObject.optString("DrRxQMd"));
-        editor.putString(MYPLN_RMRKS_MAND, jsonObject.optString("myplnRmrksMand"));
-        editor.putString(STK_INPUT_CAPTION, jsonObject.optString("Stk_Input_caption"));
-        editor.putString(UL_INPUT_CAPTION, jsonObject.optString("Ul_Input_caption"));
-        editor.putString(RCPA_ND, jsonObject.optString("RcpaNd"));
-        editor.putString(RCPA_COMPETITOR_EXTRA, jsonObject.optString("Rcpa_Competitor_extra"));
-        editor.putString(DETAILING_TYPE, jsonObject.optString("Detailing_type"));
-        editor.putString(CIP_SRT_ND, jsonObject.optString("CipSrtNd"));
-        editor.putString(DCR_FIRSTSELFIE, jsonObject.optString("Dcr_firstselfie"));
-        editor.putString(CHM_Q_CAP, jsonObject.optString("ChmQCap"));
-        editor.putString(STK_Q_CAP, jsonObject.optString("StkQCap"));
-        editor.putString(MULTIPLE_DOC_NEED, jsonObject.optString("multiple_doc_need"));
-        editor.putString(MAIL_NEED, jsonObject.optString("mailneed"));
-        editor.putString(CIRCULAR, jsonObject.optString("circular"));
-        editor.putString(DR_FEED_MD, jsonObject.optString("DrFeedMd"));
-        editor.putString(DF_NEED, jsonObject.optString("DFNeed"));
-        editor.putString(CF_NEED, jsonObject.optString("CFNeed"));
-        editor.putString(SF_NEED, jsonObject.optString("SFNeed"));
-        editor.putString(CIP_F_NEED, jsonObject.optString("CIP_FNeed"));
-        editor.putString(NF_NEED, jsonObject.optString("NFNeed"));
-        editor.putString(HF_NEED, jsonObject.optString("HFNeed"));
-        editor.putString(DQ_NEED, jsonObject.optString("DQNeed"));
-        editor.putString(CQ_NEED, jsonObject.optString("CQNeed"));
-        editor.putString(SQ_NEED, jsonObject.optString("SQNeed"));
-        editor.putString(NQ_NEED, jsonObject.optString("NQNeed"));
-        editor.putString(CIP_Q_NEED, jsonObject.optString("CIP_QNeed"));
-        editor.putString(HQ_NEED, jsonObject.optString("HQNeed"));
-        editor.putString(DE_NEED, jsonObject.optString("DENeed"));
-        editor.putString(CE_NEED, jsonObject.optString("CENeed"));
-        editor.putString(SE_NEED, jsonObject.optString("SENeed"));
-        editor.putString(NE_NEED, jsonObject.optString("NENeed"));
-        editor.putString(CIP_E_NEED, jsonObject.optString("CIP_ENeed"));
-        editor.putString(HE_NEED, jsonObject.optString("HENeed"));
-        editor.putString(TP_NEED, jsonObject.optString("tp_need"));
-        editor.putString(CLUSTER_CAP, jsonObject.optString("cluster_cap"));
-        editor.putString(WRK_AREA_NAME, jsonObject.optString("wrk_area_Name"));
-        editor.putString(NL_RX_Q_CAP, jsonObject.optString("NLRxQCap"));
-        editor.putString(NL_SMP_Q_CAP, jsonObject.optString("NLSmpQCap"));
-        editor.putString(APP_DEVICE_ID, jsonObject.optString("app_device_id"));
-        editor.putString(USR_DFD_USERNAME, jsonObject.optString("UsrDfd_UserName"));
-        editor.putString(SF_USER_NAME, jsonObject.optString("SF_User_Name"));
-        editor.putString(ATTENDANCE, jsonObject.optString("Attendance"));
-        editor.putString(DEVICE_ID_NEED, jsonObject.optString("DeviceId_Need"));
-        editor.putString(DOCTOR_DOBDOW, jsonObject.optString("doctor_dobdow"));
-        editor.putString(PRODUCT_POB_NEED_MSG, jsonObject.optString("product_pob_need_msg"));
-        editor.putString(PROD_REMARK, jsonObject.optString("prod_remark"));
-        editor.putString(PROD_REMARK_MD, jsonObject.optString("prod_remark_md"));
-        editor.putString(CIP_NEED, jsonObject.optString("cip_need"));
-        editor.putString(CIP_P_NEED, jsonObject.optString("CIP_PNeed"));
-        editor.putString(CIP_I_NEED, jsonObject.optString("CIP_INeed"));
-        editor.putString(DR_PRD_MD, jsonObject.optString("DrPrdMd"));
-        editor.putString(DR_INP_MD, jsonObject.optString("DrInpMd"));
-        editor.putString(CIP_JOINTWORK_NEED, jsonObject.optString("CIP_jointwork_Need"));
-        editor.putString(CIP_CAPTION, jsonObject.optString("CIP_Caption"));
-        editor.putString(HOSP_CAPTION, jsonObject.optString("hosp_caption"));
-        editor.putString(SEP_RCPA_ND, jsonObject.optString("Sep_RcpaNd"));
-        editor.putString(PAST_LEAVE_POST, jsonObject.optString("past_leave_post"));
-        editor.putString(DLY_CTRL, jsonObject.optString("DlyCtrl"));
-        editor.putString(FEED_ND, jsonObject.optString("FeedNd"));
-        editor.putString(TEMP_ND, jsonObject.optString("TempNd"));
-        editor.putString(PROD_DET_NEED, jsonObject.optString("prod_det_need"));
-        editor.putString(CNT_REMARKS, jsonObject.optString("cntRemarks"));
-        editor.putString(PRODUCT_POB_NEED, jsonObject.optString("product_pob_need"));
-        editor.putString(SECONDARY_ORDER_DISCOUNT, jsonObject.optString("secondary_order_discount"));
-        editor.putString(TARGET_REPORT_MD, jsonObject.optString("Target_report_md"));
-        editor.putString(RCPA_UNIT_ND, jsonObject.optString("RCPA_unit_nd"));
-        editor.putString(CHM_RCPA_NEED, jsonObject.optString("Chm_RCPA_Need"));
-        editor.putString(DR_RCPA_COMPETITOR_NEED, jsonObject.optString("DrRCPA_competitor_Need"));
-        editor.putString(CHM_RCPA_COMPETITOR_NEED, jsonObject.optString("ChmRCPA_competitor_Need"));
-        editor.putString(CURRENTDAY_TPPLANNED, jsonObject.optString("Currentday_TPplanned"));
-        editor.putString(DOC_CLUSTER_BASED, jsonObject.optString("Doc_cluster_based"));
-        editor.putString(CHM_CLUSTER_BASED, jsonObject.optString("Chm_cluster_based"));
-        editor.putString(STK_CLUSTER_BASED, jsonObject.optString("Stk_cluster_based"));
-        editor.putString(ULDOC_CLUSTER_BASED, jsonObject.optString("UlDoc_cluster_based"));
-        editor.putString(MULTI_CLUSTER, jsonObject.optString("multi_cluster"));
-        editor.putString(TERR_BASED_TAG, jsonObject.optString("Terr_based_Tag"));
-        editor.putString(RCPA_MD_MGR, jsonObject.optString("RcpaMd_Mgr"));
-        editor.putString(DR_NEED, jsonObject.optString("DrNeed"));
-        editor.putString(FAQ, jsonObject.optString("faq"));
-        editor.putString(EDIT_HOLIDAY, jsonObject.optString("edit_holiday"));
-        editor.putString(EDIT_WEEKLYOFF, jsonObject.optString("edit_weeklyoff"));
-        editor.putString(TARGET_REPORT_ND, jsonObject.optString("Target_report_Nd"));
-        editor.putString(DCR_LOCK_DAYS, jsonObject.optString("DcrLockDays"));
-        editor.putString(DOC_POB_CAPTION, jsonObject.optString("Doc_pob_caption"));
-        editor.putString(STK_POB_CAPTION, jsonObject.optString("Stk_pob_caption"));
-        editor.putString(CHM_POB_CAPTION, jsonObject.optString("Chm_pob_caption"));
-        editor.putString(ULDOC_POB_CAPTION, jsonObject.optString("Uldoc_pob_caption"));
-        editor.putString(CIP_POB_CAPTION, jsonObject.optString("CIP_pob_caption"));
-        editor.putString(HOSP_POB_CAPTION, jsonObject.optString("Hosp_pob_caption"));
-        editor.putString(DOC_POB_MANDATORY_NEED, jsonObject.optString("Doc_Pob_Mandatory_Need"));
-        editor.putString(CHM_POB_MANDATORY_NEED, jsonObject.optString("Chm_Pob_Mandatory_Need"));
-        editor.putString(DR_SAMP_ND, jsonObject.optString("DrSampNd"));
-        editor.putString(RCPA_MD, jsonObject.optString("RcpaMd"));
-        editor.putString(MISC_EXPENSE_NEED, jsonObject.optString("misc_expense_need"));
-        editor.putString(DOC_POB_NEED, jsonObject.optString("Doc_Pob_Need"));
-        editor.putString(CHM_POB_NEED, jsonObject.optString("Chm_Pob_Need"));
-        editor.putString(STK_POB_NEED, jsonObject.optString("Stk_Pob_Need"));
-        editor.putString(UL_POB_NEED, jsonObject.optString("Ul_Pob_Need"));
-        editor.putString(STK_POB_MANDATORY_NEED, jsonObject.optString("Stk_Pob_Mandatory_Need"));
-        editor.putString(UL_POB_MANDATORY_NEED, jsonObject.optString("Ul_Pob_Mandatory_Need"));
-        editor.putString(DOC_JOINTWORK_NEED, jsonObject.optString("Doc_jointwork_Need"));
-        editor.putString(CHM_JOINTWORK_NEED, jsonObject.optString("Chm_jointwork_Need"));
-        editor.putString(STK_JOINTWORK_NEED, jsonObject.optString("Stk_jointwork_Need"));
-        editor.putString(UL_JOINTWORK_NEED, jsonObject.optString("Ul_jointwork_Need"));
-        editor.putString(DOC_JOINTWORK_MANDATORY_NEED, jsonObject.optString("Doc_jointwork_Mandatory_Need"));
-        editor.putString(CHM_JOINTWORK_MANDATORY_NEED, jsonObject.optString("Chm_jointwork_Mandatory_Need"));
-        editor.putString(STK_JOINTWORK_MANDATORY_NEED, jsonObject.optString("Stk_jointwork_Mandatory_Need"));
-        editor.putString(UL_JOINTWORK_MANDATORY_NEED, jsonObject.optString("Ul_jointwork_Mandatory_Need"));
-        editor.putString(DOC_PRODUCT_CAPTION, jsonObject.optString("Doc_Product_caption"));
-        editor.putString(CHM_PRODUCT_CAPTION, jsonObject.optString("Chm_Product_caption"));
-        editor.putString(STK_PRODUCT_CAPTION, jsonObject.optString("Stk_Product_caption"));
-        editor.putString(UL_PRODUCT_CAPTION, jsonObject.optString("Ul_Product_caption"));
-        editor.putString(REMAINDER_PRD_MD, jsonObject.optString("Remainder_prd_Md"));
-        editor.putString(GEOTAG_NEED, jsonObject.optString("GEOTagNeed"));
-        editor.putString(GEOTAG_NEED_CHE, jsonObject.optString("GEOTagNeedche"));
-        editor.putString(REMAINDER_GEO, jsonObject.optString("Remainder_geo"));
-        editor.putString(GEOTAG_NEED_STOCK, jsonObject.optString("GEOTagNeedstock"));
-        editor.putString(GEOTAG_NEED_CIP, jsonObject.optString("GeoTagNeedcip"));
-        editor.putString(GEOTAG_NEED_UNLST, jsonObject.optString("GEOTagNeedunlst"));
-        editor.putString(DIS_RAD, jsonObject.optString("DisRad"));
-        editor.putString(DEVICE_REG_ID, jsonObject.optString("DeviceRegId"));
-        editor.putString(SFTP_DATE, jsonObject.optString("SFTPDate"));
-        editor.putString(SFDCR_DATE, jsonObject.optString("SFDCRDate"));
-        editor.putString(MCL_DET, jsonObject.optString("MCLDet"));
-        editor.putString(RMDR_NEED, jsonObject.optString("RmdrNeed"));
-        editor.putString(EXPENSE_NEED, jsonObject.optString("expense_need"));
-        editor.putString(GEOTAG_IMG, jsonObject.optString("geoTagImg"));
-        editor.putString(DR_RCPA_Q_MD, jsonObject.optString("DrRcpaQMd"));
-        editor.putString(QUES_NEED, jsonObject.optString("ques_need"));
-        editor.putString(HOSP_NEED, jsonObject.optString("hosp_need"));
-        editor.putString(HP_NEED, jsonObject.optString("HPNeed"));
-        editor.putString(HI_NEED, jsonObject.optString("HINeed"));
-        editor.putString(CHMSAMQTY_NEED, jsonObject.optString("chmsamQty_need"));
-        editor.putString(CHM_SMP_CAP, jsonObject.optString("ChmSmpCap"));
-        editor.putString(CALL_FEED_ENTERABLE, jsonObject.optString("call_feed_enterable"));
-        editor.putString(PWD_SETUP, jsonObject.optString("Pwdsetup"));
-        editor.putString(RCPA_EXTRA, jsonObject.optString("rcpaextra"));
-        editor.putString(LEAVE_STATUS, jsonObject.optString("LeaveStatus"));
-        editor.putString(STATE_CODE, jsonObject.optString("State_Code"));
-        editor.putString(SF_EMP_ID, jsonObject.optString("sf_emp_id"));
-        editor.putString(SUBDIVISION_CODE, jsonObject.optString("subdivision_code"));
-        editor.putString(REMAINDER_CALL_CAP, jsonObject.optString("Remainder_call_cap"));
-        editor.putString(CALL_REPORT_FROM_DATE, jsonObject.optString("call_report_from_date"));
-        editor.putString(CALL_REPORT_TO_DATE, jsonObject.optString("call_report_to_date"));
-        editor.putString(CALL_REPORT, jsonObject.optString("call_report"));
-        editor.putString(DAYS, jsonObject.optString("days"));
-        editor.putString(MRHLFDY, jsonObject.optString("MRHlfDy"));
-        editor.putString(ORDER_MANAGEMENT, jsonObject.optString("Order_management"));
-        editor.putString(ORDER_CAPTION, jsonObject.optString("Order_caption"));
-        editor.putString(PRIMARY_ORDER_CAPTION, jsonObject.optString("Primary_order_caption"));
-        editor.putString(SECONDARY_ORDER_CAPTION, jsonObject.optString("Secondary_order_caption"));
-        editor.putString(PRIMARY_ORDER, jsonObject.optString("Primary_order"));
-        editor.putString(SECONDARY_ORDER, jsonObject.optString("Secondary_order"));
-        editor.putString(GST_OPTION, jsonObject.optString("Gst_option"));
-        editor.putString(TPDCR_DEVIATION_APPR_STATUS, jsonObject.optString("TPDCR_Deviation_Appr_Status"));
-        editor.putString(TPDCR_DEVIATION, jsonObject.optString("TPDCR_Deviation"));
-        editor.putString(TPDCR_MGRAPPR, jsonObject.optString("TPDCR_MGRAppr"));
-        editor.putString(NEXT_VST, jsonObject.optString("NextVst"));
-        editor.putString(NEXT_VST_MANDATORY_NEED, jsonObject.optString("NextVst_Mandatory_Need"));
-        editor.putString(APPR_MANDATORY_NEED, jsonObject.optString("Appr_Mandatory_Need"));
-        editor.putString(RCPA_QTY_NEED, jsonObject.optString("RCPAQty_Need"));
-        editor.putString(PROD_STK_NEED, jsonObject.optString("Prod_Stk_Need"));
-        editor.putString(TP_MANDATORY_NEED, jsonObject.optString("TP_Mandatory_Need"));
-        editor.putString(TP_START_DATE, jsonObject.optString("Tp_Start_Date"));
-        editor.putString(PRDFDBACK, jsonObject.optString("prdfdback"));
-        editor.putString(TRACKING_INTERVAL, jsonObject.optString("tracking_interval"));
-        editor.putString(TP_END_DATE, jsonObject.optString("Tp_End_Date"));
-        editor.putString(DR_EVENT_MD, jsonObject.optString("DrEvent_Md"));
-        editor.putString(CHM_EVENT_MD, jsonObject.optString("ChmEvent_Md"));
-        editor.putString(STK_EVENT_MD, jsonObject.optString("StkEvent_Md"));
-        editor.putString(ULDR_EVENT_MD, jsonObject.optString("UlDrEvent_Md"));
-        editor.putString(CIP_EVENT_MD, jsonObject.optString("CipEvent_Md"));
-        editor.putString(HOSP_EVENT_MD, jsonObject.optString("HospEvent_Md"));
-        editor.putString(LEAVE_ENTITLEMENT_NEED, jsonObject.optString("Leave_entitlement_need"));
-        editor.putString(PRIMARYSEC_NEED, jsonObject.optString("primarysec_need"));
-        editor.putString(MGRHLFDY, jsonObject.optString("MGRHlfDy"));
-        editor.putString(NO_OF_TP_VIEW, jsonObject.optString("No_of_TP_View"));
-        editor.putString(CURRENTDAY, jsonObject.optString("currentDay"));
-        editor.putString(DAYPLAN_TP_BASED, jsonObject.optString("dayplan_tp_based"));
-        editor.putString(QUIZ_NEED, jsonObject.optString("quiz_need"));
-        editor.putString(STP, jsonObject.optString("stp"));
-        editor.putString(POB_MINVALUE, jsonObject.optString("pob_minvalue"));
-        editor.putString(TPBASED_DCR, jsonObject.optString("TPbasedDCR"));
-        editor.putString(LOCATION_TRACK, jsonObject.optString("Location_track"));
-        editor.putString(TRACKING_TIME, jsonObject.optString("tracking_time"));
-        editor.putString(ENTRY_FORM_MGR, jsonObject.optString("entryFormMgr"));
-        editor.putString(ENTRY_FORM_NEED, jsonObject.optString("entryFormNeed"));
-        editor.putString(DLY_CTRL_S, jsonObject.optString("Dly_Ctrls"));
-        editor.putString(ANDROID_DETAILING, jsonObject.optString("Android_Detailing"));
-        editor.putString(IOS_DETAILING, jsonObject.optString("ios_Detailing"));
-        editor.putString(SAMPLE_VAL_QTY, jsonObject.optString("Sample_Val_Qty"));
-        editor.putString(INPUT_VAL_QTY, jsonObject.optString("Input_Val_Qty"));
-        editor.putString(QUOTE_TEXT, jsonObject.optString("quote_Text"));
-        editor.putString(PRO_DET_NEED, jsonObject.optString("pro_det_need"));
-        editor.putString(AUTHENTICATION, jsonObject.optString("Authentication"));
-        editor.putString(GEOTAG_APPROVAL_NEED, jsonObject.optString("GeoTagApprovalNeed"));
-        editor.putString(CHM_SRT_ND, jsonObject.optString("ChmSrtNd"));
-        editor.putString(UNLIST_SRT_ND, jsonObject.optString("UnlistSrtNd"));
-        editor.putString(RCPA_COMPETITOR_ADD, jsonObject.optString("RCPA_competitor_add"));
-        editor.putString(GEOTAGGING, jsonObject.optString("GeoTagging"));
-        editor.putString(DCR_SEQUENTIAL, jsonObject.optString("dcr_sequential"));
-        editor.putString(PRESENTATION_NEED, jsonObject.optString("PresentNd"));
-        editor.putString(CUSTOMIZATION_PRESENTATION_NEED, jsonObject.optString("Customization_need"));
-        editor.putString(THERAPTIC_PRESENTATION_NEED, jsonObject.optString("TherapticNd"));
-        editor.putString(STOCKIST_POB_NEED, jsonObject.optString("Pob_Stockist_Nd"));
-        editor.putString(UNLISTED_DOCTOR_POB_NEED, jsonObject.optString("Pob_Unlstdr_Nd"));
-        editor.putString(ADDITIONAL_CALL_NEED, jsonObject.optString("Additional_Call"));
-        editor.putString(CHM_DETAILING_NEED, jsonObject.optString("Detailing_chem"));
-        editor.putString(STK_DETAILING_NEED, jsonObject.optString("Detailing_stk"));
-        editor.putString(UNDR_DETAILING_NEED, jsonObject.optString("Detailing_undr"));
-        editor.putString(EDIT_CALL_DEL_NEED, jsonObject.optString("EditCallDelNeed"));
-        editor.putString(SANZEN_EDET, jsonObject.optString("sanzen_edet"));
-        editor.putString(ACTIVITY_CAP, jsonObject.optString("ActivityCap"));
-        editor.putString(STP_NEED, jsonObject.optString("STP_Need"));
-        editor.putString(STP_APPR_NEED, jsonObject.optString("STP_Appr_Need"));
-        editor.putString(STP_BASED_MTP, jsonObject.optString("STP_Based_MTP"));
-        editor.putString(STP_BASED_DCR, jsonObject.optString("STP_Based_DCR"));
-        editor.putString(STP_CAPTION, jsonObject.optString("Stp_Caption"));
-        editor.putString(DCR_APPROVAL_NEED, jsonObject.optString("DcrapprvNd"));
-        editor.putString(ADD_CHM, jsonObject.optString("addChm"));
-        editor.putString(ADD_UNLST, jsonObject.optString("addDr"));
-        editor.putString(HOLIDAY_AUTOPOST_NEED, jsonObject.optString("Holiday_AutoPost_Need"));
-        editor.putString(WEEKOFF_AUTOPOST_NEED, jsonObject.optString("Weekoff_AutoPost_Need"));
-        editor.putString(SLIDES_PATH, jsonObject.optString("slide_folder").replaceAll("\\\\",""));
-        editor.putString(PROFILING_NEED, jsonObject.optString("DrProfile"));
-        editor.putString(SEQ_DLY_CTRL, jsonObject.optString("Seq_dly_ctrl"));
-        editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.optString("SeqDcrLockDays"));
-        editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
-        editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
-        editor.putString(WELCOME_SLIDES_PATH, "");
-        editor.putString(ONE_BUILD,jsonObject.optString("one_build"));
-        editor.putString(S3_BUCKET_NEED, jsonObject.optString("S3BucketNeed"));
-        editor.putString(DYNAMIC_OPTION_NEED,jsonObject.optString("dynamic_option_need"));
-        editor.putString(DYNAMIC_OPTION_CAPS,jsonObject.optString("dynamic_option_caps"));
-        editor.putString(SKIP_DETAILING_DR,jsonObject.optString("skipDetailing_Dr"));
-        editor.putString(SKIP_DETAILING_CHE, jsonObject.optString("skipDetailing_chm"));
-        editor.putString(SKIP_DETAILING_STK, jsonObject.optString("skipDetailing_stk"));
-        editor.putString(SKIP_DETAILING_UNDR, jsonObject.optString("skipDetailing_undr"));
-        editor.putString(DIVISION_SNAME,jsonObject.optString("Division_SName"));
-        editor.putString(SIGN_IN_TIME,jsonObject.optString("signin_time"));
-        editor.putString(MODE,jsonObject.optString("mode"));
-        editor.putString(DEVICE_NAME,jsonObject.optString("device_name"));
-        editor.putString(LOGIN_DEVICE_REG_ID,jsonObject.optString("LoginDeviceRegId"));
-        editor.putString(LOGIN_APP_DEVICE_ID,jsonObject.optString("Loginappdeviceid"));
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putString(SF_CODE, jsonObject.optString("SF_Code"));
+            editor.putString(SF_NAME, jsonObject.optString("SF_Name"));
+            editor.putString(SF_PASSWORD, jsonObject.optString("SF_Password"));
+            editor.putString(SF_TYPE, jsonObject.optString("sf_type"));
+            editor.putString(DESIG_CODE, jsonObject.optString("desig_Code"));
+            editor.putString(DIVISION_NAME, jsonObject.optString("Division_name"));
+            editor.putString(DESIG, jsonObject.optString("Desig"));
+            // editor.putString(HQ_NAME, jsonObject.optString("HQName"));
+            editor.putString(SF_STAT, jsonObject.optString("SFStat"));
+            editor.putString(DIVISION_CODE, jsonObject.optString("Division_Code"));
+            editor.putString(T_BASE, jsonObject.optString("TBase"));
+            editor.putString(GEO_CHK, jsonObject.optString("GeoChk"));
+            editor.putString(GEO_NEED, jsonObject.optString("GeoNeed"));
+            editor.putString(CHM_NEED, jsonObject.optString("ChmNeed"));
+            editor.putString(STK_NEED, jsonObject.optString("StkNeed"));
+            editor.putString(UNL_NEED, jsonObject.optString("UNLNeed"));
+            editor.putString(DP_NEED, jsonObject.optString("DPNeed"));
+            editor.putString(DI_NEED, jsonObject.optString("DINeed"));
+            editor.putString(CHM_RX_QTY, jsonObject.optString("ChmRxQty"));
+            editor.putString(HOS_POB_MD, jsonObject.optString("HosPOBMd"));
+            editor.putString(HOS_POB_ND, jsonObject.optString("HosPOBNd"));
+            editor.putString(SAMPLE_VALIDATION, jsonObject.optString("sample_validation"));
+            editor.putString(INPUT_VALIDATION, jsonObject.optString("input_validation"));
+            editor.putString(DOC_BUSINESS_PRODUCT, jsonObject.optString("doc_business_product"));
+            editor.putString(DOC_BUSINESS_VALUE, jsonObject.optString("doc_business_value"));
+            editor.putString(DCR_DOC_BUSINESS_PRODUCT, jsonObject.optString("dcr_doc_business_product"));
+            editor.putString(DR_MAPPINGPRODUCT, jsonObject.optString("Dr_mappingproduct"));
+            editor.putString(CP_NEED, jsonObject.optString("CPNeed"));
+            editor.putString(CI_NEED, jsonObject.optString("CINeed"));
+            editor.putString(CMPGN_NEED, jsonObject.optString("CmpgnNeed"));
+            editor.putString(SP_NEED, jsonObject.optString("SPNeed"));
+            editor.putString(SI_NEED, jsonObject.optString("SINeed"));
+            editor.putString(VST_ND, jsonObject.optString("VstNd"));
+            editor.putString(MSD_ENTRY, jsonObject.optString("MsdEntry"));
+            editor.putString(NP_NEED, jsonObject.optString("NPNeed"));
+            editor.putString(NI_NEED, jsonObject.optString("NINeed"));
+            editor.putString(CAT_NEED, jsonObject.optString("Catneed"));
+            editor.putString(CHM_AD_QTY, jsonObject.optString("chm_ad_qty"));
+            editor.putString(CAMP_NEED, jsonObject.optString("Campneed"));
+            editor.putString(CHE_BASE, jsonObject.optString("CHEBase"));
+            editor.putString(DR_CAP, jsonObject.optString("DrCap"));
+            editor.putString(CHM_CAP, jsonObject.optString("ChmCap"));
+            editor.putString(STK_CAP, jsonObject.optString("StkCap"));
+            editor.putString(NL_CAP, jsonObject.optString("NLCap"));
+            editor.putString(USER_N, jsonObject.optString("UserN"));
+            editor.putString(PASS, jsonObject.optString("Pass"));
+            editor.putString(DR_RX_Q_CAP, jsonObject.optString("DrRxQCap"));
+            editor.putString(CHM_RCPA_MD, jsonObject.optString("ChmRcpaMd"));
+            editor.putString(CHM_RCPA_MD_MGR, jsonObject.optString("ChmRcpaMd_Mgr"));
+            editor.putString(DR_SMP_Q_CAP, jsonObject.optString("DrSmpQCap"));
+            editor.putString(DR_RX_ND, jsonObject.optString("DrRxNd"));
+            editor.putString(APPROVE_NEED, jsonObject.optString("Approveneed"));
+            editor.putString(EXPENSENEED, jsonObject.optString("Expenseneed"));
+            editor.putString(TERRITORY_VST_ND, jsonObject.optString("Territory_VstNd"));
+            editor.putString(TRAVEL_DISTANCE_NEED, jsonObject.optString("travelDistance_Need"));
+            editor.putString(ANDROID_APP, jsonObject.optString("Android_App"));
+            editor.putString(IOS_APP, jsonObject.optString("ios_app"));
+            editor.putString(DOC_INPUT_CAPTION, jsonObject.optString("Doc_Input_caption"));
+            editor.putString(CHM_INPUT_CAPTION, jsonObject.optString("Chm_Input_caption"));
+            editor.putString(DASHBOARD, jsonObject.optString("dashboard"));
+            editor.putString(SRT_ND, jsonObject.optString("SrtNd"));
+            editor.putString(UL_STK_NEED, jsonObject.optString("Ul_stk_Need"));
+            editor.putString(UL_STK_MANDATORY, jsonObject.optString("Ul_stk_Mandatory"));
+            editor.putString(TP_NEW, jsonObject.optString("tp_new"));
+            editor.putString(TAXNAME_CAPTION, jsonObject.optString("Taxname_caption"));
+            editor.putString(SURVEY_ND, jsonObject.optString("SurveyNd"));
+            editor.putString(ST_STK_NEED, jsonObject.optString("st_stk_Need"));
+            editor.putString(ST_STK_MANDATORY, jsonObject.optString("st_stk_Mandatory"));
+            editor.putString(SRT_MAND_ND, jsonObject.optString("SrtMandNd"));
+            editor.putString(SINGLE_ACTIVITY, jsonObject.optString("single_activity"));
+            editor.putString(QUIZ_NEED_MANDT, jsonObject.optString("quiz_need_mandt"));
+            editor.putString(QUIZ_HEADING, jsonObject.optString("quiz_heading"));
+            editor.putString(QUICKADD, jsonObject.optString("quickadd"));
+            editor.putString(PRODUCT_RATE_EDITABLE, jsonObject.optString("Product_Rate_Editable"));
+            editor.putString(OFFLINE_LOGIN, jsonObject.optString("offlineLogin"));
+            editor.putString(OFFICEWORK_HOME, jsonObject.optString("officework_home"));
+            editor.putString(HOSP_DCR, jsonObject.optString("hosp_dcr"));
+            editor.putString(DR_POLICY, jsonObject.optString("DrPolicy"));
+            editor.putString(DOC_STK_NEED, jsonObject.optString("Doc_stk_Need"));
+            editor.putString(DOC_STK_MANDATORY, jsonObject.optString("Doc_stk_Mandatory"));
+            editor.putString(CUST_SRT_ND, jsonObject.optString("CustSrtNd"));
+            editor.putString(CHM_STK_NEED, jsonObject.optString("Chm_stk_Need"));
+            editor.putString(CHM_STK_MANDATORY, jsonObject.optString("Chm_stk_Mandatory"));
+            editor.putString(ADD_DR, jsonObject.optString("addDr"));
+            editor.putString(ACTIVITY_NEED, jsonObject.optString("activityneed"));
+            editor.putString(SF_EMAIL, jsonObject.optString("sfEmail"));
+            editor.putString(SF_MOBILE, jsonObject.optString("sfMobile"));
+            editor.putString(DS_NAME, jsonObject.optString("DS_name"));
+            editor.putString(ACTIVITY_ND, jsonObject.optString("ActivityNd"));
+            editor.putString(ACTIVITY_MAND, jsonObject.optString("activityMand"));
+            editor.putString(SEQUENTIAL_DCR, jsonObject.optString("sequential_dcr"));
+            editor.putString(MYDAYPLAN_NEED, jsonObject.optString("mydayplan_need"));
+            editor.putString(MISSED_DATE_MAND, jsonObject.optString("missedDateMand"));
+            editor.putString(MEDIA_TRANS_NEED, jsonObject.optString("mediaTrans_Need"));
+            editor.putString(DR_SMP_Q_MD, jsonObject.optString("DrSmpQMd"));
+            editor.putString(DR_RX_Q_MD, jsonObject.optString("DrRxQMd"));
+            editor.putString(MYPLN_RMRKS_MAND, jsonObject.optString("myplnRmrksMand"));
+            editor.putString(STK_INPUT_CAPTION, jsonObject.optString("Stk_Input_caption"));
+            editor.putString(UL_INPUT_CAPTION, jsonObject.optString("Ul_Input_caption"));
+            editor.putString(RCPA_ND, jsonObject.optString("RcpaNd"));
+            editor.putString(RCPA_COMPETITOR_EXTRA, jsonObject.optString("Rcpa_Competitor_extra"));
+            editor.putString(DETAILING_TYPE, jsonObject.optString("Detailing_type"));
+            editor.putString(CIP_SRT_ND, jsonObject.optString("CipSrtNd"));
+            editor.putString(DCR_FIRSTSELFIE, jsonObject.optString("Dcr_firstselfie"));
+            editor.putString(CHM_Q_CAP, jsonObject.optString("ChmQCap"));
+            editor.putString(STK_Q_CAP, jsonObject.optString("StkQCap"));
+            editor.putString(MULTIPLE_DOC_NEED, jsonObject.optString("multiple_doc_need"));
+            editor.putString(MAIL_NEED, jsonObject.optString("mailneed"));
+            editor.putString(CIRCULAR, jsonObject.optString("circular"));
+            editor.putString(DR_FEED_MD, jsonObject.optString("DrFeedMd"));
+            editor.putString(DF_NEED, jsonObject.optString("DFNeed"));
+            editor.putString(CF_NEED, jsonObject.optString("CFNeed"));
+            editor.putString(SF_NEED, jsonObject.optString("SFNeed"));
+            editor.putString(CIP_F_NEED, jsonObject.optString("CIP_FNeed"));
+            editor.putString(NF_NEED, jsonObject.optString("NFNeed"));
+            editor.putString(HF_NEED, jsonObject.optString("HFNeed"));
+            editor.putString(DQ_NEED, jsonObject.optString("DQNeed"));
+            editor.putString(CQ_NEED, jsonObject.optString("CQNeed"));
+            editor.putString(SQ_NEED, jsonObject.optString("SQNeed"));
+            editor.putString(NQ_NEED, jsonObject.optString("NQNeed"));
+            editor.putString(CIP_Q_NEED, jsonObject.optString("CIP_QNeed"));
+            editor.putString(HQ_NEED, jsonObject.optString("HQNeed"));
+            editor.putString(DE_NEED, jsonObject.optString("DENeed"));
+            editor.putString(CE_NEED, jsonObject.optString("CENeed"));
+            editor.putString(SE_NEED, jsonObject.optString("SENeed"));
+            editor.putString(NE_NEED, jsonObject.optString("NENeed"));
+            editor.putString(CIP_E_NEED, jsonObject.optString("CIP_ENeed"));
+            editor.putString(HE_NEED, jsonObject.optString("HENeed"));
+            editor.putString(TP_NEED, jsonObject.optString("tp_need"));
+            editor.putString(CLUSTER_CAP, jsonObject.optString("cluster_cap"));
+            editor.putString(WRK_AREA_NAME, jsonObject.optString("wrk_area_Name"));
+            editor.putString(NL_RX_Q_CAP, jsonObject.optString("NLRxQCap"));
+            editor.putString(NL_SMP_Q_CAP, jsonObject.optString("NLSmpQCap"));
+            editor.putString(APP_DEVICE_ID, jsonObject.optString("app_device_id"));
+            editor.putString(USR_DFD_USERNAME, jsonObject.optString("UsrDfd_UserName"));
+            editor.putString(SF_USER_NAME, jsonObject.optString("SF_User_Name"));
+            editor.putString(ATTENDANCE, jsonObject.optString("Attendance"));
+            editor.putString(DEVICE_ID_NEED, jsonObject.optString("DeviceId_Need"));
+            editor.putString(DOCTOR_DOBDOW, jsonObject.optString("doctor_dobdow"));
+            editor.putString(PRODUCT_POB_NEED_MSG, jsonObject.optString("product_pob_need_msg"));
+            editor.putString(PROD_REMARK, jsonObject.optString("prod_remark"));
+            editor.putString(PROD_REMARK_MD, jsonObject.optString("prod_remark_md"));
+            editor.putString(CIP_NEED, jsonObject.optString("cip_need"));
+            editor.putString(CIP_P_NEED, jsonObject.optString("CIP_PNeed"));
+            editor.putString(CIP_I_NEED, jsonObject.optString("CIP_INeed"));
+            editor.putString(DR_PRD_MD, jsonObject.optString("DrPrdMd"));
+            editor.putString(DR_INP_MD, jsonObject.optString("DrInpMd"));
+            editor.putString(CIP_JOINTWORK_NEED, jsonObject.optString("CIP_jointwork_Need"));
+            editor.putString(CIP_CAPTION, jsonObject.optString("CIP_Caption"));
+            editor.putString(HOSP_CAPTION, jsonObject.optString("hosp_caption"));
+            editor.putString(SEP_RCPA_ND, jsonObject.optString("Sep_RcpaNd"));
+            editor.putString(PAST_LEAVE_POST, jsonObject.optString("past_leave_post"));
+            editor.putString(DLY_CTRL, jsonObject.optString("DlyCtrl"));
+            editor.putString(FEED_ND, jsonObject.optString("FeedNd"));
+            editor.putString(TEMP_ND, jsonObject.optString("TempNd"));
+            editor.putString(PROD_DET_NEED, jsonObject.optString("prod_det_need"));
+            editor.putString(CNT_REMARKS, jsonObject.optString("cntRemarks"));
+            editor.putString(PRODUCT_POB_NEED, jsonObject.optString("product_pob_need"));
+            editor.putString(SECONDARY_ORDER_DISCOUNT, jsonObject.optString("secondary_order_discount"));
+            editor.putString(TARGET_REPORT_MD, jsonObject.optString("Target_report_md"));
+            editor.putString(RCPA_UNIT_ND, jsonObject.optString("RCPA_unit_nd"));
+            editor.putString(CHM_RCPA_NEED, jsonObject.optString("Chm_RCPA_Need"));
+            editor.putString(DR_RCPA_COMPETITOR_NEED, jsonObject.optString("DrRCPA_competitor_Need"));
+            editor.putString(CHM_RCPA_COMPETITOR_NEED, jsonObject.optString("ChmRCPA_competitor_Need"));
+            editor.putString(CURRENTDAY_TPPLANNED, jsonObject.optString("Currentday_TPplanned"));
+            editor.putString(DOC_CLUSTER_BASED, jsonObject.optString("Doc_cluster_based"));
+            editor.putString(CHM_CLUSTER_BASED, jsonObject.optString("Chm_cluster_based"));
+            editor.putString(STK_CLUSTER_BASED, jsonObject.optString("Stk_cluster_based"));
+            editor.putString(ULDOC_CLUSTER_BASED, jsonObject.optString("UlDoc_cluster_based"));
+            editor.putString(MULTI_CLUSTER, jsonObject.optString("multi_cluster"));
+            editor.putString(TERR_BASED_TAG, jsonObject.optString("Terr_based_Tag"));
+            editor.putString(RCPA_MD_MGR, jsonObject.optString("RcpaMd_Mgr"));
+            editor.putString(DR_NEED, jsonObject.optString("DrNeed"));
+            editor.putString(FAQ, jsonObject.optString("faq"));
+            editor.putString(EDIT_HOLIDAY, jsonObject.optString("edit_holiday"));
+            editor.putString(EDIT_WEEKLYOFF, jsonObject.optString("edit_weeklyoff"));
+            editor.putString(TARGET_REPORT_ND, jsonObject.optString("Target_report_Nd"));
+            editor.putString(DCR_LOCK_DAYS, jsonObject.optString("DcrLockDays"));
+            editor.putString(DOC_POB_CAPTION, jsonObject.optString("Doc_pob_caption"));
+            editor.putString(STK_POB_CAPTION, jsonObject.optString("Stk_pob_caption"));
+            editor.putString(CHM_POB_CAPTION, jsonObject.optString("Chm_pob_caption"));
+            editor.putString(ULDOC_POB_CAPTION, jsonObject.optString("Uldoc_pob_caption"));
+            editor.putString(CIP_POB_CAPTION, jsonObject.optString("CIP_pob_caption"));
+            editor.putString(HOSP_POB_CAPTION, jsonObject.optString("Hosp_pob_caption"));
+            editor.putString(DOC_POB_MANDATORY_NEED, jsonObject.optString("Doc_Pob_Mandatory_Need"));
+            editor.putString(CHM_POB_MANDATORY_NEED, jsonObject.optString("Chm_Pob_Mandatory_Need"));
+            editor.putString(DR_SAMP_ND, jsonObject.optString("DrSampNd"));
+            editor.putString(RCPA_MD, jsonObject.optString("RcpaMd"));
+            editor.putString(MISC_EXPENSE_NEED, jsonObject.optString("misc_expense_need"));
+            editor.putString(DOC_POB_NEED, jsonObject.optString("Doc_Pob_Need"));
+            editor.putString(CHM_POB_NEED, jsonObject.optString("Chm_Pob_Need"));
+            editor.putString(STK_POB_NEED, jsonObject.optString("Stk_Pob_Need"));
+            editor.putString(UL_POB_NEED, jsonObject.optString("Ul_Pob_Need"));
+            editor.putString(STK_POB_MANDATORY_NEED, jsonObject.optString("Stk_Pob_Mandatory_Need"));
+            editor.putString(UL_POB_MANDATORY_NEED, jsonObject.optString("Ul_Pob_Mandatory_Need"));
+            editor.putString(DOC_JOINTWORK_NEED, jsonObject.optString("Doc_jointwork_Need"));
+            editor.putString(CHM_JOINTWORK_NEED, jsonObject.optString("Chm_jointwork_Need"));
+            editor.putString(STK_JOINTWORK_NEED, jsonObject.optString("Stk_jointwork_Need"));
+            editor.putString(UL_JOINTWORK_NEED, jsonObject.optString("Ul_jointwork_Need"));
+            editor.putString(DOC_JOINTWORK_MANDATORY_NEED, jsonObject.optString("Doc_jointwork_Mandatory_Need"));
+            editor.putString(CHM_JOINTWORK_MANDATORY_NEED, jsonObject.optString("Chm_jointwork_Mandatory_Need"));
+            editor.putString(STK_JOINTWORK_MANDATORY_NEED, jsonObject.optString("Stk_jointwork_Mandatory_Need"));
+            editor.putString(UL_JOINTWORK_MANDATORY_NEED, jsonObject.optString("Ul_jointwork_Mandatory_Need"));
+            editor.putString(DOC_PRODUCT_CAPTION, jsonObject.optString("Doc_Product_caption"));
+            editor.putString(CHM_PRODUCT_CAPTION, jsonObject.optString("Chm_Product_caption"));
+            editor.putString(STK_PRODUCT_CAPTION, jsonObject.optString("Stk_Product_caption"));
+            editor.putString(UL_PRODUCT_CAPTION, jsonObject.optString("Ul_Product_caption"));
+            editor.putString(REMAINDER_PRD_MD, jsonObject.optString("Remainder_prd_Md"));
+            editor.putString(GEOTAG_NEED, jsonObject.optString("GEOTagNeed"));
+            editor.putString(GEOTAG_NEED_CHE, jsonObject.optString("GEOTagNeedche"));
+            editor.putString(REMAINDER_GEO, jsonObject.optString("Remainder_geo"));
+            editor.putString(GEOTAG_NEED_STOCK, jsonObject.optString("GEOTagNeedstock"));
+            editor.putString(GEOTAG_NEED_CIP, jsonObject.optString("GeoTagNeedcip"));
+            editor.putString(GEOTAG_NEED_UNLST, jsonObject.optString("GEOTagNeedunlst"));
+            editor.putString(DIS_RAD, jsonObject.optString("DisRad"));
+            editor.putString(DEVICE_REG_ID, jsonObject.optString("DeviceRegId"));
+            editor.putString(SFTP_DATE, jsonObject.optString("SFTPDate"));
+            editor.putString(SFDCR_DATE, jsonObject.optString("SFDCRDate"));
+            editor.putString(MCL_DET, jsonObject.optString("MCLDet"));
+            editor.putString(RMDR_NEED, jsonObject.optString("RmdrNeed"));
+            editor.putString(EXPENSE_NEED, jsonObject.optString("expense_need"));
+            editor.putString(GEOTAG_IMG, jsonObject.optString("geoTagImg"));
+            editor.putString(DR_RCPA_Q_MD, jsonObject.optString("DrRcpaQMd"));
+            editor.putString(QUES_NEED, jsonObject.optString("ques_need"));
+            editor.putString(HOSP_NEED, jsonObject.optString("hosp_need"));
+            editor.putString(HP_NEED, jsonObject.optString("HPNeed"));
+            editor.putString(HI_NEED, jsonObject.optString("HINeed"));
+            editor.putString(CHMSAMQTY_NEED, jsonObject.optString("chmsamQty_need"));
+            editor.putString(CHM_SMP_CAP, jsonObject.optString("ChmSmpCap"));
+            editor.putString(CALL_FEED_ENTERABLE, jsonObject.optString("call_feed_enterable"));
+            editor.putString(PWD_SETUP, jsonObject.optString("Pwdsetup"));
+            editor.putString(RCPA_EXTRA, jsonObject.optString("rcpaextra"));
+            editor.putString(LEAVE_STATUS, jsonObject.optString("LeaveStatus"));
+            editor.putString(STATE_CODE, jsonObject.optString("State_Code"));
+            editor.putString(SF_EMP_ID, jsonObject.optString("sf_emp_id"));
+            editor.putString(SUBDIVISION_CODE, jsonObject.optString("subdivision_code"));
+            editor.putString(REMAINDER_CALL_CAP, jsonObject.optString("Remainder_call_cap"));
+            editor.putString(CALL_REPORT_FROM_DATE, jsonObject.optString("call_report_from_date"));
+            editor.putString(CALL_REPORT_TO_DATE, jsonObject.optString("call_report_to_date"));
+            editor.putString(CALL_REPORT, jsonObject.optString("call_report"));
+            editor.putString(DAYS, jsonObject.optString("days"));
+            editor.putString(MRHLFDY, jsonObject.optString("MRHlfDy"));
+            editor.putString(ORDER_MANAGEMENT, jsonObject.optString("Order_management"));
+            editor.putString(ORDER_CAPTION, jsonObject.optString("Order_caption"));
+            editor.putString(PRIMARY_ORDER_CAPTION, jsonObject.optString("Primary_order_caption"));
+            editor.putString(SECONDARY_ORDER_CAPTION, jsonObject.optString("Secondary_order_caption"));
+            editor.putString(PRIMARY_ORDER, jsonObject.optString("Primary_order"));
+            editor.putString(SECONDARY_ORDER, jsonObject.optString("Secondary_order"));
+            editor.putString(GST_OPTION, jsonObject.optString("Gst_option"));
+            editor.putString(TPDCR_DEVIATION_APPR_STATUS, jsonObject.optString("TPDCR_Deviation_Appr_Status"));
+            editor.putString(TPDCR_DEVIATION, jsonObject.optString("TPDCR_Deviation"));
+            editor.putString(TPDCR_MGRAPPR, jsonObject.optString("TPDCR_MGRAppr"));
+            editor.putString(NEXT_VST, jsonObject.optString("NextVst"));
+            editor.putString(NEXT_VST_MANDATORY_NEED, jsonObject.optString("NextVst_Mandatory_Need"));
+            editor.putString(APPR_MANDATORY_NEED, jsonObject.optString("Appr_Mandatory_Need"));
+            editor.putString(RCPA_QTY_NEED, jsonObject.optString("RCPAQty_Need"));
+            editor.putString(PROD_STK_NEED, jsonObject.optString("Prod_Stk_Need"));
+            editor.putString(TP_MANDATORY_NEED, jsonObject.optString("TP_Mandatory_Need"));
+            editor.putString(TP_START_DATE, jsonObject.optString("Tp_Start_Date"));
+            editor.putString(PRDFDBACK, jsonObject.optString("prdfdback"));
+            editor.putString(TRACKING_INTERVAL, jsonObject.optString("tracking_interval"));
+            editor.putString(TP_END_DATE, jsonObject.optString("Tp_End_Date"));
+            editor.putString(DR_EVENT_MD, jsonObject.optString("DrEvent_Md"));
+            editor.putString(CHM_EVENT_MD, jsonObject.optString("ChmEvent_Md"));
+            editor.putString(STK_EVENT_MD, jsonObject.optString("StkEvent_Md"));
+            editor.putString(ULDR_EVENT_MD, jsonObject.optString("UlDrEvent_Md"));
+            editor.putString(CIP_EVENT_MD, jsonObject.optString("CipEvent_Md"));
+            editor.putString(HOSP_EVENT_MD, jsonObject.optString("HospEvent_Md"));
+            editor.putString(LEAVE_ENTITLEMENT_NEED, jsonObject.optString("Leave_entitlement_need"));
+            editor.putString(PRIMARYSEC_NEED, jsonObject.optString("primarysec_need"));
+            editor.putString(MGRHLFDY, jsonObject.optString("MGRHlfDy"));
+            editor.putString(NO_OF_TP_VIEW, jsonObject.optString("No_of_TP_View"));
+            editor.putString(CURRENTDAY, jsonObject.optString("currentDay"));
+            editor.putString(DAYPLAN_TP_BASED, jsonObject.optString("dayplan_tp_based"));
+            editor.putString(QUIZ_NEED, jsonObject.optString("quiz_need"));
+            editor.putString(STP, jsonObject.optString("stp"));
+            editor.putString(POB_MINVALUE, jsonObject.optString("pob_minvalue"));
+            editor.putString(TPBASED_DCR, jsonObject.optString("TPbasedDCR"));
+            editor.putString(LOCATION_TRACK, jsonObject.optString("Location_track"));
+            editor.putString(TRACKING_TIME, jsonObject.optString("tracking_time"));
+            editor.putString(ENTRY_FORM_MGR, jsonObject.optString("entryFormMgr"));
+            editor.putString(ENTRY_FORM_NEED, jsonObject.optString("entryFormNeed"));
+            editor.putString(DLY_CTRL_S, jsonObject.optString("Dly_Ctrls"));
+            editor.putString(ANDROID_DETAILING, jsonObject.optString("Android_Detailing"));
+            editor.putString(IOS_DETAILING, jsonObject.optString("ios_Detailing"));
+            editor.putString(SAMPLE_VAL_QTY, jsonObject.optString("Sample_Val_Qty"));
+            editor.putString(INPUT_VAL_QTY, jsonObject.optString("Input_Val_Qty"));
+            editor.putString(QUOTE_TEXT, jsonObject.optString("quote_Text"));
+            editor.putString(PRO_DET_NEED, jsonObject.optString("pro_det_need"));
+            editor.putString(AUTHENTICATION, jsonObject.optString("Authentication"));
+            editor.putString(GEOTAG_APPROVAL_NEED, jsonObject.optString("GeoTagApprovalNeed"));
+            editor.putString(CHM_SRT_ND, jsonObject.optString("ChmSrtNd"));
+            editor.putString(UNLIST_SRT_ND, jsonObject.optString("UnlistSrtNd"));
+            editor.putString(RCPA_COMPETITOR_ADD, jsonObject.optString("RCPA_competitor_add"));
+            editor.putString(GEOTAGGING, jsonObject.optString("GeoTagging"));
+            editor.putString(DCR_SEQUENTIAL, jsonObject.optString("dcr_sequential"));
+            editor.putString(PRESENTATION_NEED, jsonObject.optString("PresentNd"));
+            editor.putString(CUSTOMIZATION_PRESENTATION_NEED, jsonObject.optString("Customization_need"));
+            editor.putString(THERAPTIC_PRESENTATION_NEED, jsonObject.optString("TherapticNd"));
+            editor.putString(STOCKIST_POB_NEED, jsonObject.optString("Pob_Stockist_Nd"));
+            editor.putString(UNLISTED_DOCTOR_POB_NEED, jsonObject.optString("Pob_Unlstdr_Nd"));
+            editor.putString(ADDITIONAL_CALL_NEED, jsonObject.optString("Additional_Call"));
+            editor.putString(CHM_DETAILING_NEED, jsonObject.optString("Detailing_chem"));
+            editor.putString(STK_DETAILING_NEED, jsonObject.optString("Detailing_stk"));
+            editor.putString(UNDR_DETAILING_NEED, jsonObject.optString("Detailing_undr"));
+            editor.putString(EDIT_CALL_DEL_NEED, jsonObject.optString("EditCallDelNeed"));
+            editor.putString(SANZEN_EDET, jsonObject.optString("sanzen_edet"));
+            editor.putString(ACTIVITY_CAP, jsonObject.optString("ActivityCap"));
+            editor.putString(STP_NEED, jsonObject.optString("STP_Need"));
+            editor.putString(STP_APPR_NEED, jsonObject.optString("STP_Appr_Need"));
+            editor.putString(STP_BASED_MTP, jsonObject.optString("STP_Based_MTP"));
+            editor.putString(STP_BASED_DCR, jsonObject.optString("STP_Based_DCR"));
+            editor.putString(STP_CAPTION, jsonObject.optString("Stp_Caption"));
+            editor.putString(DCR_APPROVAL_NEED, jsonObject.optString("DcrapprvNd"));
+            editor.putString(ADD_CHM, jsonObject.optString("addChm"));
+            editor.putString(ADD_UNLST, jsonObject.optString("addDr"));
+            editor.putString(HOLIDAY_AUTOPOST_NEED, jsonObject.optString("Holiday_AutoPost_Need"));
+            editor.putString(WEEKOFF_AUTOPOST_NEED, jsonObject.optString("Weekoff_AutoPost_Need"));
+            editor.putString(SLIDES_PATH, jsonObject.optString("slide_folder").replaceAll("\\\\", ""));
+            editor.putString(PROFILING_NEED, jsonObject.optString("DrProfile"));
+            editor.putString(SEQ_DLY_CTRL, jsonObject.optString("Seq_dly_ctrl"));
+            editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.optString("SeqDcrLockDays"));
+            editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
+            editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
+            editor.putString(WELCOME_SLIDES_PATH, "");
+            editor.putString(ONE_BUILD, jsonObject.optString("one_build"));
+            editor.putString(S3_BUCKET_NEED, jsonObject.optString("S3BucketNeed"));
+            editor.putString(DYNAMIC_OPTION_NEED, jsonObject.optString("dynamic_option_need"));
+            editor.putString(DYNAMIC_OPTION_CAPS, jsonObject.optString("dynamic_option_caps"));
+            editor.putString(SKIP_DETAILING_DR, jsonObject.optString("skipDetailing_Dr"));
+            editor.putString(SKIP_DETAILING_CHE, jsonObject.optString("skipDetailing_chm"));
+            editor.putString(SKIP_DETAILING_STK, jsonObject.optString("skipDetailing_stk"));
+            editor.putString(SKIP_DETAILING_UNDR, jsonObject.optString("skipDetailing_undr"));
+            editor.putString(DIVISION_SNAME, jsonObject.optString("Division_SName"));
+            editor.putString(SIGN_IN_TIME, jsonObject.optString("signin_time"));
+            editor.putString(MODE, jsonObject.optString("mode"));
+            editor.putString(DEVICE_NAME, jsonObject.optString("device_name"));
+            editor.putString(LOGIN_DEVICE_REG_ID, jsonObject.optString("LoginDeviceRegId"));
+            editor.putString(LOGIN_APP_DEVICE_ID, jsonObject.optString("Loginappdeviceid"));
+            editor.putString(REPORTING_TO_SF, jsonObject.optString("Reporting_To_SF"));
+            editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
+            editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
+            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
+            editor.putString(WELCOME_SLIDES_PATH, "");
 
-        editor.apply();
+            editor.apply();
 
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -2058,40 +2069,47 @@ public class SharedPref {
     public static String getDcrApprovalNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_APPROVAL_NEED, "");
     }
-    public static String getOneBuild(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(ONE_BUILD,"");
+
+    public static String getOneBuild(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ONE_BUILD, "");
     }
 
 
     public static String getS3BucketNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_BUCKET_NEED, "");
     }
-    public static String getDynamicOptionNeed(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DYNAMIC_OPTION_NEED,"");
-    }
-    public static String getDynamicOptionCaps(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DYNAMIC_OPTION_CAPS,"");
-    }
-    public static String getSkipDetailingDr(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_DR,"");
-    }
-    public static String getSkipDetailingChe(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_CHE,"");
-    }
-    public static String getSkipDetailingStk(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_STK,"");
-    }
-    public static String getSkipDetailingUndr(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SKIP_DETAILING_UNDR,"");
+
+    public static String getDynamicOptionNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DYNAMIC_OPTION_NEED, "");
     }
 
-    public static String getDivisionSname(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DIVISION_SNAME,"");
-    }
-    public static String getTpObjectiveMandatory(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_OBJECTIVE_MANDATORY,"");
+    public static String getDynamicOptionCaps(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DYNAMIC_OPTION_CAPS, "");
     }
 
+    public static String getSkipDetailingDr(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SKIP_DETAILING_DR, "");
+    }
+
+    public static String getSkipDetailingChe(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SKIP_DETAILING_CHE, "");
+    }
+
+    public static String getSkipDetailingStk(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SKIP_DETAILING_STK, "");
+    }
+
+    public static String getSkipDetailingUndr(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SKIP_DETAILING_UNDR, "");
+    }
+
+    public static String getDivisionSname(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DIVISION_SNAME, "");
+    }
+
+    public static String getTpObjectiveMandatory(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TP_OBJECTIVE_MANDATORY, "");
+    }
 
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
@@ -2498,7 +2516,7 @@ public class SharedPref {
     public static void putAutomassync(Context context, boolean mas_sync) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putBoolean(  SYNC_STATUS, mas_sync).apply();
+        editor.putBoolean(SYNC_STATUS, mas_sync).apply();
     }
 
     public static void putSlidestatus(Context context, boolean status) {
@@ -2806,9 +2824,11 @@ public class SharedPref {
     public static int getSelectedCluster(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_CLUSTER, 0);
     }
+
     public static String getHq(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SELECT_HQ, "");
     }
+
     public static String getSaveTaggedAddress(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAGGED_ADDRESS, "");
     }
@@ -2824,16 +2844,19 @@ public class SharedPref {
         editor = sharedPreferences.edit();
         editor.putInt(SELECTED_CLUSTER, cluster).apply();
     }
+
     public static void sethq(Context context, String hq) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SELECT_HQ, hq).apply();
     }
+
     public static void setSelectedQualification(Context context, int quali) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putInt(SELECTED_QUALIFICATION, quali).apply();
     }
+
     public static void setSelectedSpeciality(Context context, int speciality) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2849,21 +2872,25 @@ public class SharedPref {
     public static int getSelectedClass(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_CLASS, 0);
     }
+
     public static void setSaveLatitude(Context context, double lat) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(LATITUDE, String.valueOf(lat)).apply();
     }
+
     public static void setSaveLongitutde(Context context, double lat) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(LONGITUDE, String.valueOf(lat)).apply();
     }
+
     public static void setSaveTaggedAddress(Context context, String lat) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(TAGGED_ADDRESS, lat).apply();
     }
+
     public static String getChemistAddition(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_CHM, "");
     }
@@ -2871,6 +2898,7 @@ public class SharedPref {
     public static String getUnlistAddition(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_UNLST, "");
     }
+
     public static void setProfilingNeed(Context context, String profiling) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2992,45 +3020,48 @@ public class SharedPref {
     }
 
     public static void saveTpId(Context context, int retrievedIdPm) {
-        try{
+        try {
             sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
             editor = sharedPreferences.edit();
-            editor.putInt(TpIdPrevious,retrievedIdPm);
+            editor.putInt(TpIdPrevious, retrievedIdPm);
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
     }
-    public static int getTpIdPreviousMonth(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdPrevious,0);
+
+    public static int getTpIdPreviousMonth(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(TpIdPrevious, 0);
     }
+
     public static void saveTpIdCm(Context context, int retrievedIdCm) {
-        try{
+        try {
             sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
             editor = sharedPreferences.edit();
-            editor.putInt(TpIdCurrent,retrievedIdCm);
+            editor.putInt(TpIdCurrent, retrievedIdCm);
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
     }
-    public static int getTpIdCurrentMonth(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdCurrent,0);
+
+    public static int getTpIdCurrentMonth(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(TpIdCurrent, 0);
     }
 
     public static void saveTpIdNm(Context context, int retrievedIdNm) {
-        try{
+        try {
             sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
             editor = sharedPreferences.edit();
-            editor.putInt(TpIdNext,retrievedIdNm);
+            editor.putInt(TpIdNext, retrievedIdNm);
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
     }
 
-    public static int getTpIdNextMonth(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdNext,0);
+    public static int getTpIdNextMonth(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(TpIdNext, 0);
     }
 
 
@@ -3099,4 +3130,25 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_APP_DEVICE_ID, "");
     }
 
+    public static String getLoginTimer(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_TIMER, "");
+    }
+
+    public static String getReportingToSf(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(REPORTING_TO_SF,"");
+    }
+    public static String getUnlstDocAppNeed(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(UNLST_DOC_APP_NEED,"");
+    }
+    public static String getSubDivisionNames(Context context){
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SUBDIVISION_NAMES, "");
+    }
+    public static void setIsSetupSynced(Context context, boolean isSynced) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(SETUP_SYNCED, isSynced).apply();
+    }
+    public static boolean getIsSetupSynced(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getBoolean(SETUP_SYNCED,false);
+    }
 }

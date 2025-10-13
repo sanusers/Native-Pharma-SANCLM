@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -50,7 +51,7 @@ public class SpecialityFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectspecSideBinding = FragmentSpecialityBinding.inflate(inflater);
-        View v = selectspecSideBinding.getRoot();
+        View view = selectspecSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -59,16 +60,21 @@ public class SpecialityFragment extends Fragment {
         specName = "";
         specCode = "";
         sel_speccode=0;
-        selectspecSideBinding.tvDummy.setOnClickListener(view -> {
+        selectspecSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
 
-        selectspecSideBinding.imgClose.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(selectspecSideBinding.imgClose.getWindowToken(), 0);
-            selectspecSideBinding.searchList.setText("");
-            activityProfilingBinding.fragmentSelectSpeciality.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectspecSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(selectspecSideBinding.imgClose.getWindowToken(), 0);
+                selectspecSideBinding.searchList.setText("");
+                activityProfilingBinding.fragmentSelectSpeciality.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectspecSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -88,7 +94,7 @@ public class SpecialityFragment extends Fragment {
             }
         });
 
-        selectspecSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectspecSideBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             specCode = list_code.get(i);
             specName = list_name.get(i);
             sel_speccode = Integer.parseInt(list_code.get(i));
@@ -98,7 +104,7 @@ public class SpecialityFragment extends Fragment {
             activityProfilingBinding.txtSelectSpec.setText(selectspecSideBinding.selectListView.getItemAtPosition(i).toString());
             activityProfilingBinding.fragmentSelectSpeciality.setVisibility(View.GONE);
         });
-        return v;
+        return view;
     }
 
 
