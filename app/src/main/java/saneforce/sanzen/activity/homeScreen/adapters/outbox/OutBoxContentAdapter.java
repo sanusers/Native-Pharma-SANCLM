@@ -50,6 +50,7 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityUploadModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
@@ -265,7 +266,9 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             holder.constraintMain.setVisibility(View.VISIBLE);
         }
 
-        holder.sync.setOnClickListener(v -> {
+        holder.sync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 //            if (UtilityClass.isNetworkAvailable(context)) {
                 progressDialog = CommonUtilsMethods.createProgressDialog(context);
                 switch (contentList.getChildId()) {
@@ -309,9 +312,10 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 //            } else {
 //                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
 //            }
+            }
         });
 
-        holder.expandContentView.setOnClickListener(v -> {
+        holder.expandContentView.setOnClickListener(view -> {
             contentList.setExpanded(Objects.equals(holder.img_expand_child.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.down_arrow)).getConstantState()));
             notifyDataSetChanged();
         });

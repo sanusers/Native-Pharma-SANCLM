@@ -28,6 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.profile.CustomerProfile;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -305,7 +306,7 @@ public class PreCallAnalysisFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         preCallAnalysisBinding = FragmentPrecallAnalysisBinding.inflate(inflater);
-        View v = preCallAnalysisBinding.getRoot();
+        View view = preCallAnalysisBinding.getRoot();
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
@@ -318,7 +319,7 @@ public class PreCallAnalysisFragment extends Fragment {
         preCallAnalysisBinding.recyelerview.setHasFixedSize(true);
         preCallAnalysisBinding.recyelerview.setLayoutManager(manager);
         preCallAnalysisBinding.recyelerview.setAdapter(adapter);
-        return v;
+        return view;
     }
 
     private void getRequiredData() {

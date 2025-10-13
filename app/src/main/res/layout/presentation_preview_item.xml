@@ -8,7 +8,7 @@
 <!--    <ImageView-->
 
 
-    <view
+    <!--<view
         android:id="@+id/imageView"
         class="saneforce.sanzen.activity.presentation.ZoomableImageView"
         android:layout_width="match_parent"
@@ -20,7 +20,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
-
+-->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/no_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <RelativeLayout
         android:id="@+id/rightArrow"
         android:layout_width="@dimen/_30sdp"

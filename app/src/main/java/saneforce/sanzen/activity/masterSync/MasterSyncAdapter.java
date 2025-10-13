@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.MyViewHolder> {
 
@@ -67,10 +68,13 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         }
 
 
-        holder.itemView.setOnClickListener(view -> {
-            holder.progressBar.setVisibility(View.VISIBLE);
-            holder.syncErrorIcon.setVisibility(View.GONE);
-            masterSyncItemClick.itemClick(data, holder.getBindingAdapterPosition());
+        holder.itemView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                holder.progressBar.setVisibility(View.VISIBLE);
+                holder.syncErrorIcon.setVisibility(View.GONE);
+                masterSyncItemClick.itemClick(data, holder.getBindingAdapterPosition());
+            }
         });
     }
 

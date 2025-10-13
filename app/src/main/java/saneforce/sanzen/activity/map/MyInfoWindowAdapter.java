@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 

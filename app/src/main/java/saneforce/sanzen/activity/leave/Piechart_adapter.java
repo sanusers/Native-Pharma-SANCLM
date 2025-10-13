@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.ViewHolder> {
 

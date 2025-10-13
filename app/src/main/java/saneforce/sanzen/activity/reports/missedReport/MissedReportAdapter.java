@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.storage.SharedPref;
 
 public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapter.ViewHolder> implements Filterable {
@@ -91,16 +92,18 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
         //            }
         //        });
 
-        holder.missedBox.setOnClickListener(v -> {
-            if (missed == 0) {
-                Toast.makeText(context, "No missed" + DrCap, Toast.LENGTH_SHORT).show();
-                holder.itemView.setClickable(false);
-                return;
-            }
+        holder.missedBox.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (missed == 0) {
+                    Toast.makeText(context, "No missed" + DrCap, Toast.LENGTH_SHORT).show();
+                    holder.itemView.setClickable(false);
+                    return;
+                }
 
-
-            if (listener != null) {
-                listener.onMissedClick(item, position);
+                if (listener != null) {
+                    listener.onMissedClick(item, position);
+                }
             }
         });
 

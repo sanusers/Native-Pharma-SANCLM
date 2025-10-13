@@ -54,6 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
@@ -68,6 +69,7 @@ import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.ActivityMasterSyncBinding;
@@ -102,7 +104,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String rsf = "";
     boolean retrystatus = false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
+    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0,profileStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -125,6 +127,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> slideModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> profileModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
     public List<String> HQCODE_SYN = new ArrayList<>();
     public static ArrayList<String> SlideIds = new ArrayList<>();
@@ -269,362 +272,438 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
 
-        binding.backArrow.setOnClickListener(view -> {
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 //            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
-            Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+                Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
 //            } else {
 //                getOnBackPressedDispatcher().onBackPressed();
 //            }
+            }
         });
 
-        binding.imgDownloading.setOnClickListener(new View.OnClickListener() {
+        binding.imgDownloading.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 SlideAlertbox(false);
                 welcomeSlideAlertBox(false);
             }
         });
 
 
-        binding.hq.setOnClickListener(view -> {
+        binding.hq.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 
-            try {
-                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                ArrayList<String> list = new ArrayList<>();
+                try {
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+                    ArrayList<String> list = new ArrayList<>();
 
-                if (jsonArray.length() > 0) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        list.add(jsonObject.getString("name"));
-                    }
-                }
-
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MasterSyncActivity.this);
-                LayoutInflater inflater = MasterSyncActivity.this.getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.dialog_listview, null);
-                alertDialog.setView(dialogView);
-                TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
-                ListView listView = dialogView.findViewById(R.id.listView);
-                SearchView searchView = dialogView.findViewById(R.id.searchET);
-
-                headerTxt.setText(getResources().getText(R.string.select_hq));
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(MasterSyncActivity.this, android.R.layout.simple_list_item_1, list);
-                listView.setAdapter(adapter);
-                AlertDialog dialog = alertDialog.create();
-
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String s) {
-                        adapter.getFilter().filter(s);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String s) {
-                        adapter.getFilter().filter(s);
-                        return false;
-                    }
-                });
-                listView.setOnItemClickListener((adapterView, view1, position, l) -> {
-                    String selectedHq = listView.getItemAtPosition(position).toString();
-                    binding.hqName.setText(selectedHq);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        try {
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                                rsf = jsonObject.getString("id");
-                                //myresource
-                                prepareArray(rsf); // replace the new rsf value
-                                masterSyncAll(true);
-                                break;
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            list.add(jsonObject.getString("name"));
                         }
                     }
-                    dialog.dismiss();
-                });
 
-                alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MasterSyncActivity.this);
+                    LayoutInflater inflater = MasterSyncActivity.this.getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_listview, null);
+                    alertDialog.setView(dialogView);
+                    TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
+                    ListView listView = dialogView.findViewById(R.id.listView);
+                    SearchView searchView = dialogView.findViewById(R.id.searchET);
 
-                dialog.show();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            UtilityClass.hideKeyboard(MasterSyncActivity.this);
+                    headerTxt.setText(getResources().getText(R.string.select_hq));
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MasterSyncActivity.this, android.R.layout.simple_list_item_1, list);
+                    listView.setAdapter(adapter);
+                    AlertDialog dialog = alertDialog.create();
 
-        });
-
-        binding.listedDr.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.listedDr);
-                binding.childSync.setText("Sync Listed Doctor");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(doctorModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.chemist.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.chemist);
-                binding.childSync.setText("Sync Chemist");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(chemistModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.stockiest.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.stockiest);
-                binding.childSync.setText("Sync Stockiest");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(stockiestModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.unlistedDoctor.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.unlistedDoctor);
-                binding.childSync.setText("Sync Unlisted Doctor");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(unlistedDrModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.hospital.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.hospital);
-                binding.childSync.setText("Sync Hospital");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(hospitalModelArray);
-                arrayForAdapter.addAll(hospitalModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.cip.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.cip);
-                binding.childSync.setText("Sync CIP");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(cipModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.input.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.input);
-                binding.childSync.setText("Sync Input");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(inputModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.product.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.product);
-                binding.childSync.setText("Sync Product");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(productModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.cluster.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.cluster);
-                binding.childSync.setText("Sync Cluster");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(clusterModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.leave.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.leave);
-                binding.childSync.setText("Sync Leave");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(leaveModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.dcr.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.dcr);
-                binding.childSync.setText("Sync DCR");
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(dcrModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.activity.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.activity);
-                binding.childSync.setText("Sync Activity");
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(activityModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.workType.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.workType);
-                binding.childSync.setText("Sync Work Type");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(workTypeModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.tourPlan.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.tourPlan);
-                binding.childSync.setText("Sync Tour Plan");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(tpModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.slide.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.slide);
-                binding.childSync.setText("Sync Slide");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(slideModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.subordinate.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.subordinate);
-                binding.childSync.setText("Sync Subordinate");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(subordinateModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-
-        });
-        binding.Other.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.Other);
-                binding.childSync.setText("Sync Other");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(otherModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-
-        });
-
-
-        binding.setup.setOnClickListener(view -> {
-            if (!view.isSelected()) {
-                listItemClicked(binding.setup);
-                binding.childSync.setText("Sync Setup");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(setupModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
-        binding.childSync.setOnClickListener(view -> {
-            ArrayList<MasterSyncItemModel> arrayList = new ArrayList<>();
-
-            NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void isNetworkAvailable(Boolean status) {
-                    if (status) {
-                        if (binding.listedDr.isSelected()) {
-                            arrayList.addAll(doctorModelArray);
-                        } else if (binding.chemist.isSelected()) {
-                            arrayList.addAll(chemistModelArray);
-                        } else if (binding.stockiest.isSelected()) {
-                            arrayList.addAll(stockiestModelArray);
-                        } else if (binding.unlistedDoctor.isSelected()) {
-                            arrayList.addAll(unlistedDrModelArray);
-                        } else if (binding.hospital.isSelected()) {
-                            arrayList.addAll(hospitalModelArray);
-                        } else if (binding.cip.isSelected()) {
-                            arrayList.addAll(cipModelArray);
-                        } else if (binding.input.isSelected()) {
-                            arrayList.addAll(inputModelArray);
-                        } else if (binding.product.isSelected()) {
-                            arrayList.addAll(productModelArray);
-                        } else if (binding.cluster.isSelected()) {
-                            arrayList.addAll(clusterModelArray);
-                        } else if (binding.leave.isSelected()) {
-                            arrayList.addAll(leaveModelArray);
-                        } else if (binding.dcr.isSelected()) {
-                            arrayList.addAll(dcrModelArray);
-                        } else if (binding.activity.isSelected()) {
-                            arrayList.addAll(activityModelArray);
-                        } else if (binding.workType.isSelected()) {
-                            arrayList.addAll(workTypeModelArray);
-                        } else if (binding.tourPlan.isSelected()) {
-                            arrayList.addAll(tpModelArray);
-                        } else if (binding.slide.isSelected()) {
-                            arrayList.addAll(slideModelArray);
-                        } else if (binding.subordinate.isSelected()) {
-                            arrayList.addAll(subordinateModelArray);
-                        } else if (binding.Other.isSelected()) {
-                            arrayList.addAll(otherModelArray);
-                        } else if (binding.setup.isSelected()) {
-                            arrayList.addAll(setupModelArray);
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String s) {
+                            adapter.getFilter().filter(s);
+                            return false;
                         }
 
-                        for (int i = 0; i < arrayList.size(); i++) {
-                            arrayForAdapter.get(i).setPBarVisibility(true);
-                            masterSyncAdapter.notifyDataSetChanged();
-                            if (arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
-                                setDelayForDayPlanSync(arrayList, i);
-                            } else {
-                                sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
+                        @Override
+                        public boolean onQueryTextChange(String s) {
+                            adapter.getFilter().filter(s);
+                            return false;
+                        }
+                    });
+                    listView.setOnItemClickListener((adapterView, view1, position, l) -> {
+                        String selectedHq = listView.getItemAtPosition(position).toString();
+                        binding.hqName.setText(selectedHq);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            try {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
+                                    rsf = jsonObject.getString("id");
+                                    //myresource
+                                    prepareArray(rsf); // replace the new rsf value
+                                    masterSyncAll(true);
+                                    break;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-                    } else {
-                        commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
-                    }
+                        dialog.dismiss();
+                    });
+
+                    alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+
+                    dialog.show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            });
-            networkStatusTask.execute();
-
+                UtilityClass.hideKeyboard(MasterSyncActivity.this);
+            }
         });
 
-        binding.masterSyncAll.setOnClickListener(v -> {
-            binding.masterSyncAll.setEnabled(false);
-            masterSyncAll(false);
-            new Handler().postDelayed(() -> binding.masterSyncAll.setEnabled(true), 3000);
+        binding.listedDr.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.listedDr);
+                    binding.childSync.setText("Sync Listed Doctor");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(doctorModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.chemist.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.chemist);
+                    binding.childSync.setText("Sync Chemist");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(chemistModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.stockiest.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.stockiest);
+                    binding.childSync.setText("Sync Stockiest");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(stockiestModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.unlistedDoctor.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.unlistedDoctor);
+                    binding.childSync.setText("Sync Unlisted Doctor");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(unlistedDrModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.hospital.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.hospital);
+                    binding.childSync.setText("Sync Hospital");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(hospitalModelArray);
+                    arrayForAdapter.addAll(hospitalModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.cip.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.cip);
+                    binding.childSync.setText("Sync CIP");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(cipModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.input.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.input);
+                    binding.childSync.setText("Sync Input");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(inputModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.product.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.product);
+                    binding.childSync.setText("Sync Product");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(productModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.cluster.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.cluster);
+                    binding.childSync.setText("Sync Cluster");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(clusterModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.leave.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.leave);
+                    binding.childSync.setText("Sync Leave");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(leaveModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.dcr.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.dcr);
+                    binding.childSync.setText("Sync DCR");
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(dcrModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.activity.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.activity);
+                    binding.childSync.setText("Sync Activity");
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(activityModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.workType.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.workType);
+                    binding.childSync.setText("Sync Work Type");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(workTypeModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.tourPlan.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.tourPlan);
+                    binding.childSync.setText("Sync Tour Plan");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(tpModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.slide.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.slide);
+                    binding.childSync.setText("Sync Slide");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(slideModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.subordinate.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.subordinate);
+                    binding.childSync.setText("Sync Subordinate");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(subordinateModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+        binding.Other.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.Other);
+                    binding.childSync.setText("Sync Other");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(otherModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+        binding.Profile.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.Profile);
+                    binding.childSync.setText("Sync Profile");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(profileModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.setup.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.setup);
+                    binding.childSync.setText("Sync Setup");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(setupModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.childSync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                ArrayList<MasterSyncItemModel> arrayList = new ArrayList<>();
+
+                NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void isNetworkAvailable(Boolean status) {
+                        if (status) {
+                            if (binding.listedDr.isSelected()) {
+                                arrayList.addAll(doctorModelArray);
+                            } else if (binding.chemist.isSelected()) {
+                                arrayList.addAll(chemistModelArray);
+                            } else if (binding.stockiest.isSelected()) {
+                                arrayList.addAll(stockiestModelArray);
+                            } else if (binding.unlistedDoctor.isSelected()) {
+                                arrayList.addAll(unlistedDrModelArray);
+                            } else if (binding.hospital.isSelected()) {
+                                arrayList.addAll(hospitalModelArray);
+                            } else if (binding.cip.isSelected()) {
+                                arrayList.addAll(cipModelArray);
+                            } else if (binding.input.isSelected()) {
+                                arrayList.addAll(inputModelArray);
+                            } else if (binding.product.isSelected()) {
+                                arrayList.addAll(productModelArray);
+                            } else if (binding.cluster.isSelected()) {
+                                arrayList.addAll(clusterModelArray);
+                            } else if (binding.leave.isSelected()) {
+                                arrayList.addAll(leaveModelArray);
+                            } else if (binding.dcr.isSelected()) {
+                                arrayList.addAll(dcrModelArray);
+                            } else if (binding.activity.isSelected()) {
+                                arrayList.addAll(activityModelArray);
+                            } else if (binding.workType.isSelected()) {
+                                arrayList.addAll(workTypeModelArray);
+                            } else if (binding.tourPlan.isSelected()) {
+                                arrayList.addAll(tpModelArray);
+                            } else if (binding.slide.isSelected()) {
+                                arrayList.addAll(slideModelArray);
+                            } else if (binding.subordinate.isSelected()) {
+                                arrayList.addAll(subordinateModelArray);
+                            } else if (binding.Other.isSelected()) {
+                                arrayList.addAll(otherModelArray);
+                            } else if (binding.Profile.isSelected()) {
+                                arrayList.addAll(profileModelArray);
+                            } else if (binding.setup.isSelected()) {
+                                arrayList.addAll(setupModelArray);
+                            }
+
+                            for (int i = 0; i < arrayList.size(); i++) {
+                                arrayForAdapter.get(i).setPBarVisibility(true);
+                                masterSyncAdapter.notifyDataSetChanged();
+                                if (arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
+                                    setDelayForDayPlanSync(arrayList, i);
+                                } else {
+                                    sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
+                                }
+                            }
+                        } else {
+                            commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
+                        }
+                    }
+                });
+                networkStatusTask.execute();
+            }
+        });
+
+        binding.masterSyncAll.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                binding.masterSyncAll.setEnabled(false);
+                masterSyncAll(false);
+                new Handler().postDelayed(() -> binding.masterSyncAll.setEnabled(true), 3000);
+            }
         });
     }
 
@@ -707,6 +786,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
         QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
         SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
+        profileStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROFILE);
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
         if (doctorStatus == 1 || doctorGeoStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
             binding.syncFailedImageDr.setVisibility(View.VISIBLE);
@@ -758,6 +838,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
         if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
             binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+        }
+        if(profileStatus == 1){
+            binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
         }
         if (setupStatus == 1) {
             binding.syncFailedImageSet.setVisibility(View.VISIBLE);
@@ -987,6 +1070,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                 } else {
                     binding.syncFailedImageOther.setVisibility(View.GONE);
                 }
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserdetails")) {
+                profileStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROFILE);
+                if(profileStatus == 1){
+                    binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
+                }else{
+                    binding.syncFailedImageProfile.setVisibility(View.GONE);
+                }
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                 setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
                 if (setupStatus == 1) {
@@ -997,8 +1087,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         } else if (masterSyncItemModel.getSyncSuccess() == 1) {
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||*/
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
@@ -1006,19 +1096,21 @@ public class MasterSyncActivity extends AppCompatActivity {
                 binding.syncFailedImageDr.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||*/
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
                 binding.syncFailedImageChm.setVisibility(View.VISIBLE);
             }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")) {
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist")
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||*/
+                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")*/
+            ){
                 binding.syncFailedImageStk.setVisibility(View.VISIBLE);
             }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")) {
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr")
+                 /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||*/
+                 /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")*/
+        ) {
                 binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
@@ -1088,6 +1180,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
                 binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserdetails")) {
+                binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                 binding.syncFailedImageSet.setVisibility(View.VISIBLE);
@@ -1334,6 +1429,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         otherModelArray.clear();
         MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR_MAS, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
         otherModelArray.add(feedback);
+        //Profile
+        profileModelArray.clear();
+        MasterSyncItemModel profile = new MasterSyncItemModel(Constants.PROFILE, Constants.DOCTOR, "getuserdetails", Constants.PROFILE, profileStatus, false);
+        profileModelArray.add(profile);
+
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel Quiz = new MasterSyncItemModel(Constants.QUIZ, "AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
             otherModelArray.add(Quiz);
@@ -1372,6 +1472,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.slide.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.subordinate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.Other.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
+        binding.Profile.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.setup.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
 
         binding.listedDr.setSelected(false);
@@ -1391,6 +1492,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.slide.setSelected(false);
         binding.subordinate.setSelected(false);
         binding.Other.setSelected(false);
+        binding.Profile.setSelected(false);
         binding.setup.setSelected(false);
 
         view.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.greater_than_white, 0);
@@ -1437,6 +1539,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
                         } else if (binding.Other.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), otherModelArray, position);
+                        }else if (binding.Profile.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), profileModelArray, position);
                         } else if (binding.setup.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
@@ -1500,6 +1604,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             populateAdapter(subordinateModelArray);
         } else if (binding.Other.isSelected()) {
             populateAdapter(otherModelArray);
+        }else if (binding.Profile.isSelected()) {
+            populateAdapter(profileModelArray);
         } else if (binding.setup.isSelected()) {
             populateAdapter(setupModelArray);
         }
@@ -1538,6 +1644,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncAllModel.add(dcrModelArray);
                         masterSyncAllModel.add(slideModelArray);
                         masterSyncAllModel.add(otherModelArray);
+                        masterSyncAllModel.add(profileModelArray);
                         masterSyncAllModel.add(tpModelArray);
                         if (!navigateFrom.equalsIgnoreCase("Login")) {
                             masterSyncAllModel.add(setupModelArray);
@@ -1818,6 +1925,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
                                             activityDetailsDataDao.deleteAllData();
 //                                            syncIndividualActivityDetails();
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROFILE)) {
+                                            isDateSynced = true;
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.PROFILE, jsonArray.toString(), 2));
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
                                         for (int bean = 0; bean < input.length(); bean++) {
@@ -3292,9 +3402,12 @@ public class MasterSyncActivity extends AppCompatActivity {
             slideDialog.show();
         }
 
-        cancel_img.setOnClickListener(view -> {
-            slideDialog.dismiss();
-            navigateFrom = "Slide";
+        cancel_img.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                slideDialog.dismiss();
+                navigateFrom = "Slide";
+            }
         });
 
         SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);

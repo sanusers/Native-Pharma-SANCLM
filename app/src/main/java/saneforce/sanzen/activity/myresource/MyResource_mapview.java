@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.myresource.myresourcemodel.ResourcerviewModelClass;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -89,12 +90,18 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         CurrentLat = gpsTrack.getLatitude();
         CurrentLong = gpsTrack.getLongitude();
 
-        binding.mapbackArrow.setOnClickListener(v -> {
-            finish();
+        binding.mapbackArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                finish();
+            }
         });
 
-        binding.viewImg.setOnClickListener(v -> {
-            showImagePopup();
+        binding.viewImg.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                showImagePopup();
+            }
         });
 
     }
@@ -294,7 +301,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                     }
                 });
             }
-            closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
+            closeButton.setOnClickListener(view -> dialog_fullScreen.dismiss());
         }else{
 //            Dialog dialog = new Dialog(this);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -327,7 +334,12 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                 progressBar.setVisibility(View.GONE);
                 dialog_fullScreen.show();
             }
-            closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
+            closeButton.setOnClickListener(new SafeClickListener() {
+                                               @Override
+                                               public void onSafeClick(View view) {
+                                                   dialog_fullScreen.dismiss();
+                                               }
+            });
         }
 
     }

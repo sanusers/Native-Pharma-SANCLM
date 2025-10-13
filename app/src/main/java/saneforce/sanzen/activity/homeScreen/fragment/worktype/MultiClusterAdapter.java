@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
 
 public class MultiClusterAdapter extends RecyclerView.Adapter<MultiClusterAdapter.ViewHolder> {

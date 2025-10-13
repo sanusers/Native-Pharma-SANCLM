@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.visitMonitor.VisitFilter;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.ReportPagerAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
@@ -82,22 +83,22 @@ public class MissedReportGraph extends AppCompatActivity {
     TextView totalstknewcur, totalstknewvisited, totalstknewmissed, totalunlstnewcur, totalunlstnewvisited, totalunlstnewmissed;
     TextView totalstkprevcur, totalstkprevvisited, totalstkprevmissed, totalunlstprevcur, totalunlstprevvisited, totalunlstprevmissed;
     TextView totalstkprev1cur, totalstkprev1visited, totalstkprev1missed, totalunlstprev1cur, totalunlstprev1visited, totalunlstprev1missed;
-//Doctor
+    //Doctor
     int uniqueDoctorsCurrentMonth, totalDoctors, currentMonthMissed;
     int visitedDoctorsCurrentMonth;
     int previousMonthMissed, visitedDoctorsPreviousMonth, prePreviousMonthMissed, uniqueDoctorsPreviousMonth;
-//chemist
+    //chemist
     int uniqueChemistCurrentMonth, totalChemist, currentMonthMissedChe;
     int visitedChemistCurrentMonth;
     int previousMonthMissedChe, visitedChemistPreviousMonth, prePreviousMonthMissedChe, uniqueChemistPreviousMonth;
-//stockiest
+    //stockiest
     int uniqueStockistCurrentMonth, totalStockist, currentMonthMissedStk;
     int visitedStockistCurrentMonth;
     int previousMonthMissedStk, visitedStockistPreviousMonth, prePreviousMonthMissedStk, uniqueStockistPreviousMonth;
-//unlisted
-    int uniqueUnlistedCurrentMonth,totalUnlisted,currentMonthMissedUnlisted;
+    //unlisted
+    int uniqueUnlistedCurrentMonth, totalUnlisted, currentMonthMissedUnlisted;
     int visitedUnlistedCurrentMonth;
-    int previousMonthMissedUnlisted,visitedUnlistedPreviousMonth,prePreviousMonthMissedUnlisted,uniqueUnlistedPreviousMonth;
+    int previousMonthMissedUnlisted, visitedUnlistedPreviousMonth, prePreviousMonthMissedUnlisted, uniqueUnlistedPreviousMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -430,29 +431,82 @@ public class MissedReportGraph extends AppCompatActivity {
 //                break;
 //        }
 
-//        DrMissedCurrent.setOnClickListener(v -> {
-//            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
-//            MissedReportGraph.this.startActivity(intentWeb);
-//        });
-//        DrMissedCurrentprev.setOnClickListener(v -> {
-//            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
-//            MissedReportGraph.this.startActivity(intentWeb);
-//        });
-//        DrMissedCurrentprev1.setOnClickListener(v -> {
-//            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
-//            MissedReportGraph.this.startActivity(intentWeb);
-//        });
-        binding.imageBack.setOnClickListener(v -> {
+//        LoadDrChmStkUnlstValues(missedChart, missedChart2, totalDoctors, uniqueDoctorsCurrentMonth, currentMonthMissed, previousMonthMissed);
+//        break;
+
+
+
+        DrMissedCurrent.setOnClickListener(view -> {
+            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
+            MissedReportGraph.this.startActivity(intentWeb);
+        });
+        DrMissedCurrentprev.setOnClickListener(view -> {
+            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
+            MissedReportGraph.this.startActivity(intentWeb);
+        });
+        DrMissedCurrentprev1.setOnClickListener(view -> {
+            Intent intentWeb = new Intent(MissedReportGraph.this, MissedReport.class);
+            MissedReportGraph.this.startActivity(intentWeb);
+        });
+        binding.imageBack.setOnClickListener(view -> {
             finish();
         });
 
+    }
 //
 //        // Add swipe listeners
-////        setSwipeListener(binding.viewFlipper);
-////        setSwipeListener(binding.viewFlipper2);
-////        setSwipeListener(binding.viewFlipper3);
-//    }
 
+    /// /        setSwipeListener(binding.viewFlipper);
+    /// /        setSwipeListener(binding.viewFlipper2);
+    /// /        setSwipeListener(binding.viewFlipper3);
+//    }
+//    @Override
+//    public boolean onTouch(View view, MotionEvent event) {
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                downX = event.getX();
+//                downY = event.getY();
+//                return true;
+//
+//            case MotionEvent.ACTION_MOVE:
+//                float moveX = event.getX();
+//                float moveY = event.getY();
+//                float diffX = moveX - downX;
+//                float diffY = moveY - downY;
+//
+//                if (Math.abs(diffX) > Math.abs(diffY)) {
+//                    view.getParent().requestDisallowInterceptTouchEvent(true);
+//                }
+//                break;
+//
+//            case MotionEvent.ACTION_UP:
+//                float upX = event.getX();
+//                float deltaX = upX - downX; // 👉 Right swipe = positive, Left swipe = negative
+//
+//                int currentIndex = flipper.getDisplayedChild();
+//                int childCount = flipper.getChildCount();
+//
+//                if (Math.abs(deltaX) > 150) { // threshold
+//                    if (deltaX < 0) { // 👉 Swipe Left → Next
+//                        if (currentIndex < childCount - 1) {
+//                            flipper.setInAnimation(MissedReportGraph.this, R.anim.slide_in_right);
+//                            flipper.setOutAnimation(MissedReportGraph.this, R.anim.slide_out_left);
+//                            flipper.showNext();
+//                            return true;
+//                        }
+//                    } else { // 👉 Swipe Right → Previous
+//                        if (currentIndex > 0) {
+//                            flipper.setInAnimation(MissedReportGraph.this, R.anim.slide_in_left);
+//                            flipper.setOutAnimation(MissedReportGraph.this, R.anim.slide_out_right);
+//                            flipper.showPrevious();
+//                            return true;
+//                        }
+//                    }
+//                }
+//                break;
+//        }
+//        return false;
+//    }
 
 //    public static void progressBarAnimation(final int max, ProgressBar pBar) {
 //        new Thread(new Runnable() {
@@ -529,7 +583,7 @@ public class MissedReportGraph extends AppCompatActivity {
 //                return false;
 //            }
 //        });
-    }
+
 
     private void hideSystemBars() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
@@ -683,13 +737,7 @@ public class MissedReportGraph extends AppCompatActivity {
 //    }
 //    //public void LoadDrChmStkUnlstValues(PieChart pBardrcurrent, int totalDoctors, int uniqueDoctorsCurrentMonth, int currentMonthMissed) {
 
-    public void LoadDrChmStkUnlstValues(
-            PieChart missedChart,
-            PieChart missedChart2,
-            int totalDoctors,
-            int uniqueDoctorsCurrentMonth,
-            int currentMonthMissed,
-            int previousMonthMissed) {
+    public void LoadDrChmStkUnlstValues(PieChart missedChart, PieChart missedChart2, int totalDoctors, int uniqueDoctorsCurrentMonth, int currentMonthMissed, int previousMonthMissed) {
 
 //        float missedPercentage = (((float) currentMonthMissed / (float) totalDoctors) * 100.0f);
 //        ArrayList<Integer> colors = new ArrayList<>();
@@ -910,7 +958,7 @@ public class MissedReportGraph extends AppCompatActivity {
             uniqueStockistPreviousMonth = previousMonthStats.uniqueStockiest.size();
             int uniqueStockiestPre_PrevMonth = previousMonthStats.uniqueStockiest.size();
 
-             uniqueUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
+            uniqueUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
             uniqueUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
             int uniqueUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
 
@@ -946,7 +994,7 @@ public class MissedReportGraph extends AppCompatActivity {
             visitedStockistPreviousMonth = previousMonthStats.visitedStockiest.size();
             visitedStockistPre_PrevMonth = previousMonthStats.visitedStockiest.size();
 
-           visitedUnlistedCurrentMonth = currentMonthStats.visitedUnlisted.size();
+            visitedUnlistedCurrentMonth = currentMonthStats.visitedUnlisted.size();
             visitedUnlistedPreviousMonth = currentMonthStats.visitedUnlisted.size();
             int visitedUnlistedPre_PrevMonth = currentMonthStats.visitedUnlisted.size();
 
@@ -988,7 +1036,7 @@ public class MissedReportGraph extends AppCompatActivity {
             //Unlist
             currentMonthMissedUnlisted = totalUnlisted - uniqueUnlistedCurrentMonth;
             previousMonthMissedUnlisted = totalUnlisted - uniqueUnlistedPreviousMonth;
-             prePreviousMonthMissedUnlisted = totalUnlisted - uniqueUnlistedPre_PrevMonth;
+            prePreviousMonthMissedUnlisted = totalUnlisted - uniqueUnlistedPre_PrevMonth;
 
             //FWDays
             int fwDaysCurrentMonth = currentMonthStats.FWDays.size();
@@ -1346,4 +1394,8 @@ public class MissedReportGraph extends AppCompatActivity {
 
     }
 }
+
+
+
+
 

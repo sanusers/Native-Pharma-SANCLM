@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
@@ -159,8 +160,11 @@ public class PlaySlideDetailing extends AppCompatActivity {
         initialisation();
 
 
-        binding.rightArrow.setOnClickListener(v -> {
-            DialogPopUp();
+        binding.rightArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                DialogPopUp();
+            }
         });
         binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -179,6 +183,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     case "mp4":
                     case "avi":
                     case "zip":
+                    case "htm": 
                     case "html": {
                         binding.playBtn.setVisibility(View.VISIBLE);
                         break;
@@ -197,96 +202,109 @@ public class PlaySlideDetailing extends AppCompatActivity {
             }
         });
 
-        binding.upArrow.setOnClickListener(view -> {
-            if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
-                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_up_white));
-                binding.upArrow.setVisibility(View.VISIBLE);
-                binding.bottomLayout.setVisibility(View.GONE);
-                binding.closeBtn.setVisibility(View.GONE);
-            } else {
-                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_down_white));
-                binding.upArrow.setVisibility(View.VISIBLE);
-                binding.bottomLayout.setVisibility(View.VISIBLE);
-                binding.closeBtn.setVisibility(View.GONE);
+        binding.upArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
+                    binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_up_white));
+                    binding.upArrow.setVisibility(View.VISIBLE);
+                    binding.bottomLayout.setVisibility(View.GONE);
+                    binding.closeBtn.setVisibility(View.GONE);
+                } else {
+                    binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_down_white));
+                    binding.upArrow.setVisibility(View.VISIBLE);
+                    binding.bottomLayout.setVisibility(View.VISIBLE);
+                    binding.closeBtn.setVisibility(View.GONE);
+                }
+                bottomPreviewDetailedAdapter.notifyDataSetChanged();
             }
-            bottomPreviewDetailedAdapter.notifyDataSetChanged();
         });
 
-        binding.closeBtn.setOnClickListener(view -> {
-            getOnBackPressedDispatcher().onBackPressed();
+        binding.closeBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
 
-        binding.exitBtn.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+        binding.exitBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
 
-        binding.playBtn.setOnClickListener(view -> {
-            if (!playBtnClicked) {
-                playBtnClicked = true;
-                binding.playBtn.setImageResource(R.drawable.baseline_stop);
-                binding.viewPager.setVisibility(View.GONE);
-                binding.upArrow.setVisibility(View.GONE);
-                binding.bottomLayout.setVisibility(View.GONE);
+        binding.playBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!playBtnClicked) {
+                    playBtnClicked = true;
+                    binding.playBtn.setImageResource(R.drawable.baseline_stop);
+                    binding.viewPager.setVisibility(View.GONE);
+                    binding.upArrow.setVisibility(View.GONE);
+                    binding.bottomLayout.setVisibility(View.GONE);
 
-                String fileName = arrayList.get(binding.viewPager.getCurrentItem()).getSlideName();
-                File file = new File(PlaySlideDetailing.this.getExternalFilesDir(null) + "/Slides/", fileName);
-                if (file.exists()) {
-                    String fileFormat = SupportClass.getFileExtension(fileName);
-                    switch (fileFormat) {
-                        case "pdf":
-                            binding.pdfView.setVisibility(View.VISIBLE);
-                            binding.videoView.setVisibility(View.GONE);
-                            binding.webView.setVisibility(View.GONE);
-                            binding.progressAnim.setVisibility(View.VISIBLE);
-                            binding.progressAnim.playAnimation();
-                            loadPdf(file.getAbsolutePath());
-                            break;
-                        case "mp4":
-                        case "avi":
-                            binding.pdfView.setVisibility(View.GONE);
-                            binding.videoView.setVisibility(View.VISIBLE);
-                            binding.webView.setVisibility(View.GONE);
-                            binding.progressAnim.setVisibility(View.VISIBLE);
-                            binding.progressAnim.playAnimation();
-                            Uri uri = Uri.parse(file.getAbsolutePath());
-                            binding.videoView.setVideoURI(uri);
-                            binding.videoView.setMediaController(mediaController);
-                            binding.videoView.setOnPreparedListener(mp -> {
-                                binding.progressAnim.setVisibility(View.GONE);
-                                mp.start();
-                            });
+                    String fileName = arrayList.get(binding.viewPager.getCurrentItem()).getSlideName();
+                    File file = new File(PlaySlideDetailing.this.getExternalFilesDir(null) + "/Slides/", fileName);
+                    if (file.exists()) {
+                        String fileFormat = SupportClass.getFileExtension(fileName);
+                        switch (fileFormat) {
+                            case "pdf":
+                                binding.pdfView.setVisibility(View.VISIBLE);
+                                binding.videoView.setVisibility(View.GONE);
+                                binding.webView.setVisibility(View.GONE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
+                                loadPdf(file.getAbsolutePath());
+                                break;
+                            case "mp4":
+                            case "avi":
+                                binding.pdfView.setVisibility(View.GONE);
+                                binding.videoView.setVisibility(View.VISIBLE);
+                                binding.webView.setVisibility(View.GONE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
+                                Uri uri = Uri.parse(file.getAbsolutePath());
+                                binding.videoView.setVideoURI(uri);
+                                binding.videoView.setMediaController(mediaController);
+                                binding.videoView.setOnPreparedListener(mp -> {
+                                    binding.progressAnim.setVisibility(View.GONE);
+                                    mp.start();
+                                });
 //                            binding.videoView.start();
-                            break;
-                        case "zip":
-                            binding.pdfView.setVisibility(View.GONE);
-                            binding.videoView.setVisibility(View.GONE);
-                            binding.webView.setVisibility(View.VISIBLE);
-                            binding.progressAnim.setVisibility(View.VISIBLE);
-                            binding.progressAnim.playAnimation();
+                                break;
+                            case "zip":
+                                binding.pdfView.setVisibility(View.GONE);
+                                binding.videoView.setVisibility(View.GONE);
+                                binding.webView.setVisibility(View.VISIBLE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
 
-                            binding.webView.getSettings().setBuiltInZoomControls(false);
-                            binding.webView.getSettings().setDisplayZoomControls(false);
-                            binding.webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-                            binding.webView.getSettings().setJavaScriptEnabled(true);
-                            binding.webView.getSettings().setLoadWithOverviewMode(true);
-                            binding.webView.getSettings().setUseWideViewPort(true);
-                            binding.webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-                            binding.webView.getSettings().setLoadsImagesAutomatically(true);
-                            binding.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-                            binding.webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-                            binding.webView.getSettings().setAllowFileAccess(true);
-                            binding.webView.setHorizontalScrollBarEnabled(false);
-                            binding.webView.setVerticalScrollBarEnabled(false);
-                            binding.webView.getSettings().setDomStorageEnabled(true);
-                            binding.webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-                            binding.webView.getSettings().setDatabaseEnabled(true);
-                            binding.webView.setInitialScale(1);
-                            binding.webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+                                binding.webView.getSettings().setBuiltInZoomControls(false);
+                                binding.webView.getSettings().setDisplayZoomControls(false);
+                                binding.webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+                                binding.webView.getSettings().setJavaScriptEnabled(true);
+                                binding.webView.getSettings().setLoadWithOverviewMode(true);
+                                binding.webView.getSettings().setUseWideViewPort(true);
+                                binding.webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+                                binding.webView.getSettings().setLoadsImagesAutomatically(true);
+                                binding.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                                binding.webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+                                binding.webView.getSettings().setAllowFileAccess(true);
+                                binding.webView.setHorizontalScrollBarEnabled(false);
+                                binding.webView.setVerticalScrollBarEnabled(false);
+                                binding.webView.getSettings().setDomStorageEnabled(true);
+                                binding.webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+                                binding.webView.getSettings().setDatabaseEnabled(true);
+                                binding.webView.setInitialScale(1);
+                                binding.webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 
-                            String filePath = SupportClass.getFileFromZip(file.getAbsolutePath(), "html");
-                            Log.v("Slides", " --2222-- " + filePath);
-                            if (!filePath.isEmpty()) {
-                                binding.webView.loadUrl("file://" + filePath);
-                            }
+                                String filePath = SupportClass.getFileFromZip(file.getAbsolutePath(), "html");
+                                Log.v("Slides", " --2222-- " + filePath);
+                                if (!filePath.isEmpty()) {
+                                    binding.webView.loadUrl("file://" + filePath);
+                                }
 
                            /* binding.webView.setOnTouchListener((v, event) -> {
                                 String filename = "";
@@ -302,39 +320,40 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                 return false;
                             });*/
 
-                            binding.webView.setWebViewClient(new WebViewClient() {
-                                @Override
-                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                                    Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
-                                    if (!url.isEmpty()) {
-                                        binding.webView.loadUrl(url);
+                                binding.webView.setWebViewClient(new WebViewClient() {
+                                    @Override
+                                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                        Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
+                                        if (!url.isEmpty()) {
+                                            binding.webView.loadUrl(url);
+                                        }
+                                        return true;
                                     }
-                                    return true;
-                                }
 
-                                @Override
-                                public void onPageFinished(WebView view, String url) {
-                                    super.onPageFinished(view, url);
-                                    Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                                    binding.progressAnim.setVisibility(View.GONE);
-                                    binding.progressAnim.cancelAnimation();
-                                }
-                            });
-                            break;
+                                    @Override
+                                    public void onPageFinished(WebView view, String url) {
+                                        super.onPageFinished(view, url);
+                                        Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                        binding.progressAnim.setVisibility(View.GONE);
+                                        binding.progressAnim.cancelAnimation();
+                                    }
+                                });
+                                break;
+                        }
                     }
+                } else {
+                    if (binding.videoView.isPlaying()) {
+                        binding.videoView.stopPlayback();
+                    }
+                    playBtnClicked = false;
+                    binding.playBtn.setImageResource(R.drawable.play_icon);
+                    binding.viewPager.setVisibility(View.VISIBLE);
+                    binding.pdfView.setVisibility(View.GONE);
+                    binding.videoView.setVisibility(View.GONE);
+                    binding.progressAnim.setVisibility(View.GONE);
+                    binding.webView.setVisibility(View.GONE);
+                    binding.upArrow.setVisibility(View.VISIBLE);
                 }
-            } else {
-                if (binding.videoView.isPlaying()) {
-                    binding.videoView.stopPlayback();
-                }
-                playBtnClicked = false;
-                binding.playBtn.setImageResource(R.drawable.play_icon);
-                binding.viewPager.setVisibility(View.VISIBLE);
-                binding.pdfView.setVisibility(View.GONE);
-                binding.videoView.setVisibility(View.GONE);
-                binding.progressAnim.setVisibility(View.GONE);
-                binding.webView.setVisibility(View.GONE);
-                binding.upArrow.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -362,97 +381,100 @@ public class PlaySlideDetailing extends AppCompatActivity {
         rl_comments.setEnabled(false);
         rl_share.setEnabled(false);
         rl_paint.setEnabled(false);
-        rl_stop.setOnClickListener(v1 -> {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            if (PlaySlideDetailedAdapter.preVal) {
-                int timecount = 0;
+        rl_stop.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                if (PlaySlideDetailedAdapter.preVal) {
+                    int timecount = 0;
 
-                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
-                    int ll = 0;
-                    if (i != 0) {
-                        ll = i - 1;
-                        if (PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() == PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
-                            PlaySlideDetailedAdapter.storingSlide.remove(ll);
+                    for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                        int ll = 0;
+                        if (i != 0) {
+                            ll = i - 1;
+                            if (PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() == PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                                PlaySlideDetailedAdapter.storingSlide.remove(ll);
+                            }
                         }
                     }
-                }
 
-                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
-                    int ll = 0;
-                    if (i != 0) ll = i - 1;
-                    if (i == 0 || PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() != PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
-                        mCommonSharedPreference.setValueToPreferenceFeed("timeVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getTiming());
-                        mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getDateVal());
-                        mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName());
-                        mCommonSharedPreference.setValueToPreferenceFeed("brd_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandCode());
-                        mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName());
-                        mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideType());
-                        mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideUrl());
-                        mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++timecount);
+                    for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                        int ll = 0;
+                        if (i != 0) ll = i - 1;
+                        if (i == 0 || PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() != PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                            mCommonSharedPreference.setValueToPreferenceFeed("timeVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getTiming());
+                            mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getDateVal());
+                            mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName());
+                            mCommonSharedPreference.setValueToPreferenceFeed("brd_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandCode());
+                            mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName());
+                            mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideType());
+                            mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideUrl());
+                            mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++timecount);
+                        }
                     }
-                }
 
-                val = mCommonSharedPreference.getValueFromPreferenceFeed("timeCount", 0);
-                Log.v("slideData", String.valueOf(val));
-                for (int i = 0; i < val; i++) {
-                    String timevalue = mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + i);
-                    String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
-                    String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
-                    String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
-                    String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
-                    String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
+                    val = mCommonSharedPreference.getValueFromPreferenceFeed("timeCount", 0);
+                    Log.v("slideData", String.valueOf(val));
+                    for (int i = 0; i < val; i++) {
+                        String timevalue = mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + i);
+                        String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
+                        String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
+                        String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
+                        String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
+                        String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
 
-                    String eTime;
-                    if (arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
-                        eTime = findingEndTime(i);
-                        int index = checkForProduct(SlideName);
-                        StoreImageTypeUrl mmm = arrayStore.get(index);
+                        String eTime;
+                        if (arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
+                            eTime = findingEndTime(i);
+                            int index = checkForProduct(SlideName);
+                            StoreImageTypeUrl mmm = arrayStore.get(index);
 
-                        try {
-                            JSONArray jj = new JSONArray(mmm.getRemTime());
-                            JSONArray jk = new JSONArray();
-                            JSONObject js = null;
-                            for (int k = 0; k < jj.length(); k++) {
-                                js = jj.getJSONObject(k);
+                            try {
+                                JSONArray jj = new JSONArray(mmm.getRemTime());
+                                JSONArray jk = new JSONArray();
+                                JSONObject js = null;
+                                for (int k = 0; k < jj.length(); k++) {
+                                    js = jj.getJSONObject(k);
+                                    jk.put(js);
+                                }
+                                js = new JSONObject();
+                                js.put("sT", timevalue);
+                                js.put("eT", eTime);
                                 jk.put(js);
+                                mmm.setRemTime(jk.toString());
+                            } catch (Exception ignored) {
                             }
-                            js = new JSONObject();
-                            js.put("sT", timevalue);
-                            js.put("eT", eTime);
-                            jk.put(js);
-                            mmm.setRemTime(jk.toString());
-                        } catch (Exception ignored) {
-                        }
-                    } else if (!SlideName.isEmpty()) {
-                        eTime = findingEndTime(i);
-                        JSONObject jsonObject = new JSONObject();
-                        JSONArray jsonArray = new JSONArray();
-                        try {
-                            jsonObject.put("sT", timevalue);
-                            jsonObject.put("eT", eTime);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        jsonArray.put(jsonObject);
-                        Log.v("slideData", "----" + BrandName + "----" + SlideName);
-                        boolean isAvailableScrib = false;
-                        scribblePos = 0;
-                        for (int j = 0; j < slideScribble.size(); j++) {
-                            if (slideScribble.get(j).getSlideNam().equalsIgnoreCase(SlideName)) {
-                                isAvailableScrib = true;
-                                scribblePos = j;
-                                break;
+                        } else if (!SlideName.isEmpty()) {
+                            eTime = findingEndTime(i);
+                            JSONObject jsonObject = new JSONObject();
+                            JSONArray jsonArray = new JSONArray();
+                            try {
+                                jsonObject.put("sT", timevalue);
+                                jsonObject.put("eT", eTime);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        }
-                        if (isAvailableScrib) {
-                            arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
-                        } else {
-                            arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
+                            jsonArray.put(jsonObject);
+                            Log.v("slideData", "----" + BrandName + "----" + SlideName);
+                            boolean isAvailableScrib = false;
+                            scribblePos = 0;
+                            for (int j = 0; j < slideScribble.size(); j++) {
+                                if (slideScribble.get(j).getSlideNam().equalsIgnoreCase(SlideName)) {
+                                    isAvailableScrib = true;
+                                    scribblePos = j;
+                                    break;
+                                }
+                            }
+                            if (isAvailableScrib) {
+                                arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
+                            } else {
+                                arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
+                            }
                         }
                     }
                 }
+                getOnBackPressedDispatcher().onBackPressed();
             }
-            getOnBackPressedDispatcher().onBackPressed();
         });
         params.setMargins(0, 0, 0, 0);
         wlp.gravity = Gravity.CENTER | Gravity.END;
@@ -525,6 +547,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 case "mp4":
                 case "avi":
                 case "zip":
+                case "htm": 
                 case "html": {
                     binding.playBtn.setVisibility(View.VISIBLE);
                     break;
@@ -623,36 +646,39 @@ public class PlaySlideDetailing extends AppCompatActivity {
             }
 
 
-            holder.tv_brandName.setOnClickListener(v -> {
-                SelectedPosPlay = holder.getAbsoluteAdapterPosition();
-                switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
-                    case "A":
-                        populateListData(SlideWelcomeList);
-                        break;
-                    case "B":
-                        populateListData(SlideHomeBrandList);
-                        break;
-                    case "C":
-                        populateListData(SlideBrandMatrixList);
-                        break;
-                    case "D":
-                        populateListData(SlideSpecialityList);
-                        break;
-                    case "E":
-                        populateListData(SlideTherapistList);
-                        break;
-                    case "F":
-                        populateLocalSavedData(SlideCustomizedList);
-                        break;
-                    case "G":
-                        populateLocalSavedData(SlideCustomList);
-                        break;
-                    case "H":
+            holder.tv_brandName.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    SelectedPosPlay = holder.getAbsoluteAdapterPosition();
+                    switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
+                        case "A":
+                            populateListData(SlideWelcomeList);
+                            break;
+                        case "B":
+                            populateListData(SlideHomeBrandList);
+                            break;
+                        case "C":
+                            populateListData(SlideBrandMatrixList);
+                            break;
+                        case "D":
+                            populateListData(SlideSpecialityList);
+                            break;
+                        case "E":
+                            populateListData(SlideTherapistList);
+                            break;
+                        case "F":
+                            populateLocalSavedData(SlideCustomizedList);
+                            break;
+                        case "G":
+                            populateLocalSavedData(SlideCustomList);
+                            break;
+                        case "H":
 //                        populateLocalSavedData(SlideCustomList);
-                        // TODO: 29-08-2025
-                        break;
+                            // TODO: 29-08-2025
+                            break;
+                    }
+                    notifyDataSetChanged();
                 }
-                notifyDataSetChanged();
             });
         }
 

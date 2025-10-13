@@ -55,6 +55,7 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.outbox.OutBoxHeaderAdapter;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
@@ -154,7 +155,7 @@ public class OutboxFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.v("fragment", "OutBox");
         outBoxBinding = OutboxFragmentBinding.inflate(inflater, container, false);
-        View v = outBoxBinding.getRoot();
+        View view = outBoxBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         db = RoomDB.getDatabase(requireContext());
@@ -174,37 +175,46 @@ public class OutboxFragment extends Fragment {
 
         new Handler().postDelayed(this::refreshPendingFunction, 200);
 
-        outBoxBinding.clearAll.setOnClickListener(v1 -> {
-            if (!listDates.isEmpty()) {
-                Set<String> dates = outboxUtil.getOutboxDates();
-                ArrayList<String> finalDates = new ArrayList<>();
-                for (String date : dates) {
-                    finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
+        outBoxBinding.clearAll.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!listDates.isEmpty()) {
+                    Set<String> dates = outboxUtil.getOutboxDates();
+                    ArrayList<String> finalDates = new ArrayList<>();
+                    for (String date : dates) {
+                        finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
+                    }
+                    String datesString = Arrays.toString(finalDates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
+                    Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dcr_cancel_alert);
+                    dialog.setCancelable(false);
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                    TextView btn_no = dialog.findViewById(R.id.btn_no);
+                    TextView message = dialog.findViewById(R.id.ed_alert_msg);
+                    String content = "Available Outbox dates are :\n- " + datesString + "\n\n" + context.getString(R.string.are_you_sure_you_want_to_clear);
+                    message.setText(content);
+                    btn_yes.setOnClickListener(new SafeClickListener() {
+                        @Override
+                        public void onSafeClick(View view) {
+                            addDateSyncDataBack(dates);
+                            clearCalls();
+                            HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                            dialog.dismiss();
+                        }
+                    });
+                    btn_no.setOnClickListener(new SafeClickListener() {
+                        @Override
+                        public void onSafeClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
                 }
-                String datesString = Arrays.toString(finalDates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
-                Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.dcr_cancel_alert);
-                dialog.setCancelable(false);
-                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                TextView btn_no = dialog.findViewById(R.id.btn_no);
-                TextView message = dialog.findViewById(R.id.ed_alert_msg);
-                String content = "Available Outbox dates are :\n- " + datesString + "\n\n" + context.getString(R.string.are_you_sure_you_want_to_clear);
-                message.setText(content);
-                btn_yes.setOnClickListener(view12 -> {
-                    addDateSyncDataBack(dates);
-                    clearCalls();
-                    HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
-                    dialog.dismiss();
-                });
-                btn_no.setOnClickListener(view12 -> {
-                    dialog.dismiss();
-                });
             }
         });
 
-        return v;
+        return view;
     }
 
     private void addDateSyncDataBack(Set<String> outboxDates) {
@@ -1621,14 +1631,17 @@ public class OutboxFragment extends Fragment {
                                      String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
             util.getS3Client(context);
-            String bucketName = "san-edet";
+//            String bucketName = "san-edet";
+            String bucketName = "san-one";
             if (!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
                 if (fileToUpload.toString().isEmpty()) {
                     Log.d("fileToUploadSignObFrag", "not exists: " + filePath);
                 } else {
-                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+//                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+
 
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
 

@@ -49,6 +49,7 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
@@ -161,42 +162,48 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 holder.ivExpand.setImageResource(R.drawable.down_arrow);
             }
 
-            holder.ivSync.setOnClickListener(v -> {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    progressDialog = CommonUtilsMethods.createProgressDialog(context);
+            holder.ivSync.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        progressDialog = CommonUtilsMethods.createProgressDialog(context);
 //                CallOfflineData(groupModelClass, 0);
-                    processApisForDate(groupModelClass, 0, new ApiCallback() {
-                        @Override
-                        public void onSuccess() {
-                            Log.v("SendOutboxCall", "--finallyOut--");
-                            progressDialog.dismiss();
-                            if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
-                                //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+                        processApisForDate(groupModelClass, 0, new ApiCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Log.v("SendOutboxCall", "--finallyOut--");
+                                progressDialog.dismiss();
+                                if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
+                                    //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+                                }
+                                CallDataRestClass.resetcallValues(context);
+                                RefreshAdapter();
+                                if (callSyncCount > 0) {
+                                    CallsFragment.syncCalls();
+                                    callSyncCount = 0;
+                                }
+                                OutboxFragment.SetupOutBoxAdapter(activity, context);
                             }
-                            CallDataRestClass.resetcallValues(context);
-                            RefreshAdapter();
-                            if (callSyncCount > 0) {
-                                CallsFragment.syncCalls();
-                                callSyncCount = 0;
-                            }
-                            OutboxFragment.SetupOutBoxAdapter(activity, context);
-                        }
 
-                        @Override
-                        public void onFailure() {
-                            stopSync();
-                            progressDialog.dismiss();
-                        }
-                    });
-                } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                            @Override
+                            public void onFailure() {
+                                stopSync();
+                                progressDialog.dismiss();
+                            }
+                        });
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    }
                 }
             });
 
 
-            holder.cardView.setOnClickListener(v -> {
-                groupModelClass.setExpanded(Objects.equals(holder.ivExpand.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.down_arrow)).getConstantState()));
-                notifyDataSetChanged();
+            holder.cardView.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    groupModelClass.setExpanded(Objects.equals(holder.ivExpand.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.down_arrow)).getConstantState()));
+                    notifyDataSetChanged();
+                }
             });
         }
     }
@@ -1704,7 +1711,8 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     public void CallSendSignImageS3(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
         try {
             util.getS3Client(context);
-            String bucketName = "san-edet";
+//            String bucketName = "san-edet";
+            String bucketName = "san-one";
             if(!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
@@ -1712,7 +1720,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     Log.d("fileToUploadSignHeader", "not exists: " + filePath);
                 } else {
 
-                    String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ fileToUpload.getName();
+//                    String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ fileToUpload.getName();
+                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+
                     if(s3Key.contains(null)){
                         Log.d("s3Key", "CallSendSignImage: "+"s3key is null");
                     }

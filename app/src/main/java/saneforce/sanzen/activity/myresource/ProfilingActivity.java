@@ -52,6 +52,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.MapsAddition;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -469,7 +470,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
 
         activityProfilingBinding.adddrClose.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 handleCancel();
             }
         });
@@ -477,7 +478,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
 
         activityProfilingBinding.edtDob.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(activityProfilingBinding.edtDob.getWindowToken(), 0);
@@ -576,7 +577,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         });
         activityProfilingBinding.edtDow.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(activityProfilingBinding.edtDow.getWindowToken(), 0);
@@ -586,7 +587,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         });
         activityProfilingBinding.edtChmdob.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(activityProfilingBinding.edtChmdob.getWindowToken(), 0);
@@ -597,7 +598,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
 
         activityProfilingBinding.edtChmdow.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(activityProfilingBinding.edtChmdow.getWindowToken(), 0);
@@ -607,9 +608,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         });
 
 
-        activityProfilingBinding.txtViewonmap.setOnClickListener(new View.OnClickListener() {
+        activityProfilingBinding.txtViewonmap.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(context)) {
                     Intent intent = new Intent(context, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -621,9 +622,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         });
-        activityProfilingBinding.txtViewonmap2.setOnClickListener(new View.OnClickListener() {
+        activityProfilingBinding.txtViewonmap2.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(context)) {
                     Intent intent = new Intent(context, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -637,9 +638,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             }
 
         });
-        activityProfilingBinding.txtViewonmap3.setOnClickListener(new View.OnClickListener() {
+        activityProfilingBinding.txtViewonmap3.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(context)) {
                     Intent intent = new Intent(context, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -653,9 +654,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             }
 
         });
-        activityProfilingBinding.txtChmviewonmap.setOnClickListener(new View.OnClickListener() {
+        activityProfilingBinding.txtChmviewonmap.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(context)) {
                     Intent intent = new Intent(context, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -669,9 +670,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             }
 
         });
-        activityProfilingBinding.txtChmviewonmap2.setOnClickListener(new View.OnClickListener() {
+        activityProfilingBinding.txtChmviewonmap2.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(context)) {
                     Intent intent = new Intent(context, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -685,9 +686,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             }
 
         });
-        activityProfilingBinding.txtChmviewonmap3.setOnClickListener(new View.OnClickListener() {
+        activityProfilingBinding.txtChmviewonmap3.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(context)) {
                     Intent intent = new Intent(context, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -703,7 +704,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         });
         activityProfilingBinding.txtSelectQua.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -715,7 +716,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
 
         activityProfilingBinding.txtSelectCategory.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -726,7 +727,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         });
         activityProfilingBinding.txtSelectGender.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -739,7 +740,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
 
         activityProfilingBinding.txtSelectChmcat.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -751,7 +752,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
 
         activityProfilingBinding.txtSelectSpec.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -800,56 +801,58 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         });
-        activityProfilingBinding.btnSave.setOnClickListener(v -> {
-            activityProfilingBinding.btnSave.setEnabled(false);
-            String email = activityProfilingBinding.edtEmail.getText().toString().trim();
-            String chmemail = activityProfilingBinding.edtChmemail.getText().toString().trim();
-            if (!email.isEmpty() && activityProfilingBinding.edtEmail.getError() != null) {
-                commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
-                activityProfilingBinding.edtEmail.requestFocus();
-                activityProfilingBinding.btnSave.setEnabled(true);
-            } else if (!chmemail.isEmpty() && activityProfilingBinding.edtChmemail.getError() != null) {
-                commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
-                activityProfilingBinding.edtChmemail.requestFocus();
-                activityProfilingBinding.btnSave.setEnabled(true);
-            } else {
-                JSONObject json = CommonUtilsMethods.CommonObjectParameter(this);
-                try {
+        activityProfilingBinding.btnSave.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                activityProfilingBinding.btnSave.setEnabled(false);
+                String email = activityProfilingBinding.edtEmail.getText().toString().trim();
+                String chmemail = activityProfilingBinding.edtChmemail.getText().toString().trim();
+                if (!email.isEmpty() && activityProfilingBinding.edtEmail.getError() != null) {
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
+                    activityProfilingBinding.edtEmail.requestFocus();
+                    activityProfilingBinding.btnSave.setEnabled(true);
+                } else if (!chmemail.isEmpty() && activityProfilingBinding.edtChmemail.getError() != null) {
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
+                    activityProfilingBinding.edtChmemail.requestFocus();
+                    activityProfilingBinding.btnSave.setEnabled(true);
+                } else {
+                    JSONObject json = CommonUtilsMethods.CommonObjectParameter(ProfilingActivity.this);
+                    try {
 
-                    SfName = SharedPref.getSfName(this);
-                    DivCode = SharedPref.getDivisionCode(this);
-                    json.put("tableName", "updateprofile");
-                    if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                        SfCode = SharedPref.getHqCode(this);
-                    } else {
-                        SfCode = SharedPref.getSfCode(this);
-                    }
+                        SfName = SharedPref.getSfName(ProfilingActivity.this);
+                        DivCode = SharedPref.getDivisionCode(ProfilingActivity.this);
+                        json.put("tableName", "updateprofile");
+                        if (SharedPref.getSfType(ProfilingActivity.this).equalsIgnoreCase("2")) {
+                            SfCode = SharedPref.getHqCode(ProfilingActivity.this);
+                        } else {
+                            SfCode = SharedPref.getSfCode(ProfilingActivity.this);
+                        }
 
-                    json.put("sfcode", SfCode);
-                    json.put("division_code", DivCode);
-                    json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                    json.put("DeviceID", SharedPref.getDeviceId(context));
-                    json.put("DrCode", Code);
-                    if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
-                        json.put("DrGender", "M");
-                    } else if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
-                        json.put("DrGender", "F");
-                    } else {
-                        json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
-                    }
-                    //json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
-                    json.put("DrQulCd", Qual_code);
-                    json.put("DrqulNm", activityProfilingBinding.txtSelectQua.getText().toString());
-                    json.put("DrSpcCd", spec_code);
-                    json.put("DrSpcNm", activityProfilingBinding.txtSelectSpec.getText().toString());
-                    json.put("DrCatCd", cate_code);
-                    json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
-                    if (CustType.equalsIgnoreCase("D") || CustType.equalsIgnoreCase("U")) {
-                        json.put("DrAddr", activityProfilingBinding.edtAddr.getText().toString());
+                        json.put("sfcode", SfCode);
+                        json.put("division_code", DivCode);
+                        json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                        json.put("DeviceID", SharedPref.getDeviceId(context));
+                        json.put("DrCode", Code);
+                        if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
+                            json.put("DrGender", "M");
+                        } else if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
+                            json.put("DrGender", "F");
+                        } else {
+                            json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
+                        }
+                        //json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
+                        json.put("DrQulCd", Qual_code);
+                        json.put("DrqulNm", activityProfilingBinding.txtSelectQua.getText().toString());
+                        json.put("DrSpcCd", spec_code);
+                        json.put("DrSpcNm", activityProfilingBinding.txtSelectSpec.getText().toString());
+                        json.put("DrCatCd", cate_code);
                         json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
-                        json.put("DrPhone", activityProfilingBinding.edtPhone.getText().toString());
-                        json.put("DrMob", activityProfilingBinding.edtMob.getText().toString());
-                        json.put("DrEmail", activityProfilingBinding.edtEmail.getText().toString());
+                        if (CustType.equalsIgnoreCase("D") || CustType.equalsIgnoreCase("U")) {
+                            json.put("DrAddr", activityProfilingBinding.edtAddr.getText().toString());
+                            json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
+                            json.put("DrPhone", activityProfilingBinding.edtPhone.getText().toString());
+                            json.put("DrMob", activityProfilingBinding.edtMob.getText().toString());
+                            json.put("DrEmail", activityProfilingBinding.edtEmail.getText().toString());
 //                   if(!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase(dob)) {
 //                       json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString()+ " 00:00:00");
 //                   }
@@ -862,45 +865,46 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
 //                   else{
 //                       json.put("DrDOW", "");
 //                   }
-                        if (!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase("")) {
-                            json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString() + " 00:00:00");
-                        } else {
-                            json.put("DrDOB", "");
-                        }
-                        if (!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase("")) {
-                            json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString() + " 00:00:00");
-                        } else {
-                            json.put("DrDOW", "");
-                        }
+                            if (!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase("")) {
+                                json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString() + " 00:00:00");
+                            } else {
+                                json.put("DrDOB", "");
+                            }
+                            if (!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase("")) {
+                                json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString() + " 00:00:00");
+                            } else {
+                                json.put("DrDOW", "");
+                            }
 //                        json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString() + " 00:00:00");
 //                        json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString() + " 00:00:00");
-                    } else {
-                        json.put("DrAddr", activityProfilingBinding.edtChmaddr.getText().toString());
-                        json.put("DrCatNm", activityProfilingBinding.txtSelectChmcat.getText().toString());
-                        json.put("DrPhone", activityProfilingBinding.edtChmphone.getText().toString());
-                        json.put("DrMob", activityProfilingBinding.edtChmmob.getText().toString());
-                        json.put("DrEmail", activityProfilingBinding.edtChmemail.getText().toString());
+                        } else {
+                            json.put("DrAddr", activityProfilingBinding.edtChmaddr.getText().toString());
+                            json.put("DrCatNm", activityProfilingBinding.txtSelectChmcat.getText().toString());
+                            json.put("DrPhone", activityProfilingBinding.edtChmphone.getText().toString());
+                            json.put("DrMob", activityProfilingBinding.edtChmmob.getText().toString());
+                            json.put("DrEmail", activityProfilingBinding.edtChmemail.getText().toString());
 
-                        if (!activityProfilingBinding.edtChmdob.getText().toString().equalsIgnoreCase(dob)) {
-                            json.put("DrDOB", activityProfilingBinding.edtChmdob.getText().toString() + " 00:00:00");
-                        } else {
-                            // json.put("DrDOB", "");
+                            if (!activityProfilingBinding.edtChmdob.getText().toString().equalsIgnoreCase(dob)) {
+                                json.put("DrDOB", activityProfilingBinding.edtChmdob.getText().toString() + " 00:00:00");
+                            } else {
+                                // json.put("DrDOB", "");
+                            }
+                            if (!activityProfilingBinding.edtChmdow.getText().toString().equalsIgnoreCase(dow)) {
+                                json.put("DrDOW", activityProfilingBinding.edtChmdow.getText().toString() + " 00:00:00");
+                            } else {
+                                //json.put("DrDOW", "");
+                            }
                         }
-                        if (!activityProfilingBinding.edtChmdow.getText().toString().equalsIgnoreCase(dow)) {
-                            json.put("DrDOW", activityProfilingBinding.edtChmdow.getText().toString() + " 00:00:00");
-                        } else {
-                            //json.put("DrDOW", "");
-                        }
+                        json.put("key", SharedPref.getSaveLicenseSetting(context));
+                        json.put("DrType", CustType);
+                        //json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
+                        Log.v("printing_add_dr", json.toString());
+                        activityProfilingBinding.btnSave.setEnabled(false);
+                        UpdateMaster(json.toString(), CustType);
+                    } catch (Exception e) {
+                        activityProfilingBinding.btnSave.setEnabled(true);
+                        e.printStackTrace();
                     }
-                    json.put("key", SharedPref.getSaveLicenseSetting(context));
-                    json.put("DrType", CustType);
-                    //json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
-                    Log.v("printing_add_dr", json.toString());
-                    activityProfilingBinding.btnSave.setEnabled(false);
-                    UpdateMaster(json.toString(), CustType);
-                } catch (Exception e) {
-                    activityProfilingBinding.btnSave.setEnabled(true);
-                    e.printStackTrace();
                 }
             }
         });
@@ -1104,13 +1108,19 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
 
-        btn_yes.setOnClickListener(view12 -> {
-            dialog.dismiss();
-            getOnBackPressedDispatcher().onBackPressed();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
-        btn_no.setOnClickListener(view12 -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 

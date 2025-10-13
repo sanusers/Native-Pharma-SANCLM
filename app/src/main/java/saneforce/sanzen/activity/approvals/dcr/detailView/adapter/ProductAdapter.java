@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -53,9 +54,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         }else {
             holder.img_promoted.setImageDrawable(context.getResources().getDrawable(R.drawable.gray_cross_icon));
         }
-        holder.tv_name.setOnClickListener(view -> {
-            commonUtilsMethods.displayPopupWindow(context, view, getProductList.get(position).getName());
-       });
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, getProductList.get(position).getName());
+            }
+        });
         switch (category){
             case Constants.DOCTOR_MAS:
             case "DOCTOR":
@@ -120,13 +124,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         ImageView img_promoted;
 
-        public ViewHolder(@NonNull View v) {
-            super(v);
-            tv_name = v.findViewById(R.id.tv_prd_name);
-            img_promoted = v.findViewById(R.id.img_promoted);
-            tv_samQty = v.findViewById(R.id.tv_samples);
-            tv_rxQty = v.findViewById(R.id.tv_rx_qty);
-            tv_rcpa = v.findViewById(R.id.tv_rcpa);
+        public ViewHolder(@NonNull View view) {
+            super(view);
+            tv_name = view.findViewById(R.id.tv_prd_name);
+            img_promoted = view.findViewById(R.id.img_promoted);
+            tv_samQty = view.findViewById(R.id.tv_samples);
+            tv_rxQty = view.findViewById(R.id.tv_rx_qty);
+            tv_rcpa = view.findViewById(R.id.tv_rcpa);
         }
     }
 }

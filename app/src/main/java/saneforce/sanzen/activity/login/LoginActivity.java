@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
@@ -140,76 +141,88 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        binding.selectLanguage.setOnClickListener(v -> {
-            if (binding.languageListView.getVisibility() == View.VISIBLE) {
-                binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.up_arrow_light_grey));
-                binding.languageListView.setVisibility(View.GONE);
-            } else {
-                binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.down_arrow_light_grey));
-                binding.languageListView.setVisibility(View.VISIBLE);
-            }
-        });
-
-        binding.eyeImage.setOnClickListener(view -> {
-            if (passwordNotVisible == 1) {
-                binding.password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                binding.eyeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.eye_hide));
-                passwordNotVisible = 0;
-            } else {
-                binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                binding.eyeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.eye_visible));
-                passwordNotVisible = 1;
-            }
-            binding.password.setSelection(binding.password.length());
-        });
-
-        binding.loginBtn.setOnClickListener(view -> {
-            UtilityClass.hideKeyboard(LoginActivity.this);
-      //      CommonAlertBox.CheckLocationStatus(LoginActivity.this);
-            userId = binding.userId.getText().toString().trim().replaceAll("\\s", "");
-            userPwd = binding.password.getText().toString().trim().replaceAll("\\s", "");
-
-            if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
-
-                if (userId.isEmpty()) {
-                    binding.userId.requestFocus();
-                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
-                } else if (userPwd.isEmpty()) {
-                    binding.password.requestFocus();
-                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
-                } else if (SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
-                } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
-                    SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
-                    startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
-//                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
-                    Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
+        binding.selectLanguage.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (binding.languageListView.getVisibility() == View.VISIBLE) {
+                    binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.up_arrow_light_grey));
+                    binding.languageListView.setVisibility(View.GONE);
                 } else {
-                    loginFailed();
-                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
+                    binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.down_arrow_light_grey));
+                    binding.languageListView.setVisibility(View.VISIBLE);
                 }
-            } else {
-                if (userId.isEmpty()) {
-                    binding.userId.requestFocus();
-                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
-                } else if (userPwd.isEmpty()) {
-                    binding.password.requestFocus();
-                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
+            }
+        });
+
+        binding.eyeImage.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (passwordNotVisible == 1) {
+                    binding.password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    binding.eyeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.eye_hide));
+                    passwordNotVisible = 0;
                 } else {
-                    if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
-                        login(userId, userPwd);
-                    } else {
+                    binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    binding.eyeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.eye_visible));
+                    passwordNotVisible = 1;
+                }
+                binding.password.setSelection(binding.password.length());
+            }
+        });
+
+        binding.loginBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                UtilityClass.hideKeyboard(LoginActivity.this);
+                //      CommonAlertBox.CheckLocationStatus(LoginActivity.this);
+                userId = binding.userId.getText().toString().trim().replaceAll("\\s", "");
+                userPwd = binding.password.getText().toString().trim().replaceAll("\\s", "");
+
+                if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
+
+                    if (userId.isEmpty()) {
+                        binding.userId.requestFocus();
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
+                    } else if (userPwd.isEmpty()) {
+                        binding.password.requestFocus();
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
+                    } else if (SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase("")) {
                         commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
+                    } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
+                        SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
+                        startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
+//                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
+                        Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
+                    } else {
+                        loginFailed();
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
+                    }
+                } else {
+                    if (userId.isEmpty()) {
+                        binding.userId.requestFocus();
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
+                    } else if (userPwd.isEmpty()) {
+                        binding.password.requestFocus();
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
+                    } else {
+                        if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
+                            login(userId, userPwd);
+                        } else {
+                            commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
+                        }
                     }
                 }
             }
         });
 
-        binding.clearData.setOnClickListener(view -> {
-            if (outboxUtil.isOutBoxDataAvailable()) {
-                new AlertDialog.Builder(this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
-            } else {
-                DeleteAllFiles();
+        binding.clearData.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (outboxUtil.isOutBoxDataAvailable()) {
+                    new AlertDialog.Builder(LoginActivity.this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
+                } else {
+                    DeleteAllFiles();
+                }
             }
         });
 
@@ -257,13 +270,24 @@ public class LoginActivity extends AppCompatActivity {
             binding.rlRejReason.setVisibility(View.VISIBLE);
             binding.rejectedReason.setText("Please try again after 5 minutes!");
             isTimerStarted = true;
-            remainingTime = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, "00:05:00");
+            String time = "00:05:00", loginTimer = SharedPref.getLoginTimer(LoginActivity.this);
+            if (!loginTimer.isEmpty()) {
+                try {
+                    time = String.format("00:%02d:00", Integer.parseInt(loginTimer));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            remainingTime = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, time);
             startTimer();
         }
     }
 
     private void startTimer() {
         try {
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+            }
             countDownTimer = new CountDownTimer(remainingTime, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -597,6 +621,36 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         timeZoneVerification();
         super.onResume();
+
+        int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
+        if (loginFailedCount == 5) {
+            isTimerStarted = true;
+            binding.password.setEnabled(false);
+            binding.userId.setEnabled(false);
+            binding.loginBtn.setEnabled(false);
+            binding.clearData.setEnabled(false);
+            binding.rlRejReason.setVisibility(View.VISIBLE);
+            binding.rejectedReason.setText("Please try again after 5 minutes!");
+            remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+
+            String time = "00:05:00", loginTimer = SharedPref.getLoginTimer(LoginActivity.this);
+            if (!loginTimer.isEmpty()) {
+                try {
+                    time = String.format("00:%02d:00", Integer.parseInt(loginTimer));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            long mins = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, time);
+            if (remainingTime > mins) {
+                remainingTime = 0;
+            } else {
+                remainingTime = mins - remainingTime;
+            }
+            startTimer();
+        }
+
     }
 
     private void timeZoneVerification() {

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class Leavedetails_adapter extends RecyclerView.Adapter<Leavedetails_adapter.ViewHolder> {
     ArrayList<Leave_modelclass> leave_Dates;

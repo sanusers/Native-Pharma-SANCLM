@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.presentation.SupportClass;
@@ -120,12 +121,14 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
             holder.count.setText(products.size() + " Assert");
 
 
-        holder.playButton.setOnClickListener(view -> {
-            int SelectedPos = 0;
-            int count = products.size();
-            if(count>0) {
-                ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
-                if(from_where.equalsIgnoreCase("call")) {
+        holder.playButton.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                int SelectedPos = 0;
+                int count = products.size();
+                if (count > 0) {
+                    ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
+                    if (from_where.equalsIgnoreCase("call")) {
 //                    for (int i = 0; i < arrayList.size(); i++) {
 //                        for (int j = 0; j < arrayList.get(i).getProducts().size(); j++) {
 //                            productsList.add(new BrandModelClass.Product(arrayList.get(i).getPresentationName(), arrayList.get(i).getProducts().get(j).getBrandName(), arrayList.get(i).getProducts().get(j).getBrandCode(), arrayList.get(i).getProducts().get(j).getSlideId()
@@ -138,116 +141,125 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
 //                            break;
 //                        }
 //                    }
-                    productsList = arrayList.get(position).getProducts();
-                    intent = new Intent(context, PlaySlideDetailing.class);
-                }else {
-                    productsList = arrayList.get(position).getProducts();
-                    intent = new Intent(context, PlaySlidePreviewActivity.class);
-                }
+                        productsList = arrayList.get(position).getProducts();
+                        intent = new Intent(context, PlaySlideDetailing.class);
+                    } else {
+                        productsList = arrayList.get(position).getProducts();
+                        intent = new Intent(context, PlaySlidePreviewActivity.class);
+                    }
 
-                String data = new Gson().toJson(productsList);
-                Bundle bundle = new Bundle();
-                bundle.putString("slideBundle", data);
-                bundle.putString("position", String.valueOf(SelectedPos));
-                intent.putExtra("bundle", bundle);
-                context.startActivity(intent);
+                    String data = new Gson().toJson(productsList);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("slideBundle", data);
+                    bundle.putString("position", String.valueOf(SelectedPos));
+                    intent.putExtra("bundle", bundle);
+                    context.startActivity(intent);
+                }
             }
         });
 
-        holder.menu.setOnClickListener(view -> {
-            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
-            popup.inflate(R.menu.presentation_menu);
-            if(isClickedFrom.equalsIgnoreCase("custom")) {
-                popup.getMenu().findItem(R.id.customer).setVisible(isClickedFrom.equalsIgnoreCase("custom"));
-                popup.getMenu().findItem(R.id.customer).setTitle("Show " + caption);
-            }
-            try {
-                ((Activity)context).getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            popup.setOnMenuItemClickListener(menuItem -> {
-                PresentationActivity presentationActivity = (PresentationActivity) context;
-
-                if(menuItem.getItemId() == R.id.menuPlay) {
-                    popup.dismiss();
-                    Intent intent = new Intent(presentationActivity, PlaySlidePreviewActivity.class);
-                    String data = new Gson().toJson(products);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("slideBundle", data);
-                    bundle.putString("position", String.valueOf(0));
-                    intent.putExtra("bundle", bundle);
-                    context.startActivity(intent);
-                }else if(menuItem.getItemId() == R.id.menuEdit) {
-                    popup.dismiss();
-                    Intent intent = new Intent(presentationActivity, CreatePresentationActivity.class);
-                    String data = new Gson().toJson(products);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("slideBundle", data);
-                    bundle.putString("position", String.valueOf(0));
-                    bundle.putString("presentationName", presentation.getPresentationName());
-                    intent.putExtra("bundle", bundle);
-                    if(isClickedFrom.equalsIgnoreCase("custom")) {
-                        PresentationDataTable presentationDataTable = presentationDataDao.getPresentationData(presentation.getPresentationName());
-                        intent.putExtra("customerType", presentationDataTable.getCustomerType());
-                        intent.putExtra("headquarterCode", presentationDataTable.getHeadquarterCode());
-                        intent.putExtra("customerCodes", presentationDataTable.getCustomerCodes());
-                    }
-                    context.startActivity(intent);
-                }else if(menuItem.getItemId() == R.id.menuDelete) {
-                    popup.dismiss();
-                    Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                    TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
-                    TextView btn_no = dialog.findViewById(R.id.btn_no);
-                    btn_no.setVisibility(View.VISIBLE);
-                    alertText.setText(R.string.are_you_sure_to_delete);
-                    btn_yes.setOnClickListener(view1 -> {
-                        removeAt(position);
-
-                        presentationDataDao.deletePresentation(presentation.getPresentationName());
-                        ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
-                        savedPresentation = presentationDataDao.getPresentations();
-                        if (savedPresentation.size() > 0) {
-                            binding.constraintNoData.setVisibility(View.GONE);
-                            binding.presentationRecView.setVisibility(View.VISIBLE);
-                        }else {
-                            binding.constraintNoData.setVisibility(View.VISIBLE);
-                            binding.presentationRecView.setVisibility(View.GONE);
-                        }
-                        dialog.dismiss();
-                    });
-                    btn_no.setOnClickListener((view2) -> {
-                        dialog.dismiss();
-                    });
-
-
-                }else if(menuItem.getItemId() == R.id.customer) {
-                    popup.dismiss();
-                    if(isClickedFrom.equalsIgnoreCase("custom")) {
-                        showCustomersClickListener.onClick(presentation.getPresentationName());
-                    }
+        holder.menu.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
+                popup.inflate(R.menu.presentation_menu);
+                if (isClickedFrom.equalsIgnoreCase("custom")) {
+                    popup.getMenu().findItem(R.id.customer).setVisible(isClickedFrom.equalsIgnoreCase("custom"));
+                    popup.getMenu().findItem(R.id.customer).setTitle("Show " + caption);
                 }
-                return true;
-            });
-            popup.show();
+                try {
+                    ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    PresentationActivity presentationActivity = (PresentationActivity) context;
+
+                    if (menuItem.getItemId() == R.id.menuPlay) {
+                        popup.dismiss();
+                        Intent intent = new Intent(presentationActivity, PlaySlidePreviewActivity.class);
+                        String data = new Gson().toJson(products);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("slideBundle", data);
+                        bundle.putString("position", String.valueOf(0));
+                        intent.putExtra("bundle", bundle);
+                        context.startActivity(intent);
+                    } else if (menuItem.getItemId() == R.id.menuEdit) {
+                        popup.dismiss();
+                        Intent intent = new Intent(presentationActivity, CreatePresentationActivity.class);
+                        String data = new Gson().toJson(products);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("slideBundle", data);
+                        bundle.putString("position", String.valueOf(0));
+                        bundle.putString("presentationName", presentation.getPresentationName());
+                        intent.putExtra("bundle", bundle);
+                        if (isClickedFrom.equalsIgnoreCase("custom")) {
+                            PresentationDataTable presentationDataTable = presentationDataDao.getPresentationData(presentation.getPresentationName());
+                            intent.putExtra("customerType", presentationDataTable.getCustomerType());
+                            intent.putExtra("headquarterCode", presentationDataTable.getHeadquarterCode());
+                            intent.putExtra("customerCodes", presentationDataTable.getCustomerCodes());
+                        }
+                        context.startActivity(intent);
+                    } else if (menuItem.getItemId() == R.id.menuDelete) {
+                        popup.dismiss();
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                        TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+                        TextView btn_no = dialog.findViewById(R.id.btn_no);
+                        btn_no.setVisibility(View.VISIBLE);
+                        alertText.setText(R.string.are_you_sure_to_delete);
+                        btn_yes.setOnClickListener(view1 -> {
+                            removeAt(position);
+
+                            presentationDataDao.deletePresentation(presentation.getPresentationName());
+                            ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
+                            savedPresentation = presentationDataDao.getPresentations();
+                            if (savedPresentation.size() > 0) {
+                                binding.constraintNoData.setVisibility(View.GONE);
+                                binding.presentationRecView.setVisibility(View.VISIBLE);
+                            } else {
+                                binding.constraintNoData.setVisibility(View.VISIBLE);
+                                binding.presentationRecView.setVisibility(View.GONE);
+                            }
+                            dialog.dismiss();
+                        });
+                        btn_no.setOnClickListener((view2) -> {
+                            dialog.dismiss();
+                        });
+
+
+                    } else if (menuItem.getItemId() == R.id.customer) {
+                        popup.dismiss();
+                        if (isClickedFrom.equalsIgnoreCase("custom")) {
+                            showCustomersClickListener.onClick(presentation.getPresentationName());
+                        }
+                    }
+                    return true;
+                });
+                popup.show();
+            }
         });
 
         if(isClickedFrom.equalsIgnoreCase("preview")) {
             holder.info.setVisibility(View.VISIBLE);
-            holder.info.setOnClickListener(view -> showCustomersClickListener.onClick(presentation.getPresentationName()));
+            holder.info.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    showCustomersClickListener.onClick(presentation.getPresentationName());
+                }
+            });
         } else {
             holder.info.setVisibility(View.GONE);
         }

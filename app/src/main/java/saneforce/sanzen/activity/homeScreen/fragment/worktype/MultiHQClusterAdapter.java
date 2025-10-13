@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.MultiHQClusterItem;
 import saneforce.sanzen.activity.homeScreen.modelClass.MultiHQExpandItem;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
@@ -96,10 +97,13 @@ public class MultiHQClusterAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         void bind(MultiHQExpandItem item) {
             title.setText(item.getName());
-            itemView.setOnClickListener(v -> {
-                item.setExpanded(!item.isExpanded());
-                updateDisplayList();
-                notifyDataSetChanged();
+            itemView.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    item.setExpanded(!item.isExpanded());
+                    updateDisplayList();
+                    notifyDataSetChanged();
+                }
             });
             if(item.isExpanded()) {
                 arrow.setImageResource(R.drawable.up_arrow);

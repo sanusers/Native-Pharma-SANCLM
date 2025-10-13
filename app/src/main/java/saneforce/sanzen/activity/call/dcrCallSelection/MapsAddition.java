@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 //import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -121,37 +122,49 @@ public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallba
                 lng = mMap.getCameraPosition().target.longitude;
                 binding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsAddition.this, lat, lng, false));
             });
-        binding.ivBack.setOnClickListener(view -> {
-            getOnBackPressedDispatcher().onBackPressed();
-            finish();
+        binding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+                finish();
+            }
         });
 
-        binding.btnTag.setOnClickListener(view -> {
-            Log.d("SharedPrefDebug", "Retrieved Latitude: " + lat);
-            SharedPref.setSaveLatitude(MapsAddition.this,lat);
-            SharedPref.setSaveLongitutde(MapsAddition.this, lng);
-            SharedPref.setSaveTaggedAddress(MapsAddition.this, binding.tvTaggedAddress.getText().toString());
-            if(valueFrom.equalsIgnoreCase("C")){
-                ChemistAddition.setAddressText(binding.tvTaggedAddress.getText().toString());
-            }
-            else {
-                UnlistedDoctorAddition.setAddressText(binding.tvTaggedAddress.getText().toString());
-            }
-            commonUtilsMethods.showToastMessage(MapsAddition.this, getString(R.string.location_add));
-             finish();
-        });
-        binding.imgRefreshMap.setOnClickListener(view -> {
-
-            if (CurrentLoc()) {
-                lat = gpsTrack.getLatitude();
-                lng = gpsTrack.getLongitude();
-                LatLng latLng1 = new LatLng(lat, lng);
-                mMap.addMarker(new MarkerOptions().position(latLng1).icon(BitmapFromVector(this, R.drawable.marker_map)));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 16.2f));
-                binding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsAddition.this, lat, lng, false));
+        binding.btnTag.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Log.d("SharedPrefDebug", "Retrieved Latitude: " + lat);
+                SharedPref.setSaveLatitude(MapsAddition.this, lat);
+                SharedPref.setSaveLongitutde(MapsAddition.this, lng);
+                SharedPref.setSaveTaggedAddress(MapsAddition.this, binding.tvTaggedAddress.getText().toString());
+                if (valueFrom.equalsIgnoreCase("C")) {
+                    ChemistAddition.setAddressText(binding.tvTaggedAddress.getText().toString());
+                } else {
+                    UnlistedDoctorAddition.setAddressText(binding.tvTaggedAddress.getText().toString());
+                }
+                commonUtilsMethods.showToastMessage(MapsAddition.this, getString(R.string.location_add));
+                finish();
             }
         });
-        binding.imgCurLoc.setOnClickListener(view -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f)));
+        binding.imgRefreshMap.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view){
+                if (CurrentLoc()) {
+                    lat = gpsTrack.getLatitude();
+                    lng = gpsTrack.getLongitude();
+                    LatLng latLng1 = new LatLng(lat, lng);
+                    mMap.addMarker(new MarkerOptions().position(latLng1).icon(BitmapFromVector(MapsAddition.this, R.drawable.marker_map)));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 16.2f));
+                    binding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsAddition.this, lat, lng, false));
+                }
+            }
+        });
+        binding.imgCurLoc.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
+            }
+        });
     }
     public boolean CurrentLoc() {
         boolean val = false;

@@ -25,6 +25,7 @@ import com.bumptech.glide.request.transition.Transition;
 import java.util.Random;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class NotificationClass extends ContextWrapper {
 

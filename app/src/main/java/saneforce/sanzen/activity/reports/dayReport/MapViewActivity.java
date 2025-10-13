@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.MapViewActivityBinding;
 
@@ -57,9 +58,12 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             mapFragment.getMapAsync(this);
         }
 
-        binding.backArrow.setOnClickListener(view -> {
-            getOnBackPressedDispatcher().onBackPressed();
-            finish();
+        binding.backArrow.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+                finish();
+            }
         });
 
         Bundle extra = getIntent().getExtras();
@@ -120,33 +124,39 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             binding.tvOutAddress.setText(checkOutAddress);
         }
 
-        binding.llCheckIn.setOnClickListener(view -> {
-            if(mMap != null) {
-                if(checkInMarker != null) {
-                    checkInMarker.remove();
+        binding.llCheckIn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (mMap != null) {
+                    if (checkInMarker != null) {
+                        checkInMarker.remove();
+                    }
+                    LatLng yourLocation = new LatLng(CheckINLat, CheckINLong);
+                    checkInMarker = mMap.addMarker(new MarkerOptions().position(yourLocation).title(getString(R.string.check_in)).icon(BitmapDescriptorFactory.defaultMarker(164.0F)));
+                    checkInMarker.showInfoWindow();
+                    checkInCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation, zoomLevel);
+                    mMap.moveCamera(checkInCameraUpdate);
+                } else {
+                    commonUtilsMethods.showToastMessage(MapViewActivity.this, "Not Checked In");
                 }
-                LatLng yourLocation = new LatLng(CheckINLat, CheckINLong);
-                checkInMarker = mMap.addMarker(new MarkerOptions().position(yourLocation).title(getString(R.string.check_in)).icon(BitmapDescriptorFactory.defaultMarker(164.0F)));
-                checkInMarker.showInfoWindow();
-                checkInCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation, zoomLevel);
-                mMap.moveCamera(checkInCameraUpdate);
-            } else {
-                commonUtilsMethods. showToastMessage(this, "Not Checked In");
             }
         });
 
-        binding.llCheckOut.setOnClickListener(view -> {
-            if(mMap != null) {
-                if(checkOutMarker != null) {
-                    checkOutMarker.remove();
+        binding.llCheckOut.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (mMap != null) {
+                    if (checkOutMarker != null) {
+                        checkOutMarker.remove();
+                    }
+                    LatLng yourLocation = new LatLng(CheckOUTLat, CheckOUTLong);
+                    checkOutMarker = mMap.addMarker(new MarkerOptions().position(yourLocation).title(getString(R.string.check_out)).icon(BitmapDescriptorFactory.defaultMarker(347.05884F)));
+                    checkOutMarker.showInfoWindow();
+                    checkOutCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation, zoomLevel);
+                    mMap.moveCamera(checkOutCameraUpdate);
+                } else {
+                    commonUtilsMethods.showToastMessage(MapViewActivity.this, "Not Checked Out");
                 }
-                LatLng yourLocation = new LatLng(CheckOUTLat, CheckOUTLong);
-                checkOutMarker = mMap.addMarker(new MarkerOptions().position(yourLocation).title(getString(R.string.check_out)).icon(BitmapDescriptorFactory.defaultMarker(347.05884F)));
-                checkOutMarker.showInfoWindow();
-                checkOutCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation, zoomLevel);
-                mMap.moveCamera(checkOutCameraUpdate);
-            } else {
-                commonUtilsMethods.showToastMessage(this, "Not Checked Out");
             }
         });
 

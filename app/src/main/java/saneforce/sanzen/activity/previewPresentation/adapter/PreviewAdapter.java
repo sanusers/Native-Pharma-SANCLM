@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
@@ -59,37 +60,40 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
         else holder.count.setText(products.size() + " Assert");
 
 
-        holder.cardView.setOnClickListener(view -> {
-            int SelectedPos = 0;
+        holder.cardView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                int SelectedPos = 0;
 
-            int count = products.size();
-            if (count > 0) {
-                ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
-                if (from_where.equalsIgnoreCase("call")) {
-                    for (int i = 0; i < arrayList.size(); i++) {
-                        for (int j = 0; j < arrayList.get(i).getProductArrayList().size(); j++) {
-                            productsList.add(new BrandModelClass.Product(arrayList.get(i).getBrandCode(), arrayList.get(i).getBrandName(), arrayList.get(i).getProductArrayList().get(j).getSlideId()
-                                    , arrayList.get(i).getProductArrayList().get(j).getSlideName(), arrayList.get(i).getProductArrayList().get(j).getPriority(), arrayList.get(i).getProductArrayList().get(j).isImageSelected()));
+                int count = products.size();
+                if (count > 0) {
+                    ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
+                    if (from_where.equalsIgnoreCase("call")) {
+                        for (int i = 0; i < arrayList.size(); i++) {
+                            for (int j = 0; j < arrayList.get(i).getProductArrayList().size(); j++) {
+                                productsList.add(new BrandModelClass.Product(arrayList.get(i).getBrandCode(), arrayList.get(i).getBrandName(), arrayList.get(i).getProductArrayList().get(j).getSlideId()
+                                        , arrayList.get(i).getProductArrayList().get(j).getSlideName(), arrayList.get(i).getProductArrayList().get(j).getPriority(), arrayList.get(i).getProductArrayList().get(j).isImageSelected()));
+                            }
                         }
-                    }
 
-                    for (int i = 0; i < productsList.size(); i++) {
-                        if (productsList.get(i).getBrandCode().equalsIgnoreCase(arrayList.get(position).getBrandCode())) {
-                            SelectedPos = i;
-                            break;
+                        for (int i = 0; i < productsList.size(); i++) {
+                            if (productsList.get(i).getBrandCode().equalsIgnoreCase(arrayList.get(position).getBrandCode())) {
+                                SelectedPos = i;
+                                break;
+                            }
                         }
+                        intent = new Intent(context, PlaySlideDetailing.class);
+                    } else {
+                        productsList = arrayList.get(position).getProductArrayList();
+                        intent = new Intent(context, PlaySlidePreviewActivity.class);
                     }
-                    intent = new Intent(context, PlaySlideDetailing.class);
-                } else {
-                    productsList = arrayList.get(position).getProductArrayList();
-                    intent = new Intent(context, PlaySlidePreviewActivity.class);
+                    String data = new Gson().toJson(productsList);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("slideBundle", data);
+                    bundle.putString("position", String.valueOf(SelectedPos));
+                    intent.putExtra("bundle", bundle);
+                    context.startActivity(intent);
                 }
-                String data = new Gson().toJson(productsList);
-                Bundle bundle = new Bundle();
-                bundle.putString("slideBundle", data);
-                bundle.putString("position", String.valueOf(SelectedPos));
-                intent.putExtra("bundle", bundle);
-                context.startActivity(intent);
             }
         });
 
