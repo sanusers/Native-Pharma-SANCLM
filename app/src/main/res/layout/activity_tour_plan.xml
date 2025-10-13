@@ -166,6 +166,18 @@
                         </LinearLayout>
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toStartOf="@id/tpStatusTxt"
+                            android:layout_gravity="center|end"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="Status: "
+                            android:textColor="@color/light_purple"
+                            android:textSize="@dimen/_6ssp"
+                            tools:ignore="SpUsage" />
+
+                        <TextView
                             android:id="@+id/tpStatusTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -175,7 +187,7 @@
                             android:fontFamily="@font/satoshi_variable"
                             android:text="Planning..."
                             android:textColor="@color/green_2"
-                            android:textSize="@dimen/_5sdp"
+                            android:textSize="@dimen/_6ssp"
                             tools:ignore="SpUsage" />
 
                     </RelativeLayout>
@@ -630,11 +642,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginStart="@dimen/_2sdp"
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:layout_marginEnd="@dimen/_2sdp"
-                            android:layout_marginBottom="@dimen/_2sdp"
-                            android:background="@drawable/bg_light_pink_2"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:layout_marginEnd="@dimen/_6sdp"                            android:background="@drawable/bg_light_pink_2"
                             android:drawablePadding="@dimen/_1sdp"
                             android:fontFamily="@font/satoshi_medium"
                             android:gravity="start|center"
