@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -122,27 +123,30 @@ public class AssertDownloadAdapter extends RecyclerView.Adapter<AssertDownloadAd
             rl_title_layout = itemView.findViewById(R.id.rl_calender_syn);
 
 
-            reload_img.setOnClickListener(view -> {
-                int position = getAdapterPosition();
-                if(UtilityClass.isNetworkAvailable(activity)) {
-                    QuizActivity.isSingleAssertDownloadingStatus = true;
-                    text_download_size.setText("Downloading");
-                    String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getOptionFilesUrl(activity) + list.get(position).getName();
-                    Log.e("DownloadingAPI", url);
-                    Data inputData = new Data.Builder()
-                            .putString("Flag", "2")
-                            .putString("file_url", url)
-                            .putString("Assert_name", list.get(position).getName())
-                            .putString("FilePosition", list.get(position).getListAssertPosition())
-                            .build();
+            reload_img.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    int position = getAdapterPosition();
+                    if (UtilityClass.isNetworkAvailable(activity)) {
+                        QuizActivity.isSingleAssertDownloadingStatus = true;
+                        text_download_size.setText("Downloading");
+                        String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getOptionFilesUrl(activity) + list.get(position).getName();
+                        Log.e("DownloadingAPI", url);
+                        Data inputData = new Data.Builder()
+                                .putString("Flag", "2")
+                                .putString("file_url", url)
+                                .putString("Assert_name", list.get(position).getName())
+                                .putString("FilePosition", list.get(position).getListAssertPosition())
+                                .build();
 
-                    OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(AssertDownloadWorker.class)
-                            .setInputData(inputData)
-                            .build();
-                    WorkManager workManager = WorkManager.getInstance(activity);
-                    workManager.enqueue(fileDownloadRequest);
-                }else {
-                    commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                        OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(AssertDownloadWorker.class)
+                                .setInputData(inputData)
+                                .build();
+                        WorkManager workManager = WorkManager.getInstance(activity);
+                        workManager.enqueue(fileDownloadRequest);
+                    } else {
+                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                    }
                 }
             });
         }

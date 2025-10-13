@@ -45,7 +45,7 @@ public class Call_status_second_view extends Fragment {
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Callstatussecondview = ActivityCallStatusSecondViewBinding.inflate(inflater);
-        View v = Callstatussecondview.getRoot();
+        View view = Callstatussecondview.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
 
@@ -62,7 +62,7 @@ public class Call_status_second_view extends Fragment {
 
         callsview();
 
-        return v;
+        return view;
     }
 
     public void callsview() {

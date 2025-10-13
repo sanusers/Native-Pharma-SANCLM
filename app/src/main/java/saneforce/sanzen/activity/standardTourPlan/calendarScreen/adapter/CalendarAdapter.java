@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.CalendarModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.SelectedDCRModel;
 
@@ -80,9 +81,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                             holder.dayTag1.setText(calendarModel.getCaption());
                             CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data1.setAdapter(calendarDCRAdapter);
-                            holder.options1.setOnClickListener(v -> {
+                            holder.options1.setOnClickListener(view -> {
                                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-                                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                                PopupMenu popupMenu = new PopupMenu(wrapper, view, Gravity.END);
                                 popupMenu.getMenuInflater().inflate(R.menu.stp_calendar_menu, popupMenu.getMenu());
                                 popupMenu.show();
                                 popupMenu.setOnMenuItemClickListener(menuItem -> {
@@ -90,16 +91,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                                     return true;
                                 });
                             });
-                            holder.ll_dcr_data1.setOnClickListener(v -> {
+                            holder.ll_dcr_data1.setOnClickListener(view -> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
                             });
-                            holder.fl_rv.setOnClickListener(v -> {
+                            holder.fl_rv.setOnClickListener(view -> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
                             });
                         }else {
                             holder.cl_add1.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data1.setVisibility(View.INVISIBLE);
-                            holder.cl_add1.setOnClickListener(v -> {
+                            holder.cl_add1.setOnClickListener(view -> {
                                 Log.e("Calendar adapter", "onBindViewHolder: " + Mode.NEW );
                                 calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
@@ -122,9 +123,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                             holder.dayTag2.setText(calendarModel.getCaption());
                             CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data2.setAdapter(calendarDCRAdapter);
-                            holder.options2.setOnClickListener(v -> {
+                            holder.options2.setOnClickListener(view -> {
                                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-                                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                                PopupMenu popupMenu = new PopupMenu(wrapper, view, Gravity.END);
                                 popupMenu.getMenuInflater().inflate(R.menu.stp_calendar_menu, popupMenu.getMenu());
                                 popupMenu.show();
                                 popupMenu.setOnMenuItemClickListener(menuItem -> {
@@ -132,16 +133,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                                     return true;
                                 });
                             });
-                            holder.ll_dcr_data2.setOnClickListener( v-> {
+                            holder.ll_dcr_data2.setOnClickListener( view-> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
                             });
-                            holder.rv_dcr_data2.setOnClickListener( v-> {
+                            holder.rv_dcr_data2.setOnClickListener( view-> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
                             });
                         }else {
                             holder.cl_add2.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data2.setVisibility(View.INVISIBLE);
-                            holder.cl_add2.setOnClickListener(v -> {
+                            holder.cl_add2.setOnClickListener(view -> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
                             holder.dayCaption2.setText(calendarModel.getCaption());
@@ -163,9 +164,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                             holder.dayTag3.setText(calendarModel.getCaption());
                             CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data3.setAdapter(calendarDCRAdapter);
-                            holder.options3.setOnClickListener(v -> {
+                            holder.options3.setOnClickListener(view -> {
                                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-                                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                                PopupMenu popupMenu = new PopupMenu(wrapper, view, Gravity.END);
                                 popupMenu.getMenuInflater().inflate(R.menu.stp_calendar_menu, popupMenu.getMenu());
                                 popupMenu.show();
                                 popupMenu.setOnMenuItemClickListener(menuItem -> {
@@ -173,16 +174,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                                     return true;
                                 });
                             });
-                            holder.ll_dcr_data3.setOnClickListener( v-> {
+                            holder.ll_dcr_data3.setOnClickListener( view-> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
                             });
-                            holder.rv_dcr_data3.setOnClickListener( v-> {
+                            holder.rv_dcr_data3.setOnClickListener( view-> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
                             });
                         }else {
                             holder.cl_add3.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data3.setVisibility(View.INVISIBLE);
-                            holder.cl_add3.setOnClickListener(v -> {
+                            holder.cl_add3.setOnClickListener(view -> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
                             holder.dayCaption3.setText(calendarModel.getCaption());
@@ -204,9 +205,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                             holder.dayTag4.setText(calendarModel.getCaption());
                             CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data4.setAdapter(calendarDCRAdapter);
-                            holder.options4.setOnClickListener(v -> {
+                            holder.options4.setOnClickListener(view -> {
                                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-                                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                                PopupMenu popupMenu = new PopupMenu(wrapper, view, Gravity.END);
                                 popupMenu.getMenuInflater().inflate(R.menu.stp_calendar_menu, popupMenu.getMenu());
                                 popupMenu.show();
                                 popupMenu.setOnMenuItemClickListener(menuItem -> {
@@ -214,16 +215,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                                     return true;
                                 });
                             });
-                            holder.ll_dcr_data4.setOnClickListener( v-> {
+                            holder.ll_dcr_data4.setOnClickListener( view-> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
                             });
-                            holder.rv_dcr_data4.setOnClickListener( v-> {
+                            holder.rv_dcr_data4.setOnClickListener( view-> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
                             });
                         }else {
                             holder.cl_add4.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data4.setVisibility(View.INVISIBLE);
-                            holder.cl_add4.setOnClickListener(v -> {
+                            holder.cl_add4.setOnClickListener(view -> {
                                 calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
                             holder.dayCaption4.setText(calendarModel.getCaption());

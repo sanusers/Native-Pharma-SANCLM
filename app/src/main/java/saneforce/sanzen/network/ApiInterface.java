@@ -32,9 +32,14 @@ public interface ApiInterface {
 
     @GET
     Call<JsonArray> configuration(@Url String url);
+
     @FormUrlEncoded
     @POST()
     Call<JsonElement> getJSONElement(@Url String url, @QueryMap Map<String, String> qry, @Field("data") String postObj);
+
+    @Headers("Content-Type: application/json")
+    @POST()
+    Call<JsonElement> getOneBuildConfig(@Url String url);
 
     @Headers("Content-Type: application/json")
     @POST()

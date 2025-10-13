@@ -55,7 +55,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Callstatusthridview = ActivityCallStatusThridViewBinding.inflate(inflater);
-        View v = Callstatusthridview.getRoot();
+        View view = Callstatusthridview.getRoot();
 
 
         roomDB= RoomDB.getDatabase(requireContext());
@@ -71,7 +71,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
         setUp();
         callsview();
 
-        return v;
+        return view;
     }
 
     public void callsview() {

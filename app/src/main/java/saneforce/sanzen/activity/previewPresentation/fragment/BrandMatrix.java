@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -247,7 +248,7 @@ public class BrandMatrix extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         brandMatrixBinding = FragmentSpecialityPreviewBinding.inflate(inflater);
-        View v = brandMatrixBinding.getRoot();
+        View view = brandMatrixBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -265,35 +266,44 @@ public class BrandMatrix extends Fragment {
         }
 
 
-        brandMatrixBinding.tvSelectDoctor.setOnClickListener(v1 -> {
-            SelectedTab = "Matrix";
-            previewBinding.fragmentSelectDrSide.setVisibility(View.VISIBLE);
+        brandMatrixBinding.tvSelectDoctor.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                SelectedTab = "Matrix";
+                previewBinding.fragmentSelectDrSide.setVisibility(View.VISIBLE);
+            }
         });
 
 
-        brandMatrixBinding.tvAz.setOnClickListener(v13 -> {
-            brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
-            brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-            brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
-            brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
-            brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-            brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
+        brandMatrixBinding.tvAz.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+                brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+                brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+                previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+                brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+                brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
+                Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
+            }
         });
 
-        brandMatrixBinding.tvZa.setOnClickListener(v12 -> {
-            brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
-            brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-            brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
-            brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
-            brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-            brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideBrandMatrixList, Collections.reverseOrder(new SortByName()));
+        brandMatrixBinding.tvZa.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+                brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+                brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+                previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+                brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+                brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
+                Collections.sort(SlideBrandMatrixList, Collections.reverseOrder(new SortByName()));
+            }
         });
 
-        return v;
+        return view;
     }
 
     static class SortByName implements Comparator<BrandModelClass> {

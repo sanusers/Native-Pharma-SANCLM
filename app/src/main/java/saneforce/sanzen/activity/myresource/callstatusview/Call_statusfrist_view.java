@@ -40,7 +40,7 @@ public class Call_statusfrist_view extends Fragment {
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Callstatusfristview = ActivityCallStatusfristViewBinding.inflate(inflater);
-        View v = Callstatusfristview.getRoot();
+        View view = Callstatusfristview.getRoot();
         roomDB=RoomDB.getDatabase(requireContext());
         masterDataDao=roomDB.masterDataDao();
         
@@ -52,7 +52,7 @@ public class Call_statusfrist_view extends Fragment {
          previousMonth = df.format(c.getTime());
 //         System.out.println("Previous month in MM format: " + previousMonth);
         callsview();
-        return v;
+        return view;
     }
 
     public void callsview() {

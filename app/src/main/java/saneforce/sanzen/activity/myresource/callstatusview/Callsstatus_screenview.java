@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.myresource.callstatusview;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +15,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.activity.forms.weekoff.forms_viewpager;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityCallsstatusScreenviewBinding;
 
 public class Callsstatus_screenview extends AppCompatActivity {
@@ -27,8 +29,11 @@ public class Callsstatus_screenview extends AppCompatActivity {
         Callsstatusscreenview = ActivityCallsstatusScreenviewBinding.inflate(getLayoutInflater());
         setContentView(Callsstatusscreenview.getRoot());
 
-        Callsstatusscreenview.ivBack.setOnClickListener(v -> {
-            finish();
+        Callsstatusscreenview.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                finish();
+            }
         });
 
         LocalDate currentDate = LocalDate.now();

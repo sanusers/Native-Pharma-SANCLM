@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
@@ -66,7 +67,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             String date = oneBuildModelClass.getDayNo();
             holder.dateNo.setText(date);
             if (!date.isEmpty() && oneBuildModelClass.getSessionList() != null && !oneBuildModelClass.getSessionList().isEmpty() && oneBuildModelClass.getSessionList().get(0).getWorkType() != null  && !oneBuildModelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) { //if work type is not empty means tour plan added for the date
-                holder.cornerImage.setVisibility(View.VISIBLE);
+                holder.cornerImage.setVisibility(View.INVISIBLE);
                 fwFlag = oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg();
                 for (OneBuildModelClass.SessionList sessionList: oneBuildModelClass.getSessionList()) {
                     if (sessionList.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
@@ -87,7 +88,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                     holder.itemView.setEnabled(true);
                 }
             }
-            holder.itemView.setOnClickListener(v -> onDayClickOneBuildInterface.onDayClickedOneBuild(holder.getAbsoluteAdapterPosition(), date, OneBuildInputData.get(holder.getAbsoluteAdapterPosition())));
+            holder.itemView.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    onDayClickOneBuildInterface.onDayClickedOneBuild(holder.getAbsoluteAdapterPosition(), date, OneBuildInputData.get(holder.getAbsoluteAdapterPosition()));
+                }
+            });
 
         }else {
             ModelClass modelClass = inputData.get(holder.getAbsoluteAdapterPosition());
@@ -116,7 +122,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                 }
             }
 
-            holder.itemView.setOnClickListener(v -> onDayClickInterface.onDayClicked(holder.getAbsoluteAdapterPosition(), date, inputData.get(holder.getAbsoluteAdapterPosition())));
+            holder.itemView.setOnClickListener(view -> onDayClickInterface.onDayClicked(holder.getAbsoluteAdapterPosition(), date, inputData.get(holder.getAbsoluteAdapterPosition())));
         }
 
         GradientDrawable drawable = (GradientDrawable) context.getResources().getDrawable(R.drawable.event_point_background);

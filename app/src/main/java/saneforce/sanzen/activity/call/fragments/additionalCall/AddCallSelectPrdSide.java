@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.AddSampleAdditionalCall;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
@@ -50,10 +51,12 @@ public class AddCallSelectPrdSide extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectProductSideBinding = FragmentAcSelectProductSideBinding.inflate(inflater);
-        View v = selectProductSideBinding.getRoot();
+        View view = selectProductSideBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        selectProductSideBinding.tvDummy.setOnClickListener(view -> {
+        selectProductSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
         selectACProductAdapter = new SelectACProductAdapter(requireContext(), callSampleList);
@@ -63,21 +66,27 @@ public class AddCallSelectPrdSide extends Fragment {
         selectProductSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         selectProductSideBinding.selectListView.setAdapter(selectACProductAdapter);
 
-        selectProductSideBinding.btnOk.setOnClickListener(v1 -> {
-            for (int i = 0; i < SelectACProductAdapter.callSampleListAdapter.size(); i++) {
-                if (SelectACProductAdapter.callSampleListAdapter.get(i).isCheckedItem()) {
-                    addedProductList.add(new AddSampleAdditionalCall(Selected_name, Selected_code, SelectACProductAdapter.callSampleListAdapter.get(i).getName(), SelectACProductAdapter.callSampleListAdapter.get(i).getCode(), SelectACProductAdapter.callSampleListAdapter.get(i).getStock_balance(), SelectACProductAdapter.callSampleListAdapter.get(i).getStock_balance(), "", SelectACProductAdapter.callSampleListAdapter.get(i).getCategory()));
+        selectProductSideBinding.btnOk.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                for (int i = 0; i < SelectACProductAdapter.callSampleListAdapter.size(); i++) {
+                    if (SelectACProductAdapter.callSampleListAdapter.get(i).isCheckedItem()) {
+                        addedProductList.add(new AddSampleAdditionalCall(Selected_name, Selected_code, SelectACProductAdapter.callSampleListAdapter.get(i).getName(), SelectACProductAdapter.callSampleListAdapter.get(i).getCode(), SelectACProductAdapter.callSampleListAdapter.get(i).getStock_balance(), SelectACProductAdapter.callSampleListAdapter.get(i).getStock_balance(), "", SelectACProductAdapter.callSampleListAdapter.get(i).getCategory()));
+                    }
                 }
+                commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddSampleAdditional);
+                callDetailsSideBinding.rvAddSampleAdditional.setAdapter(AdditionalCallDetailedSide.adapterSampleAdditionalCall);
+                AdditionalCallDetailedSide.adapterSampleAdditionalCall.notifyDataSetChanged();
+                dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.GONE);
             }
-            commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddSampleAdditional);
-            callDetailsSideBinding.rvAddSampleAdditional.setAdapter(AdditionalCallDetailedSide.adapterSampleAdditionalCall);
-            AdditionalCallDetailedSide.adapterSampleAdditionalCall.notifyDataSetChanged();
-            dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.GONE);
         });
 
-        selectProductSideBinding.imgClose.setOnClickListener(view -> {
-            dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectProductSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectProductSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -97,7 +106,7 @@ public class AddCallSelectPrdSide extends Fragment {
             }
         });
 
-        return v;
+        return view;
     }
 
     private void filterPrd(String text) {

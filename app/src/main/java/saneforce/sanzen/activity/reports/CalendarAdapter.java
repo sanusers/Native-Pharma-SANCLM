@@ -16,6 +16,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickOneBuildInterface;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -24,8 +25,7 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 
-public class
-CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
+public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
     ArrayList<String> arrayList = new ArrayList<>();
     int id;
@@ -83,9 +83,9 @@ CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
                 e.printStackTrace();
             }
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View view) {
                 if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
                     if(!arrayList.get(holder.getAbsoluteAdapterPosition()).equals("")){
                         onDayClickedOneBuild.onDayClickedOneBuild(holder.getAbsoluteAdapterPosition(),arrayList.get(holder.getAbsoluteAdapterPosition()),new OneBuildModelClass()); // Used the same Interface class which used for TourPlan.So passing 1st and 3rd argument for no purpose
@@ -97,9 +97,9 @@ CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
                 }
             }
         });
-      /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
+      /*  holder.itemView.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSafeClick(View v) {
                 int position = holder.getAbsoluteAdapterPosition();
                 String selectedDay = arrayList.get(position);
 
@@ -108,18 +108,21 @@ CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
                 }
             }
         });*/
-        holder.itemView.setOnClickListener(view -> {
+        holder.itemView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 
-            String selectedDay = arrayList.get(position);
+                String selectedDay = arrayList.get(position);
 
-            if (!selectedDay.equals("")) {
-                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
-                    if (onDayClickedOneBuild != null) {
-                        onDayClickedOneBuild.onDayClickedOneBuild(position, selectedDay, new OneBuildModelClass());
-                    }
-                } else {
-                    if (onDayClickInterface != null) {
-                        onDayClickInterface.onDayClicked(position, selectedDay, new ModelClass());
+                if (!selectedDay.equals("")) {
+                    if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                        if (onDayClickedOneBuild != null) {
+                            onDayClickedOneBuild.onDayClickedOneBuild(position, selectedDay, new OneBuildModelClass());
+                        }
+                    } else {
+                        if (onDayClickInterface != null) {
+                            onDayClickInterface.onDayClicked(position, selectedDay, new ModelClass());
+                        }
                     }
                 }
             }

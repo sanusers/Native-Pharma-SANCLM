@@ -40,7 +40,7 @@ public class AdditionalCallFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         additionalCallBinding = FragmentAdditionalCallBinding.inflate(getLayoutInflater());
-        View v = additionalCallBinding.getRoot();
+        View view = additionalCallBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         dummyAdapter();
@@ -65,7 +65,7 @@ public class AdditionalCallFragment extends Fragment {
                 filter(editable.toString());
             }
         });
-        return v;
+        return view;
     }
 
     private void dummyAdapter() {

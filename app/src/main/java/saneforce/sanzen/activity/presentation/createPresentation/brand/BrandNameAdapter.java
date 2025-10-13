@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 
 public class BrandNameAdapter extends RecyclerView.Adapter<BrandNameAdapter.MyViewHolder> {

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.VisitStatsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.Constants;
@@ -38,21 +39,21 @@ public class AsOnCallsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_as_on_calls, container, false);
-        TextView name = v.findViewById(R.id.headerCustName);
-        TextView hq = v.findViewById(R.id.headerCustHq);
-        TextView desig = v.findViewById(R.id.headerCustDesig);
+        View view = inflater.inflate(R.layout.fragment_as_on_calls, container, false);
+        TextView name = view.findViewById(R.id.headerCustName);
+        TextView hq = view.findViewById(R.id.headerCustHq);
+        TextView desig = view.findViewById(R.id.headerCustDesig);
 
         name.setText(SharedPref.getSfName(requireContext()));
         hq.setText(SharedPref.getHqName(requireContext()));
         desig.setText(SharedPref.getDesig(requireContext()));
 
-        recyclerView = v.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
 
         custFilter();
-        return v;
+        return view;
 
     }
 

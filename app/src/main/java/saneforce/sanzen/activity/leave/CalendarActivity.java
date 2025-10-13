@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
