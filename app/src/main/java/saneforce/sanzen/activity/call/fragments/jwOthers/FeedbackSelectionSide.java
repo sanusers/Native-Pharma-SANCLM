@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -49,7 +50,7 @@ public class FeedbackSelectionSide extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectFbSideBinding = FragmentSelectFbSideBinding.inflate(inflater);
-        View v = selectFbSideBinding.getRoot();
+        View view = selectFbSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -58,16 +59,21 @@ public class FeedbackSelectionSide extends Fragment {
         feedbackName = "";
         feedbackCode = "";
 
-        selectFbSideBinding.tvDummy.setOnClickListener(view -> {
+        selectFbSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
 
-        selectFbSideBinding.imgClose.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(selectFbSideBinding.imgClose.getWindowToken(), 0);
-            selectFbSideBinding.searchList.setText("");
-            dcrCallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectFbSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(selectFbSideBinding.imgClose.getWindowToken(), 0);
+                selectFbSideBinding.searchList.setText("");
+                dcrCallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectFbSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -87,14 +93,14 @@ public class FeedbackSelectionSide extends Fragment {
             }
         });
 
-        selectFbSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectFbSideBinding.selectListView.setOnItemClickListener((adapterView, v, i, l) -> {
             feedbackCode = list_code.get(i);
             feedbackName = list_name.get(i);
             selectFbSideBinding.searchList.setText("");
             jwOthersBinding.tvFeedback.setText(selectFbSideBinding.selectListView.getItemAtPosition(i).toString());
             dcrCallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
         });
-        return v;
+        return view;
     }
 
 

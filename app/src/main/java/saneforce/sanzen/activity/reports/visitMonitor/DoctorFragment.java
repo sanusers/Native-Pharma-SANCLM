@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -93,21 +94,21 @@ public class DoctorFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     @Nullable
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.adapter_doctor_visit_report, container, false);
+        View view = inflater.inflate(R.layout.adapter_doctor_visit_report, container, false);
 
-        TextView doctorVst = v.findViewById(R.id.custTxt);
-        TextView totalDrTxt = v.findViewById(R.id.totalCust);
-        TextView monthTxt = v.findViewById(R.id.monthTxt);
-        TextView totalDrCnt = v.findViewById(R.id.totalCustCnt);
-        TextView visitedCnt = v.findViewById(R.id.visitedCnt);
-        TextView missedCnt = v.findViewById(R.id.missedCnt);
-        TextView FWDaysCnt = v.findViewById(R.id.FWDaysCnt);
-        TextView callAvgCnt = v.findViewById(R.id.callAvgCnt);
-        TextView callCvgCnt = v.findViewById(R.id.callCvgCnt);
+        TextView doctorVst = view.findViewById(R.id.custTxt);
+        TextView totalDrTxt = view.findViewById(R.id.totalCust);
+        TextView monthTxt = view.findViewById(R.id.monthTxt);
+        TextView totalDrCnt = view.findViewById(R.id.totalCustCnt);
+        TextView visitedCnt = view.findViewById(R.id.visitedCnt);
+        TextView missedCnt = view.findViewById(R.id.missedCnt);
+        TextView FWDaysCnt = view.findViewById(R.id.FWDaysCnt);
+        TextView callAvgCnt = view.findViewById(R.id.callAvgCnt);
+        TextView callCvgCnt = view.findViewById(R.id.callCvgCnt);
 
 
-        barChart = v.findViewById(R.id.barChartVisit);
-        pieChart = v.findViewById(R.id.pieChart_visit);
+        barChart = view.findViewById(R.id.barChartVisit);
+        pieChart = view.findViewById(R.id.pieChart_visit);
         pieChart.setVisibility(View.VISIBLE);
 
         roomDB = RoomDB.getDatabase(requireContext());
@@ -171,7 +172,7 @@ public class DoctorFragment extends Fragment {
             );
         }
 
-        return v;
+        return view;
     }
 
 

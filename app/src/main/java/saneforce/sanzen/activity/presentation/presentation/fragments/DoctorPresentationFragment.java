@@ -20,6 +20,7 @@ import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationA
 import saneforce.sanzen.activity.presentation.presentation.ShowSideScreenListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.FragmentCustomerPresentationBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
@@ -63,11 +64,14 @@ public class DoctorPresentationFragment extends Fragment {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        binding.createPresentationBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-//            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR);
-            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR_MAS);
-            startActivity(intent);
+        binding.createPresentationBtn.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
+                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR);
+//            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR_MAS);
+                startActivity(intent);
+            }
         });
 
         populateAdapter();

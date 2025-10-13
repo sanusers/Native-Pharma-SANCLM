@@ -62,13 +62,13 @@
             </View>
         </LinearLayout>
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <saneforce.sanzen.activity.call.fragments.signature.SignatureCanvas
                 android:id="@+id/sign_lyt"
                 android:layout_width="@dimen/_250sdp"
-                android:layout_height="@dimen/_195sdp"
+                android:layout_height="@dimen/_185sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_29sdp"
                 android:layout_marginEnd="@dimen/_5sdp"

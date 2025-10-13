@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.fragments.input.InputFragment;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
@@ -91,9 +92,14 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                 }
             }
         }
-        holder.tv_inp_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, saveCallInputLists.get(position).getInput_name()));
+        holder.tv_inp_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, saveCallInputLists.get(position).getInput_name());
+            }
+        });
 
-        holder.ed_inpQty.setOnTouchListener((v, event) -> {
+        holder.ed_inpQty.setOnTouchListener((view, event) -> {
             if (InputValidation.equalsIgnoreCase("1")) {
                 if (InpQtyRestriction.equalsIgnoreCase("0")) {
                     //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
@@ -244,32 +250,35 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
             }
         }
 
-        holder.img_del_inp.setOnClickListener(view -> {
-            try {
-                for (int j = 0; j < checked_arraylist.size(); j++) {
-                    if (checked_arraylist.get(j).getCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
-                        checked_arraylist.set(j, new CallCommonCheckedList(checked_arraylist.get(j).getName(), checked_arraylist.get(j).getCode(), checked_arraylist.get(j).getStock_balance(), false));
-                        break;
-                    }
-                }
-
-                for (int i = 0; i < StockInput.size(); i++) {
-                    int currentBalance;
-                    if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
-                        if (saveCallInputLists.get(position).getInp_qty().equalsIgnoreCase("0") || saveCallInputLists.get(position).getInp_qty().isEmpty()) {
-                            currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock());
-                        } else {
-                            currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock()) + Integer.parseInt(saveCallInputLists.get(position).getInp_qty());
+        holder.img_del_inp.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    for (int j = 0; j < checked_arraylist.size(); j++) {
+                        if (checked_arraylist.get(j).getCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
+                            checked_arraylist.set(j, new CallCommonCheckedList(checked_arraylist.get(j).getName(), checked_arraylist.get(j).getCode(), checked_arraylist.get(j).getStock_balance(), false));
+                            break;
                         }
-                        StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(currentBalance)));
                     }
-                }
 
-                checkInputListAdapter = new CheckInputListAdapter(activity, context, checked_arraylist, saveCallInputLists);
-                commonUtilsMethods.recycleTestWithDivider(InputFragment.fragmentInputBinding.rvCheckDataList);
-                InputFragment.fragmentInputBinding.rvCheckDataList.setAdapter(checkInputListAdapter);
-                removeAt(position);
-            } catch (Exception ignored) {
+                    for (int i = 0; i < StockInput.size(); i++) {
+                        int currentBalance;
+                        if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
+                            if (saveCallInputLists.get(position).getInp_qty().equalsIgnoreCase("0") || saveCallInputLists.get(position).getInp_qty().isEmpty()) {
+                                currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock());
+                            } else {
+                                currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock()) + Integer.parseInt(saveCallInputLists.get(position).getInp_qty());
+                            }
+                            StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(currentBalance)));
+                        }
+                    }
+
+                    checkInputListAdapter = new CheckInputListAdapter(activity, context, checked_arraylist, saveCallInputLists);
+                    commonUtilsMethods.recycleTestWithDivider(InputFragment.fragmentInputBinding.rvCheckDataList);
+                    InputFragment.fragmentInputBinding.rvCheckDataList.setAdapter(checkInputListAdapter);
+                    removeAt(position);
+                } catch (Exception ignored) {
+                }
             }
         });
     }

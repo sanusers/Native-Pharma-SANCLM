@@ -25,6 +25,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.DynamicSubMenuActivity;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.fragment.DayReportDetailFragment;
@@ -86,14 +87,15 @@ public class DynamicAdapter extends BaseAdapter {
         holder.textView.setText(menuModel.getMenu_Name());
         commonUtilsMethods = new CommonUtilsMethods(context);
 
-        holder.cardView.setOnClickListener(v -> {
-
+        holder.cardView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
                 Intent intent = new Intent(context, DynamicSubMenuActivity.class);
-                intent.putExtra("title",menuModel.getMenu_Name());
+                intent.putExtra("title", menuModel.getMenu_Name());
                 String Data = String.valueOf(menuModel.getMenu_Sub_Details());
-                intent.putExtra("menu_sub_details",Data);
+                intent.putExtra("menu_sub_details", Data);
                 context.startActivity(intent);
-
+            }
         });
         return convertView;
     }

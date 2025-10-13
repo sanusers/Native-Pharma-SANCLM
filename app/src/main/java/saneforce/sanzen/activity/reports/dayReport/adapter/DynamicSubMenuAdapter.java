@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.DynamicWebActivity;
 import saneforce.sanzen.activity.reports.ReportWebActivity;
 import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
@@ -46,12 +47,14 @@ public class DynamicSubMenuAdapter  extends RecyclerView.Adapter<DynamicSubMenuA
         SubMenuModel menuSubModel = subMenuModelArrayList.get(position);
 
         holder.titleTextView.setText(menuSubModel.getMenuName());
-        holder.itemView.setOnClickListener(v -> {
-
+        holder.itemView.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
                 Intent intent = new Intent(holder.itemView.getContext(), DynamicWebActivity.class);
                 intent.putExtra("url", menuSubModel.getMenuLink());
                 intent.putExtra("title", menuSubModel.getMenuName());
                 holder.itemView.getContext().startActivity(intent);
+            }
         });
     }
 

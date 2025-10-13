@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 
 public class InputAdapter extends RecyclerView.Adapter<InputAdapter.ViewHolder> {
@@ -37,9 +38,11 @@ public class InputAdapter extends RecyclerView.Adapter<InputAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull InputAdapter.ViewHolder holder, int position) {
         holder.tv_name.setText(getInputList.get(position).getInput_name());
         holder.tv_qty.setText(getInputList.get(position).getInp_qty());
-        holder.tv_name.setOnClickListener(v -> {
-            popUp(holder.tv_name,getInputList.get(position).getInput_name());
-
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                popUp(holder.tv_name, getInputList.get(position).getInput_name());
+            }
         });
     }
 
@@ -58,7 +61,7 @@ public class InputAdapter extends RecyclerView.Adapter<InputAdapter.ViewHolder> 
         }
     }
 
-    private void popUp(View v, String name) {
+    private void popUp(View view, String name) {
         PopupWindow popup = new PopupWindow(context);
         View layout = LayoutInflater.from(context).inflate(R.layout.popup_text, null);
         popup.setContentView(layout);
@@ -66,6 +69,6 @@ public class InputAdapter extends RecyclerView.Adapter<InputAdapter.ViewHolder> 
         TextView tv_name = layout.findViewById(R.id.tv_name);
         tv_name.setText(name);
         popup.setOutsideTouchable(true);
-        popup.showAsDropDown(v);
+        popup.showAsDropDown(view);
     }
 }

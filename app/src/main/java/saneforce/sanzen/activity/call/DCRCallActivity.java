@@ -75,6 +75,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
 import saneforce.sanzen.activity.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
@@ -403,7 +404,9 @@ public class DCRCallActivity extends AppCompatActivity {
             }
         });
 
-        dcrCallBinding.ivBack.setOnClickListener(view -> {
+        dcrCallBinding.ivBack.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 //            storingSlide.clear();
 //            if (isFromActivity.equalsIgnoreCase("new")) {
 //                callsUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
@@ -413,10 +416,13 @@ public class DCRCallActivity extends AppCompatActivity {
 //            } else {
 //                getOnBackPressedDispatcher().onBackPressed();
 //            }
-            handleCancel();
+                handleCancel();
+            }
         });
 
-        dcrCallBinding.btnCancel.setOnClickListener(view -> {
+        dcrCallBinding.btnCancel.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
 //                Dialog   dialog = new Dialog(this);
 //                dialog.setContentView(R.layout.dcr_cancel_alert);
 //                dialog.setCancelable(false);
@@ -447,11 +453,15 @@ public class DCRCallActivity extends AppCompatActivity {
 //            btn_no.setOnClickListener(view12 -> {
 //                dialog.dismiss();
 //            });
-            handleCancel();
+                handleCancel();
+            }
         });
 
-        dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
-            onSubmitClicked();
+        dcrCallBinding.btnFinalSubmit.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                onSubmitClicked();
+            }
         });
 
         assert isFromActivity != null;
@@ -584,27 +594,33 @@ public class DCRCallActivity extends AppCompatActivity {
         TextView btn_yes=dialog.findViewById(R.id.btn_yes);
         TextView btn_no=dialog.findViewById(R.id.btn_no);
 
-        btn_yes.setOnClickListener(view12 -> {
-            storingSlide.clear();
-            dialog.dismiss();
-            if (save_valid.equalsIgnoreCase("1")){
-                finish();
-            }else{
-                if (isFromActivity.equalsIgnoreCase("new")) {
-                    outboxUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                    outboxUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
-                    Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                storingSlide.clear();
+                dialog.dismiss();
+                if (save_valid.equalsIgnoreCase("1")) {
                     finish();
                 } else {
-                    getOnBackPressedDispatcher().onBackPressed();
+                    if (isFromActivity.equalsIgnoreCase("new")) {
+                        outboxUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                        outboxUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
+                        Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        getOnBackPressedDispatcher().onBackPressed();
+                    }
                 }
             }
         });
 
-        btn_no.setOnClickListener(view12 -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
 
     }
@@ -818,51 +834,60 @@ public class DCRCallActivity extends AppCompatActivity {
 
         dialogCheckOut.show();
 
-        refreshLocation.setOnClickListener(v -> {
-            try {
-                btnCheckOut.setEnabled(false);
-                stopClock();
-                startClock();
-                progressBar.setVisibility(View.VISIBLE);
-                gpsTrack = new GPSTrack(this);
-                gpsTrack.setLocationChangeListener(location -> {
-                    try {
-                        lat = location.getLatitude();
-                        lng = location.getLongitude();
-                        if(UtilityClass.isNetworkAvailable(this)) {
-                            address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
-                        }else {
-                            address = getString(R.string.no_address_found);
+        refreshLocation.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    btnCheckOut.setEnabled(false);
+                    stopClock();
+                    startClock();
+                    progressBar.setVisibility(View.VISIBLE);
+                    gpsTrack = new GPSTrack(DCRCallActivity.this);
+                    gpsTrack.setLocationChangeListener(location -> {
+                        try {
+                            lat = location.getLatitude();
+                            lng = location.getLongitude();
+                            if (UtilityClass.isNetworkAvailable(DCRCallActivity.this)) {
+                                address = CommonUtilsMethods.gettingAddress(DCRCallActivity.this, lat, lng, false);
+                            } else {
+                                address = getString(R.string.no_address_found);
+                            }
+
+                            tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", lat, lng));
+                            tv_address.setText(address);
+                            progressBar.setVisibility(View.GONE);
+                            btnCheckOut.setEnabled(true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                        tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", lat, lng));
-                        tv_address.setText(address);
-                        progressBar.setVisibility(View.GONE);
-                        btnCheckOut.setEnabled(true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        imgClose.setOnClickListener(v -> {
-            stopClock();
-            if(progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
+        imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                stopClock();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                dialogCheckOut.dismiss();
             }
-            dialogCheckOut.dismiss();
         });
 
-        btnCheckOut.setOnClickListener(v -> {
-            stopClock();
-            prepareCheckInOutJsonObject(checkInOutJsonObject);
-            commonUtilsMethods.showToastMessage(DCRCallActivity.this, "Checked-Out successfully...");
+        btnCheckOut.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                stopClock();
+                prepareCheckInOutJsonObject(checkInOutJsonObject);
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, "Checked-Out successfully...");
 //            onSubmitClicked();
-            callSubmit();
-            dialogCheckOut.dismiss();
+                callSubmit();
+                dialogCheckOut.dismiss();
+            }
         });
     }
 
@@ -919,12 +944,18 @@ public class DCRCallActivity extends AppCompatActivity {
         btn_yes.setText(getResources().getString(R.string.ok));
         content.setText("You have been idle for 2 minutes. Kindly Re-Check-Out");
 
-        btn_yes.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
 
-        btn_no.setOnClickListener(view -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 
@@ -1929,8 +1960,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     Log.d("jsonExtractOnline", "jsonExtractOnline: "+jsonEC);
                 }
             }
-            if (json.has("sign_Img") && !json.getString("sign_Img").isEmpty()) {
-                imageName = json.getString("sign_Img");
+            if (json.has("sign_Img") && !json.optString("sign_Img").isEmpty()) {
+                imageName = json.optString("sign_Img");
             }
 
             if (json.has("Dcr_activity") && !json.getString("Dcr_activity").equalsIgnoreCase("[]")) {
@@ -2246,8 +2277,8 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //Signature
-            if (json.has("sign_Img") && !json.getString("sign_Img").isEmpty()) {
-                imageName = json.getString("sign_Img");
+            if (json.has("sign_Img") && !json.optString("sign_Img").isEmpty()) {
+                imageName = json.optString("sign_Img");
             }
             //RCPA
             if (!json.getString("RCPAEntry").equalsIgnoreCase("[]")) {
@@ -2943,6 +2974,11 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             jsonSaveDcr.put("Remarks", jwOthersBinding.edRemarks.getText());
             if (isFromActivity.equalsIgnoreCase("edit_online")) {
+                jsonSaveDcr.put("amc", CallActivityCustDetails.get(0).getADetSlNo());
+                jsonSaveDcr.put("headerno",  CallActivityCustDetails.get(0).getTransNo());
+                jsonSaveDcr.put("detno",  CallActivityCustDetails.get(0).getADetSlNo());
+
+            } else if (isFromActivity.equalsIgnoreCase("edit_local")) {
                 jsonSaveDcr.put("amc", CallActivityCustDetails.get(0).getADetSlNo());
                 jsonSaveDcr.put("headerno",  CallActivityCustDetails.get(0).getTransNo());
                 jsonSaveDcr.put("detno",  CallActivityCustDetails.get(0).getADetSlNo());

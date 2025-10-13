@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.BusinessEntry.DoctorBusinessActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -44,7 +45,7 @@ public class HQFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectHQSideBinding = FragmentHqBinding.inflate(inflater);
-        View v = selectHQSideBinding.getRoot();
+        View view = selectHQSideBinding.getRoot();
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -54,15 +55,20 @@ public class HQFragment extends Fragment {
         hqCode = "";
         sel_hqcode = 0;
 
-        selectHQSideBinding.tvDummy.setOnClickListener(view -> {
+        selectHQSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {}
         });
 
-        selectHQSideBinding.imgClose.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(selectHQSideBinding.imgClose.getWindowToken(), 0);
-            selectHQSideBinding.searchList.setText("");
-            doctorbusinessEntryBinding.fragmentSelectHq.setVisibility(View.GONE);
-            UtilityClass.hideKeyboard(requireActivity());
+        selectHQSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(selectHQSideBinding.imgClose.getWindowToken(), 0);
+                selectHQSideBinding.searchList.setText("");
+                doctorbusinessEntryBinding.fragmentSelectHq.setVisibility(View.GONE);
+                UtilityClass.hideKeyboard(requireActivity());
+            }
         });
 
         selectHQSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -80,7 +86,7 @@ public class HQFragment extends Fragment {
             }
         });
 
-        selectHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        selectHQSideBinding.selectListView.setOnItemClickListener((adapterView, view1, i, l) -> {
             String selectedItem = (String) adapterView.getItemAtPosition(i);
             int originalIndex = list_name.indexOf(selectedItem);
             if(originalIndex != -1) {
@@ -92,7 +98,7 @@ public class HQFragment extends Fragment {
             doctorbusinessEntryBinding.edtFieldforce.setText(selectedItem);
             doctorbusinessEntryBinding.fragmentSelectHq.setVisibility(View.GONE);
         });
-        return v;
+        return view;
     }
 
     private void SetupAdapter() {

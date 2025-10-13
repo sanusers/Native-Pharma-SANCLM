@@ -41,6 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.AddDoctorEntryProducts;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.ProductListModel;
 import saneforce.sanzen.activity.BusinessEntry.adapter.DoctorBusinessProductListAdapter;
@@ -137,21 +138,21 @@ public class DocBusinessProductList  extends AppCompatActivity {
 
         docbusinessProductListBinding.drBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 handleCancel();
             }
         });
 
         docbusinessProductListBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 handleCancel();
             }
         });
 
         docbusinessProductListBinding.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 docbusinessProductListBinding.btnSave.setEnabled(false);
                 JSONObject json = CommonUtilsMethods.CommonObjectParameter(DocBusinessProductList.this);
                 try {
@@ -317,12 +318,18 @@ public class DocBusinessProductList  extends AppCompatActivity {
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
 
-        btn_yes.setOnClickListener(view12 -> {
-            getOnBackPressedDispatcher().onBackPressed();
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
-        btn_no.setOnClickListener(view12 -> {
-            dialog.dismiss();
+        btn_no.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
         });
     }
 

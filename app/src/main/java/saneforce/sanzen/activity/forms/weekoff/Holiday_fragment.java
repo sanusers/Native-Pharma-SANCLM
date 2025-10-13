@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -46,17 +47,17 @@ public class Holiday_fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.holiday_fragment, container, false);
-        weeklist = v.findViewById(R.id.weeklist);
-        holy_year = v.findViewById(R.id.holy_year);
-        constraintNoData = v.findViewById(R.id.constraint_no_data);
+        View view = inflater.inflate(R.layout.holiday_fragment, container, false);
+        weeklist = view.findViewById(R.id.weeklist);
+        holy_year = view.findViewById(R.id.holy_year);
+        constraintNoData = view.findViewById(R.id.constraint_no_data);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
 
         holiday_avalabledetails();
-        return v;
+        return view;
     }
 
     @SuppressLint("NotifyDataSetChanged")

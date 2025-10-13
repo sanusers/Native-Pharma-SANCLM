@@ -25,6 +25,8 @@ import java.util.logging.Handler;
 import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -33,6 +35,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
     ArrayList<EventCaptureModelClass>  List;
     Context context;
 
+    ProgressDialog progressDialog;
     public EventDetailsCapture(ArrayList<EventCaptureModelClass> list, Context context) {
         List = list;
         this.context = context;
@@ -51,71 +54,71 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
          holder.Description.setText(List.get(position).getRemarks());
 
 
-         holder.Imageview.setOnClickListener(view -> {
-
-             ProgressDialog progressDialog = new ProgressDialog(context);
-             if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+         holder.Imageview.setOnClickListener(new SafeClickListener() {
+             @Override
+             public void onSafeClick(View view) {
+                 progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                 Log.e("TAG", "onSafeClick: "+"111" );
                  progressDialog.show();
-                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                 View view1  = LayoutInflater.from(context).inflate(R.layout.eventimageitem, null);
-                 dialog.setView(view1);
-                 TextView tiitle=view1.findViewById(R.id.tv_txt);
-                 tiitle.setVisibility(View.GONE);
-                 TextView tiitle1=view1.findViewById(R.id.tv_txt1);
-                 tiitle1.setVisibility(View.GONE);
-                 ImageView imageView=view1.findViewById(R.id.image);
-                 AlertDialog dialog1=dialog.create();
+//                 ProgressDialog progressDialog = new ProgressDialog(context);
+                 if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                     AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                     View view1 = LayoutInflater.from(context).inflate(R.layout.eventimageitem, null);
+                     dialog.setView(view1);
+                     TextView tiitle = view1.findViewById(R.id.tv_txt);
+                     tiitle.setVisibility(View.GONE);
+                     TextView tiitle1 = view1.findViewById(R.id.tv_txt1);
+                     tiitle1.setVisibility(View.GONE);
+                     ImageView imageView = view1.findViewById(R.id.image);
+                     AlertDialog dialog1 = dialog.create();
 //             dialog1.show();
-                 String imageName = List.get(position).getEventimg().replace("photos/","");
-                 String fileName  = imageName;
+                     String imageName = List.get(position).getEventimg().replace("photos/", "");
+                     String fileName = imageName;
 
 
+                     if (Objects.requireNonNull(fileName).isEmpty()) {
 
+                     } else {
+                         File file = new File(context.getFilesDir(), fileName);
+                         Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
 
-                 if (Objects.requireNonNull(fileName).isEmpty()) {
-
-                 }else {
-                     File file = new File(context.getFilesDir(),fileName);
-                     Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
-
-                     /*String getFile = SharedPref.getDivisionName((Activity) context);*/
-                     new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
-                         @Override
-                         public void fileDataAdd(int pos, Bitmap bitmap) {
-                             if (bitmap != null) {
-                                 Log.d("bitmap image", "Image successfully loaded.");
-                                 holder.Imageview.setImageBitmap(bitmap);
-                                 holder.Imageview.setVisibility(View.VISIBLE);
-                                 imageView.setImageBitmap(bitmap);
-                                 dialog.show();
-                                 progressDialog.dismiss();
-                             } else {
-                                 Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                                 holder.Imageview.setVisibility(View.GONE);
+                         /*String getFile = SharedPref.getDivisionName((Activity) context);*/
+                         new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
+                             @Override
+                             public void fileDataAdd(int pos, Bitmap bitmap) {
+                                 if (bitmap != null) {
+                                     Log.d("bitmap image", "Image successfully loaded.");
+                                     holder.Imageview.setImageBitmap(bitmap);
+                                     holder.Imageview.setVisibility(View.VISIBLE);
+                                     imageView.setImageBitmap(bitmap);
+                                     dialog.show();
+                                     progressDialog.dismiss();
+                                 } else {
+                                     Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                                     holder.Imageview.setVisibility(View.GONE);
+                                 }
                              }
-                         }
-                     });
+                         });
+                     }
+                 } else {
+                     AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                     View view1 = LayoutInflater.from(context).inflate(R.layout.eventimageitem, null);
+                     dialog.setView(view1);
+                     TextView tiitle = view1.findViewById(R.id.tv_txt);
+                     tiitle.setVisibility(View.GONE);
+                     TextView tiitle1 = view1.findViewById(R.id.tv_txt1);
+                     tiitle1.setVisibility(View.GONE);
+                     ImageView imageView = view1.findViewById(R.id.image);
+                     AlertDialog dialog1 = dialog.create();
+                     dialog1.show();
+                     Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
+                     progressDialog.dismiss();
                  }
-             }else{
-                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                 View view1  = LayoutInflater.from(context).inflate(R.layout.eventimageitem, null);
-                 dialog.setView(view1);
-                 TextView tiitle=view1.findViewById(R.id.tv_txt);
-                 tiitle.setVisibility(View.GONE);
-                 TextView tiitle1=view1.findViewById(R.id.tv_txt1);
-                 tiitle1.setVisibility(View.GONE);
-                 ImageView imageView=view1.findViewById(R.id.image);
-                 AlertDialog dialog1=dialog.create();
-                 dialog1.show();
-                 Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
-                 progressDialog.dismiss();
-             }
 
 //             Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
 //             }
+             }
          });
-
-
     }
 
 

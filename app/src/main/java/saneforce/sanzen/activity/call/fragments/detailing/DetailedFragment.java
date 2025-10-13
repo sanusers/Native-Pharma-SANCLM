@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.adapter.detailing.DetailedFinalCallAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -32,13 +33,13 @@ public class DetailedFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_detailied, container, false);
+        View view = inflater.inflate(R.layout.fragment_detailied, container, false);
         Log.v("fragment", "detailed");
-        rv_detailing_list = v.findViewById(R.id.rv_detailing_list);
+        rv_detailing_list = view.findViewById(R.id.rv_detailing_list);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         dummyAdapter();
-        return v;
+        return view;
     }
 
     private void dummyAdapter() {

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.commonClasses.Constants;
@@ -56,50 +57,56 @@ public class HQSelector {
     }
 
     private static void setupClickForOneBuild(Fragment fragment, TextView tv_hqName, ImageView img_drop_down, MasterDataDao masterDataDao, LayoutInflater inflater, OnHQChangeListener hqChangeListener) {
-        tv_hqName.setOnClickListener(view -> {
-            try {
-                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                ArrayList<String> list = new ArrayList<>();
+        tv_hqName.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+                    ArrayList<String> list = new ArrayList<>();
 
-                if (jsonArray.length() > 0) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if ((WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.equalsIgnoreCase(jsonObject.optString("id")) && WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F")) || (WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.equalsIgnoreCase(jsonObject.optString("id")) && WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F"))) {
-                            list.add(jsonObject.getString("name"));
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if ((WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.equalsIgnoreCase(jsonObject.optString("id")) && WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F")) || (WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.equalsIgnoreCase(jsonObject.optString("id")) && WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F"))) {
+                                list.add(jsonObject.getString("name"));
+                            }
                         }
                     }
+
+                    showDialog(fragment, inflater, tv_hqName, jsonArray, list, hqChangeListener);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                showDialog(fragment, inflater, tv_hqName, jsonArray, list, hqChangeListener);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+                UtilityClass.hideKeyboard(fragment.requireActivity());
             }
-            UtilityClass.hideKeyboard(fragment.requireActivity());
         });
     }
 
     private static void setupClickForMultiHQ(Fragment fragment, TextView tv_hqName, MasterDataDao masterDataDao, LayoutInflater inflater, OnHQChangeListener hqChangeListener) {
-        tv_hqName.setOnClickListener(view -> {
-            try {
-                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                ArrayList<String> list = new ArrayList<>();
+        tv_hqName.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                try {
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+                    ArrayList<String> list = new ArrayList<>();
 
-                if (jsonArray.length() > 0) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (SharedPref.getMultiHQCode(fragment.requireContext()).contains(jsonObject.optString("id"))) {
-                            list.add(jsonObject.optString("name"));
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if (SharedPref.getMultiHQCode(fragment.requireContext()).contains(jsonObject.optString("id"))) {
+                                list.add(jsonObject.optString("name"));
+                            }
                         }
                     }
+
+                    showDialog(fragment, inflater, tv_hqName, jsonArray, list, hqChangeListener);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                showDialog(fragment, inflater, tv_hqName, jsonArray, list, hqChangeListener);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+                UtilityClass.hideKeyboard(fragment.requireActivity());
             }
-            UtilityClass.hideKeyboard(fragment.requireActivity());
         });
     }
 

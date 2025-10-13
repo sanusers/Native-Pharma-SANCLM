@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -68,7 +69,12 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         holder.tv_brand_name.setText(callDetailingLists.get(position).getBrandName());
         holder.tv_timeline.setText(callDetailingLists.get(position).getDuration());
         holder.ratingBar.setRating(Float.parseFloat(String.valueOf(callDetailingLists.get(position).getRating())));
-        holder.tv_brand_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, callDetailingLists.get(position).getBrandName()));
+        holder.tv_brand_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, callDetailingLists.get(position).getBrandName());
+            }
+        });
 
         if (!callDetailingLists.get(position).getFeedback().isEmpty()) {
             holder.img_feedback.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_feedback_red));
@@ -79,80 +85,96 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                 callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSt_end_time(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getStartTime(),
                 Math.round(rating), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getFeedback(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getDate(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getDuration())));
 
-        holder.img_feedback.setOnClickListener(v -> {
-            dialogFeedback = new Dialog(context);
-            dialogFeedback.setContentView(R.layout.popup_detailing_feedback);
-            Objects.requireNonNull(dialogFeedback.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialogFeedback.setCancelable(false);
+        holder.img_feedback.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogFeedback = new Dialog(context);
+                dialogFeedback.setContentView(R.layout.popup_detailing_feedback);
+                Objects.requireNonNull(dialogFeedback.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialogFeedback.setCancelable(false);
 
-            ImageView iv_close = dialogFeedback.findViewById(R.id.img_close);
-            EditText ed_remark = dialogFeedback.findViewById(R.id.ed_remark);
-            Button btn_clear = dialogFeedback.findViewById(R.id.btn_clear);
-            Button btn_save = dialogFeedback.findViewById(R.id.btn_save);
-            ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark,250)});
+                ImageView iv_close = dialogFeedback.findViewById(R.id.img_close);
+                EditText ed_remark = dialogFeedback.findViewById(R.id.ed_remark);
+                Button btn_clear = dialogFeedback.findViewById(R.id.btn_clear);
+                Button btn_save = dialogFeedback.findViewById(R.id.btn_save);
+                ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark, 250)});
 
-            if (!callDetailingLists.get(holder.getBindingAdapterPosition()).getFeedback().isEmpty()) {
-                ed_remark.setText(callDetailingLists.get(holder.getBindingAdapterPosition()).getFeedback());
-            }
-
-            iv_close.setOnClickListener(view1 -> {
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
-                ed_remark.setText("");
-                dialogFeedback.dismiss();
-            });
-
-
-            btn_clear.setOnClickListener(view12 -> {
-                ed_remark.setText("");
-                ed_remark.setHint("Type your feedback");
-            });
-
-
-            btn_save.setOnClickListener(view13 -> {
-                if (!TextUtils.isEmpty(ed_remark.getText().toString())) {
-                    callDetailingLists.set(holder.getAbsoluteAdapterPosition(), new CallDetailingList(callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandName(),
-                            callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandCode(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideName(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideType(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideUrl(),
-                            callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSt_end_time(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getStartTime(),
-                            callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getRating(), ed_remark.getText().toString(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getDate(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getDuration()));
-                    dialogFeedback.dismiss();
-                    holder.img_feedback.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_feedback_red));
-                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
-                } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_feedback));
+                if (!callDetailingLists.get(holder.getBindingAdapterPosition()).getFeedback().isEmpty()) {
+                    ed_remark.setText(callDetailingLists.get(holder.getBindingAdapterPosition()).getFeedback());
                 }
-            });
-            dialogFeedback.show();
-        });
 
-        holder.info.setOnClickListener(view -> {
-            TreeMap<String, String> timeline = new TreeMap<>();
-            try {
-                for(StoreImageTypeUrl storeImageTypeUrl : arrayStore) {
-                    if(storeImageTypeUrl.getBrdCode().equalsIgnoreCase(callDetailingLists.get(position).getBrandCode())) {
-                        JSONArray jsonArray = new JSONArray(storeImageTypeUrl.getRemTime());
-                        if(jsonArray.length() > 0) {
-                            String format = TimeUtils.FORMAT_32;
-                            if(isFromActivity.equalsIgnoreCase("edit_local")) format = TimeUtils.FORMAT_1;
-                            for (int i = 0; i<jsonArray.length() - 1; i++) {
-                                String startTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("sT")),
-                                        endTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("eT"));
-                                timeline.put(jsonArray.getJSONObject(i).getString("sT"), String.format("%s~%s~%s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
-                            }
-                            String startTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT")),
-                                    endTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("eT"));
-                            timeline.put(jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT"), String.format("%s~%s~%s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
+                iv_close.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
+                        ed_remark.setText("");
+                        dialogFeedback.dismiss();
+                    }
+                });
+
+
+                btn_clear.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        ed_remark.setText("");
+                        ed_remark.setHint("Type your feedback");
+                    }
+                });
+
+
+                btn_save.setOnClickListener(new SafeClickListener() {
+                    @Override
+                    public void onSafeClick(View view) {
+                        if (!TextUtils.isEmpty(ed_remark.getText().toString())) {
+                            callDetailingLists.set(holder.getAbsoluteAdapterPosition(), new CallDetailingList(callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandName(),
+                                                                                                              callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandCode(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideName(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideType(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideUrl(),
+                                                                                                              callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSt_end_time(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getStartTime(),
+                                                                                                              callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getRating(), ed_remark.getText().toString(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getDate(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getDuration()));
+                            dialogFeedback.dismiss();
+                            holder.img_feedback.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_feedback_red));
+                            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_feedback));
                         }
                     }
-                }
+                });
+                dialogFeedback.show();
+            }
+        });
+
+        holder.info.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                TreeMap<String, String> timeline = new TreeMap<>();
+                try {
+                    for (StoreImageTypeUrl storeImageTypeUrl : arrayStore) {
+                        if (storeImageTypeUrl.getBrdCode().equalsIgnoreCase(callDetailingLists.get(position).getBrandCode())) {
+                            JSONArray jsonArray = new JSONArray(storeImageTypeUrl.getRemTime());
+                            if (jsonArray.length() > 0) {
+                                String format = TimeUtils.FORMAT_32;
+                                if (isFromActivity.equalsIgnoreCase("edit_local"))
+                                    format = TimeUtils.FORMAT_1;
+                                for (int i = 0; i < jsonArray.length() - 1; i++) {
+                                    String startTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("sT")),
+                                            endTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("eT"));
+                                    timeline.put(jsonArray.getJSONObject(i).getString("sT"), String.format("%s~%s~%s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
+                                }
+                                String startTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT")),
+                                        endTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("eT"));
+                                timeline.put(jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT"), String.format("%s~%s~%s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
+                            }
+                        }
+                    }
 //                for (String key: timeline.keySet()) {
 //                    stringBuilder.append(timeline.get(key));
 //                    if(!key.equalsIgnoreCase(timeline.lastKey())) stringBuilder.append("\n");
 //                }
-                showTimelinePopUp(view, new ArrayList<>(timeline.values()));
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    showTimelinePopUp(view, new ArrayList<>(timeline.values()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -180,7 +202,12 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         view.getLocationOnScreen(location);
         popupWindow.setOutsideTouchable(true);
         ImageView close = popupView.findViewById(R.id.img_close);
-        close.setOnClickListener(closeView -> popupWindow.dismiss());
+        close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int width = popupView.getMeasuredWidth();
         int height = popupView.getMeasuredHeight();

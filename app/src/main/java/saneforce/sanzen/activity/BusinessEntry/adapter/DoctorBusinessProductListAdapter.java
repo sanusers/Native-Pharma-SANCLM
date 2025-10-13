@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.AddDoctorEntryProducts;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -103,8 +104,11 @@ public class DoctorBusinessProductListAdapter extends RecyclerView.Adapter<Docto
         };
         holder.BusinessQty.addTextChangedListener(holder.qtyTextWatcher);
 
-        holder.tv_name.setOnClickListener(view -> {
-            commonUtilsMethods.displayPopupWindow(context, view, item.getName());
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context, view, item.getName());
+            }
         });
     }
 

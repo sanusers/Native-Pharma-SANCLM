@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.FillteredInterfacce;
 
@@ -59,9 +60,12 @@ public class FillteredAdapter extends BaseAdapter {
             textView.setText(dataList.get(i).getName());
         }
 
-        linearLayout.setOnClickListener(view -> {
-            if(dataList.size() > i) {
-                interfacce.ChooseValues(dataList.get(i));
+        linearLayout.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (dataList.size() > i) {
+                    interfacce.ChooseValues(dataList.get(i));
+                }
             }
         });
 /*        editText.addTextChangedListener(new TextWatcher() {

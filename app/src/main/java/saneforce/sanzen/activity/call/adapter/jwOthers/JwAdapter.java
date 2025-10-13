@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JointWorkSelectionSide;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;

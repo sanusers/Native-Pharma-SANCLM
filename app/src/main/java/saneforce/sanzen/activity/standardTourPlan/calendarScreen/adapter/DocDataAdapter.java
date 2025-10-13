@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DocDataModel;
 
 public class DocDataAdapter extends RecyclerView.Adapter<DocDataAdapter.MyViewHolder> {

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 
 public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.ViewHolder> {
@@ -104,6 +105,12 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
         }
 
         holder.number.setText((position + 1) + ")");
+
+        holder.itemView.setOnClickListener(new SafeClickListener() {
+                                               @Override
+                                               public void onSafeClick(View view) {}
+            // Your click action here
+        });
     }
 //        DoctorVisitItem item = doctorList.get(position);
 //        holder.textDoctor.setText(checkEmpty(item.getName()));

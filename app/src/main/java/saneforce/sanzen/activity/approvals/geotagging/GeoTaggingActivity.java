@@ -40,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
@@ -130,61 +131,70 @@ public class GeoTaggingActivity extends AppCompatActivity {
 
         CallGeoTagApi();
 
-        geoTaggingBinding.ivFilter.setOnClickListener(v -> {
-            Context wrapper = new ContextThemeWrapper(getApplicationContext(), R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, geoTaggingBinding.ivFilter, Gravity.END);
+        geoTaggingBinding.ivFilter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Context wrapper = new ContextThemeWrapper(getApplicationContext(), R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, geoTaggingBinding.ivFilter, Gravity.END);
 
-            popup.getMenu().add(0, 0, 0, "All");
-            if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(1, 1, 1, SharedPref.getDrCap(this));
-            if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(2, 2, 2, SharedPref.getChmCap(context));
-            if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(3, 3, 3, SharedPref.getStkCap(context));
-            if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(4, 4, 4, SharedPref.getUNLcap(context));
-            if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(5, 5, 5, SharedPref.getHospCaption(context));
-            if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(6, 6, 6, SharedPref.getCipCaption(context));
-            popup.getMenu().add(7, 7, 7, "By Name      A - Z");
-            popup.getMenu().add(8, 8, 8, "By Name      Z - A");
-            popup.getMenu().add(9, 9, 9, "By Date      Newer - Older");
-            popup.getMenu().add(10, 10, 10, "By Date      Older - Newer");
-            popup.setOnMenuItemClickListener(menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case 0:
+                popup.getMenu().add(0, 0, 0, "All");
+                if (SharedPref.getDrNeed(GeoTaggingActivity.this).equalsIgnoreCase("0"))
+                    popup.getMenu().add(1, 1, 1, SharedPref.getDrCap(GeoTaggingActivity.this));
+                if (SharedPref.getChmNeed(GeoTaggingActivity.this).equalsIgnoreCase("0"))
+                    popup.getMenu().add(2, 2, 2, SharedPref.getChmCap(GeoTaggingActivity.this));
+                if (SharedPref.getStkNeed(GeoTaggingActivity.this).equalsIgnoreCase("0"))
+                    popup.getMenu().add(3, 3, 3, SharedPref.getStkCap(GeoTaggingActivity.this));
+                if (SharedPref.getUnlNeed(GeoTaggingActivity.this).equalsIgnoreCase("0"))
+                    popup.getMenu().add(4, 4, 4, SharedPref.getUNLcap(GeoTaggingActivity.this));
+                if (SharedPref.getHospNeed(GeoTaggingActivity.this).equalsIgnoreCase("0"))
+                    popup.getMenu().add(5, 5, 5, SharedPref.getHospCaption(GeoTaggingActivity.this));
+                if (SharedPref.getCipNeed(GeoTaggingActivity.this).equalsIgnoreCase("0"))
+                    popup.getMenu().add(6, 6, 6, SharedPref.getCipCaption(GeoTaggingActivity.this));
+                popup.getMenu().add(7, 7, 7, "By Name      A - Z");
+                popup.getMenu().add(8, 8, 8, "By Name      Z - A");
+                popup.getMenu().add(9, 9, 9, "By Date      Newer - Older");
+                popup.getMenu().add(10, 10, 10, "By Date      Older - Newer");
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    switch (menuItem.getItemId()) {
+                        case 0:
 
-                        SortTable("All");
-                        break;
-                    case 1:
-                        SortTable("D");
-                        break;
-                    case 2:
-                        SortTable("C");
-                        break;
-                    case 3:
-                        SortTable("S");
-                        break;
-                    case 4:
-                        SortTable("U");
-                        break;
-                    case 5:
-                        SortTable("H");
-                        break;
-                    case 6:
-                        SortTable("CIP");
-                        break;
-                    case 7:
-                        SortTable("By Name      A - Z");
-                        break;
-                    case 8:
-                        SortTable("By Name      Z - A");
-                        break;
-                    case 9:
-                        SortTable("By Date      Newer - Older");
-                        break;
-                    case 10:
-                        SortTable("By Date      Older - Newer");
-                        break;
-                }
-                return true;
-            });
-            popup.show();
+                            SortTable("All");
+                            break;
+                        case 1:
+                            SortTable("D");
+                            break;
+                        case 2:
+                            SortTable("C");
+                            break;
+                        case 3:
+                            SortTable("S");
+                            break;
+                        case 4:
+                            SortTable("U");
+                            break;
+                        case 5:
+                            SortTable("H");
+                            break;
+                        case 6:
+                            SortTable("CIP");
+                            break;
+                        case 7:
+                            SortTable("By Name      A - Z");
+                            break;
+                        case 8:
+                            SortTable("By Name      Z - A");
+                            break;
+                        case 9:
+                            SortTable("By Date      Newer - Older");
+                            break;
+                        case 10:
+                            SortTable("By Date      Older - Newer");
+                            break;
+                    }
+                    return true;
+                });
+                popup.show();
+            }
         });
 
         geoTaggingBinding.searchGeoTagging.addTextChangedListener(new TextWatcher() {
@@ -204,7 +214,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
             }
         });
 
-        geoTaggingBinding.ivBack.setOnClickListener(v -> {
+        geoTaggingBinding.ivBack.setOnClickListener(view -> {
             Intent intent = new Intent(GeoTaggingActivity.this, ApprovalsActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

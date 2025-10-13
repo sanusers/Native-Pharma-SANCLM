@@ -32,6 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -98,26 +99,35 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_cip_img));
                 break;
         }
-        holder.tag_view.setOnClickListener(v -> {
-            Intent intent = new Intent(context, MapsActivity.class);
-            intent.putExtra("from", "view_tag_approval");
-            geoTagViewList.clear();
-            geoTagViewList.add(new GeoTaggingModelList(geoTaggingModelLists.get(position).getName(), geoTaggingModelLists.get(position).getLatitude(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getAddress()));
-         //   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        });
-        holder.btn_approved.setOnClickListener(v -> {
-            if (UtilityClass.isNetworkAvailable(context)){
-                CallApi("0", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(),holder);
-            }else {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
+        holder.tag_view.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Intent intent = new Intent(context, MapsActivity.class);
+                intent.putExtra("from", "view_tag_approval");
+                geoTagViewList.clear();
+                geoTagViewList.add(new GeoTaggingModelList(geoTaggingModelLists.get(position).getName(), geoTaggingModelLists.get(position).getLatitude(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getAddress()));
+                //   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         });
-        holder.btn_rejected.setOnClickListener(v -> {
-            if (UtilityClass.isNetworkAvailable(context)) {
-                CallApi("2", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(), holder);
-            }else {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
+        holder.btn_approved.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    CallApi("0", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(), holder);
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
+                }
+            }
+        });
+        holder.btn_rejected.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    CallApi("2", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(), holder);
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
+                }
             }
         });
 
