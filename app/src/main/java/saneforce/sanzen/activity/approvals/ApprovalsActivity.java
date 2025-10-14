@@ -1,6 +1,6 @@
 package saneforce.sanzen.activity.approvals;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -165,7 +165,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/approvals");
-        Call<JsonElement> callGetCountApprovals = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGetCount.toString());
+        Call<JsonElement> callGetCountApprovals = api_interface.getJSONElement(SharedPref.getCallApiUrl(ApprovalsActivity.this), mapString,jsonGetCount.toString());
         callGetCountApprovals.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -212,19 +212,19 @@ public class ApprovalsActivity extends AppCompatActivity {
     private void AssignCountValues() {
         Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount + "---" + GeoTagCount);
         list_approvals.add(new AdapterModel(getResources().getString(R.string.leave_approvals), String.valueOf(LeaveCount)));
-        if (SharedPref.getTpNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getTpNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
             list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
         }
-        if (SharedPref.getDcrApprovalNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getDcrApprovalNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
             list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
         }
-        if (SharedPref.getTpdcrMgrappr(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getTpdcrMgrappr(ApprovalsActivity.this).equalsIgnoreCase("0")) {
             list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
         }
-        if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getGeotagApprovalNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
             list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), String.valueOf(GeoTagCount)));
         }
-        if (SharedPref.getStpApprNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getStpApprNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
             list_approvals.add(new AdapterModel(getResources().getString(R.string.standard_tour_plan), String.valueOf(STPCount)));
         }
 

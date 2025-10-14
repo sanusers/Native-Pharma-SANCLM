@@ -51,6 +51,8 @@ import java.util.ArrayList;
 import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.myresource.myresourcemodel.ResourcerviewModelClass;
 import saneforce.sanzen.commonClasses.Constants;
@@ -59,6 +61,7 @@ import saneforce.sanzen.databinding.ActivityMyResourceMapviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.NetworkStatusTask;
 
 public class MyResource_mapview extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -71,6 +74,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     ActivityMyResourceMapviewBinding binding;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    CommonUtilsMethods commonUtilsMethods;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +90,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         limitKm = Double.parseDouble(SharedPref.getDisRad(this));
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
         CurrentLat = gpsTrack.getLatitude();
         CurrentLong = gpsTrack.getLongitude();
@@ -111,18 +116,18 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         double getDistance = getDistanceMeters(CurrentLat, CurrentLong, marker.getPosition().latitude, marker.getPosition().longitude);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), 18.0f));
 
-        if(marker.getSnippet() != null) {
+        if (marker.getSnippet() != null) {
             String[] snippetData = marker.getSnippet().split("@");
-            if(snippetData.length>0) {
+            if (snippetData.length > 0) {
                 ImageName = snippetData[1];
                 binding.address.setText(snippetData[0]);
-                if(getDistance>1000) {
+                if (getDistance > 1000) {
                     getDistance = getDistance / 1000;
                     DecimalFormat decFor = new DecimalFormat("0.00");
                     getDistance = parseDouble(decFor.format(getDistance));
                     binding.distance.setText(String.valueOf(getDistance));
                     binding.disName.setText("Km");
-                }else {
+                } else {
                     binding.distance.setText(String.valueOf(getDistance));
                     binding.disName.setText("Meters");
                 }
@@ -153,16 +158,16 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         if (SharedPref.getGeotagImg(this).equalsIgnoreCase("0")) {
             if (loclist != null && !loclist.isEmpty() && !loclist.get(0).getImageName().isEmpty()) {
                 binding.viewImg.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 binding.viewImg.setVisibility(View.GONE);
             }
-        }else {
+        } else {
             binding.viewImg.setVisibility(View.GONE);
         }
     }
     private void parseJsonData(String jsonResponse) {
         try {
-            if(mMap != null) {
+            if (mMap != null) {
                 mMap.clear();
             }
             JSONArray jsonArray = new JSONArray(jsonResponse);
@@ -256,53 +261,68 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     public static double milesToMeters(double miles) {
         return miles * 1609.344;
     }
+
     private void showImagePopup() {
         ImageName = loclist.get(0).getImageName();
         String fileName = ImageName;
         if (fileName.isEmpty()) {
             return;
         }
-        if(SharedPref.getS3BucketNeed(getApplicationContext()).equalsIgnoreCase("0")) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            LayoutInflater inflater = getLayoutInflater();
-            View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
-            ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
-            ImageButton closeButton = dialogView.findViewById(R.id.close_button);
-            ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
+        if (SharedPref.getS3BucketNeed(getApplicationContext()).equalsIgnoreCase("0")) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, new NetworkStatusTask.NetworkStatusInterface() {
+                @Override
+                public void isNetworkAvailable(Boolean status) {
+                    if (status){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        LayoutInflater inflater = getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
+                        ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
+                        ImageButton closeButton = dialogView.findViewById(R.id.close_button);
+                        ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
 //        ImageView popupImageView = dialog.findViewById(R.id.img_dr_content);
-            fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
-            builder.setView(dialogView);
-            AlertDialog dialog_fullScreen = builder.create();
-            fullScreenImage.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-            dialog_fullScreen.show();
-            dialog_fullScreen.getWindow().setLayout(
-                    (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
-                    (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
-            );
-            if (ImageName == null || ImageName.isEmpty() || ImageName.contains("noimage") || ImageName.endsWith(".jpg")) {
-                Log.d("Image Name", "showImagePopup: " + "no image Found");
-            } else {
-                TransferNetworkLossHandler.getInstance(getApplicationContext());
-                File MapView = new File(MyResource_mapview.this.getFilesDir(), fileName);
-                Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
-                new AWSBucketsTag(MyResource_mapview.this, fileName, MapView, 0, "", new S3DownloadFiles() {
-                    @Override
-                    public void fileDataAdd(int pos, Bitmap bitmap) {
-                        if (bitmap != null) {
-                            Log.d("bitmap image", "image: " + "bitmap map is not null");
-                            fullScreenImage.setImageBitmap(bitmap);
-                            fullScreenImage.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
+                        fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+                        builder.setView(dialogView);
+                        AlertDialog dialog_fullScreen = builder.create();
+                        fullScreenImage.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
+                        dialog_fullScreen.show();
+                        dialog_fullScreen.getWindow().setLayout(
+                                (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
+                                (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
+                        );
+                        if (ImageName == null || ImageName.isEmpty() || ImageName.contains("noimage") || ImageName.endsWith(".jpg")) {
+                            Log.d("Image Name", "showImagePopup: " + "no image Found");
                         } else {
-                            Log.d("bitmap image", "image: " + "bitmap image is null");
-                            fullScreenImage.setVisibility(View.GONE);
+                            TransferNetworkLossHandler.getInstance(getApplicationContext());
+                            File MapView = new File(MyResource_mapview.this.getFilesDir(), fileName);
+                            Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
+                            new AWSBucketsTag(MyResource_mapview.this, fileName, MapView, 0, "", new S3DownloadFiles() {
+                                @Override
+                                public void fileDataAdd(int pos, Bitmap bitmap) {
+                                    if (bitmap != null) {
+                                        Log.d("bitmap image", "image: " + "bitmap map is not null");
+                                        fullScreenImage.setImageBitmap(bitmap);
+                                        fullScreenImage.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                    } else {
+                                        Log.d("bitmap image", "image: " + "bitmap image is null");
+                                        fullScreenImage.setVisibility(View.GONE);
+                                        progressBar.setVisibility(View.GONE);
+                                        dialog_fullScreen.dismiss();
+                                    }
+                                }
+                            });
+                            closeButton.setOnClickListener(view -> dialog_fullScreen.dismiss());
                         }
+                    }else{
+                        commonUtilsMethods.showToastMessage(context, getString(R.string.no_network));
                     }
-                });
-            }
-            closeButton.setOnClickListener(view -> dialog_fullScreen.dismiss());
-        }else{
+                }
+            });
+            networkStatusTask.execute();
+
+
+        } else {
 //            Dialog dialog = new Dialog(this);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = getLayoutInflater();
@@ -335,10 +355,10 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                 dialog_fullScreen.show();
             }
             closeButton.setOnClickListener(new SafeClickListener() {
-                                               @Override
-                                               public void onSafeClick(View view) {
-                                                   dialog_fullScreen.dismiss();
-                                               }
+                @Override
+                public void onSafeClick(View view) {
+                    dialog_fullScreen.dismiss();
+                }
             });
         }
 
@@ -356,7 +376,8 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
 //        ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
 //        ImageButton closeButton = dialogView.findViewById(R.id.close_button);
 //        dialog.setContentView(R.layout.map_img_layout);
-////        ImageView popupImageView = dialog.findViewById(R.id.img_dr_content);
+
+    /// /        ImageView popupImageView = dialog.findViewById(R.id.img_dr_content);
 //        fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
 //        builder.setView(dialogView);
 //        AlertDialog dialog_fullScreen = builder.create();
@@ -387,9 +408,6 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
 //        closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
 //
 //    }
-
-
-
     private void RequestLocationPermission() {
         if (ContextCompat.checkSelfPermission(MyResource_mapview.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(MyResource_mapview.this, ACCESS_FINE_LOCATION)) {

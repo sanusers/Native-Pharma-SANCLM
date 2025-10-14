@@ -464,9 +464,9 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             }
         });
 
-        holder.rcpaLayoutitle.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        holder.rcpaLayoutitle.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 rcpaList.clear();
                 if (holder.rcpaLayout.getVisibility() == View.VISIBLE) {
                     holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
@@ -483,12 +483,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         Rcpagetdata(holder.rvRcpa, holder.rcpaLayout, position);
                     }
                 }
-            }
+//            }
         });
 
-        holder.SlidercpaLayoutitle.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        holder.SlidercpaLayoutitle.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 if (holder.slideDetailsLayout.getVisibility() == View.VISIBLE) {
                     holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.click_logo));
                     holder.slideDetailsLayout.setVisibility(View.GONE);
@@ -504,7 +504,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         SldeDetails(holder.rvSlideDetails, holder.slideDetailsLayout, position, holder);
                     }
                 }
-            }
+//            }
         });
 
     }
