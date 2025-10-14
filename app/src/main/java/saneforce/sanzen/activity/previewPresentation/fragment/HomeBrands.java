@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.previewPresentation.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeMap;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -55,34 +51,28 @@ public class HomeBrands extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         getRequiredData();
 
-        homePreviewBinding.tvAz.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
-                homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
-                homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-                previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
-                homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-                homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideHomeBrandList, Comparator.comparing(BrandModelClass::getBrandName));
-            }
+        homePreviewBinding.tvAz.setOnClickListener(view1 -> {
+            homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+            homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+            homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+            Collections.sort(SlideHomeBrandList, Comparator.comparing(BrandModelClass::getBrandName));
         });
 
-        homePreviewBinding.tvZa.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
-                homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
-                homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-                previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
-                homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-                homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideHomeBrandList, Collections.reverseOrder(new BrandMatrix.SortByName()));
-            }
+        homePreviewBinding.tvZa.setOnClickListener(view1 -> {
+            homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+            homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+            homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+            Collections.sort(SlideHomeBrandList, Collections.reverseOrder(new BrandMatrix.SortByName()));
         });
-        
+
         return view;
     }
 
@@ -99,23 +89,23 @@ public class HomeBrands extends Fragment {
                 JSONObject productObject = prodSlide.getJSONObject(i);
                 String id = productObject.getString("SlideId");
                 String code = productObject.getString("Code");
-                if(brandToProducts.containsKey(code)){
+                if (brandToProducts.containsKey(code)) {
                     brandToProducts.get(code).put(id, productObject);
-                }else {
+                } else {
                     LinkedHashMap<String, JSONObject> productData = new LinkedHashMap<>();
                     productData.put(id, productObject);
                     brandToProducts.put(code, productData);
                 }
             }
 
-            for(int i = 0; i < brandSlide.length(); i++) {
+            for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
                 String id = brandObject.getString("ID");
-                if(brandToProductWithPriority.containsKey(brandCode)){
+                if (brandToProductWithPriority.containsKey(brandCode)) {
                     brandToProductWithPriority.get(brandCode).put(id, priority);
-                }else{
+                } else {
                     LinkedHashMap<String, String> productsList = new LinkedHashMap<>();
                     productsList.put(id, priority);
                     brandToProductWithPriority.put(brandCode, productsList);
@@ -127,50 +117,50 @@ public class HomeBrands extends Fragment {
                 String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
                 LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
                 HashMap<String, JSONObject> products = brandToProducts.get(brandCode);
-                if(productWithPriority != null) {
+                if (productWithPriority != null) {
                     for (String productID : productWithPriority.keySet()) {
-                        if(products != null && products.containsKey(productID)) {
+                        if (products != null && products.containsKey(productID)) {
                             JSONObject productObject = products.get(productID);
-                            if(productObject != null) {
+                            if (productObject != null) {
                                 brandName = productObject.getString("Name");
                                 BrandModelClass.Product product = getProductData(productObject, priority);
-                                if(product != null) {
+                                if (product != null) {
                                     productArrayList.add(product);
                                 }
                             }
                         }
                     }
-                    if(!productWithPriority.isEmpty() && products != null) {
+                    if (!productWithPriority.isEmpty() && products != null) {
                         for (String productID : productWithPriority.keySet()) {
                             products.remove(productID);
                         }
                     }
                 }
-                if(products != null && !products.isEmpty()) {
+                if (products != null && !products.isEmpty()) {
                     for (String productID : products.keySet()) {
                         JSONObject productObject = products.get(productID);
-                        if(productObject != null) {
+                        if (productObject != null) {
                             brandName = productObject.getString("Name");
                             BrandModelClass.Product product = getProductData(productObject, priority);
-                            if(product != null) {
+                            if (product != null) {
                                 productArrayList.add(product);
                             }
                         }
                     }
                 }
-                if(!brandName.isEmpty() && !productArrayList.isEmpty()) {
+                if (!brandName.isEmpty() && !productArrayList.isEmpty()) {
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
                     SlideHomeBrandList.add(brandModelClass);
                 }
             }
-            if(!SlideHomeBrandList.isEmpty()) {
+            if (!SlideHomeBrandList.isEmpty()) {
                 BrandModelClass brandModelClass = SlideHomeBrandList.get(0);
                 brandModelClass.setBrandSelected(true);
                 SlideHomeBrandList.set(0, brandModelClass);
             }
 
             if (!SlideHomeBrandList.isEmpty()) {
-                if(SlideHomeBrandList.size()>1) {
+                if (SlideHomeBrandList.size() > 1) {
                     homePreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 }
                 homePreviewBinding.constraintNoData.setVisibility(View.GONE);
@@ -197,7 +187,7 @@ public class HomeBrands extends Fragment {
             String slideId = productObject.getString("SlideId");
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
-            if(priority.isEmpty()) priority = "500" + slidePriority;
+            if (priority.isEmpty()) priority = "500" + slidePriority;
             return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());

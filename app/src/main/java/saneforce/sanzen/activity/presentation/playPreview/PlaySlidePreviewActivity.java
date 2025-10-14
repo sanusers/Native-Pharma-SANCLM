@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.presentation.playPreview;
 
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -32,7 +31,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -82,7 +80,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                     case "mp4":
                     case "avi":
                     case "zip":
-                    case "htm": 
+                    case "htm":
                     case "html": {
                         binding.playBtn.setVisibility(View.VISIBLE);
                         break;
@@ -101,59 +99,44 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
             }
         });
 
-        binding.upArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
-                    binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(PlaySlidePreviewActivity.this, R.drawable.arrow_up_white));
-                    binding.upArrow.setVisibility(View.VISIBLE);
-                    binding.bottomLayout.setVisibility(View.GONE);
-                    binding.closeBtn.setVisibility(View.GONE);
-                } else {
-                    binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(PlaySlidePreviewActivity.this, R.drawable.arrow_down_white));
-                    binding.upArrow.setVisibility(View.VISIBLE);
-                    binding.bottomLayout.setVisibility(View.VISIBLE);
-                    binding.closeBtn.setVisibility(View.GONE);
-                }
-                bottomPreviewAdapter.notifyDataSetChanged();
-            }
-        });
-
-        binding.upArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                binding.upArrow.setVisibility(View.GONE);
-                binding.bottomLayout.setVisibility(View.VISIBLE);
-                bottomPreviewAdapter.notifyDataSetChanged();
-            }
-        });
-
-        binding.closeBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                binding.bottomLayout.setVisibility(View.GONE);
+        binding.upArrow.setOnClickListener(view -> {
+            if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
+                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(PlaySlidePreviewActivity.this, R.drawable.arrow_up_white));
                 binding.upArrow.setVisibility(View.VISIBLE);
+                binding.bottomLayout.setVisibility(View.GONE);
+                binding.closeBtn.setVisibility(View.GONE);
+            } else {
+                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(PlaySlidePreviewActivity.this, R.drawable.arrow_down_white));
+                binding.upArrow.setVisibility(View.VISIBLE);
+                binding.bottomLayout.setVisibility(View.VISIBLE);
+                binding.closeBtn.setVisibility(View.GONE);
+            }
+            bottomPreviewAdapter.notifyDataSetChanged();
+        });
+
+        binding.upArrow.setOnClickListener(view -> {
+            binding.upArrow.setVisibility(View.GONE);
+            binding.bottomLayout.setVisibility(View.VISIBLE);
+            bottomPreviewAdapter.notifyDataSetChanged();
+        });
+
+        binding.closeBtn.setOnClickListener(view -> {
+            binding.bottomLayout.setVisibility(View.GONE);
+            binding.upArrow.setVisibility(View.VISIBLE);
+        });
+
+        binding.ivPlayPauseTimer.setOnClickListener(view -> {
+            if (timer != null) {
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_play_arrow_24);
+                stopTimer();
+            } else {
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
+                startTimer();
             }
         });
 
-        binding.ivPlayPauseTimer.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (timer != null) {
-                    binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_play_arrow_24);
-                    stopTimer();
-                } else {
-                    binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
-                    startTimer();
-                }
-            }
-        });
-
-        binding.exitBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
+        binding.exitBtn.setOnClickListener(view -> {
+            getOnBackPressedDispatcher().onBackPressed();
         });
 
         binding.playBtn.setOnClickListener(view -> {
@@ -296,7 +279,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 case "mp4":
                 case "avi":
                 case "zip":
-                case "htm": 
+                case "htm":
                 case "html": {
                     binding.playBtn.setVisibility(View.VISIBLE);
                     break;
@@ -340,13 +323,13 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     }
 
     public void startTimer() {
-        if(timer != null) timer.cancel();
+        if (timer != null) timer.cancel();
         timer = new Timer();
         timer.schedule(new SlideTimer(), 2000, 5000);
     }
 
     public void stopTimer() {
-        if(timer != null) timer.cancel();
+        if (timer != null) timer.cancel();
         timer = null;
     }
 
@@ -361,7 +344,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(timer != null) {
+        if (timer != null) {
             timer.cancel();
         }
     }

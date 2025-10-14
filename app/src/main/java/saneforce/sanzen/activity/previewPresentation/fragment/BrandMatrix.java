@@ -10,7 +10,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,16 +29,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.Set;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.FragmentSpecialityPreviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -70,23 +67,23 @@ public class BrandMatrix extends Fragment {
                 JSONObject productObject = prodSlide.getJSONObject(i);
                 String id = productObject.getString("SlideId");
                 String code = productObject.getString("Code");
-                if(brandToProducts.containsKey(code)){
+                if (brandToProducts.containsKey(code)) {
                     brandToProducts.get(code).put(id, productObject);
-                }else {
+                } else {
                     LinkedHashMap<String, JSONObject> productData = new LinkedHashMap<>();
                     productData.put(id, productObject);
                     brandToProducts.put(code, productData);
                 }
             }
 
-            for(int i = 0; i < brandSlide.length(); i++) {
+            for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
                 String id = brandObject.getString("ID");
-                if(brandToProductWithPriority.containsKey(brandCode)){
+                if (brandToProductWithPriority.containsKey(brandCode)) {
                     brandToProductWithPriority.get(brandCode).put(id, priority);
-                }else{
+                } else {
                     LinkedHashMap<String, String> productsList = new LinkedHashMap<>();
                     productsList.put(id, priority);
                     brandToProductWithPriority.put(brandCode, productsList);
@@ -96,25 +93,25 @@ public class BrandMatrix extends Fragment {
 //            for (String brandCode : brandToProductWithPriority.keySet()) {
 //                if(mappedBrands.contains(brandCode)) {
             for (String brandCode : CommonUtilsMethods.removeLastComma(mappedBrands).split(",")) {
-                if(brandToProductWithPriority.containsKey(brandCode)) {
+                if (brandToProductWithPriority.containsKey(brandCode)) {
                     ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
                     String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
                     LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
                     HashMap<String, JSONObject> products = brandToProducts.get(brandCode);
-                    if(productWithPriority != null) {
+                    if (productWithPriority != null) {
                         for (String productID : productWithPriority.keySet()) {
-                            if(products != null && products.containsKey(productID)) {
+                            if (products != null && products.containsKey(productID)) {
                                 JSONObject productObject = products.get(productID);
-                                if(productObject != null) {
+                                if (productObject != null) {
                                     String[] separated1 = mappedSlides.split(",");
                                     String[] separated2 = productObject.getString("Product_Detail_Code").split(",");
                                     Log.d("TAG", "getSelectedMatrix: " + mappedSlides + "\n" + productObject.getString("Product_Detail_Code"));
                                     for (String value : separated1) {
                                         for (String s : separated2) {
-                                            if(value.equalsIgnoreCase(s)) {
+                                            if (value.equalsIgnoreCase(s)) {
                                                 brandName = productObject.getString("Name");
                                                 BrandModelClass.Product product = getProductData(productObject, priority);
-                                                if(product != null) {
+                                                if (product != null) {
                                                     productArrayList.add(product);
                                                 }
                                                 break;
@@ -124,40 +121,40 @@ public class BrandMatrix extends Fragment {
                                 }
                             }
                         }
-                        if(!productWithPriority.isEmpty() && products != null) {
+                        if (!productWithPriority.isEmpty() && products != null) {
                             for (String productID : productWithPriority.keySet()) {
                                 products.remove(productID);
                             }
                         }
                     }
-                    if(products != null && !products.isEmpty()) {
+                    if (products != null && !products.isEmpty()) {
                         for (String productID : products.keySet()) {
                             JSONObject productObject = products.get(productID);
-                            if(productObject != null) {
+                            if (productObject != null) {
                                 String[] separated1 = mappedSlides.split(",");
                                 String[] separated2 = productObject.getString("Product_Detail_Code").split(",");
 //                                for (String value : separated1) {
-                                    for (String s : separated2) {
-                                        if(Arrays.asList(separated1).contains(s)) {
-                                            brandName = productObject.getString("Name");
-                                            BrandModelClass.Product product = getProductData(productObject, priority);
-                                            if(product != null) {
-                                                productArrayList.add(product);
-                                            }
-                                            break;
+                                for (String s : separated2) {
+                                    if (Arrays.asList(separated1).contains(s)) {
+                                        brandName = productObject.getString("Name");
+                                        BrandModelClass.Product product = getProductData(productObject, priority);
+                                        if (product != null) {
+                                            productArrayList.add(product);
                                         }
+                                        break;
                                     }
+                                }
 //                                }
                             }
                         }
                     }
-                    if(!brandName.isEmpty()) {
+                    if (!brandName.isEmpty()) {
                         BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
                         SlideBrandMatrixList.add(brandModelClass);
                     }
                 }
             }
-            if(!SlideBrandMatrixList.isEmpty()) {
+            if (!SlideBrandMatrixList.isEmpty()) {
                 BrandModelClass brandModelClass = SlideBrandMatrixList.get(0);
                 brandModelClass.setBrandSelected(true);
                 SlideBrandMatrixList.set(0, brandModelClass);
@@ -274,33 +271,26 @@ public class BrandMatrix extends Fragment {
             }
         });
 
-
-        brandMatrixBinding.tvAz.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
-                brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
-                brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-                previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
-                brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-                brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
-            }
+        brandMatrixBinding.tvAz.setOnClickListener(view1 -> {
+            brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+            brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+            brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+            brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
+            Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
         });
 
-        brandMatrixBinding.tvZa.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
-                brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
-                brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-                previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
-                brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-                brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideBrandMatrixList, Collections.reverseOrder(new SortByName()));
-            }
+        brandMatrixBinding.tvZa.setOnClickListener(view1 -> {
+            brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+            brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+            brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+            brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
+            Collections.sort(SlideBrandMatrixList, Collections.reverseOrder(new SortByName()));
         });
 
         return view;
@@ -320,7 +310,7 @@ public class BrandMatrix extends Fragment {
             String slideId = productObject.getString("SlideId");
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
-            if(priority.isEmpty()) priority = "500" + slidePriority;
+            if (priority.isEmpty()) priority = "500" + slidePriority;
             return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());

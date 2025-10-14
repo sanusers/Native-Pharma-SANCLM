@@ -61,13 +61,13 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityPlaySlidePreviewDetailingBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -159,13 +159,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
         context = this;
         initialisation();
 
-
-        binding.rightArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                DialogPopUp();
-            }
+        binding.rightArrow.setOnClickListener(view -> {
+            DialogPopUp();
         });
+
         binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -183,7 +180,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     case "mp4":
                     case "avi":
                     case "zip":
-                    case "htm": 
+                    case "htm":
                     case "html": {
                         binding.playBtn.setVisibility(View.VISIBLE);
                         break;
@@ -202,37 +199,28 @@ public class PlaySlideDetailing extends AppCompatActivity {
             }
         });
 
-        binding.upArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
-                    binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_up_white));
-                    binding.upArrow.setVisibility(View.VISIBLE);
-                    binding.bottomLayout.setVisibility(View.GONE);
-                    binding.closeBtn.setVisibility(View.GONE);
-                } else {
-                    binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_down_white));
-                    binding.upArrow.setVisibility(View.VISIBLE);
-                    binding.bottomLayout.setVisibility(View.VISIBLE);
-                    binding.closeBtn.setVisibility(View.GONE);
-                }
-                bottomPreviewDetailedAdapter.notifyDataSetChanged();
+        binding.upArrow.setOnClickListener(view -> {
+            if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
+                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_up_white));
+                binding.upArrow.setVisibility(View.VISIBLE);
+                binding.bottomLayout.setVisibility(View.GONE);
+                binding.closeBtn.setVisibility(View.GONE);
+            } else {
+                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_down_white));
+                binding.upArrow.setVisibility(View.VISIBLE);
+                binding.bottomLayout.setVisibility(View.VISIBLE);
+                binding.closeBtn.setVisibility(View.GONE);
             }
+            bottomPreviewDetailedAdapter.notifyDataSetChanged();
         });
 
-        binding.closeBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
+        binding.closeBtn.setOnClickListener(view -> {
+            getOnBackPressedDispatcher().onBackPressed();
         });
 
 
-        binding.exitBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
+        binding.exitBtn.setOnClickListener(view -> {
+            getOnBackPressedDispatcher().onBackPressed();
         });
 
         binding.playBtn.setOnClickListener(view -> {
@@ -544,7 +532,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 case "mp4":
                 case "avi":
                 case "zip":
-                case "htm": 
+                case "htm":
                 case "html": {
                     binding.playBtn.setVisibility(View.VISIBLE);
                     break;
@@ -643,39 +631,36 @@ public class PlaySlideDetailing extends AppCompatActivity {
             }
 
 
-            holder.tv_brandName.setOnClickListener(new SafeClickListener() {
-                @Override
-                public void onSafeClick(View view) {
-                    SelectedPosPlay = holder.getAbsoluteAdapterPosition();
-                    switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
-                        case "A":
-                            populateListData(SlideWelcomeList);
-                            break;
-                        case "B":
-                            populateListData(SlideHomeBrandList);
-                            break;
-                        case "C":
-                            populateListData(SlideBrandMatrixList);
-                            break;
-                        case "D":
-                            populateListData(SlideSpecialityList);
-                            break;
-                        case "E":
-                            populateListData(SlideTherapistList);
-                            break;
-                        case "F":
-                            populateLocalSavedData(SlideCustomizedList);
-                            break;
-                        case "G":
-                            populateLocalSavedData(SlideCustomList);
-                            break;
-                        case "H":
+            holder.tv_brandName.setOnClickListener(view -> {
+                SelectedPosPlay = holder.getAbsoluteAdapterPosition();
+                switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
+                    case "A":
+                        populateListData(SlideWelcomeList);
+                        break;
+                    case "B":
+                        populateListData(SlideHomeBrandList);
+                        break;
+                    case "C":
+                        populateListData(SlideBrandMatrixList);
+                        break;
+                    case "D":
+                        populateListData(SlideSpecialityList);
+                        break;
+                    case "E":
+                        populateListData(SlideTherapistList);
+                        break;
+                    case "F":
+                        populateLocalSavedData(SlideCustomizedList);
+                        break;
+                    case "G":
+                        populateLocalSavedData(SlideCustomList);
+                        break;
+                    case "H":
 //                        populateLocalSavedData(SlideCustomList);
-                            // TODO: 29-08-2025
-                            break;
-                    }
-                    notifyDataSetChanged();
+                        // TODO: 29-08-2025
+                        break;
                 }
+                notifyDataSetChanged();
             });
         }
 
