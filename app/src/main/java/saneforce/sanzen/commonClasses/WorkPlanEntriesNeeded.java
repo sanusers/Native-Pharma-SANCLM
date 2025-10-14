@@ -2,6 +2,7 @@ package saneforce.sanzen.commonClasses;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static saneforce.sanzen.storage.SharedPref.DCR_SEQUENTIAL;
 import static saneforce.sanzen.storage.SharedPref.SP_NAME;
 
 import android.content.Context;
@@ -84,7 +85,7 @@ public class WorkPlanEntriesNeeded {
         SharedPreferences.Editor editor;
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-// editor.putString(STP_NEED, "0");
+// editor.putString(DCR_SEQUENTIAL, "0");
         editor.apply();
 //        if(shouldSync) {
 //            syncCallAndDate(context);
