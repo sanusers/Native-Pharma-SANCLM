@@ -280,7 +280,7 @@ public class PreviewActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
+                                String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).optString("sT"), jsonArray.getJSONObject(i).optString("eT"));
                                 totalDuration = TimeUtils.addTime(totalDuration, duration);
                             }
                         } catch (JSONException e) {
@@ -295,13 +295,15 @@ public class PreviewActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
+                                String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).optString("sT"), jsonArray.getJSONObject(i).optString("eT"));
                                 totalDuration = TimeUtils.addTime(totalDuration, duration);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
+                        if (!time.isEmpty()) {
+                            callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
+                        }
                         finalPrdNam = arrayStore.get(j).getBrdName();
                         totalDuration = "";
                     }
@@ -311,7 +313,7 @@ public class PreviewActivity extends AppCompatActivity {
                     try {
                         JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size() - 1).getRemTime());
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
+                            String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).optString("sT"), jsonArray.getJSONObject(i).optString("eT"));
                             totalDuration = TimeUtils.addTime(totalDuration, duration);
                         }
                     } catch (JSONException e) {
@@ -420,10 +422,10 @@ public class PreviewActivity extends AppCompatActivity {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        code = jsonObject.getString("Code");
+                        code = jsonObject.optString("Code");
                         if (!customerCodes1.contains(code)) {
                             customerCodes1.add(code);
-                            CustomerDataModel customerDataModel = new CustomerDataModel(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), "", "", "", "", "", "");
+                            CustomerDataModel customerDataModel = new CustomerDataModel(jsonObject.optString("Name"), jsonObject.optString("Code"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), "", "", "", "", "", "");
                             if (presentationDataTable.getCustomerCodes() != null && !presentationDataTable.getCustomerCodes().isEmpty() && presentationDataTable.getCustomerCodes().contains(code)) {
                                 customerDataModel.setSelected(true);
                                 customerDataList.add(customerDataModel);
@@ -506,8 +508,8 @@ public class PreviewActivity extends AppCompatActivity {
 
                 if (jj.length() > 0) {
                     JSONObject jsr = jj.getJSONObject(jj.length() - 1);
-                    timesMax.add(jsr.getString("eT"));
-                    timesMin.add(jsr.getString("sT"));
+                    timesMax.add(jsr.optString("eT"));
+                    timesMin.add(jsr.optString("sT"));
                 }
             }
             String timesMaxnew = timesMax.toString().replace("[", "").replace("]", "");
@@ -536,21 +538,21 @@ public class PreviewActivity extends AppCompatActivity {
             mm = arrayStore.get(i);
             json = new JSONArray(mm.getRemTime());
             JSONObject jjj = json.getJSONObject(0);
-            Log.v("last_value_time", jjj.getString("sT"));
-            startT = jjj.getString("sT");
-            //  finalTime = startT + " " + jjj.getString("eT");
+            Log.v("last_value_time", jjj.optString("sT"));
+            startT = jjj.optString("sT");
+            //  finalTime = startT + " " + jjj.optString("eT");
             finalTime = startT;
             if (i == arrayStore.size() - 1) {
                 mm1 = arrayStore.get(arrayStore.size() - 1);
                 json = new JSONArray(mm1.getRemTime());
                 JSONObject jj = json.getJSONObject(0);
-                endT = jj.getString("eT");
+                endT = jj.optString("eT");
                 for (int j = 0; j < i; j++) {
                     if (arrayStore.get(j).getBrdName().equals(mm1.getBrdName())) {
                         mm2 = arrayStore.get(j);
                         json2 = new JSONArray(mm2.getRemTime());
                         JSONObject jj2 = json2.getJSONObject(0);
-                        startT = jj2.getString("sT");
+                        startT = jj2.optString("sT");
                         break;
                     }
                 }
@@ -573,20 +575,20 @@ public class PreviewActivity extends AppCompatActivity {
                 mm1 = arrayStore.get(i - 1);
                 json = new JSONArray(mm1.getRemTime());
                 JSONObject jj = json.getJSONObject(0);
-                endT = jj.getString("eT");
+                endT = jj.optString("eT");
             }
             finalTime = startT;
             mm = arrayStore.get(i);
             json = new JSONArray(mm.getRemTime());
             JSONObject jj = json.getJSONObject(0);
-            Log.v("last_value_timemid", jj.getString("sT"));
-            startT = jj.getString("sT");
+            Log.v("last_value_timemid", jj.optString("sT"));
+            startT = jj.optString("sT");
             if (arrayStore.size() == 1) {
                 mm = arrayStore.get(i);
                 json = new JSONArray(mm.getRemTime());
                 JSONObject jjj = json.getJSONObject(0);
-                Log.v("last_value_time", jjj.getString("sT"));
-                startT = jjj.getString("sT");
+                Log.v("last_value_time", jjj.optString("sT"));
+                startT = jjj.optString("sT");
                 finalTime = startT;
             }
             return finalTime;
