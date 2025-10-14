@@ -198,8 +198,8 @@ public class PreviewActivity extends AppCompatActivity {
                 }
                 viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
                 headingData.add("G");
-                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-                headingData.add("H");
+//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+//                headingData.add("H");
             } else {
                 viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                 headingData.add("A");
@@ -217,8 +217,8 @@ public class PreviewActivity extends AppCompatActivity {
                 }
                 viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.custom_presentation));
                 headingData.add("G");
-                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-                headingData.add("H");
+//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+//                headingData.add("H");
             }
         } else {
             viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
