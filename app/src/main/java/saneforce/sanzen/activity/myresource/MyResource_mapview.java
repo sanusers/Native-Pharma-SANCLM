@@ -315,7 +315,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                             closeButton.setOnClickListener(view -> dialog_fullScreen.dismiss());
                         }
                     }else{
-                        commonUtilsMethods.showToastMessage(context, getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(MyResource_mapview.this, getString(R.string.no_network));
                     }
                 }
             });

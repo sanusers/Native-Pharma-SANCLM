@@ -267,9 +267,9 @@ public class PreviewActivity extends AppCompatActivity {
             }
         });
 
-        previewBinding.btnFinishDet.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        previewBinding.btnFinishDet.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
                 String totalDuration = "";
                 for (int j = 0; j < arrayStore.size(); j++) {
@@ -331,7 +331,7 @@ public class PreviewActivity extends AppCompatActivity {
                 intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
                 startActivity(intent1);
-            }
+//            }
         });
     }
 

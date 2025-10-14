@@ -363,7 +363,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 public void onSafeClick(View view) {
 //                handler.post(runnable);
                     NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-//                        @SuppressLint("NotifyDataSetChanged")
+                        //                        @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void isNetworkAvailable(Boolean status) {
                             if (status) {
@@ -421,109 +421,69 @@ public class TourPlanActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(view ->  {
 
-      /*      if(!draftDates.isEmpty()){
-                Dialog dialog = new Dialog(this);
-                dialog.setContentView(R.layout.dcr_cancel_alert);
-                dialog.setCancelable(false);
-                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-                TextView alert_msg = dialog.findViewById(R.id.ed_alert_msg);
-                alert_msg.setText(R.string.draft_alert);
-                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                TextView btn_no = dialog.findViewById(R.id.btn_no);
-                btn_yes.setOnClickListener(view1 -> {
-                    LocalDate localDate1 = LocalDate.now();
-                    if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
-                        getDraftSaveOneBuild("previous", dayWiseArrayPreviousMonthOneBuild, isFrom,true);
-                       get1MonthRemoteTPDataOneBuild(localDate1);
-                    } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
-                        getDraftSaveOneBuild("current", dayWiseArrayCurrentMonthOneBuild, isFrom, true);
-                        get1MonthRemoteTPDataOneBuild(localDate1);
-//                        get3MonthRemoteTPDataOneBuild("current");
-//                        get3MonthRemoteTPDataOneBuild("current");
-                    } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
-                        getDraftSaveOneBuild("next", dayWiseArrayNextMonthOneBuild, isFrom, true);
-                        get1MonthRemoteTPDataOneBuild(localDate1);
-//                        get3MonthRemoteTPDataOneBuild("next");
-//                        get3MonthRemoteTPDataOneBuild("next");
-                    }
-                    draftDates.clear();
-                    dialog.dismiss();
-                });
+            if (SharedPref.getTpMandatoryNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getTpNeed(TourPlanActivity.this).equalsIgnoreCase("0") &&
+                    !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("-1") &&
+                    !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("-1")) {
+                SharedPref.setTpSKIPDate(TourPlanActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+            }
 
-                btn_no.setOnClickListener(view1 -> {
-                    getOnBackPressedDispatcher().onBackPressed();
-                    finish();
-                    dialog.dismiss();
-                });
-
-
-            }*/
-
-                if (SharedPref.getTpMandatoryNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getTpNeed(TourPlanActivity.this).equalsIgnoreCase("0") &&
-                        !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("-1") &&
-                        !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("-1")) {
-                    SharedPref.setTpSKIPDate(TourPlanActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
-                }
-
-                getOnBackPressedDispatcher().onBackPressed();
-                finish();
-
+            getOnBackPressedDispatcher().onBackPressed();
+            finish();
 
         });
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             binding.calendarNextButton.setOnClickListener(view ->  {
 
-                    binding.calendarPrevButton.setEnabled(true);
-                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
-                    localDate = localDate.plusMonths(1);
-                    if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
-                        binding.calendarNextButton.setEnabled(false);
-                        binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-                    } else binding.calendarNextButton.setEnabled(true);
+                binding.calendarPrevButton.setEnabled(true);
+                binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
+                localDate = localDate.plusMonths(1);
+                if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
+                    binding.calendarNextButton.setEnabled(false);
+                    binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
+                } else binding.calendarNextButton.setEnabled(true);
 
-                    if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
-                        monthInAdapterFlag = 0;
-                        if (dayWiseArrayCurrentMonthOneBuild.size() == 0) {
-                            dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
-                        }
-                        populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
-                    } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().plusMonths(1).getMonth().toString())) {
-                        monthInAdapterFlag = 1;
-                        if (dayWiseArrayNextMonthOneBuild.size() == 0) {
-                            dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
-                        }
-                        dayWiseArrayNextMonthOneBuild.clear();
-                        dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
-                        populateCalenderAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
+                if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
+                    monthInAdapterFlag = 0;
+                    if (dayWiseArrayCurrentMonthOneBuild.size() == 0) {
+                        dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                     }
+                    populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
+                } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().plusMonths(1).getMonth().toString())) {
+                    monthInAdapterFlag = 1;
+                    if (dayWiseArrayNextMonthOneBuild.size() == 0) {
+                        dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
+                    }
+                    dayWiseArrayNextMonthOneBuild.clear();
+                    dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
+                    populateCalenderAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
+                }
 
             });
 
         } else {
             binding.calendarNextButton.setOnClickListener(view ->  {
 
-                    binding.calendarPrevButton.setEnabled(true);
-                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
-                    localDate = localDate.plusMonths(1);
-                    if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
-                        binding.calendarNextButton.setEnabled(false);
-                        binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-                    } else binding.calendarNextButton.setEnabled(true);
+                binding.calendarPrevButton.setEnabled(true);
+                binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
+                localDate = localDate.plusMonths(1);
+                if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
+                    binding.calendarNextButton.setEnabled(false);
+                    binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
+                } else binding.calendarNextButton.setEnabled(true);
 
-                    if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
-                        monthInAdapterFlag = 0;
-                        if (dayWiseArrayCurrentMonth.size() == 0) {
-                            dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
-                        }
-                        populateCalendarAdapter(dayWiseArrayCurrentMonth);
-                    } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().plusMonths(1).getMonth().toString())) {
-                        monthInAdapterFlag = 1;
-                        if (dayWiseArrayNextMonth.size() == 0) {
-                            dayWiseArrayNextMonth = prepareModelClassForMonth(localDate);
-                        }
-                        populateCalendarAdapter(dayWiseArrayNextMonth);
+                if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
+                    monthInAdapterFlag = 0;
+                    if (dayWiseArrayCurrentMonth.size() == 0) {
+                        dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
                     }
+                    populateCalendarAdapter(dayWiseArrayCurrentMonth);
+                } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().plusMonths(1).getMonth().toString())) {
+                    monthInAdapterFlag = 1;
+                    if (dayWiseArrayNextMonth.size() == 0) {
+                        dayWiseArrayNextMonth = prepareModelClassForMonth(localDate);
+                    }
+                    populateCalendarAdapter(dayWiseArrayNextMonth);
+                }
 
             });
         }
@@ -531,62 +491,62 @@ public class TourPlanActivity extends AppCompatActivity {
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             binding.calendarPrevButton.setOnClickListener(view ->  {
 
-                    binding.calendarNextButton.setEnabled(true);
-                    binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
-                    localDate = localDate.minusMonths(1);
-                    if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
-                        binding.calendarPrevButton.setEnabled(false);
-                        binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-                    } else if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
-                        binding.calendarPrevButton.setEnabled(false);
-                        binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-                    } else binding.calendarPrevButton.setEnabled(true);
+                binding.calendarNextButton.setEnabled(true);
+                binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
+                localDate = localDate.minusMonths(1);
+                if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                } else if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                } else binding.calendarPrevButton.setEnabled(true);
 
-                    if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
-                        monthInAdapterFlag = 0;
-                        if (dayWiseArrayCurrentMonthOneBuild.size() == 0) {
-                            dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
-                        }
-                        populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
-                    } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().minusMonths(1).getMonth().toString())) {
-                        monthInAdapterFlag = -1;
-                        if (dayWiseArrayPreviousMonthOneBuild.size() == 0) {
-                            dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
-                        }
-                        dayWiseArrayPreviousMonthOneBuild.clear();
-                        dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
-                        populateCalenderAdapterOneBuild(dayWiseArrayPreviousMonthOneBuild);
+                if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
+                    monthInAdapterFlag = 0;
+                    if (dayWiseArrayCurrentMonthOneBuild.size() == 0) {
+                        dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                     }
+                    populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
+                } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().minusMonths(1).getMonth().toString())) {
+                    monthInAdapterFlag = -1;
+                    if (dayWiseArrayPreviousMonthOneBuild.size() == 0) {
+                        dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
+                    }
+                    dayWiseArrayPreviousMonthOneBuild.clear();
+                    dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
+                    populateCalenderAdapterOneBuild(dayWiseArrayPreviousMonthOneBuild);
+                }
 
             });
         } else {
             binding.calendarPrevButton.setOnClickListener(view ->  {
 
-                    binding.calendarNextButton.setEnabled(true);
-                    binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
-                    localDate = localDate.minusMonths(1);
-                    if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
-                        binding.calendarPrevButton.setEnabled(false);
-                        binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-                    } else if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
-                        binding.calendarPrevButton.setEnabled(false);
-                        binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-                    } else
-                        binding.calendarPrevButton.setEnabled(true);
+                binding.calendarNextButton.setEnabled(true);
+                binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
+                localDate = localDate.minusMonths(1);
+                if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                } else if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                } else
+                    binding.calendarPrevButton.setEnabled(true);
 
-                    if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
-                        monthInAdapterFlag = 0;
-                        if (dayWiseArrayCurrentMonth.size() == 0) {
-                            dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
-                        }
-                        populateCalendarAdapter(dayWiseArrayCurrentMonth);
-                    } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().minusMonths(1).getMonth().toString())) {
-                        monthInAdapterFlag = -1;
-                        if (dayWiseArrayPrevMonth.size() == 0) {
-                            dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate);
-                        }
-                        populateCalendarAdapter(dayWiseArrayPrevMonth);
+                if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
+                    monthInAdapterFlag = 0;
+                    if (dayWiseArrayCurrentMonth.size() == 0) {
+                        dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
                     }
+                    populateCalendarAdapter(dayWiseArrayCurrentMonth);
+                } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().minusMonths(1).getMonth().toString())) {
+                    monthInAdapterFlag = -1;
+                    if (dayWiseArrayPrevMonth.size() == 0) {
+                        dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate);
+                    }
+                    populateCalendarAdapter(dayWiseArrayPrevMonth);
+                }
             });
         }
 
@@ -850,71 +810,48 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.tpNavigation.sessionSave.setOnClickListener(view ->  {
              /*   @Override
                 public void onSafeClick(View view) {*/
-                    UtilityClass.hideKeyboard(TourPlanActivity.this);
-                    boolean isEmpty = false;
-                    int position = 0;
+                UtilityClass.hideKeyboard(TourPlanActivity.this);
+                boolean isEmpty = false;
+                int position = 0;
 
-                    OneBuildModelClass dataModelOneBuild = inputDataArrayOneBuild;
-                    ArrayList<OneBuildModelClass.SessionList> sessionLists = dataModelOneBuild.getSessionList();
-                    String dayNo = String.valueOf(sessionLists.size());
-                    for (int i = 0; i < sessionLists.size(); i++) {
-                        OneBuildModelClass.SessionList oneBuildModelClass = sessionLists.get(i);
-                        if (oneBuildModelClass.getWorkType().getName().isEmpty()) {
+                OneBuildModelClass dataModelOneBuild = inputDataArrayOneBuild;
+                ArrayList<OneBuildModelClass.SessionList> sessionLists = dataModelOneBuild.getSessionList();
+                String dayNo = String.valueOf(sessionLists.size());
+                for (int i = 0; i < sessionLists.size(); i++) {
+                    OneBuildModelClass.SessionList oneBuildModelClass = sessionLists.get(i);
+                    if (oneBuildModelClass.getWorkType().getName().isEmpty()) {
+                        isEmpty = true;
+                        position = i;
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
+                        break;
+                    } else if (oneBuildModelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
+                        if (oneBuildModelClass.getHeadquarters().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
                             isEmpty = true;
                             position = i;
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
                             break;
-                        } else if (oneBuildModelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
-                            if (oneBuildModelClass.getHeadquarters().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
-                                isEmpty = true;
-                                position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
-                                break;
-                            } else if (oneBuildModelClass.getTerritories().size() == 0) {
-                                isEmpty = true;
-                                position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
-                                break;
+                        } else if (oneBuildModelClass.getTerritories().size() == 0) {
+                            isEmpty = true;
+                            position = i;
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+                            break;
 
-                            } else if (oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                if (FW_meetup_mandatory.equals("0")) {
-                                    if (drNeed.equals("0")) {
-                                        if (oneBuildModelClass.getDoctors().size() == 0) {
-                                            isEmpty = true;
-                                            position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
-                                            break;
-                                        } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) {
-                                            isEmpty = true;
-                                            position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
-                                            break;
-                                        }
-                                    }
-
-                                    if (oneBuildModelClass.getDoctors().isEmpty() && oneBuildModelClass.getChemists().isEmpty() && oneBuildModelClass.getStockists().isEmpty() && oneBuildModelClass.getUnlistedDoctors().isEmpty() && oneBuildModelClass.getCip().isEmpty() && oneBuildModelClass.getHospitals().isEmpty()) {
+                        } else if (oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                            if (FW_meetup_mandatory.equals("0")) {
+                                if (drNeed.equals("0")) {
+                                    if (oneBuildModelClass.getDoctors().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
                                         break;
-                                    }
-                                }
-                            }
-                        } else if (oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
-                            if (FW_meetup_mandatory.equals("0")) { // "0"-- yes
-                                if (drNeed.equals("0")) { // Dr meet up mandatory
-                                    if (oneBuildModelClass.getDoctors().isEmpty()) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + " " + (i + 1));
-                                        break;
-                                    } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
+                                    } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                         break;
                                     }
                                 }
+
                                 if (oneBuildModelClass.getDoctors().isEmpty() && oneBuildModelClass.getChemists().isEmpty() && oneBuildModelClass.getStockists().isEmpty() && oneBuildModelClass.getUnlistedDoctors().isEmpty() && oneBuildModelClass.getCip().isEmpty() && oneBuildModelClass.getHospitals().isEmpty()) {
                                     isEmpty = true;
                                     position = i;
@@ -923,87 +860,101 @@ public class TourPlanActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        if (remarksNeed.equalsIgnoreCase("0") && oneBuildModelClass.getRemarks().isEmpty()) {
-                            isEmpty = true;
-                            position = i;
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.need_remarks) + (i + 1));
-                            break;
-                        }
-                    }
-
-                    if (!isEmpty) {
-                        binding.tpDrawer.closeDrawer(GravityCompat.END);
-                        dataModelOneBuild.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
-                        if (monthInAdapterFlag == 0) {
-
-                            for (int i = 0; i < dayWiseArrayCurrentMonthOneBuild.size(); i++) {
-                                if (dayWiseArrayCurrentMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
-                                    dayWiseArrayCurrentMonthOneBuild.remove(i);
-                                    dayWiseArrayCurrentMonthOneBuild.add(i, dataModelOneBuild);
-                                    calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
+                    } else if (oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
+                        if (FW_meetup_mandatory.equals("0")) { // "0"-- yes
+                            if (drNeed.equals("0")) { // Dr meet up mandatory
+                                if (oneBuildModelClass.getDoctors().isEmpty()) {
+                                    isEmpty = true;
+                                    position = i;
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + " " + (i + 1));
+                                    break;
+                                } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
+                                    isEmpty = true;
+                                    position = i;
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                     break;
                                 }
                             }
-                            populateSummaryAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
-                            saveTpLocalOneBuild(dayWiseArrayCurrentMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
+                            if (oneBuildModelClass.getDoctors().isEmpty() && oneBuildModelClass.getChemists().isEmpty() && oneBuildModelClass.getStockists().isEmpty() && oneBuildModelClass.getUnlistedDoctors().isEmpty() && oneBuildModelClass.getCip().isEmpty() && oneBuildModelClass.getHospitals().isEmpty()) {
+                                isEmpty = true;
+                                position = i;
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
+                                break;
+                            }
+                        }
+                    }
+                    if (remarksNeed.equalsIgnoreCase("0") && oneBuildModelClass.getRemarks().isEmpty()) {
+                        isEmpty = true;
+                        position = i;
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.need_remarks) + (i + 1));
+                        break;
+                    }
+                }
+
+                if (!isEmpty) {
+                    binding.tpDrawer.closeDrawer(GravityCompat.END);
+                    dataModelOneBuild.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                    if (monthInAdapterFlag == 0) {
+
+                        for (int i = 0; i < dayWiseArrayCurrentMonthOneBuild.size(); i++) {
+                            if (dayWiseArrayCurrentMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
+                                dayWiseArrayCurrentMonthOneBuild.remove(i);
+                                dayWiseArrayCurrentMonthOneBuild.add(i, dataModelOneBuild);
+                                calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
+                                break;
+                            }
+                        }
+                        populateSummaryAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
+                        saveTpLocalOneBuild(dayWiseArrayCurrentMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
 
 
 //                prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayCurrentMonthOneBuild, false);
-                        } else if (monthInAdapterFlag == 1) {
-                            for (int i = 0; i < dayWiseArrayNextMonthOneBuild.size(); i++) {
-                                if (dayWiseArrayNextMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
-                                    dayWiseArrayNextMonthOneBuild.remove(i);
-                                    dayWiseArrayNextMonthOneBuild.add(i, dataModelOneBuild);
-                                    calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
-                                    break;
-                                }
+                    } else if (monthInAdapterFlag == 1) {
+                        for (int i = 0; i < dayWiseArrayNextMonthOneBuild.size(); i++) {
+                            if (dayWiseArrayNextMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
+                                dayWiseArrayNextMonthOneBuild.remove(i);
+                                dayWiseArrayNextMonthOneBuild.add(i, dataModelOneBuild);
+                                calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
+                                break;
                             }
-                            populateSummaryAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
-                            saveTpLocalOneBuild(dayWiseArrayNextMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
+                        }
+                        populateSummaryAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
+                        saveTpLocalOneBuild(dayWiseArrayNextMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
 //                prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayNextMonthOneBuild, false);
 
-                        } else if (monthInAdapterFlag == -1) {
-                            for (int i = 0; i < dayWiseArrayPreviousMonthOneBuild.size(); i++) {
-                                if (dayWiseArrayPreviousMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
-                                    dayWiseArrayPreviousMonthOneBuild.remove(i);
-                                    dayWiseArrayPreviousMonthOneBuild.add(i, dataModelOneBuild);
-                                    calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
-                                    break;
-                                }
+                    } else if (monthInAdapterFlag == -1) {
+                        for (int i = 0; i < dayWiseArrayPreviousMonthOneBuild.size(); i++) {
+                            if (dayWiseArrayPreviousMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
+                                dayWiseArrayPreviousMonthOneBuild.remove(i);
+                                dayWiseArrayPreviousMonthOneBuild.add(i, dataModelOneBuild);
+                                calendarAdapter.notifyDataSetChanged();// removed and replaced the object with updated session data
+                                break;
                             }
-                            populateSummaryAdapterOneBuild(dayWiseArrayPreviousMonthOneBuild);
-                            saveTpLocalOneBuild(dayWiseArrayPreviousMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
+                        }
+                        populateSummaryAdapterOneBuild(dayWiseArrayPreviousMonthOneBuild);
+                        saveTpLocalOneBuild(dayWiseArrayPreviousMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
 //                prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayPrevMonthOneBuild, false);
 
-                        }
-
-
-                        if (isEdited) {
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Updated Successfully");
-                            calendarAdapter.notifyDataSetChanged();
-                            isEdited = false;
-                        } else {
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Saved Successfully");
-                        }
-                        calendarAdapter.notifyDataSetChanged();
-                    } else {
-                        scrollToPosition(position, true);
                     }
-//                }
+
+
+                    if (isEdited) {
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Updated Successfully");
+                        calendarAdapter.notifyDataSetChanged();
+                        isEdited = false;
+                    } else {
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Saved Successfully");
+                    }
+                    calendarAdapter.notifyDataSetChanged();
+                } else {
+                    scrollToPosition(position, true);
+                }
                 binding.tpStatusTxt.setText(Constants.STATUS_0);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 binding.rejectionReasonLayout.setVisibility(View.GONE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
                 binding.rejectedReasonTxt.setText("");
-               /* draftDates.clear();
-                LocalDate localDate1 = LocalDate.now();
-                if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
-                    draftDates.add(dayWiseArrayPreviousMonthOneBuild);
-                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
-                    draftDates.add(dayWiseArrayCurrentMonthOneBuild);
-                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
-                    draftDates.add(dayWiseArrayNextMonthOneBuild);
-                }*/
+//                }
             });
 //Edit
             binding.tpNavigation.sessionEdit.setOnClickListener(new SafeClickListener() {
@@ -1292,12 +1243,6 @@ public class TourPlanActivity extends AppCompatActivity {
                     } else {
                         scrollToPosition(position, true);
                     }
-                    binding.tpStatusTxt.setText(Constants.STATUS_0);
-                    binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
-                    binding.rejectionReasonLayout.setVisibility(View.GONE);
-                    binding.tpNavigation.sessionEdit.setEnabled(true);
-                    binding.rejectedReasonTxt.setText("");
-
                 }
             });
 
@@ -2431,7 +2376,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     oneBuildModelClasses.add(oneBuildModelClass);
             }
 
-            summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
+             summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
 
                 populateSessionViewAdapterOneBuild(oneBuildmodelClass);
                 binding.tpNavigation.addEditViewTxt.setText("View Plan");
@@ -2638,7 +2583,7 @@ public class TourPlanActivity extends AppCompatActivity {
         if (!isDataAvailable) {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
             binding.rejectedReasonTxt.setText("");
-            binding.tpStatusTxt.setText(Constants.STATUS_0);
+            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
             calendarAdapter.notifyDataSetChanged();
         }
     }

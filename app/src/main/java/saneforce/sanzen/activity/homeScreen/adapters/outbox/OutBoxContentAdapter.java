@@ -688,9 +688,9 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
         File fileToUpload = new File(filePath);
         Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
         if (!fileToUpload.exists()) {
+            DeleteCacheFile(filePath, id, i, position);
             Log.d("fileToUpload", "not exists: " + filePath);
         } else {
-
 
                 String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);

@@ -1502,13 +1502,14 @@ public class OutboxFragment extends Fragment {
                                     String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
             util.getS3Client(context);
-            String bucketName = "san-edet";
+            String bucketName = "san-one";
             File fileToUpload = new File(filePath);
             Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
             if (!fileToUpload.exists()) {
+                DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                 Log.d("fileToUpload", "not exists: " + filePath);
             } else {
-                String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
 

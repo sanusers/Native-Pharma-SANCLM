@@ -188,7 +188,8 @@ public class SignatureCanvas extends View {
 
     public String getSignature() {
 
-        imageName = DCRCallActivity.CallActivityCustDetails.get(0).getCode();
+//        imageName = DCRCallActivity.CallActivityCustDetails.get(0).getCode();
+        imageName = DCRCallActivity.CallActivityCustDetails.get(0).getName();
         if(imageName != null) {
             this.imageName = "Sign" + SfCode + "_" + imageName + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
 
