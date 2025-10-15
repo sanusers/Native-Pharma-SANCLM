@@ -280,6 +280,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                             CallAPIWorkPlan(position);
                         } else {
                             commonUtilsMethods.showToastMessage(context, "Sync Check In/Out!");
+                            progressDialog.dismiss();
                         }
                         break;
                     case 2:
@@ -287,6 +288,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                             CallAPIList(position);
                         } else {
                             commonUtilsMethods.showToastMessage(context, "Sync Work Plan!");
+                            progressDialog.dismiss();
                         }
                         break;
                     case 3:
@@ -306,6 +308,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                             CallAPIDaySubmit(position);
                         } else {
                             commonUtilsMethods.showToastMessage(context, "Sync Calls!");
+                            progressDialog.dismiss();
                         }
                         break;
                 }
