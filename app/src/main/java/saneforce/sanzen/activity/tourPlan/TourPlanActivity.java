@@ -112,9 +112,9 @@ public class TourPlanActivity extends AppCompatActivity {
     ArrayList<ModelClass> dayWiseArrayPrevMonth = new ArrayList<>();
     ArrayList<ModelClass> dayWiseArrayNextMonth = new ArrayList<>();
     //OneBuild
-    public static ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
-    public static ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
-    public static ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
+    public  ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
+    public  ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
+    public  ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
 
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
@@ -298,6 +298,10 @@ public class TourPlanActivity extends AppCompatActivity {
                     binding.calendarNextButton.setEnabled(false);
                     binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                 }
+                if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }
                 monthInAdapterFlag = 1;
                 if (dayWiseArrayNextMonthOneBuild.size() == 0) {
                     dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
@@ -305,6 +309,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 populateCalenderAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
 
             } else {
+                if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }
                 dayWiseArrayCurrentMonthOneBuild.clear();
                 dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                 populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
@@ -318,12 +326,20 @@ public class TourPlanActivity extends AppCompatActivity {
                     binding.calendarNextButton.setEnabled(false);
                     binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                 }
+                if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }
                 monthInAdapterFlag = 1;
                 if (dayWiseArrayNextMonth.size() == 0) {
                     dayWiseArrayNextMonth = prepareModelClassForMonth(localDate);
                 }
                 populateCalendarAdapter(dayWiseArrayNextMonth);
             } else {
+                if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }
                 dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
                 populateCalendarAdapter(dayWiseArrayCurrentMonth);
             }
@@ -345,17 +361,6 @@ public class TourPlanActivity extends AppCompatActivity {
                 UtilityClass.hideKeyboard(TourPlanActivity.this);
             }
         });
-
-     /*   Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            int counter = 0;
-            @Override
-            public void run() {
-                counter++;
-                Log.d("Timer", "Timer count: " + counter);
-                handler.postDelayed(this, 5000);
-            }
-        };*/
 
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             binding.tvSync.setOnClickListener(new SafeClickListener() {
@@ -2583,7 +2588,7 @@ public class TourPlanActivity extends AppCompatActivity {
         if (!isDataAvailable) {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
             binding.rejectedReasonTxt.setText("");
-            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
+            binding.tpStatusTxt.setText(Constants.STATUS_0);
             calendarAdapter.notifyDataSetChanged();
         }
     }

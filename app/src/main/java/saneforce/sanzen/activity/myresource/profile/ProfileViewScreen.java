@@ -18,6 +18,7 @@ import saneforce.sanzen.databinding.ActivityProfileViewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.utility.TimeUtils;
 
 
 public class ProfileViewScreen extends AppCompatActivity {
@@ -55,31 +56,39 @@ public class ProfileViewScreen extends AppCompatActivity {
                 JSONObject joinDateObj = profileObject.optJSONObject("SF_JoiningDate");
                 String joinDate = "";
                 if (joinDateObj != null) {
-                    String fullDate = joinDateObj.optString("date");
-                    if (fullDate.contains(" ")) {
-                        joinDate = fullDate.split(" ")[0];
-                    } else {
-                        joinDate = fullDate;
+                    try {
+                        String fullDate = joinDateObj.optString("date");
+                        joinDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, fullDate);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
                 JSONObject dobObj = profileObject.optJSONObject("DOB");
                 String dob = "";
-                if (dobObj != null) {
-                    String fullDate = dobObj.optString("date");
-                    if (fullDate.contains(" ")) {
-                        dob = fullDate.split(" ")[0];
-                    } else {
-                        dob = fullDate;
+                if (dobObj != null ) {
+                    try {
+                        String fullDate = dobObj.optString("date");
+                        if (fullDate.contains("1900")) {
+                            dob = "";
+                        } else {
+                            dob = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, fullDate);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
                 JSONObject dowObj = profileObject.optJSONObject("DOW");
                 String dow = "";
                 if (dowObj != null) {
-                    String fullDate = dowObj.optString("date");
-                    if (fullDate.contains(" ")) {
-                        dow = fullDate.split(" ")[0];
-                    } else {
-                        dow = fullDate;
+                    try {
+                        String fullDate = dowObj.optString("date");
+                        if (fullDate.contains("1900")) {
+                            dow = "";
+                        } else {
+                            dow = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, fullDate);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
 

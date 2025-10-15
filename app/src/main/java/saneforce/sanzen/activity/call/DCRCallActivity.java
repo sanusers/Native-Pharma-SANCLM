@@ -546,6 +546,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             if(!JWOthersFragment.callCaptureImageLists.isEmpty()) {
                 for (int i = 0; i<JWOthersFragment.callCaptureImageLists.size(); i++) {
+
                     callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                 }
             }
