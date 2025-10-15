@@ -14,6 +14,14 @@ import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -45,6 +53,7 @@ public class ReportWebActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityWebReportsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        trustAllCert();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
@@ -114,6 +123,11 @@ public class ReportWebActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 progressDialog.dismiss();
             }
+
+            @Override
+            public void onReceivedSslError(WebView view, android.webkit.SslErrorHandler handler, android.net.http.SslError error) {
+                handler.proceed();
+            }
         });
     }
 
@@ -121,6 +135,8 @@ public class ReportWebActivity extends AppCompatActivity {
 
         @Override
         public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+
+
             if (mUploadMessage != null) {
                 mUploadMessage.onReceiveValue(null);
             }
@@ -136,4 +152,28 @@ public class ReportWebActivity extends AppCompatActivity {
             return true;
         }
     }
+    public void trustAllCert(){
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new javax.net.ssl.X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[]{}; }
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                    }
+            };
+
+            javax.net.ssl.SSLContext sslContext = javax.net.ssl.SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+            // Disable hostname verification (accept all hostnames)
+            javax.net.ssl.HostnameVerifier allHostsValid = (hostname, session) -> true;
+            javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

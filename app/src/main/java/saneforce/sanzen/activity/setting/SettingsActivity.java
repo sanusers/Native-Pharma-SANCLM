@@ -298,6 +298,9 @@ public class SettingsActivity extends AppCompatActivity {
                                         optionFiles = config.getString("optionFiles");
 
                                         String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
+                                        if( binding.etWebUrl.getText().toString().contains("saneforce.com")){
+                                            web_url_getText = web_url_getText.replace("http","https");
+                                        }
                                         String urlData = web_url_getText + phpPathUrl;
                                         String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
 
