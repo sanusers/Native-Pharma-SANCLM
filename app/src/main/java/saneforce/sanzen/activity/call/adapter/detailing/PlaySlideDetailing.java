@@ -331,6 +331,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 if (binding.videoView.isPlaying()) {
                     binding.videoView.stopPlayback();
                 }
+                binding.webView.loadUrl("about:blank");
+                binding.webView.clearHistory();
+                binding.webView.clearCache(false);
                 playBtnClicked = false;
                 binding.playBtn.setImageResource(R.drawable.play_icon);
                 binding.viewPager.setVisibility(View.VISIBLE);
