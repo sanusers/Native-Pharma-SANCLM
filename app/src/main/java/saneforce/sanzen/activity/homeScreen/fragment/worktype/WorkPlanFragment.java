@@ -1136,7 +1136,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         try {
             String clusters = mTowncode1;
             if (dayPlanCount.equalsIgnoreCase("2")) clusters = mTowncode2;
-            if (EditSession.equalsIgnoreCase("1")) chk_cluster = mTowncode1;
+            if (EditSession.equalsIgnoreCase("1")){
+                chk_cluster = mTowncode1;
+                hqCode = mHQCode1;
+
+            } else if (EditSession.equalsIgnoreCase("2")) {
+                chk_cluster = mTowncode2;
+                hqCode = mHQCode2;
+            } else if (dayPlanCount.equalsIgnoreCase("1")) {
+                chk_cluster = mTowncode1;
+                hqCode = mHQCode1;
+            }else{
+                chk_cluster = mTowncode2;
+                hqCode = mHQCode2;
+            }
             multiple_cluster_list.clear();
             JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray();
             for (int i = 0; i < workTypeArray2.length(); i++) {
