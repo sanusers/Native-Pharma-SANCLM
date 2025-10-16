@@ -236,9 +236,11 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     switch (isFromActivity) {
                         case "new":
                             showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
+                            progressBar.dismiss();
                             break;
                         case "edit_local":
                             showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
+                            progressBar.dismiss();
                             break;
                         case "edit_online":
                             if (UtilityClass.isNetworkAvailable(context)) {
@@ -246,17 +248,22 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                     callCaptureImageList.setShowPreview(true);
                                     notifyItemChanged(position);
                                 }
-                                if (callCaptureImageList.isNewlyAdded())
+                                if (callCaptureImageList.isNewlyAdded()) {
                                     showImage(callCaptureImageList.getImg_view());
-                                else {
+                                    progressBar.dismiss();
+                                } else {
                                     if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
+                                        progressBar.dismiss();
                                     }else {
                                         ShowImageEdit(callCaptureImageList.getSystemImgName());
+                                        progressBar.dismiss();
                                     }
                                 }
-                            } else
+                            } else {
+                                progressBar.dismiss();
                                 new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
+                            }
                             break;
                     }
                 }
@@ -306,11 +313,11 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
             builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
             builder.setCancelable(true);
             Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
             ImageView imageView = new ImageView(context);
             imageView.setImageBitmap(myBitmap);
             builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
             builder.show();
+            progressBar.dismiss();
         }
     }
 
