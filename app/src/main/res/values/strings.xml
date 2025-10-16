@@ -657,6 +657,6 @@
     <string name="state"> State </string>
     <string name="employe_code"> Employee Code </string>
     <string name="join_dt"> Joining Date </string>
-    <string name="draft_alert"> Tour Plan is Prepared Locally,Please Click Yes to Save </string>
+
 
 </resources>
