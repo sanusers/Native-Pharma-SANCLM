@@ -2233,7 +2233,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             JsonArray jsonArray = jsonElement.getAsJsonArray();
                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
-                            checkAndSetEntryDate(HomeDashBoard.this, false);
+                            checkAndSetEntryDate(HomeDashBoard.this, true);
 //                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
 //                        binding.tabLayout.setVisibility(View.VISIBLE);
 //                        binding.viewPager.setVisibility(View.VISIBLE);

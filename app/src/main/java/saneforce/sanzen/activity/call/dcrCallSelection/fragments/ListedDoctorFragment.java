@@ -1,3 +1,4 @@
+
 package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
@@ -753,7 +754,7 @@ public class ListedDoctorFragment extends Fragment {
                     } catch (Exception e) {
                         Log.v("DrCall", "dr--error-1-" + e);
                     }
-               /* switch (RequiredFiltered) {
+           /* switch (RequiredFiltered) {
                     case "Speciality":
                         if (filteredStr.equalsIgnoreCase(jsonObject.optString("Specialty"))) {
                             AssignData(i);
@@ -773,6 +774,7 @@ public class ListedDoctorFragment extends Fragment {
                         AssignData(i);
                         break;
                 }*/
+
                 }
 
                 int count = custListArrayList.size();
@@ -957,7 +959,7 @@ public class ListedDoctorFragment extends Fragment {
         return subString;
     }
 
-  /*  private void AssignData(int i) {
+/*  private void AssignData(int i) {
         try {
             Log.v("CheckSelCall", "--dr-" + GeoTagApproval + "--" + DrGeoTag + "----" + TpBasedDcr);
             if (DrGeoTag.equalsIgnoreCase("1")) {

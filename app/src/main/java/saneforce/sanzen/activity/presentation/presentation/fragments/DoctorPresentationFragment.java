@@ -68,7 +68,7 @@ public class DoctorPresentationFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR);
+                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR_MAS);
 //            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.DOCTOR_MAS);
                 startActivity(intent);
             }

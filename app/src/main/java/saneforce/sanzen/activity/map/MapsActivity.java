@@ -1465,7 +1465,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                         }
                     }
-                    ModelList = new MasterSyncItemModel("Listed Doctor Master", "getdoctors_master", Constants.DOCTOR_MAS + hqCode);
+                    ModelList = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode);
                     break;
 
 
@@ -1520,18 +1520,113 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             });
                         }
                     }
-                    ModelList = new MasterSyncItemModel("Doctor", "getchemist_master", Constants.CHEMIST_MAS + hqCode);
-                    ModelList = new MasterSyncItemModel("Doctor", "getchemist_geo", Constants.CHEMIST_GEO + hqCode);
+                    ModelList = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode);
+                    ModelList = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
             case "S":
-                ModelList = new MasterSyncItemModel("Doctor", "getstockist", Constants.STOCKIEST + hqCode);
+                JSONArray masterJsonArrayStkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + hqCode).getMasterSyncDataJsonArray();
+                JSONArray masterJsonArrayStkGeo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + hqCode).getMasterSyncDataJsonArray();
+                try {
+                    HashMap<String, JSONObject> docObj_stk = new HashMap<>();
+                    for (int i = 0; i < masterJsonArrayStkMas.length(); i++) {
+                        JSONObject jsonObject = masterJsonArrayStkMas.getJSONObject(i);
+                        String code = jsonObject.optString("Code");
+                        if (!code.isEmpty()) {
+                            docObj_stk.put(code, jsonObject);
+                        } else {
+                            Log.d("Merge", "Skipping DOCTOR_MAS object with empty 'Code': " + jsonObject.toString());
+                        }
+                    }
+                    for (int i = 0; i < masterJsonArrayStkGeo.length(); i++) {
+                        JSONObject jsonObject_geo = masterJsonArrayStkGeo.getJSONObject(i);
+                        String code = jsonObject_geo.optString("Code");
+                        if (code.isEmpty()) {
+                            Log.w("Merge", "Skipping GEO object with empty 'Code': " + jsonObject_geo.toString());
+                            continue;
+                        }
+                        if (docObj_stk.containsKey(code)) {
+                            JSONObject existingObject = docObj_stk.get(code);
+                                /*    for (java.util.Iterator<String> it = jsonObject_geo.keys(); it.hasNext(); ) {
+                                        String key = it.next();
+                                        System.out.println("Merging key :" + key);
+                                        try {
+                                            assert existingObject != null;
+                                            existingObject.put(key, jsonObject_geo.get(key));
+                                        } catch (Exception e) {
+                                            Log.e("MergeError", "Error merging key " + key + " for code " + code + ": " + e.getMessage());
+                                        }
+                                    }*/
+                            jsonObject_geo.keys().forEachRemaining(key -> {
+                                System.out.println("Merging keys prepmasSync:" + key);
+                                try {
+                                    assert existingObject != null;
+                                    existingObject.put(key, jsonObject_geo.get(key));
+                                } catch (JSONException e) {
+                                    Log.e("MergeError", "Error merging key: " + key);
+                                }
+                            });
+                        }
+                    }
+                    ModelList = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode);
+                    ModelList = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
             case "U":
-                ModelList = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
+                JSONArray masterJsonArrayUNLMas = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray();
+                JSONArray masterJsonArrayUNLGeo = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + hqCode).getMasterSyncDataJsonArray();
+                try {
+                    HashMap<String, JSONObject> docObj_stk = new HashMap<>();
+                    for (int i = 0; i < masterJsonArrayUNLMas.length(); i++) {
+                        JSONObject jsonObject = masterJsonArrayUNLMas.getJSONObject(i);
+                        String code = jsonObject.optString("Code");
+                        if (!code.isEmpty()) {
+                            docObj_stk.put(code, jsonObject);
+                        } else {
+                            Log.d("Merge", "Skipping DOCTOR_MAS object with empty 'Code': " + jsonObject.toString());
+                        }
+                    }
+                    for (int i = 0; i < masterJsonArrayUNLGeo.length(); i++) {
+                        JSONObject jsonObject_geo = masterJsonArrayUNLGeo.getJSONObject(i);
+                        String code = jsonObject_geo.optString("Code");
+                        if (code.isEmpty()) {
+                            Log.w("Merge", "Skipping GEO object with empty 'Code': " + jsonObject_geo.toString());
+                            continue;
+                        }
+                        if (docObj_stk.containsKey(code)) {
+                            JSONObject existingObject = docObj_stk.get(code);
+                                /*    for (java.util.Iterator<String> it = jsonObject_geo.keys(); it.hasNext(); ) {
+                                        String key = it.next();
+                                        System.out.println("Merging key :" + key);
+                                        try {
+                                            assert existingObject != null;
+                                            existingObject.put(key, jsonObject_geo.get(key));
+                                        } catch (Exception e) {
+                                            Log.e("MergeError", "Error merging key " + key + " for code " + code + ": " + e.getMessage());
+                                        }
+                                    }*/
+                            jsonObject_geo.keys().forEachRemaining(key -> {
+                                System.out.println("Merging keys prepmasSync:" + key);
+                                try {
+                                    assert existingObject != null;
+                                    existingObject.put(key, jsonObject_geo.get(key));
+                                } catch (JSONException e) {
+                                    Log.e("MergeError", "Error merging key: " + key);
+                                }
+                            });
+                        }
+                    }
+                    ModelList = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode);
+                    ModelList = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
 

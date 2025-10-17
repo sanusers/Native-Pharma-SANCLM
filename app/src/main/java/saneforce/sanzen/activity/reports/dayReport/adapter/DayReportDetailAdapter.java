@@ -174,7 +174,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         String detailingNeed = "0";
 
         switch (reportOf){
-            case Constants.DOCTOR:{
+            case Constants.DOCTOR_MAS:{
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_dr_icon));
                 if(SharedPref.getDocProductCaption(context).isEmpty() || SharedPref.getDocProductCaption(context).equalsIgnoreCase(null)) {
                     holder.textProduct.setText("Product");
@@ -220,7 +220,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 holder.SlidercpaLayoutitle.setVisibility(View.VISIBLE);
                 break;
             }
-            case Constants.CHEMIST:{
+            case Constants.CHEMIST_MAS:{
                 detailingNeed = SharedPref.getCHMDetailingNeed(context);
                 holder.textPromoted.setVisibility(View.INVISIBLE);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_chemist_icon));
@@ -263,7 +263,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
             }
-            case Constants.STOCKIEST:{
+            case Constants.STOCKIEST_MAS:{
                 detailingNeed = SharedPref.getSTKDetailingNeed(context);
                 holder.textPromoted.setVisibility(View.INVISIBLE);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_stockiest_icon));
@@ -301,7 +301,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
             }
-            case Constants.UNLISTED_DOCTOR:{
+            case Constants.UNLISTED_DOCTOR_MAS:{
                 detailingNeed = SharedPref.getUNDRDetailingNeed(context);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_unlist_dr_icon));
                 if(SharedPref.getUlProductCaption(context).isEmpty() || SharedPref.getUlProductCaption(context).equalsIgnoreCase(null)) {
@@ -464,9 +464,9 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             }
         });
 
-        holder.rcpaLayoutitle.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        holder.rcpaLayoutitle.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 rcpaList.clear();
                 if (holder.rcpaLayout.getVisibility() == View.VISIBLE) {
                     holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
@@ -483,12 +483,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         Rcpagetdata(holder.rvRcpa, holder.rcpaLayout, position);
                     }
                 }
-            }
+//            }
         });
 
-        holder.SlidercpaLayoutitle.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        holder.SlidercpaLayoutitle.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 if (holder.slideDetailsLayout.getVisibility() == View.VISIBLE) {
                     holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.click_logo));
                     holder.slideDetailsLayout.setVisibility(View.GONE);
@@ -504,7 +504,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         SldeDetails(holder.rvSlideDetails, holder.slideDetailsLayout, position, holder);
                     }
                 }
-            }
+//            }
         });
 
     }

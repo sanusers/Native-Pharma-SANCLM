@@ -79,16 +79,16 @@ public class DayReportDetailFragment extends Fragment {
         initialisation();
         if(SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")){
             binding.doctor.setSelected(true);
-            getData("1", Constants.DOCTOR);
+            getData("1", Constants.DOCTOR_MAS);
         } else if(SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")){
             binding.chemist.setSelected(true);
-            getData("2", Constants.CHEMIST);
+            getData("2", Constants.CHEMIST_MAS);
         } else if(SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")){
             binding.stockiest.setSelected(true);
-            getData("3", Constants.STOCKIEST);
+            getData("3", Constants.STOCKIEST_MAS);
         } else if(SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")){
             binding.unDr.setSelected(true);
-            getData("4", Constants.UNLISTED_DOCTOR);
+            getData("4", Constants.UNLISTED_DOCTOR_MAS);
         } else if(SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")){
             binding.cip.setSelected(true);
             getData("5", Constants.CIP);
@@ -131,7 +131,7 @@ public class DayReportDetailFragment extends Fragment {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     setSelection(binding.doctor);
-                    getData("1", Constants.DOCTOR);
+                    getData("1", Constants.DOCTOR_MAS);
                 }
             }
         });
@@ -147,7 +147,7 @@ public class DayReportDetailFragment extends Fragment {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     setSelection(binding.chemist);
-                    getData("2", Constants.CHEMIST);
+                    getData("2", Constants.CHEMIST_MAS);
                 }
             }
         });
@@ -157,7 +157,7 @@ public class DayReportDetailFragment extends Fragment {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     setSelection(binding.stockiest);
-                    getData("3", Constants.STOCKIEST);
+                    getData("3", Constants.STOCKIEST_MAS);
                 }
             }
         });
@@ -167,7 +167,7 @@ public class DayReportDetailFragment extends Fragment {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     setSelection(binding.unDr);
-                    getData("4", Constants.UNLISTED_DOCTOR);
+                    getData("4", Constants.UNLISTED_DOCTOR_MAS);
                 }
             }
         });
@@ -312,13 +312,13 @@ public class DayReportDetailFragment extends Fragment {
                         SharedPref.getCustSrtNd(requireContext());
                         String checkInOutNeed = "1";
                         switch (reportOf) {
-                            case Constants.DOCTOR:
+                            case Constants.DOCTOR_MAS:
                                 checkInOutNeed = SharedPref.getCustSrtNd(requireContext());
                                 break;
-                            case Constants.CHEMIST:
+                            case Constants.CHEMIST_MAS:
                                 checkInOutNeed = SharedPref.getChmSrtNd(requireContext());
                                 break;
-                            case Constants.UNLISTED_DOCTOR:
+                            case Constants.UNLISTED_DOCTOR_MAS:
                                 checkInOutNeed = SharedPref.getUnlistSrtNd(requireContext());
                                 break;
                             case Constants.CIP:

@@ -502,7 +502,7 @@ public class MyResource_Activity extends AppCompatActivity {
             visitcount_list.clear();
 
             JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
-            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
             // Initialize a HashMap to store counts of custom_id1 values
             String viewlist = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_31, (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
             if (jsonvst_ctl.length() > 0) {

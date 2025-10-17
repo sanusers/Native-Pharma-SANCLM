@@ -134,7 +134,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            leaveModelLists.add(new LeaveModelList(json.getString("LvID"), json.getString("Sf_Code"), json.getString("SFName"), json.getString("FDate"), json.getString("TDate"), json.getString("Reason"), json.getString("Address"), json.getString("LType"), json.getString("LAvail"), json.getString("No_of_Days"), json.getString("Sf_Emp_Id")));
+                            leaveModelLists.add(new LeaveModelList(json.optString("LvID"), json.optString("Sf_Code"), json.optString("SFName"), json.optString("FDate"), json.optString("TDate"), json.optString("Reason"), json.optString("Address"), json.optString("LType"), json.optString("LAvail"), json.optString("No_of_Days"), json.optString("Sf_Emp_Id")));
                         }
                         leaveApprovalAdapter = new LeaveApprovalAdapter(LeaveApprovalActivity.this, leaveModelLists);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
