@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.reports.missedReport;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -224,7 +225,11 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             holder.card2Layout.setVisibility(View.GONE);
             if (doctor != null)
                 setPieChart(holder.missedChart, holder.totalDrCnt, holder.visitedCnt, holder.missedCnt, doctor);
+            holder.missedBox.setClickable(true);
+            holder.missedBox.setFocusable(true);
+
             holder.missedBox.setOnClickListener(v -> {
+                Log.d("CLICK_TEST", "Missed box clicked at position " + position);
                 try {
                     //Prepare array
                     JSONArray missedDoctors = doctor.getMissedCustomers();
@@ -244,7 +249,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                     intent.putExtra("date", date);
                     intent.putExtra("selected_month", monthName);
                     intent.putExtra("clicked_type", doctor.getType());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
 
                 } catch (Exception e) {
@@ -262,6 +267,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
 
                     Log.d("MissedDoctorsJSON", chemistDoctors.toString());
                     Log.d("MissedDoctorsCount", "Length = " + chemistDoctors.length());
+
                     // Save to RoomDB
                     RoomDB localRoomDB = RoomDB.getDatabase(context);
                     localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, chemistDoctors.toString());
@@ -366,16 +372,30 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
 
         float missedPercentage = (((float) missedCount / (float) totalCount) * 100.0f);
 
+         int colorVisited;
+        switch (model.getType()) {
+            case "1": colorVisited = context.getColor(R.color.green_60); break;   // Doctor
+            case "2": colorVisited = context.getColor(R.color.blue_60); break; // Chemist
+            case "3": colorVisited = context.getColor(R.color.txt_sample); break;  // Stockist
+            case "4": colorVisited = context.getColor(R.color.gray_45); break; // Unlisted
+            default: colorVisited = context.getColor(R.color.gray_20);
+        }
+        int colorMissed = context.getResources().getColor(R.color.tab_gray);
+
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(context.getResources().getColor(R.color.green_60));
-        colors.add(context.getResources().getColor(R.color.mildRed));
+        colors.add(colorVisited);  // visited color based on type
+        colors.add(colorMissed);
+
+//        colors.add(context.getResources().getColor(R.color.green_60));
+//        colors.add(context.getResources().getColor(R.color.mildRed));
 
         ArrayList<PieEntry> dataList = new ArrayList<>();
         dataList.add(new PieEntry(100.0f - missedPercentage));
         dataList.add(new PieEntry(missedPercentage, ""));
 
         PieDataSet dataSet = new PieDataSet(dataList, "");
-        dataSet.setColors(colors);
+        dataSet.setColors(colorVisited, colorMissed);
+        dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
         data.setValueTextSize(0f);
@@ -405,7 +425,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
         TextView totalstkCnt, stkvisitedCnt, stkmissedCnt;
         TextView totalunlstCnt, unlstvisitedCnt, unlstmissedCnt;
         LinearLayout missedBox, chemistBox,stockiestBox,unlistedBox;
-
+        View visitedLegend, missedLegend;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -435,6 +455,9 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             unlstvisitedCnt = itemView.findViewById(R.id.missedunlstvisitedCnt);
             unlstmissedCnt = itemView.findViewById(R.id.missedunlstmissedCnt);
             unlistedBox = itemView.findViewById(R.id.unlstgrid3);
+
+            visitedLegend = itemView.findViewById(R.id.visitedLegend);
+            missedLegend = itemView.findViewById(R.id.missedLegend);
 
         }
     }

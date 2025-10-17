@@ -110,6 +110,7 @@
                                     android:layout_marginBottom="8dp">
 
                                     <View
+                                        android:id="@+id/visitedLegend"
                                         android:layout_width="15dp"
                                         android:layout_height="15dp"
                                         android:layout_marginEnd="6dp"
@@ -130,6 +131,7 @@
                                     android:orientation="horizontal">
 
                                     <View
+                                        android:id="@+id/missedLegend"
                                         android:layout_width="15dp"
                                         android:layout_height="15dp"
                                         android:layout_marginEnd="6dp"

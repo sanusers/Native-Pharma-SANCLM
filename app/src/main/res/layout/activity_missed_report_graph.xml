@@ -10,7 +10,7 @@
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/text_dark"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
     <LinearLayout
         android:id="@+id/switch_txt"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_margin="8dp"
         android:layout_marginTop="17dp"
         android:background="@drawable/bg_white_border_purple"
@@ -64,7 +64,9 @@
             android:background="@drawable/bg_darkpurple_sharp_bottom_end"
             android:gravity="center"
             android:text="As on Calls"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:clickable="true"
+            android:focusable="true"/>
 
         <TextView
             android:id="@+id/live"
@@ -73,8 +75,77 @@
             android:layout_margin="@dimen/_2sdp"
             android:gravity="center"
             android:text="Approved Calls"
-            android:textColor="@color/dark_purple" />
+            android:textColor="@color/dark_purple"
+            android:clickable="true"
+            android:focusable="true"/>
     </LinearLayout>
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/calendar_lyt"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/fragment_container"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/search_cust"-->
+<!--        app:layout_constraintStart_toEndOf="@id/switch_txt"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">-->
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/calender"-->
+<!--            android:layout_width="@dimen/_150sdp"-->
+<!--            android:layout_height="@dimen/_20sdp"-->
+<!--            android:layout_marginStart="@dimen/_5sdp"-->
+<!--            android:background="@drawable/black_stroke"-->
+<!--            android:fontFamily="@font/satoshi_medium"-->
+<!--            android:gravity="start|center_vertical"-->
+<!--            android:paddingStart="@dimen/_9sdp"-->
+<!--            android:text="Select Month"-->
+<!--            android:textColor="@color/text_dark"-->
+<!--            android:textSize="@dimen/_7sdp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            tools:ignore="MissingConstraints,SpUsage" />-->
+
+
+<!--        <ImageView-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:background="@color/text_dark"-->
+<!--            android:padding="@dimen/_4sdp"-->
+<!--            android:src="@drawable/calendar_img"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/calender"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/calender"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/calender"-->
+<!--            app:tint="@color/white" />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+<!--    <androidx.appcompat.widget.AppCompatEditText-->
+<!--        android:id="@+id/search_cust"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="@dimen/_20sdp"-->
+<!--        android:layout_margin="@dimen/_6sdp"-->
+<!--        android:layout_marginHorizontal="@dimen/_10sdp"-->
+<!--        android:layout_marginVertical="@dimen/_3sdp"-->
+<!--        android:layout_marginTop="4dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:background="@drawable/border_shape_spinner"-->
+<!--        android:drawableStart="@drawable/grey_search"-->
+<!--        android:drawablePadding="@dimen/_5sdp"-->
+<!--        android:hint="@string/search"-->
+<!--        android:paddingHorizontal="@dimen/_10sdp"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textColorHint="@color/light_grey"-->
+<!--        android:textSize="@dimen/_6ssp"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/calendar_lyt"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/fragment_container"-->
+<!--        app:layout_constraintVertical_bias="0.044"-->
+<!--        android:visibility="gone"/>-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/note"
@@ -95,7 +166,6 @@
             android:fontFamily="@font/satoshi_medium"
             android:gravity="start|center"
             android:paddingStart="@dimen/_10sdp"
-
             android:text="Sync to get Live Data!"
             android:textColor="@color/pink"
             android:textSize="@dimen/_6ssp" />
@@ -109,64 +179,57 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/nameCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_3sdp"
-        android:layout_marginEnd="@dimen/_3sdp"
-        android:layout_marginTop="@dimen/_3sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/note">
-        <TextView
-            android:id="@+id/Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="@dimen/_5sdp"
-            android:textColor="@color/txt_sample"
-            android:textSize="@dimen/_7ssp"
-            android:textStyle="bold"
-            tools:text="Wasim Jaffer Ahmeed - HQ - designation" />
-
-    </androidx.cardview.widget.CardView>
-
-
-    <!--    <TextView-->
-<!--        android:id="@+id/Name"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:gravity="center"-->
-<!--        android:layout_marginTop="@dimen/_3sdp"-->
-<!--        android:layout_marginStart="@dimen/_3sdp"-->
-<!--        android:layout_marginEnd="@dimen/_3sdp"-->
-<!--        android:padding="@dimen/_3sdp"-->
-<!--        android:textColor="@color/txt_sample"-->
-<!--        android:textSize="@dimen/_7ssp"-->
-<!--        android:textStyle="bold"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/note"-->
-<!--        tools:text="Wasim Jaffer Ahmeed - HQ - designation" />-->
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerDoctorMissedReports"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:padding="16dp"
-        android:layout_marginStart="@dimen/_3sdp"
-        android:layout_marginEnd="@dimen/_3sdp"
-        android:layout_weight="1"
-        android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@id/nameCard"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginTop="@dimen/_5sdp"
+        app:layout_constraintTop_toBottomOf="@+id/switch_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/nameCard"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="@dimen/_3sdp"-->
+<!--        android:layout_marginEnd="@dimen/_3sdp"-->
+<!--        android:layout_marginTop="@dimen/_3sdp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/note">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/Name"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center"-->
+<!--            android:padding="@dimen/_5sdp"-->
+<!--            android:textColor="@color/txt_sample"-->
+<!--            android:textSize="@dimen/_7ssp"-->
+<!--            android:textStyle="bold"-->
+<!--            tools:text="Wasim Jaffer Ahmeed - HQ - designation" />-->
+
+<!--    </androidx.cardview.widget.CardView>-->
 
 
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/recyclerDoctorMissedReports"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginStart="@dimen/_3sdp"-->
+<!--        android:layout_marginEnd="@dimen/_3sdp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:clipToPadding="false"-->
+<!--        android:padding="16dp"-->
+<!--        android:scrollbars="vertical"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="1.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/nameCard"-->
+<!--        app:layout_constraintVertical_bias="1.0" />-->
+</androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--    <LinearLayout&ndash;&gt;-->
     <!--                        android:id="@+id/headerName"-->
@@ -498,4 +561,4 @@
     <!--            </LinearLayout>-->
     <!--        </RelativeLayout>-->
     <!--    </ScrollView>-->
-</androidx.constraintlayout.widget.ConstraintLayout>
+

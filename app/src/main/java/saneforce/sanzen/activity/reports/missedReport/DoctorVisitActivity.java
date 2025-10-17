@@ -133,7 +133,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
 //        binding.toolbarTitle.setText(" Missed " + drCaption+ " - " + selectedMonth);
 
         doctorList = new ArrayList<>();
-        adapter = new DoctorVisitAdapter(this, doctorList,clickedType);
+        adapter = new DoctorVisitAdapter(this, doctorList, clickedType);
         binding.recyclerDoctorVisit.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerDoctorVisit.setAdapter(adapter);
         roomDB = RoomDB.getDatabase(this);
@@ -174,6 +174,8 @@ public class DoctorVisitActivity extends AppCompatActivity {
 
         String sfCode = getIntent().getStringExtra("sfcode");
         String date = getIntent().getStringExtra("date");
+
+
         String missedArrayString = getIntent().getStringExtra("missed_array");
         loadDoctorData(missedArrayString, "missed");
         String visitArrayString = getIntent().getStringExtra("visit");
@@ -229,17 +231,11 @@ public class DoctorVisitActivity extends AppCompatActivity {
                     String visitDate = callObj.optString("Date", "");
                     String custCode = callObj.optString("CustCode", "").trim();
 
-                    // ✅ Skip empty or invalid entries
-//                    if (!custCode.isEmpty() || !visitDate.isEmpty()) continue;
-
                     if (visitDate.startsWith(selectedMonth)) {
                         visitedCodes.add(custCode);
                         Log.d("DoctorVisitActivity", "Added visited: " + custCode + " (" + visitDate + ")");
                     }
-                    // ✅ Only include visits from current month
-//                    if (visitDate.startsWith(selectedMonth)) {
-//                        visitedCodes.add(custCode);
-//                    }
+
                 }
                 binding.recyclerDoctorVisit.setVisibility(View.GONE);
                 Log.d("DoctorVisitActivity", "Visited codes this month: " + visitedCodes.size());
@@ -267,8 +263,11 @@ public class DoctorVisitActivity extends AppCompatActivity {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 //added
                 String code = obj.optString("Code").trim();
-//                if ("visited".equals(type) && !visitedCodes.contains(code)) continue;
-//                if ("missed".equals(type) && visitedCodes.contains(code)) continue;
+                String doctorType = "1"; // default Doctor
+                if (obj.has("Chm_cat")) doctorType = "2"; // Chemist
+                else if (obj.has("CategoryName") || obj.has("SpecialtyName") || obj.has("Doc_QuaName"))
+                    doctorType = "4"; // Unlisted
+                else if (obj.optString("DrDesig", "").isEmpty()) doctorType = "3";
                 DoctorVisitItem item = new DoctorVisitItem(
                         obj.optString("Name"),
                         obj.optString("Town_Name"),
@@ -278,7 +277,65 @@ public class DoctorVisitActivity extends AppCompatActivity {
                         obj.optString("Specialty"),
                         obj.optString("Doc_Class_ShortName")
                 );
-                doctorList.add(item);
+                switch (doctorType) {
+                    case "2":
+                        String chemCat = obj.optString("Chm_cat", "").trim(); // number from main JSON
+                        String finalCat = "-";
+
+                        try {
+                            String chemCatJson = masterDataDao.getDataByKey("ChemistCategory");
+                            if (chemCatJson != null && !chemCatJson.isEmpty()) {
+                                JSONArray chemistArray = new JSONArray(chemCatJson);
+
+                                for (int j = 0; j < chemistArray.length(); j++) {
+                                    JSONObject chemObj = chemistArray.getJSONObject(j);
+                                    if (chemCat.equals(chemObj.optString("Code", "").trim())) {
+                                        finalCat = chemObj.optString("Chem_Cat_Name", "-");
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        item.setCategory(finalCat);
+                        break;
+//                    case "2":
+//                        item.setCategory(obj.optString("Chm_cat", ""));
+//                        break;
+                    case "4":
+                        item.setCategory(obj.optString("CategoryName", ""));
+                        item.setSpeciality(obj.optString("SpecialtyName", ""));
+                        item.setQualification(obj.optString("Doc_QuaName", ""));
+                        String classCode = obj.optString("Doc_ClsCode", "").trim(); // e.g., "142"
+                        String finalClass = "-";
+                        try {
+                            String classJson = masterDataDao.getDataByKey("Class");
+                            if (classJson != null && !classJson.isEmpty()) {
+                                JSONArray classArray = new JSONArray(classJson);
+                                for (int j = 0; j < classArray.length(); j++) {
+                                    JSONObject classObj = classArray.getJSONObject(j);
+                                    if (classCode.equals(classObj.optString("Code", "").trim())) {
+                                        finalClass = classObj.optString("Doc_ClsName", "-"); // e.g., "Rx"
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        item.setClassName(finalClass); // now Rx will show
+                        break;
+                }
+//                    case "4":
+//                        item.setCategory(obj.optString("CategoryName", ""));
+//                        item.setSpeciality(obj.optString("SpecialtyName", ""));
+//                        item.setQualification(obj.optString("Doc_QuaName", ""));
+//                        item.setClassName(obj.optString("Doc_ClsCode", ""));
+//                        break;
+//
+                    doctorList.add(item);
                 Log.d("DoctorVisitActivity", "Added doctor: " + obj.optString("Name") + ", Code: " + code);
             }
             adapter.updateData(doctorList);
