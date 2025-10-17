@@ -65,7 +65,7 @@ public class UnListedDoctorPresentationFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR);
+                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR_MAS);
 //            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR_MAS);
                 startActivity(intent);
             }

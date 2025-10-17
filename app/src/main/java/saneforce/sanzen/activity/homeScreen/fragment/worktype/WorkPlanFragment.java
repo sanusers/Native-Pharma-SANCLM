@@ -1135,7 +1135,27 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         try {
             String clusters = mTowncode1;
             if (dayPlanCount.equalsIgnoreCase("2")) clusters = mTowncode2;
-            if (EditSession.equalsIgnoreCase("1")) chk_cluster = mTowncode1;
+            if (EditSession.equalsIgnoreCase("1")){
+                chk_cluster = mTowncode1;
+                if (!mHQCode1.isEmpty()) {
+                    hqCode = mHQCode1;
+                }
+            } else if (EditSession.equalsIgnoreCase("2")) {
+                chk_cluster = mTowncode2;
+                if (!mHQCode2.isEmpty()) {
+                    hqCode = mHQCode2;
+                }
+            }else if (dayPlanCount.equalsIgnoreCase("1")) {
+                chk_cluster = mTowncode1;
+                if (!mHQCode1.isEmpty()) {
+                    hqCode = mHQCode1;
+                }
+            }else{
+                chk_cluster = mTowncode2;
+                if (!mHQCode2.isEmpty()) {
+                    hqCode = mHQCode2;
+                }
+            }
             multiple_cluster_list.clear();
             JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray();
             for (int i = 0; i < workTypeArray2.length(); i++) {
@@ -4029,6 +4049,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtWorktype1.setText(mWTName1);
                             binding.txtCluster1.setText("");
                             binding.txtheadquaters1.setText("");
+                            NeedClusterFlag1 = false;
                             SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
                             if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                                 SharedPref.saveHq(requireContext(), mHQName1.split(",")[0], mHQCode1.split(",")[0]);
@@ -4245,6 +4266,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtWorktype2.setText(mWTName2);
                                 binding.txtCluster2.setText("");
                                 binding.txtheadquaters2.setText("");
+                                NeedClusterFlag2 = false;
                                 if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                                     if(!mFwFlg1.equalsIgnoreCase("F")) {
                                         SharedPref.saveHq(requireContext(), mHQName2.split(",")[0], mHQCode2.split(",")[0]);

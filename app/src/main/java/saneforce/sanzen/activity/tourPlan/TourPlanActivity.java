@@ -7,13 +7,17 @@ import android.annotation.SuppressLint;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -58,6 +62,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
@@ -107,12 +112,15 @@ public class TourPlanActivity extends AppCompatActivity {
     ArrayList<ModelClass> dayWiseArrayPrevMonth = new ArrayList<>();
     ArrayList<ModelClass> dayWiseArrayNextMonth = new ArrayList<>();
     //OneBuild
-    public static ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
-    public static ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
-    public static ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
+    public  ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
+    public  ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
+    public  ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
 
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
+
+//    List<ArrayList> draftDates = new ArrayList<>();
+
     ModelClass.SessionList.WorkType weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType();
     ModelClass.SessionList.WorkType holidayWorkTypeModel = new ModelClass.SessionList.WorkType();
 
@@ -290,6 +298,10 @@ public class TourPlanActivity extends AppCompatActivity {
                     binding.calendarNextButton.setEnabled(false);
                     binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                 }
+                if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }
                 monthInAdapterFlag = 1;
                 if (dayWiseArrayNextMonthOneBuild.size() == 0) {
                     dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
@@ -297,6 +309,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 populateCalenderAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
 
             } else {
+                if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }
                 dayWiseArrayCurrentMonthOneBuild.clear();
                 dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                 populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
@@ -310,12 +326,20 @@ public class TourPlanActivity extends AppCompatActivity {
                     binding.calendarNextButton.setEnabled(false);
                     binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                 }
+                if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }
                 monthInAdapterFlag = 1;
                 if (dayWiseArrayNextMonth.size() == 0) {
                     dayWiseArrayNextMonth = prepareModelClassForMonth(localDate);
                 }
                 populateCalendarAdapter(dayWiseArrayNextMonth);
             } else {
+                if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }
                 dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
                 populateCalendarAdapter(dayWiseArrayCurrentMonth);
             }
@@ -337,17 +361,6 @@ public class TourPlanActivity extends AppCompatActivity {
                 UtilityClass.hideKeyboard(TourPlanActivity.this);
             }
         });
-
-     /*   Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            int counter = 0;
-            @Override
-            public void run() {
-                counter++;
-                Log.d("Timer", "Timer count: " + counter);
-                handler.postDelayed(this, 5000);
-            }
-        };*/
 
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             binding.tvSync.setOnClickListener(new SafeClickListener() {
@@ -941,12 +954,12 @@ public class TourPlanActivity extends AppCompatActivity {
                 } else {
                     scrollToPosition(position, true);
                 }
-//                }
                 binding.tpStatusTxt.setText(Constants.STATUS_0);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 binding.rejectionReasonLayout.setVisibility(View.GONE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
                 binding.rejectedReasonTxt.setText("");
+//                }
             });
 //Edit
             binding.tpNavigation.sessionEdit.setOnClickListener(new SafeClickListener() {
@@ -1237,12 +1250,6 @@ public class TourPlanActivity extends AppCompatActivity {
                     } else {
                         scrollToPosition(position, true);
                     }
-                    binding.tpStatusTxt.setText(Constants.STATUS_0);
-                    binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
-                    binding.rejectionReasonLayout.setVisibility(View.GONE);
-                    binding.tpNavigation.sessionEdit.setEnabled(true);
-                    binding.rejectedReasonTxt.setText("");
-
                 }
             });
 
@@ -2377,7 +2384,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     oneBuildModelClasses.add(oneBuildModelClass);
             }
 
-            summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
+             summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
 
                 populateSessionViewAdapterOneBuild(oneBuildmodelClass);
                 binding.tpNavigation.addEditViewTxt.setText("View Plan");
@@ -3405,8 +3412,10 @@ public class TourPlanActivity extends AppCompatActivity {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-
-
+                                        get1MonthRemoteTPDataOneBuild(localDate);
+//                                        get3MonthRemoteTPDataOneBuild(isClickedName);
+//                                        get3MonthRemoteTPDataOneBuild(isClickedName);
+//                                        draftDates.clear();
                                     } else {
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                                         SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
@@ -3426,7 +3435,6 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-//                        get3MonthRemoteTPDataOneBuild(isClickedName);
                         get1MonthRemoteTPDataOneBuild(localDate);
                     }
 
@@ -3442,8 +3450,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
 
-    private void SaveTourPlanWholeMonth(JSONObject jsonObject1, String
-            isClickedName) {
+    private void SaveTourPlanWholeMonth(JSONObject jsonObject1, String isClickedName) {
         try {
             localDate = LocalDate.now();
             if (jsonObject1.has("previous")) {

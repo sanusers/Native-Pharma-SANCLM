@@ -78,13 +78,13 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         });
 
         activityUnplannedVisitBinding.tagTvStockist.setOnClickListener(view -> {
-            selectedDCR = Constants.STOCKIEST;
+            selectedDCR = Constants.STOCKIEST_MAS;
             updateDCRSelectionUI();
             populateDcrData();
         });
 
         activityUnplannedVisitBinding.tagTvUndr.setOnClickListener(view -> {
-            selectedDCR = Constants.UNLISTED_DOCTOR;
+            selectedDCR = Constants.UNLISTED_DOCTOR_MAS;
             updateDCRSelectionUI();
             populateDcrData();
         });
@@ -212,11 +212,11 @@ public class UnplannedVisitActivity extends AppCompatActivity {
                 activityUnplannedVisitBinding.tagTvChemist.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityUnplannedVisitBinding.tagTvChemist.setTextColor(getColor(R.color.white));
                 break;
-            case Constants.STOCKIEST:
+            case Constants.STOCKIEST_MAS:
                 activityUnplannedVisitBinding.tagTvStockist.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityUnplannedVisitBinding.tagTvStockist.setTextColor(getColor(R.color.white));
                 break;
-            case Constants.UNLISTED_DOCTOR:
+            case Constants.UNLISTED_DOCTOR_MAS:
                 activityUnplannedVisitBinding.tagTvUndr.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityUnplannedVisitBinding.tagTvUndr.setTextColor(getColor(R.color.white));
                 break;

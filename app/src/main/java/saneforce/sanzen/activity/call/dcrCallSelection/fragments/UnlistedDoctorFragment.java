@@ -287,7 +287,7 @@ public class UnlistedDoctorFragment extends Fragment {
                         }
                     }
                 }
-        /*        List<JSONObject> sortedList = new ArrayList<>(docObj_UnList.values());
+/*        List<JSONObject> sortedList = new ArrayList<>(docObj_UnList.values());
 
 
                 Collections.sort(sortedList, (o1, o2) -> {
@@ -295,6 +295,7 @@ public class UnlistedDoctorFragment extends Fragment {
                     String name2 = o2.optString("Name", "");
                     return name1.compareToIgnoreCase(name2);
                 });*/
+
 
                 jsonArray = new JSONArray(docObj_UnList.values());
 

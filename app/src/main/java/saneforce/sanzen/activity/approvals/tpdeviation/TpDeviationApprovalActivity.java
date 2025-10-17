@@ -364,7 +364,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
 
 //            ModelClass modelClass = new ModelClass(jsonObject.optString("Day"), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_19, jsonObject.optString("TPDt")), jsonObject.optString("tpday"), jsonObject.optString("Tour_Month"), jsonObject.optString("Tour_Year"), false, sessionLists);
 
-            if(!jsonObject.optString("HQCodes2").isEmpty()) {
+            if(!jsonObject.optString("WTCode2").isEmpty()) {
                 sessionList = prepareSessionListForAdapter();
                 sessionList.setHQ(getHQData(jsonObject.optString("HQCodes2")));
 
@@ -396,7 +396,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
 
                 sessionLists.add(sessionList);
             }
-            if(!jsonObject.optString("HQCodes3").isEmpty()) {
+            if(!jsonObject.optString("WTCode3").isEmpty()) {
                 sessionList = prepareSessionListForAdapter();
                 sessionList.setHQ(getHQData(jsonObject.optString("HQCodes3")));
 
@@ -480,7 +480,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
             //commented before not you
 //            ModelClass modelClass = new ModelClass(jsonObject.optString("Day"), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_19, jsonObject.optString("TPDt")), jsonObject.optString("tpday"), jsonObject.optString("Tour_Month"), jsonObject.optString("Tour_Year"), false, sessionLists);
 
-            if(!jsonObject.optString("HQCodes2").isEmpty()) {
+            if(!jsonObject.optString("WTCode2").isEmpty()) {
                 sessionList = prepareSessionListForAdapterOneBuild();
                 sessionList.setHeadquarters(getHQDataOneBuild(jsonObject.optString("HQCodes2")));
 
@@ -512,7 +512,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
 */
                 sessionLists.add(sessionList);
             }
-            if(!jsonObject.optString("HQCodes3").isEmpty()) {
+            if(!jsonObject.optString("WTCode3").isEmpty()) {
                 sessionList = prepareSessionListForAdapterOneBuild();
                 sessionList.setHeadquarters(getHQDataOneBuild(jsonObject.optString("HQCodes3")));
 

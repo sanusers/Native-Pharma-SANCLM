@@ -210,13 +210,13 @@ public class TagCustSelectionList extends AppCompatActivity {
             }
         });
 
-        binding.imgClose.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.imgClose.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 hideKeyboard();
                 binding.constraintHqList.setVisibility(View.GONE);
                 binding.dummyView.setVisibility(View.GONE);
-            }
+//            }
         });
 
         binding.clrSearchCustTxt.setOnClickListener(new SafeClickListener() {
