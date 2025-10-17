@@ -726,6 +726,7 @@ public class ChemistFragment extends Fragment {
         }
         dialogFilter.dismiss();
     }
+
     private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {

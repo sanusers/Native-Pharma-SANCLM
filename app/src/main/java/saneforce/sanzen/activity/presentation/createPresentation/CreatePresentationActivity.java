@@ -21,12 +21,10 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.createPresentation.brand.BrandNameAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.selectedSlide.ItemTouchHelperCallBack;
 import saneforce.sanzen.activity.presentation.createPresentation.selectedSlide.SelectedSlidesAdapter;
@@ -97,67 +95,55 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
         uiInitialisation();
 
-        binding.backArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                Intent intent = new Intent(CreatePresentationActivity.this, PresentationActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        binding.backArrow.setOnClickListener(view -> {
+            Intent intent = new Intent(CreatePresentationActivity.this, PresentationActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        });
+
+        binding.playBtn.setOnClickListener(view -> {
+            if (!selectedSlideArrayList.isEmpty()) {
+                Intent intent = new Intent(CreatePresentationActivity.this, PlaySlidePreviewActivity.class);
+                String data = new Gson().toJson(selectedSlideArrayList);
+                Bundle bundle = new Bundle();
+                bundle.putString("slideBundle", data);
+                bundle.putString("position", String.valueOf(0));
+                intent.putExtra("bundle", bundle);
                 startActivity(intent);
             }
         });
 
-        binding.playBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!selectedSlideArrayList.isEmpty()) {
-                    Intent intent = new Intent(CreatePresentationActivity.this, PlaySlidePreviewActivity.class);
-                    String data = new Gson().toJson(selectedSlideArrayList);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("slideBundle", data);
-                    bundle.putString("position", String.valueOf(0));
-                    intent.putExtra("bundle", bundle);
-                    startActivity(intent);
-                }
-            }
+        binding.clear.setOnClickListener(view -> {
+            binding.presentationNameEt.setText("");
         });
 
-        binding.clear.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                binding.presentationNameEt.setText("");
-            }
-        });
+        binding.save.setOnClickListener(view -> {
+            if (!selectedSlideArrayList.isEmpty()) {
+                String name = binding.presentationNameEt.getText().toString().trim();
 
-        binding.save.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!selectedSlideArrayList.isEmpty()) {
-                    String name = binding.presentationNameEt.getText().toString().trim();
-
-                    if (!name.isEmpty()) {
-                        if (!oldName.isEmpty()) {
-                            if (!oldName.equalsIgnoreCase(name)) {
-                                if (!presentationDataDao.presentationExists(name)) {
-                                    intentAction(oldName, name);
-                                } else {
-                                    commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already));
-                                }
-                            } else {
-                                intentAction(oldName, name);
-                            }
-                        } else {
+                if (!name.isEmpty()) {
+                    if (!oldName.isEmpty()) {
+                        if (!oldName.equalsIgnoreCase(name)) {
                             if (!presentationDataDao.presentationExists(name)) {
-                                intentAction("", name);
+                                intentAction(oldName, name);
                             } else {
                                 commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already));
                             }
+                        } else {
+                            intentAction(oldName, name);
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.enter_presentation_name));
+                        if (!presentationDataDao.presentationExists(name)) {
+                            intentAction("", name);
+                        } else {
+                            commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already));
+                        }
                     }
-                    UtilityClass.hideKeyboard(CreatePresentationActivity.this);
+                } else {
+                    commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.enter_presentation_name));
                 }
             }
+            UtilityClass.hideKeyboard(CreatePresentationActivity.this);
         });
 
     }
@@ -281,7 +267,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void populateBrandNameAdapter(ArrayList<BrandModelClass> arrayList) {
-
         brandNameAdapter = new BrandNameAdapter(CreatePresentationActivity.this, arrayList, (arrayList1, position) -> {
             populateSlideImageAdapter(arrayList1.get(position).getProductArrayList());
             brandNameAdapter.notifyDataSetChanged();
@@ -296,7 +281,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void populateSlideImageAdapter(ArrayList<BrandModelClass.Product> arrayList) {
-
         imageSelectionInterface = (arrayList1, position) -> {
             brandNameAdapter.notifyDataSetChanged();
             slideImageAdapter.notifyDataSetChanged();
@@ -326,7 +310,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
                     }
                 }
             }
-
 
             int count = selectedSlideArrayList.size();
             for (int i = 0; i < count; i++) {

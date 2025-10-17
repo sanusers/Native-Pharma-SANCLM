@@ -138,7 +138,7 @@ public class CustomPreviewFragment extends Fragment {
                 binding.noDataDr.setVisibility(View.GONE);
                 binding.rvBrandListDr.setVisibility(View.VISIBLE);
                 drPresentationAdapter = new PresentationAdapter(requireContext(), drSlideCustomizedList, "preview", presentationName -> {
-                    showSideScreenListener.onClick(Constants.DOCTOR, presentationName);
+                    showSideScreenListener.onClick(Constants.DOCTOR_MAS, presentationName);
                 });
                 binding.rvBrandListDr.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
                 binding.rvBrandListDr.setAdapter(drPresentationAdapter);
@@ -158,7 +158,7 @@ public class CustomPreviewFragment extends Fragment {
                 binding.noDataChm.setVisibility(View.GONE);
                 binding.rvBrandListChm.setVisibility(View.VISIBLE);
                 chmPresentationAdapter = new PresentationAdapter(requireContext(), chmSlideCustomizedList, "preview", presentationName -> {
-                    showSideScreenListener.onClick(Constants.CHEMIST, presentationName);
+                    showSideScreenListener.onClick(Constants.CHEMIST_MAS, presentationName);
                 });
                 binding.rvBrandListChm.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
                 binding.rvBrandListChm.setAdapter(chmPresentationAdapter);
@@ -178,7 +178,7 @@ public class CustomPreviewFragment extends Fragment {
                 binding.noDataStk.setVisibility(View.GONE);
                 binding.rvBrandListStk.setVisibility(View.VISIBLE);
                 stkPresentationAdapter = new PresentationAdapter(requireContext(), stkSlideCustomizedList, "preview", presentationName -> {
-                    showSideScreenListener.onClick(Constants.STOCKIEST, presentationName);
+                    showSideScreenListener.onClick(Constants.STOCKIEST_MAS, presentationName);
                 });
                 binding.rvBrandListStk.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
                 binding.rvBrandListStk.setAdapter(stkPresentationAdapter);
@@ -198,7 +198,7 @@ public class CustomPreviewFragment extends Fragment {
                 binding.noDataUnlDr.setVisibility(View.GONE);
                 binding.rvBrandListUnlDr.setVisibility(View.VISIBLE);
                 unDrPresentationAdapter = new PresentationAdapter(requireContext(), unDrSlideCustomizedList, "preview", presentationName -> {
-                    showSideScreenListener.onClick(Constants.UNLISTED_DOCTOR, presentationName);
+                    showSideScreenListener.onClick(Constants.UNLISTED_DOCTOR_MAS, presentationName);
                 });
                 binding.rvBrandListUnlDr.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
                 binding.rvBrandListUnlDr.setAdapter(unDrPresentationAdapter);

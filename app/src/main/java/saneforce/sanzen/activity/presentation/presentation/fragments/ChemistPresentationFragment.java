@@ -66,7 +66,7 @@ public class ChemistPresentationFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.CHEMIST);
+                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.CHEMIST_MAS);
 //            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.CHEMIST_MAS);
                 startActivity(intent);
             }

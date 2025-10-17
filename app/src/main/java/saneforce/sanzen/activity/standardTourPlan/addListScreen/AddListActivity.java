@@ -182,7 +182,7 @@ public class AddListActivity extends AppCompatActivity {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
-                selectedDCR = Constants.STOCKIEST;
+                selectedDCR = Constants.STOCKIEST_MAS;
                 selectedDCRCap = stkCap;
                 activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
@@ -194,7 +194,7 @@ public class AddListActivity extends AppCompatActivity {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
-                selectedDCR = Constants.UNLISTED_DOCTOR;
+                selectedDCR = Constants.UNLISTED_DOCTOR_MAS;
                 selectedDCRCap = unDrCap;
                 activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
@@ -452,11 +452,11 @@ public class AddListActivity extends AppCompatActivity {
                 activityAddListBinding.tagTvChemist.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityAddListBinding.tagTvChemist.setTextColor(getColor(R.color.white));
                 break;
-            case Constants.STOCKIEST:
+            case Constants.STOCKIEST_MAS:
                 activityAddListBinding.tagTvStockist.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityAddListBinding.tagTvStockist.setTextColor(getColor(R.color.white));
                 break;
-            case Constants.UNLISTED_DOCTOR:
+            case Constants.UNLISTED_DOCTOR_MAS:
                 activityAddListBinding.tagTvUndr.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityAddListBinding.tagTvUndr.setTextColor(getColor(R.color.white));
                 break;
@@ -645,10 +645,10 @@ public class AddListActivity extends AppCompatActivity {
             case Constants.CHEMIST_MAS:
                 activityAddListBinding.tvSelectedDcr.setText("Selected " + chmCap);
                 break;
-            case Constants.STOCKIEST:
+            case Constants.STOCKIEST_MAS:
                 activityAddListBinding.tvSelectedDcr.setText("Selected " + stkCap);
                 break;
-            case Constants.UNLISTED_DOCTOR:
+            case Constants.UNLISTED_DOCTOR_MAS:
                 activityAddListBinding.tvSelectedDcr.setText("Selected " + unDrCap);
                 break;
             case Constants.CIP:
