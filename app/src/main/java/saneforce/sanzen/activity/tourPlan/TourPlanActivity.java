@@ -1050,13 +1050,61 @@ public class TourPlanActivity extends AppCompatActivity {
 //                            }
 //                        }
 //                    }
+                            ArrayList<MultiHQItemModelClass> checkList = new ArrayList<>();
+//                            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getClusters()) {
+//                                checkList.addAll(multiHQHeaderModelClass.getItemsList());
+//                            }
+                            boolean isClusterNotSelectedForHQ = false;
+                            String hqName = "";
+                            ArrayList<String> hqCodes = new ArrayList<>();
+                            ArrayList<String> hqNames = new ArrayList<>();
+                            for (ModelClass.SessionList.SubClass subClass: modelClass.getHQs()) {
+                                hqCodes.add(subClass.getCode());
+                                hqNames.add(subClass.getName());
+                            }
+                            for (int k = 0; k < modelClass.getClusters().size(); k++) {
+                                MultiHQHeaderModelClass multiHQHeaderModelClass = modelClass.getClusters().get(k);
+                                ArrayList<MultiHQItemModelClass> dataList = multiHQHeaderModelClass.getItemsList();
+                                checkList.addAll(dataList);
+                                boolean isClusterNotSelected = false;
+                                for (int j = 0; j < dataList.size(); j++) {
+                                    if (dataList.get(j).isChecked()) {
+                                        isClusterNotSelected = true;
+                                    }
+                                }
+                                for (ModelClass.SessionList.SubClass subClass: modelClass.getHQs()) {
+                                    if (subClass.getCode().equalsIgnoreCase(multiHQHeaderModelClass.getCode())) {
+                                        int index = hqCodes.indexOf(subClass.getCode());
+                                        hqCodes.remove(index);
+                                        hqNames.remove(index);
+                                        break;
+                                    }
+                                }
+                                if (!isClusterNotSelected) {
+                                    isClusterNotSelectedForHQ = true;
+                                    hqName = multiHQHeaderModelClass.getName();
+                                    break;
+                                }
+                            }
+
+                            if (!hqNames.isEmpty()) {
+                                isClusterNotSelectedForHQ = true;
+                                hqName = hqNames.get(0);
+                            }
+
+                            if (isClusterNotSelectedForHQ) {
+                                isEmpty = true;
+                                position = i;
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Select any " + SharedPref.getClusterCap(context) + " for " + hqName);
+                                break;
+                            }
                             if (modelClass.getHQs().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
                                 break;
                             } else if ((modelClass.getCluster().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1"))
-                                    || (modelClass.getClusters().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0"))) {
+                                    || (checkList.isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0"))) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
@@ -1093,7 +1141,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                    ArrayList<MultiHQItemModelClass> checkList = new ArrayList<>();
+                                    checkList = new ArrayList<>();
                                     for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
                                         checkList.addAll(multiHQHeaderModelClass.getItemsList());
                                     }
