@@ -395,25 +395,65 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("editCall", jsonObject.toString());
                         Intent intent = new Intent(context, DCRCallActivity.class);
                         JSONArray callData = jsonObject.optJSONArray("DCRDetail");
-                        String selectedHQ = "", mProds = "";
+                        String selectedHQ = "", mProds = "", townName = "", townCode = "";
                         if (callData != null) {
                             JSONObject dcrDetail = callData.optJSONObject(0);
                             if (dcrDetail != null) {
                                 selectedHQ = dcrDetail.optString("DataSF");
-//                                JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
-                                JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
-                                for (int i = 0; i < drMas.length(); i++) {
-                                    JSONObject drObj = drMas.optJSONObject(i);
-                                    if (drObj.optString("Code").equalsIgnoreCase(docCode)) {
-                                        mProds = drObj.optString("MProd");
+                                switch (type) {
+                                    case "1":
+                                        JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
+                                        for (int i = 0; i < drMas.length(); i++) {
+                                            JSONObject obj = drMas.optJSONObject(i);
+                                            if (obj.optString("Code").equalsIgnoreCase(docCode)) {
+                                                mProds = obj.optString("MProd");
+                                                townName = obj.optString("Town_Name");
+                                                townCode = obj.optString("Town_Code");
+                                                break;
+                                            }
+                                        }
                                         break;
-                                    }
+                                    case "2":
+                                        JSONArray chmMas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + selectedHQ).getMasterSyncDataJsonArray();
+                                        for (int i = 0; i < chmMas.length(); i++) {
+                                            JSONObject obj = chmMas.optJSONObject(i);
+                                            if (obj.optString("Code").equalsIgnoreCase(docCode)) {
+                                                townName = obj.optString("Town_Name");
+                                                townCode = obj.optString("Town_Code");
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case "3":
+                                        JSONArray stkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + selectedHQ).getMasterSyncDataJsonArray();
+                                        for (int i = 0; i < stkMas.length(); i++) {
+                                            JSONObject obj = stkMas.optJSONObject(i);
+                                            if (obj.optString("Code").equalsIgnoreCase(docCode)) {
+                                                townName = obj.optString("Town_Name");
+                                                townCode = obj.optString("Town_Code");
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case "4":
+                                        JSONArray unlDrMas = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
+                                        for (int i = 0; i < unlDrMas.length(); i++) {
+                                            JSONObject obj = unlDrMas.optJSONObject(i);
+                                            if (obj.optString("Code").equalsIgnoreCase(docCode)) {
+                                                townName = obj.optString("Town_Name");
+                                                townCode = obj.optString("Town_Code");
+                                                break;
+                                            }
+                                        }
+                                        break;
                                 }
                             }
                         }
                         CallActivityCustDetails = new ArrayList<>();
                         CustList custList = new CustList(docName.substring(0, docName.lastIndexOf(" ---")).trim(), docCode, type, transSlno, aDetSLNo, "", jsonObject.toString());
                         custList.setMappedSlides(mProds);
+                        custList.setTown_code(townCode);
+                        custList.setTown_name(townName);
                         CallActivityCustDetails.add(0, custList);
                         intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                         intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");

@@ -1963,6 +1963,8 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             if (json.has("sign_Img") && !json.optString("sign_Img").isEmpty()) {
                 imageName = json.optString("sign_Img");
+            } else {
+                imageName = "";
             }
 
             if (json.has("Dcr_activity") && !json.getString("Dcr_activity").equalsIgnoreCase("[]")) {
@@ -2280,6 +2282,8 @@ public class DCRCallActivity extends AppCompatActivity {
             //Signature
             if (json.has("sign_Img") && !json.optString("sign_Img").isEmpty()) {
                 imageName = json.optString("sign_Img");
+            } else {
+                imageName = "";
             }
             //RCPA
             if (!json.getString("RCPAEntry").equalsIgnoreCase("[]")) {

@@ -183,7 +183,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     } else if (menuItem.getItemId() == R.id.menuEdit) {
                         Intent intent = new Intent(context, DCRCallActivity.class);
                         DCRCallActivity.clickedLocalDate = outBoxCallLists.get(position).getDates();
-                        String selectedHQ = "", mProds = "", headerno = "", detno = "";
+                        String selectedHQ = "", mProds = "", headerno = "", detno = "", townCode = "", townName = "";
                         try {
                             JSONObject dcrDetail = new JSONObject(outBoxCallLists.get(position).getJsonData());
                             if (dcrDetail != null) {
@@ -191,13 +191,52 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                 detno = dcrDetail.optString("detno");
                                 selectedHQ = dcrDetail.optString("Rsf");
 //                            JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
-                                JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
-                                for (int i = 0; i < drMas.length(); i++) {
-                                    JSONObject drObj = drMas.optJSONObject(i);
-                                    if (drObj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
-                                        mProds = drObj.optString("MProd");
+                                switch (type) {
+                                    case "1":
+                                        JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
+                                        for (int i = 0; i < drMas.length(); i++) {
+                                            JSONObject obj = drMas.optJSONObject(i);
+                                            if (obj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
+                                                mProds = obj.optString("MProd");
+                                                townName = obj.optString("Town_Name");
+                                                townCode = obj.optString("Town_Code");
+                                                break;
+                                            }
+                                        }
                                         break;
-                                    }
+                                    case "2":
+                                        JSONArray chmMas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + selectedHQ).getMasterSyncDataJsonArray();
+                                        for (int i = 0; i < chmMas.length(); i++) {
+                                            JSONObject obj = chmMas.optJSONObject(i);
+                                            if (obj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
+                                                townName = obj.optString("Town_Name");
+                                                townCode = obj.optString("Town_Code");
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case "3":
+                                        JSONArray stkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + selectedHQ).getMasterSyncDataJsonArray();
+                                        for (int i = 0; i < stkMas.length(); i++) {
+                                            JSONObject obj = stkMas.optJSONObject(i);
+                                            if (obj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
+                                                townName = obj.optString("Town_Name");
+                                                townCode = obj.optString("Town_Code");
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case "4":
+                                        JSONArray unlDrMas = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + selectedHQ).getMasterSyncDataJsonArray();
+                                        for (int i = 0; i < unlDrMas.length(); i++) {
+                                            JSONObject obj = unlDrMas.optJSONObject(i);
+                                            if (obj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
+                                                townName = obj.optString("Town_Name");
+                                                townCode = obj.optString("Town_Code");
+                                                break;
+                                            }
+                                        }
+                                        break;
                                 }
                             }
                         } catch (Exception e) {
@@ -206,6 +245,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         CallActivityCustDetails = new ArrayList<>();
                         CustList custList = new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, headerno, detno, "", outBoxCallLists.get(position).getJsonData());
                         custList.setMappedSlides(mProds);
+                        custList.setTown_code(townCode);
+                        custList.setTown_name(townName);
                         CallActivityCustDetails.add(0, custList);
                         intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                         intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_local");

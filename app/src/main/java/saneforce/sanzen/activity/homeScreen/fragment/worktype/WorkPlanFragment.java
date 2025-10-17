@@ -1138,17 +1138,24 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if (dayPlanCount.equalsIgnoreCase("2")) clusters = mTowncode2;
             if (EditSession.equalsIgnoreCase("1")){
                 chk_cluster = mTowncode1;
-                hqCode = mHQCode1;
-
+                if (!mHQCode1.isEmpty()) {
+                    hqCode = mHQCode1;
+                }
             } else if (EditSession.equalsIgnoreCase("2")) {
                 chk_cluster = mTowncode2;
-                hqCode = mHQCode2;
-            } else if (dayPlanCount.equalsIgnoreCase("1")) {
+                if (!mHQCode2.isEmpty()) {
+                    hqCode = mHQCode2;
+                }
+            }else if (dayPlanCount.equalsIgnoreCase("1")) {
                 chk_cluster = mTowncode1;
-                hqCode = mHQCode1;
+                if (!mHQCode1.isEmpty()) {
+                    hqCode = mHQCode1;
+                }
             }else{
                 chk_cluster = mTowncode2;
-                hqCode = mHQCode2;
+                if (!mHQCode2.isEmpty()) {
+                    hqCode = mHQCode2;
+                }
             }
             multiple_cluster_list.clear();
             JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray();
