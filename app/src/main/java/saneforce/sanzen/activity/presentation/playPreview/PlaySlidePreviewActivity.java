@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.presentation.playPreview;
 
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -32,7 +31,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -82,7 +80,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                     case "mp4":
                     case "avi":
                     case "zip":
-                    case "htm": 
+                    case "htm":
                     case "html": {
                         binding.playBtn.setVisibility(View.VISIBLE);
                         break;
@@ -101,168 +99,153 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
             }
         });
 
-        binding.upArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
-                    binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(PlaySlidePreviewActivity.this, R.drawable.arrow_up_white));
-                    binding.upArrow.setVisibility(View.VISIBLE);
-                    binding.bottomLayout.setVisibility(View.GONE);
-                    binding.closeBtn.setVisibility(View.GONE);
-                } else {
-                    binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(PlaySlidePreviewActivity.this, R.drawable.arrow_down_white));
-                    binding.upArrow.setVisibility(View.VISIBLE);
-                    binding.bottomLayout.setVisibility(View.VISIBLE);
-                    binding.closeBtn.setVisibility(View.GONE);
-                }
-                bottomPreviewAdapter.notifyDataSetChanged();
-            }
-        });
-
-        binding.upArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                binding.upArrow.setVisibility(View.GONE);
-                binding.bottomLayout.setVisibility(View.VISIBLE);
-                bottomPreviewAdapter.notifyDataSetChanged();
-            }
-        });
-
-        binding.closeBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                binding.bottomLayout.setVisibility(View.GONE);
+        binding.upArrow.setOnClickListener(view -> {
+            if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
+                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(PlaySlidePreviewActivity.this, R.drawable.arrow_up_white));
                 binding.upArrow.setVisibility(View.VISIBLE);
+                binding.bottomLayout.setVisibility(View.GONE);
+                binding.closeBtn.setVisibility(View.GONE);
+            } else {
+                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(PlaySlidePreviewActivity.this, R.drawable.arrow_down_white));
+                binding.upArrow.setVisibility(View.VISIBLE);
+                binding.bottomLayout.setVisibility(View.VISIBLE);
+                binding.closeBtn.setVisibility(View.GONE);
+            }
+            bottomPreviewAdapter.notifyDataSetChanged();
+        });
+
+        binding.upArrow.setOnClickListener(view -> {
+            binding.upArrow.setVisibility(View.GONE);
+            binding.bottomLayout.setVisibility(View.VISIBLE);
+            bottomPreviewAdapter.notifyDataSetChanged();
+        });
+
+        binding.closeBtn.setOnClickListener(view -> {
+            binding.bottomLayout.setVisibility(View.GONE);
+            binding.upArrow.setVisibility(View.VISIBLE);
+        });
+
+        binding.ivPlayPauseTimer.setOnClickListener(view -> {
+            if (timer != null) {
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_play_arrow_24);
+                stopTimer();
+            } else {
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
+                startTimer();
             }
         });
 
-        binding.ivPlayPauseTimer.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (timer != null) {
-                    binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_play_arrow_24);
-                    stopTimer();
+        binding.exitBtn.setOnClickListener(view -> {
+            getOnBackPressedDispatcher().onBackPressed();
+        });
+
+        binding.playBtn.setOnClickListener(view -> {
+            if (binding.bottomLayout.getVisibility() != View.VISIBLE) {
+                if (!playBtnClicked) {
+                    playBtnClicked = true;
+                    binding.playBtn.setImageResource(R.drawable.baseline_stop);
+                    timer.cancel();
+                    binding.viewPager.setVisibility(View.GONE);
+                    binding.upArrow.setVisibility(View.GONE);
+                    binding.bottomLayout.setVisibility(View.GONE);
+
+                    String fileName = arrayList.get(binding.viewPager.getCurrentItem()).getSlideName();
+                    File file = new File(PlaySlidePreviewActivity.this.getExternalFilesDir(null) + "/Slides/", fileName);
+                    if (file.exists()) {
+                        String fileFormat = SupportClass.getFileExtension(fileName);
+                        switch (fileFormat) {
+                            case "pdf":
+                                binding.pdfView.setVisibility(View.VISIBLE);
+                                binding.videoView.setVisibility(View.GONE);
+                                binding.webView.setVisibility(View.GONE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
+                                loadPdf(file.getAbsolutePath());
+                                break;
+                            case "mp4":
+                            case "avi":
+                                binding.pdfView.setVisibility(View.GONE);
+                                binding.videoView.setVisibility(View.VISIBLE);
+                                binding.webView.setVisibility(View.GONE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
+                                Uri uri = Uri.parse(file.getAbsolutePath());
+                                binding.videoView.setVideoURI(uri);
+                                binding.videoView.setMediaController(mediaController);
+                                binding.videoView.setOnPreparedListener(mp -> {
+                                    binding.progressAnim.setVisibility(View.GONE);
+                                    mp.start();
+                                });
+//                                binding.videoView.start();
+                                break;
+                            case "zip":
+                                binding.pdfView.setVisibility(View.GONE);
+                                binding.videoView.setVisibility(View.GONE);
+                                binding.webView.setVisibility(View.VISIBLE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
+
+                                binding.webView.getSettings().setBuiltInZoomControls(false);
+                                binding.webView.getSettings().setDisplayZoomControls(false);
+                                binding.webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+                                binding.webView.getSettings().setJavaScriptEnabled(true);
+                                binding.webView.getSettings().setLoadWithOverviewMode(true);
+                                binding.webView.getSettings().setUseWideViewPort(true);
+                                binding.webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+                                binding.webView.getSettings().setLoadsImagesAutomatically(true);
+                                binding.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                                binding.webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+                                binding.webView.getSettings().setAllowFileAccess(true);
+                                binding.webView.setHorizontalScrollBarEnabled(false);
+                                binding.webView.setVerticalScrollBarEnabled(false);
+                                binding.webView.getSettings().setDomStorageEnabled(true);
+                                binding.webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+                                binding.webView.getSettings().setDatabaseEnabled(true);
+                                binding.webView.setInitialScale(1);
+                                binding.webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+
+                                String filePath = SupportClass.getFileFromZip(file.getAbsolutePath(), "html");
+                                if (!filePath.isEmpty()) {
+                                    binding.webView.loadUrl("file://" + filePath);
+                                }
+                                binding.webView.setWebViewClient(new WebViewClient() {
+                                    @Override
+                                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                        Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
+                                        if (!url.isEmpty()) {
+                                            binding.webView.loadUrl(url);
+                                        }
+                                        return true;
+                                    }
+
+                                    @Override
+                                    public void onPageFinished(WebView view, String url) {
+                                        super.onPageFinished(view, url);
+                                        Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                        binding.progressAnim.setVisibility(View.GONE);
+                                        binding.progressAnim.cancelAnimation();
+                                    }
+                                });
+                                break;
+                        }
+                    }
                 } else {
+                    if (binding.videoView.isPlaying()) {
+                        binding.videoView.stopPlayback();
+                    }
+                    binding.webView.loadUrl("about:blank");
+                    binding.webView.clearHistory();
+                    binding.webView.clearCache(false);
+                    playBtnClicked = false;
+                    binding.playBtn.setImageResource(R.drawable.play_icon);
+                    binding.viewPager.setVisibility(View.VISIBLE);
+                    binding.pdfView.setVisibility(View.GONE);
+                    binding.videoView.setVisibility(View.GONE);
+                    binding.webView.setVisibility(View.GONE);
+                    binding.upArrow.setVisibility(View.VISIBLE);
+                    binding.progressAnim.setVisibility(View.GONE);
                     binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
                     startTimer();
-                }
-            }
-        });
-
-        binding.exitBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
-        });
-
-        binding.playBtn.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (binding.bottomLayout.getVisibility() != View.VISIBLE) {
-                    if (!playBtnClicked) {
-                        playBtnClicked = true;
-                        binding.playBtn.setImageResource(R.drawable.baseline_stop);
-                        timer.cancel();
-                        binding.viewPager.setVisibility(View.GONE);
-                        binding.upArrow.setVisibility(View.GONE);
-                        binding.bottomLayout.setVisibility(View.GONE);
-
-                        String fileName = arrayList.get(binding.viewPager.getCurrentItem()).getSlideName();
-                        File file = new File(PlaySlidePreviewActivity.this.getExternalFilesDir(null) + "/Slides/", fileName);
-                        if (file.exists()) {
-                            String fileFormat = SupportClass.getFileExtension(fileName);
-                            switch (fileFormat) {
-                                case "pdf":
-                                    binding.pdfView.setVisibility(View.VISIBLE);
-                                    binding.videoView.setVisibility(View.GONE);
-                                    binding.webView.setVisibility(View.GONE);
-                                    binding.progressAnim.setVisibility(View.VISIBLE);
-                                    binding.progressAnim.playAnimation();
-                                    loadPdf(file.getAbsolutePath());
-                                    break;
-                                case "mp4":
-                                case "avi":
-                                    binding.pdfView.setVisibility(View.GONE);
-                                    binding.videoView.setVisibility(View.VISIBLE);
-                                    binding.webView.setVisibility(View.GONE);
-                                    binding.progressAnim.setVisibility(View.VISIBLE);
-                                    binding.progressAnim.playAnimation();
-                                    Uri uri = Uri.parse(file.getAbsolutePath());
-                                    binding.videoView.setVideoURI(uri);
-                                    binding.videoView.setMediaController(mediaController);
-                                    binding.videoView.setOnPreparedListener(mp -> {
-                                        binding.progressAnim.setVisibility(View.GONE);
-                                        mp.start();
-                                    });
-//                                binding.videoView.start();
-                                    break;
-                                case "zip":
-                                    binding.pdfView.setVisibility(View.GONE);
-                                    binding.videoView.setVisibility(View.GONE);
-                                    binding.webView.setVisibility(View.VISIBLE);
-                                    binding.progressAnim.setVisibility(View.VISIBLE);
-                                    binding.progressAnim.playAnimation();
-
-                                    binding.webView.getSettings().setBuiltInZoomControls(false);
-                                    binding.webView.getSettings().setDisplayZoomControls(false);
-                                    binding.webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-                                    binding.webView.getSettings().setJavaScriptEnabled(true);
-                                    binding.webView.getSettings().setLoadWithOverviewMode(true);
-                                    binding.webView.getSettings().setUseWideViewPort(true);
-                                    binding.webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-                                    binding.webView.getSettings().setLoadsImagesAutomatically(true);
-                                    binding.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-                                    binding.webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-                                    binding.webView.getSettings().setAllowFileAccess(true);
-                                    binding.webView.setHorizontalScrollBarEnabled(false);
-                                    binding.webView.setVerticalScrollBarEnabled(false);
-                                    binding.webView.getSettings().setDomStorageEnabled(true);
-                                    binding.webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-                                    binding.webView.getSettings().setDatabaseEnabled(true);
-                                    binding.webView.setInitialScale(1);
-                                    binding.webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-
-                                    String filePath = SupportClass.getFileFromZip(file.getAbsolutePath(), "html");
-                                    if (!filePath.isEmpty()) {
-                                        binding.webView.loadUrl("file://" + filePath);
-                                    }
-                                    binding.webView.setWebViewClient(new WebViewClient() {
-                                        @Override
-                                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                                            Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
-                                            if (!url.isEmpty()) {
-                                                binding.webView.loadUrl(url);
-                                            }
-                                            return true;
-                                        }
-
-                                        @Override
-                                        public void onPageFinished(WebView view, String url) {
-                                            super.onPageFinished(view, url);
-                                            Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                                            binding.progressAnim.setVisibility(View.GONE);
-                                            binding.progressAnim.cancelAnimation();
-                                        }
-                                    });
-                                    break;
-                            }
-                        }
-                    } else {
-                        if (binding.videoView.isPlaying()) {
-                            binding.videoView.stopPlayback();
-                        }
-                        playBtnClicked = false;
-                        binding.playBtn.setImageResource(R.drawable.play_icon);
-                        binding.viewPager.setVisibility(View.VISIBLE);
-                        binding.pdfView.setVisibility(View.GONE);
-                        binding.videoView.setVisibility(View.GONE);
-                        binding.webView.setVisibility(View.GONE);
-                        binding.upArrow.setVisibility(View.VISIBLE);
-                        binding.progressAnim.setVisibility(View.GONE);
-                        binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
-                        startTimer();
-                    }
                 }
             }
         });
@@ -299,7 +282,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 case "mp4":
                 case "avi":
                 case "zip":
-                case "htm": 
+                case "htm":
                 case "html": {
                     binding.playBtn.setVisibility(View.VISIBLE);
                     break;
@@ -343,13 +326,13 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     }
 
     public void startTimer() {
-        if(timer != null) timer.cancel();
+        if (timer != null) timer.cancel();
         timer = new Timer();
         timer.schedule(new SlideTimer(), 2000, 5000);
     }
 
     public void stopTimer() {
-        if(timer != null) timer.cancel();
+        if (timer != null) timer.cancel();
         timer = null;
     }
 
@@ -364,7 +347,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(timer != null) {
+        if (timer != null) {
             timer.cancel();
         }
     }

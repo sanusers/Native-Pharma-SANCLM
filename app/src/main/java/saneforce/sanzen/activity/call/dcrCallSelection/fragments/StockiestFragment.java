@@ -266,12 +266,13 @@ public class StockiestFragment extends Fragment {
                         });
                     }
                 }
-         /*       List<JSONObject> sortedList = new ArrayList<>(docObj_stk.values());
+/*       List<JSONObject> sortedList = new ArrayList<>(docObj_stk.values());
                 Collections.sort(sortedList, (o1, o2) -> {
                     String name1 = o1.optString("Name", "");
                     String name2 = o2.optString("Name", "");
                     return name1.compareToIgnoreCase(name2);
                 });*/
+
                 jsonArray = new JSONArray(docObj_stk.values());
 
                 Log.v("STKCALL", "-stk_full_length-" + jsonArray.length());
@@ -429,11 +430,11 @@ public class StockiestFragment extends Fragment {
             } else {
                 if (SharedPref.getTodayDayPlanClusterName(requireContext()).contains(jsonObject.optString("Town_Name"))) {
 //                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
-                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", ""));
-                } else {
-                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"),/* jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"),*/ String.valueOf(i), /*jsonObject.optString("lat"), jsonObject.optString("long"),*/ jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", true));
+                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", ""));
+                    } else {
+                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"),/*jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"),*/String.valueOf(i),/*jsonObject.optString("lat"), jsonObject.optString("long"),*/jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", true));
+                    }
                 }
-            }
 //            } else if (SharedPref.getTodayDayPlanClusterName(requireContext()).contains(jsonObject.optString("Town_Name"))) {
 //                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", false));
 //            } else {
@@ -557,4 +558,3 @@ public class StockiestFragment extends Fragment {
         dialogFilter.dismiss();
     }
 }
-

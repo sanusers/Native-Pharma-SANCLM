@@ -121,7 +121,7 @@ public class SignatureFragment1 extends Fragment {
                 }
                 break;
             case "edit_online":
-                if ((!imageName.isEmpty()  || !filePath.isEmpty() )) {
+                if ((!imageName.isEmpty()  /*|| !filePath.isEmpty()*/ )) {
                     if (UtilityClass.isNetworkAvailable(context)) {
                         if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                             loadImageFromS3(imageName);
@@ -211,7 +211,7 @@ public class SignatureFragment1 extends Fragment {
     }
 
     public void loadImageFromS3(String fileName) {
-        if (!fileName.equalsIgnoreCase("null")) {
+        if (!fileName.contains("null")) {
             File file = new File(context.getExternalFilesDir(null) + "/Signature/", fileName);
             new AWSBucketsSign(context, fileName, file, 0, "", new S3DownloadFiles() {
                 @Override
@@ -222,7 +222,7 @@ public class SignatureFragment1 extends Fragment {
                         try (FileOutputStream fos = new FileOutputStream(file)) {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                             Log.d("S3ImageLoad", "Image stored locally at: " + file.getAbsolutePath());
-                            if(!fileName.equalsIgnoreCase("null")) {
+                            if(!fileName.contains("null")) {
                                 callSignCaptureImage.add(0, new CallSignCaptureImageList(file.getAbsolutePath(), fileName));
                             }
                         } catch (Exception e) {
@@ -290,9 +290,9 @@ public class SignatureFragment1 extends Fragment {
 //            File file = new File(callSignCaptureImage.get(0).getFilepath());
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             signatureCanvas.setBackgroundBitmap(bitmap);
-
-            callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
-
+            if(!imageName.contains("null")){
+                callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
+            }
             Log.d("SignatureFlow", "Loaded image from local: " + fileName);
         } else {
             Log.d("TAG", "instance initializer: file path is empty");

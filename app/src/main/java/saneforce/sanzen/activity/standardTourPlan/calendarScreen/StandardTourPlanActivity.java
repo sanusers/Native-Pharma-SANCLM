@@ -568,32 +568,32 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                                 selectedDcrMap.put(Constants.CHEMIST_MAS, chmModelList);
                                             }
                                             break;
-                                        case Constants.STOCKIEST:
+                                        case Constants.STOCKIEST_MAS:
                                             if(!totalStkCodeList.contains(code)) {
                                                 totalStkCodeList.add(code);
-                                                if(!selectedDcrMap.containsKey(Constants.STOCKIEST)) {
-                                                    selectedDcrMap.put(Constants.STOCKIEST, new ArrayList<>());
+                                                if(!selectedDcrMap.containsKey(Constants.STOCKIEST_MAS)) {
+                                                    selectedDcrMap.put(Constants.STOCKIEST_MAS, new ArrayList<>());
                                                 }
-                                                List<DCRModel> stkModelList = selectedDcrMap.get(Constants.STOCKIEST);
+                                                List<DCRModel> stkModelList = selectedDcrMap.get(Constants.STOCKIEST_MAS);
                                                 if(stkModelList == null) {
                                                     stkModelList = new ArrayList<>();
                                                 }
                                                 stkModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
-                                                selectedDcrMap.put(Constants.STOCKIEST, stkModelList);
+                                                selectedDcrMap.put(Constants.STOCKIEST_MAS, stkModelList);
                                             }
                                             break;
-                                        case Constants.UNLISTED_DOCTOR:
+                                        case Constants.UNLISTED_DOCTOR_MAS:
                                             if(!totalUnDrCodeList.contains(code)) {
                                                 totalUnDrCodeList.add(code);
-                                                if(!selectedDcrMap.containsKey(Constants.UNLISTED_DOCTOR)) {
-                                                    selectedDcrMap.put(Constants.UNLISTED_DOCTOR, new ArrayList<>());
+                                                if(!selectedDcrMap.containsKey(Constants.UNLISTED_DOCTOR_MAS)) {
+                                                    selectedDcrMap.put(Constants.UNLISTED_DOCTOR_MAS, new ArrayList<>());
                                                 }
-                                                List<DCRModel> unDrModelList = selectedDcrMap.get(Constants.UNLISTED_DOCTOR);
+                                                List<DCRModel> unDrModelList = selectedDcrMap.get(Constants.UNLISTED_DOCTOR_MAS);
                                                 if(unDrModelList == null) {
                                                     unDrModelList = new ArrayList<>();
                                                 }
                                                 unDrModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
-                                                selectedDcrMap.put(Constants.UNLISTED_DOCTOR, unDrModelList);
+                                                selectedDcrMap.put(Constants.UNLISTED_DOCTOR_MAS, unDrModelList);
                                             }
                                             break;
                                         case Constants.CIP:

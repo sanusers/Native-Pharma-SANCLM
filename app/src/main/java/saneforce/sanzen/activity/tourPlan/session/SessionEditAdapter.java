@@ -1027,7 +1027,24 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
-            holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            holder.remarks.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+
+           /* holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -1044,7 +1061,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
                     }
                 }
-            });
+            });*/
 
             holder.sessionDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -2013,7 +2030,24 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
-            holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            holder.remarks.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+
+       /*     holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -2030,7 +2064,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         holder.sessionData.setRemarks(holder.remarks.getText().toString());
                     }
                 }
-            });
+            });*/
 
             holder.sessionDelete.setOnClickListener(new View.OnClickListener() {
                 @Override

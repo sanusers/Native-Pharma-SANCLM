@@ -66,7 +66,7 @@ public class StockistPresentationFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.STOCKIEST);
+                intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.STOCKIEST_MAS);
 //            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.STOCKIEST_MAS);
                 startActivity(intent);
             }

@@ -141,7 +141,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
     public void show_docdata() {
         try {
             listeduser.clear();
-            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
 
             String Town_Name = "";
 
