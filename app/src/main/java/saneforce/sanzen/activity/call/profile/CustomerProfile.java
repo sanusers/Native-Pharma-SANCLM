@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.profile;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.storingSlide;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -205,6 +206,7 @@ public class CustomerProfile extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 if (HomeDashBoard.selectedDate != null) {
+                    storingSlide.clear();
                     Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
                     intent.putExtra("from", "call");
                     intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());

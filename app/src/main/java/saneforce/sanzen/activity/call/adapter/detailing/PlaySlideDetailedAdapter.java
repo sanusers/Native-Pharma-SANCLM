@@ -96,7 +96,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private Runnable runnable;
     public static HashMap<String, ArrayList<String>> timer = new HashMap<>();
     private int currentPage = -1;
-    private String pageStartTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
+    public static String pageStartTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
         this.context = context;
@@ -172,7 +172,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
     public void onPageChanged(int newPosition) {
         String now = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
-
         if(currentPage != -1 && !pageStartTime.isEmpty()) {
             String slideName = getSlideNameAt(currentPage);
             ArrayList<String> list = new ArrayList<>();
@@ -183,10 +182,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             timer.put(slideName, list);
             Log.d("SlideTiming", "Slide " + slideName + "started at " + pageStartTime + " ended after " + now);
         }
-
         pageStartTime = now;
         currentPage = newPosition;
-
     }
 
     public void resetTimer() {

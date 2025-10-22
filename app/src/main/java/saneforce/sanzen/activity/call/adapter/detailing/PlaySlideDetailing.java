@@ -637,6 +637,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
             holder.tv_brandName.setOnClickListener(view -> {
                 SelectedPosPlay = holder.getAbsoluteAdapterPosition();
+                itemsPagerAdapter.logCurrentPageEndIfNeeded();
                 switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
                     case "A":
                         populateListData(SlideWelcomeList);
