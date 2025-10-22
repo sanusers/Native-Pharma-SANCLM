@@ -3,10 +3,8 @@ package saneforce.sanzen.activity.reports;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,18 +15,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
-import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicSubMenuAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.storage.SharedPref;
-import saneforce.sanzen.utility.NetworkStatusTask;
-import saneforce.sanzen.utility.TimeUtils;
 
 public class DynamicSubMenuActivity extends AppCompatActivity {
     ArrayList<SubMenuModel> subMenuModelArrayList = new ArrayList<>();
@@ -53,7 +46,7 @@ public class DynamicSubMenuActivity extends AppCompatActivity {
         backArrow.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                //show_exit_alert();
+
                 finish();
             }
         });

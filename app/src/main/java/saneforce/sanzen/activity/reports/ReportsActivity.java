@@ -5,21 +5,16 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.processing.SurfaceProcessorNode;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,8 +31,6 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 
-import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -82,8 +75,10 @@ public class ReportsActivity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                Intent intent = new Intent(ReportsActivity.this, HomeDashBoard.class);
-                startActivity(intent);
+               /* Intent intent = new Intent(ReportsActivity.this, HomeDashBoard.class);
+                startActivity(intent);*/
+                finish();
+
             }
         });
 
@@ -95,8 +90,8 @@ public class ReportsActivity extends AppCompatActivity {
        /* arrayList.add("Monthly Report");
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");*/
-//        arrayList.add("Visit Monitor");
-//        arrayList.add("Missed Report");
+        arrayList.add("Visit Monitor");
+        arrayList.add("Missed Report");
         if (SharedPref.getDashboard(this).equals("0")){
             arrayList.add("Dash Board");
         }
@@ -174,6 +169,7 @@ public class ReportsActivity extends AppCompatActivity {
         if (UtilityClass.isNetworkAvailable(this)) {
             Intent intent = new Intent(context, DynamicMenuActivity.class);
             startActivity(intent);
+            progressDialog.dismiss();
         }else{
             progressDialog.dismiss();
             commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network));

@@ -98,6 +98,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.reports.DynamicMenuActivity;
+import saneforce.sanzen.activity.reports.DynamicMenuHome;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
@@ -224,6 +226,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private String previousDate = "";
     float dX, dY;
     int lastAction;
+    String dynamicLinKNeed = "0";
 
     private final Handler handler = new Handler();
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
@@ -1820,6 +1823,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
             return true;
         }
+        if(item.getTitle().toString().equalsIgnoreCase(SharedPref.getDynamicOptionCaps(HomeDashBoard.this))){
+            if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
+            }else{
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
+            }
+
+        }
 
     /*    if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.reports))) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
@@ -2425,6 +2436,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //        if (SharedPref.getDocBusinessProduct(this).equalsIgnoreCase("0")) {
 //            menu.findItem(R.id.docbusinessentry).setVisible(true);
 //        } else {
+        if(SharedPref.getDynamicOptionNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
+            menu.findItem(R.id.dyn_link).setTitle(SharedPref.getDynamicOptionCaps(HomeDashBoard.this));
+            menu.findItem(R.id.dyn_link).setVisible(true);
+        }else{
+            menu.findItem(R.id.dyn_link).setVisible(false);
+        }
         menu.findItem(R.id.docbusinessentry).setVisible(false);
 //        }
 

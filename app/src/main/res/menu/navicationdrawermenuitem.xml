@@ -71,6 +71,10 @@
         android:icon="@drawable/faq"
         android:title="@string/faq" />
 
+    <item android:id="@+id/dyn_link"
+        android:icon="@drawable/report_monthly_icon"
+        android:title="" />
+
     <item
         android:id="@+id/ClearSlide"
         android:icon="@drawable/img_clear"

@@ -190,6 +190,10 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity android:name=".activity.reports.DynamicMenuHome"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".activity.reports.visitMonitor.VisitMonitorActivity"
             android:exported="false"

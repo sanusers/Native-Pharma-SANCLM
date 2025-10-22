@@ -18,6 +18,8 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -32,6 +34,7 @@ public class SanZenApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {

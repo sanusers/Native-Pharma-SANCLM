@@ -431,7 +431,7 @@ public class AsOnCallsFragment extends Fragment {
                     dataListDoc,
                     dataListChm,
                     dataListStk,
-                    dataListUnlisted,requireContext()
+                    dataListUnlisted, requireContext()
             );
             Log.w("DEBUG", "Adapter created = " + adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

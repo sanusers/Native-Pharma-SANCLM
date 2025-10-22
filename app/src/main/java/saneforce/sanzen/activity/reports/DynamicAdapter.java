@@ -1,4 +1,4 @@
-package saneforce.sanzen.activity.reports.dayReport.adapter;
+package saneforce.sanzen.activity.reports;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
@@ -10,28 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.reports.DynamicSubMenuActivity;
-import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
-import saneforce.sanzen.activity.reports.dayReport.fragment.DayReportDetailFragment;
 import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.storage.SharedPref;
 
 public class DynamicAdapter extends BaseAdapter {
 

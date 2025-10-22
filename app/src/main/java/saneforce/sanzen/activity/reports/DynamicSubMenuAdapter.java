@@ -1,4 +1,4 @@
-package saneforce.sanzen.activity.reports.dayReport.adapter;
+package saneforce.sanzen.activity.reports;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
@@ -18,8 +18,6 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.reports.DynamicWebActivity;
-import saneforce.sanzen.activity.reports.ReportWebActivity;
 import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
