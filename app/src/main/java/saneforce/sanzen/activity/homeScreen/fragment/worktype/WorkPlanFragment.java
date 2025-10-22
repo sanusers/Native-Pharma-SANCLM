@@ -2327,25 +2327,27 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             try {
-                String[] hqCodes = CommonUtilsMethods.removeLastComma(mHQCode1).split(",");
-                String[] hqNames = CommonUtilsMethods.removeLastComma(mHQName1).split(",");
-                if (sessionId.equalsIgnoreCase("2")) {
-                    hqCodes = CommonUtilsMethods.removeLastComma(mHQCode2).split(",");
-                    hqNames = CommonUtilsMethods.removeLastComma(mHQName2).split(",");
-                }
-                String hqName = "";
-                boolean isClusterNotSelected = false;
-                for (int i = 0; i < hqCodes.length; i++) {
-                    String HQCode = hqCodes[i];
-                    if (!mapSelectedCluster.containsKey(HQCode) || mapSelectedCluster.get(HQCode) == null || mapSelectedCluster.get(HQCode).isEmpty()) {
-                        isClusterNotSelected = true;
-                        hqName = hqNames[i];
-                        break;
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                    String[] hqCodes = CommonUtilsMethods.removeLastComma(mHQCode1).split(",");
+                    String[] hqNames = CommonUtilsMethods.removeLastComma(mHQName1).split(",");
+                    if (sessionId.equalsIgnoreCase("2")) {
+                        hqCodes = CommonUtilsMethods.removeLastComma(mHQCode2).split(",");
+                        hqNames = CommonUtilsMethods.removeLastComma(mHQName2).split(",");
                     }
-                }
-                if (isClusterNotSelected) {
-                    showToast("Select any " + SharedPref.getClusterCap(requireContext()) + "for " + hqName);
-                    return;
+                    String hqName = "";
+                    boolean isClusterNotSelected = false;
+                    for (int i = 0; i < hqCodes.length; i++) {
+                        String HQCode = hqCodes[i];
+                        if (!mapSelectedCluster.containsKey(HQCode) || mapSelectedCluster.get(HQCode) == null || mapSelectedCluster.get(HQCode).isEmpty()) {
+                            isClusterNotSelected = true;
+                            hqName = hqNames[i];
+                            break;
+                        }
+                    }
+                    if (isClusterNotSelected) {
+                        showToast("Select any " + SharedPref.getClusterCap(requireContext()) + "for " + hqName);
+                        return;
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

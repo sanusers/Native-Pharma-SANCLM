@@ -804,6 +804,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             }
         }*/
         if(!mm.getBrdName().equalsIgnoreCase("Welcome")) {
+            Log.i("TAG slide", "setPrimaryItem: " + mm.getSlideNam() + " --> " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
             storingSlide.add(new LoadBitmap(mm.getScribble(), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), position, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mm.getSlideNam(), mm.getSlideTyp(), mm.getSlideUrl(), mm.getBrdName(), mm.getBrdCode()));
         }
     }

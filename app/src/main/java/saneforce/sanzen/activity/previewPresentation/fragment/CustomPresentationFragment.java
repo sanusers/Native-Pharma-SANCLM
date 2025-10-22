@@ -56,7 +56,7 @@ public class CustomPresentationFragment extends Fragment {
     private SlideImageAdapter slideImageAdapter;
     private SelectedSlidesAdapter selectedSlidesAdapter;
     private final ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
-    private final ArrayList<BrandModelClass.Product> selectedSlideArrayList = new ArrayList<>();
+    public static ArrayList<BrandModelClass.Product> selectedSlideArrayList = new ArrayList<>();
     private final ArrayList<BrandModelClass.Product> savedPresentation = new ArrayList<>();
     private ImageSelectionInterface imageSelectionInterface;
     private ItemTouchHelper itemTouchHelper;
@@ -71,6 +71,7 @@ public class CustomPresentationFragment extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        selectedSlideArrayList = new ArrayList<>();
     }
 
     @Override
@@ -202,8 +203,7 @@ public class CustomPresentationFragment extends Fragment {
             e.printStackTrace();
         }
         populateBrandNameAdapter(brandProductArrayList);
-        populateSelectedSlideAdapter(selectedSlideArrayList);
-
+        populateSelectedSlideAdapter(selectedSlideArrayList, -1);
     }
 
     private BrandModelClass.Product getProductData(JSONObject productObject, String priority) {
@@ -277,7 +277,7 @@ public class CustomPresentationFragment extends Fragment {
                 }
             }
 
-            populateSelectedSlideAdapter(selectedSlideArrayList);
+            populateSelectedSlideAdapter(selectedSlideArrayList, position);
             binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
             binding.clearBtn.setEnabled(!selectedSlideArrayList.isEmpty());
         };
@@ -289,7 +289,7 @@ public class CustomPresentationFragment extends Fragment {
         binding.clearBtn.setEnabled(!selectedSlideArrayList.isEmpty());
     }
 
-    public void populateSelectedSlideAdapter(ArrayList<BrandModelClass.Product> arrayList) {
+    public void populateSelectedSlideAdapter(ArrayList<BrandModelClass.Product> arrayList, int position) {
         selectedSlidesAdapter = new SelectedSlidesAdapter(requireContext(), arrayList, imageSelectionInterface, viewHolder -> itemTouchHelper.startDrag(viewHolder));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext());
         binding.slidesRecView.setLayoutManager(layoutManager);
@@ -300,7 +300,11 @@ public class CustomPresentationFragment extends Fragment {
         binding.slideImageRecView.setHasFixedSize(false);
         binding.slidesRecView.setAdapter(selectedSlidesAdapter);
         binding.selectedSlideCount.setText(String.valueOf(arrayList.size()));
+        if (position >= arrayList.size()) {
+            binding.slidesRecView.scrollToPosition(arrayList.size() - 1);
+        } else if (position >= 0) {
+            binding.slidesRecView.scrollToPosition(position);
+        }
     }
-
 
 }

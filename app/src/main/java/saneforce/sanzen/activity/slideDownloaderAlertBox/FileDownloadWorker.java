@@ -474,7 +474,7 @@ public class FileDownloadWorker extends Worker {
             InputStream is = connection.getInputStream();
             totalSize = connection.getContentLength();
             String progressTex="";
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[8192];
             int len1;
             while ((len1 = is.read(buffer)) != -1) {
                 fos.write(buffer, 0, len1);
