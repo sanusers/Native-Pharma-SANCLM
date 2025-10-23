@@ -1099,7 +1099,6 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     public boolean checkRequiredFunctions() {
-
         if (ActivityNeed.equalsIgnoreCase("0")) {
             for (String slNo : ActivityFragment.activityAnswerData.keySet()) {
                 LinkedHashMap<String, ActivityDetailsModelClass> activityDetailsModelClassMap = ActivityFragment.activityAnswerData.get(slNo);
@@ -1214,16 +1213,13 @@ public class DCRCallActivity extends AppCompatActivity {
                     if (RCPANeed.equalsIgnoreCase("0") && RcpaMandatory.equalsIgnoreCase("0")) {
                         if(!validateRCPA()) return false;
                     }
-                    if(RCPANeed.equalsIgnoreCase("0")) {
-                        if(!validateRCPACompQty()) return false;
-                    }
                 } else {
                     if (RCPANeed.equalsIgnoreCase("0") && MgrRcpaMandatory.equalsIgnoreCase("0")) {
                         if(!validateRCPA()) return false;
                     }
-                    if(RCPANeed.equalsIgnoreCase("0")) {
-                        if(!validateRCPACompQty()) return false;
-                    }
+                }
+                if(RCPANeed.equalsIgnoreCase("0")) {
+                    if(!validateRCPACompQty()) return false;
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
@@ -1278,14 +1274,15 @@ public class DCRCallActivity extends AppCompatActivity {
             case "2":
                 if (SfType.equalsIgnoreCase("1")) {
                     if (RCPANeed.equalsIgnoreCase("0") && RcpaMandatory.equalsIgnoreCase("0")) {
-                        if(!validateRCPA()) return false;
-                    }
-                } else {
-                    if (MgrRcpaMandatory.equalsIgnoreCase("0")) {
-                    if (SharedPref.getChmRcpaNeed(this).equals("0")) {
                         if (!validateRCPA()) return false;
                     }
+                } else {
+                    if (RCPANeed.equalsIgnoreCase("0") && MgrRcpaMandatory.equalsIgnoreCase("0")) {
+                        if (!validateRCPA()) return false;
                     }
+                }
+                if(RCPANeed.equalsIgnoreCase("0")) {
+                    if(!validateRCPACompQty()) return false;
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
@@ -1385,6 +1382,19 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private boolean validateRCPACompQty() {
+        for (int i = 0; i < RCPAFragment.ProductSelectedList.size(); i++) {
+            ArrayList<String> dummyChk = new ArrayList<>();
+            for (int j = 0; j < RCPASelectCompSide.rcpa_comp_list.size(); j++) {
+                if (RCPAFragment.ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(RCPASelectCompSide.rcpa_comp_list.get(j).getChem_Code()) && RCPAFragment.ProductSelectedList.get(i).getPrd_code().equalsIgnoreCase(RCPASelectCompSide.rcpa_comp_list.get(j).getPrd_code())) {
+                    dummyChk.add(RCPASelectCompSide.rcpa_comp_list.get(j).getChem_Code());
+                }
+            }
+            if (dummyChk.isEmpty()) {
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.need_competitors_for_prd));
+                moveToPage("RCPA");
+                return false;
+            }
+        }
         for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
 //            if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty() || Integer.parseInt(RCPASelectCompSide.rcpa_comp_list.get(i).getQty()) == 0) {
             if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty()) {
