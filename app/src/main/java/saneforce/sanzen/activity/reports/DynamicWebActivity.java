@@ -79,7 +79,7 @@ public class DynamicWebActivity extends AppCompatActivity {
             progressDialog.show();
         }
         else {
-            progressDialog.show();
+            progressDialog.dismiss();
         }
         String url = getIntent().getStringExtra("url");
         String title = getIntent().getStringExtra("title");
@@ -112,6 +112,7 @@ public class DynamicWebActivity extends AppCompatActivity {
             }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                progressDialog.dismiss();
                 return false;
             }
         });

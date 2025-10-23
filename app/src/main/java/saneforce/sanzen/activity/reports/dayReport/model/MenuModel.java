@@ -5,19 +5,25 @@ import com.google.gson.JsonArray;
 public class MenuModel {
     public String Menu_Name;
     public String Menu_Icon;
-    JsonArray Menu_Sub_Details;
+    JsonArray Menu_Option;
+    public String Menu_Sub_Details;
 
-    public MenuModel(String menu_Name,String menu_Icon,JsonArray menu_Sub_Detail) {
+    public MenuModel(String menu_Name,String menu_Icon,String menu_Sub_Detail) {
         this.Menu_Name = menu_Name;
         this.Menu_Icon = menu_Icon;
         this.Menu_Sub_Details = menu_Sub_Detail;
     }
+    public MenuModel(String menu_Name,String menu_Icon,JsonArray menu_Option) {
+        this.Menu_Name = menu_Name;
+        this.Menu_Icon = menu_Icon;
+        this.Menu_Option = menu_Option;
+    }
 
-    public JsonArray getMenu_Sub_Details() {
+    public String getMenu_Sub_Details() {
         return Menu_Sub_Details;
     }
 
-    public void setMenu_Sub_Details(JsonArray menu_Sub_Details) {
+    public void setMenu_Sub_Details(String menu_Sub_Details) {
         Menu_Sub_Details = menu_Sub_Details;
     }
 

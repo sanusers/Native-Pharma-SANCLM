@@ -120,13 +120,14 @@ public class DynamicMenuActivity extends AppCompatActivity {
                                 try {
                                     if (response.isSuccessful() && response.body() != null) {
                                         JsonArray jsonArray = response.body().getAsJsonArray();
+                                        Log.d("API Response", response.body().toString());
                                         if (jsonArray.size() > 0) {
                                             binding.noReportFoundTxt.setVisibility(View.GONE);
                                             for (int i = 0; i < jsonArray.size(); i++) {
                                                 JsonObject menuObject = jsonArray.get(i).getAsJsonObject();
                                                 String menu_name = menuObject.get("Menu_Name").getAsString();
                                                 String menu_icon = menuObject.get("Menu_Icon").getAsString();
-                                                JsonArray menu_sub_details = menuObject.get("Menu_Options").getAsJsonArray();
+                                                String menu_sub_details = menuObject.get("Menu_Page").getAsString();
 
                                                 menu_icon = SharedPref.getTagImageUrl(DynamicMenuActivity.this) + "/" + menu_icon;
 
@@ -172,7 +173,7 @@ public class DynamicMenuActivity extends AppCompatActivity {
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-//            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.no_network));
         }
 
     }

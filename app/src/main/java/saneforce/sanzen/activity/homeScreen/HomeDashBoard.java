@@ -73,6 +73,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 
 import org.json.JSONArray;
@@ -100,6 +101,8 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.DynamicMenuActivity;
 import saneforce.sanzen.activity.reports.DynamicMenuHome;
+import saneforce.sanzen.activity.reports.ReportsAdapter;
+import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
@@ -153,6 +156,7 @@ import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkChangeReceiver;
+import saneforce.sanzen.utility.NetworkStatusTask;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -227,7 +231,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     float dX, dY;
     int lastAction;
     String dynamicLinKNeed = "0";
-
+    ArrayList<MenuModel> menuList = new ArrayList<>();
+    ReportsAdapter reportsAdapter;
     private final Handler handler = new Handler();
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
     private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.getDefault());
@@ -2767,6 +2772,5 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CommonUtilsMethods.accessDialogBox(this);
         }
     }
-
 }
 
