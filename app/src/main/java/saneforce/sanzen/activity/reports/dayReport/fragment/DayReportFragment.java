@@ -69,20 +69,16 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkStatusTask;
 import saneforce.sanzen.utility.TimeUtils;
 
-
 public class DayReportFragment extends Fragment {
-
     FragmentDayReportBinding binding;
     ApiInterface apiInterface;
     LocalDate localDate;
-
     ProgressDialog progressDialog;
     DayReportAdapter dayReportAdapter;
     CalendarAdapter calendarAdapter;
     AlertDialog calendarDialog;
     ArrayList<DayReportModel> arrayListOfReportData = new ArrayList<>();
     ArrayList<DayReportModel> arrayListOfReportDataShort = new ArrayList<>();
-
     ArrayList<String> daysArrayList = new ArrayList<>();
     DataViewModel dataViewModel;
     AlertDialog.Builder alertDialog;
@@ -229,9 +225,7 @@ public class DayReportFragment extends Fragment {
         return date.format(formatter);
     }
 
-
     public void calendarDialog() {
-
         if (alertDialog != null) {
             calendarDialog.show();
         } else {
@@ -249,40 +243,32 @@ public class DayReportFragment extends Fragment {
             localDate = LocalDate.parse(binding.calender.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
             nextArrow.setEnabled(false);
             nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-            prevArrow.setOnClickListener(new SafeClickListener() {
-                @Override
-                public void onSafeClick(View view) {
-                    nextArrow.setEnabled(true);
-                    nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
-                    localDate = localDate.minusMonths(1);
-                    monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
-                    daysArrayList = daysInMonthArray(localDate);
-                    populateCalendarAdapter(recyclerView);
-                }
+            prevArrow.setOnClickListener(view1 -> {
+                nextArrow.setEnabled(true);
+                nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
+                localDate = localDate.minusMonths(1);
+                monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
+                daysArrayList = daysInMonthArray(localDate);
+                populateCalendarAdapter(recyclerView);
             });
 
-            nextArrow.setOnClickListener(new SafeClickListener() {
-                @Override
-                public void onSafeClick(View view) {
-                    localDate = localDate.plusMonths(1);
-                    monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
-                    daysArrayList = daysInMonthArray(localDate);
-                    populateCalendarAdapter(recyclerView);
-                    if (LocalDate.now().equals(localDate)) {
-                        nextArrow.setEnabled(false);
-                        nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-                    }
+            nextArrow.setOnClickListener(view2 -> {
+                localDate = localDate.plusMonths(1);
+                monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
+                daysArrayList = daysInMonthArray(localDate);
+                populateCalendarAdapter(recyclerView);
+                if (LocalDate.now().equals(localDate)) {
+                    nextArrow.setEnabled(false);
+                    nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                 }
             });
             populateCalendarAdapter(recyclerView);
             calendarDialog = alertDialog.create();
             calendarDialog.show();
         }
-
     }
 
     public void populateCalendarAdapter(RecyclerView recyclerView) {
-
         if(OneBuildSetup == 0){
             calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), localDate, new OnDayClickOneBuildInterface() {
                 @Override
@@ -375,7 +361,6 @@ public class DayReportFragment extends Fragment {
             progressDialog.dismiss();
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
         }
-
     }
 
     public void populateAdapter() {
@@ -386,6 +371,7 @@ public class DayReportFragment extends Fragment {
         binding.dayReportRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportRecView.setAdapter(dayReportAdapter);
     }
+
     private void onClickListener(){
         binding.sortIcon.setOnClickListener(view -> {
             Context wrapper = new ContextThemeWrapper(getContext(), R.style.popupMenuStyle);
@@ -406,6 +392,7 @@ public class DayReportFragment extends Fragment {
             popup.show();
         });
     }
+
     private void SortTable(String Mode) {
         arrayListOfReportDataShort.clear();
         for (int i = 0; i < arrayListOfReportData.size(); i++) {
@@ -426,6 +413,7 @@ public class DayReportFragment extends Fragment {
                 break;
         }
     }
+
     static class SortByName implements Comparator<DayReportModel> {
         @Override
         public int compare(DayReportModel a, DayReportModel b) {

@@ -1,4 +1,5 @@
 package saneforce.sanzen.activity.reports.dayReport.adapter;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -23,7 +24,6 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.MapViewActivity;
@@ -31,14 +31,11 @@ import saneforce.sanzen.activity.reports.dayReport.fragment.DayReportDetailFragm
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportModel;
 import saneforce.sanzen.storage.SharedPref;
 
-
 public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyViewHolder> implements Filterable {
-    public static ArrayList<GeoTaggingModelList> DayReportMapList = new ArrayList<>();
     ArrayList<DayReportModel> arrayList = new ArrayList<>();
     ArrayList<DayReportModel> supportModelArray = new ArrayList<>();
     Context context;
     DataViewModel dataViewModel;
-
 
     public DayReportAdapter(ArrayList<DayReportModel> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -279,7 +276,6 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
                 activity.loadFragment(new DayReportDetailFragment());
             }
         });
-
     }
 
     @Override
@@ -330,7 +326,6 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             cipCount = itemView.findViewById(R.id.cipCount);
             hospCount = itemView.findViewById(R.id.hospCount);
             DcrIconLayout = itemView.findViewById(R.id.iconLayout1);
-
 
             statusLayout = itemView.findViewById(R.id.statusLayout);
             arrow = itemView.findViewById(R.id.arrow);

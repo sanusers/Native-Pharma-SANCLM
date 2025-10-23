@@ -15,10 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.storage.SharedPref;
 
 public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -29,6 +31,7 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
     private List<MultiHQHeaderModelClass> originalList;
     private final List<Object> displayList = new ArrayList<>();
     private ItemSelectListener itemSelectListener;
+    private String caption;
 
     public interface ItemSelectListener {
         void onItemClicked(String hqCode, MultiHQItemModelClass multiHQItemModelClass);
@@ -37,20 +40,31 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
     public SessionMultiHQItemAdapter() {
     }
 
-    public SessionMultiHQItemAdapter(Context context, List<MultiHQHeaderModelClass> parentList, ItemSelectListener itemSelectListener) {
+    public SessionMultiHQItemAdapter(Context context, List<MultiHQHeaderModelClass> parentList, String caption, ItemSelectListener itemSelectListener) {
         this.context = context;
         this.originalList = parentList;
         this.itemSelectListener = itemSelectListener;
+        this.caption = caption;
         updateDisplayList();
     }
 
     private void updateDisplayList() {
         displayList.clear();
-        if(originalList != null) {
+        if (originalList != null) {
             for (MultiHQHeaderModelClass parent : originalList) {
                 displayList.add(parent);
-                if(parent.isExpanded()) {
-                    displayList.addAll(parent.getItemsList());
+                if (parent.isExpanded()) {
+//                    displayList.addAll(parent.getItemsList());
+                    List<MultiHQItemModelClass> multiHQItemModelClassList = parent.getItemsList();
+                    if (multiHQItemModelClassList != null && !multiHQItemModelClassList.isEmpty()) {
+                        displayList.addAll(multiHQItemModelClassList);
+                    } else {
+                        if (UtilityClass.isNetworkAvailable(context)) {
+                            displayList.add(new MultiHQItemModelClass("No " + caption + " available.", true));
+                        } else {
+                            displayList.add(new MultiHQItemModelClass("No network available. Kindly sync " + caption, true));
+                        }
+                    }
                 }
             }
         }
@@ -69,10 +83,10 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == VIEW_TYPE_PARENT) {
+        if (viewType == VIEW_TYPE_PARENT) {
             View view = LayoutInflater.from(context).inflate(R.layout.multi_hq_header, parent, false);
             return new SessionMultiHQItemAdapter.ParentViewHolder(view);
-        }else {
+        } else {
             View view = LayoutInflater.from(context).inflate(R.layout.tp_session_listview_item, parent, false);
             return new SessionMultiHQItemAdapter.ChildViewHolder(view);
         }
@@ -80,10 +94,10 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof SessionMultiHQItemAdapter.ParentViewHolder) {
+        if (holder instanceof SessionMultiHQItemAdapter.ParentViewHolder) {
             MultiHQHeaderModelClass parentItem = (MultiHQHeaderModelClass) displayList.get(position);
             ((SessionMultiHQItemAdapter.ParentViewHolder) holder).bind(parentItem);
-        }else {
+        } else {
             MultiHQItemModelClass childItem = (MultiHQItemModelClass) displayList.get(position);
             ((SessionMultiHQItemAdapter.ChildViewHolder) holder).bind(holder, childItem);
         }
@@ -109,9 +123,9 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
                     notifyDataSetChanged();
                 }
             });
-            if(item.isExpanded()) {
+            if (item.isExpanded()) {
                 arrow.setImageResource(R.drawable.up_arrow);
-            }else {
+            } else {
                 arrow.setImageResource(R.drawable.down_arrow);
             }
         }
@@ -133,13 +147,18 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
             checkBox.setVisibility(View.VISIBLE);
             checkBox.setChecked(item.isChecked());
 
-            if(item.getClusterCode() != null && !item.getClusterCode().isEmpty()) {
-                text2.setVisibility(View.VISIBLE);
-                text2.setText(item.getClusterName());
-            } else {
+            if (item.isPlaceholder()) {
+                checkBox.setVisibility(View.INVISIBLE);
                 text2.setVisibility(View.GONE);
                 text2.setText("");
-            }
+            } else {
+                if (item.getClusterCode() != null && !item.getClusterCode().isEmpty()) {
+                    text2.setVisibility(View.VISIBLE);
+                    text2.setText(item.getClusterName());
+                } else {
+                    text2.setVisibility(View.GONE);
+                    text2.setText("");
+                }
 
 //            itemView.setOnClickListener(view -> {
 //                int position = holder.getAbsoluteAdapterPosition();
@@ -178,67 +197,68 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
 //
 //            });
 
-            itemView.setOnClickListener(view -> {
-                int position = holder.getAbsoluteAdapterPosition();
-                if (position == RecyclerView.NO_POSITION) return;
+                itemView.setOnClickListener(view -> {
+                    int position = holder.getAbsoluteAdapterPosition();
+                    if (position == RecyclerView.NO_POSITION) return;
 
-                boolean isNowChecked = !item.isChecked();
-                item.setChecked(isNowChecked);
-                checkBox.setChecked(isNowChecked);
-                notifyItemChanged(position);
+                    boolean isNowChecked = !item.isChecked();
+                    item.setChecked(isNowChecked);
+                    checkBox.setChecked(isNowChecked);
+                    notifyItemChanged(position);
 
-                if (isNowChecked) {
-                    // Find the parent of this item
-                    MultiHQHeaderModelClass parent = null;
-                    for (MultiHQHeaderModelClass header : originalList) {
-                        if (header.getItemsList().contains(item)) {
-                            parent = header;
-                            break;
+                    if (isNowChecked) {
+                        // Find the parent of this item
+                        MultiHQHeaderModelClass parent = null;
+                        for (MultiHQHeaderModelClass header : originalList) {
+                            if (header.getItemsList().contains(item)) {
+                                parent = header;
+                                break;
+                            }
+                        }
+
+                        if (parent != null) {
+                            if (item.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
+                                // If Independent is checked, uncheck all others under this header
+                                for (MultiHQItemModelClass child : parent.getItemsList()) {
+                                    if (!child.equals(item) && child.isChecked()) {
+                                        child.setChecked(false);
+                                        notifyItemChanged(displayList.indexOf(child));
+                                    }
+                                }
+                            } else {
+                                // If another item is checked, uncheck Independent under this header
+                                for (MultiHQItemModelClass child : parent.getItemsList()) {
+                                    if (child.getName().equalsIgnoreCase(Constants.INDEPENDENT) && child.isChecked()) {
+                                        child.setChecked(false);
+                                        notifyItemChanged(displayList.indexOf(child));
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    if (parent != null) {
-                        if (item.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
-                            // If Independent is checked, uncheck all others under this header
-                            for (MultiHQItemModelClass child : parent.getItemsList()) {
-                                if (!child.equals(item) && child.isChecked()) {
-                                    child.setChecked(false);
-                                    notifyItemChanged(displayList.indexOf(child));
-                                }
-                            }
-                        } else {
-                            // If another item is checked, uncheck Independent under this header
-                            for (MultiHQItemModelClass child : parent.getItemsList()) {
-                                if (child.getName().equalsIgnoreCase(Constants.INDEPENDENT) && child.isChecked()) {
-                                    child.setChecked(false);
-                                    notifyItemChanged(displayList.indexOf(child));
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                itemSelectListener.onItemClicked(item.getHqCode(), item);
-            });
+                    itemSelectListener.onItemClicked(item.getHqCode(), item);
+                });
+            }
 
         }
     }
 
     public void filter(String query) {
         displayList.clear();
-        if(query == null || query.trim().isEmpty()) {
+        if (query == null || query.trim().isEmpty()) {
             updateDisplayList();
-        }else {
+        } else {
             String lower = query.toLowerCase();
             for (MultiHQHeaderModelClass parent : originalList) {
                 ArrayList<MultiHQItemModelClass> filteredChildren = new ArrayList<>();
                 for (MultiHQItemModelClass child : parent.getItemsList()) {
-                    if(child.getName().toLowerCase().contains(lower)) {
+                    if (child.getName().toLowerCase().contains(lower)) {
                         filteredChildren.add(child);
                     }
                 }
-                if(!filteredChildren.isEmpty()) {
+                if (!filteredChildren.isEmpty()) {
                     MultiHQHeaderModelClass tempParent = new MultiHQHeaderModelClass(parent.getName(), parent.getCode(), filteredChildren, true);
                     displayList.add(tempParent);
                     displayList.addAll(filteredChildren);
@@ -252,7 +272,7 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
         List<MultiHQItemModelClass> selected = new ArrayList<>();
         for (MultiHQHeaderModelClass parent : originalList) {
             for (MultiHQItemModelClass child : parent.getItemsList()) {
-                if(child.isChecked()) {
+                if (child.isChecked()) {
                     selected.add(child);
                 }
             }

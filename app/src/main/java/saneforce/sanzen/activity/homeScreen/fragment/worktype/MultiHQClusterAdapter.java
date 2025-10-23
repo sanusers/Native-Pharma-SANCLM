@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.homeScreen.fragment.worktype;
 
 import android.content.Context;
+import android.graphics.Shader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.MultiHQClusterItem;
 import saneforce.sanzen.activity.homeScreen.modelClass.MultiHQExpandItem;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
+import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.storage.SharedPref;
 
 public class MultiHQClusterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -47,7 +50,17 @@ public class MultiHQClusterAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         for (MultiHQExpandItem parent : originalList) {
             displayList.add(parent);
             if(parent.isExpanded()) {
-                displayList.addAll(parent.getClusterList());
+//                displayList.addAll(parent.getClusterList());
+                List<MultiHQClusterItem> clusters = parent.getClusterList();
+                if (clusters != null && !clusters.isEmpty()) {
+                    displayList.addAll(clusters);
+                } else {
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        displayList.add(new MultiHQClusterItem("No " + SharedPref.getClusterCap(context) + " available.", true));
+                    } else {
+                        displayList.add(new MultiHQClusterItem("No network available. Kindly sync " + SharedPref.getClusterCap(context), true));
+                    }
+                }
             }
         }
     }
@@ -125,21 +138,25 @@ public class MultiHQClusterAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         void bind(MultiHQClusterItem item) {
             text.setText(item.getName());
-            checkBox.setVisibility(View.VISIBLE);
-            checkBox.setOnCheckedChangeListener(null);
-            checkBox.setChecked(item.isChecked());
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                item.setChecked(isChecked);
-                if(isChecked) {
+            if (item.isPlaceholder()) {
+                checkBox.setVisibility(View.INVISIBLE);
+            } else {
+                checkBox.setVisibility(View.VISIBLE);
+                checkBox.setOnCheckedChangeListener(null);
+                checkBox.setChecked(item.isChecked());
+                checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    item.setChecked(isChecked);
+                    if (isChecked) {
+                        clusterSelectListener.onClusterSelected(item.getHqCode(), item);
+                    } else {
+                        clusterSelectListener.onClusterUnSelected(item.getHqCode(), item);
+                    }
+                });
+                if (item.isChecked()) {
                     clusterSelectListener.onClusterSelected(item.getHqCode(), item);
-                }else {
+                } else {
                     clusterSelectListener.onClusterUnSelected(item.getHqCode(), item);
                 }
-            });
-            if(item.isChecked()) {
-                clusterSelectListener.onClusterSelected(item.getHqCode(), item);
-            }else {
-                clusterSelectListener.onClusterUnSelected(item.getHqCode(), item);
             }
         }
     }

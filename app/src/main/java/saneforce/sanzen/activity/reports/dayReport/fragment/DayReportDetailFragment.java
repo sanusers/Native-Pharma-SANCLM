@@ -3,8 +3,6 @@ package saneforce.sanzen.activity.reports.dayReport.fragment;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.ProgressDialog;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,11 +14,9 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -39,7 +35,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.call.fragments.jwOthers.FeedbackSelectionSide;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DayReportDetailAdapter;
@@ -62,10 +57,7 @@ public class DayReportDetailFragment extends Fragment {
     DayReportModel dayReportModel;
     DataViewModel dataViewModel;
     ApiInterface apiInterface;
-
     ArrayList<DayReportDetailModel> arrayOfReportData = new ArrayList<>();
-    ArrayList<DayReportDetailModel> arrayOfReportData1 = new ArrayList<>();
-
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
     String rcpaItem, eventCaptureItem,pobItem,feedBackItem,inputItem,productItem = "";
@@ -193,11 +185,9 @@ public class DayReportDetailFragment extends Fragment {
         });
 
         return binding.getRoot();
-
     }
 
     public void initialisation() {
-
         try {
             Type type = new TypeToken<DayReportModel>() {
             }.getType();
@@ -289,7 +279,6 @@ public class DayReportDetailFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
 
     public void setSelection(LinearLayout linearLayout) {
         binding.doctor.setSelected(false);
@@ -442,6 +431,5 @@ public class DayReportDetailFragment extends Fragment {
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }
-
 
 }

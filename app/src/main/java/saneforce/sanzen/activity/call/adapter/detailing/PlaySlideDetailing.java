@@ -64,6 +64,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -628,14 +629,15 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 case "G":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.customized_presentation));
                     break;
-                case "H":
-                    holder.tv_brandName.setText(context.getResources().getText(R.string.custom_presentation));
-                    break;
+//                case "H":
+//                    holder.tv_brandName.setText(context.getResources().getText(R.string.custom_presentation));
+//                    break;
             }
 
 
             holder.tv_brandName.setOnClickListener(view -> {
                 SelectedPosPlay = holder.getAbsoluteAdapterPosition();
+                itemsPagerAdapter.logCurrentPageEndIfNeeded();
                 switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
                     case "A":
                         populateListData(SlideWelcomeList);
@@ -658,17 +660,32 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     case "G":
                         populateLocalSavedData(SlideCustomList);
                         break;
-                    case "H":
-//                        populateLocalSavedData(SlideCustomList);
-                        // TODO: 29-08-2025
-                        break;
+//                    case "H":
+//                        populateCustomSavedData();
+//                        break;
                 }
                 notifyDataSetChanged();
             });
         }
 
-        private void populateListData(ArrayList<BrandModelClass> brandProductArrayList) {
+        private void populateCustomSavedData() {
+            ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
+            if (!CustomPresentationFragment.selectedSlideArrayList.isEmpty()) {
+                productsList.addAll(CustomPresentationFragment.selectedSlideArrayList);
+            }
+            if (!productsList.isEmpty()) {
+                binding.constraintNoData.setVisibility(View.GONE);
+                binding.rightArrow.setVisibility(View.GONE);
+            } else {
+                binding.constraintNoData.setVisibility(View.VISIBLE);
+                binding.rightArrow.setVisibility(View.VISIBLE);
+            }
 
+            populateViewPagerAdapterNew(productsList);
+            populateBottomViewAdapterNew(productsList);
+        }
+
+        private void populateListData(ArrayList<BrandModelClass> brandProductArrayList) {
             ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
             for (int i = 0; i < brandProductArrayList.size(); i++) {
                 for (int j = 0; j < brandProductArrayList.get(i).getProductArrayList().size(); j++) {
@@ -676,7 +693,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 }
             }
 
-            if (productsList.size() > 0) {
+            if (!productsList.isEmpty()) {
                 binding.constraintNoData.setVisibility(View.GONE);
                 binding.rightArrow.setVisibility(View.GONE);
             } else {
@@ -696,7 +713,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
                         productsList.add(new BrandModelClass.Product(savedPresentation.get(i).getPresentationName(), savedPresentation.get(i).getProducts().get(j).getBrandName(), savedPresentation.get(i).getProducts().get(j).getBrandCode(), savedPresentation.get(i).getProducts().get(j).getSlideId(), savedPresentation.get(i).getProducts().get(j).getSlideName(), savedPresentation.get(i).getProducts().get(j).getPriority(), savedPresentation.get(i).getProducts().get(j).isImageSelected()));
                     }
                 }
-
 
                 if (productsList.size() > 0) {
                     binding.constraintNoData.setVisibility(View.GONE);

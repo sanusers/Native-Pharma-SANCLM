@@ -487,7 +487,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.CALL_FAILED, 1);
                     notifyDataSetChanged();
                     if (attempt != 5) {
-                        callSubmitAPI(child, index, attempt, callback);
+                        callSubmitAPI(child, index, attempt + 1, callback);
                     } else {
                         callback.onFailure();
                     }

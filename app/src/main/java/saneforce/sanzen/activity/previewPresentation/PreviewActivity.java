@@ -169,6 +169,7 @@ public class PreviewActivity extends AppCompatActivity {
                     checkInJsonObject = new JSONObject();
                 }
                 PlaySlideDetailedAdapter.timer = new HashMap<>();
+                PlaySlideDetailedAdapter.pageStartTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
                 previewBinding.tagCustName.setText(cus_name);
                 previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
             } else {
@@ -198,8 +199,8 @@ public class PreviewActivity extends AppCompatActivity {
                 }
                 viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
                 headingData.add("G");
-//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-//                headingData.add("H");
+                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                headingData.add("H");
             } else {
                 viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                 headingData.add("A");
@@ -215,10 +216,10 @@ public class PreviewActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                     headingData.add("F");
                 }
-                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
                 headingData.add("G");
-//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-//                headingData.add("H");
+                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                headingData.add("H");
             }
         } else {
             viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
@@ -280,7 +281,7 @@ public class PreviewActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).optString("sT"), jsonArray.getJSONObject(i).optString("eT"));
+                                String duration = TimeUtils.timeDurationHMS(jsonArray.optJSONObject(i).optString("sT"), jsonArray.optJSONObject(i).optString("eT"));
                                 totalDuration = TimeUtils.addTime(totalDuration, duration);
                             }
                         } catch (JSONException e) {
@@ -295,7 +296,7 @@ public class PreviewActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).optString("sT"), jsonArray.getJSONObject(i).optString("eT"));
+                                String duration = TimeUtils.timeDurationHMS(jsonArray.optJSONObject(i).optString("sT"), jsonArray.optJSONObject(i).optString("eT"));
                                 totalDuration = TimeUtils.addTime(totalDuration, duration);
                             }
                         } catch (JSONException e) {
@@ -313,7 +314,7 @@ public class PreviewActivity extends AppCompatActivity {
                     try {
                         JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size() - 1).getRemTime());
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).optString("sT"), jsonArray.getJSONObject(i).optString("eT"));
+                            String duration = TimeUtils.timeDurationHMS(jsonArray.optJSONObject(i).optString("sT"), jsonArray.optJSONObject(i).optString("eT"));
                             totalDuration = TimeUtils.addTime(totalDuration, duration);
                         }
                     } catch (JSONException e) {
@@ -421,7 +422,7 @@ public class PreviewActivity extends AppCompatActivity {
                 String code = "";
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        JSONObject jsonObject = jsonArray.optJSONObject(i);
                         code = jsonObject.optString("Code");
                         if (!customerCodes1.contains(code)) {
                             customerCodes1.add(code);
@@ -453,7 +454,7 @@ public class PreviewActivity extends AppCompatActivity {
             ArrayList<String> list = new ArrayList<>();
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
                     if (jsonObject.optString("id").equalsIgnoreCase(hqCode)) {
                         return jsonObject.optString("name");
                     }
@@ -475,7 +476,7 @@ public class PreviewActivity extends AppCompatActivity {
         try {
 //            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
 //            for (int i = 0; i < jsonArray.length(); i++) {
-//                JSONObject setupData = jsonArray.getJSONObject(0);
+//                JSONObject setupData = jsonArray.optJSONObject(0);
 //                customSetupResponse = new CustomSetupResponse();
 //                Type typeSetup = new TypeToken<CustomSetupResponse>() {
 //                }.getType();
@@ -507,7 +508,7 @@ public class PreviewActivity extends AppCompatActivity {
                 JSONArray jj = new JSONArray(mm1.getTiming());
 
                 if (jj.length() > 0) {
-                    JSONObject jsr = jj.getJSONObject(jj.length() - 1);
+                    JSONObject jsr = jj.optJSONObject(jj.length() - 1);
                     timesMax.add(jsr.optString("eT"));
                     timesMin.add(jsr.optString("sT"));
                 }
@@ -537,29 +538,35 @@ public class PreviewActivity extends AppCompatActivity {
             JSONArray json2 = new JSONArray(jsonvalue);
             mm = arrayStore.get(i);
             json = new JSONArray(mm.getRemTime());
-            JSONObject jjj = json.getJSONObject(0);
-            Log.v("last_value_time", jjj.optString("sT"));
-            startT = jjj.optString("sT");
-            //  finalTime = startT + " " + jjj.optString("eT");
-            finalTime = startT;
+            if (!json.toString().equals("[]")) {
+                JSONObject jjj = json.optJSONObject(0);
+                Log.v("last_value_time", jjj.optString("sT"));
+                startT = jjj.optString("sT");
+                //  finalTime = startT + " " + jjj.optString("eT");
+                finalTime = startT;
+            }
             if (i == arrayStore.size() - 1) {
                 mm1 = arrayStore.get(arrayStore.size() - 1);
                 json = new JSONArray(mm1.getRemTime());
-                JSONObject jj = json.getJSONObject(0);
-                endT = jj.optString("eT");
-                for (int j = 0; j < i; j++) {
-                    if (arrayStore.get(j).getBrdName().equals(mm1.getBrdName())) {
-                        mm2 = arrayStore.get(j);
-                        json2 = new JSONArray(mm2.getRemTime());
-                        JSONObject jj2 = json2.getJSONObject(0);
-                        startT = jj2.optString("sT");
-                        break;
+                if (!json.toString().equals("[]")) {
+                    JSONObject jj = json.optJSONObject(0);
+                    endT = jj.optString("eT");
+                    for (int j = 0; j < i; j++) {
+                        if (arrayStore.get(j).getBrdName().equals(mm1.getBrdName())) {
+                            mm2 = arrayStore.get(j);
+                            json2 = new JSONArray(mm2.getRemTime());
+                            if (!json2.toString().equals("[]")) {
+                                JSONObject jj2 = json2.optJSONObject(0);
+                                startT = jj2.optString("sT");
+                            }
+                            break;
+                        }
                     }
+                    finalTime = startT;
                 }
-                finalTime = startT;
             }
             return finalTime;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return finalTime;
@@ -571,28 +578,33 @@ public class PreviewActivity extends AppCompatActivity {
         try {
             JSONArray json;
             if (i != 0) {
-
                 mm1 = arrayStore.get(i - 1);
                 json = new JSONArray(mm1.getRemTime());
-                JSONObject jj = json.getJSONObject(0);
-                endT = jj.optString("eT");
+                if (!json.toString().equals("[]")) {
+                    JSONObject jj = json.optJSONObject(0);
+                    endT = jj.optString("eT");
+                }
             }
             finalTime = startT;
             mm = arrayStore.get(i);
             json = new JSONArray(mm.getRemTime());
-            JSONObject jj = json.getJSONObject(0);
-            Log.v("last_value_timemid", jj.optString("sT"));
-            startT = jj.optString("sT");
+            if (!json.toString().equals("[]")) {
+                JSONObject jj = json.optJSONObject(0);
+                Log.v("last_value_timemid", jj.optString("sT"));
+                startT = jj.optString("sT");
+            }
             if (arrayStore.size() == 1) {
                 mm = arrayStore.get(i);
                 json = new JSONArray(mm.getRemTime());
-                JSONObject jjj = json.getJSONObject(0);
-                Log.v("last_value_time", jjj.optString("sT"));
-                startT = jjj.optString("sT");
-                finalTime = startT;
+                if (!json.toString().equals("[]")) {
+                    JSONObject jjj = json.optJSONObject(0);
+                    Log.v("last_value_time", jjj.optString("sT"));
+                    startT = jjj.optString("sT");
+                    finalTime = startT;
+                }
             }
             return finalTime;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return finalTime;

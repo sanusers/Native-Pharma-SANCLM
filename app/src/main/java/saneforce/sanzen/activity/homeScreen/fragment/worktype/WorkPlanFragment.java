@@ -589,7 +589,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
-    public void showMultiHQClusterAlert() {
+    public void showMultiHQClusterAlert(String session) {
         listSelectedCluster.clear();
         mapSelectedCluster.clear();
         multiple_cluster_list.clear();
@@ -659,11 +659,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HomeDashBoard.binding.llNav.txtClDone.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
-                UtilityClass.hideKeyboard(requireActivity());
-                strClusterName = "";
-                strClusterID = "";
-                updateSelectedClusters();
+                String hqName = "";
+                boolean isClusterNotSelected = false;
+                try {
+                    String[] hqCodes = CommonUtilsMethods.removeLastComma(mHQCode1).split(",");
+                    String[] hqNames = CommonUtilsMethods.removeLastComma(mHQName1).split(",");
+                    if (session.equalsIgnoreCase("2")) {
+                        hqCodes = CommonUtilsMethods.removeLastComma(mHQCode2).split(",");
+                        hqNames = CommonUtilsMethods.removeLastComma(mHQName2).split(",");
+                    }
+                    for (int i = 0; i < hqCodes.length; i++) {
+                        String HQCode = hqCodes[i];
+                        if (!mapSelectedCluster.containsKey(HQCode) || mapSelectedCluster.get(HQCode) == null || mapSelectedCluster.get(HQCode).isEmpty()) {
+                            isClusterNotSelected = true;
+                            hqName = hqNames[i];
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (isClusterNotSelected) {
+                    commonUtilsMethods.showToastMessage(requireContext(), "Select any " + SharedPref.getClusterCap(requireContext()) + " for " + hqName);
+                } else {
+                    HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+                    UtilityClass.hideKeyboard(requireActivity());
+                    strClusterName = "";
+                    strClusterID = "";
+                    updateSelectedClusters();
+                }
             }
         });
 
@@ -1293,7 +1317,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             showMultiClusterAlert();
                         }
                     } else {
-                        showMultiHQClusterAlert();
+                        showMultiHQClusterAlert("1");
                     }
                     break;
 
@@ -1312,7 +1336,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             showMultiClusterAlert();
                         }
                     }else {
-                        showMultiHQClusterAlert();
+                        showMultiHQClusterAlert("2");
                     }
                     break;
 
@@ -2299,6 +2323,33 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if(isEmpty(txtCluster)) {
                 showToast(R.string.select_cluster);
                 return;
+            }
+
+            try {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                    String[] hqCodes = CommonUtilsMethods.removeLastComma(mHQCode1).split(",");
+                    String[] hqNames = CommonUtilsMethods.removeLastComma(mHQName1).split(",");
+                    if (sessionId.equalsIgnoreCase("2")) {
+                        hqCodes = CommonUtilsMethods.removeLastComma(mHQCode2).split(",");
+                        hqNames = CommonUtilsMethods.removeLastComma(mHQName2).split(",");
+                    }
+                    String hqName = "";
+                    boolean isClusterNotSelected = false;
+                    for (int i = 0; i < hqCodes.length; i++) {
+                        String HQCode = hqCodes[i];
+                        if (!mapSelectedCluster.containsKey(HQCode) || mapSelectedCluster.get(HQCode) == null || mapSelectedCluster.get(HQCode).isEmpty()) {
+                            isClusterNotSelected = true;
+                            hqName = hqNames[i];
+                            break;
+                        }
+                    }
+                    if (isClusterNotSelected) {
+                        showToast("Select any " + SharedPref.getClusterCap(requireContext()) + "for " + hqName);
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }else if(isEmpty(txtWorkType)) {
             showToast(R.string.select_worktype);

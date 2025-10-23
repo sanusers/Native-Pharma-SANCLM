@@ -1,8 +1,9 @@
 package saneforce.sanzen.activity.tourPlan.model;
 
 public class MultiHQItemModelClass {
-    private final String name, code, hqCode, clusterCode, clusterName;
-    private boolean isChecked;
+    private final String name;
+    private String code, hqCode, clusterCode, clusterName;
+    private boolean isChecked, isPlaceholder;
 
     public MultiHQItemModelClass(String name, String code, String hqCode, String clusterCode, String clusterName, boolean isChecked) {
         this.name = name;
@@ -11,6 +12,11 @@ public class MultiHQItemModelClass {
         this.clusterCode = clusterCode;
         this.clusterName = clusterName;
         this.isChecked = isChecked;
+    }
+
+    public MultiHQItemModelClass(String name, boolean isPlaceholder) {
+        this.name = name;
+        this.isPlaceholder = isPlaceholder;
     }
 
     public MultiHQItemModelClass(MultiHQItemModelClass multiHQItemModelClass) {
@@ -48,5 +54,13 @@ public class MultiHQItemModelClass {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+    }
+
+    public boolean isPlaceholder() {
+        return isPlaceholder;
+    }
+
+    public void setPlaceholder(boolean placeholder) {
+        isPlaceholder = placeholder;
     }
 }

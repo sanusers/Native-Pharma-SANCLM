@@ -683,6 +683,7 @@ public class OutboxFragment extends Fragment {
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
+                                outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 0, Constants.WAITING_FOR_SYNC, 0);
                                 outboxUtil.deleteOfflineCalls(outBoxCallList.getCusCode(), outBoxCallList.getCusName(), outBoxCallList.getDates());
                                 callsList.remove(outBoxCallList);
                                 notifyedmethod();
@@ -736,7 +737,7 @@ public class OutboxFragment extends Fragment {
                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.CALL_FAILED, 1);
                     notifyedmethod();
                     if (attempt != 5) {
-                        callSubmitAPI(child, index, attempt, callback);
+                        callSubmitAPI(child, index, attempt + 1, callback);
                     } else {
                         callback.onFailure();
                     }

@@ -291,6 +291,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
             Log.v("required_data", "---" + TodayPlanSfCode + "---" + TodayPlanClusterList);
 
+            limitKm = Double.parseDouble(SharedPref.getDisRad(this));
         } catch (Exception e) {
             Log.v("required_data", "--tab-dcr-" + e);
         }

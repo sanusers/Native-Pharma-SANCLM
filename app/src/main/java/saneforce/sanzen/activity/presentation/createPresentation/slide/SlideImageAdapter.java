@@ -57,7 +57,7 @@ public class SlideImageAdapter extends RecyclerView.Adapter<SlideImageAdapter.My
             public void onSafeClick(View view) {
                 arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(!product.isImageSelected());
                 arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(-1);
-                imageSelectionInterface.imageSelection(arrayList, holder.getAbsoluteAdapterPosition());
+                imageSelectionInterface.imageSelection(arrayList, Integer.MAX_VALUE);
             }
         });
 

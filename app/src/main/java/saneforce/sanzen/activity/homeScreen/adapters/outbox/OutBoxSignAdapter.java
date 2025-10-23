@@ -1,8 +1,7 @@
 package saneforce.sanzen.activity.homeScreen.adapters.outbox;
 
-//import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.imageName;
-
-import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.filePath;
+import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.listDates;
+import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -50,6 +48,7 @@ import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.fragments.signature.SignatureCanvas;
 import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
@@ -61,6 +60,7 @@ import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -76,7 +76,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
     private final OfflineDaySubmitDao offlineDaySubmitDao;
     private String id;
     Util util;
-
+    private OutboxUtil outboxUtil;
 
     public OutBoxSignAdapter(Activity activity, Context context, ArrayList<SignModelClass> signModelClasses) {
         this.activity = activity;
@@ -88,8 +88,8 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         this.callOfflineDataDao = roomDB.callOfflineDataDao();
         this.offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         this.util = new Util();
+        outboxUtil = new OutboxUtil(context);
     }
-
 
     @NonNull
     @Override
@@ -131,11 +131,11 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
 
                 popup.setOnMenuItemClickListener(menuItem -> {
                     if (menuItem.getItemId() == R.id.menuSync) {
-                        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
-                            CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
-                        } else {
-                            CallSignImageApi(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
-                        }
+//                        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+//                            CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
+//                        } else {
+//                            CallSignImageApi(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
+//                        }
 
                         if (UtilityClass.isNetworkAvailable(context)) {
                             if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
@@ -167,6 +167,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
                         if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
+                            DeleteCacheFileSign(filePath, id, signModelClass);
                         } else {
                             signModelClass.setSynced(1);
                             signModelClass.setSync_status(Constants.DUPLICATE_CALL);
@@ -190,6 +191,42 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         });
     }
 
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void DeleteCacheFileSign(String filePath, String id, SignModelClass signModelClass) {
+        File fileDelete = new File(filePath);
+        if (fileDelete.exists()) {
+            if (fileDelete.delete()) {
+                System.out.println("file Deleted :" + filePath);
+            } else {
+                System.out.println("file not Deleted :" + filePath);
+            }
+        }
+        callOfflineSignDataDao.deleteOfflineSignImage(filePath);
+        signModelClasses.remove(signModelClass);
+        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData();
+        try {
+            for (int i = 0; i < listDates.size(); i++) {
+                GroupModelClass groupModelClass = listDates.get(i);
+                if (groupModelClass.isExpanded()) {
+                    for (int j = 0; j < listDatesDup.size(); j++) {
+                        GroupModelClass groupModelClass1 = listDatesDup.get(j);
+                        if (groupModelClass1.getGroupName().equalsIgnoreCase(groupModelClass.getGroupName())) {
+                            groupModelClass1.setExpanded(true);
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        listDates = listDatesDup;
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
+        commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
+        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+        outBoxHeaderAdapter.notifyDataSetChanged();
+    }
 
     private void CallSignImageApiS3(String id, SignModelClass signModelClass, String filePath, String jsonValues) {
         try {
