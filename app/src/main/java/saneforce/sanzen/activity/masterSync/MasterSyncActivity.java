@@ -936,15 +936,32 @@ public class MasterSyncActivity extends AppCompatActivity {
                     binding.syncFailedImageTP.setVisibility(View.GONE);
                 }
             } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") &&
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+                    (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettp_onebuild") ||
 //                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details"))) {
                 tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
                 tourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
                 stpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STP_SETUP);
                 standardTourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STANDARD_TOUR_PLAN);
+//                boolean stpEnabled = Boolean.parseBoolean(SharedPref.getStpStatus(this));
+//                if (!stpEnabled) {
+//                    binding.syncFailedImageTP.setVisibility(View.GONE);
+//                } else if (tpSetupStatus == 1 || tourPLanStatus == 1) {
+//                    binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+//                } else if (stpSetupStatus == 1 || standardTourPLanStatus == 1) {
+//                    binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+//                } else {
+//                    binding.syncFailedImageTP.setVisibility(View.GONE);
+//                }
+//                if (tourPLanStatus == 1 || standardTourPLanStatus == 1 || stpSetupStatus == 1 || tpSetupStatus == 1) {
+//                    binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+//                } else if ((tourPLanStatus == 0 && tpSetupStatus == 0)|| (standardTourPLanStatus == 0 && stpSetupStatus == 0)) {
+//                    binding.syncFailedImageTP.setVisibility(View.GONE);
+//                } else {
+//                    binding.syncFailedImageTP.setVisibility(View.GONE);
+//                }
                 if (tourPLanStatus == 1 || standardTourPLanStatus == 1 || stpSetupStatus == 1 || tpSetupStatus == 1) {
                     binding.syncFailedImageTP.setVisibility(View.VISIBLE);
                 } else {
