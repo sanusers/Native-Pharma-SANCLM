@@ -504,6 +504,7 @@ public class SharedPref {
     public static final String SUBDIVISION_NAMES = "SubdivisionNames";
     public static final String SETUP_SYNCED = "setup_synced";
 
+    public static final String SLIDE_AUTO_PLAY = "slide_auto_play";
 
     public static SharedPreferences.Editor editor;
 
@@ -860,7 +861,8 @@ public class SharedPref {
             editor.putString(REPORTING_TO_SF, jsonObject.optString("Reporting_To_SF"));
             editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
             editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
-            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
+            editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
+            editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("slide_auto_play"));
             editor.putString(WELCOME_SLIDES_PATH, "");
 
             editor.apply();
@@ -3137,18 +3139,27 @@ public class SharedPref {
     public static String getReportingToSf(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(REPORTING_TO_SF,"");
     }
+
     public static String getUnlstDocAppNeed(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(UNLST_DOC_APP_NEED,"");
     }
+
     public static String getSubDivisionNames(Context context){
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SUBDIVISION_NAMES, "");
     }
+
     public static void setIsSetupSynced(Context context, boolean isSynced) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putBoolean(SETUP_SYNCED, isSynced).apply();
     }
+
     public static boolean getIsSetupSynced(Context context) {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getBoolean(SETUP_SYNCED,false);
     }
+
+    public static String getSlideAutoPlay(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDE_AUTO_PLAY,"0");
+    }
+
 }

@@ -25,19 +25,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.RelativeLayout;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
 import com.github.barteksc.pdfviewer.BuildConfig;
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -82,7 +90,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     ArrayList<StoreImageTypeUrl> slideDescribe = new ArrayList<>();
     public static ArrayList<StoreImageTypeUrl> slideScribble = new ArrayList<>();
     Object objsd;
-    ImageView imageView;
     PlaySlideDetailing act;
     String slideUrl1 = null;
     Dialog dialogPopUp;
@@ -97,6 +104,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     public static HashMap<String, ArrayList<String>> timer = new HashMap<>();
     private int currentPage = -1;
     public static String pageStartTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
+    private HashMap<Integer, ImageView> imageViewList = new HashMap<>();
+    private HashMap<Integer, PDFView> pdfViewList = new HashMap<>();
+    private HashMap<Integer, VideoView> videoViewList = new HashMap<>();
+    private HashMap<Integer, WebView> webViewList = new HashMap<>();
+    private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
         this.context = context;
@@ -104,6 +116,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         slideDescribe.clear();
         act = context;
         mCommonSharedPreference = new CommonSharedPreference(context);
+        imageViewList = new HashMap<>();
+        pdfViewList = new HashMap<>();
+        videoViewList = new HashMap<>();
+        webViewList = new HashMap<>();
+        progressAnimationViewList = new HashMap<>();
         commonUtilsMethods = new CommonUtilsMethods(context);
         for (int i = 0; i<productArrayList.size(); i++) {
             File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(i).getSlideName());
@@ -123,7 +140,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         return "";
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     @NonNull
     @Override
@@ -131,7 +147,16 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
 
-        imageView = sliderLayout.findViewById(R.id.imageView);
+        ImageView imageView = sliderLayout.findViewById(R.id.imageView);
+        WebView webView = sliderLayout.findViewById(R.id.webView);
+        PDFView pdfView = sliderLayout.findViewById(R.id.pdfView);
+        VideoView videoView = sliderLayout.findViewById(R.id.videoView);
+        LottieAnimationView progressAnim = sliderLayout.findViewById(R.id.progress_anim);
+        imageViewList.put(position, imageView);
+        pdfViewList.put(position, pdfView);
+        videoViewList.put(position, videoView);
+        webViewList.put(position, webView);
+        progressAnimationViewList.put(position, progressAnim);
         RelativeLayout rl_rightView = sliderLayout.findViewById(R.id.rightArrow);
         rl_rightView.setVisibility(View.VISIBLE);
 
@@ -152,6 +177,110 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             return false;
         });
         return sliderLayout;
+    }
+
+    public void autoPlaySlide(int position, int attempt) {
+        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("0")) {
+            try {
+                ImageView imageView = imageViewList.get(position);
+                WebView webView = webViewList.get(position);
+                PDFView pdfView = pdfViewList.get(position);
+                VideoView videoView = videoViewList.get(position);
+                LottieAnimationView progressAnim = progressAnimationViewList.get(position);
+                String fileName = productArrayList.get(position).getSlideName();
+                File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
+                if (file.exists()) {
+                    String fileFormat = SupportClass.getFileExtension(fileName);
+                    switch (fileFormat) {
+                        case "pdf":
+                            pdfView.setVisibility(View.VISIBLE);
+                            videoView.setVisibility(View.GONE);
+                            webView.setVisibility(View.GONE);
+                            progressAnim.setVisibility(View.VISIBLE);
+                            progressAnim.playAnimation();
+                            pdfView.fromFile(file)
+                                    .onRender((nbPages, pageWidth, pageHeight) -> {
+                                        progressAnim.setVisibility(View.GONE);
+                                        progressAnim.cancelAnimation();
+                                    }).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(context)).load();
+                            break;
+                        case "mp4":
+                        case "avi":
+                            MediaController mediaController = new MediaController(context);
+                            mediaController.setAnchorView(videoView);
+                            pdfView.setVisibility(View.GONE);
+                            videoView.setVisibility(View.VISIBLE);
+                            webView.setVisibility(View.GONE);
+                            progressAnim.setVisibility(View.VISIBLE);
+                            progressAnim.playAnimation();
+                            Uri uri = Uri.parse(file.getAbsolutePath());
+                            videoView.setVideoURI(uri);
+                            videoView.setMediaController(mediaController);
+                            videoView.setOnPreparedListener(mp -> {
+                                progressAnim.setVisibility(View.GONE);
+                                mp.start();
+                            });
+//                            videoView.start();
+                            break;
+                        case "zip":
+                            pdfView.setVisibility(View.GONE);
+                            videoView.setVisibility(View.GONE);
+                            webView.setVisibility(View.VISIBLE);
+                            progressAnim.setVisibility(View.VISIBLE);
+                            progressAnim.playAnimation();
+
+                            webView.getSettings().setBuiltInZoomControls(false);
+                            webView.getSettings().setDisplayZoomControls(false);
+                            webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+                            webView.getSettings().setJavaScriptEnabled(true);
+                            webView.getSettings().setLoadWithOverviewMode(true);
+                            webView.getSettings().setUseWideViewPort(true);
+                            webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+                            webView.getSettings().setLoadsImagesAutomatically(true);
+                            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                            webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+                            webView.getSettings().setAllowFileAccess(true);
+                            webView.setHorizontalScrollBarEnabled(false);
+                            webView.setVerticalScrollBarEnabled(false);
+                            webView.getSettings().setDomStorageEnabled(true);
+                            webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+                            webView.getSettings().setDatabaseEnabled(true);
+                            webView.setInitialScale(1);
+                            webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+
+                            String filePath = SupportClass.getFileFromZip(file.getAbsolutePath(), "html");
+                            Log.v("Slides", " --2222-- " + filePath);
+                            if (!filePath.isEmpty()) {
+                                webView.loadUrl("file://" + filePath);
+                            }
+                            webView.setWebViewClient(new WebViewClient() {
+                                @Override
+                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                    Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
+                                    if (!url.isEmpty()) {
+                                        webView.loadUrl(url);
+                                    }
+                                    return true;
+                                }
+
+                                @Override
+                                public void onPageFinished(WebView view, String url) {
+                                    super.onPageFinished(view, url);
+                                    Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                    progressAnim.setVisibility(View.GONE);
+                                    progressAnim.cancelAnimation();
+                                }
+                            });
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (attempt != 3) {
+                    new Handler().postDelayed(() -> autoPlaySlide(position, attempt + 1), 500);
+                }
+            }
+        }
     }
 
     public void logCurrentPageEndIfNeeded() {
