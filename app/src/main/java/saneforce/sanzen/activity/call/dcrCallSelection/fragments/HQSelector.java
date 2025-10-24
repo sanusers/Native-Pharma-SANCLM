@@ -120,21 +120,30 @@ public class HQSelector {
         SearchView searchView = dialogView.findViewById(R.id.searchET);
 
         headerTxt.setText(fragment.getResources().getText(R.string.select_hq));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(fragment.requireContext(), android.R.layout.simple_list_item_1, list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(fragment.requireContext(), android.R.layout.simple_list_item_1, new ArrayList<>(list));
         listView.setAdapter(adapter);
         AlertDialog dialog = alertDialog.create();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                adapter.getFilter().filter(s);
+//                adapter.getFilter().filter(s);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                adapter.getFilter().filter(s);
-                return false;
+                List<String> filtered = new ArrayList<>();
+                for (String item : list) {
+                    if (item.toLowerCase().contains(s.toLowerCase())) {
+                        filtered.add(item);
+                    }
+                }
+
+                adapter.clear();
+                adapter.addAll(filtered);
+                adapter.notifyDataSetChanged();
+                return true;
             }
         });
 
