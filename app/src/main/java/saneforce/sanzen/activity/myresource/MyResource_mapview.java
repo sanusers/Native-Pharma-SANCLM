@@ -3,13 +3,13 @@ package saneforce.sanzen.activity.myresource;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 
 import static saneforce.sanzen.activity.map.MapsActivity.BitmapFromVector;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -75,12 +75,13 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
+    Context context;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMyResourceMapviewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        context=this;
         gpsTrack = new GPSTrack(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
@@ -331,7 +332,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
             ImageButton closeButton = dialogView.findViewById(R.id.close_button);
             ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
-//            fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+            fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
             builder.setView(dialogView);
             AlertDialog dialog_fullScreen = builder.create();
             fullScreenImage.setVisibility(View.GONE);

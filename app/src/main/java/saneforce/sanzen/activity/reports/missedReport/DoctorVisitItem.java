@@ -9,6 +9,7 @@ public class DoctorVisitItem implements Serializable {
     private String category;
     private String speciality;
     private String className;
+
     //private String monthKey;
     public DoctorVisitItem(String name, String territory,String code, String qualification,
                            String category, String speciality, String className) {
@@ -56,9 +57,17 @@ public class DoctorVisitItem implements Serializable {
         return className;
     }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
+    public void setSpeciality(String speciality) {
+        this.speciality = speciality;
+    }
+    public void setQualification(String qualification) {
+        this.qualification = qualification;
+    }
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
-
-//    public String getMonthKey(){
-//        return monthKey;
-//    }
 }

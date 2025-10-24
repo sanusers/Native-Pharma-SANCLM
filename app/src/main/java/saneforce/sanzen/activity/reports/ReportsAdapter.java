@@ -188,7 +188,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+//import saneforce.sanzen.activity.reports.missedReport.MissedReport;
+import saneforce.sanzen.activity.reports.visitMonitor.VisitMonitorActivity;
+//import saneforce.sanzen.activity.reports.missedReport.MissedReport;
+import saneforce.sanzen.activity.reports.missedReport.MissedReportGraph;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHolder> {
 

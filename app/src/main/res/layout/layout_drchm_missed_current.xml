@@ -7,7 +7,9 @@
     android:layout_marginStart="@dimen/_2sdp"
     android:layout_marginEnd="@dimen/_2sdp"
     android:background="@color/white"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:clickable="false"
+    android:focusable="false">
 
 
     <!-- Cards Row -->
@@ -19,7 +21,9 @@
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:visibility="visible"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:clickable="false"
+        android:focusable="false">
 
         <!-- Doctor Card -->
         <LinearLayout
@@ -121,8 +125,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
-                        android:background="@drawable/draktheme_"
-                        android:backgroundTint="@color/mildRed" />
+                        android:background="@drawable/gray_border"
+                        android:backgroundTint="@color/tab_gray" />
 
                     <!-- Label -->
                     <TextView
@@ -210,6 +214,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+
                     android:layout_margin="2dp"
                     android:background="@color/white"
                     android:orientation="vertical"
@@ -314,8 +321,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
-                        android:background="@drawable/bg_green_border"
-                        android:backgroundTint="@color/green_60" />
+                        android:background="@drawable/bg_light_blue"
+                        android:backgroundTint="@color/blue_60" />
                     <!-- Label -->
                     <TextView
                         android:layout_width="wrap_content"
@@ -339,8 +346,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
-                        android:background="@drawable/draktheme_"
-                        android:backgroundTint="@color/mildRed" />
+                        android:background="@drawable/gray_border"
+                        android:backgroundTint="@color/tab_gray" />
                     <!-- Label -->
                     <TextView
                         android:layout_width="wrap_content"
@@ -428,6 +435,8 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="2dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="6dp">
@@ -561,8 +570,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
-                        android:background="@drawable/bg_green_border"
-                        android:backgroundTint="@color/green_60" />
+                        android:background="@drawable/bg_light_pink_2"
+                        android:backgroundTint="@color/txt_sample" />
 
                     <!-- Label -->
                     <TextView
@@ -589,8 +598,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
-                        android:background="@drawable/draktheme_"
-                        android:backgroundTint="@color/mildRed" />
+                        android:background="@drawable/gray_border"
+                        android:backgroundTint="@color/tab_gray" />
 
                     <!-- Label -->
                     <TextView
@@ -781,8 +790,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
-                        android:background="@drawable/bg_green_border"
-                        android:backgroundTint="@color/green_60" />
+                        android:background="@drawable/gray_border"
+                        android:backgroundTint="@color/gray_45" />
                     <!-- Label -->
                     <TextView
                         android:layout_width="wrap_content"
@@ -806,8 +815,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
-                        android:background="@drawable/draktheme_"
-                        android:backgroundTint="@color/mildRed" />
+                        android:background="@drawable/gray_border"
+                        android:backgroundTint="@color/tab_gray" />
                     <!-- Label -->
                     <TextView
                         android:layout_width="wrap_content"

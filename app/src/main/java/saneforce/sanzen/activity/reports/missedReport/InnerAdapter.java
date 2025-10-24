@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.reports.missedReport;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -38,8 +39,131 @@ import java.util.Locale;
 import java.util.Set;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
+
+//public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> {
+//    private final Context context;
+//    private final List<MissedStatsModel> statsList;
+//    String val;
+//    public InnerAdapter(Context context, List<MissedStatsModel> statsList, String val) {
+//        this.context = context;
+//        this.statsList = statsList;
+//        this.val = val;
+//    }
+//
+//    @NonNull
+//    @Override
+//    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//        View view = LayoutInflater.from(context).inflate(R.layout.layout_drchm_missed_current, parent, false);
+//        return new ViewHolder(view);
+//    }
+//
+//    @Override
+//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//        MissedStatsModel model = statsList.get(position);
+//        if (model.getType().equalsIgnoreCase("1")) {
+//            int totalCount = model.getTotalCustomers().length();
+//            int visitedCount = model.getUniqueCustomers().size();
+//            int missedCount = totalCount - visitedCount;
+//            holder.totalDrCnt.setText(String.valueOf(totalCount));
+//            holder.visitedCnt.setText(String.valueOf(visitedCount));
+//            holder.missedCnt.setText(String.valueOf(missedCount));
+//            float missedPercentage = (((float) missedCount / (float) totalCount) * 100.0f);
+//            ArrayList<Integer> colors = new ArrayList<>();
+//            colors.add(context.getResources().getColor(R.color.green_60));
+//            colors.add(context.getResources().getColor(R.color.mildRed));
+//            ArrayList<PieEntry> missedDataList = new ArrayList<>();
+//            missedDataList.add(new PieEntry(100.0f - missedPercentage)); // visited
+//            missedDataList.add(new PieEntry(missedPercentage, ""));      // missed
+//            PieDataSet missedDataSet = new PieDataSet(missedDataList, "");
+//            missedDataSet.setColors(colors);
+//            PieData missedData = new PieData(missedDataSet);
+//            missedData.setValueTextSize(0f);
+//            missedData.setValueTextColor(Color.WHITE);
+//            holder.missedChart.setData(missedData);
+//            holder.missedChart.setUsePercentValues(true);
+//            holder.missedChart.setDrawHoleEnabled(true);
+//            holder.missedChart.setCenterTextSize(18f);
+//            holder.missedChart.setCenterTextColor(holder.missedChart.getContext().getColor(R.color.black));
+//            holder.missedChart.setTransparentCircleRadius(30f);
+//            holder.missedChart.setHoleRadius(75f);
+//            holder.missedChart.animateXY(1400, 1400);
+//            holder.missedChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
+//            holder.missedChart.setCenterText(String.format("%.1f %%", missedPercentage));
+//            Description description2 = holder.missedChart.getDescription();
+//            description2.setEnabled(false);
+//            Legend legend2 = holder.missedChart.getLegend();
+//            legend2.setEnabled(false);
+//            holder.missedChart.invalidate();
+//        }
+//        if (model.getType().equalsIgnoreCase("2")) {
+//            int totalCountchm = model.getTotalCustomers().length();
+//            int visitedCountchm = model.getUniqueCustomers().size();
+//            int missedCountchm = totalCountchm - visitedCountchm;
+//            holder.totalchmCnt.setText(String.valueOf(totalCountchm));
+//            holder.chmvisitedCnt.setText(String.valueOf(visitedCountchm));
+//            holder.chmmissedCnt.setText(String.valueOf(missedCountchm));
+//            float missedPercentagechm = (((float) missedCountchm / (float) totalCountchm) * 100.0f);
+//            ArrayList<Integer> colorschm = new ArrayList<>();
+//            colorschm.add(context.getResources().getColor(R.color.green_60));
+//            colorschm.add(context.getResources().getColor(R.color.mildRed));
+//            ArrayList<PieEntry> missedDataListchm = new ArrayList<>();
+//            missedDataListchm.add(new PieEntry(100.0f - missedPercentagechm)); // visited
+//            missedDataListchm.add(new PieEntry(missedPercentagechm, ""));      // missed
+//            PieDataSet missedDataSetchm = new PieDataSet(missedDataListchm, "");
+//            missedDataSetchm.setColors(colorschm);
+//            PieData missedDatachm = new PieData(missedDataSetchm);
+//            missedDatachm.setValueTextSize(0f);
+//            missedDatachm.setValueTextColor(Color.WHITE);
+//            holder.missedChartChem.setData(missedDatachm);
+//            holder.missedChartChem.setUsePercentValues(true);
+//            holder.missedChart.setDrawHoleEnabled(true);
+//            holder.missedChartChem.setCenterTextSize(18f);
+//            holder.missedChartChem.setCenterTextColor(holder.missedChartChem.getContext().getColor(R.color.black));
+//            holder.missedChartChem.setTransparentCircleRadius(30f);
+//            holder.missedChartChem.setHoleRadius(75f);
+//            holder.missedChartChem.animateXY(1400, 1400);
+//            holder.missedChartChem.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
+//            holder.missedChartChem.setCenterText(String.format("%.1f %%", missedPercentagechm));
+//            Description description2chm = holder.missedChartChem.getDescription();
+//            description2chm.setEnabled(false);
+//            Legend legend2chm = holder.missedChartChem.getLegend();
+//            legend2chm.setEnabled(false);
+//            holder.missedChartChem.invalidate();
+//        }
+//    }
+//
+//    @Override
+//    public int getItemCount() {
+//        return statsList.size();
+//    }
+//
+//    public static class ViewHolder extends RecyclerView.ViewHolder {
+//        public PieChart missedChart, missedChartChem;
+//        TextView totalDr, visited, missed, totalDrCnt, visitedCnt, missedCnt;
+//        TextView totalchm, totalchmCnt, chmvisited, chmvisitedCnt, chmmissed, chmmissedCnt;
+//        public ViewHolder(@NonNull View itemView) {
+//            super(itemView);
+//            missedChart = itemView.findViewById(R.id.pBar);
+//            totalDr = itemView.findViewById(R.id.totalDr);
+//            totalDrCnt = itemView.findViewById(R.id.totalDrCnt);
+//            visited = itemView.findViewById(R.id.visited);
+//            visitedCnt = itemView.findViewById(R.id.visitedCnt);
+//            missed = itemView.findViewById(R.id.missed);
+//            missedCnt = itemView.findViewById(R.id.missedCnt);
+//            missedChartChem = itemView.findViewById(R.id.pBar2);
+//            totalchm = itemView.findViewById(R.id.totalchm);
+//            totalchmCnt = itemView.findViewById(R.id.totalchmCnt);
+//            chmvisited = itemView.findViewById(R.id.chmvisited);
+//            chmvisitedCnt = itemView.findViewById(R.id.chmvisitedCnt);
+//            chmmissed = itemView.findViewById(R.id.chmmissed);
+//            chmmissedCnt = itemView.findViewById(R.id.chmmissedCnt);
+//        }
+//    }
+//}
 
 public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> {
 
@@ -101,7 +225,11 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             holder.card2Layout.setVisibility(View.GONE);
             if (doctor != null)
                 setPieChart(holder.missedChart, holder.totalDrCnt, holder.visitedCnt, holder.missedCnt, doctor);
+            holder.missedBox.setClickable(true);
+            holder.missedBox.setFocusable(true);
+
             holder.missedBox.setOnClickListener(v -> {
+                Log.d("CLICK_TEST", "Missed box clicked at position " + position);
                 try {
                     //Prepare array
                     JSONArray missedDoctors = doctor.getMissedCustomers();
@@ -121,7 +249,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                     intent.putExtra("date", date);
                     intent.putExtra("selected_month", monthName);
                     intent.putExtra("clicked_type", doctor.getType());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
 
                 } catch (Exception e) {
@@ -139,6 +267,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
 
                     Log.d("MissedDoctorsJSON", chemistDoctors.toString());
                     Log.d("MissedDoctorsCount", "Length = " + chemistDoctors.length());
+
                     // Save to RoomDB
                     RoomDB localRoomDB = RoomDB.getDatabase(context);
                     localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, chemistDoctors.toString());
@@ -243,16 +372,30 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
 
         float missedPercentage = (((float) missedCount / (float) totalCount) * 100.0f);
 
+         int colorVisited;
+        switch (model.getType()) {
+            case "1": colorVisited = context.getColor(R.color.green_60); break;   // Doctor
+            case "2": colorVisited = context.getColor(R.color.blue_60); break; // Chemist
+            case "3": colorVisited = context.getColor(R.color.txt_sample); break;  // Stockist
+            case "4": colorVisited = context.getColor(R.color.gray_45); break; // Unlisted
+            default: colorVisited = context.getColor(R.color.gray_20);
+        }
+        int colorMissed = context.getResources().getColor(R.color.tab_gray);
+
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(context.getResources().getColor(R.color.green_60));
-        colors.add(context.getResources().getColor(R.color.mildRed));
+        colors.add(colorVisited);  // visited color based on type
+        colors.add(colorMissed);
+
+//        colors.add(context.getResources().getColor(R.color.green_60));
+//        colors.add(context.getResources().getColor(R.color.mildRed));
 
         ArrayList<PieEntry> dataList = new ArrayList<>();
         dataList.add(new PieEntry(100.0f - missedPercentage));
         dataList.add(new PieEntry(missedPercentage, ""));
 
         PieDataSet dataSet = new PieDataSet(dataList, "");
-        dataSet.setColors(colors);
+        dataSet.setColors(colorVisited, colorMissed);
+        dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
         data.setValueTextSize(0f);
@@ -282,7 +425,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
         TextView totalstkCnt, stkvisitedCnt, stkmissedCnt;
         TextView totalunlstCnt, unlstvisitedCnt, unlstmissedCnt;
         LinearLayout missedBox, chemistBox,stockiestBox,unlistedBox;
-
+        View visitedLegend, missedLegend;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -312,6 +455,9 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             unlstvisitedCnt = itemView.findViewById(R.id.missedunlstvisitedCnt);
             unlstmissedCnt = itemView.findViewById(R.id.missedunlstmissedCnt);
             unlistedBox = itemView.findViewById(R.id.unlstgrid3);
+
+            visitedLegend = itemView.findViewById(R.id.visitedLegend);
+            missedLegend = itemView.findViewById(R.id.missedLegend);
 
         }
     }

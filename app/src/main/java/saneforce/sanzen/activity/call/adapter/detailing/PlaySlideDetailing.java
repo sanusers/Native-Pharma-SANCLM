@@ -629,9 +629,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 case "G":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.customized_presentation));
                     break;
-//                case "H":
-//                    holder.tv_brandName.setText(context.getResources().getText(R.string.custom_presentation));
-//                    break;
+                case "H":
+                    holder.tv_brandName.setText(context.getResources().getText(R.string.custom_presentation));
+                    break;
             }
 
 
@@ -660,9 +660,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     case "G":
                         populateLocalSavedData(SlideCustomList);
                         break;
-//                    case "H":
-//                        populateCustomSavedData();
-//                        break;
+                    case "H":
+                        populateCustomSavedData();
+                        break;
                 }
                 notifyDataSetChanged();
             });

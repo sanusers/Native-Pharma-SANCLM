@@ -900,7 +900,7 @@ public class SharedPref {
     }
 
     public static String getTBase(Context context) {
-        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(T_BASE, "");
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(   T_BASE, "");
     }
 
     public static String getGeoChk(Context context) {

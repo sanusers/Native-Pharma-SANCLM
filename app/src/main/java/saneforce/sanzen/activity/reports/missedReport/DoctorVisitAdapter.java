@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,82 +49,147 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
         View view = LayoutInflater.from(context).inflate(R.layout.item_doctor_visit, parent, false);
         return new ViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-// Always show Name and Place
         DoctorVisitItem item = doctorList.get(position);
+
+        // Always show Name & Place
         holder.textDoctor.setText(checkEmpty(item.getName()));
         holder.textPlace.setText(checkEmpty(item.getTerritory()));
+        holder.number.setText((position + 1) + ")");
         holder.textDoctor.setVisibility(View.VISIBLE);
         holder.textPlace.setVisibility(View.VISIBLE);
 
-        // Type-specific visibility
+        // Hide all optional fields initially
+        holder.layoutQualification.setVisibility(View.GONE);
+        holder.layoutCategory.setVisibility(View.GONE);
+        holder.layoutSpeciality.setVisibility(View.GONE);
+        holder.layoutClass.setVisibility(View.GONE);
+
+        // Hide divider initially
+        holder.divider.setVisibility(View.GONE);
+
+        boolean optionalVisible = false;
+
         switch (type) {
-            case "1": // Doctor → show all fields
+            case "1": // Doctor → show all optional fields
+                holder.drImg.setImageResource(R.drawable.tp_dr_icon);
+
+                holder.layoutQualification.setVisibility(View.VISIBLE);
+                holder.layoutCategory.setVisibility(View.VISIBLE);
+                holder.layoutSpeciality.setVisibility(View.VISIBLE);
+                holder.layoutClass.setVisibility(View.VISIBLE);
+
                 holder.qualification.setText(checkEmpty(item.getQualification()));
                 holder.category.setText(checkEmpty(item.getCategory()));
                 holder.speciality.setText(checkEmpty(item.getSpeciality()));
                 holder.className.setText(checkEmpty(item.getClassName()));
 
-                holder.qualification.setVisibility(View.VISIBLE);
-                holder.category.setVisibility(View.VISIBLE);
-                holder.speciality.setVisibility(View.VISIBLE);
-                holder.className.setVisibility(View.VISIBLE);
+                optionalVisible = true;
                 break;
 
-            case "2": // Chemist → show Name, Place, Category
+            case "2": // Chemist → show Category only
+                holder.drImg.setImageResource(R.drawable.tp_chemist_icon);
+
+                holder.layoutCategory.setVisibility(View.VISIBLE);
                 holder.category.setText(checkEmpty(item.getCategory()));
 
-                holder.qualification.setVisibility(View.GONE);
-                holder.category.setVisibility(View.VISIBLE);
-                holder.speciality.setVisibility(View.GONE);
-                holder.className.setVisibility(View.GONE);
-                break;
-            case "3": // Stockist → only Name & Place
-                holder.qualification.setVisibility(View.GONE);
-                holder.category.setVisibility(View.GONE);
-                holder.speciality.setVisibility(View.GONE);
-                holder.className.setVisibility(View.GONE);
+                optionalVisible = true;
                 break;
 
-            case "4": // Unlisted → Name, Place, Category, Specialty
+            case "3": // Stockist → Name & Place only
+                holder.drImg.setImageResource(R.drawable.tp_stockiest_icon);
+                break;
+
+            case "4": // Unlisted → show Category + Specialty
+                holder.drImg.setImageResource(R.drawable.tp_unlist_dr_icon);
+
+                holder.layoutCategory.setVisibility(View.VISIBLE);
+                holder.layoutSpeciality.setVisibility(View.VISIBLE);
+                holder.layoutQualification.setVisibility(View.VISIBLE);
+                holder.layoutClass.setVisibility(View.VISIBLE);
+
                 holder.category.setText(checkEmpty(item.getCategory()));
                 holder.speciality.setText(checkEmpty(item.getSpeciality()));
+                holder.qualification.setText(checkEmpty(item.getQualification()));
+                holder.className.setText(checkEmpty(item.getClassName()));
 
-                holder.qualification.setVisibility(View.GONE);
-                holder.category.setVisibility(View.VISIBLE);
-                holder.speciality.setVisibility(View.VISIBLE);
-                holder.className.setVisibility(View.GONE);
-                break;
-
-            default: // fallback → only Name & Place
-                holder.qualification.setVisibility(View.GONE);
-                holder.category.setVisibility(View.GONE);
-                holder.speciality.setVisibility(View.GONE);
-                holder.className.setVisibility(View.GONE);
+                optionalVisible = true;
                 break;
         }
 
-        holder.number.setText((position + 1) + ")");
-
-        holder.itemView.setOnClickListener(new SafeClickListener() {
-                                               @Override
-                                               public void onSafeClick(View view) {}
-            // Your click action here
-        });
+        // Show divider only if any optional field is visible
+        holder.divider.setVisibility(optionalVisible ? View.VISIBLE : View.GONE);
     }
-//        DoctorVisitItem item = doctorList.get(position);
-//        holder.textDoctor.setText(checkEmpty(item.getName()));
-//        holder.textPlace.setText(checkEmpty(item.getTerritory()));
-//        holder.qualification.setText(checkEmpty(item.getQualification()));
-//        holder.category.setText(checkEmpty(item.getCategory()));
-//        holder.speciality.setText(checkEmpty(item.getSpeciality()));
-//        holder.className.setText(checkEmpty(item.getClassName()));
-//        holder.number.setText((position + 1) + ")");
-//        holder.itemView.setOnClickListener(v -> {
+
+   // @Override
+//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//// Always show Name and Place
+//            DoctorVisitItem item = doctorList.get(position);
 //
-//        });
+//            // Always show Name & Place
+//            holder.textDoctor.setText(checkEmpty(item.getName()));
+//            holder.textPlace.setText(checkEmpty(item.getTerritory()));
+//            holder.number.setText((position + 1) + ")");
+//            holder.textDoctor.setVisibility(View.VISIBLE);
+//            holder.textPlace.setVisibility(View.VISIBLE);
+//            // Hide all optional fields initially
+//            holder.doctorqual.setVisibility(View.GONE);
+//            holder.qualification.setVisibility(View.GONE);
+//            holder.doctorcat.setVisibility(View.GONE);
+//            holder.category.setVisibility(View.GONE);
+//            holder.doctorspec.setVisibility(View.GONE);
+//            holder.speciality.setVisibility(View.GONE);
+//            holder.doctorclass.setVisibility(View.GONE);
+//            holder.className.setVisibility(View.GONE);
+//
+//
+//            // Hide divider initially
+//            holder.divider.setVisibility(View.GONE);
+//            switch (type) {
+//                case "1": // Doctor → show all optional fields
+//                    holder.drImg.setImageResource(R.drawable.tp_dr_icon);
+//                    holder.doctorqual.setVisibility(View.VISIBLE);
+//                    holder.qualification.setVisibility(View.VISIBLE);
+//                    holder.doctorcat.setVisibility(View.VISIBLE);
+//                    holder.category.setVisibility(View.VISIBLE);
+//                    holder.doctorspec.setVisibility(View.VISIBLE);
+//                    holder.speciality.setVisibility(View.VISIBLE);
+//                    holder.doctorclass.setVisibility(View.VISIBLE);
+//                    holder.className.setVisibility(View.VISIBLE);
+//                    holder.qualification.setText(checkEmpty(item.getQualification()));
+//                    holder.category.setText(checkEmpty(item.getCategory()));
+//                    holder.speciality.setText(checkEmpty(item.getSpeciality()));
+//                    holder.className.setText(checkEmpty(item.getClassName()));
+//                    holder.divider.setVisibility(View.VISIBLE);
+//                    break;
+//
+//                case "2": // Chemist → show Category only
+//                    holder.drImg.setImageResource(R.drawable.tp_chemist_icon);
+//                    holder.doctorcat.setVisibility(View.VISIBLE);
+//                    holder.category.setVisibility(View.VISIBLE);
+//                    holder.category.setText(checkEmpty(item.getCategory()));
+//
+//                    holder.divider.setVisibility(View.VISIBLE);
+//                    break;
+//
+//                case "3": // Stockist → Name & Place only
+//                    holder.drImg.setImageResource(R.drawable.tp_stockiest_icon);
+//                    break;
+//
+//                case "4": // Unlisted → show Category + Specialty
+//                    holder.drImg.setImageResource(R.drawable.tp_unlist_dr_icon);
+//                    holder.doctorcat.setVisibility(View.VISIBLE);
+//                    holder.category.setVisibility(View.VISIBLE);
+//                    holder.category.setText(checkEmpty(item.getCategory()));
+//                    holder.doctorspec.setVisibility(View.VISIBLE);
+//                    holder.speciality.setVisibility(View.VISIBLE);
+//                    holder.speciality.setText(checkEmpty(item.getSpeciality()));
+//                    holder.divider.setVisibility(View.VISIBLE);
+//                    break;
+//            }
+//
+//        }
 
 
     private String checkEmpty(String value) {
@@ -145,6 +212,10 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textDoctor, textPlace;
         TextView qualification, category, speciality, className, number;
+        TextView doctorqual, doctorcat, doctorspec, doctorclass;
+        LinearLayout doctorNameLayout, layoutQualification, layoutCategory, layoutSpeciality, layoutClass;
+        View divider;
+        ImageView drImg;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -155,6 +226,21 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
             speciality = itemView.findViewById(R.id.Speciality);
             className = itemView.findViewById(R.id.Class);
             number = itemView.findViewById(R.id.number);
+
+
+            doctorqual = itemView.findViewById(R.id.doctorqual);
+            doctorcat = itemView.findViewById(R.id.doctorcat);
+            doctorspec = itemView.findViewById(R.id.doctorspec);
+            doctorclass = itemView.findViewById(R.id.doctorclass);
+            doctorNameLayout = itemView.findViewById(R.id.doctorNameLayout);
+            divider = itemView.findViewById(R.id.dividerView);
+            drImg = itemView.findViewById(R.id.dr_img);
+
+            layoutQualification = itemView.findViewById(R.id.layoutQualification);
+            layoutCategory = itemView.findViewById(R.id.layoutCategory);
+            layoutSpeciality = itemView.findViewById(R.id.layoutSpeciality);
+            layoutClass = itemView.findViewById(R.id.layoutClass);
+
         }
     }
 
