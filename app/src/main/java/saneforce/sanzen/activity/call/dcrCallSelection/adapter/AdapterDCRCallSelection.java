@@ -68,12 +68,14 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     private int limit = 1;
     private ProgressBar progressBar;
     private RelativeLayout refreshLocation;
+    private boolean isFencing;
 
-    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, String isFrom) {
+    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, boolean isFencing, String isFrom) {
         this.activity = activity;
         this.context = context;
         this.cusListArrayList = cusListArrayList;
         this.needCheckInOut = needCheckInOut;
+        this.isFencing = isFencing;
         this.isFrom = isFrom;
         this.FillteredList=cusListArrayList;
         roomDB=RoomDB.getDatabase(context);
@@ -206,9 +208,14 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             }
         });
 
-//        holder.info.setOnClickListener(view -> {
-//
-//        }
+        if (isFencing) {
+            holder.info.setVisibility(View.VISIBLE);
+            holder.info.setOnClickListener(view -> {
+
+            });
+        } else {
+            holder.info.setVisibility(View.GONE);
+        }
 
     }
 
@@ -423,7 +430,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         TextView tv_name, tv_category, tv_specialist, tv_area;
         ConstraintLayout constraint_main;
         View view_top;
-//        ImageView info;
+        ImageView info;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -433,7 +440,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             tv_area = itemView.findViewById(R.id.txt_address);
             constraint_main = itemView.findViewById(R.id.constraint_main);
             view_top = itemView.findViewById(R.id.view_top);
-//            info = itemView.findViewById(R.id.tv_duration_info);
+            info = itemView.findViewById(R.id.tv_duration_info);
         }
     }
 

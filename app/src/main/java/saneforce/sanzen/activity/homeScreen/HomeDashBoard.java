@@ -2492,8 +2492,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (SharedPref.getGeotagNeedUnlst(this).equalsIgnoreCase("1"))
             navigationFooterBinding.tvUdot.setVisibility(View.VISIBLE);
 
-        if (SharedPref.getGeotagNeedCip(this).equalsIgnoreCase("1"))
-            navigationFooterBinding.tvHdot.setVisibility(View.VISIBLE);
+//        if (SharedPref.getGeotagNeedCip(this).equalsIgnoreCase("1"))
+//            navigationFooterBinding.tvHdot.setVisibility(View.VISIBLE);
 
 
         try {

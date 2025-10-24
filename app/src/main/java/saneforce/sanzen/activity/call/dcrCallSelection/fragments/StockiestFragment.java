@@ -400,7 +400,7 @@ public class StockiestFragment extends Fragment {
         } else {
             noStockist.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, "1", "3");
+            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, "1", SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now()), "3");
             rv_list.setItemAnimator(new DefaultItemAnimator());
             rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
             rv_list.setAdapter(adapterDCRCallSelection);

@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/txt_cust_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/satoshi_bold"
@@ -40,20 +40,24 @@
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toTopOf="@id/txt_cat"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_duration_info"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-     <!--   <ImageView
+
+        <ImageView
             android:id="@+id/tv_duration_info"
             android:layout_width="@dimen/_13sdp"
             android:layout_height="@dimen/_13sdp"
             android:padding="@dimen/_3sdp"
+            android:visibility="gone"
             android:src="@drawable/info_icon_purple"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />-->
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/txt_cat"
@@ -64,11 +68,11 @@
             android:fontFamily="@font/satoshi_medium"
             android:gravity="start"
             android:paddingHorizontal="@dimen/_1sdp"
-            android:visibility="gone"
             android:paddingVertical="@dimen/_2sdp"
             android:text="@string/category"
             android:textColor="@color/light_grey_2"
             android:textSize="@dimen/_6ssp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/txt_specialist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -86,9 +90,9 @@
             android:paddingHorizontal="@dimen/_1sdp"
             android:paddingVertical="@dimen/_2sdp"
             android:text="@string/specialist"
-            android:visibility="gone"
             android:textColor="@color/light_grey_2"
             android:textSize="@dimen/_6ssp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/txt_class"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -106,9 +110,9 @@
             android:paddingHorizontal="@dimen/_1sdp"
             android:paddingVertical="@dimen/_2sdp"
             android:text="@string/clases"
-            android:visibility="gone"
             android:textColor="@color/light_grey_2"
             android:textSize="@dimen/_6ssp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/txt_address"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -141,11 +145,11 @@
             android:id="@+id/img_select"
             android:layout_width="@dimen/_10sdp"
             android:layout_height="@dimen/_10sdp"
+            android:layout_margin="@dimen/_2sdp"
             android:src="@drawable/done"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="@dimen/_2sdp"/>
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

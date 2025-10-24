@@ -424,7 +424,7 @@ public class UnlistedDoctorFragment extends Fragment {
         } else {
             noULDoctor.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getUnlistSrtNd(requireContext()), "4");
+            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getUnlistSrtNd(requireContext()), SharedPref.getGeotagNeedUnlst(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now()), "4");
             rv_list.setItemAnimator(new DefaultItemAnimator());
             rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
             rv_list.setAdapter(adapterDCRCallSelection);

@@ -420,7 +420,7 @@ public class ChemistFragment extends Fragment {
         } else {
             noChemist.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getChmSrtNd(requireContext()), "2");
+            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getChmSrtNd(requireContext()),SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now()), "2");
             rv_list.setItemAnimator(new DefaultItemAnimator());
             rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
             rv_list.setAdapter(adapterDCRCallSelection);
