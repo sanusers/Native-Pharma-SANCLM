@@ -118,21 +118,21 @@ public class AsOnCallsMissedFragment extends Fragment {
             //total unlisted
             totalUnlisted = 0;
             visitedUnlistedPreviousMonth = 0;
-            visitedDoctorsCurrentMonth = currentMonthStats.visitedDoctors.size();
-            visitedDoctorsPreviousMonth = previousMonthStats.visitedDoctors.size();
-            visitedDoctorsPre_PrevMonth = prePreviousMonthStats.visitedDoctors.size();
+            visitedDoctorsCurrentMonth = currentMonthStats.uniqueDoctors.size();
+            visitedDoctorsPreviousMonth = previousMonthStats.uniqueDoctors.size();
+            visitedDoctorsPre_PrevMonth = prePreviousMonthStats.uniqueDoctors.size();
 
-            visitedChemistCurrentMonth = currentMonthStats.visitedChemists.size();
-            visitedChemistPreviousMonth = previousMonthStats.visitedChemists.size();
-            visitedChemistPre_PrevMonth = prePreviousMonthStats.visitedChemists.size();
+            visitedChemistCurrentMonth = currentMonthStats.uniqueChemists.size();
+            visitedChemistPreviousMonth = previousMonthStats.uniqueChemists.size();
+            visitedChemistPre_PrevMonth = prePreviousMonthStats.uniqueChemists.size();
 
-            visitedStockistCurrentMonth = currentMonthStats.visitedStockiest.size();
-            visitedStockistPreviousMonth = previousMonthStats.visitedStockiest.size();
-            visitedStockistPre_PrevMonth = previousMonthStats.visitedStockiest.size();
+            visitedStockistCurrentMonth = currentMonthStats.uniqueStockiest.size();
+            visitedStockistPreviousMonth = previousMonthStats.uniqueStockiest.size();
+            visitedStockistPre_PrevMonth = previousMonthStats.uniqueStockiest.size();
 
-            visitedUnlistedCurrentMonth = currentMonthStats.visitedUnlisted.size();
-            visitedUnlistedPreviousMonth = currentMonthStats.visitedUnlisted.size();
-            int visitedUnlistedPre_PrevMonth = currentMonthStats.visitedUnlisted.size();
+            visitedUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
+            visitedUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
+            int visitedUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
 
 
             //doctor

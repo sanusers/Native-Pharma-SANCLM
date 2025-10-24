@@ -70,7 +70,8 @@ public class UnlistedVisitFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            this.monthData = getArguments().getStringArrayList(ARG_MONTH_DATA);
+//            this.monthData = getArguments().getStringArrayList(ARG_MONTH_DATA);
+            position = getArguments().getInt(ARG_POSITION, 0);
         }
     }
 
@@ -92,6 +93,10 @@ public class UnlistedVisitFragment extends Fragment {
         ImageView unlistedImage = view.findViewById(R.id.custImg);
 
         barChart  = view.findViewById(R.id.barChartVisit);
+
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
 
         switch (position) {
             case 0:
@@ -122,11 +127,6 @@ public class UnlistedVisitFragment extends Fragment {
                 monthTxt.setText(formattedDate2);
                 break;
         }
-
-        roomDB = RoomDB.getDatabase(requireContext());
-        masterDataDao = roomDB.masterDataDao();
-        commonUtilsMethods = new CommonUtilsMethods(requireContext());
-
 
         unListVst.setText(SharedPref.getUNLcap(requireContext()));
         totalUnlistTxt.setText("Total"+" "+SharedPref.getUNLcap(requireContext()));

@@ -29,7 +29,7 @@
 //import retrofit2.Call;
 //import retrofit2.Callback;
 //import retrofit2.Response;
-////import saneforce.sanzen.activity.reports.missedReport.MissedReport;
+/// /import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 //import saneforce.sanzen.R;
 //import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 //import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
@@ -95,17 +95,17 @@
 //
 //    }
 //
-////    public void populateAdapter() {
-////        ArrayList<String> arrayList = new ArrayList<>();
-////        arrayList.add("Day Report");
-////       /* arrayList.add("Monthly Report");
-////        arrayList.add("Day Check In Report");
-////        arrayList.add("Customer Check In Report");*/
-////        arrayList.add("Visit Monitor");
-////        arrayList.add("Missed Report");
-////        if (SharedPref.getDashboard(this).equals("0")){
-////            arrayList.add("Dash Board");
-////        }
+/// /    public void populateAdapter() {
+/// /        ArrayList<String> arrayList = new ArrayList<>();
+/// /        arrayList.add("Day Report");
+/// /       /* arrayList.add("Monthly Report");
+/// /        arrayList.add("Day Check In Report");
+/// /        arrayList.add("Customer Check In Report");*/
+/// /        arrayList.add("Visit Monitor");
+/// /        arrayList.add("Missed Report");
+/// /        if (SharedPref.getDashboard(this).equals("0")){
+/// /            arrayList.add("Dash Board");
+/// /        }
 //
 //    /// /        if (SharedPref.getDynamicOptionNeed(this).equals("0")) {
 //    /// /            arrayList.add(SharedPref.getDynamicOptionCaps(context));
@@ -328,10 +328,11 @@
 
 package saneforce.sanzen.activity.reports;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -382,17 +383,10 @@ public class ReportsActivity extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
     String url;
-    // Removed menuList as we will use a single list for the adapter
-    // ArrayList<MenuModel> menuList = new ArrayList<>();
-
-    // This list will now hold ALL report titles (static + dynamic)
     ArrayList<String> reportTitles = new ArrayList<>();
-
-    // Store MenuModel objects separately for dynamic report URL lookup
     ArrayList<MenuModel> dynamicMenuList = new ArrayList<>();
+    Context context;
 
-
-    //To Hide the bottomNavigation When popup
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -408,11 +402,8 @@ public class ReportsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-
-        // 1. Initialize static reports and adapter
+        context = this;
         populateAdapter();
-
-        // 2. Load dynamic reports if needed (API call)
         if (SharedPref.getDynamicOptionNeed(ReportsActivity.this).equalsIgnoreCase("0")) {
             loadMenuFromApi();
         }
@@ -427,7 +418,6 @@ public class ReportsActivity extends AppCompatActivity {
     }
 
     public void populateAdapter() {
-        // Clear previous entries and add static reports
         reportTitles.clear();
         reportTitles.add("Day Report");
         reportTitles.add("Visit Monitor");
@@ -435,8 +425,6 @@ public class ReportsActivity extends AppCompatActivity {
         if (SharedPref.getDashboard(this).equals("0")) {
             reportTitles.add("Dash Board");
         }
-
-        // Initialize adapter with the combined list
         reportsAdapter = new ReportsAdapter(reportTitles, this, reportName -> {
             switch (reportName.toUpperCase()) {
                 case "DAY REPORT":
@@ -453,14 +441,11 @@ public class ReportsActivity extends AppCompatActivity {
                     break;
 
                 case "DASH BOARD":
-                    // Assuming ReportWebActivity is for the general dashboard
                     startActivity(new Intent(this, ReportWebActivity.class));
                     break;
 
                 default:
-                    // Handle Dynamic Reports
                     if (SharedPref.getDynamicOptionNeed(this).equalsIgnoreCase("0")) {
-                        // Find the corresponding MenuModel to get the URL
                         MenuModel dynamicReport = findDynamicReport(reportName);
                         if(dynamicReport != null) {
                             Intent intent = new Intent(this, DynamicWebActivity.class);
@@ -489,7 +474,6 @@ public class ReportsActivity extends AppCompatActivity {
     }
 
     public void getData(String report, String date) {
-        // ... (getData implementation remains unchanged for Day Report API call)
         if (UtilityClass.isNetworkAvailable(this)) {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
                 if (status) {
@@ -567,7 +551,6 @@ public class ReportsActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            // dynamicMenuList.clear(); // Clear list before loading
 
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
                 if (status) {
@@ -627,8 +610,7 @@ public class ReportsActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 progressDialog.dismiss();
-                                commonUtilsMethods.showToastMessage(ReportsActivity.this,
-                                        getString(R.string.poor_connection) + " " + getString(R.string.please_try_again));
+                                commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection) + " " + getString(R.string.please_try_again));
                             }
                         });
                     } catch (JSONException e) {

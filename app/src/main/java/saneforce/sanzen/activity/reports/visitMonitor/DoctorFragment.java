@@ -29,6 +29,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
@@ -227,19 +228,18 @@ public class DoctorFragment extends Fragment {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
         pieChart.setTransparentCircleColor(requireContext().getResources().getColor(R.color.gray_med));
-        pieChart.setTransparentCircleAlpha(100);
         pieChart.setHoleRadius(63f);
-        pieChart.setTransparentCircleRadius(20f);
+        pieChart.setTransparentCircleRadius(10f);
         pieChart.setRotationAngle(0);
         pieChart.setRotationEnabled(true);
         pieChart.setHighlightPerTapEnabled(true);
         pieChart.setDrawEntryLabels(false);
 
         ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(oneVisit, "1 Visit"));
-        entries.add(new PieEntry(twoVisit, "2 Visits"));
-        entries.add(new PieEntry(threeVisit, "3 Visits"));
-        entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
+        if(oneVisit>0) entries.add(new PieEntry(oneVisit, "1 Visit"));
+        if(twoVisit>0)entries.add(new PieEntry(twoVisit, "2 Visits"));
+        if(threeVisit>0)entries.add(new PieEntry(threeVisit, "3 Visits"));
+        if(threePlusVisit>0)entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
 
         PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setSliceSpace(3f);
@@ -251,14 +251,24 @@ public class DoctorFragment extends Fragment {
         colors.add(requireContext().getResources().getColor(R.color.red_60));
         colors.add(requireContext().getResources().getColor(R.color.green_2));
         dataSet.setColors(colors);
-//        dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
+
+        data.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.valueOf((int) value);
+            }
+        });
+
+        data.setValueTextSize(20f);
+        data.setValueTextColor(requireContext().getResources().getColor(R.color.black));
+
         pieChart.setData(data);
 
         Legend l = pieChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
         l.setXEntrySpace(7f);

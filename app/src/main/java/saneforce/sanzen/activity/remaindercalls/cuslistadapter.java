@@ -338,7 +338,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
             dcrDocDataDao.insertDCRDocValues(new DCRDocDataTable("Doctor_" + hq_code, jsonArray1.toString()));
             String Town_Name = "";
             if (jsonArray1.length() > 0) {
-                if (!jsonArray1.equals("[]") || !jsonArray1.equals("null") && SharedPref.getRemainderGeo(context).equals("0")) {
+                if (!jsonArray1.equals("[]") || !jsonArray1.equals("null") && SharedPref. getRemainderGeo(context).equals("0")) {
                     for (int i = 0; i < jsonArray1.length(); i++) {
                         JSONObject jsonObject = jsonArray1.getJSONObject(i);
                         if (SharedPref.getGeoChk(context).equals("1")) {//"Lat":"", "Long":"",
