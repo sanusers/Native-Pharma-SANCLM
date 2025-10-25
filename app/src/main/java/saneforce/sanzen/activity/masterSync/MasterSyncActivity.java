@@ -2257,9 +2257,9 @@ public class MasterSyncActivity extends AppCompatActivity {
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
-                if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
+                if (jsonObject.getString("FWFlg").equalsIgnoreCase("W"))
                     weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
+                else if (jsonObject.getString("FWFlg").equalsIgnoreCase("H"))
                     holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
             }
         } catch (Exception ignored) {
@@ -2321,9 +2321,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
                 for (int i = 0; i < workTypeArray1.length(); i++) {
                     JSONObject jsonObject = workTypeArray1.getJSONObject(i);
-                    if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
+                    if (jsonObject.getString("FWFlg").equalsIgnoreCase("W"))
                         weeklyOffWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                    else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
+                    else if (jsonObject.getString("FWFlg").equalsIgnoreCase("H"))
                         holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
                 }
 
@@ -2386,9 +2386,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
                 for (int i = 0; i < workTypeArray1.length(); i++) {
                     JSONObject jsonObject = workTypeArray1.getJSONObject(i);
-                    if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
+                    if (jsonObject.getString("FWFlg").equalsIgnoreCase("W"))
                         weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                    else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
+                    else if (jsonObject.getString("FWFlg").equalsIgnoreCase("H"))
                         holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
                 }
 

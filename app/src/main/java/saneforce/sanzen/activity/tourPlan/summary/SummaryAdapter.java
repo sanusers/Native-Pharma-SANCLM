@@ -81,8 +81,10 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                 }
                 holder.date.setText(oneBuildModelClasses.getDate());
                 for (OneBuildModelClass.SessionList.WorkType workType : holder.workTypeModelArrayOneBuild) {
-                    if (!workType.getName().isEmpty())
+                    if (!workType.getFWFlg().isEmpty()) {
                         holder.workTypeNames.add(workType.getName());
+                        holder.workTypeFlags.add(workType.getFWFlg());
+                    }
                 }
 
                 if (holder.workTypeModelArrayOneBuild.size() == 1) {
@@ -145,6 +147,14 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                 boolean onlyHoliday = false;
                 for (String workType : holder.workTypeNames) { // to find the work types among sessions are only holiday/weeklyOff are combinations of any other work types
                     if (workType.equalsIgnoreCase("Holiday") || workType.equalsIgnoreCase("Weekly Off") || workType.equalsIgnoreCase("Not Available")) {
+                        onlyHoliday = true;
+                    } else {
+                        onlyHoliday = false;
+                        break;
+                    }
+                }
+                for (String workType : holder.workTypeFlags) { // to find the work types among sessions are only holiday/weeklyOff are combinations of any other work types
+                    if (workType.equalsIgnoreCase("H") || workType.equalsIgnoreCase("W")) {
                         onlyHoliday = true;
                     } else {
                         onlyHoliday = false;
@@ -280,8 +290,10 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
 
                 holder.date.setText(modelClasses.getDate());
                 for (ModelClass.SessionList.WorkType workType : holder.workTypeModelArray) {
-                    if (!workType.getName().isEmpty())
+                    if (!workType.getName().isEmpty()) {
                         holder.workTypeNames.add(workType.getName());
+                        holder.workTypeFlags.add(workType.getFWFlg());
+                    }
                 }
 
                 if (holder.workTypeModelArray.size() == 1) {
@@ -377,6 +389,14 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                 boolean onlyHoliday = false;
                 for (String workType : holder.workTypeNames) { // to find the work types among sessions are only holiday/weeklyOff are combinations of any other work types
                     if (workType.equalsIgnoreCase("Holiday") || workType.equalsIgnoreCase("Weekly Off") || workType.equalsIgnoreCase("Not Available")) {
+                        onlyHoliday = true;
+                    } else {
+                        onlyHoliday = false;
+                        break;
+                    }
+                }
+                for (String workType : holder.workTypeFlags) { // to find the work types among sessions are only holiday/weeklyOff are combinations of any other work types
+                    if (workType.equalsIgnoreCase("H") || workType.equalsIgnoreCase("W")) {
                         onlyHoliday = true;
                     } else {
                         onlyHoliday = false;
@@ -493,6 +513,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
         ArrayList<List<ModelClass.SessionList.SubClass>> hqsModelArray = new ArrayList<>();
 
         ArrayList<String> workTypeNames = new ArrayList<>();
+        ArrayList<String> workTypeFlags = new ArrayList<>();
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
