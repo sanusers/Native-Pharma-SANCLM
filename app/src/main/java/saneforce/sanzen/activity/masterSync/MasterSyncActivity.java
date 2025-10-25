@@ -25,9 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -54,7 +52,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
@@ -63,9 +60,9 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideAdapter;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideService;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlidesViewModel;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
-import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -104,7 +101,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String rsf = "";
     boolean retrystatus = false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0,profileStatus = 0;
+    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0, profileStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -221,27 +218,27 @@ public class MasterSyncActivity extends AppCompatActivity {
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             binding.listedDr.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getDrCap(MasterSyncActivity.this));
+            binding.childSync.setText("Sync " + SharedPref.getDrCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(doctorModelArray);
         } else if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
             binding.chemist.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getChmCap(MasterSyncActivity.this));
+            binding.childSync.setText("Sync " + SharedPref.getChmCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(chemistModelArray);
         } else if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
             binding.stockiest.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getStkCap(MasterSyncActivity.this));
+            binding.childSync.setText("Sync " + SharedPref.getStkCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(stockiestModelArray);
         } else if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
             binding.unlistedDoctor.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getUNLcap(MasterSyncActivity.this));
+            binding.childSync.setText("Sync " + SharedPref.getUNLcap(MasterSyncActivity.this));
             arrayForAdapter.addAll(unlistedDrModelArray);
         } else if (SharedPref.getCipNeed(this).equalsIgnoreCase("0")) {
             binding.cip.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getCipCaption(MasterSyncActivity.this));
+            binding.childSync.setText("Sync " + SharedPref.getCipCaption(MasterSyncActivity.this));
             arrayForAdapter.addAll(cipModelArray);
         } else if (SharedPref.getHospNeed(this).equalsIgnoreCase("0")) {
             binding.hospital.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getHospCaption(MasterSyncActivity.this));
+            binding.childSync.setText("Sync " + SharedPref.getHospCaption(MasterSyncActivity.this));
             arrayForAdapter.addAll(hospitalModelArray);
         } else {
             binding.cluster.setSelected(true);
@@ -255,14 +252,14 @@ public class MasterSyncActivity extends AppCompatActivity {
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                     /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
-                if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                    if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
 //                    sync(Constants.DOCTOR_MAS, "gettodaydcr", dcrModelArray, 2);
-                    sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
+                        sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
 
-                }else {
+                    } else {
 //                    sync(Constants.DOCTOR_MAS, "gettodaydcrmultihq", dcrModelArray, 2);
-                    sync(Constants.DOCTOR, "gettodaydcrmultihq", dcrModelArray, 2);
-                }
+                        sync(Constants.DOCTOR, "gettodaydcrmultihq", dcrModelArray, 2);
+                    }
                     // to get all the HQ list initially only for MGR
 // to get all the HQ list initially only for MGR
                 } else {
@@ -304,75 +301,85 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
 
-        binding.hq.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.hq.setOnClickListener(view -> {
+            try {
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+                ArrayList<String> list = new ArrayList<>();
 
-                try {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                    ArrayList<String> list = new ArrayList<>();
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        list.add(jsonObject.getString("name"));
+                    }
+                }
 
-                    if (jsonArray.length() > 0) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            list.add(jsonObject.getString("name"));
-                        }
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MasterSyncActivity.this);
+                LayoutInflater inflater = MasterSyncActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_listview, null);
+                alertDialog.setView(dialogView);
+                TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
+                ListView listView = dialogView.findViewById(R.id.listView);
+                SearchView searchView = dialogView.findViewById(R.id.searchET);
+
+                searchView.setIconified(false);
+                searchView.setIconifiedByDefault(false);
+                searchView.setMaxWidth(Integer.MAX_VALUE);
+
+                headerTxt.setText(getResources().getText(R.string.select_hq));
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MasterSyncActivity.this, android.R.layout.simple_list_item_1, new ArrayList<>(list));
+                listView.setAdapter(adapter);
+                AlertDialog dialog = alertDialog.create();
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String s) {
+//                            adapter.getFilter().filter(s);
+                        return false;
                     }
 
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MasterSyncActivity.this);
-                    LayoutInflater inflater = MasterSyncActivity.this.getLayoutInflater();
-                    View dialogView = inflater.inflate(R.layout.dialog_listview, null);
-                    alertDialog.setView(dialogView);
-                    TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
-                    ListView listView = dialogView.findViewById(R.id.listView);
-                    SearchView searchView = dialogView.findViewById(R.id.searchET);
-
-                    headerTxt.setText(getResources().getText(R.string.select_hq));
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MasterSyncActivity.this, android.R.layout.simple_list_item_1, list);
-                    listView.setAdapter(adapter);
-                    AlertDialog dialog = alertDialog.create();
-
-                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String s) {
-                            adapter.getFilter().filter(s);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onQueryTextChange(String s) {
-                            adapter.getFilter().filter(s);
-                            return false;
-                        }
-                    });
-                    listView.setOnItemClickListener((adapterView, view1, position, l) -> {
-                        String selectedHq = listView.getItemAtPosition(position).toString();
-                        binding.hqName.setText(selectedHq);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            try {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                                    rsf = jsonObject.getString("id");
-                                    //myresource
-                                    prepareArray(rsf); // replace the new rsf value
-                                    masterSyncAll(true);
-                                    break;
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    @Override
+                    public boolean onQueryTextChange(String s) {
+                        List<String> filtered = new ArrayList<>();
+                        for (String item : list) {
+                            if (item.toLowerCase().contains(s.toLowerCase())) {
+                                filtered.add(item);
                             }
                         }
-                        dialog.dismiss();
-                    });
 
-                    alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+                        adapter.clear();
+                        adapter.addAll(filtered);
+                        adapter.notifyDataSetChanged();
+                        return true;
+                    }
+                });
 
-                    dialog.show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                UtilityClass.hideKeyboard(MasterSyncActivity.this);
+                listView.setOnItemClickListener((adapterView, view1, position, l) -> {
+                    String selectedHq = listView.getItemAtPosition(position).toString();
+                    binding.hqName.setText(selectedHq);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
+                                rsf = jsonObject.getString("id");
+                                //myresource
+                                prepareArray(rsf); // replace the new rsf value
+                                masterSyncAll(true);
+                                break;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    dialog.dismiss();
+                });
+
+                alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+
+                dialog.show();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            UtilityClass.hideKeyboard(MasterSyncActivity.this);
         });
 
         binding.listedDr.setOnClickListener(new SafeClickListener() {
@@ -380,7 +387,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.listedDr);
-                    binding.childSync.setText("Sync "+SharedPref.getDrCap(MasterSyncActivity.this));
+                    binding.childSync.setText("Sync " + SharedPref.getDrCap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(doctorModelArray);
@@ -394,7 +401,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.chemist);
-                    binding.childSync.setText("Sync "+SharedPref.getChmCap(MasterSyncActivity.this));
+                    binding.childSync.setText("Sync " + SharedPref.getChmCap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(chemistModelArray);
@@ -408,7 +415,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.stockiest);
-                    binding.childSync.setText("Sync "+SharedPref.getStkCap(MasterSyncActivity.this));
+                    binding.childSync.setText("Sync " + SharedPref.getStkCap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(stockiestModelArray);
@@ -422,7 +429,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.unlistedDoctor);
-                    binding.childSync.setText("Sync "+SharedPref.getUNLcap(MasterSyncActivity.this));
+                    binding.childSync.setText("Sync " + SharedPref.getUNLcap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(unlistedDrModelArray);
@@ -436,7 +443,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.hospital);
-                    binding.childSync.setText("Sync "+SharedPref.getHospCaption(MasterSyncActivity.this));
+                    binding.childSync.setText("Sync " + SharedPref.getHospCaption(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(hospitalModelArray);
@@ -451,7 +458,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.cip);
-                    binding.childSync.setText("Sync "+SharedPref.getCipCaption(MasterSyncActivity.this));
+                    binding.childSync.setText("Sync " + SharedPref.getCipCaption(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(cipModelArray);
@@ -493,7 +500,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.cluster);
-                    binding.childSync.setText("Sync "+SharedPref.getClusterCap(MasterSyncActivity.this));
+                    binding.childSync.setText("Sync " + SharedPref.getClusterCap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(clusterModelArray);
@@ -534,7 +541,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.activity);
-                    binding.childSync.setText("Sync "+SharedPref.getActivityCap(MasterSyncActivity.this));
+                    binding.childSync.setText("Sync " + SharedPref.getActivityCap(MasterSyncActivity.this));
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(activityModelArray);
                     populateAdapter(arrayForAdapter);
@@ -852,7 +859,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
             binding.syncFailedImageOther.setVisibility(View.VISIBLE);
         }
-        if(profileStatus == 1){
+        if (profileStatus == 1) {
             binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
         }
         if (setupStatus == 1) {
@@ -882,8 +889,8 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void checkAndSetStatus(MasterSyncItemModel masterSyncItemModel) {
         if (masterSyncItemModel.getSyncSuccess() == 2) {
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                  /*  masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||*/
-                  /*  masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||*/
+                    /*  masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||*/
+                    /*  masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
@@ -902,12 +909,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                     binding.syncFailedImageDr.setVisibility(View.GONE);
                 }
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||*/
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||*/
+                    /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||*/
+                    /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
                 chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
-              /*  chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + rsf);*/
-              /*  chemistGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + rsf);*/
+                /*  chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + rsf);*/
+                /*  chemistGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + rsf);*/
                 chemistCategoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY_CHEMIST);
                 if (chemistStatus == 1 || chemistGeoStatus == 1 || chemistCategoryStatus == 1) {
                     binding.syncFailedImageChm.setVisibility(View.VISIBLE);
@@ -918,11 +925,10 @@ public class MasterSyncActivity extends AppCompatActivity {
 /*
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
 */
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")*/)
-            {
+                /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")*/) {
                 stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
                 /*  stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_MAS + rsf);*/
-              /*  stockiestGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_GEO + rsf);*/
+                /*  stockiestGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_GEO + rsf);*/
                 if (stockiestStatus == 1 || stockiestGeoStatus == 1) {
                     binding.syncFailedImageStk.setVisibility(View.VISIBLE);
                 } else {
@@ -930,7 +936,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") /*||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||*/
-                    /*masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")*/) {
+                /*masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")*/) {
                 unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
 //                unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
 //                unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
@@ -1092,9 +1098,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserdetails")) {
                 profileStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROFILE);
-                if(profileStatus == 1){
+                if (profileStatus == 1) {
                     binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     binding.syncFailedImageProfile.setVisibility(View.GONE);
                 }
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
@@ -1107,8 +1113,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         } else if (masterSyncItemModel.getSyncSuccess() == 1) {
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||*/
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||*/
+                    /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||*/
+                    /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
@@ -1116,21 +1122,21 @@ public class MasterSyncActivity extends AppCompatActivity {
                 binding.syncFailedImageDr.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||*/
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||*/
+                    /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||*/
+                    /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||*/
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
                 binding.syncFailedImageChm.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist")
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||*/
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")*/
-            ){
+                /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||*/
+                /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")*/
+            ) {
                 binding.syncFailedImageStk.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr")
-                 /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||*/
-                 /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")*/
-        ) {
+                /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||*/
+                /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")*/
+            ) {
                 binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
@@ -1235,43 +1241,43 @@ public class MasterSyncActivity extends AppCompatActivity {
             doctorModelArray.add(cat);
             //  doctorModelArray.add(dep);
             doctorModelArray.add(clas);*/
-                MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
-                MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
-                MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
-                MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
-                //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
-                MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
-                doctorModelArray.add(doctorModel);
-                doctorModelArray.add(spl);
-                doctorModelArray.add(ql);
-                doctorModelArray.add(cat);
-                //  doctorModelArray.add(dep);
-                doctorModelArray.add(clas);
+            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
+            MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
+            MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
+            MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
+            //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
+            MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
+            doctorModelArray.add(doctorModel);
+            doctorModelArray.add(spl);
+            doctorModelArray.add(ql);
+            doctorModelArray.add(cat);
+            //  doctorModelArray.add(dep);
+            doctorModelArray.add(clas);
 
         } else binding.listedDr.setVisibility(View.GONE);
 
         //Chemist
         chemistModelArray.clear();
         if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
-           /* MasterSyncItemModel cheMas = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);*/
-           /* MasterSyncItemModel cheGeo = new MasterSyncItemModel(SharedPref.getChmCap(this)+" Geo", Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);*/
+            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+            /* MasterSyncItemModel cheMas = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);*/
+            /* MasterSyncItemModel cheGeo = new MasterSyncItemModel(SharedPref.getChmCap(this)+" Geo", Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);*/
 /*
             MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
 */
             MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
             chemistModelArray.add(cheModel);
-        /*    chemistModelArray.add(cheMas);*/
-        /*    chemistModelArray.add(cheGeo);*/
+            /*    chemistModelArray.add(cheMas);*/
+            /*    chemistModelArray.add(cheGeo);*/
             chemistModelArray.add(chemistCategory);
         } else binding.chemist.setVisibility(View.GONE);
 
         //Stockiest
         stockiestModelArray.clear();
         if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this),Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
-           /* MasterSyncItemModel stock_mas = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, stockiestStatus, false);*/
-           /* MasterSyncItemModel stock_geo = new MasterSyncItemModel(SharedPref.getStkCap(this)+" Geo", Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode, stockiestGeoStatus, false);*/
+            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
+            /* MasterSyncItemModel stock_mas = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, stockiestStatus, false);*/
+            /* MasterSyncItemModel stock_geo = new MasterSyncItemModel(SharedPref.getStkCap(this)+" Geo", Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode, stockiestGeoStatus, false);*/
             stockiestModelArray.add(stockModel);
 //            stockiestModelArray.add(stock_mas);
 //            stockiestModelArray.add(stock_geo);
@@ -1280,9 +1286,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Unlisted Dr
         unlistedDrModelArray.clear();
         if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this),  Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
-           // MasterSyncItemModel unList_mas = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, unlistedDrStatus, false);
-           // MasterSyncItemModel unList_geo = new MasterSyncItemModel(SharedPref.getUNLcap(this)+" Geo", Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, unlistedDrGeoStatus, false);
+            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
+            // MasterSyncItemModel unList_mas = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, unlistedDrStatus, false);
+            // MasterSyncItemModel unList_geo = new MasterSyncItemModel(SharedPref.getUNLcap(this)+" Geo", Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, unlistedDrGeoStatus, false);
 
             unlistedDrModelArray.add(unListModel);
 //            unlistedDrModelArray.add(unList_mas);
@@ -1348,10 +1354,10 @@ public class MasterSyncActivity extends AppCompatActivity {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
 
         } else {
-            if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1") || (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2") && SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0"))){
+            if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1") || (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2") && SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0"))) {
 //                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
                 myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
-            }else {
+            } else {
 //                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
                 myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
             }
@@ -1566,7 +1572,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
                         } else if (binding.Other.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), otherModelArray, position);
-                        }else if (binding.Profile.isSelected()) {
+                        } else if (binding.Profile.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), profileModelArray, position);
                         } else if (binding.setup.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
@@ -1631,7 +1637,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             populateAdapter(subordinateModelArray);
         } else if (binding.Other.isSelected()) {
             populateAdapter(otherModelArray);
-        }else if (binding.Profile.isSelected()) {
+        } else if (binding.Profile.isSelected()) {
             populateAdapter(profileModelArray);
         } else if (binding.setup.isSelected()) {
             populateAdapter(setupModelArray);
@@ -1793,7 +1799,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             if (masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
                 mapString.put("axn", "table/dcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            }else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
                 mapString.put("axn", "table/subordinates");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {

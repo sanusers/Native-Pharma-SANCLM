@@ -118,6 +118,9 @@ public class HQSelector {
         TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
         ListView listView = dialogView.findViewById(R.id.listView);
         SearchView searchView = dialogView.findViewById(R.id.searchET);
+        searchView.setIconified(false);
+        searchView.setIconifiedByDefault(false);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
 
         headerTxt.setText(fragment.getResources().getText(R.string.select_hq));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(fragment.requireContext(), android.R.layout.simple_list_item_1, new ArrayList<>(list));
