@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/_110sdp"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="@dimen/_2sdp"
+    app:cardElevation="@dimen/_1sdp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/popup_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_darkpurple_sharp_bottom_end">
+
+            <TextView
+                android:id="@+id/tv_head"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:padding="@dimen/_3sdp"
+                android:text="@string/timeline"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_5ssp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/img_close"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_alignTop="@id/tv_head"
+                android:layout_alignBottom="@id/tv_head"
+                android:layout_alignParentEnd="true"
+                android:padding="@dimen/_2sdp"
+                app:tint="@color/white"
+                android:src="@drawable/img_close"
+                tools:ignore="ContentDescription" />
+
+            <View
+                android:id="@+id/view_dummy"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:layout_below="@id/tv_head"
+                android:background="@color/red_60" />
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/view_dummy"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:textAlignment="textStart"
+                android:paddingVertical="@dimen/_2sdp"
+                android:visibility="visible"
+                tools:text="4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_4ssp" />
+
+            <TextView
+                android:id="@+id/meters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/address"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:textAlignment="textStart"
+                android:layout_marginBottom="@dimen/_4sdp"
+                android:visibility="visible"
+                tools:text="500 meters"
+                android:textColor="@color/red_60"
+                android:textSize="@dimen/_5ssp" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_6sdp"
+            android:layout_alignEnd="@id/popup_layout"
+            android:layout_below="@id/popup_layout"
+            android:src="@drawable/pointer" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

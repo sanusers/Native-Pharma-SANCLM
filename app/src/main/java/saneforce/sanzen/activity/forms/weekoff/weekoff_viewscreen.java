@@ -50,8 +50,8 @@ public class weekoff_viewscreen extends AppCompatActivity {
         //create viewpager adapter
         //here we will create inner class for adapter
         formsviewpager  = new forms_viewpager(getSupportFragmentManager(), 0);        //add fragments and set the adapter
-        formsviewpager.addFragment(holidayfragment,"Holiday");
-        formsviewpager.addFragment(weekofffragment,"Weekly Off");
+        formsviewpager.addFragment(holidayfragment, getString(R.string.holiday));
+        formsviewpager.addFragment(weekofffragment, getString(R.string.weekly_off));
         viewPager.setAdapter(formsviewpager);        //set the icons
         tabLayout.getTabAt(0);
         tabLayout.getTabAt(1);

@@ -1593,9 +1593,9 @@ public class TourPlanActivity extends AppCompatActivity {
             JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
             for (int i = 0; i < workTypeArray1.length(); i++) {
                 JSONObject jsonObject = workTypeArray1.getJSONObject(i);
-                if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
+                if (jsonObject.getString("FWFlg").equalsIgnoreCase("W"))
                     weeklyOffWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
+                else if (jsonObject.getString("FWFlg").equalsIgnoreCase("H"))
                     holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
             }
         } catch (JSONException e) {
@@ -1717,9 +1717,9 @@ public class TourPlanActivity extends AppCompatActivity {
             JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
             for (int i = 0; i < workTypeArray1.length(); i++) {
                 JSONObject jsonObject = workTypeArray1.getJSONObject(i);
-                if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
+                if (jsonObject.getString("FWFlg").equalsIgnoreCase("W"))
                     weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
+                else if (jsonObject.getString("FWFlg").equalsIgnoreCase("H"))
                     holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
             }
 
@@ -2357,11 +2357,11 @@ public class TourPlanActivity extends AppCompatActivity {
         addSaveBtnLayout.setVisibility(View.GONE);
         clrSaveBtnLayout.setVisibility(View.GONE);
         binding.tpNavigation.editLayout.setVisibility(View.GONE);
-        if (modelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Weekly Off")) {
+        if (modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
             if (weeklyOffEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
             }
-        } else if (modelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Holiday")) {
+        } else if (modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
             if (holidayEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
             }
@@ -2380,13 +2380,13 @@ public class TourPlanActivity extends AppCompatActivity {
 
         addSaveBtnLayout.setVisibility(View.GONE);
         clrSaveBtnLayout.setVisibility(View.GONE);
-        if (oneBuildModelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Weekly Off")) {
+        if (oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
             if (weeklyOffEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
             } else {
                 binding.tpNavigation.editLayout.setVisibility(View.GONE);
             }
-        } else if (oneBuildModelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Holiday")) {
+        } else if (oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
             if (holidayEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
             } else {
