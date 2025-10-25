@@ -225,8 +225,16 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                         showImage(callCaptureImageList.getImg_view());
                                         progressBar.dismiss();
                                     }
+                                }else{
+                                    if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+                                        ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
+                                        progressBar.dismiss();
+                                    }else {
+                                        ShowImageEdit(callCaptureImageList.getSystemImgName());
+                                        progressBar.dismiss();
+                                    }
                                 }
-                            } else {
+                            }else {
                                 progressBar.dismiss();
                                 new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
                             }

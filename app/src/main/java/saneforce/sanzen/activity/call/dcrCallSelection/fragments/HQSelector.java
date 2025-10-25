@@ -57,9 +57,9 @@ public class HQSelector {
     }
 
     private static void setupClickForOneBuild(Fragment fragment, TextView tv_hqName, ImageView img_drop_down, MasterDataDao masterDataDao, LayoutInflater inflater, OnHQChangeListener hqChangeListener) {
-        tv_hqName.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        tv_hqName.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                     ArrayList<String> list = new ArrayList<>();
@@ -79,14 +79,14 @@ public class HQSelector {
                     e.printStackTrace();
                 }
                 UtilityClass.hideKeyboard(fragment.requireActivity());
-            }
+//            }
         });
     }
 
     private static void setupClickForMultiHQ(Fragment fragment, TextView tv_hqName, MasterDataDao masterDataDao, LayoutInflater inflater, OnHQChangeListener hqChangeListener) {
-        tv_hqName.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        tv_hqName.setOnClickListener(view ->  {
+//            @Override
+//            public void onSafeClick(View view) {
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                     ArrayList<String> list = new ArrayList<>();
@@ -106,7 +106,7 @@ public class HQSelector {
                     e.printStackTrace();
                 }
                 UtilityClass.hideKeyboard(fragment.requireActivity());
-            }
+//            }
         });
     }
 

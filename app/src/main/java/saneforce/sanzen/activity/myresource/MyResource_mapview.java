@@ -3,13 +3,13 @@ package saneforce.sanzen.activity.myresource;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 
 import static saneforce.sanzen.activity.map.MapsActivity.BitmapFromVector;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -75,12 +75,13 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
+    Context context;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMyResourceMapviewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        context = this;
         gpsTrack = new GPSTrack(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
