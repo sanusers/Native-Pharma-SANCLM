@@ -1058,9 +1058,11 @@ public class TourPlanActivity extends AppCompatActivity {
                             String hqName = "";
                             ArrayList<String> hqCodes = new ArrayList<>();
                             ArrayList<String> hqNames = new ArrayList<>();
+                            ArrayList<String> hqNamesDup = new ArrayList<>();
                             for (ModelClass.SessionList.SubClass subClass: modelClass.getHQs()) {
                                 hqCodes.add(subClass.getCode());
                                 hqNames.add(subClass.getName());
+                                hqNamesDup.add(subClass.getName());
                             }
                             for (int k = 0; k < modelClass.getClusters().size(); k++) {
                                 MultiHQHeaderModelClass multiHQHeaderModelClass = modelClass.getClusters().get(k);
@@ -1092,7 +1094,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 hqName = hqNames.get(0);
                             }
 
-                            if (isClusterNotSelectedForHQ) {
+                            if (isClusterNotSelectedForHQ && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Select any " + SharedPref.getClusterCap(context) + " for " + hqName);
@@ -1127,12 +1129,15 @@ public class TourPlanActivity extends AppCompatActivity {
                                             try {
                                                 int drsCount = 0;
                                                 for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
-                                                    drsCount += multiHQHeaderModelClass.getItemsList().size();
+                                                    drsCount = multiHQHeaderModelClass.getItemsList().size();
+                                                    if (drsCount > Integer.parseInt(maxDrCount)) {
+                                                        isEmpty = true;
+                                                        position = i;
+                                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                        break;
+                                                    }
                                                 }
-                                                if (drsCount > Integer.parseInt(maxDrCount)) {
-                                                    isEmpty = true;
-                                                    position = i;
-                                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                if (isEmpty) {
                                                     break;
                                                 }
                                             } catch (Exception e) {
@@ -1141,34 +1146,86 @@ public class TourPlanActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                    checkList = new ArrayList<>();
+                                    HashMap<String, ArrayList<MultiHQItemModelClass>> hqData = new HashMap<>();
                                     for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
-                                        checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                        if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                            dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                        }
+                                        if (dataList != null) {
+                                            dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        }
+                                        hqData.put(multiHQHeaderModelClass.getName(), dataList);
                                     }
                                     for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getChemists()) {
-                                        checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                        if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                            dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                        }
+                                        if (dataList != null) {
+                                            dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        }
+                                        hqData.put(multiHQHeaderModelClass.getName(), dataList);
                                     }
                                     for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getStockiests()) {
-                                        checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                        if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                            dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                        }
+                                        if (dataList != null) {
+                                            dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        }
+                                        hqData.put(multiHQHeaderModelClass.getName(), dataList);
                                     }
                                     for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getUnListedDrs()) {
-                                        checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                        if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                            dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                        }
+                                        if (dataList != null) {
+                                            dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        }
+                                        hqData.put(multiHQHeaderModelClass.getName(), dataList);
                                     }
                                     for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getCips()) {
-                                        checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                        if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                            dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                        }
+                                        if (dataList != null) {
+                                            dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        }
+                                        hqData.put(multiHQHeaderModelClass.getName(), dataList);
                                     }
                                     for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getHospitals()) {
-                                        checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                        if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                            dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                        }
+                                        if (dataList != null) {
+                                            dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                        }
+                                        hqData.put(multiHQHeaderModelClass.getName(), dataList);
                                     }
 
-                                    if ((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())
-                                            || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")
-                                            && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")
-                                            && checkList.isEmpty())) {
+                                    if ((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + " " + (i + 1));
                                         break;
+                                    } else if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")
+                                            && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+                                        for (String hq : hqNamesDup) {
+                                            if (!hqData.containsKey(hq) || hqData.get(hq).isEmpty()) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " for " + hq + " " + getString(R.string.in_session) + " " + (i + 1));
+                                                break;
+                                            }
+                                        }
+                                        if (isEmpty) {
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -1197,12 +1254,15 @@ public class TourPlanActivity extends AppCompatActivity {
                                         try {
                                             int drsCount = 0;
                                             for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
-                                                drsCount += multiHQHeaderModelClass.getItemsList().size();
+                                                drsCount = multiHQHeaderModelClass.getItemsList().size();
+                                                if (drsCount > Integer.parseInt(maxDrCount)) {
+                                                    isEmpty = true;
+                                                    position = i;
+                                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                    break;
+                                                }
                                             }
-                                            if (drsCount > Integer.parseInt(maxDrCount)) {
-                                                isEmpty = true;
-                                                position = i;
-                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                            if (isEmpty) {
                                                 break;
                                             }
                                         } catch (Exception e) {
@@ -1211,32 +1271,91 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                ArrayList<MultiHQItemModelClass> checkList = new ArrayList<>();
-                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
-                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
-                                }
-                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getChemists()) {
-                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
-                                }
-                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getStockiests()) {
-                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
-                                }
-                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getUnListedDrs()) {
-                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
-                                }
-                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getCips()) {
-                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
-                                }
-                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getHospitals()) {
-                                    checkList.addAll(multiHQHeaderModelClass.getItemsList());
+                                ArrayList<String> hqNamesDup = new ArrayList<>();
+                                for (ModelClass.SessionList.SubClass subClass: modelClass.getHQs()) {
+                                    hqNamesDup.add(subClass.getName());
                                 }
 
-                                if ((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())
-                                        || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0") && checkList.isEmpty())) {
+                                HashMap<String, ArrayList<MultiHQItemModelClass>> hqData = new HashMap<>();
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
+                                    ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                    if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                        dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                    }
+                                    if (dataList != null) {
+                                        dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                    }
+                                    hqData.put(multiHQHeaderModelClass.getName(), dataList);
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getChemists()) {
+                                    ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                    if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                        dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                    }
+                                    if (dataList != null) {
+                                        dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                    }
+                                    hqData.put(multiHQHeaderModelClass.getName(), dataList);
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getStockiests()) {
+                                    ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                    if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                        dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                    }
+                                    if (dataList != null) {
+                                        dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                    }
+                                    hqData.put(multiHQHeaderModelClass.getName(), dataList);
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getUnListedDrs()) {
+                                    ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                    if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                        dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                    }
+                                    if (dataList != null) {
+                                        dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                    }
+                                    hqData.put(multiHQHeaderModelClass.getName(), dataList);
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getCips()) {
+                                    ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                    if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                        dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                    }
+                                    if (dataList != null) {
+                                        dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                    }
+                                    hqData.put(multiHQHeaderModelClass.getName(), dataList);
+                                }
+                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getHospitals()) {
+                                    ArrayList<MultiHQItemModelClass> dataList = new ArrayList<>();
+                                    if (hqData.containsKey(multiHQHeaderModelClass.getName())) {
+                                        dataList = hqData.get(multiHQHeaderModelClass.getName());
+                                    }
+                                    if (dataList != null) {
+                                        dataList.addAll(multiHQHeaderModelClass.getItemsList());
+                                    }
+                                    hqData.put(multiHQHeaderModelClass.getName(), dataList);
+                                }
+
+                                if ((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())) {
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + " " + (i + 1));
                                     break;
+                                } else if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")
+                                        && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+                                    for (String hq : hqNamesDup) {
+                                        if (!hqData.containsKey(hq) || hqData.get(hq).isEmpty()) {
+                                            isEmpty = true;
+                                            position = i;
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " for " + hq + " " + getString(R.string.in_session) + " " + (i + 1));
+                                            break;
+                                        }
+                                    }
+                                    if (isEmpty) {
+                                        break;
+                                    }
                                 }
                             }
                         }
