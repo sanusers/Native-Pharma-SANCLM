@@ -1406,6 +1406,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             String holidayName = findWTName("H");
                             commonUtilsMethods.showToastMessage(requireContext(), "Already " + holidayName + " has been submitted");
                         } else {
+                            if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
+                                commonUtilsMethods.showToastMessage(requireContext(), "Cannot add plan in Tour Plan based DCR!");
+                            }
                             DayPlanCount = "2";
                             binding.llDelete.setVisibility(View.VISIBLE);
                             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
@@ -1435,6 +1438,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if (DayPlanCount.equals("1")) {
                             binding.txtAddPlan.setEnabled(true);
                             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
+                            if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
+                                binding.txtAddPlan.setEnabled(false);
+                                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+                            }
                         } else if (DayPlanCount.equals("2")) {
                             binding.txtAddPlan.setEnabled(false);
                             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
@@ -5294,7 +5301,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         Button btn_save = dialogOptionSelection.findViewById(R.id.btn_save);
         heading.setText(R.string.alert);
         btn_save.setText(requireContext().getString(R.string.edit));
-        if (DayPlanCount.equals("2")) {
+        if (DayPlanCount.equals("2") && !isFromTP) {
             btn_clear.setText(requireContext().getString(R.string.delete));
             content.setText(String.format("%s %s", "Choose Edit/Delete session", sessionType));
         } else if (DayPlanCount.equals("1")) {
@@ -5633,6 +5640,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlheadquates1.setEnabled(false);
         binding.rlworkday1.setEnabled(false);
         binding.txtAddPlan.setEnabled(true);
+        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
+            binding.txtAddPlan.setEnabled(false);
+            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+        }
         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
         binding.txtSave.setEnabled(false);
         binding.flSession1.setVisibility(View.VISIBLE);
