@@ -276,6 +276,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
                         obj.optString("Category"),
                         obj.optString("Specialty"),
                         obj.optString("Doc_Class_ShortName")
+                        //obj.optString("DctrDOB")
                 );
                 switch (doctorType) {
                     case "2":
