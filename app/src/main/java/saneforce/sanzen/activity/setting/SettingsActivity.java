@@ -124,17 +124,17 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
-        binding.languageBtn.setOnClickListener(view -> {
-            Log.e("SettingsActivity", "Language button clicked!");
-
-            if (binding.languageListView.getVisibility() == View.VISIBLE) {
-//                binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.up_arrow_light_grey));
-                binding.languageListView.setVisibility(View.GONE);
-            } else {
-//                binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.down_arrow_light_grey));
-                binding.languageListView.setVisibility(View.VISIBLE);
-            }
-        });
+//        binding.languageBtn.setOnClickListener(view -> {
+//            Log.e("SettingsActivity", "Language button clicked!");
+//
+//            if (binding.languageListView.getVisibility() == View.VISIBLE) {
+////                binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.up_arrow_light_grey));
+//                binding.languageListView.setVisibility(View.GONE);
+//            } else {
+////                binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.down_arrow_light_grey));
+//                binding.languageListView.setVisibility(View.VISIBLE);
+//            }
+//        });
 
     }
 
@@ -381,17 +381,17 @@ private void SetUpLanguage() {
 //        binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
 //    }
 private void SelectedLanguage(String lang) {
-    SharedPref.saveSelectedLanguage(this, lang);
-    LocaleHelper.setLocale(getApplicationContext(), lang);
-
-    Locale myLocale = new Locale(lang);
-    Resources res = getResources();
-    DisplayMetrics dm = res.getDisplayMetrics();
-    Configuration conf = res.getConfiguration();
-    conf.setLocale(myLocale);
-    res.updateConfiguration(conf, dm);
-
-    binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
+//    SharedPref.saveSelectedLanguage(this, lang);
+//    LocaleHelper.setLocale(getApplicationContext(), lang);
+//
+//    Locale myLocale = new Locale(lang);
+//    Resources res = getResources();
+//    DisplayMetrics dm = res.getDisplayMetrics();
+//    Configuration conf = res.getConfiguration();
+//    conf.setLocale(myLocale);
+//    res.updateConfiguration(conf, dm);
+//
+//    binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
 }
 
 
