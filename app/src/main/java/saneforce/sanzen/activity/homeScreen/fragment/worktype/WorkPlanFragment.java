@@ -5301,7 +5301,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         Button btn_save = dialogOptionSelection.findViewById(R.id.btn_save);
         heading.setText(R.string.alert);
         btn_save.setText(requireContext().getString(R.string.edit));
-        if (DayPlanCount.equals("2") && !isFromTP) {
+        if (DayPlanCount.equals("2")) {
             btn_clear.setText(requireContext().getString(R.string.delete));
             content.setText(String.format("%s %s", "Choose Edit/Delete session", sessionType));
         } else if (DayPlanCount.equals("1")) {
@@ -5320,8 +5320,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_clear.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                dialogEditOrDeleteConfirmation(sessionType, "Delete");
-                dialogOptionSelection.dismiss();
+                if (isFromTP) {
+                    commonUtilsMethods.showToastMessage(requireContext(), "Save Work Plan to delete session " + sessionType);
+                    dialogOptionSelection.dismiss();
+                } else {
+                    dialogEditOrDeleteConfirmation(sessionType, "Delete");
+                    dialogOptionSelection.dismiss();
+                }
             }
         });
         iv_close.setOnClickListener(new SafeClickListener() {
