@@ -4841,15 +4841,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void checkAndClearCalls() {
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
-            JSONArray resultArray = new JSONArray();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (HomeDashBoard.selectedDate != null && !jsonObject.getString("Dcr_dt").equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString())) || jsonObject.optString("CustType").equalsIgnoreCase("0")) {
-                    resultArray.put(jsonArray.optJSONObject(i));
+            if (!HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+                JSONArray resultArray = new JSONArray();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if (!(jsonObject.getString("Dcr_dt").equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString())) && !jsonObject.optString("CustType").equalsIgnoreCase("0"))) {
+                        resultArray.put(jsonArray.optJSONObject(i));
+                    }
                 }
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, resultArray.toString(), 2));
             }
-            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, resultArray.toString(), 2));
         } catch (Exception e) {
             e.printStackTrace();
         }
