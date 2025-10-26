@@ -174,15 +174,19 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/_4sdp">
 
-                                <Spinner
-                                    android:id="@+id/spinnerLanguage"
+                                <TextView
+                                    android:id="@+id/language_btn"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/edittext_stroke"
-                                    android:gravity="center|start" />
+                                    android:focusable="true"
+                                    android:padding="@dimen/_7sdp"
+                                    android:gravity="center|start"
+                                    android:clickable="true"/>
 
                                 <ImageView
-                                    android:visibility="gone"
+                                    android:id="@+id/drop_down"
+                                    android:visibility="visible"
                                     android:layout_width="@dimen/_7sdp"
                                     android:layout_height="@dimen/_4sdp"
                                     android:layout_alignParentEnd="true"
@@ -190,6 +194,17 @@
                                     android:layout_marginEnd="@dimen/_6sdp"
                                     android:background="@drawable/arrow_down"
                                     tools:ignore="ContentDescription" />
+
+                                <ListView
+                                    android:id="@+id/languageListView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/language_btn"
+                                    android:background="@drawable/recyclerview_shape"
+                                    android:divider="#808080"
+                                    android:dividerHeight="0.2dp"
+                                    android:visibility="gone" />
+
 
                             </RelativeLayout>
 
