@@ -3,18 +3,32 @@ package saneforce.sanzen.activity.reports.visitMonitor;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import saneforce.sanzen.activity.reports.missedReport.MissedReportItem;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.VisitStatsAdapter;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -24,6 +38,7 @@ import saneforce.sanzen.databinding.ActivityVisitMonitorBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class VisitMonitorActivity extends AppCompatActivity {
     private RoomDB roomDB;
@@ -45,29 +60,26 @@ public class VisitMonitorActivity extends AppCompatActivity {
         loadFragment(new AsOnCallsFragment());
 
         binding.note.findViewById(R.id.note);
-        binding.searchCust.findViewById(R.id.search_cust);
 
         backArrow.setOnClickListener(view -> {
             getOnBackPressedDispatcher().onBackPressed();
         });
 
-        binding.calendarLyt.findViewById(R.id.calendar_lyt);
+
 
 
         binding.self.setOnClickListener(view -> {
             selectedTab = "As on Calls";
-            binding.searchCust.setVisibility(View.GONE);
             binding.note.setVisibility(View.VISIBLE);
-            binding.calendarLyt.setVisibility(View.GONE);
+            binding.tvNote.setText("Sync to get Live Data!");
             updateReportUi();
             loadFragment(new AsOnCallsFragment());
         });
 
         binding.live.setOnClickListener(view -> {
             selectedTab = "Approved Calls";
-            binding.searchCust.setVisibility(View.VISIBLE);
-            binding.note.setVisibility(View.GONE);
-            binding.calendarLyt.setVisibility(View.VISIBLE);
+            binding.note.setVisibility(View.VISIBLE);
+            binding.tvNote.setText("You Are Live! Select Month to get Data");
             updateReportUi();
             loadFragment(new ApprovedCallsFragment());
         });

@@ -108,7 +108,7 @@ public class DoctorFragment extends Fragment {
         TextView callCvgCnt = view.findViewById(R.id.callCvgCnt);
 
 
-        barChart = view.findViewById(R.id.barChartVisit);
+        barChart = view.findViewById(R.id.in_chart_visit);
         pieChart = view.findViewById(R.id.pieChart_visit);
         pieChart.setVisibility(View.VISIBLE);
 
@@ -236,10 +236,10 @@ public class DoctorFragment extends Fragment {
         pieChart.setDrawEntryLabels(false);
 
         ArrayList<PieEntry> entries = new ArrayList<>();
-        if(oneVisit>0) entries.add(new PieEntry(oneVisit, "1 Visit"));
-        if(twoVisit>0)entries.add(new PieEntry(twoVisit, "2 Visits"));
-        if(threeVisit>0)entries.add(new PieEntry(threeVisit, "3 Visits"));
-        if(threePlusVisit>0)entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
+        entries.add(new PieEntry(oneVisit, "1 Visit"));
+        entries.add(new PieEntry(twoVisit, "2 Visits"));
+        entries.add(new PieEntry(threeVisit, "3 Visits"));
+        entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
 
         PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setSliceSpace(3f);
@@ -253,27 +253,27 @@ public class DoctorFragment extends Fragment {
         dataSet.setColors(colors);
 
         PieData data = new PieData(dataSet);
-
         data.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return String.valueOf((int) value);
+                return value == 0 ? "" : String.valueOf((int) value);
             }
         });
-
         data.setValueTextSize(20f);
-        data.setValueTextColor(requireContext().getResources().getColor(R.color.black));
+        data.setValueTextColor(requireContext().getResources().getColor(R.color.bg_lit_white));
 
         pieChart.setData(data);
 
-        Legend l = pieChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(0f);
-        l.setYOffset(0f);
+        Legend legend = pieChart.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setDrawInside(false);
+        legend.setXEntrySpace(7f);
+        legend.setYEntrySpace(0f);
+        legend.setYOffset(0f);
+        legend.setWordWrapEnabled(true);
+        legend.setForm(Legend.LegendForm.CIRCLE);
 
         pieChart.animateY(1400);
         pieChart.invalidate();

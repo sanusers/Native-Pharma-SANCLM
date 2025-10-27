@@ -209,29 +209,29 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     switch (isFromActivity) {
                         case "new":
                             showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
-                            progressBar.dismiss();
+//                            progressBar.dismiss();
                             break;
                         case "edit_local":
                             showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
-                            progressBar.dismiss();
+//                            progressBar.dismiss();
                             break;
                         case "edit_online":
                             if (UtilityClass.isNetworkAvailable(context)) {
                                 if (callCaptureImageList.isNewlyAdded()) {
                                     if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }else {
                                         showImage(callCaptureImageList.getImg_view());
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }
                                 }else{
                                     if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }else {
                                         ShowImageEdit(callCaptureImageList.getSystemImgName());
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }
                                 }
                             } else {
@@ -258,14 +258,14 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                 }
                                 if (callCaptureImageList.isNewlyAdded()) {
                                     showImage(callCaptureImageList.getImg_view());
-                                    progressBar.dismiss();
+//                                    progressBar.dismiss();
                                 } else {
                                     if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }else {
                                         ShowImageEdit(callCaptureImageList.getSystemImgName());
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }
                                 }
                             } else {

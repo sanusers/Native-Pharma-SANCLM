@@ -92,7 +92,7 @@ public class UnlistedVisitFragment extends Fragment {
         TextView callCvgCnt = view.findViewById(R.id.callCvgCnt);
         ImageView unlistedImage = view.findViewById(R.id.custImg);
 
-        barChart  = view.findViewById(R.id.barChartVisit);
+        barChart  = view.findViewById(R.id.in_chart_visit);
 
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();

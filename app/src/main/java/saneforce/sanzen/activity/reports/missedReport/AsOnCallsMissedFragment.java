@@ -49,7 +49,9 @@ public class AsOnCallsMissedFragment extends Fragment {
     int uniqueUnlistedCurrentMonth,totalUnlisted,currentMonthMissedUnlisted;
     int visitedUnlistedCurrentMonth;
     int previousMonthMissedUnlisted,visitedUnlistedPreviousMonth,prePreviousMonthMissedUnlisted,uniqueUnlistedPreviousMonth;
+    int uniqueDoctorsPre_PrevMonth,uniqueChemistPre_PrevMonth,uniqueStockiestPre_PrevMonth,uniqueUnlistedPre_PrevMonth,visitedDoctorsPre_PrevMonth,visitedChemistPre_PrevMonth,visitedStockistPre_PrevMonth,visitedUnlistedPre_PrevMonth;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -58,9 +60,7 @@ public class AsOnCallsMissedFragment extends Fragment {
         sfCode = SharedPref.getSfCode(requireContext());
         date = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5);
         TextView name = v.findViewById(R.id.Name);
-        name.setText(SharedPref.getSfName(requireContext()) + " - " +
-                SharedPref.getDsName(requireContext()) + " - " +
-                SharedPref.getHqNameMain(requireContext()));
+        name.setText(SharedPref.getSfName(requireContext()) + " - " + SharedPref.getDsName(requireContext()) + " - " + SharedPref.getHqNameMain(requireContext()));
 
         recyclerView = v.findViewById(R.id.recyclerDoctorMissedReports);
         roomDB = RoomDB.getDatabase(requireContext());
@@ -81,43 +81,45 @@ public class AsOnCallsMissedFragment extends Fragment {
             VisitFilter.MonthlyStats previousMonthStats = monthlyData.get("previous");
             VisitFilter.MonthlyStats prePreviousMonthStats = monthlyData.get("prePrevious");
 
-            // Example: Get the number of unique doctors visited in the current month
+
             uniqueDoctorsCurrentMonth = currentMonthStats.uniqueDoctors.size();
             uniqueDoctorsPreviousMonth = previousMonthStats.uniqueDoctors.size();
-            int uniqueDoctorsPre_PrevMonth = prePreviousMonthStats.uniqueDoctors.size();
+             uniqueDoctorsPre_PrevMonth = prePreviousMonthStats.uniqueDoctors.size();
 
             uniqueChemistCurrentMonth = currentMonthStats.uniqueChemists.size();
             uniqueChemistPreviousMonth = previousMonthStats.uniqueChemists.size();
-            int uniqueChemistPre_PrevMonth = prePreviousMonthStats.uniqueChemists.size();
+            uniqueChemistPre_PrevMonth = prePreviousMonthStats.uniqueChemists.size();
 
             uniqueStockistCurrentMonth = currentMonthStats.uniqueStockiest.size();
             uniqueStockistPreviousMonth = previousMonthStats.uniqueStockiest.size();
-            int uniqueStockiestPre_PrevMonth = previousMonthStats.uniqueStockiest.size();
+            uniqueStockiestPre_PrevMonth = prePreviousMonthStats.uniqueStockiest.size();
 
             uniqueUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
-            uniqueUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
-            int uniqueUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
+            uniqueUnlistedPreviousMonth = previousMonthStats.uniqueUnlisted.size();
+            uniqueUnlistedPre_PrevMonth = prePreviousMonthStats.uniqueUnlisted.size();
 
             //added total doctor
 
             totalDoctors = 0;
             visitedDoctorsPreviousMonth = 0;
-            int visitedDoctorsPre_PrevMonth = 0;
+             visitedDoctorsPre_PrevMonth = 0;
 
 
             //added total visit
             totalChemist = 0;
             visitedChemistPreviousMonth = 0;
-            int visitedChemistPre_PrevMonth = 0;
+            visitedChemistPre_PrevMonth = 0;
 
             //added totalstockiest
             totalStockist = 0;
             visitedStockistPreviousMonth = 0;
-            int visitedStockistPre_PrevMonth = 0;
+            visitedStockistPre_PrevMonth = 0;
 
             //total unlisted
             totalUnlisted = 0;
             visitedUnlistedPreviousMonth = 0;
+            visitedUnlistedPre_PrevMonth = 0;
+
             visitedDoctorsCurrentMonth = currentMonthStats.uniqueDoctors.size();
             visitedDoctorsPreviousMonth = previousMonthStats.uniqueDoctors.size();
             visitedDoctorsPre_PrevMonth = prePreviousMonthStats.uniqueDoctors.size();
@@ -128,11 +130,11 @@ public class AsOnCallsMissedFragment extends Fragment {
 
             visitedStockistCurrentMonth = currentMonthStats.uniqueStockiest.size();
             visitedStockistPreviousMonth = previousMonthStats.uniqueStockiest.size();
-            visitedStockistPre_PrevMonth = previousMonthStats.uniqueStockiest.size();
+            visitedStockistPre_PrevMonth = prePreviousMonthStats.uniqueStockiest.size();
 
             visitedUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
-            visitedUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
-            int visitedUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
+            visitedUnlistedPreviousMonth = previousMonthStats.uniqueUnlisted.size();
+            visitedUnlistedPre_PrevMonth = prePreviousMonthStats.uniqueUnlisted.size();
 
 
             //doctor

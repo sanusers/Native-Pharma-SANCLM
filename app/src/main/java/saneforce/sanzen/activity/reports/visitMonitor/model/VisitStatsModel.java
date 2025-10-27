@@ -39,6 +39,9 @@ public class VisitStatsModel implements Parcelable {
         this(totalCustomers, visitedCustomers, missedCustomers, fwDays, callAvg, coverage,
                 0, 0, 0, 0);
     }
+    public VisitStatsModel() {
+    }
+
 
     // Parcelable constructor
     protected VisitStatsModel(Parcel in) {
