@@ -546,13 +546,16 @@ public class DCRCallActivity extends AppCompatActivity {
 
             if(!JWOthersFragment.callCaptureImageLists.isEmpty()) {
                 for (int i = 0; i<JWOthersFragment.callCaptureImageLists.size(); i++) {
-
-                    callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
+                    if (!callCaptureImageLists.get(i).getFilePath().isEmpty() && !callCaptureImageLists.get(i).getSystemImgName().isEmpty()) {
+                        callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
+                    }
                 }
             }
             if(SignatureFragment1.callSignCaptureImage != null){
                 for (int i = 0; i< SignatureFragment1.callSignCaptureImage.size();i++){
-                    callOfflineSignDataDao.saveOfflineSign(SignatureFragment1.callSignCaptureImage.get(i).getImg_Name() ,SignatureFragment1.callSignCaptureImage.get(i).getFilepath(),jsonSign.toString(),Constants.WAITING_FOR_SYNC,0,HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)),CallActivityCustDetails.get(i).getCode(),CallActivityCustDetails.get(i).getName());
+                    if (!callSignCaptureImage.get(i).getFilepath().isEmpty() && !callSignCaptureImage.get(i).getImg_Name().isEmpty()) {
+                        callOfflineSignDataDao.saveOfflineSign(SignatureFragment1.callSignCaptureImage.get(i).getImg_Name(), SignatureFragment1.callSignCaptureImage.get(i).getFilepath(), jsonSign.toString(), Constants.WAITING_FOR_SYNC, 0, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(i).getCode(), CallActivityCustDetails.get(i).getName());
+                    }
                 }
             }
             UpdateInputStock();

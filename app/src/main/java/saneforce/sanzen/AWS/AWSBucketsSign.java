@@ -106,9 +106,13 @@ public class AWSBucketsSign {
                         if (TransferState.COMPLETED == state) {
                             Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath());
                             System.out.println("CHk_Data-->>" + bmp);
-                            S3DownloadFiles.fileDataAdd(pos, bmp);
+                            if (S3DownloadFiles != null) {
+                                S3DownloadFiles.fileDataAdd(pos, bmp);
+                            }
                         } else if (TransferState.FAILED == state) {
-                            S3DownloadFiles.onFailure(pos);
+                            if (S3DownloadFiles != null) {
+                                S3DownloadFiles.onFailure(pos);
+                            }
                             Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
                         }
                     }
