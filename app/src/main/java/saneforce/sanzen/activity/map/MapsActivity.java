@@ -2514,6 +2514,13 @@ private void updateMasterData(String selectedTab, String json) {
                                             fullScreenImage.setVisibility(View.GONE);
                                         }
                                     }
+
+                                    @Override
+                                    public void onFailure(int pos) {
+                                        Log.d("bitmap image", "image: " + "bitmap image is null");
+                                        commonUtilsMethods.showToastMessage(MapsActivity.this,"Image Not Found");
+                                        fullScreenImage.setVisibility(View.GONE);
+                                    }
                                 });
                             }
                             closeButton.setOnClickListener(new SafeClickListener() {

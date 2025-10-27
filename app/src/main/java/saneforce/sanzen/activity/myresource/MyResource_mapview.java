@@ -91,7 +91,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         limitKm = Double.parseDouble(SharedPref.getDisRad(this));
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        commonUtilsMethods = new CommonUtilsMethods(context);
 
         CurrentLat = gpsTrack.getLatitude();
         CurrentLong = gpsTrack.getLongitude();
@@ -311,6 +311,15 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                                         progressBar.setVisibility(View.GONE);
                                         dialog_fullScreen.dismiss();
                                     }
+                                }
+
+                                @Override
+                                public void onFailure(int pos) {
+                                    Log.d("bitmap image", "image: " + "bitmap image is null");
+                                    commonUtilsMethods.showToastMessage(context,"Image Not Found");
+                                    fullScreenImage.setVisibility(View.GONE);
+                                    progressBar.setVisibility(View.GONE);
+                                    dialog_fullScreen.dismiss();
                                 }
                             });
                             closeButton.setOnClickListener(view -> dialog_fullScreen.dismiss());

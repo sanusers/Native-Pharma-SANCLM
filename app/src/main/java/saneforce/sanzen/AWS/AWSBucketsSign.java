@@ -103,14 +103,14 @@ public class AWSBucketsSign {
                 image_upload.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
-//                        if (TransferState.COMPLETED == state) {
-//                            commonUtilsMethods.showToastMessage(context,"Upload Successful!");
-//
-//
-//
-//                        } else if (TransferState.FAILED == state) {
-//                            commonUtilsMethods.showToastMessage(context,"Upload Failed");
-//                        }
+                        if (TransferState.COMPLETED == state) {
+                            Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath());
+                            System.out.println("CHk_Data-->>" + bmp);
+                            S3DownloadFiles.fileDataAdd(pos, bmp);
+                        } else if (TransferState.FAILED == state) {
+                            S3DownloadFiles.onFailure(pos);
+                            Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
+                        }
                     }
 
                     @Override

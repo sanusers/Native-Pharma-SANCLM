@@ -32,6 +32,7 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.CallSignCaptureImageList;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -54,6 +55,7 @@ public class SignatureFragment1 extends Fragment {
     boolean delete;
     CallOfflineSignDataDao callOfflineSignDataDao;
     RoomDB roomDB;
+    CommonUtilsMethods commonUtilsMethods;
 
 
 
@@ -63,6 +65,7 @@ public class SignatureFragment1 extends Fragment {
         this.context = context;
         roomDB = RoomDB.getDatabase(context);
         callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
+        commonUtilsMethods = new CommonUtilsMethods(context);
         Log.d("SignatureFragment", "onAttach()");
     }
 
@@ -232,6 +235,12 @@ public class SignatureFragment1 extends Fragment {
 
                     }
 
+                }
+
+                @Override
+                public void onFailure(int pos) {
+                    Log.e("S3ImageLoad", "Failed to load image from S3: " + fileName + ", bitmap is null.");
+                    commonUtilsMethods.showToastMessage(context,"Image Not Found");
                 }
             });
         } else {

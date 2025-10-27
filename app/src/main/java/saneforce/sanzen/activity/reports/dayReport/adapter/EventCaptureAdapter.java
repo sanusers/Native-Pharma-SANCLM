@@ -26,6 +26,7 @@ import java.util.Objects;
 import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.storage.SharedPref;
@@ -34,10 +35,12 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
 
     Context context;
     ArrayList<EventCaptureModelClass> EventList = new ArrayList<>();
+    CommonUtilsMethods commonUtilsMethods;
 
     public EventCaptureAdapter(Context context, ArrayList<EventCaptureModelClass> EventList) {
         this.context = context;
         this.EventList = EventList;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -81,6 +84,14 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
                                 holder.progressBar.setVisibility(View.GONE);
                             }
                         }
+                    }
+
+                    @Override
+                    public void onFailure(int pos) {
+                        if(holder.progressBar != null) {
+                            holder.progressBar.setVisibility(View.GONE);
+                        }
+                        commonUtilsMethods.showToastMessage(context,"Image Not Found");
                     }
                 });
             }

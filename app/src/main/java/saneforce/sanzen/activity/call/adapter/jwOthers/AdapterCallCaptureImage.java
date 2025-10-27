@@ -55,12 +55,14 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     private RoomDB roomDB;
     private CallOfflineECDataDao callOfflineECDataDao;
     ProgressDialog progressBar;
+    CommonUtilsMethods commonUtilsMethods;
 
     public AdapterCallCaptureImage(Context context, ArrayList<CallCaptureImageList> callCaptureImageLists) {
         this.context = context;
         this.callCaptureImageLists = callCaptureImageLists;
         roomDB = RoomDB.getDatabase(context);
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -209,29 +211,29 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     switch (isFromActivity) {
                         case "new":
                             showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
-                            progressBar.dismiss();
+//                            progressBar.dismiss();
                             break;
                         case "edit_local":
                             showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
-                            progressBar.dismiss();
+//                            progressBar.dismiss();
                             break;
                         case "edit_online":
                             if (UtilityClass.isNetworkAvailable(context)) {
                                 if (callCaptureImageList.isNewlyAdded()) {
                                     if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }else {
                                         showImage(callCaptureImageList.getImg_view());
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }
                                 }else{
                                     if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }else {
                                         ShowImageEdit(callCaptureImageList.getSystemImgName());
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }
                                 }
                             }else {
@@ -244,11 +246,11 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     switch (isFromActivity) {
                         case "new":
                             showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
-                            progressBar.dismiss();
+//                            progressBar.dismiss();
                             break;
                         case "edit_local":
                             showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
-                            progressBar.dismiss();
+//                            progressBar.dismiss();
                             break;
                         case "edit_online":
                             if (UtilityClass.isNetworkAvailable(context)) {
@@ -258,14 +260,14 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                 }
                                 if (callCaptureImageList.isNewlyAdded()) {
                                     showImage(callCaptureImageList.getImg_view());
-                                    progressBar.dismiss();
+//                                    progressBar.dismiss();
                                 } else {
                                     if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }else {
                                         ShowImageEdit(callCaptureImageList.getSystemImgName());
-                                        progressBar.dismiss();
+//                                        progressBar.dismiss();
                                     }
                                 }
                             } else {
@@ -326,6 +328,8 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
             builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
             builder.show();
             progressBar.dismiss();
+        }else{
+            progressBar.dismiss();
         }
     }
 
@@ -348,6 +352,14 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     holder.img_view.setVisibility(View.GONE);
                     progressBar.dismiss();
                 }
+            }
+
+            @Override
+            public void onFailure(int pos) {
+                Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                commonUtilsMethods.showToastMessage(context,"Image Not Found");
+                holder.img_view.setVisibility(View.VISIBLE);
+                progressBar.dismiss();
             }
         });
     }

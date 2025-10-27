@@ -69,6 +69,7 @@ public class AWSBuckets {
                             System.out.println("CHk_Data-->>" + bmp);
                             S3DownloadFiles.fileDataAdd(pos, bmp);
                         } else if (TransferState.FAILED == state) {
+                            S3DownloadFiles.onFailure(pos);
                             Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
                         }
                     }

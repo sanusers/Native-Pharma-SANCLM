@@ -34,11 +34,13 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
 
     ArrayList<EventCaptureModelClass>  List;
     Context context;
+    CommonUtilsMethods commonUtilsMethods;
 
     ProgressDialog progressDialog;
     public EventDetailsCapture(ArrayList<EventCaptureModelClass> list, Context context) {
         List = list;
         this.context = context;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -97,6 +99,13 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
                                      Log.d("bitmap image", "Failed to load image, bitmap is null.");
                                      holder.Imageview.setVisibility(View.GONE);
                                  }
+                             }
+
+                             @Override
+                             public void onFailure(int pos) {
+                                 Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                                 commonUtilsMethods.showToastMessage(context,"Image Not Found");
+                                 holder.Imageview.setVisibility(View.VISIBLE);
                              }
                          });
                      }

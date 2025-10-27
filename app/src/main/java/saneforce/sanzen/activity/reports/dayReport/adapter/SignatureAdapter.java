@@ -20,6 +20,7 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.model.SignatureModelClass;
 import saneforce.sanzen.storage.SharedPref;
@@ -27,10 +28,12 @@ import saneforce.sanzen.storage.SharedPref;
     public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.Viewholder>{
     Context context;
     ArrayList<SignatureModelClass> SignatureData = new ArrayList<>();
+    CommonUtilsMethods commonUtilsMethods;
 
     public SignatureAdapter(Context context, ArrayList<SignatureModelClass> signatureData) {
         this.context = context;
         SignatureData = signatureData;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -62,6 +65,13 @@ import saneforce.sanzen.storage.SharedPref;
                         Log.d("bitmap image", "Failed to load image, bitmap is null.");
                         holder.imageView.setVisibility(View.GONE);
                     }
+                }
+
+                @Override
+                public void onFailure(int pos) {
+                    Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                    commonUtilsMethods.showToastMessage(context,"Image Not Found");
+                    holder.imageView.setVisibility(View.GONE);
                 }
             });
         }else{
