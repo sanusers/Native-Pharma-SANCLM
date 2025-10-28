@@ -65,7 +65,7 @@ public class VisitStatsAdapter extends RecyclerView.Adapter<VisitStatsAdapter.Vi
                 position
         );
         holder.viewPager2.setAdapter(pagerAdapter);
-        holder.viewPager2.setOffscreenPageLimit(4);
+        holder.viewPager2.setOffscreenPageLimit(pagerAdapter.getItemCount());
         holder.viewPager2.post(()->addDotsIndicator(holder,0));
 
         holder.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -88,11 +88,12 @@ public class VisitStatsAdapter extends RecyclerView.Adapter<VisitStatsAdapter.Vi
         });
     }
     private void addDotsIndicator(VisitStatsViewHolder holder, int position) {
-        holder.dots = new ImageView[4];
+        int tabCount = holder.viewPager2.getAdapter() != null ? holder.viewPager2.getAdapter().getItemCount() : 0;
+
+        holder.dots = new ImageView[tabCount];
         holder.dotsLayout.removeAllViews();
 
-
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < tabCount; i++) {
             holder.dots[i] = new ImageView(context);
             if (i == position) {
                 holder.dots[i].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.active_dot));
@@ -107,7 +108,6 @@ public class VisitStatsAdapter extends RecyclerView.Adapter<VisitStatsAdapter.Vi
             params.setMargins(8, 0, 8, 0);
             holder.dotsLayout.addView(holder.dots[i], params);
         }
-
     }
 
     @Override

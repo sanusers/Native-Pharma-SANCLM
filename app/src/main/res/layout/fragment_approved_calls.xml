@@ -14,29 +14,19 @@
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:layout_marginVertical="@dimen/_3sdp"
         android:paddingStart="@dimen/_9sdp"
+        android:background="@drawable/border_shape_spinner"
+        app:drawableEndCompat="@drawable/spin_down_arrow"
         android:paddingHorizontal="@dimen/_10sdp"
-        android:background="@drawable/black_stroke"
         android:fontFamily="@font/satoshi_medium"
         android:gravity="start|center_vertical"
         android:text="Select Month"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/_7sdp"
-        app:layout_constraintVertical_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/headquarters_visit"
         app:layout_constraintBottom_toTopOf="@+id/doctor_fragment_container"/>
 
 
-    <ImageView
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="0dp"
-        android:background="@color/text_dark"
-        android:padding="@dimen/_4sdp"
-        android:src="@drawable/calendar_img"
-        app:layout_constraintBottom_toBottomOf="@+id/calender"
-        app:layout_constraintEnd_toEndOf="@+id/calender"
-        app:layout_constraintTop_toTopOf="@+id/calender"
-        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/headquarters_visit"
@@ -44,34 +34,27 @@
         android:layout_height="@dimen/_20sdp"
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:layout_marginVertical="@dimen/_3sdp"
-        android:background="@drawable/black_stroke"
+        android:paddingStart="@dimen/_9sdp"
+        android:background="@drawable/border_shape_spinner"
+        app:drawableEndCompat="@drawable/spin_down_arrow"
+        android:paddingHorizontal="@dimen/_10sdp"
         android:fontFamily="@font/satoshi_medium"
         android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/_9sdp"
         android:text="Select Headquarters"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/_7sdp"
-        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/search_cust"
         app:layout_constraintStart_toEndOf="@id/calender"
         tools:ignore="MissingConstraints,SpUsage" />
 
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="0dp"
-        android:background="@color/text_dark"
-        android:padding="@dimen/_4sdp"
-        android:src="@drawable/calendar_img"
-        app:layout_constraintBottom_toBottomOf="@+id/headquarters_visit"
-        app:layout_constraintEnd_toEndOf="@+id/headquarters_visit"
-        app:layout_constraintTop_toTopOf="@+id/headquarters_visit"
-        app:tint="@color/white" />
+
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/search_cust"
         android:layout_width="0dp"
         android:layout_height="@dimen/_20sdp"
         android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
         android:background="@drawable/border_shape_spinner"
         android:drawableStart="@drawable/grey_search"
         android:drawablePadding="@dimen/_5sdp"
@@ -83,7 +66,6 @@
         app:layout_constraintStart_toEndOf="@+id/headquarters_visit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/doctor_fragment_container"
-        app:layout_constraintVertical_bias="0.044"
         android:visibility="visible"/>
 
 
@@ -99,6 +81,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"

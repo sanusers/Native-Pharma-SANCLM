@@ -17,6 +17,10 @@ public class VisitStatsModel implements Parcelable {
     private int threeVisitCount;
     private int threePlusVisitCount;
 
+    String name;
+    String hq;
+    String designation;
+
     // Full constructor
     public VisitStatsModel(String totalCustomers, String visitedCustomers, String missedCustomers,
                            String fwDays, String callAvg, String coverage,
@@ -177,5 +181,29 @@ public class VisitStatsModel implements Parcelable {
 
     public void setThreePlusVisitCount(int threePlusVisitCount) {
         this.threePlusVisitCount = threePlusVisitCount;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getHq() {
+        return hq;
+    }
+
+    public void setHq(String hq) {
+        this.hq = hq;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 }

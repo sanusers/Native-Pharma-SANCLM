@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.reports.visitMonitor.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,10 +47,7 @@ public class ApprovedCallsAdapter extends RecyclerView.Adapter<ApprovedCallsAdap
         this.reportList = reportList;
     }
 
-    @Override
-    public Filter getFilter() {
-        return null;
-    }
+
 
     @NonNull
     @Override
@@ -63,12 +61,12 @@ public class ApprovedCallsAdapter extends RecyclerView.Adapter<ApprovedCallsAdap
     @Override
     public void onBindViewHolder(@NonNull ApprovedCallsAdapter.ViewHolder holder, int position) {
         VisitStatsModel model = visitStatsModelList.get(position);
-        MissedReportItem item = reportList.get(position);
-        holder.name.setText(item.getName());
+
+        holder.name.setText(model.getName());
         holder.hqName.setVisibility(View.VISIBLE);
-        holder.hqName.setText(item.getCluster());
+        holder.hqName.setText(model.getHq());
         holder.designation.setVisibility(View.VISIBLE);
-        holder.designation.setText(item.getCluster());
+        holder.designation.setText(model.getDesignation());
         holder.view1.setVisibility(View.VISIBLE);
         holder.view2.setVisibility(View.VISIBLE);
         holder.drTxt.setText(SharedPref.getDrCap(context));
@@ -80,13 +78,13 @@ public class ApprovedCallsAdapter extends RecyclerView.Adapter<ApprovedCallsAdap
         holder.callAvgCnr.setText(model.getCallAvg());
         holder.callCvgCnt.setText(model.getCoverage());
         holder.pieChart.setVisibility(View.GONE);
-//        setupBarChart(
-//                holder.barChart,
-//                Integer.parseInt(model.getTotalCustomers()),
-//                Integer.parseInt(model.getVisitedCustomers()),
-//                Integer.parseInt(model.getMissedCustomers()),
-//                Double.parseDouble(model.getCallAvg())
-//        );
+        setupBarChart(
+                holder.barChart,
+                Integer.parseInt(model.getTotalCustomers()),
+                Integer.parseInt(model.getVisitedCustomers()),
+                Integer.parseInt(model.getMissedCustomers()),
+                Double.parseDouble(model.getCallAvg())
+        );
 //        setupPieChart(
 //                holder.pieChart,
 //                model.getOneVisitCount(),
@@ -236,5 +234,39 @@ public class ApprovedCallsAdapter extends RecyclerView.Adapter<ApprovedCallsAdap
 
         pieChart.animateY(1400);
         pieChart.invalidate();
+    }
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                Log.d("FILTER", "Filtering with: " + constraint);
+
+                List<MissedReportItem> filteredResults = new ArrayList<>();
+
+                if (constraint == null || constraint.length() == 0) {
+                    filteredResults.addAll(reportList);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+
+                    for (MissedReportItem item : reportList) {
+                        if (item.getName().toLowerCase().contains(filterPattern) ||
+                                item.getCluster().toLowerCase().contains(filterPattern)) {
+                            filteredResults.add(item);
+                        }
+                    }
+                }
+                FilterResults results = new FilterResults();
+                results.values = filteredResults;
+                results.count = filteredResults.size();
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                reportList.clear();
+                reportList.addAll((List<MissedReportItem>) results.values);
+                notifyDataSetChanged();
+            }
+        };
     }
 }

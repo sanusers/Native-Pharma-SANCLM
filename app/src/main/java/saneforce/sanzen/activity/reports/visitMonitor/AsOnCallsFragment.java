@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class AsOnCallsFragment extends Fragment {
 
@@ -35,6 +37,7 @@ public class AsOnCallsFragment extends Fragment {
     MasterDataDao masterDataDao;
 
     private RecyclerView recyclerView;
+    String JoiningDate,JoiningMonth,JoiningYear;
 
     @Nullable
     @Override
@@ -51,12 +54,26 @@ public class AsOnCallsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
-
+        getJoiningDate();
         custFilter();
         return view;
 
     }
 
+    private void getJoiningDate() {
+        try {
+            String SFDCR_Date_sp = SharedPref.getSfDCRDate(requireContext());
+            JSONObject obj = new JSONObject(SFDCR_Date_sp);
+            String SFDCR_Date = obj.getString("date");
+            if (!SFDCR_Date.isEmpty()) {
+                JoiningDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFDCR_Date);
+                JoiningMonth = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFDCR_Date);
+                JoiningYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFDCR_Date);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void custFilter() {
         VisitFilter visitFilter = new VisitFilter(masterDataDao);
 
@@ -69,24 +86,19 @@ public class AsOnCallsFragment extends Fragment {
             VisitFilter.MonthlyStats prePreviousMonthStats = monthlyData.get("prePrevious");
 
 
-            // Example: Get the number of unique doctors visited in the current month
             int uniqueDoctorsCurrentMonth = currentMonthStats.uniqueDoctors.size();
-            Log.d("TAG", "UniqueDr Cur Month: "+uniqueDoctorsCurrentMonth);
             int uniqueDoctorsPreviousMonth = previousMonthStats.uniqueDoctors.size();
             int uniqueDoctorsPre_PrevMonth = prePreviousMonthStats.uniqueDoctors.size();
 
             int uniqueChemistCurrentMonth = currentMonthStats.uniqueChemists.size();
-            Log.d("TAG", "UniqueChe Cur Month: "+uniqueChemistCurrentMonth);
             int uniqueChemistPreviousMonth = previousMonthStats.uniqueChemists.size();
             int uniqueChemistPre_PrevMonth = prePreviousMonthStats.uniqueChemists.size();
 
             int uniqueStockiestCurrentMonth = currentMonthStats.uniqueStockiest.size();
-            Log.d("TAG", "UniqueStk Cur Month: "+uniqueStockiestCurrentMonth);
             int uniqueStockiestPreviousMonth = previousMonthStats.uniqueStockiest.size();
             int uniqueStockiestPre_PrevMonth = previousMonthStats.uniqueStockiest.size();
 
             int uniqueUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
-            Log.d("TAG", "UniqueUnlist Cur Month: "+uniqueUnlistedCurrentMonth);
             int uniqueUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
             int uniqueUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
 

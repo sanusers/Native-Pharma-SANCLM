@@ -50,7 +50,7 @@
 
     <ListView
         android:id="@+id/monthYearListView"
-        android:layout_width="@dimen/_80sdp"
+        android:layout_width="@dimen/_100sdp"
         android:layout_height="wrap_content"
         android:padding="1dp"
         android:divider="@color/Evening_Blue_10"

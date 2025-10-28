@@ -36,6 +36,7 @@
 //}
 package saneforce.sanzen.activity.reports.missedReport;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -116,11 +117,11 @@ public class FragmentApprovedCallsMissed extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentApprovedCallsMissedBinding.inflate(inflater, container, false);
 
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
         db = RoomDB.getDatabase(requireContext());
         masterDataDao = db.masterDataDao();
         blockingOverlay = binding.blockingOverlay;
         blockingOverlay.setVisibility(View.GONE);
-
         getJoiningDate();
 
         adapter = new MissedReportAdapter(requireContext(), reportList, (item, position) -> fetchAndLoadData(date, item.getSfCode()));
@@ -348,7 +349,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
         int count = 0;
         while ((cal.get(Calendar.YEAR) > joinYear ||
                 (cal.get(Calendar.YEAR) == joinYear && (cal.get(Calendar.MONTH) + 1) >= joinMonth))
-                && count < 4) {
+                && count < 3) {
             months.add(sdf.format(cal.getTime()));
             cal.add(Calendar.MONTH, -1);
             count++;
@@ -392,16 +393,20 @@ public class FragmentApprovedCallsMissed extends Fragment {
     }
 
     public void getReportData(String date, String sfcode) {
-        showLoadingOverlay();
+//        showLoadingOverlay();
+        ProgressDialog progressDialog = new ProgressDialog(requireContext());
+        progressDialog.show();
         if (!UtilityClass.isNetworkAvailable(requireContext())) {
-            hideLoadingOverlay();
+//            hideLoadingOverlay();
+            progressDialog.dismiss();
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
             return;
         }
 
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
             if (!status) {
-                hideLoadingOverlay();
+//                hideLoadingOverlay();
+                progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
                 return;
             }
@@ -414,6 +419,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                 jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
                 jsonObject.put("rptDt", date);
                 jsonObject.put("tableName", "getmissedrpt");
+                Log.v("getMissedRpt",jsonObject.toString());
 
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "get/reports");
@@ -422,9 +428,10 @@ public class FragmentApprovedCallsMissed extends Fragment {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                        hideLoadingOverlay();
+//                        hideLoadingOverlay();
                         try {
                             if (response.isSuccessful() && response.body() != null) {
+                                progressDialog.dismiss();
                                 JsonElement jsonElement = response.body();
                                 if (jsonElement.isJsonArray()) {
                                     JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
@@ -469,13 +476,15 @@ public class FragmentApprovedCallsMissed extends Fragment {
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        hideLoadingOverlay();
+//                        hideLoadingOverlay();
+                        progressDialog.dismiss();
                         requireActivity().runOnUiThread(() ->
                                 commonUtilsMethods.showToastMessage(requireContext(), "Failed to load data"));
                     }
                 });
             } catch (JSONException e) {
-                hideLoadingOverlay();
+//                hideLoadingOverlay();
+                progressDialog.dismiss();
                 e.printStackTrace();
             }
         });
@@ -499,16 +508,20 @@ public class FragmentApprovedCallsMissed extends Fragment {
     }
 
     public void getData(String date, String sfcode) {
-        showLoadingOverlay();
+//        showLoadingOverlay();
+        ProgressDialog progressDialog = new ProgressDialog(requireContext());
+        progressDialog.show();
         if (!UtilityClass.isNetworkAvailable(requireContext())) {
-            hideLoadingOverlay();
+//            hideLoadingOverlay();
+            progressDialog.dismiss();
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
             return;
         }
 
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
             if (!status) {
-                hideLoadingOverlay();
+//                hideLoadingOverlay();
+                progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
                 return;
             }
@@ -521,6 +534,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                 jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
                 jsonObject.put("report_date", date);
                 jsonObject.put("tableName", "getmissedrptview");
+                Log.v("getMissedView",jsonObject.toString());
 
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "get/reports");
@@ -529,7 +543,8 @@ public class FragmentApprovedCallsMissed extends Fragment {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                        hideLoadingOverlay();
+//                        hideLoadingOverlay();
+                        progressDialog.dismiss();
                         try {
                             if (response.isSuccessful() && response.body() != null) {
                                 JsonElement jsonElement = response.body();
@@ -554,13 +569,15 @@ public class FragmentApprovedCallsMissed extends Fragment {
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        hideLoadingOverlay();
+//                        hideLoadingOverlay();
+                        progressDialog.dismiss();
                         requireActivity().runOnUiThread(() ->
                                 commonUtilsMethods.showToastMessage(requireContext(), "Failed to load data"));
                     }
                 });
             } catch (JSONException e) {
-                hideLoadingOverlay();
+//                hideLoadingOverlay();
+                progressDialog.dismiss();
                 e.printStackTrace();
             }
         });

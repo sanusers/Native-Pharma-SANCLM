@@ -39,12 +39,12 @@
                 android:layout_height="wrap_content"
                 android:text="Missed Reports"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/satoshi_variable"
+                android:textSize="@dimen/_7sdp" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:id="@+id/switch_txt"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
@@ -62,22 +62,69 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_2sdp"
             android:background="@drawable/bg_darkpurple_sharp_bottom_end"
-            android:gravity="center"
-            android:text="As on Calls"
-            android:textColor="@color/white"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="As on Calls"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/live"
-            android:layout_width="107dp"
+            android:layout_width="@dimen/_40sdp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_2sdp"
             android:gravity="center"
             android:text="Approved Calls"
             android:textColor="@color/dark_purple"
+            android:singleLine="true"
             android:clickable="true"
             android:focusable="true"/>
+    </LinearLayout>-->
+    <LinearLayout
+        android:id="@+id/switch_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_marginStart="@dimen/_3sdp"
+        android:background="@drawable/bg_white_border_purple"
+        android:backgroundTint="@color/light_grey_1"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/note"
+        app:layout_constraintHorizontal_bias="0.014"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_container">
+
+
+        <TextView
+            android:id="@+id/self"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/_2sdp"
+            android:background="@drawable/bg_darkpurple_sharp_bottom_end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="As on Calls"
+            android:textSize="@dimen/_5ssp"
+            android:textColor="@color/white">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/live"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/_2sdp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="Approved Calls"
+            android:textSize="@dimen/_5ssp"
+            android:textColor="@color/dark_purple">
+
+        </TextView>
+
+
     </LinearLayout>
 
 <!--    <androidx.constraintlayout.widget.ConstraintLayout-->

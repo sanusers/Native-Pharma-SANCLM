@@ -99,7 +99,10 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
                     Toast.makeText(context, "No missed" + DrCap, Toast.LENGTH_SHORT).show();
                     holder.itemView.setClickable(false);
                     return;
-                }
+                }/*else{
+                    Intent intent = new Intent(context, DoctorVisitActivity.class);
+                    context.startActivity(intent);
+                }*/
 
                 if (listener != null) {
                     listener.onMissedClick(item, position);
@@ -141,8 +144,8 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
     private void setupMissedChart(Context context, PieChart missedChart, int totalDotor, int visited, int missed) {
         float missedPercentage =(((float)missed / (float) totalDotor) * 100.0f);
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(Color.rgb(0, 144, 255));
-        colors.add(context.getColor(R.color.mildRed));
+        colors.add(context.getColor(R.color.green_60));
+        colors.add(context.getColor(R.color.light_grey));
         ArrayList<PieEntry> missedDataList = new ArrayList<>();
         missedDataList.add(new PieEntry(100.0f - missedPercentage));//visited 100-missed%
         missedDataList.add(new PieEntry(missedPercentage, ""));//Missed %

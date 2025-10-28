@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.reports.visitMonitor;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,6 +104,22 @@ public class ApprovedCallsFragment extends Fragment {
         }else{
             headquarters.setVisibility(View.GONE);
         }
+        searchCust.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (adapter != null) adapter.getFilter().filter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -188,17 +206,16 @@ public class ApprovedCallsFragment extends Fragment {
             listView.setOnItemClickListener((adapterView, view1, position, l) -> {
                 String selectedHq = listView.getItemAtPosition(position).toString();
 
-
+                TextView headquarters = requireView().findViewById(R.id.headquarters_visit);
+                headquarters.setText(selectedHq);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
                             selectedHqId = jsonObject.optString("id", "");
-//                            if (!selectedDate.isEmpty() && !selectedHqId.isEmpty()) tryFetchReport();
                             break;
                         }
                     } catch (JSONException e) { e.printStackTrace(); }
-//                    binding.emptyMessage.setVisibility(View.GONE);
                 }
                 getVisitData();
                 hqDialog.dismiss();
@@ -263,7 +280,7 @@ public class ApprovedCallsFragment extends Fragment {
 //                binding.recyclerMissedReports.setVisibility(View.VISIBLE);
 //                binding.emptyMessage.setVisibility(View.GONE);
 
-                if (SharedPref.getSfType(requireContext()).equals("1")) tryFetchReport();
+//                if (SharedPref.getSfType(requireContext()).equals("1")) tryFetchReport();
             } catch (ParseException e) { e.printStackTrace(); }
 
             monthDialog.dismiss();
@@ -298,9 +315,12 @@ public class ApprovedCallsFragment extends Fragment {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
                         jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
-                        jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
+
+                        String sfCodeToUse = selectedHqId.isEmpty() ? SharedPref.getSfCode(requireContext()) : selectedHqId;
+
+                        jsonObject.put("sfcode", sfCodeToUse);
                         jsonObject.put("division_code",SharedPref.getDivisionCode(requireContext()));
-                        jsonObject.put("Rsf",SharedPref.getSfCode(requireContext()));
+                        jsonObject.put("Rsf",sfCodeToUse);
                         String selected = ((TextView) getView().findViewById(R.id.calender)).getText().toString();
                         SimpleDateFormat inputFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
                         Calendar cal = Calendar.getInstance();
@@ -332,10 +352,13 @@ public class ApprovedCallsFragment extends Fragment {
                                             for (int i = 0; i < jsonArray.length(); i++) {
                                                 JSONObject obj = jsonArray.getJSONObject(i);
                                                 VisitStatsModel model = new VisitStatsModel();
-                                                model.setTotalCustomers(obj.optString("Total_Listed_Drs"));
-                                                model.setVisitedCustomers(obj.optString("Doctors_Met"));
-                                                model.setMissedCustomers(obj.optString("Listed_Drs_Missed"));
-                                                model.setFwDays(obj.optString("No_Of_Field_Wrk_Days"));
+                                                model.setName(obj.optString("FieldForce Name"));
+                                                model.setHq(obj.optString("HQ"));
+                                                model.setDesignation(obj.optString("Designation Name"));
+                                                model.setTotalCustomers(obj.optString("Total_Listed_Drs").replace("-","0"));
+                                                model.setVisitedCustomers(obj.optString("Doctors_Met").replace("-","0"));
+                                                model.setMissedCustomers(obj.optString("Listed_Drs_Missed").replace("-","0"));
+                                                model.setFwDays(obj.optString("No_Of_Field_Wrk_Days").replace("-","0"));
                                                 model.setCallAvg(obj.optString("Call_Average"));
                                                 model.setCoverage(obj.optString("Coverage_Per"));
                                                 reportList.add(model);
@@ -351,11 +374,13 @@ public class ApprovedCallsFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call<JsonElement> call, Throwable throwable) {
+                                commonUtilsMethods.showToastMessage(requireContext(),"Something Went Wrong! Please Try Again");
 
                             }
 
                         });
                 }else{
+                    commonUtilsMethods.showToastMessage(requireContext(),"Poor Network Connection");
 
                 }
 

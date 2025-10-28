@@ -599,7 +599,7 @@ public class ReportsActivity extends AppCompatActivity {
                                             // 🔑 FIX: Notify adapter to refresh with new data
                                             reportsAdapter.notifyDataSetChanged();
                                         } else {
-                                            commonUtilsMethods.showToastMessage(ReportsActivity.this, "No Dynamic Reports Found");
+//                                            commonUtilsMethods.showToastMessage(ReportsActivity.this, "No Dynamic Reports Found");
                                         }
                                     }
                                 } catch (Exception e) {

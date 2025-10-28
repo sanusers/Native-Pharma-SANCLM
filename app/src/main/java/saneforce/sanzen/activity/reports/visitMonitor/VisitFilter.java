@@ -196,7 +196,6 @@ public class VisitFilter {
         public Set<String> FWDays = new HashSet<>();
         public Map<String, Integer> customerVisitCounts = new HashMap<>();
 
-        // Buckets (only for doctors)
         public int oneVisitCount = 0;
         public int twoVisitCount = 0;
         public int threeVisitCount = 0;
@@ -265,7 +264,7 @@ public class VisitFilter {
                         String custCode = callObj.optString("CustCode");
                         String fwIndicator = callObj.optString("FW_Indicator");
 
-                        // Record visits by type
+
                         if (custType.equalsIgnoreCase("1") && !custCode.isEmpty() && !custType.equals("0")) {
                             stats.uniqueDoctors.add(custCode);
                             int count = stats.customerVisitCounts.getOrDefault(custCode, 0);

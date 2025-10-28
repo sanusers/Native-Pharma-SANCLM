@@ -49,6 +49,8 @@ import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityMissedReportGraphBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitDao;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.MissedDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -59,6 +61,8 @@ public class MissedReportGraph extends AppCompatActivity {
     private ActivityMissedReportGraphBinding binding;
     private String sfCode;
     private String date;
+    public DoctorVisitDao doctorVisitDao;
+    public MissedDao missedDao;
 
 
     //private PieChart missedChart, missedChart2;
@@ -108,6 +112,8 @@ public class MissedReportGraph extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
+        doctorVisitDao = roomDB.doctorVisitDao();
+        missedDao = roomDB.missedDao();
         super.onCreate(savedInstanceState);
         binding = ActivityMissedReportGraphBinding.inflate(getLayoutInflater());
 
@@ -118,25 +124,24 @@ public class MissedReportGraph extends AppCompatActivity {
         date = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5);
         loadFragment(new AsOnCallsMissedFragment());
         binding.note.findViewById(R.id.note);
-        //binding.searchCust.findViewById(R.id.search_cust);
         binding.imageBack.setOnClickListener(v -> {
+            missedDao.deleteAll();
+            doctorVisitDao.deleteAll();
             finish();
         });
         //binding.calendarLyt.findViewById(R.id.calendar_lyt);
 
         binding.self.setOnClickListener(view -> {
             selectedTab = "As on Calls";
-           // binding.searchCust.setVisibility(View.GONE);
             binding.note.setVisibility(View.VISIBLE);
-          // binding.calendarLyt.setVisibility(View.GONE);
+            binding.tvNote.setText("Sync to get Live Data!");
             updateReportUi();
             loadFragment(new AsOnCallsMissedFragment());
         });
         binding.live.setOnClickListener(view -> {
             selectedTab = "Approved Calls";
-          // binding.searchCust.setVisibility(View.VISIBLE);
-            binding.note.setVisibility(View.GONE);
-           //binding.calendarLyt.setVisibility(View.VISIBLE);
+            binding.note.setVisibility(View.VISIBLE);
+            binding.tvNote.setText("You Are Live! Select Month to get Data");
             updateReportUi();
             loadFragment(new FragmentApprovedCallsMissed());
         });

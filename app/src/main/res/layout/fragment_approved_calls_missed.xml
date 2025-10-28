@@ -10,62 +10,70 @@
     <TextView
         android:id="@+id/calender"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/black_stroke"
-        android:gravity="center_vertical"
-        android:paddingStart="10dp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_3sdp"
+        android:paddingStart="@dimen/_9sdp"
+        android:background="@drawable/border_shape_spinner"
+        app:drawableEndCompat="@drawable/spin_down_arrow"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="start|center_vertical"
         android:text="Select Month"
         android:textColor="@color/text_dark"
-        android:textSize="14sp"
+        android:textSize="@dimen/_7sdp"
+        app:layout_constraintVertical_bias="0.044"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/headquarters"/>
 
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="0dp"
-        android:background="@color/text_dark"
-        android:padding="@dimen/_4sdp"
-        android:src="@drawable/calendar_img"
-        app:layout_constraintBottom_toBottomOf="@+id/calender"
-        app:layout_constraintEnd_toEndOf="@+id/calender"
-        app:layout_constraintTop_toTopOf="@+id/calender"
-        app:tint="@color/white" />
+<!--    <ImageView-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/text_dark"-->
+<!--        android:padding="@dimen/_4sdp"-->
+<!--        android:src="@drawable/calendar_img"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/calender"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/calender"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/calender"-->
+<!--        app:tint="@color/white" />-->
 
     <!-- Headquarters -->
     <TextView
         android:id="@+id/headquarters"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:background="@drawable/black_stroke"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_3sdp"
+        android:paddingStart="@dimen/_9sdp"
+        android:background="@drawable/border_shape_spinner"
+        app:drawableEndCompat="@drawable/spin_down_arrow"
+        android:paddingHorizontal="@dimen/_10sdp"
         android:fontFamily="@font/satoshi_medium"
         android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/_9sdp"
-        android:text="Select HeadQuarters"
+        android:text="Select Headquarters"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/_7sdp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/calender"
         app:layout_constraintEnd_toStartOf="@id/cl_search_sort"
         app:layout_constraintStart_toEndOf="@id/calender"
         app:layout_constraintTop_toTopOf="@id/calender" />
 
-    <ImageView
-        android:layout_width="8.80dp"
-        android:layout_height="7.80dp"
-        android:src="@drawable/arrow_down"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintBottom_toBottomOf="@id/headquarters"
-        app:layout_constraintEnd_toStartOf="@id/cl_search_sort"
-        app:layout_constraintTop_toTopOf="@id/headquarters" />
+<!--    <ImageView-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/text_dark"-->
+<!--        android:padding="@dimen/_4sdp"-->
+<!--        android:src="@drawable/vector"-->
+<!--        app:tint="@color/white"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/headquarters"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/cl_search_sort"-->
+<!--        app:layout_constraintTop_toTopOf="@id/headquarters" />-->
     <!-- Search + Sort -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_search_sort"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/calender"
         app:layout_constraintBottom_toBottomOf="@id/calender"
         app:layout_constraintStart_toEndOf="@id/headquarters"
@@ -74,14 +82,16 @@
         <EditText
             android:id="@+id/searchET"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:hint="Search"
-            android:background="@drawable/edittext_stroke"
-            android:paddingStart="36dp"
-            android:singleLine="true"
-            android:textColor="@color/text_dark_65"
-            android:textColorHint="@color/text_dark_65"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:background="@drawable/border_shape_spinner"
+            android:drawableStart="@drawable/grey_search"
+            android:drawablePadding="@dimen/_5sdp"
+            android:hint="@string/search"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/light_grey"
+            android:textSize="@dimen/_6ssp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,14 +106,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/searchET"
             app:layout_constraintStart_toStartOf="@+id/searchET"
             app:layout_constraintTop_toTopOf="@+id/searchET" />
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="10dp"
-            android:src="@drawable/search_icon_gray"
-            app:layout_constraintBottom_toBottomOf="@+id/searchBkn"
-            app:layout_constraintEnd_toEndOf="@+id/searchBkn"
-            app:layout_constraintStart_toStartOf="@+id/searchBkn"
-            app:layout_constraintTop_toTopOf="@+id/searchBkn" />
+
 
         <ImageView
             android:id="@+id/searchClearIcon"
