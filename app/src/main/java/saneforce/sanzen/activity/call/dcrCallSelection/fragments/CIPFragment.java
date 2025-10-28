@@ -45,7 +45,6 @@ import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -184,13 +183,13 @@ public class CIPFragment extends Fragment {
                     listView.setOnItemClickListener((adapterView, view1, position, l) -> {
                         String selectedHq = listView.getItemAtPosition(position).toString();
                         tv_hqName.setText(selectedHq);
+                        String hqID = "", hqName = "";
                         for (int i = 0; i<jsonArray.length(); i++) {
                             try {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 if(jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                                    DcrCallTabLayoutActivity.TodayPlanSfCode = jsonObject.getString("id");
-                                    DcrCallTabLayoutActivity.TodayPlanSfName = jsonObject.getString("name");
-                                    SharedPref.saveHq(requireContext(), DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
+                                    hqID = jsonObject.getString("id");
+                                    hqName = jsonObject.getString("name");
                                     break;
                                 }
                             } catch (JSONException e) {
@@ -199,7 +198,7 @@ public class CIPFragment extends Fragment {
                         }
 //                        DcrCallTabLayoutActivity.prepareClusterList(requireActivity());
 //                        SetupAdapter();
-                        hqChangeListener.onHQChange();
+                        hqChangeListener.onHQChange(hqID, hqName);
                         dialog.dismiss();
                     });
 
