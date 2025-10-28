@@ -20,7 +20,6 @@ import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -30,7 +29,7 @@ import saneforce.sanzen.storage.SharedPref;
 public class HQSelector {
 
     public interface OnHQChangeListener {
-        void onHQChange();
+        void onHQChange(String hqID, String hqName);
     }
 
     public static void setupHQSelector(Fragment fragment, TextView tv_hqName, ImageView img_drop_down, MasterDataDao masterDataDao, LayoutInflater inflater, OnHQChangeListener hqChangeListener) {
@@ -41,7 +40,7 @@ public class HQSelector {
                 } else {
                     img_drop_down.setVisibility(View.GONE);
                 }
-                setupClickForOneBuild(fragment, tv_hqName, img_drop_down, masterDataDao, inflater, hqChangeListener);
+                setupClickForOneBuild(fragment, tv_hqName, masterDataDao, inflater, hqChangeListener);
             } else {
                 if (!SharedPref.getMultiHQCode(fragment.requireContext()).isEmpty()) {
                     String[] hqCodes = SharedPref.getMultiHQCode(fragment.requireContext()).split(",");
@@ -56,7 +55,7 @@ public class HQSelector {
         }
     }
 
-    private static void setupClickForOneBuild(Fragment fragment, TextView tv_hqName, ImageView img_drop_down, MasterDataDao masterDataDao, LayoutInflater inflater, OnHQChangeListener hqChangeListener) {
+    public static void setupClickForOneBuild(Fragment fragment, TextView tv_hqName, MasterDataDao masterDataDao, LayoutInflater inflater, OnHQChangeListener hqChangeListener) {
         tv_hqName.setOnClickListener(view ->  {
 //            @Override
 //            public void onSafeClick(View view) {
@@ -153,20 +152,20 @@ public class HQSelector {
         listView.setOnItemClickListener((adapterView, view, position, l) -> {
             String selectedHq = listView.getItemAtPosition(position).toString();
             tv_hqName.setText(selectedHq);
+            String hqID = "", hqName = "";
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
-                        DcrCallTabLayoutActivity.TodayPlanSfCode = jsonObject.optString("id");
-                        DcrCallTabLayoutActivity.TodayPlanSfName = jsonObject.optString("name");
-                        SharedPref.saveHq(fragment.requireContext(), DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
+                        hqID = jsonObject.optString("id");
+                        hqName = jsonObject.optString("name");
                         break;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            hqChangeListener.onHQChange();
+            hqChangeListener.onHQChange(hqID, hqName);
             dialog.dismiss();
         });
 

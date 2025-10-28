@@ -1,9 +1,6 @@
 package saneforce.sanzen.activity.call.dcrCallSelection;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +13,6 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
@@ -63,7 +59,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     private HospitalFragment hospitalFragment;
 
     public interface HQChangeListener {
-        void onHQChange();
+        void onHQChange(String hqID, String hqName);
     }
 
     //To Hide the bottomNavigation When popup
@@ -122,7 +118,10 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         }
 
         getRequiredData();
-        HQChangeListener hqChangeListener = () -> {
+        HQChangeListener hqChangeListener = (String hqID, String hqName) -> {
+            DcrCallTabLayoutActivity.TodayPlanSfCode = hqID;
+            DcrCallTabLayoutActivity.TodayPlanSfName = hqName;
+            SharedPref.saveHq(DcrCallTabLayoutActivity.this, DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
             prepareClusterList();
             if(listedDoctorFragment != null) {
                 listedDoctorFragment.SetupAdapter();
