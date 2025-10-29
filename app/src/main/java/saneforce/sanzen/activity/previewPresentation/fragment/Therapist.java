@@ -80,10 +80,10 @@ public class Therapist extends Fragment {
             fragmentTherapistBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             fragmentTherapistBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
             fragmentTherapistBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            Collections.sort(SlideTherapistList, Comparator.comparing(BrandModelClass::getBrandName));
             previewAdapter = new PreviewAdapter(requireContext(), SlideTherapistList);
             fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             fragmentTherapistBinding.rvTherapistList.setAdapter(previewAdapter);
-            Collections.sort(SlideTherapistList, Comparator.comparing(BrandModelClass::getBrandName));
         });
 
         fragmentTherapistBinding.tvZa.setOnClickListener(v12 -> {
@@ -91,10 +91,10 @@ public class Therapist extends Fragment {
             fragmentTherapistBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             fragmentTherapistBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
             fragmentTherapistBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            Collections.sort(SlideTherapistList, Collections.reverseOrder(new BrandMatrix.SortByName()));
             previewAdapter = new PreviewAdapter(requireContext(), SlideTherapistList);
             fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             fragmentTherapistBinding.rvTherapistList.setAdapter(previewAdapter);
-            Collections.sort(SlideTherapistList, Collections.reverseOrder(new BrandMatrix.SortByName()));
         });
 
         return fragmentTherapistBinding.getRoot();

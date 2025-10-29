@@ -5,6 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tv_select_hq"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_2sdp"
+        android:background="@drawable/border_shape_spinner"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="start|center"
+        android:hint="@string/select_hq"
+        android:paddingHorizontal="@dimen/_6sdp"
+        android:paddingVertical="@dimen/_4sdp"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="normal"
+        android:visibility="visible"
+        app:drawableEndCompat="@drawable/spin_down_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tv_select_doctor"
@@ -28,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_select_hq"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -47,7 +72,7 @@
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_7ssp"
         android:textStyle="normal"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/view_dummy_2"
         app:layout_constraintHorizontal_bias="1.0"
@@ -88,7 +113,7 @@
         android:layout_height="@dimen/_1sdp"
         android:layout_marginEnd="@dimen/_2sdp"
         android:background="@color/bg_grey_2"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/tv_info"
         app:layout_constraintEnd_toStartOf="@id/tv_select_speciality"
         app:layout_constraintStart_toEndOf="@id/tv_info"

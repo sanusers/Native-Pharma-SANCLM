@@ -11,7 +11,6 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.Speciality.
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -61,7 +60,6 @@ import saneforce.sanzen.storage.SharedPref;
 
 public class DrSelectionSide extends Fragment {
     public static ArrayList<CustList> callDrListBrand = new ArrayList<>();
-    public static ArrayList<CustList> callDrListSpeciality = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static FragmentDrSelectionSideBinding drSelectionSideBinding;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
@@ -69,14 +67,12 @@ public class DrSelectionSide extends Fragment {
     JSONArray jsonArray;
     JSONObject jsonObject;
     SelectDoctorAdapter selectDoctorAdapter;
-
-    String TodayPlanSfCode;
+    private String TodayPlanSfCode, TodayPlanSfName;
     String brands;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         drSelectionSideBinding = FragmentDrSelectionSideBinding.inflate(inflater);
@@ -148,20 +144,6 @@ public class DrSelectionSide extends Fragment {
     public void SetDrAdapter() {
         try {
             callDrListBrand.clear();
-            if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
-                TodayPlanSfCode = SharedPref.getSfCode(requireContext());
-            } else {
-                if (SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                    for (int i = 0; i < 1; i++) {
-                        JSONObject jsonHQList = jsonArray.getJSONObject(0);
-                        TodayPlanSfCode = jsonHQList.getString("id");
-                    }
-                } else {
-                    TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(requireContext());
-                }
-            }
-
             if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
 //            if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR_MAS + TodayPlanSfCode)) {
                 prepareMasterToSync(TodayPlanSfCode);
@@ -310,6 +292,22 @@ public class DrSelectionSide extends Fragment {
         } else {
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
         }
+    }
+
+    public String getTodayPlanSfCode() {
+        return TodayPlanSfCode;
+    }
+
+    public void setTodayPlanSfCode(String todayPlanSfCode) {
+        TodayPlanSfCode = todayPlanSfCode;
+    }
+
+    public String getTodayPlanSfName() {
+        return TodayPlanSfName;
+    }
+
+    public void setTodayPlanSfName(String todayPlanSfName) {
+        TodayPlanSfName = todayPlanSfName;
     }
 
     private void hideKeyboard() {
