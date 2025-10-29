@@ -4,7 +4,6 @@
     android:id="@+id/layoutDrChmCurrent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     android:background="@color/white"
     android:orientation="horizontal"
     android:clickable="false"
@@ -68,8 +67,8 @@
 
             <!-- PieChart -->
             <FrameLayout
-                android:layout_width="165dp"
-                android:layout_height="165dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center">
 
                 <com.github.mikephil.charting.charts.PieChart

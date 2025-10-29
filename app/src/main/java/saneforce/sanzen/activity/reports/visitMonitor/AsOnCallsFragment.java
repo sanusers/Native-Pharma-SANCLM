@@ -48,8 +48,8 @@ public class AsOnCallsFragment extends Fragment {
         TextView desig = view.findViewById(R.id.headerCustDesig);
 
         name.setText(SharedPref.getSfName(requireContext()));
-        hq.setText(SharedPref.getHqName(requireContext()));
-        desig.setText(SharedPref.getDesig(requireContext()));
+        hq.setText(SharedPref.getHqNameMain(requireContext()));
+        desig.setText(SharedPref.getDsName(requireContext()));
 
         recyclerView = view.findViewById(R.id.recyclerView);
         roomDB = RoomDB.getDatabase(requireContext());

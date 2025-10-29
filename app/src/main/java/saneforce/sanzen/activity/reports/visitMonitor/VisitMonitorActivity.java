@@ -57,7 +57,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
 
-        loadFragment(new AsOnCallsFragment());
+
 
         binding.note.findViewById(R.id.note);
 
@@ -66,6 +66,14 @@ public class VisitMonitorActivity extends AppCompatActivity {
         });
 
 
+        if(SharedPref.getSfType(VisitMonitorActivity.this).equalsIgnoreCase("2")){
+            binding.self.setVisibility(View.GONE);
+            binding.tvNote.setText("You Are Live! Select Month to get Data");
+            loadFragment(new ApprovedCallsFragment());
+        }else{
+            binding.self.setVisibility(View.VISIBLE);
+            loadFragment(new AsOnCallsFragment());
+        }
 
 
         binding.self.setOnClickListener(view -> {

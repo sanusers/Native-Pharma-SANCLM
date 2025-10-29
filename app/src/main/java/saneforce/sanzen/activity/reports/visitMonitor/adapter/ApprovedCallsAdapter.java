@@ -38,13 +38,12 @@ public class ApprovedCallsAdapter extends RecyclerView.Adapter<ApprovedCallsAdap
 
     Context context;
     List<VisitStatsModel> visitStatsModelList;
-    List<MissedReportItem> reportList;
+//    List<MissedReportItem> reportList;
 
 
-    public ApprovedCallsAdapter(Context context, List<VisitStatsModel> visitStatsModelList, List<MissedReportItem> reportList) {
+    public ApprovedCallsAdapter(Context context, List<VisitStatsModel> visitStatsModelList) {
         this.context = context;
         this.visitStatsModelList = visitStatsModelList;
-        this.reportList = reportList;
     }
 
 
@@ -241,16 +240,15 @@ public class ApprovedCallsAdapter extends RecyclerView.Adapter<ApprovedCallsAdap
             protected FilterResults performFiltering(CharSequence constraint) {
                 Log.d("FILTER", "Filtering with: " + constraint);
 
-                List<MissedReportItem> filteredResults = new ArrayList<>();
+                List<VisitStatsModel> filteredResults = new ArrayList<>();
 
                 if (constraint == null || constraint.length() == 0) {
-                    filteredResults.addAll(reportList);
+                    filteredResults.addAll(visitStatsModelList);
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();
 
-                    for (MissedReportItem item : reportList) {
-                        if (item.getName().toLowerCase().contains(filterPattern) ||
-                                item.getCluster().toLowerCase().contains(filterPattern)) {
+                    for (VisitStatsModel item : visitStatsModelList) {
+                        if (item.getName().toLowerCase().contains(filterPattern)) {
                             filteredResults.add(item);
                         }
                     }
@@ -263,8 +261,8 @@ public class ApprovedCallsAdapter extends RecyclerView.Adapter<ApprovedCallsAdap
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                reportList.clear();
-                reportList.addAll((List<MissedReportItem>) results.values);
+                visitStatsModelList.clear();
+                visitStatsModelList.addAll((List<VisitStatsModel>) results.values);
                 notifyDataSetChanged();
             }
         };

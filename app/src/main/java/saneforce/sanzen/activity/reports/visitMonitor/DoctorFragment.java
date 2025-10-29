@@ -87,7 +87,6 @@ public class DoctorFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            position = getArguments().getInt(ARG_POSITION, position);
             position = getArguments().getInt(ARG_POSITION, 0);
         }
     }
@@ -218,64 +217,77 @@ public class DoctorFragment extends Fragment {
     }
 
     private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
-        pieChart.setCenterText("Visits");
-        pieChart.setCenterTextSize(15f);
-        pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
-        pieChart.setUsePercentValues(false);
-        pieChart.getDescription().setEnabled(false);
-        pieChart.setExtraOffsets(5f, 10f, 5f, 5f);
-        pieChart.setDragDecelerationFrictionCoef(0.95f);
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
-        pieChart.setTransparentCircleColor(requireContext().getResources().getColor(R.color.gray_med));
-        pieChart.setHoleRadius(63f);
-        pieChart.setTransparentCircleRadius(10f);
-        pieChart.setRotationAngle(0);
-        pieChart.setRotationEnabled(true);
-        pieChart.setHighlightPerTapEnabled(true);
-        pieChart.setDrawEntryLabels(false);
 
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(oneVisit, "1 Visit"));
-        entries.add(new PieEntry(twoVisit, "2 Visits"));
-        entries.add(new PieEntry(threeVisit, "3 Visits"));
-        entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
+      /*  if (oneVisit == 0 && twoVisit == 0 && threeVisit == 0 && threePlusVisit == 0) {
+            pieChart.clear();
+            pieChart.setCenterText("No Visits");
+            pieChart.setCenterTextSize(15f);
+            pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
+            pieChart.setDrawHoleEnabled(true);
+            pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
+            pieChart.setTransparentCircleColor(requireContext().getResources().getColor(R.color.black));
+            pieChart.setUsePercentValues(false);
+            pieChart.getDescription().setEnabled(false);
+            pieChart.invalidate();
+        } else {*/
+            pieChart.setCenterText("Visits");
+            pieChart.setCenterTextSize(15f);
+            pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
+            pieChart.setUsePercentValues(false);
+            pieChart.getDescription().setEnabled(false);
+            pieChart.setExtraOffsets(5f, 10f, 5f, 5f);
+            pieChart.setDragDecelerationFrictionCoef(0.95f);
+            pieChart.setDrawHoleEnabled(true);
+            pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
+            pieChart.setHoleRadius(63f);
+            pieChart.setTransparentCircleRadius(10f);
+            pieChart.setRotationAngle(0);
+            pieChart.setRotationEnabled(true);
+            pieChart.setHighlightPerTapEnabled(true);
+            pieChart.setDrawEntryLabels(false);
 
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
+            ArrayList<PieEntry> entries = new ArrayList<>();
+            entries.add(new PieEntry(oneVisit, "1 Visit"));
+            entries.add(new PieEntry(twoVisit, "2 Visits"));
+            entries.add(new PieEntry(threeVisit, "3 Visits"));
+            entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
 
-        ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(requireContext().getResources().getColor(R.color.blue_60));
-        colors.add(requireContext().getResources().getColor(R.color.yellow_45));
-        colors.add(requireContext().getResources().getColor(R.color.red_60));
-        colors.add(requireContext().getResources().getColor(R.color.green_2));
-        dataSet.setColors(colors);
+            PieDataSet dataSet = new PieDataSet(entries, "");
+            dataSet.setSliceSpace(3f);
+            dataSet.setSelectionShift(5f);
 
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return value == 0 ? "" : String.valueOf((int) value);
-            }
-        });
-        data.setValueTextSize(20f);
-        data.setValueTextColor(requireContext().getResources().getColor(R.color.bg_lit_white));
+            ArrayList<Integer> colors = new ArrayList<>();
+            colors.add(requireContext().getResources().getColor(R.color.blue_60));
+            colors.add(requireContext().getResources().getColor(R.color.yellow_45));
+            colors.add(requireContext().getResources().getColor(R.color.red_60));
+            colors.add(requireContext().getResources().getColor(R.color.green_2));
+            dataSet.setColors(colors);
 
-        pieChart.setData(data);
+            PieData data = new PieData(dataSet);
+            data.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return value == 0 ? "" : String.valueOf((int) value);
+                }
+            });
+            data.setValueTextSize(20f);
+            data.setValueTextColor(requireContext().getResources().getColor(R.color.bg_lit_white));
 
-        Legend legend = pieChart.getLegend();
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        legend.setDrawInside(false);
-        legend.setXEntrySpace(7f);
-        legend.setYEntrySpace(0f);
-        legend.setYOffset(0f);
-        legend.setWordWrapEnabled(true);
-        legend.setForm(Legend.LegendForm.CIRCLE);
+            pieChart.setData(data);
 
-        pieChart.animateY(1400);
-        pieChart.invalidate();
-    }
+            Legend legend = pieChart.getLegend();
+            legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            legend.setDrawInside(false);
+            legend.setXEntrySpace(7f);
+            legend.setYEntrySpace(0f);
+            legend.setYOffset(0f);
+            legend.setWordWrapEnabled(true);
+            legend.setForm(Legend.LegendForm.CIRCLE);
+
+            pieChart.animateY(1400);
+            pieChart.invalidate();
+        }
+//    }
 }

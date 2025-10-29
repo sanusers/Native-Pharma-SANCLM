@@ -72,26 +72,29 @@ public class ApprovedCallsFragment extends Fragment {
     private AlertDialog hqDialog;
     public  String JoiningDate, JoiningMonth, JoiningYear;
     final List<VisitStatsModel> reportList = new ArrayList<>();
-    final List<MissedReportItem> reportList1 = new ArrayList<>();
+
     JSONObject jsonObject = new JSONObject();
     ApprovedCallsAdapter adapter;
     private String selectedDate = "";
     private String selectedHqId = "";
     private String date = "";
     CommonUtilsMethods commonUtilsMethods;
+    private TextView noReport;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_approved_calls, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
-        adapter = new ApprovedCallsAdapter(requireContext(),reportList,reportList1);
+        adapter = new ApprovedCallsAdapter(requireContext(),reportList);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
         TextView calender = view.findViewById(R.id.calender);
         TextView headquarters = view.findViewById(R.id.headquarters_visit);
         EditText searchCust = view.findViewById(R.id.search_cust);
+        noReport = view.findViewById(R.id.noReportFoundTxt);
+        noReport.setVisibility(View.VISIBLE);
         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")){
             headquarters.setVisibility(View.VISIBLE);
             headquarters.setOnClickListener(v -> {
@@ -263,7 +266,9 @@ public class ApprovedCallsFragment extends Fragment {
             monthYearTextView.setText(selected);
             if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")){
                 commonUtilsMethods.showToastMessage(requireContext(),"Please Select HeadQuarters");
+                noReport.setVisibility(View.VISIBLE);
             }else {
+                noReport.setVisibility(View.GONE);
                 getVisitData();
             }
             try {
@@ -365,6 +370,7 @@ public class ApprovedCallsFragment extends Fragment {
                                             }
 
                                             adapter.notifyDataSetChanged();
+                                            noReport.setVisibility(View.GONE);
                                         }
                                     }
                                 } catch (Exception e) {
