@@ -3382,7 +3382,9 @@ public class TourPlanActivity extends AppCompatActivity {
                                                     } else {
                                                         Log.e("outerJsonObject", "'d' key not found in the response body.");
                                                     }
-                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
+                                                    get3MonthRemoteTPDataOneBuild(isClickedName);
+                                                    get3MonthRemoteTPDataOneBuild(isClickedName);
+//                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(jbonj)).toString(), 2));
                                                     binding.progressBar.setVisibility(View.GONE);
                                                     binding.tvSync.setEnabled(true);
                                                 }
@@ -3408,8 +3410,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                             e.printStackTrace();
                                         }
                                         get1MonthRemoteTPDataOneBuild(localDate);
-//                                        get3MonthRemoteTPDataOneBuild(isClickedName);
-//                                        get3MonthRemoteTPDataOneBuild(isClickedName);
+                                        get3MonthRemoteTPDataOneBuild(isClickedName);
+                                        get3MonthRemoteTPDataOneBuild(isClickedName);
 //                                        draftDates.clear();
                                     } else {
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
