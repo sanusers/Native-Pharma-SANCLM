@@ -25,7 +25,6 @@ import saneforce.sanzen.databinding.FragmentHomePreviewBinding;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
-
 public class CustomizedPresentationFragment extends Fragment {
     private FragmentHomePreviewBinding binding;
     PresentationAdapter presentationAdapter;
@@ -47,6 +46,8 @@ public class CustomizedPresentationFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomePreviewBinding.inflate(inflater);
+
+        binding.tabBrandSlide.setVisibility(View.GONE);
 
         binding.tvAz.setOnClickListener(view -> {
             binding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,22 +26,24 @@ import java.util.LinkedHashSet;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
+import saneforce.sanzen.activity.previewPresentation.adapter.SlideWiseAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentHomePreviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 public class HomeBrands extends Fragment {
     FragmentHomePreviewBinding homePreviewBinding;
     public static ArrayList<BrandModelClass> SlideHomeBrandList = new ArrayList<>();
     LinkedHashSet<String> brandCodeList = new LinkedHashSet<>();
-    PreviewAdapter previewAdapter;
+    RecyclerView.Adapter previewAdapter;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private boolean isSlideWiseEnabled = false;
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homePreviewBinding = FragmentHomePreviewBinding.inflate(inflater);
@@ -51,15 +54,47 @@ public class HomeBrands extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         getRequiredData();
 
+        if (SharedPref.getSlideWiseDetailingNeed(requireContext()).equalsIgnoreCase("0")) {
+            homePreviewBinding.tabBrandSlide.setVisibility(View.VISIBLE);
+        } else {
+            homePreviewBinding.tabBrandSlide.setVisibility(View.GONE);
+        }
+
+        homePreviewBinding.brandWise.setOnClickListener(view1 -> {
+            isSlideWiseEnabled = false;
+            homePreviewBinding.brandWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+            homePreviewBinding.brandWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            homePreviewBinding.slideWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+            homePreviewBinding.slideWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+        });
+
+        homePreviewBinding.slideWise.setOnClickListener(view1 -> {
+            isSlideWiseEnabled = true;
+            homePreviewBinding.slideWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+            homePreviewBinding.slideWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            homePreviewBinding.brandWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+            homePreviewBinding.brandWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new SlideWiseAdapter(requireContext(), SlideHomeBrandList);
+            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+        });
+
         homePreviewBinding.tvAz.setOnClickListener(view1 -> {
             homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
             homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
             homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            Collections.sort(SlideHomeBrandList, Comparator.comparing(BrandModelClass::getBrandName));
+            if (isSlideWiseEnabled) {
+                previewAdapter = new SlideWiseAdapter(requireContext(), SlideHomeBrandList);
+            } else {
+                previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            }
             homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideHomeBrandList, Comparator.comparing(BrandModelClass::getBrandName));
         });
 
         homePreviewBinding.tvZa.setOnClickListener(view1 -> {
@@ -67,10 +102,14 @@ public class HomeBrands extends Fragment {
             homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
             homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            Collections.sort(SlideHomeBrandList, Collections.reverseOrder(new BrandMatrix.SortByName()));
+            if (isSlideWiseEnabled) {
+                previewAdapter = new SlideWiseAdapter(requireContext(), SlideHomeBrandList);
+            } else {
+                previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            }
             homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideHomeBrandList, Collections.reverseOrder(new BrandMatrix.SortByName()));
         });
 
         return view;

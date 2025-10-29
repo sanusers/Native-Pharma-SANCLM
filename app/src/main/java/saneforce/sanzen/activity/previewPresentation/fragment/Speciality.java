@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,15 +33,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.fragments.HQSelector;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.previewPresentation.DrSelectionSide;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
+import saneforce.sanzen.activity.previewPresentation.adapter.SlideWiseAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentSpecialityPreviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-
+import saneforce.sanzen.storage.SharedPref;
 
 public class Speciality extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -48,10 +52,12 @@ public class Speciality extends Fragment {
     public static ArrayList<BrandModelClass> SlideSpecialityList = new ArrayList<>();
     public static ArrayList<String> brandCodeList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
-    public static PreviewAdapter previewAdapter;
+    public static RecyclerView.Adapter previewAdapter;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private boolean isSlideWiseEnabled = false;
+    private String hqName = "", hqID = "";
 
     public static void getRequiredData(Context context, String specialityName, MasterDataDao masterDataDao) {
         try {
@@ -67,23 +73,23 @@ public class Speciality extends Fragment {
                 JSONObject productObject = prodSlide.getJSONObject(i);
                 String id = productObject.getString("SlideId");
                 String code = productObject.getString("Code");
-                if(brandToProducts.containsKey(code)){
+                if (brandToProducts.containsKey(code)) {
                     brandToProducts.get(code).put(id, productObject);
-                }else {
+                } else {
                     LinkedHashMap<String, JSONObject> productData = new LinkedHashMap<>();
                     productData.put(id, productObject);
                     brandToProducts.put(code, productData);
                 }
             }
 
-            for(int i = 0; i < brandSlide.length(); i++) {
+            for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
                 String id = brandObject.getString("ID");
-                if(brandToProductWithPriority.containsKey(brandCode)){
+                if (brandToProductWithPriority.containsKey(brandCode)) {
                     brandToProductWithPriority.get(brandCode).put(id, priority);
-                }else{
+                } else {
                     LinkedHashMap<String, String> productsList = new LinkedHashMap<>();
                     productsList.put(id, priority);
                     brandToProductWithPriority.put(brandCode, productsList);
@@ -95,49 +101,49 @@ public class Speciality extends Fragment {
                 String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
                 LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
                 HashMap<String, JSONObject> products = brandToProducts.get(brandCode);
-                if(productWithPriority != null) {
+                if (productWithPriority != null) {
                     for (String productID : productWithPriority.keySet()) {
-                        if(products != null && products.containsKey(productID)) {
+                        if (products != null && products.containsKey(productID)) {
                             JSONObject productObject = products.get(productID);
-                            if(productObject != null) {
+                            if (productObject != null) {
                                 brandName = productObject.getString("Name");
                                 code = productObject.getString("Code");
                                 slideId = productObject.getString("SlideId");
                                 fileName = productObject.getString("FilePath");
                                 slidePriority = productObject.getString("Priority");
-                                if(priority.isEmpty()) priority = "500" + slidePriority;
+                                if (priority.isEmpty()) priority = "500" + slidePriority;
                                 BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
                                 productArrayList.add(product);
                             }
                         }
                     }
-                    if(!productWithPriority.isEmpty() && products != null) {
+                    if (!productWithPriority.isEmpty() && products != null) {
                         for (String productID : productWithPriority.keySet()) {
                             products.remove(productID);
                         }
                     }
                 }
-                if(products != null && !products.isEmpty()) {
+                if (products != null && !products.isEmpty()) {
                     for (String productID : products.keySet()) {
                         JSONObject productObject = products.get(productID);
-                        if(productObject != null) {
+                        if (productObject != null) {
                             brandName = productObject.getString("Name");
                             code = productObject.getString("Code");
                             slideId = productObject.getString("SlideId");
                             fileName = productObject.getString("FilePath");
                             slidePriority = productObject.getString("Priority");
-                            if(priority.isEmpty()) priority = "500" + slidePriority;
+                            if (priority.isEmpty()) priority = "500" + slidePriority;
                             BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
                             productArrayList.add(product);
                         }
                     }
                 }
-                if(!brandName.isEmpty() && !productArrayList.isEmpty()) {
+                if (!brandName.isEmpty() && !productArrayList.isEmpty()) {
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
                     SlideSpecialityList.add(brandModelClass);
                 }
             }
-            if(!SlideSpecialityList.isEmpty()) {
+            if (!SlideSpecialityList.isEmpty()) {
                 BrandModelClass brandModelClass = SlideSpecialityList.get(0);
                 brandModelClass.setBrandSelected(true);
                 SlideSpecialityList.set(0, brandModelClass);
@@ -174,8 +180,8 @@ public class Speciality extends Fragment {
                 specialityPreviewBinding.constraintNoData.setVisibility(View.GONE);
                 specialityPreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
-                specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
-                specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
+//                specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
+//                specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
                 previewAdapter = new PreviewAdapter(context, SlideSpecialityList);
                 specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
                 specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
@@ -207,23 +213,23 @@ public class Speciality extends Fragment {
                 JSONObject productObject = prodSlide.getJSONObject(i);
                 String id = productObject.getString("SlideId");
                 String code = productObject.getString("Code");
-                if(brandToProducts.containsKey(code)){
+                if (brandToProducts.containsKey(code)) {
                     brandToProducts.get(code).put(id, productObject);
-                }else {
+                } else {
                     LinkedHashMap<String, JSONObject> productData = new LinkedHashMap<>();
                     productData.put(id, productObject);
                     brandToProducts.put(code, productData);
                 }
             }
 
-            for(int i = 0; i < brandSlide.length(); i++) {
+            for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
                 String id = brandObject.getString("ID");
-                if(brandToProductWithPriority.containsKey(brandCode)){
+                if (brandToProductWithPriority.containsKey(brandCode)) {
                     brandToProductWithPriority.get(brandCode).put(id, priority);
-                }else{
+                } else {
                     LinkedHashMap<String, String> productsList = new LinkedHashMap<>();
                     productsList.put(id, priority);
                     brandToProductWithPriority.put(brandCode, productsList);
@@ -235,49 +241,49 @@ public class Speciality extends Fragment {
                 String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
                 LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
                 HashMap<String, JSONObject> products = brandToProducts.get(brandCode);
-                if(productWithPriority != null) {
+                if (productWithPriority != null) {
                     for (String productID : productWithPriority.keySet()) {
-                        if(products != null && products.containsKey(productID)) {
+                        if (products != null && products.containsKey(productID)) {
                             JSONObject productObject = products.get(productID);
-                            if(productObject != null && productObject.getString("Speciality_Code").contains(selectedSpecialityCode)) {
+                            if (productObject != null && productObject.getString("Speciality_Code").contains(selectedSpecialityCode)) {
                                 brandName = productObject.getString("Name");
                                 code = productObject.getString("Code");
                                 slideId = productObject.getString("SlideId");
                                 fileName = productObject.getString("FilePath");
                                 slidePriority = productObject.getString("Priority");
-                                if(priority.isEmpty()) priority = "500" + slidePriority;
+                                if (priority.isEmpty()) priority = "500" + slidePriority;
                                 BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
                                 productArrayList.add(product);
                             }
                         }
                     }
-                    if(!productWithPriority.isEmpty() && products != null) {
+                    if (!productWithPriority.isEmpty() && products != null) {
                         for (String productID : productWithPriority.keySet()) {
                             products.remove(productID);
                         }
                     }
                 }
-                if(products != null && !products.isEmpty()) {
+                if (products != null && !products.isEmpty()) {
                     for (String productID : products.keySet()) {
                         JSONObject productObject = products.get(productID);
-                        if(productObject != null && productObject.getString("Speciality_Code").contains(selectedSpecialityCode)) {
+                        if (productObject != null && productObject.getString("Speciality_Code").contains(selectedSpecialityCode)) {
                             brandName = productObject.getString("Name");
                             code = productObject.getString("Code");
                             slideId = productObject.getString("SlideId");
                             fileName = productObject.getString("FilePath");
                             slidePriority = productObject.getString("Priority");
-                            if(priority.isEmpty()) priority = "500" + slidePriority;
+                            if (priority.isEmpty()) priority = "500" + slidePriority;
                             BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
                             productArrayList.add(product);
                         }
                     }
                 }
-                if(!brandName.isEmpty() && !productArrayList.isEmpty()) {
+                if (!brandName.isEmpty() && !productArrayList.isEmpty()) {
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
                     SlideSpecialityList.add(brandModelClass);
                 }
             }
-            if(!SlideSpecialityList.isEmpty()) {
+            if (!SlideSpecialityList.isEmpty()) {
                 BrandModelClass brandModelClass = SlideSpecialityList.get(0);
                 brandModelClass.setBrandSelected(true);
                 SlideSpecialityList.set(0, brandModelClass);
@@ -319,8 +325,8 @@ public class Speciality extends Fragment {
                 specialityPreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
                 if (from_where.equalsIgnoreCase("call")) {
-                    specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
-                    specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
+//                    specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
+//                    specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
                 }
                 previewAdapter = new PreviewAdapter(context, SlideSpecialityList);
                 specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
@@ -339,6 +345,20 @@ public class Speciality extends Fragment {
         }
     }
 
+    private final DcrCallTabLayoutActivity.HQChangeListener hqChangeListener = (String hqID, String hqName) -> {
+        this.hqID = hqID;
+        this.hqName = hqName;
+        Log.i("HQ change", hqID + " -> " + hqName);
+        specialityPreviewBinding.tvSelectHq.setText(hqName);
+        specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
+        specialityPreviewBinding.rvBrandList.setVisibility(View.GONE);
+        specialityPreviewBinding.tvSelectDoctor.setVisibility(View.VISIBLE);
+        specialityPreviewBinding.tvSelectDoctor.setText("");
+        specialityPreviewBinding.tvSelectHq.setVisibility(View.VISIBLE);
+        specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
+        specialityPreviewBinding.viewDummy2.setVisibility(View.GONE);
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -349,8 +369,15 @@ public class Speciality extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
+        if (SharedPref.getSlideWiseDetailingNeed(requireContext()).equalsIgnoreCase("0")) {
+            specialityPreviewBinding.tabBrandSlide.setVisibility(View.VISIBLE);
+        } else {
+            specialityPreviewBinding.tabBrandSlide.setVisibility(View.GONE);
+        }
+
         if (from_where.equalsIgnoreCase("call")) {
             specialityPreviewBinding.tvSelectDoctor.setVisibility(View.GONE);
+            specialityPreviewBinding.tvSelectHq.setVisibility(View.GONE);
             specialityPreviewBinding.tvSelectSpeciality.setVisibility(View.VISIBLE);
             if (CusType.equalsIgnoreCase("1")) {
                 getSelectedSpec(requireContext(), SpecialityCode, SpecialityName, masterDataDao);
@@ -362,6 +389,13 @@ public class Speciality extends Fragment {
             specialityPreviewBinding.tvSelectSpeciality.setVisibility(View.GONE);
             specialityPreviewBinding.rvBrandList.setVisibility(View.GONE);
             specialityPreviewBinding.tvSelectDoctor.setVisibility(View.VISIBLE);
+            if (!SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                specialityPreviewBinding.tvSelectHq.setVisibility(View.VISIBLE);
+            } else {
+                hqID = SharedPref.getSfCode(requireContext());
+                hqName = SharedPref.getSfName(requireContext());
+                specialityPreviewBinding.tvSelectHq.setVisibility(View.GONE);
+            }
             specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
             specialityPreviewBinding.viewDummy2.setVisibility(View.GONE);
         }
@@ -371,10 +405,53 @@ public class Speciality extends Fragment {
             previewBinding.fragmentSelectSpecialistSide.setVisibility(View.VISIBLE);
         });
 
+        HQSelector.setupClickForHQ(
+                this,
+                requireContext(),
+                specialityPreviewBinding.tvSelectHq,
+                masterDataDao,
+                getLayoutInflater(),
+                hqChangeListener::onHQChange);
 
         specialityPreviewBinding.tvSelectDoctor.setOnClickListener(v1 -> {
-            SelectedTab = "Spec";
-            previewBinding.fragmentSelectDrSide.setVisibility(View.VISIBLE);
+            if (specialityPreviewBinding.tvSelectHq.getText().toString().isEmpty() && !SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
+            } else {
+                try {
+                    DrSelectionSide drSelectionSide = (DrSelectionSide) requireActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_select_dr_side);
+                    if (drSelectionSide != null) {
+                        drSelectionSide.setTodayPlanSfCode(hqID);
+                        drSelectionSide.setTodayPlanSfName(hqName);
+                        drSelectionSide.SetDrAdapter();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                SelectedTab = "Spec";
+                previewBinding.fragmentSelectDrSide.setVisibility(View.VISIBLE);
+            }
+        });
+
+        specialityPreviewBinding.brandWise.setOnClickListener(view1 -> {
+            isSlideWiseEnabled = false;
+            specialityPreviewBinding.brandWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+            specialityPreviewBinding.brandWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            specialityPreviewBinding.slideWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+            specialityPreviewBinding.slideWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
+            specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
+        });
+
+        specialityPreviewBinding.slideWise.setOnClickListener(view1 -> {
+            isSlideWiseEnabled = true;
+            specialityPreviewBinding.slideWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+            specialityPreviewBinding.slideWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            specialityPreviewBinding.brandWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+            specialityPreviewBinding.brandWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new SlideWiseAdapter(requireContext(), SlideSpecialityList);
+            specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
         });
 
         specialityPreviewBinding.tvAz.setOnClickListener(v13 -> {
@@ -382,10 +459,14 @@ public class Speciality extends Fragment {
             specialityPreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             specialityPreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
             specialityPreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
+            Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
+            if (isSlideWiseEnabled) {
+                previewAdapter = new SlideWiseAdapter(requireContext(), SlideSpecialityList);
+            } else {
+                previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
+            }
             specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
         });
 
         specialityPreviewBinding.tvZa.setOnClickListener(v12 -> {
@@ -393,10 +474,14 @@ public class Speciality extends Fragment {
             specialityPreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             specialityPreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
             specialityPreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
+            Collections.sort(SlideSpecialityList, Collections.reverseOrder(new BrandMatrix.SortByName()));
+            if (isSlideWiseEnabled) {
+                previewAdapter = new SlideWiseAdapter(requireContext(), SlideSpecialityList);
+            } else {
+                previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
+            }
             specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideSpecialityList, Collections.reverseOrder(new BrandMatrix.SortByName()));
         });
 
         return view;
@@ -409,7 +494,7 @@ public class Speciality extends Fragment {
             String slideId = productObject.getString("SlideId");
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
-            if(priority.isEmpty()) priority = "500" + slidePriority;
+            if (priority.isEmpty()) priority = "500" + slidePriority;
             return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());

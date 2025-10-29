@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -505,6 +504,7 @@ public class SharedPref {
     public static final String SETUP_SYNCED = "setup_synced";
 
     public static final String SLIDE_AUTO_PLAY = "slide_auto_play";
+    public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
 
     public static SharedPreferences.Editor editor;
 
@@ -863,6 +863,7 @@ public class SharedPref {
             editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
             editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("slide_auto_play"));
+            editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
             editor.putString(WELCOME_SLIDES_PATH, "");
 
             editor.apply();
@@ -3159,7 +3160,11 @@ public class SharedPref {
     }
 
     public static String getSlideAutoPlay(Context context) {
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDE_AUTO_PLAY,"0");
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDE_AUTO_PLAY,"1");
+    }
+
+    public static String getSlideWiseDetailingNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED,"1");
     }
 
 }
