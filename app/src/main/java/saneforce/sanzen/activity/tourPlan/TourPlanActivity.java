@@ -112,9 +112,9 @@ public class TourPlanActivity extends AppCompatActivity {
     ArrayList<ModelClass> dayWiseArrayPrevMonth = new ArrayList<>();
     ArrayList<ModelClass> dayWiseArrayNextMonth = new ArrayList<>();
     //OneBuild
-    public  ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
-    public  ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
-    public  ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
+    public ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
+    public ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
+    public ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
 
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
@@ -426,7 +426,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
 
 
-        binding.backArrow.setOnClickListener(view ->  {
+        binding.backArrow.setOnClickListener(view -> {
 
             if (SharedPref.getTpMandatoryNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getTpNeed(TourPlanActivity.this).equalsIgnoreCase("0") &&
                     !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("-1") &&
@@ -439,7 +439,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
         });
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
-            binding.calendarNextButton.setOnClickListener(view ->  {
+            binding.calendarNextButton.setOnClickListener(view -> {
 
                 binding.calendarPrevButton.setEnabled(true);
                 binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
@@ -468,7 +468,7 @@ public class TourPlanActivity extends AppCompatActivity {
             });
 
         } else {
-            binding.calendarNextButton.setOnClickListener(view ->  {
+            binding.calendarNextButton.setOnClickListener(view -> {
 
                 binding.calendarPrevButton.setEnabled(true);
                 binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
@@ -496,7 +496,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
 
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
-            binding.calendarPrevButton.setOnClickListener(view ->  {
+            binding.calendarPrevButton.setOnClickListener(view -> {
 
                 binding.calendarNextButton.setEnabled(true);
                 binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
@@ -527,7 +527,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
             });
         } else {
-            binding.calendarPrevButton.setOnClickListener(view ->  {
+            binding.calendarPrevButton.setOnClickListener(view -> {
 
                 binding.calendarNextButton.setEnabled(true);
                 binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
@@ -558,9 +558,9 @@ public class TourPlanActivity extends AppCompatActivity {
         }
 
 
-        binding.tpNavigation.tpDrawerCloseIcon.setOnClickListener(view ->  {
+        binding.tpNavigation.tpDrawerCloseIcon.setOnClickListener(view -> {
 
-                binding.tpDrawer.closeDrawer(GravityCompat.END);
+            binding.tpDrawer.closeDrawer(GravityCompat.END);
 
         });
 
@@ -813,7 +813,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             //Session Save
-            binding.tpNavigation.sessionSave.setOnClickListener(view ->  {
+            binding.tpNavigation.sessionSave.setOnClickListener(view -> {
              /*   @Override
                 public void onSafeClick(View view) {*/
                 UtilityClass.hideKeyboard(TourPlanActivity.this);
@@ -2385,7 +2385,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     oneBuildModelClasses.add(oneBuildModelClass);
             }
 
-             summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
+            summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
 
                 populateSessionViewAdapterOneBuild(oneBuildmodelClass);
                 binding.tpNavigation.addEditViewTxt.setText("View Plan");
@@ -3331,7 +3331,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
                     TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                     changeStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
-                    if (Objects.equals(changeStatus, "0")  || Objects.equals(changeStatus, "2") ) {
+                    if (Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2")) {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
                         Map<String, String> mapString = new HashMap<>();
                         Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
