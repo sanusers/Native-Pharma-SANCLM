@@ -385,6 +385,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     getDraftSaveOneBuild("next", dayWiseArrayNextMonthOneBuild, isFrom, status);
                                 }
                             } else {
+                                binding.progressBar.setVisibility(View.GONE);
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
                             }
 
@@ -413,6 +414,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     get3MonthRemoteTPData("next");
                                 }
                             } else {
+                                binding.progressBar.setVisibility(View.GONE);
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
                             }
 
@@ -556,11 +558,10 @@ public class TourPlanActivity extends AppCompatActivity {
         }
 
 
-        binding.tpNavigation.tpDrawerCloseIcon.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.tpNavigation.tpDrawerCloseIcon.setOnClickListener(view ->  {
+
                 binding.tpDrawer.closeDrawer(GravityCompat.END);
-            }
+
         });
 
         binding.tpNavigation.itemClear.setOnClickListener(new SafeClickListener() {
@@ -896,6 +897,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
 
+                dataModelOneBuild.setSyncStatus("0");
                 if (!isEmpty) {
                     binding.tpDrawer.closeDrawer(GravityCompat.END);
                     dataModelOneBuild.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
@@ -989,6 +991,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
 
                         } else {
+                            binding.progressBar.setVisibility(View.GONE);
                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
 
                         }
@@ -1293,6 +1296,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 sendWholeMonthStatus(localDate);
                             }
                         } else {
+                            binding.progressBar.setVisibility(View.GONE);
                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
 
                         }
@@ -5049,25 +5053,16 @@ public class TourPlanActivity extends AppCompatActivity {
                         }.getType();
                         if (jsonArray.length() >= 0) {
                             try {
-                                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                                for (OneBuildModelClass modelClass : arrayList) {
-                                    if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
-                                        dummy.add(modelClass.getDayNo());
-                                        switch (isClickedName) {
-                                            case "previous":
-                                                changeApprovalBtnStateOneBuild(dayWiseArrayPreviousMonthOneBuild);
-                                                break;
-                                            case "current":
-                                                changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
-                                                break;
-                                            case "next":
-                                                changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
-                                                break;
-                                        }
-                                        get1MonthRemoteTPDataOneBuild(localDate);
-
+                                switch (isClickedName) {
+                                    case "previous":
+                                        changeApprovalBtnStateOneBuild(dayWiseArrayPreviousMonthOneBuild);
                                         break;
-                                    }
+                                    case "current":
+                                        changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
+                                        break;
+                                    case "next":
+                                        changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
+                                        break;
                                 }
                                 get1MonthRemoteTPDataOneBuild(localDate);
                             } catch (Exception e) {
@@ -5106,29 +5101,23 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
 
-    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String
-            month, String status) {
-
-
+    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String month, String status) {
         for (ModelClass modelClass : arrayList) {
             if (modelClass.getDayNo().equals(date)) {
                 modelClass.setSyncStatus(status);
                 break;
             }
         }
-
         tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
     }
 
     public void saveTpLocalOneBuild(ArrayList<OneBuildModelClass> arrayList, String date, String month, String status) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         for (OneBuildModelClass oneBuildModelClass : arrayList) {
             if (oneBuildModelClass.getDayNo().equals(date)) {
                 oneBuildModelClass.setSyncStatus(status);
                 break;
             }
         }
-
         tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
     }
 

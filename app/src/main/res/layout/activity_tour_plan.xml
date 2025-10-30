@@ -739,11 +739,28 @@
 
         </LinearLayout>
 
+        <!--<FrameLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#AA000000"
+            android:elevation="@dimen/_5sdp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_below="@id/appBar"
+
+            android:visibility="gone">-->
+
+
+
+<!--
+        </FrameLayout>-->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:indeterminateTint="@color/text_dark"
             android:visibility="gone" />
 
