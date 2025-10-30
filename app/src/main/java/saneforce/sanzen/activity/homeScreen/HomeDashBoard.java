@@ -98,6 +98,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.ChatActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
@@ -841,8 +842,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.imgChat.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                ContinuousLogCollector.stopLogging(getApplicationContext());
-//            startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
+//                ContinuousLogCollector.stopLogging(getApplicationContext());
+            startActivity(new Intent(HomeDashBoard.this, ChatActivity.class));
             }
         });
 

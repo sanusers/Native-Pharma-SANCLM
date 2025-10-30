@@ -50,6 +50,7 @@
         android:xlargeScreens="true" />
 
     <application
+        android:name=".application.SanZenApp"
         android:allowBackup="true"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -66,17 +67,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
-        android:name=".application.SanZenApp"
         tools:targetApi="31">
-      <!--  <activity
+        <activity
+            android:name=".activity.ChatActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"  />
+        <!--
+          <activity
             android:name=".activity.reports.missedReport.MissedReportAdapter"
-            android:exported="false" />-->
+            android:exported="false" />
+        -->
         <activity
             android:name=".activity.reports.missedReport.DoctorVisitActivity"
-            android:exported="false" />
-        <!--<activity
+            android:exported="false"
+            android:screenOrientation="landscape"  />
+        <!--
+<activity
             android:name=".dialog_month_year_picker"
-            android:exported="false" />-->
+            android:exported="false" />
+        -->
         <activity
             android:name=".activity.reports.missedReport.monthYear"
             android:exported="false" />
@@ -90,6 +99,7 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
         <receiver
             android:name=".services.NotificationClickReceiver"
             android:exported="false">
@@ -344,13 +354,13 @@
         </activity>
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
-            android:exported="false"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:exported="false"
             android:screenOrientation="landscape" />
-<!--
+        <!--
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
-            -->
+        -->
         <service
             android:name=".services.FirebaseService"
             android:exported="false">
