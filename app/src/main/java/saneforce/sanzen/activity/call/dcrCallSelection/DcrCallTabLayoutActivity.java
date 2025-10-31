@@ -18,6 +18,8 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.CIPFragment;
@@ -296,7 +298,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         }
     }
 
-    private void prepareClusterList() {
+ /*   private void prepareClusterList() {
         try {
             if(WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()){
                 SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode1);
@@ -317,8 +319,30 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
+    }*/
+ private void prepareClusterList() {
+     try {
+         if(WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()){
+             SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode1);
+             SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname1);
+         } else if(WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode2 != null && !WorkPlanFragment.mTowncode2.isEmpty()){
+             SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode2);
+             SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname2);
+         }
+         TodayPlanClusterList.clear();
+         JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + TodayPlanSfCode).getMasterSyncDataJsonArray();
+         List<String> selectedClusterList = Arrays.asList(CommonUtilsMethods.removeLastComma(CommonUtilsMethods.removeDollar(SharedPref.getTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this))).split(","));
+         for (int i = 0; i<jsonArray2.length(); i++) {
+             JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
+             if(selectedClusterList.contains(jsonClusterList.getString("Code"))) {
+                 TodayPlanClusterList.add(jsonClusterList.getString("Code"));
+                 TodayPlanClusterList.add(jsonClusterList.getString("Name"));
+             }
+         }
+     } catch (Exception e) {
+         e.printStackTrace();
+     }
+ }
     @Override
     protected void onResume() {
         super.onResume();

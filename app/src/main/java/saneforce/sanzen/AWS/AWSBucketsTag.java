@@ -76,6 +76,11 @@ public class AWSBucketsTag {
 
                     @Override
                     public void onError(int id, Exception ex) {
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+                            commonUtilsMethods.showToastMessage(context,"Network timeout. Please try again.");
+                        }
 //                        commonUtilsMethods.showToastMessage(context,"Error");
                         ex.printStackTrace();
                     }
@@ -116,6 +121,11 @@ public class AWSBucketsTag {
 
                     @Override
                     public void onError(int id, Exception ex) {
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+                            commonUtilsMethods.showToastMessage(context,"Network timeout. Please try again.");
+                        }
                         ex.printStackTrace();
                     }
                 });

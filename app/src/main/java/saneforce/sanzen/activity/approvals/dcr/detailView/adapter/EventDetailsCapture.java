@@ -97,7 +97,8 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
                                      progressDialog.dismiss();
                                  } else {
                                      Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                                     holder.Imageview.setVisibility(View.GONE);
+                                     holder.Imageview.setVisibility(View.VISIBLE);
+                                     progressDialog.dismiss();
                                  }
                              }
 
@@ -106,6 +107,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
                                  Log.d("bitmap image", "Failed to load image, bitmap is null.");
                                  commonUtilsMethods.showToastMessage(context,"Image Not Found");
                                  holder.Imageview.setVisibility(View.VISIBLE);
+                                 progressDialog.dismiss();
                              }
                          });
                      }

@@ -80,6 +80,11 @@ public class AWSBuckets {
 
                     @Override
                     public void onError(int id, Exception ex) {
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+                            commonUtilsMethods.showToastMessage(context,"Network timeout. Please try again.");
+                        }
                         ex.printStackTrace();
                     }
                 });
@@ -104,14 +109,11 @@ public class AWSBuckets {
                 image_upload.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
-//                        if (TransferState.COMPLETED == state) {
-//                            commonUtilsMethods.showToastMessage(context,"Upload Successful!");
-//
-//
-//
-//                        } else if (TransferState.FAILED == state) {
-//                            commonUtilsMethods.showToastMessage(context,"Upload Failed");
-//                        }
+                        if (TransferState.COMPLETED == state) {
+                            commonUtilsMethods.showToastMessage(context,"Upload Successful!");
+                        } else if (TransferState.FAILED == state) {
+                            commonUtilsMethods.showToastMessage(context,"Upload Failed");
+                        }
                     }
 
                     @Override
@@ -120,6 +122,12 @@ public class AWSBuckets {
 
                     @Override
                     public void onError(int id, Exception ex) {
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+//                            Toast.makeText(context, "Network timeout. Please try again.", Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.showToastMessage(context,"Network timeout. Please try again.");
+                        }
 //                        commonUtilsMethods.showToastMessage(context,"Error");
                         ex.printStackTrace();
                     }

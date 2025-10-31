@@ -79,6 +79,11 @@ public class AWSBucketsSign {
 
                     @Override
                     public void onError(int id, Exception ex) {
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+                            commonUtilsMethods.showToastMessage(context,"Network timeout. Please try again.");
+                        }
                         ex.printStackTrace();
                     }
                 });
@@ -123,7 +128,12 @@ public class AWSBucketsSign {
 
                     @Override
                     public void onError(int id, Exception ex) {
-//                        commonUtilsMethods.showToastMessage(context,"Error");
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+//                            Toast.makeText(context, "Network timeout. Please try again.", Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.showToastMessage(context,"Network timeout. Please try again.");
+                        }
                         ex.printStackTrace();
                     }
                 });
