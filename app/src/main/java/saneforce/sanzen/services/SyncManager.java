@@ -81,16 +81,16 @@ public class SyncManager {
     }
 
     private void getRequiredData() {
-        doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR + hqCode);
+        doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + hqCode);
         specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
         qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
         categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
         departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
         classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
         feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
-        unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + hqCode);
-        chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + hqCode);
-        stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + hqCode);
+        unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + hqCode);
+        chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + hqCode);
+        stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_MAS + hqCode);
         hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + hqCode);
         cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + hqCode);
         inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
@@ -135,12 +135,12 @@ public class SyncManager {
         //Listed Doctor
         doctorModelArray.clear();
         if(SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
-            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(context), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
-            MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
-            MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
-            MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
+            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(context), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
+            MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR_MAS, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
+            MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR_MAS, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
+            MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getcategorys", Constants.CATEGORY, categoryStatus, false);
             //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
-            MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
+            MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR_MAS, "getclass", Constants.CLASS, classStatus, false);
             doctorModelArray.add(doctorModel);
             doctorModelArray.add(spl);
             doctorModelArray.add(ql);
@@ -152,8 +152,8 @@ public class SyncManager {
         //Chemist
         chemistModelArray.clear();
         if(SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
-            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(context), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
-            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
+            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(context), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
+            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
             chemistModelArray.add(cheModel);
             chemistModelArray.add(chemistCategory);
         }
@@ -161,34 +161,34 @@ public class SyncManager {
         //Stockiest
         stockiestModelArray.clear();
         if(SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
-            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(context), Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
+            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(context), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, stockiestStatus, false);
             stockiestModelArray.add(stockModel);
         }
 
         //Unlisted Dr
         unlistedDrModelArray.clear();
         if(SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
-            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(context), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
+            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(context), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, unlistedDrStatus, false);
             unlistedDrModelArray.add(unListModel);
         }
 
         //Hospital
         hospitalModelArray.clear();
         if(SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
-            MasterSyncItemModel hospModel = new MasterSyncItemModel(SharedPref.getHospCaption(context), Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
+            MasterSyncItemModel hospModel = new MasterSyncItemModel(SharedPref.getHospCaption(context), Constants.DOCTOR_MAS, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
             hospitalModelArray.add(hospModel);
         }
 
         //CIP
         cipModelArray.clear();
         if(SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
-            MasterSyncItemModel ciModel = new MasterSyncItemModel(SharedPref.getCipCaption(context), Constants.DOCTOR, "getcip", Constants.CIP + hqCode, cipStatus, false);
+            MasterSyncItemModel ciModel = new MasterSyncItemModel(SharedPref.getCipCaption(context), Constants.DOCTOR_MAS, "getcip", Constants.CIP + hqCode, cipStatus, false);
             cipModelArray.add(ciModel);
         }
 
         //Cluster
         clusterModelArray.clear();
-        MasterSyncItemModel cluster = new MasterSyncItemModel(SharedPref.getClusterCap(context), Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
+        MasterSyncItemModel cluster = new MasterSyncItemModel(SharedPref.getClusterCap(context), Constants.DOCTOR_MAS, "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
         clusterModelArray.add(cluster);
 
         //Input
@@ -224,7 +224,7 @@ public class SyncManager {
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
 
         //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
         dcrModelArray.add(callSyncModel);
@@ -248,9 +248,9 @@ public class SyncManager {
 
         //Work Type
         workTypeModelArray.clear();
-        MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE, Constants.DOCTOR, "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
-        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY, Constants.DOCTOR, "getholiday", Constants.HOLIDAY, holidayStatus, false);
-        MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF, Constants.DOCTOR, "getweeklyoff", Constants.WEEKLY_OFF, weeklyOfStatus, false);
+        MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE, Constants.DOCTOR_MAS, "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
+        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY, Constants.DOCTOR_MAS, "getholiday", Constants.HOLIDAY, holidayStatus, false);
+        MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF, Constants.DOCTOR_MAS, "getweeklyoff", Constants.WEEKLY_OFF, weeklyOfStatus, false);
         workTypeModelArray.add(workType);
         workTypeModelArray.add(holiday);
         workTypeModelArray.add(weeklyOff);
@@ -303,7 +303,7 @@ public class SyncManager {
 
         //Other
         otherModelArray.clear();
-        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
+        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR_MAS, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
         otherModelArray.add(feedback);
         if(SharedPref.getQuizNeed(context).equalsIgnoreCase("0")) {
             MasterSyncItemModel Quiz = new MasterSyncItemModel(Constants.QUIZ, "AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
@@ -451,7 +451,7 @@ public class SyncManager {
             Map<String, String> mapString = new HashMap<>();
             Log.e("API Object", "master sync obj : " + jsonObject);
             Call<JsonElement> call = null;
-            if(masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
+            if(masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                 mapString.put("axn", "table/dcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
             }else if(masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {

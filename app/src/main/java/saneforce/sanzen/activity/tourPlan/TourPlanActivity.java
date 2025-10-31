@@ -117,9 +117,9 @@ public class TourPlanActivity extends AppCompatActivity {
     ArrayList<ModelClass> dayWiseArrayPrevMonth = new ArrayList<>();
     ArrayList<ModelClass> dayWiseArrayNextMonth = new ArrayList<>();
     //OneBuild
-    public  ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
-    public  ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
-    public  ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
+    public ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
+    public ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
+    public ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
 
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
@@ -1063,7 +1063,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             String hqName = "";
                             ArrayList<String> hqCodes = new ArrayList<>();
                             ArrayList<String> hqNames = new ArrayList<>();
-                            for (ModelClass.SessionList.SubClass subClass: modelClass.getHQs()) {
+                            for (ModelClass.SessionList.SubClass subClass : modelClass.getHQs()) {
                                 hqCodes.add(subClass.getCode());
                                 hqNames.add(subClass.getName());
                             }
@@ -1077,7 +1077,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         isClusterNotSelected = true;
                                     }
                                 }
-                                for (ModelClass.SessionList.SubClass subClass: modelClass.getHQs()) {
+                                for (ModelClass.SessionList.SubClass subClass : modelClass.getHQs()) {
                                     if (subClass.getCode().equalsIgnoreCase(multiHQHeaderModelClass.getCode())) {
                                         int index = hqCodes.indexOf(subClass.getCode());
                                         hqCodes.remove(index);
@@ -2437,7 +2437,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     oneBuildModelClasses.add(oneBuildModelClass);
             }
 
-             summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
+            summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
 
                 populateSessionViewAdapterOneBuild(oneBuildmodelClass);
                 binding.tpNavigation.addEditViewTxt.setText("View Plan");
@@ -5251,7 +5251,7 @@ public class TourPlanActivity extends AppCompatActivity {
             SharedPref.setTpStatus(TourPlanActivity.this, false);
         }
     }
-}
+
 
     @Override
     protected void onResume() {
@@ -5269,8 +5269,8 @@ public class TourPlanActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM|WT")) {
-                if(binding.tpDrawer.isOpen()) {
+            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM|WT")) {
+                if (binding.tpDrawer.isOpen()) {
                     binding.tpDrawer.closeDrawer(GravityCompat.END);
                 }
                 startActivity(new Intent(TourPlanActivity.this, TourPlanActivity.class));
@@ -5278,6 +5278,8 @@ public class TourPlanActivity extends AppCompatActivity {
             }
         }
     };
+}
+
 
 
 

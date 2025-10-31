@@ -66,7 +66,7 @@ public class FirebaseService extends FirebaseMessagingService {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    notificationId = random.nextInt(1000);
+                    id = random.nextInt(1000);
                     createNotification();
                 }
             }

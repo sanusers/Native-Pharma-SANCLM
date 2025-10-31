@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
+import saneforce.sanzen.activity.forms.weekoff.WeekOffViewScreen;
 
 public class Forms_adapter extends RecyclerView.Adapter<Forms_adapter.ViewHolder> {
 
@@ -45,7 +45,7 @@ public class Forms_adapter extends RecyclerView.Adapter<Forms_adapter.ViewHolder
             @Override
             public void onSafeClick(View view) {
                 if (frm_listed.getForms_name().equals("Holiday / Weekly off")) {
-                    Intent l = new Intent(context, weekoff_viewscreen.class);
+                    Intent l = new Intent(context, WeekOffViewScreen.class);
                     context.startActivity(l);
                 }
             }

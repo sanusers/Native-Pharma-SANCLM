@@ -33,7 +33,7 @@ import java.util.HashSet;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
+import saneforce.sanzen.activity.forms.weekoff.WeekOffViewScreen;
 import saneforce.sanzen.activity.myresource.Categoryview.Cate_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.DateSyncActivity;
 import saneforce.sanzen.activity.myresource.StockBalanceview.StockBalanceScreen;
@@ -793,7 +793,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         case ("10"):
 
                             MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
-                            Intent l = new Intent(context, weekoff_viewscreen.class);
+                            Intent l = new Intent(context, WeekOffViewScreen.class);
                             context.startActivity(l);
                             MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                             MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
