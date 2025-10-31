@@ -123,7 +123,7 @@ public class TimeUtils {
             D_GivenDate = dateFormat.parse(mGivenDate);
             D_StartDate = dateFormat.parse(mStartDate);
             D_EndDate = dateFormat.parse(mEndDate);
-            if (D_GivenDate != null && D_StartDate != null && D_EndDate != null) {
+            if(D_GivenDate != null && D_StartDate != null && D_EndDate != null) {
                 return D_GivenDate.after(D_StartDate) && D_GivenDate.before(D_EndDate);
             }
         } catch (ParseException e) {
@@ -137,8 +137,8 @@ public class TimeUtils {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_32);
             long differenceInMillis = simpleDateFormat.parse(endTime).getTime() - simpleDateFormat.parse(startTime).getTime();
             long mins = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis);
-            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis)%60;
-            return String.format("%02d:%02d",mins, secs);
+            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis) % 60;
+            return String.format("%02d:%02d", mins, secs);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -175,15 +175,16 @@ public class TimeUtils {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_32);
             long differenceInMillis = simpleDateFormat.parse(endTime).getTime() - simpleDateFormat.parse(startTime).getTime();
             long hrs = TimeUnit.MILLISECONDS.toHours(differenceInMillis);
-            long mins = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)%60;
-            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis)%60;
+            long mins = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis) % 60;
+            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis) % 60;
             return String.format("%02d:%02d:%02d", hrs, mins, secs);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "time";
     }
-    public static String timeConverter(String time){
+
+    public static String timeConverter(String time) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault());
 
@@ -244,12 +245,42 @@ public class TimeUtils {
         int seconds = (int) (millis / 1000) % 60;
         if(format.equalsIgnoreCase(FORMAT_32)) {
             time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-        } else if(format.equalsIgnoreCase(FORMAT_29)) {
+        }else if(format.equalsIgnoreCase(FORMAT_29)) {
             time = String.format("%02d:%02d", hours, minutes);
         } else if(format.equalsIgnoreCase(FORMAT_40)) {
             time = String.format("%02d:%02d", minutes, seconds);
         }
         return time;
+    }
+
+    public static String getFriendlyDate(String inputDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_39);
+        try {
+            Date date = sdf.parse(inputDate);
+            Calendar today = Calendar.getInstance();
+            Calendar yesterday = Calendar.getInstance();
+            yesterday.add(Calendar.DATE, -1);
+
+            Calendar inputCal = Calendar.getInstance();
+            assert date != null;
+            inputCal.setTime(date);
+
+            if(isSameDay(inputCal, today)) {
+                return "Today " + GetConvertedDate(FORMAT_39, FORMAT_40, inputDate);
+            }else if(isSameDay(inputCal, yesterday)) {
+                return "Yesterday " + GetConvertedDate(FORMAT_39, FORMAT_40, inputDate);
+            }else {
+                return inputDate;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return inputDate;
+        }
+    }
+
+    private static boolean isSameDay(Calendar cal1, Calendar cal2) {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 
 }

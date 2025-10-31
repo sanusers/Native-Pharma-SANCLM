@@ -1,6 +1,10 @@
 package saneforce.sanzen.activity.standardTourPlan.unplannedVisitScreen;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,6 +12,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +27,7 @@ import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.NoDataModel;
@@ -310,5 +316,28 @@ public class UnplannedVisitActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+    }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM")) {
+                startActivity(new Intent(UnplannedVisitActivity.this, StandardTourPlanActivity.class));
+                finish();
+            }
+        }
+    };
 
 }
