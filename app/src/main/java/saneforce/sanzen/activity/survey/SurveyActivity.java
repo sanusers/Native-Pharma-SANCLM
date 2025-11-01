@@ -223,7 +223,7 @@ public class SurveyActivity extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 if (SharedPref.getSfType(SurveyActivity.this).equalsIgnoreCase("2") && surveyBinding.tvHeadquarters.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.select_head_quarter));
+                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.select_hq));
                 } else {
                     ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
                     try {

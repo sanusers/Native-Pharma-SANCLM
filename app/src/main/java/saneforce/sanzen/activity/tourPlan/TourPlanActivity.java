@@ -4708,8 +4708,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return null;
     }
 
-    public void prepareObjectToSendForApproval(String month, String
-            dateForApproval, ArrayList<ModelClass> arrayList, boolean statusOffline) {
+    public void prepareObjectToSendForApproval(String month, String dateForApproval, ArrayList<ModelClass> arrayList, boolean statusOffline) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
             @Override
             public void isNetworkAvailable(Boolean status) {
@@ -5011,9 +5010,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return stringBuilder.toString();
     }
 
-    public void sendTpForApproval(JSONArray
-                                          jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String
-                                          month, Boolean statusOffline) {
+    public void sendTpForApproval(JSONArray jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month, Boolean statusOffline) {
         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
         Log.v("tpApproval", "--json--" + jsonArray.toString());
         Map<String, String> mapString = new HashMap<>();
@@ -5062,11 +5059,10 @@ public class TourPlanActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                         saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
                     }
-
+                    binding.progressBar.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     if (statusOffline) {
                         binding.progressBar.setVisibility(View.GONE);
-
                     }
                     e.printStackTrace();
                 }

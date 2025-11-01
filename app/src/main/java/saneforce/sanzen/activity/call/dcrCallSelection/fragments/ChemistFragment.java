@@ -227,6 +227,7 @@ public class ChemistFragment extends Fragment {
 //        }
         HQSelector.setupHQSelector(
                 this,
+                requireContext(),
                 tv_hqName,
                 img_drop_down,
                 masterDataDao,

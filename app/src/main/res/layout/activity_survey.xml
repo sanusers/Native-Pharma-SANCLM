@@ -389,7 +389,7 @@
                                             android:layout_margin="@dimen/_1sdp"
                                             android:layout_toStartOf="@id/img_arrow"
                                             android:fontFamily="@font/satoshi_medium"
-                                            android:hint="@string/select_head_quarter"
+                                            android:hint="@string/select_hq"
                                             android:padding="@dimen/_4sdp"
                                             android:textColor="@color/text_dark"
                                             android:textColorHint="@color/text_dark"

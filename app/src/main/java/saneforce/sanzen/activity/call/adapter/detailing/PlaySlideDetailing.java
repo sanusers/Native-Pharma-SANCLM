@@ -72,6 +72,7 @@ import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityPlaySlidePreviewDetailingBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class PlaySlideDetailing extends AppCompatActivity {
@@ -102,6 +103,12 @@ public class PlaySlideDetailing extends AppCompatActivity {
         itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
+        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("0")) {
+            binding.playBtn.setVisibility(View.GONE);
+        } else {
+            binding.playBtn.setVisibility(View.VISIBLE);
+        }
+        itemsPagerAdapter.autoPlaySlide(0, 1);
     }
 
     public static void populateBottomViewAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
@@ -183,7 +190,11 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     case "zip":
                     case "htm":
                     case "html": {
-                        binding.playBtn.setVisibility(View.VISIBLE);
+                        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("0")) {
+                            binding.playBtn.setVisibility(View.GONE);
+                        } else {
+                            binding.playBtn.setVisibility(View.VISIBLE);
+                        }
                         break;
                     }
                     default: {
@@ -193,6 +204,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
                 progress = (100 / (double) arrayList.size()) * (position + 1);
                 binding.progressBar.setProgress((int) progress);
+                itemsPagerAdapter.autoPlaySlide(position, 1);
             }
 
             @Override
@@ -332,9 +344,13 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 if (binding.videoView.isPlaying()) {
                     binding.videoView.stopPlayback();
                 }
-                binding.webView.loadUrl("about:blank");
-                binding.webView.clearHistory();
-                binding.webView.clearCache(false);
+                try {
+                    binding.webView.loadUrl("about:blank");
+                    binding.webView.clearHistory();
+                    binding.webView.clearCache(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 playBtnClicked = false;
                 binding.playBtn.setImageResource(R.drawable.play_icon);
                 binding.viewPager.setVisibility(View.VISIBLE);
@@ -555,6 +571,12 @@ public class PlaySlideDetailing extends AppCompatActivity {
         binding.viewPager.setAdapter(itemsPagerAdapter);
         binding.viewPager.setCurrentItem(SelectedPos);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
+        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("0")) {
+            binding.playBtn.setVisibility(View.GONE);
+        } else {
+            binding.playBtn.setVisibility(View.VISIBLE);
+        }
+        itemsPagerAdapter.autoPlaySlide(0, 1);
     }
 
     public void populateBottomViewAdapter() {

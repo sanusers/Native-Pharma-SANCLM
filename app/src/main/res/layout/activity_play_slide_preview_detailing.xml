@@ -56,7 +56,6 @@
             app:layout_constraintTop_toBottomOf="@id/img_not_found" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
@@ -86,7 +85,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rightLayout"
@@ -211,6 +209,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintVertical_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -234,7 +233,6 @@
             android:src="@drawable/arrow_back_white" />
 
     </RelativeLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomLayout"
@@ -432,18 +430,18 @@
         app:tint="@color/white" />
 
     <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/progress_anim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/progress_anim"
+        android:background="@color/white"
+        android:padding="@dimen/_20sdp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="false"
-        app:lottie_rawRes="@raw/file_transfer"
-        android:padding="@dimen/_20sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:lottie_rawRes="@raw/file_transfer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
