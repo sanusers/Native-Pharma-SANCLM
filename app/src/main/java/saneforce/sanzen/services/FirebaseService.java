@@ -58,39 +58,82 @@ public class FirebaseService extends FirebaseMessagingService {
         if(SharedPref.getSettingState(getApplicationContext())) {
             if(SharedPref.getLoginState(getApplicationContext())) {
                 if(remoteMessage.getNotification() != null) {
-                    imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
-                    title = remoteMessage.getNotification().getTitle();
-                    body = remoteMessage.getNotification().getBody();
-                    time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
+                    try {
+                        imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
+                        title = remoteMessage.getNotification().getTitle();
+                        body = remoteMessage.getNotification().getBody();
+                        time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
 //                    notificationId = random.nextInt(1000);
 
-                    hqCode = SharedPref.getHqCode(this);
-                    if(hqCode == null || hqCode.isEmpty()) {
-                        hqCode = SharedPref.getSfCode(this);
-                    }
-                    if(body.contains("$")) {
-                        try {
-                            id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1));
-                            if(body.contains("-MR")) {
-                                type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
-                                hqCode = body.substring(body.lastIndexOf("-MR") + 1);
-                            }else {
-                                type = body.substring(body.lastIndexOf("$") + 1);
+                        hqCode = SharedPref.getHqCode(this);
+                        if (hqCode == null || hqCode.isEmpty()) {
+                            hqCode = SharedPref.getSfCode(this);
+                        }
+                        if (body.contains("$")) {
+                            try {
+                                id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1));
+                                if (body.contains("-MR")) {
+                                    type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
+                                    hqCode = body.substring(body.lastIndexOf("-MR") + 1);
+                                } else {
+                                    type = body.substring(body.lastIndexOf("$") + 1);
+                                }
+                                body = body.substring(0, body.lastIndexOf("$"));
+                                showNotificationDialog();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            body = body.substring(0, body.lastIndexOf("$"));
-                            showNotificationDialog();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } else {
+                            try {
+                                notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }else {
-                        try {
-                            notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
 
-                    createNotification();
+                        createNotification();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else if (!remoteMessage.getData().isEmpty()) {
+                    try {
+                        title = remoteMessage.getData().get("title");
+                        body = remoteMessage.getData().get("message");
+                        imageUrl = remoteMessage.getData().get("imageUrl");
+                        time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
+                        Log.i("Notification", "onMessageReceived: data -> " + title + " -> " + body);
+                        hqCode = SharedPref.getHqCode(this);
+                        if (hqCode == null || hqCode.isEmpty()) {
+                            hqCode = SharedPref.getSfCode(this);
+                        }
+                        if (body.contains("$")) {
+                            try {
+                                Log.i("Notification", "onMessageReceived: onSave -> " + title + " -> " + body);
+                                id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1));
+                                Log.i("Notification", "onMessageReceived: postSave -> " + title + " -> " + body + " -> " + id);
+                                if (body.contains("-MR")) {
+                                    type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
+                                    hqCode = body.substring(body.lastIndexOf("-MR") + 1);
+                                } else {
+                                    type = body.substring(body.lastIndexOf("$") + 1);
+                                }
+                                body = body.substring(0, body.lastIndexOf("$"));
+                                showNotificationDialog();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        createNotification();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
