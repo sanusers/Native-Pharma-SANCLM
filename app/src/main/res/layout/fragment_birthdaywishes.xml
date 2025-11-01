@@ -214,6 +214,7 @@
                     android:textStyle="bold"
                     android:paddingVertical="4dp"/>
 
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
