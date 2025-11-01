@@ -4,38 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gray_border"
     android:orientation="vertical">
-
-    <!-- Optional: year box (can be hidden if not needed) -->
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="@dimen/_50sdp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="@dimen/_6sdp"-->
-    <!--        android:layout_marginStart="@dimen/_4sdp"-->
-    <!--        android:layout_gravity="right"-->
-    <!--        android:layout_marginEnd="@dimen/_4sdp"-->
-    <!--        android:paddingBottom="@dimen/_4sdp">-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="@dimen/_50sdp"-->
-    <!--            android:layout_height="@dimen/_20sdp"-->
-    <!--            android:padding="@dimen/_4sdp"-->
-    <!--            android:background="@drawable/gray_border"-->
-    <!--            android:orientation="horizontal">-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/holy_year"-->
-    <!--                android:layout_width="@dimen/_40sdp"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:fontFamily="@font/satoshi_bold"-->
-    <!--                android:layout_marginStart="@dimen/_2sdp"-->
-    <!--                android:gravity="center"-->
-    <!--                android:text="2023"-->
-    <!--                android:textColor="#808B96"-->
-    <!--                android:textSize="@dimen/_8sdp"-->
-    <!--                tools:ignore="SpUsage" />-->
-    <!--        </LinearLayout>-->
-    <!--    </LinearLayout>-->
 
     <!-- No Data Layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -80,10 +50,227 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- RecyclerView to show Name + Birthday Date -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/anniversaryList"
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Today -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
+            <TextView
+                android:id="@+id/header_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today "
+                android:textColor="@color/Green_45"
+                android:background="@drawable/gray_border"
+                android:backgroundTint="@color/green_10"
+                android:padding="5dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingVertical="4dp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="#BDBDBD" />
+        </LinearLayout>
+            <ListView
+                android:id="@+id/list_today"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:nestedScrollingEnabled="false"
+                android:scrollbars="none"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:padding="0dp"
+                android:transcriptMode="normal"
+                android:stackFromBottom="false"/>
+            <TextView
+                android:id="@+id/txtTodayNoData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text=" No Anniversary's Today!! "
+                android:visibility="gone"
+                android:textColor="@color/gray_20"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:padding="8dp" />
+<!--            <ListView-->
+<!--                android:id="@+id/list_today"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:divider="@null"-->
+<!--                android:dividerHeight="0dp"-->
+<!--                android:scrollbars="none" />-->
+
+            <!-- Upcoming -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp">
+
+                <TextView
+                    android:id="@+id/header_upcoming"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Upcoming"
+                    android:textColor="@color/bg_blue"
+                    android:background="@drawable/bg_light_blue"
+                    android:backgroundTint="@color/bg_lite_blue"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingVertical="4dp"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="#BDBDBD" />
+
+            </LinearLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/header_upcoming"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="— Upcoming —"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="16sp"-->
+<!--                android:padding="8dp"-->
+<!--                android:textColor="@android:color/black" />-->
+            <ListView
+                android:id="@+id/list_upcoming"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:nestedScrollingEnabled="false"
+                android:scrollbars="none"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:padding="0dp"
+                android:transcriptMode="normal"
+                android:stackFromBottom="false"/>
+            <TextView
+                android:id="@+id/txtUpcomingNoData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text=" No Anniversary's Upcoming!! "
+                android:visibility="gone"
+                android:textColor="@color/gray_20"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:padding="8dp" />
+<!--            <ListView-->
+<!--                android:id="@+id/list_upcoming"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:divider="@null"-->
+<!--                android:dividerHeight="0dp"-->
+<!--                android:scrollbars="none" />-->
+
+            <!-- Belated -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp">
+
+                <TextView
+                    android:id="@+id/header_belated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Belated"
+                    android:textColor="@color/pink"
+                    android:background="@color/bg_grey_70"
+                    android:backgroundTint="@color/text_sync_bg"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingVertical="4dp"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="#BDBDBD" />
+            </LinearLayout>
+
+            <!--            <TextView-->
+<!--                android:id="@+id/header_belated"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="— Belated —"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="16sp"-->
+<!--                android:padding="8dp"-->
+<!--                android:textColor="@android:color/black" />-->
+            <ListView
+                android:id="@+id/list_belated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:nestedScrollingEnabled="false"
+                android:scrollbars="none"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:padding="0dp"
+                android:transcriptMode="normal"
+                android:stackFromBottom="false"/>
+            <TextView
+                android:id="@+id/txtBelatedNoData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="No Anniversary's Belated!! "
+                android:visibility="gone"
+                android:textColor="@color/gray_20"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:padding="8dp" />
+<!--            <ListView-->
+<!--                android:id="@+id/list_belated"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:divider="@null"-->
+<!--                android:dividerHeight="0dp"-->
+<!--                android:scrollbars="none" />-->
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
+<!--    <ListView-->
+<!--        android:id="@+id/anniversaryList"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_weight="1"-->
+<!--        android:divider="@android:color/darker_gray"-->
+<!--        android:dividerHeight="1dp"-->
+<!--        android:visibility="visible" />-->
+<!--</LinearLayout>-->

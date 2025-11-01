@@ -1,17 +1,33 @@
 package saneforce.sanzen.activity.forms.birthdayAnniversary;
 
-public class birthdayModel {
+import java.io.Serializable;
+
+public class birthdayModel implements Serializable {
+//public class birthdayModel {
 
     String doctorName;
     String birthDate;
+    //String Place;
+    // private String name;
+    private String code;
+    private String territory;
+    private String qualification;
+    private String category;
+    private String speciality;
+    private String className;
+    // String color;
 
-  String color;
-
-    public birthdayModel(String doctorName, String birthDate ) {
+    public birthdayModel(String doctorName, String birthDate,
+                         String code, String territory, String qualification,
+                         String category, String speciality, String className) {
         this.doctorName = doctorName;
         this.birthDate = birthDate;
-       this.color = color;
-
+        this.code = code;
+        this.territory = territory;
+        this.qualification = qualification;
+        this.category = category;
+        this.speciality = speciality;
+        this.className = className;
     }
 
     public String getDoctorName() {
@@ -30,14 +46,45 @@ public class birthdayModel {
         this.birthDate = birthDate;
     }
 
-    public String getColor() {
-        return color;
+    public String getcode() {
+        return code;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public String getTerritory() {
+        return territory;
     }
 
+    public String getQualification() {
+        return qualification;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getSpeciality() {
+        return speciality;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setSpeciality(String speciality) {
+        this.speciality = speciality;
+    }
+
+    public void setQualification(String qualification) {
+        this.qualification = qualification;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
 //    public String getAnniversaryDate() {
 //        return anniversaryDate;
 //    }

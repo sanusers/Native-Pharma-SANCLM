@@ -54,7 +54,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
@@ -69,7 +68,6 @@ import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.ActivityMasterSyncBinding;
@@ -221,27 +219,21 @@ public class MasterSyncActivity extends AppCompatActivity {
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             binding.listedDr.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getDrCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(doctorModelArray);
         } else if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
             binding.chemist.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getChmCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(chemistModelArray);
         } else if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
             binding.stockiest.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getStkCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(stockiestModelArray);
         } else if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
             binding.unlistedDoctor.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getUNLcap(MasterSyncActivity.this));
             arrayForAdapter.addAll(unlistedDrModelArray);
         } else if (SharedPref.getCipNeed(this).equalsIgnoreCase("0")) {
             binding.cip.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getCipCaption(MasterSyncActivity.this));
             arrayForAdapter.addAll(cipModelArray);
         } else if (SharedPref.getHospNeed(this).equalsIgnoreCase("0")) {
             binding.hospital.setSelected(true);
-            binding.childSync.setText("Sync "+SharedPref.getHospCaption(MasterSyncActivity.this));
             arrayForAdapter.addAll(hospitalModelArray);
         } else {
             binding.cluster.setSelected(true);
@@ -278,438 +270,362 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
 
-        binding.backArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.backArrow.setOnClickListener(view -> {
 //            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
-                Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+            Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
 //            } else {
 //                getOnBackPressedDispatcher().onBackPressed();
 //            }
-            }
         });
 
-        binding.imgDownloading.setOnClickListener(new SafeClickListener() {
+        binding.imgDownloading.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSafeClick(View view) {
+            public void onClick(View view) {
                 SlideAlertbox(false);
                 welcomeSlideAlertBox(false);
             }
         });
 
 
-        binding.hq.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.hq.setOnClickListener(view -> {
 
-                try {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                    ArrayList<String> list = new ArrayList<>();
+            try {
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+                ArrayList<String> list = new ArrayList<>();
 
-                    if (jsonArray.length() > 0) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            list.add(jsonObject.getString("name"));
-                        }
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        list.add(jsonObject.getString("name"));
+                    }
+                }
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MasterSyncActivity.this);
+                LayoutInflater inflater = MasterSyncActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_listview, null);
+                alertDialog.setView(dialogView);
+                TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
+                ListView listView = dialogView.findViewById(R.id.listView);
+                SearchView searchView = dialogView.findViewById(R.id.searchET);
+
+                headerTxt.setText(getResources().getText(R.string.select_hq));
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MasterSyncActivity.this, android.R.layout.simple_list_item_1, list);
+                listView.setAdapter(adapter);
+                AlertDialog dialog = alertDialog.create();
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String s) {
+                        adapter.getFilter().filter(s);
+                        return false;
                     }
 
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MasterSyncActivity.this);
-                    LayoutInflater inflater = MasterSyncActivity.this.getLayoutInflater();
-                    View dialogView = inflater.inflate(R.layout.dialog_listview, null);
-                    alertDialog.setView(dialogView);
-                    TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
-                    ListView listView = dialogView.findViewById(R.id.listView);
-                    SearchView searchView = dialogView.findViewById(R.id.searchET);
-
-                    headerTxt.setText(getResources().getText(R.string.select_hq));
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MasterSyncActivity.this, android.R.layout.simple_list_item_1, list);
-                    listView.setAdapter(adapter);
-                    AlertDialog dialog = alertDialog.create();
-
-                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String s) {
-                            adapter.getFilter().filter(s);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onQueryTextChange(String s) {
-                            adapter.getFilter().filter(s);
-                            return false;
-                        }
-                    });
-                    listView.setOnItemClickListener((adapterView, view1, position, l) -> {
-                        String selectedHq = listView.getItemAtPosition(position).toString();
-                        binding.hqName.setText(selectedHq);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            try {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                                    rsf = jsonObject.getString("id");
-                                    //myresource
-                                    prepareArray(rsf); // replace the new rsf value
-                                    masterSyncAll(true);
-                                    break;
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        dialog.dismiss();
-                    });
-
-                    alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
-
-                    dialog.show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                UtilityClass.hideKeyboard(MasterSyncActivity.this);
-            }
-        });
-
-        binding.listedDr.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.listedDr);
-                    binding.childSync.setText("Sync "+SharedPref.getDrCap(MasterSyncActivity.this));
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(doctorModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.chemist.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.chemist);
-                    binding.childSync.setText("Sync "+SharedPref.getChmCap(MasterSyncActivity.this));
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(chemistModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.stockiest.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.stockiest);
-                    binding.childSync.setText("Sync "+SharedPref.getStkCap(MasterSyncActivity.this));
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(stockiestModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.unlistedDoctor.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.unlistedDoctor);
-                    binding.childSync.setText("Sync "+SharedPref.getUNLcap(MasterSyncActivity.this));
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(unlistedDrModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.hospital.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.hospital);
-                    binding.childSync.setText("Sync "+SharedPref.getHospCaption(MasterSyncActivity.this));
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(hospitalModelArray);
-                    arrayForAdapter.addAll(hospitalModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.cip.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.cip);
-                    binding.childSync.setText("Sync "+SharedPref.getCipCaption(MasterSyncActivity.this));
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(cipModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.input.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.input);
-                    binding.childSync.setText("Sync Input");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(inputModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.product.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.product);
-                    binding.childSync.setText("Sync Product");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(productModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.cluster.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.cluster);
-                    binding.childSync.setText("Sync "+SharedPref.getClusterCap(MasterSyncActivity.this));
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(clusterModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.leave.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.leave);
-                    binding.childSync.setText("Sync Leave");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(leaveModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.dcr.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.dcr);
-                    binding.childSync.setText("Sync DCR");
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(dcrModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.activity.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.activity);
-                    binding.childSync.setText("Sync "+SharedPref.getActivityCap(MasterSyncActivity.this));
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(activityModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.workType.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.workType);
-                    binding.childSync.setText("Sync Work Type");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(workTypeModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.tourPlan.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.tourPlan);
-                    binding.childSync.setText("Sync Tour Plan");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(tpModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.slide.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.slide);
-                    binding.childSync.setText("Sync Slide");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(slideModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.subordinate.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.subordinate);
-                    binding.childSync.setText("Sync Subordinate");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(subordinateModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-        binding.Other.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.Other);
-                    binding.childSync.setText("Sync Other");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(otherModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-        binding.Profile.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.Profile);
-                    binding.childSync.setText("Sync Profile");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(profileModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.setup.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (!view.isSelected()) {
-                    listItemClicked(binding.setup);
-                    binding.childSync.setText("Sync Setup");
-
-                    arrayForAdapter.clear();
-                    arrayForAdapter.addAll(setupModelArray);
-                    populateAdapter(arrayForAdapter);
-                }
-            }
-        });
-
-        binding.childSync.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                ArrayList<MasterSyncItemModel> arrayList = new ArrayList<>();
-
-                NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                    @SuppressLint("NotifyDataSetChanged")
                     @Override
-                    public void isNetworkAvailable(Boolean status) {
-                        if (status) {
-                            if (binding.listedDr.isSelected()) {
-                                arrayList.addAll(doctorModelArray);
-                            } else if (binding.chemist.isSelected()) {
-                                arrayList.addAll(chemistModelArray);
-                            } else if (binding.stockiest.isSelected()) {
-                                arrayList.addAll(stockiestModelArray);
-                            } else if (binding.unlistedDoctor.isSelected()) {
-                                arrayList.addAll(unlistedDrModelArray);
-                            } else if (binding.hospital.isSelected()) {
-                                arrayList.addAll(hospitalModelArray);
-                            } else if (binding.cip.isSelected()) {
-                                arrayList.addAll(cipModelArray);
-                            } else if (binding.input.isSelected()) {
-                                arrayList.addAll(inputModelArray);
-                            } else if (binding.product.isSelected()) {
-                                arrayList.addAll(productModelArray);
-                            } else if (binding.cluster.isSelected()) {
-                                arrayList.addAll(clusterModelArray);
-                            } else if (binding.leave.isSelected()) {
-                                arrayList.addAll(leaveModelArray);
-                            } else if (binding.dcr.isSelected()) {
-                                arrayList.addAll(dcrModelArray);
-                            } else if (binding.activity.isSelected()) {
-                                arrayList.addAll(activityModelArray);
-                            } else if (binding.workType.isSelected()) {
-                                arrayList.addAll(workTypeModelArray);
-                            } else if (binding.tourPlan.isSelected()) {
-                                arrayList.addAll(tpModelArray);
-                            } else if (binding.slide.isSelected()) {
-                                arrayList.addAll(slideModelArray);
-                            } else if (binding.subordinate.isSelected()) {
-                                arrayList.addAll(subordinateModelArray);
-                            } else if (binding.Other.isSelected()) {
-                                arrayList.addAll(otherModelArray);
-                            } else if (binding.Profile.isSelected()) {
-                                arrayList.addAll(profileModelArray);
-                            } else if (binding.setup.isSelected()) {
-                                arrayList.addAll(setupModelArray);
-                            }
-
-                            for (int i = 0; i < arrayList.size(); i++) {
-                                arrayForAdapter.get(i).setPBarVisibility(true);
-                                masterSyncAdapter.notifyDataSetChanged();
-                                if (arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
-                                    setDelayForDayPlanSync(arrayList, i);
-                                } else {
-                                    sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
-                                }
-                            }
-                        } else {
-                            commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
-                        }
+                    public boolean onQueryTextChange(String s) {
+                        adapter.getFilter().filter(s);
+                        return false;
                     }
                 });
-                networkStatusTask.execute();
+                listView.setOnItemClickListener((adapterView, view1, position, l) -> {
+                    String selectedHq = listView.getItemAtPosition(position).toString();
+                    binding.hqName.setText(selectedHq);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
+                                rsf = jsonObject.getString("id");
+                                //myresource
+                                prepareArray(rsf); // replace the new rsf value
+                                masterSyncAll(true);
+                                break;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    dialog.dismiss();
+                });
+
+                alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+
+                dialog.show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            UtilityClass.hideKeyboard(MasterSyncActivity.this);
+
+        });
+
+        binding.listedDr.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.listedDr);
+                binding.childSync.setText("Sync Listed Doctor");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(doctorModelArray);
+                populateAdapter(arrayForAdapter);
             }
         });
 
-        binding.masterSyncAll.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                binding.masterSyncAll.setEnabled(false);
-                masterSyncAll(false);
-                new Handler().postDelayed(() -> binding.masterSyncAll.setEnabled(true), 3000);
+        binding.chemist.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.chemist);
+                binding.childSync.setText("Sync Chemist");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(chemistModelArray);
+                populateAdapter(arrayForAdapter);
             }
+        });
+
+        binding.stockiest.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.stockiest);
+                binding.childSync.setText("Sync Stockiest");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(stockiestModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.unlistedDoctor.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.unlistedDoctor);
+                binding.childSync.setText("Sync Unlisted Doctor");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(unlistedDrModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.hospital.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.hospital);
+                binding.childSync.setText("Sync Hospital");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(hospitalModelArray);
+                arrayForAdapter.addAll(hospitalModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.cip.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.cip);
+                binding.childSync.setText("Sync CIP");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(cipModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.input.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.input);
+                binding.childSync.setText("Sync Input");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(inputModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.product.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.product);
+                binding.childSync.setText("Sync Product");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(productModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.cluster.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.cluster);
+                binding.childSync.setText("Sync Cluster");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(clusterModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.leave.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.leave);
+                binding.childSync.setText("Sync Leave");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(leaveModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.dcr.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.dcr);
+                binding.childSync.setText("Sync DCR");
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(dcrModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.activity.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.activity);
+                binding.childSync.setText("Sync Activity");
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(activityModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.workType.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.workType);
+                binding.childSync.setText("Sync Work Type");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(workTypeModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.tourPlan.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.tourPlan);
+                binding.childSync.setText("Sync Tour Plan");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(tpModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.slide.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.slide);
+                binding.childSync.setText("Sync Slide");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(slideModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.subordinate.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.subordinate);
+                binding.childSync.setText("Sync Subordinate");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(subordinateModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+
+        });
+        binding.Other.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.Other);
+                binding.childSync.setText("Sync Other");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(otherModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+
+        });
+
+
+        binding.setup.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.setup);
+                binding.childSync.setText("Sync Setup");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(setupModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
+        binding.childSync.setOnClickListener(view -> {
+            ArrayList<MasterSyncItemModel> arrayList = new ArrayList<>();
+
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void isNetworkAvailable(Boolean status) {
+                    if (status) {
+                        if (binding.listedDr.isSelected()) {
+                            arrayList.addAll(doctorModelArray);
+                        } else if (binding.chemist.isSelected()) {
+                            arrayList.addAll(chemistModelArray);
+                        } else if (binding.stockiest.isSelected()) {
+                            arrayList.addAll(stockiestModelArray);
+                        } else if (binding.unlistedDoctor.isSelected()) {
+                            arrayList.addAll(unlistedDrModelArray);
+                        } else if (binding.hospital.isSelected()) {
+                            arrayList.addAll(hospitalModelArray);
+                        } else if (binding.cip.isSelected()) {
+                            arrayList.addAll(cipModelArray);
+                        } else if (binding.input.isSelected()) {
+                            arrayList.addAll(inputModelArray);
+                        } else if (binding.product.isSelected()) {
+                            arrayList.addAll(productModelArray);
+                        } else if (binding.cluster.isSelected()) {
+                            arrayList.addAll(clusterModelArray);
+                        } else if (binding.leave.isSelected()) {
+                            arrayList.addAll(leaveModelArray);
+                        } else if (binding.dcr.isSelected()) {
+                            arrayList.addAll(dcrModelArray);
+                        } else if (binding.activity.isSelected()) {
+                            arrayList.addAll(activityModelArray);
+                        } else if (binding.workType.isSelected()) {
+                            arrayList.addAll(workTypeModelArray);
+                        } else if (binding.tourPlan.isSelected()) {
+                            arrayList.addAll(tpModelArray);
+                        } else if (binding.slide.isSelected()) {
+                            arrayList.addAll(slideModelArray);
+                        } else if (binding.subordinate.isSelected()) {
+                            arrayList.addAll(subordinateModelArray);
+                        } else if (binding.Other.isSelected()) {
+                            arrayList.addAll(otherModelArray);
+                        } else if (binding.setup.isSelected()) {
+                            arrayList.addAll(setupModelArray);
+                        }
+
+                        for (int i = 0; i < arrayList.size(); i++) {
+                            arrayForAdapter.get(i).setPBarVisibility(true);
+                            masterSyncAdapter.notifyDataSetChanged();
+                            if (arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
+                                setDelayForDayPlanSync(arrayList, i);
+                            } else {
+                                sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
+                            }
+                        }
+                    } else {
+                        commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
+                    }
+                }
+            });
+            networkStatusTask.execute();
+
+        });
+
+        binding.masterSyncAll.setOnClickListener(v -> {
+            binding.masterSyncAll.setEnabled(false);
+            masterSyncAll(false);
+            new Handler().postDelayed(() -> binding.masterSyncAll.setEnabled(true), 3000);
         });
     }
 
@@ -792,7 +708,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
         QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
         SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
-        profileStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROFILE);
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
         if (doctorStatus == 1 || doctorGeoStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
             binding.syncFailedImageDr.setVisibility(View.VISIBLE);
@@ -844,9 +759,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
         if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
             binding.syncFailedImageOther.setVisibility(View.VISIBLE);
-        }
-        if(profileStatus == 1){
-            binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
         }
         if (setupStatus == 1) {
             binding.syncFailedImageSet.setVisibility(View.VISIBLE);
@@ -1076,13 +988,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                 } else {
                     binding.syncFailedImageOther.setVisibility(View.GONE);
                 }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserdetails")) {
-                profileStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROFILE);
-                if(profileStatus == 1){
-                    binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
-                }else{
-                    binding.syncFailedImageProfile.setVisibility(View.GONE);
-                }
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                 setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
                 if (setupStatus == 1) {
@@ -1093,8 +998,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         } else if (masterSyncItemModel.getSyncSuccess() == 1) {
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||*/
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||*/
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
@@ -1102,21 +1007,19 @@ public class MasterSyncActivity extends AppCompatActivity {
                 binding.syncFailedImageDr.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||*/
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||*/
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
                 binding.syncFailedImageChm.setVisibility(View.VISIBLE);
             }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist")
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||*/
-                   /* masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")*/
-            ){
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")) {
                 binding.syncFailedImageStk.setVisibility(View.VISIBLE);
             }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr")
-                 /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||*/
-                 /*   masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")*/
-        ) {
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")) {
                 binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
@@ -1186,9 +1089,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
                 binding.syncFailedImageOther.setVisibility(View.VISIBLE);
-            }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserdetails")) {
-                binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                 binding.syncFailedImageSet.setVisibility(View.VISIBLE);
@@ -1435,11 +1335,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         otherModelArray.clear();
         MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR_MAS, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
         otherModelArray.add(feedback);
-        //Profile
-        profileModelArray.clear();
-        MasterSyncItemModel profile = new MasterSyncItemModel(Constants.PROFILE, Constants.DOCTOR_MAS, "getuserdetails", Constants.PROFILE, profileStatus, false);
-        profileModelArray.add(profile);
-
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel Quiz = new MasterSyncItemModel(Constants.QUIZ, "AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
             otherModelArray.add(Quiz);
@@ -1478,7 +1373,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.slide.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.subordinate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.Other.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
-        binding.Profile.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.setup.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
 
         binding.listedDr.setSelected(false);
@@ -1498,7 +1392,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.slide.setSelected(false);
         binding.subordinate.setSelected(false);
         binding.Other.setSelected(false);
-        binding.Profile.setSelected(false);
         binding.setup.setSelected(false);
 
         view.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.greater_than_white, 0);
@@ -1545,8 +1438,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
                         } else if (binding.Other.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), otherModelArray, position);
-                        }else if (binding.Profile.isSelected()) {
-                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), profileModelArray, position);
                         } else if (binding.setup.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
@@ -1610,8 +1501,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             populateAdapter(subordinateModelArray);
         } else if (binding.Other.isSelected()) {
             populateAdapter(otherModelArray);
-        }else if (binding.Profile.isSelected()) {
-            populateAdapter(profileModelArray);
         } else if (binding.setup.isSelected()) {
             populateAdapter(setupModelArray);
         }
@@ -1650,7 +1539,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncAllModel.add(dcrModelArray);
                         masterSyncAllModel.add(slideModelArray);
                         masterSyncAllModel.add(otherModelArray);
-                        masterSyncAllModel.add(profileModelArray);
                         masterSyncAllModel.add(tpModelArray);
                         if (!navigateFrom.equalsIgnoreCase("Login")) {
                             masterSyncAllModel.add(setupModelArray);
@@ -1931,9 +1819,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
                                             activityDetailsDataDao.deleteAllData();
 //                                            syncIndividualActivityDetails();
-                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROFILE)) {
-                                            isDateSynced = true;
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.PROFILE, jsonArray.toString(), 2));
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
                                         for (int bean = 0; bean < input.length(); bean++) {
@@ -3408,12 +3293,9 @@ public class MasterSyncActivity extends AppCompatActivity {
             slideDialog.show();
         }
 
-        cancel_img.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                slideDialog.dismiss();
-                navigateFrom = "Slide";
-            }
+        cancel_img.setOnClickListener(view -> {
+            slideDialog.dismiss();
+            navigateFrom = "Slide";
         });
 
         SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
@@ -3556,6 +3438,543 @@ public class MasterSyncActivity extends AppCompatActivity {
                 SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
             }
         });
+    }
+
+    public void getDraftSaveOneBuild1(String isClickedName, ArrayList<OneBuildModelClass> arrayList, boolean statusOffline) {
+//        SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
+//        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
+//            if (status) {
+        try {
+
+            int id = 0;
+            switch (isClickedName) {
+                case "previous":
+                    id = SharedPref.getTpIdPreviousMonth(MasterSyncActivity.this);
+                    break;
+                case "current":
+                    id = SharedPref.getTpIdCurrentMonth(MasterSyncActivity.this);
+                    break;
+                case "next":
+                    id = SharedPref.getTpIdNextMonth(MasterSyncActivity.this);
+                    break;
+            }
+
+
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("mode", "AndroidDetailing");
+            jsonObject.addProperty("tpId", id);
+
+
+            JsonObject tourPlan = new JsonObject();
+//            for (OneBuildModelClass oneBuildModelClassTp : arrayList) {
+            OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
+            tourPlan.addProperty("SFCode", SharedPref.getSfCode(MasterSyncActivity.this));
+            tourPlan.addProperty("SFName", SharedPref.getSfName(MasterSyncActivity.this));
+            tourPlan.addProperty("Month", oneBuildModelClassTp.getMonth());
+            tourPlan.addProperty("Year", oneBuildModelClassTp.getYear());
+            tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(MasterSyncActivity.this).replace(",", ""));
+//            }
+
+
+            JsonArray detailsArray = new JsonArray();
+
+            for (OneBuildModelClass oneBuildModelClass : arrayList) {
+                if (!oneBuildModelClass.getDayNo().isEmpty()) {
+                    String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
+                    String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
+                    String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
+                    String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
+
+                    for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                        OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
+
+                        if (i == 0) {
+                            WorkTypeName = sessionList_OneBuild.getWorkType().getName();
+                            WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
+                            WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
+                            SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                            Remarks = sessionList_OneBuild.getRemarks();
+
+                            if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                                HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
+                                HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
+                            }
+                            TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                            TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                            JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                            JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                            CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                            CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                            DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                            DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                            UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                            UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                            StkName = textBuilder_OB(sessionList_OneBuild.getStockists(), false);
+                            StkCode = textBuilder_OB(sessionList_OneBuild.getStockists(), true);
+                            CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                            CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                            HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                            HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                        } else if (i == 1) {
+                            WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
+                            WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
+                            WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
+                            SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                            Remarks2 = sessionList_OneBuild.getRemarks();
+
+                            HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
+                            HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
+                            TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                            TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                            JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                            JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                            CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                            CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                            DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                            DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                            UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                            UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                            StkName2 = textBuilder_OB(sessionList_OneBuild.getStockists(), false);
+                            StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockists(), true);
+                            CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                            CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                            HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                            HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                        } else if (i == 2) {
+                            WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
+                            WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
+                            WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
+                            SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                            Remarks3 = sessionList_OneBuild.getRemarks();
+
+                            HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
+                            HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
+                            TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                            TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+
+                            JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                            JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+                            CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                            CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                            DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                            DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                            UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                            UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                            StkName3 = textBuilder_OB(sessionList_OneBuild.getStockists(), false);
+                            StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockists(), true);
+                            CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                            CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                            HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                            HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+                        }
+                    }
+
+
+                    //Sessions
+                    JsonArray Sessions = new JsonArray();
+                    for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+                            JsonObject SessionsObj = new JsonObject();
+                            if (i == 0) {
+                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
+                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName);
+                                    SessionsObj.addProperty("Id", i);
+                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
+                                    SessionsObj.addProperty("Remark", Remarks);
+                                }
+                            } else if (i == 1) {
+                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
+                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
+                                    SessionsObj.addProperty("Id", i);
+                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
+                                    SessionsObj.addProperty("Remark", Remarks2);
+                                }
+                            } else if (i == 2) {
+                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
+                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
+                                    SessionsObj.addProperty("Id", i);
+                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
+                                    SessionsObj.addProperty("Remark", Remarks3);
+                                }
+                            }
+
+
+                            JsonArray JointWorks = new JsonArray();
+
+                            String nameJw = "";
+                            String codeJw = "";
+
+                            if (i == 0) {
+                                nameJw = JWName;
+                                codeJw = JWCode;
+                            } else if (i == 1) {
+                                nameJw = JWName2;
+                                codeJw = JWCode2;
+                            } else if (i == 2) {
+                                nameJw = JWName3;
+                                codeJw = JWCode3;
+                            }
+
+                            if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
+                                String[] nameArr = nameJw.split(",");
+                                String[] codeArr = codeJw.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject JointWorks_obj = new JsonObject();
+                                    JointWorks_obj.addProperty("Name", nameArr[j].trim());
+                                    JointWorks_obj.addProperty("Id", codeArr[j].trim());
+                                    JointWorks.add(JointWorks_obj);
+                                }
+                            }
+
+
+                            //Territories
+                            JsonArray Territories = new JsonArray();
+                            String nameTerr = "";
+                            String codeTerr = "";
+                            if (i == 0) {
+                                nameTerr = TerritoriesName;
+                                codeTerr = TerritoriesCode;
+                            } else if (i == 1) {
+                                nameTerr = TerritoriesName2;
+                                codeTerr = TerritoriesCode2;
+                            } else if (i == 2) {
+                                nameTerr = TerritoriesName3;
+                                codeTerr = TerritoriesCode3;
+                            }
+                            if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
+                                String[] nameArr = nameTerr.split(",");
+                                String[] codeArr = codeTerr.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Territories_obj = new JsonObject();
+                                    Territories_obj.addProperty("Name", nameArr[j].trim());
+                                    Territories_obj.addProperty("Id", codeArr[j].trim());
+                                    Territories.add(Territories_obj);
+                                }
+                            }
+
+
+                            //Headquarters
+                            JsonArray Headquarters = new JsonArray();
+                            String nameHq = "";
+                            String codeHq = "";
+                            if (i == 0) {
+                                nameHq = HeadquartersName;
+                                codeHq = HeadquartersCode;
+                            } else if (i == 1) {
+                                nameHq = HeadquartersName2;
+                                codeHq = HeadquartersCode2;
+                            } else if (i == 2) {
+                                nameHq = HeadquartersName3;
+                                codeHq = HeadquartersCode3;
+                            }
+                            if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
+                                String[] nameArr = nameHq.split(",");
+                                String[] codeArr = codeHq.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Headquarters_obj = new JsonObject();
+                                    Headquarters_obj.addProperty("Name", nameArr[j].trim());
+                                    Headquarters_obj.addProperty("Id", codeArr[j].trim());
+                                    Headquarters.add(Headquarters_obj);
+                                }
+                            }
+
+                            //Hospitals
+                            JsonArray Hospitals = new JsonArray();
+                            String nameHosp = "";
+                            String codeHosp = "";
+                            if (i == 0) {
+                                nameHosp = HospName;
+                                codeHosp = HospCode;
+                            } else if (i == 1) {
+                                nameHosp = HospName2;
+                                codeHosp = HospCode2;
+                            } else if (i == 2) {
+                                nameHosp = HospName3;
+                                codeHosp = HospCode3;
+                            }
+                            if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
+                                String[] nameArr = nameHosp.split(",");
+                                String[] codeArr = codeHosp.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Hospitals_obj = new JsonObject();
+                                    Hospitals_obj.addProperty("Name", nameArr[j].trim());
+                                    Hospitals_obj.addProperty("Id", codeArr[j].trim());
+                                    Hospitals.add(Hospitals_obj);
+                                }
+                            }
+
+                            //Chemists
+                            JsonArray Chemists = new JsonArray();
+                            String nameChe = "";
+                            String codeChe = "";
+                            if (i == 0) {
+                                nameChe = CheName;
+                                codeChe = CheCode;
+                            } else if (i == 1) {
+                                nameChe = CheName2;
+                                codeChe = CheCode2;
+                            } else if (i == 2) {
+                                nameChe = CheName3;
+                                codeChe = CheCode3;
+                            }
+                            if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
+                                String[] nameArr = nameChe.split(",");
+                                String[] codeArr = codeChe.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Chemists_obj = new JsonObject();
+                                    Chemists_obj.addProperty("Name", nameArr[j].trim());
+                                    Chemists_obj.addProperty("Id", codeArr[j].trim());
+                                    Chemists.add(Chemists_obj);
+                                }
+                            }
+
+                            //StockLists
+                            JsonArray Stockists = new JsonArray();
+                            String nameStk = "";
+                            String codeStk = "";
+                            if (i == 0) {
+                                nameStk = StkName;
+                                codeStk = StkCode;
+                            } else if (i == 1) {
+                                nameStk = StkName2;
+                                codeStk = StkCode2;
+                            } else if (i == 2) {
+                                nameStk = StkName3;
+                                codeStk = StkCode3;
+                            }
+                            if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
+                                String[] nameArr = nameStk.split(",");
+                                String[] codeArr = codeStk.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Stockists_obj = new JsonObject();
+                                    Stockists_obj.addProperty("Name", nameArr[j].trim());
+                                    Stockists_obj.addProperty("Id", codeArr[j].trim());
+                                    Stockists.add(Stockists_obj);
+                                }
+                            }
+
+                            //ListedDr
+                            JsonArray Doctors = new JsonArray();
+                            String nameDoc = "";
+                            String codeDoc = "";
+                            if (i == 0) {
+                                nameDoc = DrName;
+                                codeDoc = DrCode;
+                            } else if (i == 1) {
+                                nameDoc = DrName2;
+                                codeDoc = DrCode2;
+                            } else if (i == 2) {
+                                nameDoc = DrName3;
+                                codeDoc = DrCode3;
+                            }
+                            if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
+                                String[] nameArr = nameDoc.split(",");
+                                String[] codeArr = codeDoc.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Doctors_obj = new JsonObject();
+                                    Doctors_obj.addProperty("Name", nameArr[j].trim());
+                                    Doctors_obj.addProperty("Id", codeArr[j].trim());
+                                    Doctors.add(Doctors_obj);
+                                }
+                            }
+
+                            //UnlistedDr
+
+                            JsonArray UnlistedDoctors = new JsonArray();
+                            String nameUnDr = "";
+                            String codeUmDr = "";
+                            if (i == 0) {
+                                nameUnDr = UnDrName;
+                                codeUmDr = UnDrCode;
+                            } else if (i == 1) {
+                                nameUnDr = UnDrName2;
+                                codeUmDr = UnDrCode2;
+                            } else if (i == 2) {
+                                nameUnDr = UnDrName3;
+                                codeUmDr = UnDrCode3;
+                            }
+                            if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
+                                String[] nameArr = nameUnDr.split(",");
+                                String[] codeArr = codeUmDr.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject UnlistedDoctors_obj = new JsonObject();
+                                    UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
+                                    UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
+                                    UnlistedDoctors.add(UnlistedDoctors_obj);
+                                }
+                            }
+
+
+                            //Cip
+                                   /*     JSONArray Cip = new JSONArray();
+                                        String nameCip = "";
+                                        String codeCip = "";
+                                        if (i == 0) {
+                                            nameCip = CipName;
+                                            codeCip = CipCode;
+                                        } else if (i == 1) {
+                                            nameCip = CipName2;
+                                            codeCip = CipCode2;
+                                        } else if (i == 2) {
+                                            nameCip = CipName3;
+                                            codeCip = CipCode3;
+                                        }
+                                        if (!nameCip.isEmpty() && !codeCip.isEmpty()) {
+                                            String[] nameArr = nameCip.split(",");
+                                            String[] codeArr = codeCip.split(",");
+
+                                            int length = Math.min(nameArr.length, codeArr.length);
+
+                                            for (int j = 0; j < length; j++) {
+                                                JSONObject Cip_obj = new JSONObject();
+                                                Cip_obj.put("Name", nameArr[j].trim());
+                                                Cip_obj.put("Id", codeArr[j].trim());
+                                                Cip.put(Cip_obj);
+                                            }
+                                        }*/
+
+                            SessionsObj.add("JointWorks", JointWorks);
+                            SessionsObj.add("Headquarters", Headquarters);
+                            SessionsObj.add("Territories", Territories);
+                            SessionsObj.add("Doctors", Doctors);
+                            SessionsObj.add("Chemists", Chemists);
+                            SessionsObj.add("Stockists", Stockists);
+                            SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
+                            SessionsObj.add("Hospitals", Hospitals);
+//                                        SessionsObj.put("Cip", Cip);
+                            Sessions.add(SessionsObj);
+                        }
+
+                    }
+
+                    //Details
+
+                    JsonObject DetailsObj = new JsonObject();
+                    DetailsObj.addProperty("Id", 0);
+                    DetailsObj.add("Others", new JsonArray());
+                    DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
+                    DetailsObj.add("Sessions", Sessions);
+                    detailsArray.add(DetailsObj);
+
+                }
+                tourPlan.add("Details", detailsArray);
+                jsonObject.add("tourPlan", tourPlan);
+                Gson gson = new Gson();
+
+                jbonj = gson.fromJson(jsonObject.toString(), JsonObject.class);
+            }
+
+            Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
+            apiInterface = RetrofitClient.getRetrofit(MasterSyncActivity.this, SharedPref.getBaseWebUrl(MasterSyncActivity.this));
+            Map<String, String> mapString = new HashMap<>();
+            Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    Log.v("tpGetPlan", "----" + response.body());
+                    if (response.body() != null && !response.body().isJsonNull()) {
+                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
+                        try {
+                            JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
+                            if (!isFrom.equalsIgnoreCase("sendToApproval")) {
+                                /*if (outerJsonObject.has("d")) {
+                                    String innerJsonString = outerJsonObject.getString("d");
+                                    JSONObject innerJsonObject = new JSONObject(innerJsonString);
+                                    if (innerJsonObject.has("Data")) {
+                                        switch (isClickedName) {
+                                            case "previous":
+                                                int retrievedIdPm = innerJsonObject.getInt("Data");
+                                                SharedPref.saveTpId(MasterSyncActivity.this, retrievedIdPm);
+                                                Log.d("ret_Id", "onResponse: " + retrievedIdPm);
+                                                break;
+                                            case "current":
+                                                int retrievedIdCm = innerJsonObject.getInt("Data");
+                                                SharedPref.saveTpIdCm(MasterSyncActivity.this, retrievedIdCm);
+                                                Log.d("ret_Id", "onResponse: " + retrievedIdCm);
+                                                break;
+                                            case "next":
+                                                int retrievedIdNm = innerJsonObject.getInt("Data");
+                                                SharedPref.saveTpIdNm(MasterSyncActivity.this, retrievedIdNm);
+                                                Log.d("ret_Id", "onResponse: " + retrievedIdNm);
+                                                break;
+                                        }
+                                    } else {
+                                        Log.e("ret_Id", "'Data' key not found ");
+                                    }*/
+                            } else {
+                                Log.e("outerJsonObject", "'d' key not found in the response body.");
+                            }
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
+//                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, "Please Try Again !");
+                    Log.e("tpGetPlan", "error getTp : " + t);
+                }
+            });
+
+        } catch (JsonIOException e) {
+
+            Log.v("tpGetPlan", "--error--1--" + e);
+        }
+//            }
+//        });
+//        networkStatusTask.execute();
+    }
+
+    public static String textBuilder_OB(List<OneBuildModelClass.SessionList.SubClass> sessionLists, boolean codeOrName) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < sessionLists.size(); i++) {
+            if (codeOrName) { // true -> code
+                stringBuilder.append(sessionLists.get(i).getCode()).append(",");
+            } else { // false -> name
+                stringBuilder.append(sessionLists.get(i).getName()).append(",");
+            }
+        }
+        return stringBuilder.toString();
     }
 
 }
