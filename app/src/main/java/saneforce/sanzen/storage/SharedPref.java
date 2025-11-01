@@ -503,7 +503,7 @@ public class SharedPref {
     public static final String SUBDIVISION_NAMES = "SubdivisionNames";
     public static final String SETUP_SYNCED = "setup_synced";
 
-    public static final String SLIDE_AUTO_PLAY = "slide_auto_play";
+    public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
 
     public static SharedPreferences.Editor editor;
@@ -862,7 +862,7 @@ public class SharedPref {
             editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
             editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
             editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
-            editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("slide_auto_play"));
+            editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
             editor.putString(WELCOME_SLIDES_PATH, "");
 
@@ -3160,7 +3160,7 @@ public class SharedPref {
     }
 
     public static String getSlideAutoPlay(Context context) {
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDE_AUTO_PLAY,"1");
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDE_AUTO_PLAY,"0");
     }
 
     public static String getSlideWiseDetailingNeed(Context context) {

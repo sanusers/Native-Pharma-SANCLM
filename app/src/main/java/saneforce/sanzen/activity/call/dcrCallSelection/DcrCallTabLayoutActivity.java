@@ -18,6 +18,8 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.CIPFragment;
@@ -307,9 +309,10 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             }
             TodayPlanClusterList.clear();
             JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + TodayPlanSfCode).getMasterSyncDataJsonArray();
+            List<String> selectedClusterList = Arrays.asList(CommonUtilsMethods.removeLastComma(CommonUtilsMethods.removeDollar(SharedPref.getTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this))).split(","));
             for (int i = 0; i<jsonArray2.length(); i++) {
                 JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
-                if(SharedPref.getTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this).contains(jsonClusterList.getString("Code"))) {
+                if(selectedClusterList.contains(jsonClusterList.getString("Code"))) {
                     TodayPlanClusterList.add(jsonClusterList.getString("Code"));
                     TodayPlanClusterList.add(jsonClusterList.getString("Name"));
                 }

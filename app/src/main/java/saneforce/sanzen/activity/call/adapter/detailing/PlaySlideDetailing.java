@@ -103,7 +103,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
-        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
             binding.playBtn.setVisibility(View.GONE);
         } else {
             binding.playBtn.setVisibility(View.VISIBLE);
@@ -190,7 +190,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     case "zip":
                     case "htm":
                     case "html": {
-                        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("0")) {
+                        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
                             binding.playBtn.setVisibility(View.GONE);
                         } else {
                             binding.playBtn.setVisibility(View.VISIBLE);
@@ -571,7 +571,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         binding.viewPager.setAdapter(itemsPagerAdapter);
         binding.viewPager.setCurrentItem(SelectedPos);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
-        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
             binding.playBtn.setVisibility(View.GONE);
         } else {
             binding.playBtn.setVisibility(View.VISIBLE);

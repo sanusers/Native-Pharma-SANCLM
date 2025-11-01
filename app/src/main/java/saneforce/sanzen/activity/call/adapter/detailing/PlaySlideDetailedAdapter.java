@@ -176,13 +176,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     public void autoPlaySlide(int position, int attempt) {
-        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
             try {
                 ImageView imageView = imageViewList.get(position);
                 WebView webView = webViewList.get(position);
-                PDFView pdfView = pdfViewList.get(position);
                 VideoView videoView = videoViewList.get(position);
                 LottieAnimationView progressAnim = progressAnimationViewList.get(position);
+                PDFView pdfView = pdfViewList.get(position);
                 String fileName = productArrayList.get(position).getSlideName();
                 File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
                 if (file.exists()) {
