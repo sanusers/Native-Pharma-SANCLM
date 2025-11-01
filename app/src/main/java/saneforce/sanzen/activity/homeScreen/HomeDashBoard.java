@@ -697,7 +697,35 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     CheckingManatoryApprovals();
                 }
                 CheckedTpRange();
+              //  showBirthdayPopup();
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+                if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this)) ||
+                        !today.equals(SharedPref.getAnniversaryShownDate(HomeDashBoard.this))) {
+
+                    new Handler().postDelayed(this::showCombinedWishesPopup, 1000);
+                }
+//                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//                if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this))) {
+//                    new Handler().postDelayed(this::showCombinedWishesPopup, 1000);
+//                    //showBirthdayPopup();
+//                    //SharedPref.setBirthdayShownDate(HomeDashBoard.this, today);
+//                }
+////
+////                //  showAnniversaryPopup();
+//                String today2 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//                if (!today2.equals(SharedPref.getAnniversaryShownDate(HomeDashBoard.this))) {
+//                    new Handler().postDelayed(this::showCombinedWishesPopup, 1000);
+//                   // showAnniversaryPopup();
+//                   // SharedPref.setAnniversaryShownDate(HomeDashBoard.this, today);
+//                }
             }
+
+//            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//            if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this))) {
+//                showBirthdayPopup();
+//                SharedPref.setBirthdayShownDate(HomeDashBoard.this, today);
+//            }
             checkAndSetEntryDate(this, true);
             if (isDcrFrom) {
                 binding.viewPager.setCurrentItem(1);
@@ -2559,6 +2587,230 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void commonFun() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
+    private void showCombinedWishesPopup() {
+        Log.d("CombinedWishes", "Checking both Birthday and Anniversary...");
+
+        try {
+            RoomDB roomDB = RoomDB.getDatabase(this);
+            MasterDataDao masterDataDao = roomDB.masterDataDao();
+
+            JSONArray doctorJsonArray = masterDataDao
+                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
+                    .getMasterSyncDataJsonArray();
+
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM d", Locale.US);
+            String todayStr = outputFormat.format(new Date());
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+            String birthdayMsg = "";
+            String anniversaryMsg = "";
+
+            for (int i = 0; i < doctorJsonArray.length(); i++) {
+                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
+                String doctorName = doctorObj.optString("Name");
+                String territory = doctorObj.optString("Town_Name");
+
+                // 🎂 Check for birthday
+                JSONObject dobObject = doctorObj.optJSONObject("DctrDOB");
+                if (dobObject != null) {
+                    String dobDateStr = dobObject.optString("date", "").trim();
+                    if (!dobDateStr.isEmpty() && !dobDateStr.startsWith("1900")) {
+                        Date date = inputFormat.parse(dobDateStr.split(" ")[0]);
+                        String birthDate = outputFormat.format(date);
+                        if (birthDate.equalsIgnoreCase(todayStr)) {
+                            int count = birthdayMsg.isEmpty() ? 1 : birthdayMsg.split("\n\n").length + 1;
+                            birthdayMsg += count + ". Dr. " + doctorName + "\n    " + territory + "\n\n";
+//                        if (birthDate.equalsIgnoreCase(todayStr)) {
+//                           // birthdayMsg = "🎉 Wish Dr. " + doctorName + "\n" + territory;
+//                            birthdayMsg += (birthdayMsg.isEmpty() ? "1" : String.valueOf(birthdayMsg.split("\n\n").length + 1))
+//                                    + ". " + doctorName + "\n " + territory + "\n\n";
+
+                            //break; // stop once found
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < doctorJsonArray.length(); i++) {
+                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
+                String doctorName = doctorObj.optString("Name");
+                String territory = doctorObj.optString("Town_Name");
+
+                // 💐 Check for anniversary
+                JSONObject dowObject = doctorObj.optJSONObject("DctrDOW");
+                if (dowObject != null) {
+                    String dowDateStr = dowObject.optString("date", "").trim();
+                    if (!dowDateStr.isEmpty() && !dowDateStr.startsWith("1900")) {
+                        Date date = inputFormat.parse(dowDateStr.split(" ")[0]);
+                        String annivDate = outputFormat.format(date);
+                        if (annivDate.equalsIgnoreCase(todayStr)) {
+                            int count = anniversaryMsg.isEmpty() ? 1 : anniversaryMsg.split("\n\n").length + 1;
+                            anniversaryMsg += count + ". Dr. " + doctorName + "\n    " + territory + "\n\n";
+//                        if (annivDate.equalsIgnoreCase(todayStr)) {
+//                           // anniversaryMsg = "💐 Congratulate Dr. " + doctorName + " \n " + territory;
+//                            anniversaryMsg += (anniversaryMsg.isEmpty() ? "1" : String.valueOf(anniversaryMsg.split("\n\n").length + 1))
+//                                    + ". " + doctorName + "\n " + territory + "\n\n";
+
+                           // break; // stop once found
+                        }
+                    }
+                }
+            }
+
+            // ✅ Show combined alert if any message exists
+            if (!birthdayMsg.isEmpty() || !anniversaryMsg.isEmpty()) {
+                SharedPref.setBirthdayShownDate(this, today);
+                SharedPref.setAnniversaryShownDate(this, today);
+
+                CommonAlertBox.ShowCombinedWishesAlert(this, birthdayMsg, anniversaryMsg
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+//    private void showBirthdayPopup() {
+//        Log.d("BirthdayPopup", "Called showBirthdayPopup()");
+//
+//        try {
+////            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+////
+////            // ✅ Skip if popup already shown today
+////            if (today.equals(SharedPref.getBirthdayShownDate(this))) {
+////                Log.d("BirthdayPopup", "Already shown today. Skipping popup.");
+////                return;
+////            }
+//
+//            RoomDB roomDB = RoomDB.getDatabase(this);
+//            MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//            JSONArray doctorJsonArray = masterDataDao
+//                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
+//                    .getMasterSyncDataJsonArray();
+//
+//            java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+//            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMMM d", java.util.Locale.US);
+//            String todayStr = outputFormat.format(new java.util.Date());
+//            Log.d("BirthdayPopup", "Today: " + todayStr);
+//            for (int i = 0; i < doctorJsonArray.length(); i++) {
+//                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
+//                String doctorName = doctorObj.getString("Name");
+//                String territory = doctorObj.getString("Town_Name");
+//                JSONObject dobObject = doctorObj.optJSONObject("DctrDOB");
+//
+//                if (dobObject != null) {
+//                    String dobDateStr = dobObject.optString("date", "").trim();
+//                    Log.d("BirthdayPopup", "Doctor: " + doctorName + ", DOB raw: " + dobDateStr);
+//
+//                    if (!dobDateStr.isEmpty() && !dobDateStr.startsWith("1900")) {
+//                        java.util.Date date = inputFormat.parse(dobDateStr.split(" ")[0]);
+//                        String birthDate = outputFormat.format(date);
+//
+//                        // 🎂 If today is birthday
+//                        if (birthDate.equalsIgnoreCase(todayStr)) {
+//                            CommonAlertBox.BirthdayWishAlert(
+//                                    this,
+//                                    "🎉 Wish Dr. " + doctorName + " - " + territory + " for their Birthday today!"
+//                            );
+//                           SharedPref.setBirthdayShownDate(this ,
+//                                   new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
+//                           );
+//                            break; // only show once
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//    private void showAnniversaryPopup() {
+//
+//        try {
+//            RoomDB roomDB = RoomDB.getDatabase(this);
+//            MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//            JSONArray doctorJsonArray = masterDataDao
+//                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
+//                    .getMasterSyncDataJsonArray();
+//
+//            java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+//            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMMM d", java.util.Locale.US);
+//            String todayStr = outputFormat.format(new java.util.Date());
+//
+//            for (int i = 0; i < doctorJsonArray.length(); i++) {
+//                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
+//                String doctorName = doctorObj.getString("Name");
+//                String territory = doctorObj.getString("Town_Name");
+//                JSONObject dowObject = doctorObj.optJSONObject("DctrDOW");
+//
+//                if (dowObject != null) {
+//                    String dowDateStr = dowObject.optString("date", "").trim();
+//
+//                    if (!dowDateStr.isEmpty() && !dowDateStr.startsWith("1900")) {
+//                        java.util.Date date = inputFormat.parse(dowDateStr.split(" ")[0]);
+//                        String anniversaryDate = outputFormat.format(date);
+//
+//                        // 🎂 If today is birthday
+//                        if (anniversaryDate.equalsIgnoreCase(todayStr)) {
+//                            CommonAlertBox.AnniversaryWishAlert(
+//                                    this,
+//                                    "🎉 Congratulate Dr. " + doctorName + " - " + territory + " on their Anniversary today!"
+//                            );
+//                            SharedPref.setAnniversaryShownDate(this ,
+//                                    new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
+//                            );
+//                            break; // only show once
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    private void showAnniversaryPopup() {
+//        try {
+//            RoomDB roomDB = RoomDB.getDatabase(this);
+//            MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//            JSONArray doctorJsonArray = masterDataDao
+//                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
+//                    .getMasterSyncDataJsonArray();
+//
+//            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//            SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM d", Locale.US);
+//            String todayStr = outputFormat.format(new Date());
+//
+//            for (int i = 0; i < doctorJsonArray.length(); i++) {
+//                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
+//                String doctorName = doctorObj.optString("Name");
+//                String territory = doctorObj.optString("Town_Name");
+//                String anniversaryDate = doctorObj.optString("DctrDOW"); // ✅ check your JSON key (maybe DctrDOA)
+//
+//                if (anniversaryDate != null && !anniversaryDate.isEmpty() && !anniversaryDate.startsWith("1900")) {
+//                    Date date = inputFormat.parse(anniversaryDate.split(" ")[0]);
+//                    String formattedDate = outputFormat.format(date);
+//
+//                    if (formattedDate.equalsIgnoreCase(todayStr)) {
+//                        CommonAlertBox.AnniversaryWishAlert(
+//                                this,
+//                                "💐 Congratulate Dr. " + doctorName + " - " + territory + " on their Anniversary today!"
+//                        );
+//
+//                        break;
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
 
     public void CheckedTpRange() {
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
