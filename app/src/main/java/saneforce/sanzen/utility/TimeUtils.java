@@ -56,6 +56,7 @@ public class TimeUtils {
     public static final String FORMAT_38 = "d MMMM yyyy";
     public static final String FORMAT_39 = "dd-MM-yyyy hh:mm a";
     public static final String FORMAT_40 = "mm:ss";
+    public static final String FORMAT_41 = "hh:mm a";
 
     public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
@@ -123,7 +124,7 @@ public class TimeUtils {
             D_GivenDate = dateFormat.parse(mGivenDate);
             D_StartDate = dateFormat.parse(mStartDate);
             D_EndDate = dateFormat.parse(mEndDate);
-            if(D_GivenDate != null && D_StartDate != null && D_EndDate != null) {
+            if (D_GivenDate != null && D_StartDate != null && D_EndDate != null) {
                 return D_GivenDate.after(D_StartDate) && D_GivenDate.before(D_EndDate);
             }
         } catch (ParseException e) {
@@ -157,13 +158,13 @@ public class TimeUtils {
 
     public static String addTime(String oldTime, String newTime) {
         try {
-            if(!oldTime.isEmpty() && !newTime.isEmpty()) {
+            if (!oldTime.isEmpty() && !newTime.isEmpty()) {
                 LocalTime oldLocalTime = LocalTime.parse(oldTime);
                 LocalTime newLocalTime = LocalTime.parse(newTime);
                 LocalTime resultTime = oldLocalTime.plusHours(newLocalTime.getHour()).plusMinutes(newLocalTime.getMinute()).plusSeconds(newLocalTime.getSecond());
                 return resultTime.format(DateTimeFormatter.ofPattern(FORMAT_32));
-            }else if(!newTime.isEmpty()) return newTime;
-            else if(!oldTime.isEmpty()) return oldTime;
+            } else if (!newTime.isEmpty()) return newTime;
+            else if (!oldTime.isEmpty()) return oldTime;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,7 +203,7 @@ public class TimeUtils {
             SimpleDateFormat timeFormat = new SimpleDateFormat(format);
             Date dateTime = timeFormat.parse(time);
 
-            if(dateTime != null) {
+            if (dateTime != null) {
                 long totalSeconds = dateTime.getTime() / 1000;
                 long multipliedSeconds = totalSeconds * noOfTimes;
 
@@ -222,7 +223,7 @@ public class TimeUtils {
             SimpleDateFormat timeFormat = new SimpleDateFormat(format);
             Date dateTime = timeFormat.parse(time);
 
-            if(dateTime != null) {
+            if (dateTime != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(dateTime);
 
@@ -243,11 +244,11 @@ public class TimeUtils {
         int hours = (int) (millis / 1000) / 3600;
         int minutes = (int) (millis / 1000) / 60;
         int seconds = (int) (millis / 1000) % 60;
-        if(format.equalsIgnoreCase(FORMAT_32)) {
+        if (format.equalsIgnoreCase(FORMAT_32)) {
             time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-        }else if(format.equalsIgnoreCase(FORMAT_29)) {
+        } else if (format.equalsIgnoreCase(FORMAT_29)) {
             time = String.format("%02d:%02d", hours, minutes);
-        } else if(format.equalsIgnoreCase(FORMAT_40)) {
+        } else if (format.equalsIgnoreCase(FORMAT_40)) {
             time = String.format("%02d:%02d", minutes, seconds);
         }
         return time;
@@ -265,11 +266,11 @@ public class TimeUtils {
             assert date != null;
             inputCal.setTime(date);
 
-            if(isSameDay(inputCal, today)) {
-                return "Today " + GetConvertedDate(FORMAT_39, FORMAT_40, inputDate);
-            }else if(isSameDay(inputCal, yesterday)) {
-                return "Yesterday " + GetConvertedDate(FORMAT_39, FORMAT_40, inputDate);
-            }else {
+            if (isSameDay(inputCal, today)) {
+                return "Today " + GetConvertedDate(FORMAT_39, FORMAT_41, inputDate);
+            } else if (isSameDay(inputCal, yesterday)) {
+                return "Yesterday " + GetConvertedDate(FORMAT_39, FORMAT_41, inputDate);
+            } else {
                 return inputDate;
             }
         } catch (ParseException e) {

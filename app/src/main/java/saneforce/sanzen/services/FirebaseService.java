@@ -54,6 +54,7 @@ public class FirebaseService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 //        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
+
         if(SharedPref.getSettingState(getApplicationContext())) {
             if(SharedPref.getLoginState(getApplicationContext())) {
                 if(remoteMessage.getNotification() != null) {
@@ -61,12 +62,34 @@ public class FirebaseService extends FirebaseMessagingService {
                     title = remoteMessage.getNotification().getTitle();
                     body = remoteMessage.getNotification().getBody();
                     time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
-                    try {
-                        notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
-                    } catch (Exception e) {
-                        e.printStackTrace();
+//                    notificationId = random.nextInt(1000);
+
+                    hqCode = SharedPref.getHqCode(this);
+                    if(hqCode == null || hqCode.isEmpty()) {
+                        hqCode = SharedPref.getSfCode(this);
                     }
-                    id = random.nextInt(1000);
+                    if(body.contains("$")) {
+                        try {
+                            id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1));
+                            if(body.contains("-MR")) {
+                                type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
+                                hqCode = body.substring(body.lastIndexOf("-MR") + 1);
+                            }else {
+                                type = body.substring(body.lastIndexOf("$") + 1);
+                            }
+                            body = body.substring(0, body.lastIndexOf("$"));
+                            showNotificationDialog();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        try {
+                            notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     createNotification();
                 }
             }

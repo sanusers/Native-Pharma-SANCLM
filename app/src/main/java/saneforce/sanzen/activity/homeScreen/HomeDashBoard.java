@@ -76,7 +76,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 
 import org.json.JSONArray;
@@ -104,11 +103,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.DynamicMenuActivity;
-import saneforce.sanzen.activity.reports.DynamicMenuHome;
-import saneforce.sanzen.activity.reports.ReportsAdapter;
-import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
@@ -134,18 +128,21 @@ import saneforce.sanzen.activity.myresource.MyResource_Activity;
 import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
+import saneforce.sanzen.activity.reports.DynamicMenuHome;
 import saneforce.sanzen.activity.reports.ReportsActivity;
+import saneforce.sanzen.activity.reports.ReportsAdapter;
+import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.survey.SurveyActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
-import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.application.AppActivityTracker;
-import saneforce.sanzen.commonClasses.CheckInOutManager;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.InAppUpdate;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.ActivityHomeDashBoardBinding;
@@ -153,18 +150,17 @@ import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.databinding.HomeNavigationFooterBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.sanzen.services.NotificationDialog;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkChangeReceiver;
-import saneforce.sanzen.utility.NetworkStatusTask;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -272,12 +268,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                }
                 String currentDate = dateFormat.format(new Date());
                 try {
-                    if(!previousDate.equals(currentDate)) {
-                        if(masterDataDao != null) {
+                    if (!previousDate.equals(currentDate)) {
+                        if (masterDataDao != null) {
                             JSONArray workPlanArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
-                            if(workPlanArray.toString().equals("[]")) {
+                            if (workPlanArray.toString().equals("[]")) {
                                 checkAndSetEntryDate(HomeDashBoard.this, true);
-                                if(HomeDashBoard.homeDashBoardActivity != null && !HomeDashBoard.homeDashBoardActivity.isFinishing() && !HomeDashBoard.homeDashBoardActivity.isDestroyed()) {
+                                if (HomeDashBoard.homeDashBoardActivity != null && !HomeDashBoard.homeDashBoardActivity.isFinishing() && !HomeDashBoard.homeDashBoardActivity.isDestroyed()) {
                                     HomeDashBoard.homeDashBoardActivity.setUpCalendar();
                                 }
                             }
@@ -411,7 +407,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             float dX, dY;
             int lastAction;
 
-            @Override public boolean onTouch(View view, MotionEvent event) {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
                 View root = binding.getRoot(); // <-- your root container id
                 if (root == null) return false;
 
@@ -506,7 +503,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                             SharedPref.setIsSetupSynced(HomeDashBoard.this, true);
                                             SharedPref.InsertLogInData(HomeDashBoard.this, jsonArray.getJSONObject(0));
                                             String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
-                                            if(signInTime.isEmpty()) {
+                                            if (signInTime.isEmpty()) {
                                                 changePassword(HomeDashBoard.this.getString(R.string.reset_password));
                                             } else {
                                                 try {
@@ -675,7 +672,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (signInTime.isEmpty() && !SharedPref.getIsSetupSynced(HomeDashBoard.this)) {
                 isResetPasswordVisible = true;
                 changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-            } else if(signInTime.isEmpty()) {
+            } else if (signInTime.isEmpty()) {
                 syncSetup();
             } else {
                 try {
@@ -857,22 +854,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
         notificationViewModel.getAllUnsyncedNotifications().observe(this, list -> {
-            if(!list.isEmpty()) {
-                for (NotificationDataTable notificationData: list) {
-                    if(syncingIds.contains(notificationData.getId())) continue;
+            if (!list.isEmpty()) {
+                for (NotificationDataTable notificationData : list) {
+                    if (syncingIds.contains(notificationData.getId())) continue;
                     syncingIds.add(notificationData.getId());
                     String title = notificationData.getTitle(), body = notificationData.getMessage(), time = notificationData.getDateTime(), type = "", hqCode = "";
                     int id = notificationData.getId();
                     hqCode = SharedPref.getHqCode(this);
-                    if(hqCode == null || hqCode.isEmpty()) {
+                    if (hqCode == null || hqCode.isEmpty()) {
                         hqCode = SharedPref.getSfCode(this);
                     }
-                    if(body.contains("$")) {
+                    if (body.contains("$")) {
                         try {
-                            if(body.contains("-MR")) {
+                            if (body.contains("-MR")) {
                                 type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
                                 hqCode = body.substring(body.lastIndexOf("-MR") + 1);
-                            }else {
+                            } else {
                                 type = body.substring(body.lastIndexOf("$") + 1);
                             }
                             body = body.substring(0, body.lastIndexOf("$"));
@@ -894,11 +891,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         });
 
-        binding.imgNotification.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                showNotificationPopup();
-            }
+        binding.imgNotification.setOnClickListener(view -> {
+            showNotificationPopup();
         });
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -1076,7 +1070,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(() -> {
             Activity currentActivity = AppActivityTracker.getInstance().getCurrentActivity();
-            if(currentActivity != null) {
+            if (currentActivity != null) {
                 currentActivity.runOnUiThread(() -> {
                     NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, id);
                 });
@@ -1880,10 +1874,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
             return true;
         }
-        if(item.getTitle().toString().equalsIgnoreCase(SharedPref.getDynamicOptionCaps(HomeDashBoard.this))){
+        if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getDynamicOptionCaps(HomeDashBoard.this))) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
                 startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
-            }else{
+            } else {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
             }
 
@@ -2493,10 +2487,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //        if (SharedPref.getDocBusinessProduct(this).equalsIgnoreCase("0")) {
 //            menu.findItem(R.id.docbusinessentry).setVisible(true);
 //        } else {
-        if(SharedPref.getDynamicOptionNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
+        if (SharedPref.getDynamicOptionNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.dyn_link).setTitle(SharedPref.getDynamicOptionCaps(HomeDashBoard.this));
             menu.findItem(R.id.dyn_link).setVisible(true);
-        }else{
+        } else {
             menu.findItem(R.id.dyn_link).setVisible(false);
         }
         menu.findItem(R.id.docbusinessentry).setVisible(false);
@@ -2807,20 +2801,20 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-    private void accessibility(){
+    private void accessibility() {
         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
         for (int bean = 0; bean < input.length(); bean++) {
             try {
                 JSONObject setUpObject = input.getJSONObject(bean);
                 String appAccess = setUpObject.getString("sanzen_edet");
-                 if (!appAccess.equals("1")){
-                     CommonUtilsMethods.accessDialogBox(this);
-                 }
+                if (!appAccess.equals("1")) {
+                    CommonUtilsMethods.accessDialogBox(this);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (!SharedPref.getAppAccess(this).equals("1")){
+        if (!SharedPref.getAppAccess(this).equals("1")) {
             CommonUtilsMethods.accessDialogBox(this);
         }
     }
