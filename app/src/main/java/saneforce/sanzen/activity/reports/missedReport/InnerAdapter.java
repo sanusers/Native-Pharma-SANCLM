@@ -223,7 +223,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             // Card 1 → Doctor + Chemist
             holder.card1Layout.setVisibility(View.VISIBLE);
             holder.card2Layout.setVisibility(View.GONE);
-            if (doctor != null)
+            if (doctor != null && SharedPref.getDrNeed(context).equalsIgnoreCase("0"))
                 setPieChart(holder.missedChart, holder.totalDrCnt, holder.visitedCnt, holder.missedCnt, doctor);
             holder.missedBox.setClickable(true);
             holder.missedBox.setFocusable(true);
@@ -256,8 +256,10 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                     e.printStackTrace();
                 }
             });
+
+        } else if (position == 1) {
 //
-            if (chemist != null)
+            if (chemist != null && SharedPref.getChmNeed(context).equalsIgnoreCase("0"))
                 setPieChart(holder.missedChartChem, holder.totalchmCnt, holder.chmvisitedCnt, holder.chmmissedCnt, chemist);
             holder.chemistBox.setOnClickListener(v -> {
                 try {
@@ -288,11 +290,11 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                 }
             });
 
-        } else if (position == 1) {
+        } else if (position == 2) {
             // Card 2 → Stockist + Unlisted
             holder.card1Layout.setVisibility(View.GONE);
             holder.card2Layout.setVisibility(View.VISIBLE);
-            if (stockist != null)
+            if (stockist != null && SharedPref.getStkNeed(context).equalsIgnoreCase("0"))
                 setPieChart(holder.missedChartStk, holder.totalstkCnt, holder.stkvisitedCnt, holder.stkmissedCnt, stockist);
             holder.stockiestBox.setOnClickListener(v -> {
                 try {
@@ -321,8 +323,9 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                     e.printStackTrace();
                 }
             });
+        } else if (position == 3) {
 
-            if (unlisted != null)
+            if (unlisted != null && SharedPref.getUnlNeed(context).equalsIgnoreCase("0"))
                 setPieChart(holder.missedChartUnlst, holder.totalunlstCnt, holder.unlstvisitedCnt, holder.unlstmissedCnt, unlisted);
             holder.unlistedBox.setOnClickListener(v -> {
 
