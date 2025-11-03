@@ -1436,11 +1436,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtSave.setText(getString(R.string.save));
                         binding.txtAddPlan.setText(getString(R.string.add_plan));
                         if (DayPlanCount.equals("1")) {
-                            binding.txtAddPlan.setEnabled(true);
-                            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
                             if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
                                 binding.txtAddPlan.setEnabled(false);
                                 binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+                            } else {
+                                binding.txtAddPlan.setEnabled(true);
+                                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
                             }
                         } else if (DayPlanCount.equals("2")) {
                             binding.txtAddPlan.setEnabled(false);
@@ -2581,6 +2582,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     enableEditSession2();
                 }
             }
+        }
+        if (!mFwFlg1.equalsIgnoreCase("F") && !mFwFlg2.equalsIgnoreCase("F")) {
+            checkAndClearCalls();
         }
         DcrCallTabLayoutActivity.TodayPlanSfCode = "";
         DcrCallTabLayoutActivity.TodayPlanSfName = "";
@@ -5641,15 +5645,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
         }
-        binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
         binding.rlworktype1.setEnabled(false);
         binding.rlcluster1.setEnabled(false);
         binding.rlheadquates1.setEnabled(false);
         binding.rlworkday1.setEnabled(false);
-        binding.txtAddPlan.setEnabled(true);
         if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
             binding.txtAddPlan.setEnabled(false);
             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+        } else {
+            binding.txtAddPlan.setEnabled(true);
+            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
         }
         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
         binding.txtSave.setEnabled(false);

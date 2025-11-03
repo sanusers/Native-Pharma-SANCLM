@@ -274,18 +274,40 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 TodayPlanSfCode = SharedPref.getSfCode(this);
                 TodayPlanSfName = SharedPref.getSfName(this);
             } else {
-                if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
+//                if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
                     TodayPlanSfCode = SharedPref.getHqCode(this);
                     TodayPlanSfName = SharedPref.getHqName(this);
                     if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
+//                        JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+//                        for (int i = 0; i < 1; i++) {
+//                            JSONObject jsonHQList = jsonArray1.getJSONObject(0);
+//                            TodayPlanSfCode = jsonHQList.getString("id");
+//                            TodayPlanSfName = jsonHQList.getString("name");
+//                        }
+                        if (WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F")) {
+                            String[] hqCode = CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQCode1).split(",");
+                            String[] hqName = CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQName1).split(",");
+                            if (hqCode.length > 0 && hqName.length > 0) {
+                                SharedPref.saveHq(DcrCallTabLayoutActivity.this, hqName[0], hqCode[0]);
+                            }
+                        } else if (WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F")) {
+                            String[] hqCode = CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQCode2).split(",");
+                            String[] hqName = CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQName2).split(",");
+                            if (hqCode.length > 0 && hqName.length > 0) {
+                                SharedPref.saveHq(DcrCallTabLayoutActivity.this, hqName[0], hqCode[0]);
+                            }
+                        }
+                    }
+
+                if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
                         JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                         for (int i = 0; i < 1; i++) {
                             JSONObject jsonHQList = jsonArray1.getJSONObject(0);
                             TodayPlanSfCode = jsonHQList.getString("id");
                             TodayPlanSfName = jsonHQList.getString("name");
                         }
-                    }
                 }
+//                }
             }
 
             prepareClusterList();
