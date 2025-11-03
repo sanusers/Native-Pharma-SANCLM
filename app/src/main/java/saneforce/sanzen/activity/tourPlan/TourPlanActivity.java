@@ -896,6 +896,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
 
+                dataModelOneBuild.setSyncStatus("0");
                 if (!isEmpty) {
                     binding.tpDrawer.closeDrawer(GravityCompat.END);
                     dataModelOneBuild.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
@@ -2935,116 +2936,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void get3MonthRemoteTPDataOneBuild(String isClickedName) {
-
-//        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
-//            if (status) {
-//                try {
-//                    apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
-//                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
-//                    jsonObject.put("tableName", "gettp_onebuild");
-//                    jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
-//                    jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
-//                    jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-//
-//                    // 👉 Dynamically pick which month/year to sync
-//                    LocalDate targetDate = LocalDate.now();
-//
-//                    switch (isClickedName) {
-//                        case "previous":
-//                            targetDate = targetDate.minusMonths(1);
-//                            break;
-//                        case "next":
-//                            targetDate = targetDate.plusMonths(1);
-//                            break;
-//                        case "current":
-//                        default:
-//                            targetDate = LocalDate.now();
-//                            break;
-//                    }
-//
-//                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, targetDate.getMonth().toString()));
-//                    jsonObject.put("tp_year", targetDate.getYear());
-//
-//                    Log.v("tpGetPlan", "--json--" + jsonObject);
-//
-//                    Map<String, String> mapString = new HashMap<>();
-//                    mapString.put("axn", "get/tp");
-//
-//                    Call<JsonElement> call = apiInterface.getJSONElement(
-//                            SharedPref.getBaseWebUrl(context) + "iOSServer/db_api.php/",
-//                            mapString,
-//                            jsonObject.toString()
-//                    );
-//
-//                    LocalDate finalTargetDate = targetDate;
-//                    call.enqueue(new Callback<JsonElement>() {
-//                        @Override
-//                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-//                            try {
-//                                Log.v("tpGetPlan", "----" + response.body());
-//                                if (response.body() != null && !response.body().isJsonNull()) {
-//                                    SharedPref.setTpSyncStaus(TourPlanActivity.this, true);
-//
-//                                    if (response.body().isJsonObject()) {
-//                                        JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
-//                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(jsonObject1)).toString(), 2));
-//                                        SaveTourPlanWholeMonthOneBuild(jsonObject1, isClickedName);
-//                                    }
-//
-//                                    binding.progressBar.setVisibility(View.GONE);
-//                                    binding.tvSync.setEnabled(true);
-//
-//                                    // 👉 Only prepare and populate the selected month
-//                                    switch (isClickedName) {
-//                                        case "previous":
-//                                            localDate = finalTargetDate;
-//                                            dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(finalTargetDate);
-//                                            populateCalenderAdapterOneBuild(dayWiseArrayPreviousMonthOneBuild);
-//                                            break;
-//                                        case "next":
-//                                            localDate = finalTargetDate;
-//                                            dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(finalTargetDate);
-//                                            populateCalenderAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
-//                                            break;
-//                                        case "current":
-//                                        default:
-//                                            localDate = finalTargetDate;
-//                                            dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(finalTargetDate);
-//                                            populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
-//                                            break;
-//                                    }
-//
-//                                } else {
-//                                    SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
-//                                    checkTpApiStatusOneBuild();
-//                                }
-//                            } catch (JSONException e) {
-//                                SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
-//                                checkTpApiStatusOneBuild();
-//                                binding.progressBar.setVisibility(View.GONE);
-//                                binding.tvSync.setEnabled(true);
-//                                Log.v("tpGetPlan", "--error--2--" + e);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-//                            SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
-//                            binding.progressBar.setVisibility(View.GONE);
-//                            Log.e("tpGetPlan", "error getTp : " + t);
-//                        }
-//                    });
-//
-//                } catch (JSONException e) {
-//                    binding.progressBar.setVisibility(View.GONE);
-//                    binding.tvSync.setEnabled(true);
-//                    Log.v("tpGetPlan", "--error--1--" + e);
-//                }
-//            }
-//        });
-//        networkStatusTask.execute();
-
-
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
             if (status) {
                 try {
@@ -3705,7 +3596,6 @@ public class TourPlanActivity extends AppCompatActivity {
                         });
                     } else {
                         get1MonthRemoteTPDataOneBuild(localDate);
-//                        get3MonthRemoteTPDataOneBuild(isClickedName);
                     }
 
 
@@ -5325,29 +5215,18 @@ public class TourPlanActivity extends AppCompatActivity {
                         }.getType();
                         if (jsonArray.length() >= 0) {
                             try {
-                                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                                for (OneBuildModelClass modelClass : arrayList) {
-                                    if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
-                                        dummy.add(modelClass.getDayNo());
-                                        switch (isClickedName) {
-                                            case "previous":
-                                                changeApprovalBtnStateOneBuild(dayWiseArrayPreviousMonthOneBuild);
-                                                break;
-                                            case "current":
-                                                changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
-                                                break;
-                                            case "next":
-                                                changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
-                                                break;
-                                        }
-                                        get1MonthRemoteTPDataOneBuild(localDate);
-//                                        get3MonthRemoteTPDataOneBuild(isClickedName);
-
+                                switch (isClickedName) {
+                                    case "previous":
+                                        changeApprovalBtnStateOneBuild(dayWiseArrayPreviousMonthOneBuild);
                                         break;
-                                    }
+                                    case "current":
+                                        changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
+                                        break;
+                                    case "next":
+                                        changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
+                                        break;
                                 }
                                 get1MonthRemoteTPDataOneBuild(localDate);
-//                                get3MonthRemoteTPDataOneBuild(isClickedName);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -5384,29 +5263,23 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
 
-    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String
-            month, String status) {
-
-
+    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String month, String status) {
         for (ModelClass modelClass : arrayList) {
             if (modelClass.getDayNo().equals(date)) {
                 modelClass.setSyncStatus(status);
                 break;
             }
         }
-
         tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
     }
 
     public void saveTpLocalOneBuild(ArrayList<OneBuildModelClass> arrayList, String date, String month, String status) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         for (OneBuildModelClass oneBuildModelClass : arrayList) {
             if (oneBuildModelClass.getDayNo().equals(date)) {
                 oneBuildModelClass.setSyncStatus(status);
                 break;
             }
         }
-
         tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
     }
 
