@@ -110,9 +110,9 @@ public class AWSBuckets {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
                         if (TransferState.COMPLETED == state) {
-                            commonUtilsMethods.showToastMessage(context,"Upload Successful!");
+//                            commonUtilsMethods.showToastMessage(context,"Upload Successful!");
                         } else if (TransferState.FAILED == state) {
-                            commonUtilsMethods.showToastMessage(context,"Upload Failed");
+//                            commonUtilsMethods.showToastMessage(context,"Upload Failed");
                         }
                     }
 

@@ -4518,7 +4518,7 @@ public class TourPlanActivity extends AppCompatActivity {
             jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
             jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-            jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
+            jsonObject.put("Month",  localDate1.getMonthValue()/*TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString())*/);
             jsonObject.put("Year", localDate1.getYear());
             Log.v("TAG", "json--" + jsonObject);
 
@@ -4541,7 +4541,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     String reason = jsonArray.getJSONObject(0).getString("Rejection_Reason");
                                     tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status, reason);
 
-                                    TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                                    TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1)));
                                     if (tourPlanOfflineDataTable != null) {
                                         status = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
                                         reason = tourPlanOfflineDataTable.getTpRejectionReasonOrEmpty();

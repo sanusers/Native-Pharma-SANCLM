@@ -1973,7 +1973,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             deviationJSONObject.put("location", gpsTrack.getLatitude() + ":" + gpsTrack.getLongitude());
             deviationJSONObject.put("address", CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
-            deviationJSONObject.put("InsMode", "0");
+            deviationJSONObject.put("InsMode", deviation);   // previously it was 0
             deviationJSONObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
             deviationJSONObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             deviationJSONObject.put("TpVwFlg", deviation);
@@ -2888,7 +2888,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("Remarks", mRemarks1);
             jsonObject.put("location", gpsTrack.getLatitude() + ":" + gpsTrack.getLongitude());
             jsonObject.put("address", CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
-            jsonObject.put("InsMode", insMode);
+            jsonObject.put("InsMode", deviation); // previously it was incMode
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
             jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             jsonObject.put("TpVwFlg", deviation);
@@ -3344,9 +3344,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     btn_save.setOnClickListener(new SafeClickListener() {
                                         @Override
                                         public void onSafeClick(View view) {
-                                            insMode = "1";
-                                            saveOrUpdateWorkPlan(false);
-                                            deviationConfirmation.dismiss();
+                                            if(deviation.equalsIgnoreCase("1")) {
+                                                insMode = "1";
+                                                saveOrUpdateWorkPlan(false);
+                                                deviationConfirmation.dismiss();
+                                            }
                                         }
                                     });
 //                                    btn_clear.setOnClickListener(view -> {
