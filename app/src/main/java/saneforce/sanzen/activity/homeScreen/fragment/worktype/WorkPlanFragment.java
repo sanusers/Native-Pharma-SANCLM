@@ -65,7 +65,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -85,6 +84,7 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.STPDaySorter;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.WorkplanFragmentBinding;
@@ -92,12 +92,12 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataTable;
-import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDataTable;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
@@ -3344,11 +3344,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     btn_save.setOnClickListener(new SafeClickListener() {
                                         @Override
                                         public void onSafeClick(View view) {
-                                            if(deviation.equalsIgnoreCase("1")) {
-                                                insMode = "1";
-                                                saveOrUpdateWorkPlan(false);
-                                                deviationConfirmation.dismiss();
-                                            }
+                                            insMode = "1";
+                                            saveOrUpdateWorkPlan(false);
+                                            deviationConfirmation.dismiss();
                                         }
                                     });
 //                                    btn_clear.setOnClickListener(view -> {
