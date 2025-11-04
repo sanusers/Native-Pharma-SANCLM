@@ -989,11 +989,11 @@ public class DoctorBusinessActivity extends AppCompatActivity {
             if (jsonArray.length() == 0) {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) );
             }
-            Log.v("DrCall", "-dr_full_length-" + jsonArray.length());
+//            Log.v("DrCall", "-dr_full_length-" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 try {
-                      Log.v("DrCall", "333");
+//                      Log.v("DrCall", "333");
                       custListArrayList = SaveData(jsonObject, i);
                 }
                 catch (Exception e) {

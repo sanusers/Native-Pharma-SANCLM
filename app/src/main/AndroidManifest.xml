@@ -163,6 +163,7 @@
         <activity
             android:name=".activity.previewPresentation.PreviewActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
@@ -280,16 +281,19 @@
         <activity
             android:name=".activity.call.profile.CustomerProfile"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name=".activity.call.DCRCallActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
@@ -345,6 +349,7 @@
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
+            android:launchMode="singleTop"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="landscape" />
 <!--

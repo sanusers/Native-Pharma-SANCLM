@@ -1662,7 +1662,7 @@ public class ListedDoctorFragment extends Fragment {
                     if (SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                         if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
                             if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
-                                Log.v("DrCall", "111");
+//                                Log.v("DrCall", "111");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -1671,7 +1671,7 @@ public class ListedDoctorFragment extends Fragment {
                                     }
                                 }
                             } else {
-                                Log.v("DrCall", "222");
+//                                Log.v("DrCall", "222");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -1680,7 +1680,7 @@ public class ListedDoctorFragment extends Fragment {
                             }
                         }
                     } else {
-                        Log.v("DrCall", "333");
+//                        Log.v("DrCall", "333");
 
                         // This not need TbBased DCR
 //                        if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
@@ -1856,7 +1856,7 @@ public class ListedDoctorFragment extends Fragment {
             } else {
                 prepareData(jsonObject, i, brands, true);
             }
-            Log.v("DrCall", "--brands---" + brands);
+//            Log.v("DrCall", "--brands---" + brands);
         } catch (Exception e) {
             Log.v("DrCall", "--1111---" + e.toString());
             e.printStackTrace();
