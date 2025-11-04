@@ -5025,15 +5025,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                 ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
                                                 StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder();
                                                 if (modelClass.getSessionList() != null && !modelClass.getSessionList().isEmpty()) {
-                                                    for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getListedDr()) {
-                                                        listedDr.append(subClass.getCode());
-                                                        listedDr.append(",");
-                                                    }
-                                                    for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getCluster()) {
-                                                        clusterCode.append(subClass.getCode());
-                                                        clusterCode.append(",");
-                                                        clusterName.append(subClass.getName());
-                                                        clusterName.append(",");
+                                                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getListedDr()) {
+                                                            listedDr.append(subClass.getCode());
+                                                            listedDr.append(",");
+                                                        }
+                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getCluster()) {
+                                                            clusterCode.append(subClass.getCode());
+                                                            clusterCode.append(",");
+                                                            clusterName.append(subClass.getName());
+                                                            clusterName.append(",");
+                                                        }
+                                                    } else {
+                                                        for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(0).getListedDrs()) {
+                                                            for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                listedDr.append(data.getCode());
+                                                                listedDr.append(",");
+                                                            }
+                                                            listedDr.append("$");
+                                                        }
+                                                        for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(0).getClusters()) {
+                                                            for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                clusterCode.append(data.getCode());
+                                                                clusterCode.append(",");
+                                                                clusterName.append(data.getName());
+                                                                clusterName.append(",");
+                                                            }
+                                                            clusterCode.append("$");
+                                                            clusterName.append("$");
+                                                        }
                                                     }
                                                     JSONObject obj = new JSONObject();
                                                     JSONObject obj2 = new JSONObject();
@@ -5066,15 +5086,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                     jsonArray.put(obj);
 
                                                     if (modelClass.getSessionList().size() > 1) {
-                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getListedDr()) {
-                                                            listedDr.append(subClass.getCode());
-                                                            listedDr.append(",");
-                                                        }
-                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getCluster()) {
-                                                            clusterCode.append(subClass.getCode());
-                                                            clusterCode.append(",");
-                                                            clusterName.append(subClass.getName());
-                                                            clusterName.append(",");
+                                                        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                                                            for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getListedDr()) {
+                                                                listedDr.append(subClass.getCode());
+                                                                listedDr.append(",");
+                                                            }
+                                                            for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getCluster()) {
+                                                                clusterCode.append(subClass.getCode());
+                                                                clusterCode.append(",");
+                                                                clusterName.append(subClass.getName());
+                                                                clusterName.append(",");
+                                                            }
+                                                        } else {
+                                                            for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(1).getListedDrs()) {
+                                                                for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                    listedDr.append(data.getCode());
+                                                                    listedDr.append(",");
+                                                                }
+                                                                listedDr.append("$");
+                                                            }
+                                                            for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(1).getClusters()) {
+                                                                for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                    clusterCode.append(data.getCode());
+                                                                    clusterCode.append(",");
+                                                                    clusterName.append(data.getName());
+                                                                    clusterName.append(",");
+                                                                }
+                                                                clusterCode.append("$");
+                                                                clusterName.append("$");
+                                                            }
                                                         }
                                                         obj2.put("SFCode", SharedPref.getSfCode(requireContext()));
                                                         JSONObject TPDtSecondSeasonObject = new JSONObject();

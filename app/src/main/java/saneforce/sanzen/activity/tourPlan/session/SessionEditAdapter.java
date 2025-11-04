@@ -1286,7 +1286,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
                 }
-                prepareMGRInputData(holder.jcsModelArray, holder.mgrJointCallArray);
+                prepareMGRJCData(holder.jcsModelArray, holder.mgrJointCallArray);
             } else {
                 for (int i = 0; i < holder.jcModelArray.size(); i++) {
                     if (jcName.length() == 0) {
@@ -2783,7 +2783,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                                holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
 
                                 prepareMGRInputData(holder.clustersModelArray, holder.mgrClusterArray);
-                                prepareMGRInputData(holder.jcsModelArray, holder.mgrJointCallArray);
+                                prepareMGRJCData(holder.jcsModelArray, holder.mgrJointCallArray);
                                 prepareMGRInputData(holder.listedDrsModelArray, holder.mgrListedDrArray);
                                 prepareMGRInputData(holder.chemistsModelArray, holder.mgrChemistArray);
                                 prepareMGRInputData(holder.stockistsModelArray, holder.mgrStockiestArray);
@@ -2854,6 +2854,30 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     });
             Log.d("TAG", "prepareMGRInputData: " + modelArray);
+        }
+    }
+
+    private void prepareMGRJCData(ArrayList<MultiHQHeaderModelClass> modelArray, ArrayList<MultiHQHeaderModelClass> mgrArray) {
+        if (!modelArray.isEmpty()) {
+            Map<String, List<String>> selectedData = new HashMap<>();
+            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelArray) {
+                ArrayList<MultiHQItemModelClass> multiHQItemModelClassList = multiHQHeaderModelClass.getItemsList();
+                List<String> selectedJC = new ArrayList<>();
+                for (MultiHQItemModelClass multiHQItemModelClass : multiHQItemModelClassList) {
+                    selectedJC.add(multiHQItemModelClass.getCode());
+                }
+                selectedData.put(multiHQHeaderModelClass.getCode(), selectedJC);
+            }
+            for (MultiHQHeaderModelClass multiHQHeaderModelClass : mgrArray) {
+                if (selectedData.containsKey(multiHQHeaderModelClass.getCode())) {
+                    for (MultiHQItemModelClass multiHQItemModelClass : multiHQHeaderModelClass.getItemsList()) {
+                        if (selectedData.get(multiHQHeaderModelClass.getCode()).contains(multiHQItemModelClass.getCode())) {
+                            multiHQItemModelClass.setChecked(true);
+                        }
+                    }
+                }
+            }
+            Log.d("TAG", "prepareMGRJCData: " + modelArray);
         }
     }
 
