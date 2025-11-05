@@ -51,6 +51,25 @@ public class FirebaseService extends FirebaseMessagingService {
     }
 
     @Override
+    public void handleIntent(Intent intent) {
+        try {
+            if (intent.getExtras() != null) {
+                RemoteMessage.Builder builder = new RemoteMessage.Builder("FirebaseService");
+                for (String key : intent.getExtras().keySet()) {
+                    if (intent.getExtras().get(key) != null) {
+                        builder.addData(key, intent.getExtras().get(key).toString());
+                    }
+                }
+                onMessageReceived(builder.build());
+            } else {
+                super.handleIntent(intent);
+            }
+        } catch (Exception e) {
+            super.handleIntent(intent);
+        }
+    }
+
+    @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 //        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
