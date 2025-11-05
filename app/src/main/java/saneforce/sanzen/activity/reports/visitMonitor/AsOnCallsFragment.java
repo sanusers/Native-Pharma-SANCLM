@@ -85,11 +85,11 @@ public class AsOnCallsFragment extends Fragment {
             int currentMonth = Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8)); // e.g., "11" for November
             int currentYear = Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_10)); // e.g., "2025"
 
-            // Step 2: Convert joining month/year to int
+
             int joinMonth = Integer.parseInt(JoiningMonth);
             int joinYear = Integer.parseInt(JoiningYear);
 
-            // Step 3: Prepare which months to show
+
             List<String> monthsToShow = new ArrayList<>();
 
             if (joinYear == currentYear) {

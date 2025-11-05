@@ -74,7 +74,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     private RelativeLayout refreshLocation;
     private boolean isFencing;
 
-    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, boolean isFencing, String isFrom) {
+    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, boolean isFencing, String isFrom/*, boolean isCustVisitedToday*/) {
         this.activity = activity;
         this.context = context;
         this.cusListArrayList = cusListArrayList;
@@ -83,6 +83,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         this.isFrom = isFrom;
         this.FillteredList = cusListArrayList;
         roomDB = RoomDB.getDatabase(context);
+//        this.isCustVisitedToday = isCustVisitedToday;
         masterDataDao = roomDB.masterDataDao();
         gpsTrack = new GPSTrack(activity);
 
@@ -211,6 +212,11 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 }
             }
         });
+      /*  if(isCustVisitedToday){
+            holder.seenDr.setVisibility(View.VISIBLE);
+        }else{
+            holder.seenDr.setVisibility(View.GONE);
+        }*/
 
         if (isFencing) {
             holder.info.setVisibility(View.VISIBLE);
@@ -484,7 +490,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         TextView tv_name, tv_category, tv_specialist, tv_area;
         ConstraintLayout constraint_main;
         View view_top;
-        ImageView info;
+        ImageView info,seenDr;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -495,6 +501,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             constraint_main = itemView.findViewById(R.id.constraint_main);
             view_top = itemView.findViewById(R.id.view_top);
             info = itemView.findViewById(R.id.tv_duration_info);
+            seenDr = itemView.findViewById(R.id.seenDr);
         }
     }
 

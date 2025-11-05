@@ -242,6 +242,9 @@ public class VisitFilter {
                 JSONObject callObj = jsonArray_call.getJSONObject(i);
                 String callDateStr = callObj.getString("Dcr_dt");
 
+                if (callDateStr.isEmpty() || callDateStr.equalsIgnoreCase("null")) {
+                    continue;
+                }
                 if (!rejectedDates.contains(callDateStr)) {
                     Date callDate = sdf.parse(callDateStr);
                     Calendar cal = Calendar.getInstance();

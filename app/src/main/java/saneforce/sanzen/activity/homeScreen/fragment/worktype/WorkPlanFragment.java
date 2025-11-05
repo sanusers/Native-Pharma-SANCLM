@@ -1405,6 +1405,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             String holidayName = findWTName("H");
                             commonUtilsMethods.showToastMessage(requireContext(), "Already " + holidayName + " has been submitted");
                         } else {
+                            if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
+                                commonUtilsMethods.showToastMessage(requireContext(), "Cannot add plan in Tour Plan based DCR!");
+                            }
                             DayPlanCount = "2";
                             binding.llDelete.setVisibility(View.VISIBLE);
                             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
@@ -1432,8 +1435,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtSave.setText(getString(R.string.save));
                         binding.txtAddPlan.setText(getString(R.string.add_plan));
                         if (DayPlanCount.equals("1")) {
-                            binding.txtAddPlan.setEnabled(true);
-                            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
+                            if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
+                                binding.txtAddPlan.setEnabled(false);
+                                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+                            } else {
+                                binding.txtAddPlan.setEnabled(true);
+                                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
+                            }
                         } else if (DayPlanCount.equals("2")) {
                             binding.txtAddPlan.setEnabled(false);
                             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
@@ -2573,6 +2581,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     enableEditSession2();
                 }
             }
+        }
+        if (!mFwFlg1.equalsIgnoreCase("F") && !mFwFlg2.equalsIgnoreCase("F")) {
+            checkAndClearCalls();
         }
         DcrCallTabLayoutActivity.TodayPlanSfCode = "";
         DcrCallTabLayoutActivity.TodayPlanSfName = "";
@@ -4827,18 +4838,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         prepareMultiHQClusters();
     }
-
     private void checkAndClearCalls() {
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
-            JSONArray resultArray = new JSONArray();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (HomeDashBoard.selectedDate != null && !jsonObject.getString("Dcr_dt").equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString())) || jsonObject.optString("CustType").equalsIgnoreCase("0")) {
-                    resultArray.put(jsonArray.optJSONObject(i));
+            if (!HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+                JSONArray resultArray = new JSONArray();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if (!(jsonObject.getString("Dcr_dt").equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString())) && !jsonObject.optString("CustType").equalsIgnoreCase("0"))) {
+                        resultArray.put(jsonArray.optJSONObject(i));
+                    }
                 }
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, resultArray.toString(), 2));
             }
-            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, resultArray.toString(), 2));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -5008,15 +5020,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                 ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
                                                 StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder();
                                                 if (modelClass.getSessionList() != null && !modelClass.getSessionList().isEmpty()) {
-                                                    for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getListedDr()) {
-                                                        listedDr.append(subClass.getCode());
-                                                        listedDr.append(",");
-                                                    }
-                                                    for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getCluster()) {
-                                                        clusterCode.append(subClass.getCode());
-                                                        clusterCode.append(",");
-                                                        clusterName.append(subClass.getName());
-                                                        clusterName.append(",");
+                                                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getListedDr()) {
+                                                            listedDr.append(subClass.getCode());
+                                                            listedDr.append(",");
+                                                        }
+                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getCluster()) {
+                                                            clusterCode.append(subClass.getCode());
+                                                            clusterCode.append(",");
+                                                            clusterName.append(subClass.getName());
+                                                            clusterName.append(",");
+                                                        }
+                                                    } else {
+                                                        for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(0).getListedDrs()) {
+                                                            for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                listedDr.append(data.getCode());
+                                                                listedDr.append(",");
+                                                            }
+                                                            listedDr.append("$");
+                                                        }
+                                                        for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(0).getClusters()) {
+                                                            for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                clusterCode.append(data.getCode());
+                                                                clusterCode.append(",");
+                                                                clusterName.append(data.getName());
+                                                                clusterName.append(",");
+                                                            }
+                                                            clusterCode.append("$");
+                                                            clusterName.append("$");
+                                                        }
                                                     }
                                                     JSONObject obj = new JSONObject();
                                                     JSONObject obj2 = new JSONObject();
@@ -5308,9 +5340,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         });
         btn_clear.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onSafeClick(View view) {
+            public void onSafeClick(View view) {if (isFromTP) {
+                commonUtilsMethods.showToastMessage(requireContext(), "Save Work Plan to delete session " + sessionType);
+                dialogOptionSelection.dismiss();
+            } else {
                 dialogEditOrDeleteConfirmation(sessionType, "Delete");
                 dialogOptionSelection.dismiss();
+            }
             }
         });
         iv_close.setOnClickListener(new SafeClickListener() {
@@ -5623,12 +5659,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
         }
-        binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
         binding.rlworktype1.setEnabled(false);
         binding.rlcluster1.setEnabled(false);
         binding.rlheadquates1.setEnabled(false);
         binding.rlworkday1.setEnabled(false);
-        binding.txtAddPlan.setEnabled(true);
+        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
+            binding.txtAddPlan.setEnabled(false);
+            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+        } else {
+            binding.txtAddPlan.setEnabled(true);
+            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
+        }
         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
         binding.txtSave.setEnabled(false);
         binding.flSession1.setVisibility(View.VISIBLE);

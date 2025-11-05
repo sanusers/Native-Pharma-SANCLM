@@ -218,6 +218,9 @@ public class DoctorFragment extends Fragment {
     }
 
     private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
+        if (oneVisit == 0 && twoVisit == 0 && threeVisit == 0 && threePlusVisit == 0) {
+            pieChart.setCenterText("No Visits Found");
+        } else {
 
             pieChart.setCenterText("Visits");
             pieChart.setCenterTextSize(15f);
@@ -279,6 +282,7 @@ public class DoctorFragment extends Fragment {
             pieChart.invalidate();
 
         }
+    }
    /* private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
         pieChart.setCenterTextSize(15f);
         pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
