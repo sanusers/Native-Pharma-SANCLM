@@ -123,14 +123,14 @@ public class CallsFragment extends Fragment {
                                             for (int i = 0; i < jsonArray.length(); i++) {
                                                 JSONObject json = jsonArray.getJSONObject(i);
                                                 SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.toString());
-                                                TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
-                                                TodayCallListTwo.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                TodayCallListTwo.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
 
                                                 if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
                                                     for (int j = 0; j < jsonArray1.length(); j++) {
                                                         JSONObject jsonObject = jsonArray1.getJSONObject(j);
-                                                        if (json.getString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").equalsIgnoreCase(json.getString("CustCode"))) {
-                                                            TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                        if (json.optString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))) {
+                                                            TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                                                             jsonArray1.remove(j);
                                                             break;
                                                         }
@@ -138,8 +138,8 @@ public class CallsFragment extends Fragment {
                                                 } else {
                                                     for (int j = 0; j < jsonArray1.length(); j++) {
                                                         JSONObject jsonObject = jsonArray1.getJSONObject(j);
-                                                        if (json.getString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").equalsIgnoreCase(json.getString("CustCode"))) {
-                                                            TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                        if (json.optString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))) {
+                                                            TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                                                             jsonArray1.remove(j);
                                                             break;
                                                         }
@@ -152,8 +152,8 @@ public class CallsFragment extends Fragment {
                                                 JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
                                                 for (int i = 0; i < jsonArrayWt.length(); i++) {
                                                     JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
-                                                    if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
-                                                        FwFlag = workTypeData.getString("FWFlg");
+                                                    if (workTypeData.optString("FWFlg").equalsIgnoreCase("F")) {
+                                                        FwFlag = workTypeData.optString("FWFlg");
                                                     }
                                                 }
 
@@ -241,9 +241,9 @@ public class CallsFragment extends Fragment {
             if (!SharedPref.getTodayCallList(context).isEmpty()) {
                 JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
                 if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
-                    CheckDate = jsonArray.getJSONObject(0).getString("DCRdt").substring(0, 10);
+                    CheckDate = jsonArray.getJSONObject(0).optString("DCRdt").substring(0, 10);
                 } else {
-                    CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
+                    CheckDate = jsonArray.getJSONObject(0).optString("vstTime").substring(0, 10);
                 }
 
                 if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
@@ -254,7 +254,7 @@ public class CallsFragment extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject json = jsonArray.getJSONObject(i);
                         SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-                        TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                        TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                     }
                 }
             }
@@ -365,13 +365,13 @@ public class CallsFragment extends Fragment {
                     try {
                         if (workTypeArray.length() > 0) {
                             JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
-                            String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                            String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").optString("date");
                             Date FirstPlanDate = sdf.parse(DayPlanDate1);
                             String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                             Date CurentDate = sdf.parse(CurrentDate);
                             if (workTypeArray.length() > 1) {
                                 JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
-                                String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                                String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").optString("date");
                                 Date SecondPlanDate = sdf.parse(DayPlanDate2);
                                 if ((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
                                     startActivity(new Intent(requireActivity(), DynamicActivity.class));
@@ -444,15 +444,15 @@ public class CallsFragment extends Fragment {
                                 commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
                             } else if (workTypeArray.length() > 0) {
                                 JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
-                                String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
-                                String FWFlg1 = FirstSeasonDayPlanObject.getString("FWFlg");
+                                String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").optString("date");
+                                String FWFlg1 = FirstSeasonDayPlanObject.optString("FWFlg");
                                 Date FirstPlanDate = sdf.parse(DayPlanDate1);
                                 String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                                 Date CurentDate = sdf.parse(CurrentDate);
                                 if (workTypeArray.length() > 1) {
                                     JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
-                                    String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
-                                    String FWFlg2 = SecondSeasonDayPlanObject.getString("FWFlg");
+                                    String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").optString("date");
+                                    String FWFlg2 = SecondSeasonDayPlanObject.optString("FWFlg");
                                     Date SecondPlanDate = sdf.parse(DayPlanDate2);
                                     if ((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
                                         if (!FWFlg1.equalsIgnoreCase("F") && (!FWFlg2.equalsIgnoreCase("F"))) {

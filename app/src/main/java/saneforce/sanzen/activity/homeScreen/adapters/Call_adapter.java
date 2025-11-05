@@ -169,12 +169,20 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                     CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode(), checkInOutNeed);
                                     String mMdata = masterDataDao.getDataByKey(Constants.CALL_SYNC);
                                     JSONArray jsonArray = new JSONArray(mMdata);
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
-                                            jsonArray.remove(i);
-                                            break;
+                                    try {
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                            String date = callslist.getCallsDateTime().substring(0, 10);
+                                            if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                                                date = callslist.getDcrDate().substring(0, 10);
+                                            }
+                                            if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
+                                                jsonArray.remove(i);
+                                                break;
+                                            }
                                         }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                     MasterDataTable data = new MasterDataTable();
                                     data.setMasterKey(Constants.CALL_SYNC);
