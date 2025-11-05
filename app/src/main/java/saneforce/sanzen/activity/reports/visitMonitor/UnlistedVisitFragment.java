@@ -133,27 +133,29 @@ public class UnlistedVisitFragment extends Fragment {
         unlistedImage.setImageDrawable(getResources().getDrawable(R.drawable.map_unlistdr_img));
 
         if (dataListUnlist != null && !dataListUnlist.isEmpty()) {
-            VisitStatsModel model = dataListUnlist.get(position);
+            if (position < dataListUnlist.size()) {
+                VisitStatsModel model = dataListUnlist.get(position);
 
-            totalUnlistCnt.setText(model.getTotalCustomers());
-            visitedCnt.setText(model.getVisitedCustomers());
-            missedCnt.setText(model.getMissedCustomers());
-            FWDaysCnt.setText(model.getFwDays());
-            callAvgCnt.setText(model.getCallAvg());
-            callCvgCnt.setText(model.getCoverage() + "%");
+                totalUnlistCnt.setText(model.getTotalCustomers());
+                visitedCnt.setText(model.getVisitedCustomers());
+                missedCnt.setText(model.getMissedCustomers());
+                FWDaysCnt.setText(model.getFwDays());
+                callAvgCnt.setText(model.getCallAvg());
+                callCvgCnt.setText(model.getCoverage() + "%");
 
-            setupBarChart(
-                    Integer.parseInt(model.getTotalCustomers()),
-                    Integer.parseInt(model.getVisitedCustomers()),
-                    Integer.parseInt(model.getMissedCustomers()),
-                    Double.parseDouble(model.getCallAvg())
-            );
+                setupBarChart(
+                        Integer.parseInt(model.getTotalCustomers()),
+                        Integer.parseInt(model.getVisitedCustomers()),
+                        Integer.parseInt(model.getMissedCustomers()),
+                        Double.parseDouble(model.getCallAvg())
+                );
        /*     setupPieChart(
                     (int) model.getOneVisitCount(),
                     (int) model.getTwoVisitCount(),
                     (int) model.getThreeVisitCount(),
                     (int) model.getThreePlusVisitCount()
             );*/
+            }
         }
 
         return view;

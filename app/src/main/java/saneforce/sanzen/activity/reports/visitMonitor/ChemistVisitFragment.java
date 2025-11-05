@@ -140,27 +140,29 @@ public class ChemistVisitFragment extends Fragment {
 
 
         if (dataListChm != null && !dataListChm.isEmpty()) {
-            VisitStatsModel model = dataListChm.get(position);
+            if (position < dataListChm.size()) {
+                VisitStatsModel model = dataListChm.get(position);
 
-            totalChmCnt.setText(model.getTotalCustomers());
-            visitedCnt.setText(model.getVisitedCustomers());
-            missedCnt.setText(model.getMissedCustomers());
-            FWDaysCnt.setText(model.getFwDays());
-            callAvgCnt.setText(model.getCallAvg());
-            callCvgCnt.setText(model.getCoverage() + "%");
+                totalChmCnt.setText(model.getTotalCustomers());
+                visitedCnt.setText(model.getVisitedCustomers());
+                missedCnt.setText(model.getMissedCustomers());
+                FWDaysCnt.setText(model.getFwDays());
+                callAvgCnt.setText(model.getCallAvg());
+                callCvgCnt.setText(model.getCoverage() + "%");
 
-            setupBarChart(
-                    Integer.parseInt(model.getTotalCustomers()),
-                    Integer.parseInt(model.getVisitedCustomers()),
-                    Integer.parseInt(model.getMissedCustomers()),
-                    Double.parseDouble(model.getCallAvg())
-            );
+                setupBarChart(
+                        Integer.parseInt(model.getTotalCustomers()),
+                        Integer.parseInt(model.getVisitedCustomers()),
+                        Integer.parseInt(model.getMissedCustomers()),
+                        Double.parseDouble(model.getCallAvg())
+                );
        /*     setupPieChart(
                     (int) model.getOneVisitCount(),
                     (int) model.getTwoVisitCount(),
                     (int) model.getThreeVisitCount(),
                     (int) model.getThreePlusVisitCount()
             );*/
+            }
         }
 
         return view;
