@@ -20,6 +20,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -277,6 +280,7 @@ public class JWOthersFragment extends Fragment {
 
     private void HiddenVisibleFunction() {
         jwOthersBinding.tagPob.setText(CapPob);
+        jwOthersBinding.edRemarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(jwOthersBinding.edRemarks, 200)});
         if (DCRCallActivity.PobNeed.equalsIgnoreCase("0")) {
             jwOthersBinding.constraintPob.setVisibility(View.VISIBLE);
         } else {

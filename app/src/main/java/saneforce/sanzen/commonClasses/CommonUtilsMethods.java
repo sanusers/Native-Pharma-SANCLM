@@ -143,29 +143,38 @@ public class CommonUtilsMethods {
     }
 
     public static InputFilter FilterSpaceEditText(EditText editText) {
-        return (source, start, end, dest, dstart, dend) -> {
+        return new InputFilter() {
+            boolean canEnterSpace = false;
 
-            StringBuilder result = new StringBuilder(dest);
-            result.replace(dstart, dend, source.subSequence(start, end).toString());
-
-            if (result.length() > 0 && result.charAt(0) == ' ') {
-                return "";
-            }
-
-            for (int i = 1; i < result.length(); i++) {
-                if (result.charAt(i) == ' ' && result.charAt(i - 1) == ' ') {
-                    return "";
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if(editText.getText().toString().equals("")) {
+                    canEnterSpace = false;
                 }
-            }
 
-            for (int i = start; i < end; i++) {
-                char c = source.charAt(i);
-                if (!Character.isLetterOrDigit(c) && c != '_' && c != '@' && c != '!' && c != '#' && c != '$' && !Character.isWhitespace(c)) {
-                    return "";
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = start; i<end; i++) {
+                    char currentChar = source.charAt(i);
+
+                    if(Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+                        builder.append(currentChar);
+                        canEnterSpace = true;
+                    }
+
+                    if(Character.isWhitespace(currentChar) && canEnterSpace) {
+                        builder.append(currentChar);
+                    }
                 }
-            }
 
-            return null;
+                String result = dest.toString().substring(0, dstart) + builder.toString() + dest.toString().substring(dend);
+
+               /* if(result.length()>maxLength) {
+                    return "";
+                }*/
+
+                return builder.toString();
+            }
         };
     }
 
@@ -200,7 +209,7 @@ public class CommonUtilsMethods {
 //        };
 //    }
 
-    public static InputFilter FilterSpaceEditText(final EditText editText, final int maxLength) {
+public static InputFilter FilterSpaceEditText(final EditText editText, final int maxLength) {
         return new InputFilter() {
             boolean canEnterSpace = false;
 

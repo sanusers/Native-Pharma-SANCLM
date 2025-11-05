@@ -157,8 +157,8 @@ public class Leave_Application extends AppCompatActivity {
         setMaxLength();
         onClickListener();
 
-        leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason)});
-        leavebinding.edAddress.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edAddress)});
+        leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason,300)});
+        leavebinding.edAddress.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edAddress,300)});
 
 //        l_sideview.closeDrawer(Gravity.RIGHT);
         leavebinding.leavebackArrow.setOnClickListener(new SafeClickListener() {

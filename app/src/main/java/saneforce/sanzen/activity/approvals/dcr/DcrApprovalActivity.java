@@ -396,6 +396,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                dcrCallApprovalBinding.searchDcr.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( dcrCallApprovalBinding.searchDcr, 300)});
 
             }
 

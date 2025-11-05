@@ -870,6 +870,7 @@ public class DynamicActivity extends AppCompatActivity {
             fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
             textcharacter.setFilters(fArray);
         }
+        textcharacter.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(textcharacter)});
 
         // CreateName
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
@@ -1034,6 +1035,7 @@ public class DynamicActivity extends AppCompatActivity {
             fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
             textarea.setFilters(fArray);
         }
+        textarea.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(textarea)});
 
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -1043,6 +1044,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
+                    holder.remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.remarks, 300)});
                 }
 
                 @Override
@@ -1470,6 +1472,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     } else {
                         sessionItemAdapter.getFilter().filter(charSequence);
                     }
+                    holder.searchET.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.searchET, 100)});
                 }
 
                 @Override
@@ -2050,6 +2053,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     holder.sessionData.setRemarks(holder.remarks.getText().toString());
+                    holder.remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.remarks, 300)});
                 }
 
                 @Override

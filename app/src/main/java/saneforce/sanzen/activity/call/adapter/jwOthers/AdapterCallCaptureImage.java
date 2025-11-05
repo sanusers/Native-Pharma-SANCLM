@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -288,7 +289,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                holder.tv_image_name.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.tv_image_name, 100)});
             }
 
             @Override
@@ -305,6 +306,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                holder.ed_img_desc.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.ed_img_desc, 300)});
 
             }
 
