@@ -284,40 +284,34 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 TodayPlanSfCode = SharedPref.getSfCode(this);
                 TodayPlanSfName = SharedPref.getSfName(this);
             } else {
-//                if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
-                TodayPlanSfCode = SharedPref.getHqCode(this);
-                TodayPlanSfName = SharedPref.getHqName(this);
                 if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
+                    TodayPlanSfCode = SharedPref.getHqCode(this);
+                    TodayPlanSfName = SharedPref.getHqName(this);
+                    if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
 //                        JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
 //                        for (int i = 0; i < 1; i++) {
 //                            JSONObject jsonHQList = jsonArray1.getJSONObject(0);
 //                            TodayPlanSfCode = jsonHQList.getString("id");
 //                            TodayPlanSfName = jsonHQList.getString("name");
 //                        }
-                    if (WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F")) {
-                        String[] hqCode = CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQCode1).split(",");
-                        String[] hqName = CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQName1).split(",");
-                        if (hqCode.length > 0 && hqName.length > 0) {
-                            SharedPref.saveHq(DcrCallTabLayoutActivity.this, hqName[0], hqCode[0]);
-                        }
-                    } else if (WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F")) {
-                        String[] hqCode = CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQCode2).split(",");
-                        String[] hqName = CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQName2).split(",");
-                        if (hqCode.length > 0 && hqName.length > 0) {
-                            SharedPref.saveHq(DcrCallTabLayoutActivity.this, hqName[0], hqCode[0]);
-                        }
+                        saveHQ();
                     }
-                }
 
-                if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
-                    JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                    for (int i = 0; i < 1; i++) {
-                        JSONObject jsonHQList = jsonArray1.getJSONObject(0);
-                        TodayPlanSfCode = jsonHQList.getString("id");
-                        TodayPlanSfName = jsonHQList.getString("name");
+                    if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
+                        JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+                        for (int i = 0; i < 1; i++) {
+                            JSONObject jsonHQList = jsonArray1.getJSONObject(0);
+                            TodayPlanSfCode = jsonHQList.getString("id");
+                            TodayPlanSfName = jsonHQList.getString("name");
+                        }
+                    }
+                } else {
+                    if ((WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F") || WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F"))
+                            && (!(Arrays.asList(CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQCode1).split(",")).contains(TodayPlanSfCode))
+                             && !(Arrays.asList(CommonUtilsMethods.removeLastComma(WorkPlanFragment.mHQCode2).split(",")).contains(TodayPlanSfCode)))) {
+                        saveHQ();
                     }
                 }
-//                }
             }
 
             prepareClusterList();
@@ -327,6 +321,24 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             limitKm = Double.parseDouble(SharedPref.getDisRad(this));
         } catch (Exception e) {
             Log.v("required_data", "--tab-dcr-" + e);
+        }
+    }
+
+    private void saveHQ() {
+        if (WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F")) {
+            saveHQ(WorkPlanFragment.mHQCode1, WorkPlanFragment.mHQName1);
+        } else if (WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F")) {
+            saveHQ(WorkPlanFragment.mHQCode2, WorkPlanFragment.mHQName2);
+        }
+    }
+
+    private void saveHQ(String mHQCode, String mHQName) {
+        String[] hqCode = CommonUtilsMethods.removeLastComma(mHQCode).split(",");
+        String[] hqName = CommonUtilsMethods.removeLastComma(mHQName).split(",");
+        if (hqCode.length > 0 && hqName.length > 0) {
+            SharedPref.saveHq(DcrCallTabLayoutActivity.this, hqName[0], hqCode[0]);
+            TodayPlanSfCode = hqCode[0];
+            TodayPlanSfName = hqName[0];
         }
     }
 

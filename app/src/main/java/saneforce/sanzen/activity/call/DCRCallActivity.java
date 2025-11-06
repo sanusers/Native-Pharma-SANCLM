@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.call;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.storingSlide;
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.JWKCodeList;
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.callCaptureImageLists;
@@ -58,6 +57,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -491,7 +491,7 @@ public class DCRCallActivity extends AppCompatActivity {
 //                    double lng = gpsTrack.getLongitude();
 //                    address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
 //                }else {
-//                    tv_address.setText(context.getString(R.string.no_network));
+//                    tv_address.setText(DCRCallActivity.this.getString(R.string.no_network));
 //                }
 //            }
             if (signatureFragment1 != null) {
@@ -1035,7 +1035,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            CallDataRestClass.resetcallValues(context);
+            CallDataRestClass.resetcallValues(DCRCallActivity.this);
 
         } catch (Exception ignored) {
             ignored.printStackTrace();
@@ -1475,7 +1475,7 @@ public class DCRCallActivity extends AppCompatActivity {
         Log.v("callSave", "---" + jsonSaveDcr);
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/dcr");
-        Call<JsonElement> callSaveDcr = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonSaveDcr);
+        Call<JsonElement> callSaveDcr = api_interface.getJSONElement(SharedPref.getCallApiUrl(DCRCallActivity.this), mapString, jsonSaveDcr);
         callSaveDcr.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -2510,7 +2510,7 @@ public class DCRCallActivity extends AppCompatActivity {
             Call<JsonElement> call = null;
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "save/remainder");
-            call = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jn.toString());
+            call = api_interface.getJSONElement(SharedPref.getCallApiUrl(DCRCallActivity.this), mapString, jn.toString());
 
             call.enqueue(new Callback<JsonElement>() {
                 @Override
@@ -2583,7 +2583,13 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             Log.v("final_value_call", "---inputzise---" + jsonArray);
             jsonSaveDcr.put("JointWork", jsonArray);
-            SharedPref.setJWKCODE(context, JWKCodeList, HomeDashBoard.selectedDate.toString());
+            Map<String, List<String>> jcMap = SharedPref.getJCMap(DCRCallActivity.this);
+            if (jcMap == null) {
+                jcMap = new HashMap<>();
+            }
+            jcMap.put(TodayPlanSfCode, JWKCodeList);
+            SharedPref.setJWKCODE(DCRCallActivity.this, JWKCodeList, HomeDashBoard.selectedDate.toString());
+            SharedPref.saveJCMap(DCRCallActivity.this, jcMap, HomeDashBoard.selectedDate.toString());
 
             //Input
             jsonArray = new JSONArray();
@@ -3823,7 +3829,7 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void timeZoneVerification() {
-        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(DCRCallActivity.this) && commonUtilsMethods.isTimeZoneAutomatic(DCRCallActivity.this);
         if (!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }

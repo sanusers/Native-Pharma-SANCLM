@@ -629,8 +629,11 @@ public class StockiestFragment extends Fragment {
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private final DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation;
+
+    public StockiestFragment() {
+    }
 
     public StockiestFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
         this.hqChangeListener = hqChangeListener;

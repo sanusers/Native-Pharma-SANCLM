@@ -915,7 +915,6 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-
 public class UnlistedDoctorFragment extends Fragment {
     RecyclerView rv_list;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
@@ -940,8 +939,11 @@ public class UnlistedDoctorFragment extends Fragment {
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private final DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation;
+
+    public UnlistedDoctorFragment() {
+    }
 
     public UnlistedDoctorFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
         this.hqChangeListener = hqChangeListener;
