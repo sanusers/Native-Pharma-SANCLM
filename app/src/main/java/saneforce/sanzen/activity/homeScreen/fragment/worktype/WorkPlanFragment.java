@@ -2888,7 +2888,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("Remarks", mRemarks1);
             jsonObject.put("location", gpsTrack.getLatitude() + ":" + gpsTrack.getLongitude());
             jsonObject.put("address", CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
-            jsonObject.put("InsMode", insMode); // previously it was incMode
+            if(SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")){
+                jsonObject.put("InsMode", deviation);
+            }else {
+                jsonObject.put("InsMode", insMode); // previously it was incMode
+            }
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
             jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             jsonObject.put("TpVwFlg", deviation);
