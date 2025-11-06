@@ -298,6 +298,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded(),callCaptureImageLists.get(holder.getBindingAdapterPosition()).isShowPreview()));
             }
         });
+        holder.ed_img_desc.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.ed_img_desc, 300)});
 
         holder.ed_img_desc.addTextChangedListener(new TextWatcher() {
             @Override
@@ -307,7 +308,6 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                holder.ed_img_desc.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.ed_img_desc, 300)});
 
             }
 

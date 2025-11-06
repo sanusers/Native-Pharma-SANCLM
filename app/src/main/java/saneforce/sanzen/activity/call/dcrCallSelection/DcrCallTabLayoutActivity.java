@@ -366,12 +366,22 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
        }*/
     private void prepareClusterList() {
         try {
-            if (WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()) {
-                SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode1);
-                SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname1);
-            } else if (WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode2 != null && !WorkPlanFragment.mTowncode2.isEmpty()) {
-                SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode2);
-                SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname2);
+            if (SharedPref.getSfType(DcrCallTabLayoutActivity.this).equalsIgnoreCase("1")) {
+                if (WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F") && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()) {
+                    SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode1);
+                    SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname1);
+                } else if (WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F") && WorkPlanFragment.mTowncode2 != null && !WorkPlanFragment.mTowncode2.isEmpty()) {
+                    SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode2);
+                    SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname2);
+                }
+            } else {
+                if (WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()) {
+                    SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode1);
+                    SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname1);
+                } else if (WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode2 != null && !WorkPlanFragment.mTowncode2.isEmpty()) {
+                    SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode2);
+                    SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname2);
+                }
             }
             TodayPlanClusterList.clear();
             JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + TodayPlanSfCode).getMasterSyncDataJsonArray();
