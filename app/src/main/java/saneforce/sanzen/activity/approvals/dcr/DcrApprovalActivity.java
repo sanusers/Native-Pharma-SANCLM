@@ -388,6 +388,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         } else {
             commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
         }
+        dcrCallApprovalBinding.searchDcr.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( dcrCallApprovalBinding.searchDcr, 300)});
+
         dcrCallApprovalBinding.searchDcr.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -396,7 +398,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                dcrCallApprovalBinding.searchDcr.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( dcrCallApprovalBinding.searchDcr, 300)});
 
             }
 

@@ -1034,7 +1034,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     return false;
                 }
             });
-
+            holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
+            holder.remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.remarks, 300)});
             holder.remarks.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -1043,8 +1044,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
-                    holder.remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.remarks, 300)});
+
                 }
 
                 @Override

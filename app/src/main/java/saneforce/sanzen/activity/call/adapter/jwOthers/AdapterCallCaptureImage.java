@@ -280,6 +280,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 }
             }
         });
+        holder.tv_image_name.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.tv_image_name, 100)});
 
         holder.tv_image_name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -289,7 +290,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                holder.tv_image_name.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.tv_image_name, 100)});
+
             }
 
             @Override
