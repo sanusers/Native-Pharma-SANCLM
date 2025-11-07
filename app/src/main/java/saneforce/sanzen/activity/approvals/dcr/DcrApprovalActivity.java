@@ -156,9 +156,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrContentList = CommonUtilsMethods.CommonObjectParameter(DcrApprovalActivity.this);
             jsonDcrContentList.put("tableName", "getvwdcrone");
             jsonDcrContentList.put("Trans_SlNo", SelectedTransCode);
-            jsonDcrContentList.put("sfcode", SelectedSfCode);
+            jsonDcrContentList.put("sfcode", SharedPref.getSfCode(this));
             jsonDcrContentList.put("division_code", SharedPref.getDivisionCode(this));
-            jsonDcrContentList.put("Rsf", SharedPref.getHqCode(this));
+            jsonDcrContentList.put("Rsf", SelectedSfCode);
             Log.v("json_get_full_dcr_list", jsonDcrContentList.toString());
 
         } catch (Exception ignored) {
