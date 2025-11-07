@@ -56,6 +56,7 @@ public class TimeUtils {
     public static final String FORMAT_38 = "d MMMM yyyy";
     public static final String FORMAT_39 = "dd-MM-yyyy hh:mm a";
     public static final String FORMAT_40 = "mm:ss";
+    public static final String FORMAT_42 = "yyyy-MM-dd 00:00:00";
 
     public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();

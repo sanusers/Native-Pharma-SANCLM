@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.ChatActivity">
+    tools:context=".activity.chat.ChatActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -53,14 +53,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/backround_graey"
+        android:padding="@dimen/_5sdp"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_2sdp"
             android:background="@color/white"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:padding="@dimen/_2sdp"
             android:layout_weight="2">
 
@@ -78,7 +79,7 @@
                 android:hint="@string/search"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
-                android:paddingHorizontal="@dimen/_10sdp"
+                android:padding="@dimen/_5sdp"
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textColorHint="@color/light_grey"
@@ -109,7 +110,6 @@
                 android:id="@+id/rl_no_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/_3sdp"
                 android:background="@color/white"
                 android:visibility="visible">
 
