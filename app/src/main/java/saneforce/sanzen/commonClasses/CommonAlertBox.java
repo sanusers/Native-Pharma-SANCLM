@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -130,6 +131,27 @@ public class CommonAlertBox {
         });
 
     }
+    public static void DoctorPlanPopup(Activity activity, CharSequence  message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setCancelable(false);
+
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.popup_doctor_count, null);
+
+        TextView heading = alertLayout.findViewById(R.id.heading);
+        TextView messagePopup = alertLayout.findViewById(R.id.messagePopup);
+        Button okButton = alertLayout.findViewById(R.id.okButton);
+        heading.setText("Today's Doctor Plan!!");
+        messagePopup.setText(message);
+
+        alert.setView(alertLayout);
+        AlertDialog dialog = alert.create();
+        dialog.show();
+
+        okButton.setOnClickListener(view -> dialog.dismiss());
+    }
+
+
 
     public static void ApprovalAlert(Activity activity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);

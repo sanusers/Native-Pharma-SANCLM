@@ -14,9 +14,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -28,7 +30,11 @@ import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
@@ -89,10 +95,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -255,12 +263,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                }
                 String currentDate = dateFormat.format(new Date());
                 try {
-                    if(!previousDate.equals(currentDate)) {
-                        if(masterDataDao != null) {
+                    if (!previousDate.equals(currentDate)) {
+                        if (masterDataDao != null) {
                             JSONArray workPlanArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
-                            if(workPlanArray.toString().equals("[]")) {
+                            if (workPlanArray.toString().equals("[]")) {
                                 checkAndSetEntryDate(HomeDashBoard.this, true);
-                                if(HomeDashBoard.homeDashBoardActivity != null && !HomeDashBoard.homeDashBoardActivity.isFinishing() && !HomeDashBoard.homeDashBoardActivity.isDestroyed()) {
+                                if (HomeDashBoard.homeDashBoardActivity != null && !HomeDashBoard.homeDashBoardActivity.isFinishing() && !HomeDashBoard.homeDashBoardActivity.isDestroyed()) {
                                     HomeDashBoard.homeDashBoardActivity.setUpCalendar();
                                 }
                             }
@@ -394,7 +402,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             float dX, dY;
             int lastAction;
 
-            @Override public boolean onTouch(View view, MotionEvent event) {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
                 View root = binding.getRoot(); // <-- your root container id
                 if (root == null) return false;
 
@@ -438,6 +447,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
+        //checkAndShow5PMDoctorPopup();
     }
 
     private void syncSetup() {
@@ -489,7 +499,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                             SharedPref.setIsSetupSynced(HomeDashBoard.this, true);
                                             SharedPref.InsertLogInData(HomeDashBoard.this, jsonArray.getJSONObject(0));
                                             String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
-                                            if(signInTime.isEmpty()) {
+                                            if (signInTime.isEmpty()) {
                                                 changePassword(HomeDashBoard.this.getString(R.string.reset_password));
                                             } else {
                                                 try {
@@ -658,7 +668,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (signInTime.isEmpty() && !SharedPref.getIsSetupSynced(HomeDashBoard.this)) {
                 isResetPasswordVisible = true;
                 changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-            } else if(signInTime.isEmpty()) {
+            } else if (signInTime.isEmpty()) {
                 syncSetup();
             } else {
                 try {
@@ -689,12 +699,34 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.viewPager.setCurrentItem(1);
                 isDcrFrom = false;
             }
+            //SharedPref.setTodayTPDoctor(this, tpDoctor);
+
+            Log.e("TPDoctorCheck", "Today's Planned Doctors: " + SharedPref.getTodayTPDoctor(this));
+            String tpDoctor = SharedPref.getTodayTPDoctor(this);
+            showNotVisitedDoctorsPopup(tpDoctor);
+            //checkAndShow5PMDoctorPopup();
+            // checkAndShowNotVisitedDoctorPopup();
+
         } else {
             super.onResume();
         }
-
     }
 
+    //    private void checkAndShow5PMDoctorPopup() {
+//        Calendar now = Calendar.getInstance();
+//        int currentHour = now.get(Calendar.HOUR_OF_DAY);
+//        int currentMinutes = now.get(Calendar.MINUTE);
+//        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//
+//        //if (currentHour >= 19) { // After 5 PM
+//            if (currentHour >= 18 && currentMinutes > 50) {
+//                // Trigger only once for remaining doctors
+//                if (!today.equals(SharedPref.getDoctorRemainingShownDate(this))) {
+//                    showVisitedAndNotVisitedDoctors(); // same method, it will calculate visited & not visited
+//                    SharedPref.setDoctorRemainingShownDate(this, today); // mark shown
+//                }
+//            }
+//        }
     @Override
     protected void onPause() {
         super.onPause();
@@ -2748,5 +2780,981 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
+    //   public void showDoctorPlanPopup() {
+//        try {
+//            RoomDB roomDB = RoomDB.getDatabase(this);
+//            MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//            JSONArray doctorArray = masterDataDao
+//                    .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                    .getMasterSyncDataJsonArray();
+//
+//            int doctorCount = 0;
+//            for (int i = 0; i < doctorArray.length(); i++) {
+//                JSONObject obj = doctorArray.getJSONObject(i);
+//                // Filter today's cluster/town doctors
+//                if (SharedPref.getTodayDayPlanClusterCode(this)
+//                        .contains(obj.getString("Town_Code"))) {
+//                    doctorCount++;
+//                }
+//            }
+//
+//            if (doctorCount > 0) {
+//                String message = "You are going to meet " + doctorCount + " doctor" +
+//                        (doctorCount > 1 ? "s" : "") + " today.";
+//                CommonAlertBox.DoctorPlanPopup(HomeDashBoard.this, message);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//public void showDoctorPlanPopup() {
+//    try {
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // Get all doctor data from local DB
+//        JSONArray doctorArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        // Get today’s planned town/cluster code
+//        String todayClusterCode = SharedPref.getTodayDayPlanClusterCode(this);
+//
+//        StringBuilder doctorNames = new StringBuilder();
+//
+//        for (int i = 0; i < doctorArray.length(); i++) {
+//            JSONObject obj = doctorArray.getJSONObject(i);
+//
+//            // Filter only today's planned doctors (by Town_Code)
+//            if (todayClusterCode.contains(obj.getString("Town_Code"))) {
+//                String name = obj.optString("Name");
+//                if (!name.isEmpty()) {
+//                    if (doctorNames.length() > 0) {
+//                        doctorNames.append(", ");
+//                    }
+//                    doctorNames.append("Dr. ").append(name);
+//                }
+//            }
+//public void showDoctorPlanPopup() {
+//    try {
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // 1️⃣ Fetch dayplan JSON (contains TP_Doctor)
+//        JSONArray dayPlanArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.WORK_PLAN + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        // 2️⃣ Fetch doctor master (contains doctor names)
+//        JSONArray doctorMasArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Log.d("DoctorPopup", "DAYPLAN DATA: " + dayPlanArray);
+//        Log.d("DoctorPopup", "DOCTOR_MAS DATA: " + doctorMasArray);
+//
+//        // 3️⃣ Extract all planned doctor codes
+//        Set<String> plannedDoctorCodes = new HashSet<>();
+//        for (int i = 0; i < dayPlanArray.length(); i++) {
+//            JSONObject obj = dayPlanArray.getJSONObject(i);
+//            String tpDoctor = obj.optString("TP_Doctor", "");
+//            if (!tpDoctor.isEmpty()) {
+//                String[] codes = tpDoctor.split(",");
+//                for (String code : codes) {
+//                    if (!code.trim().isEmpty()) {
+//                        plannedDoctorCodes.add(code.trim());
+//                    }
+//                }
+//            }
+//        }
+//
+//        // 4️⃣ Match with doctor master
+//        List<String> matchedDoctors = new ArrayList<>();
+//        for (int i = 0; i < doctorMasArray.length(); i++) {
+//            JSONObject doc = doctorMasArray.getJSONObject(i);
+//            String docCode = doc.optString("Code", "");
+//            if (plannedDoctorCodes.contains(docCode)) {
+//                String docName = doc.optString("Name", "Unknown Doctor");
+//                matchedDoctors.add(docCode + " - " + docName);
+//            }
+//        }
+//
+//        // 5️⃣ Show popup if we have matches
+//        if (!matchedDoctors.isEmpty()) {
+//            StringBuilder message = new StringBuilder("Today's Planned Doctors:\n\n");
+//            for (String entry : matchedDoctors) {
+//                message.append("• ").append(entry).append("\n");
+//            }
+//            CommonAlertBox.DoctorPlanPopup(this, message.toString());
+//        } else {
+//            Log.d("DoctorPopup", "No matching doctors found in plan.");
+//        }
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("DoctorPopup", "Error: " + e.getMessage());
+//    }
+//}
+//public void showDoctorPlanPopup(String tpDoctor) {
+//    try {
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // 1️⃣ Load doctor master JSON
+//        JSONArray doctorMasArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Log.e("DoctorPopup", "Total DoctorMaster count: " + doctorMasArray.length());
+//
+//        // 2️⃣ Get doctor codes from TP_Doctor string
+//        List<String> plannedDoctorCodes = new ArrayList<>();
+//        if (tpDoctor != null && !tpDoctor.isEmpty()) {
+//            for (String code : tpDoctor.split(",")) {
+//                if (!code.trim().isEmpty()) {
+//                    plannedDoctorCodes.add(code.trim());
+//                }
+//            }
+//        }
+//        Log.e("DoctorPopup", "PlannedDoctorCodes => " + plannedDoctorCodes);
+//
+//        // 3️⃣ Compare with doctor master
+//        List<String> matchedDoctors = new ArrayList<>();
+//        for (int i = 0; i < doctorMasArray.length(); i++) {
+//            JSONObject doc = doctorMasArray.getJSONObject(i);
+//            String docCode = doc.optString("Code", "").trim();
+//
+//            if (plannedDoctorCodes.contains(docCode)) {
+//                String docName = doc.optString("Name", "Unknown Doctor");
+//                matchedDoctors.add(docName);
+//                Log.e("DoctorPopup", "Matched Doctor: " + docName + " (" + docCode + ")");
+//            }
+//        }
+//
+//        // 4️⃣ Show popup if match found
+//        if (!matchedDoctors.isEmpty()) {
+//            StringBuilder msg = new StringBuilder("You are going to meet:\n\n");
+//            for (String name : matchedDoctors) {
+//                msg.append("• Dr. ").append(name).append("\n");
+//            }
+//
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Today's Planned Doctors")
+//                    .setMessage(msg.toString())
+//                    .setPositiveButton("OK", null)
+//                    .setCancelable(false)
+//                    .show();
+//        } else {
+//            Log.e("DoctorPopup", "No matching doctors found for today.");
+//        }
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("DoctorPopup", "Error: " + e.getMessage());
+//    }
+//}
+    public void showDoctorPlanPopup(String tpDoctor) {
+        try {
+            RoomDB roomDB = RoomDB.getDatabase(this);
+            MasterDataDao masterDataDao = roomDB.masterDataDao();
+            JSONArray doctorMasArray = masterDataDao
+                    .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+                    .getMasterSyncDataJsonArray();
+
+            Log.e("DoctorPopup", "Doctor Master count: " + doctorMasArray.length());
+            List<String> plannedDoctorCodes = new ArrayList<>();
+            if (tpDoctor != null && !tpDoctor.isEmpty()) {
+                for (String code : tpDoctor.split(",")) {
+                    if (!code.trim().isEmpty()) {
+                        plannedDoctorCodes.add(code.trim());
+                    }
+                }
+            }
+            Log.e("DoctorPopup", "PlannedDoctorCodes => " + plannedDoctorCodes);
+            List<String> matchedDoctors = new ArrayList<>();
+            for (int i = 0; i < doctorMasArray.length(); i++) {
+                JSONObject doc = doctorMasArray.getJSONObject(i);
+                String docCode = doc.optString("Code", "").trim();
+
+                if (plannedDoctorCodes.contains(docCode)) {
+                    String docName = doc.optString("Name", "Unknown Doctor");
+                    matchedDoctors.add("Dr. " + docName);
+                    Log.e("DoctorPopup", "Matched Doctor: " + docName + " (" + docCode + ")");
+                }
+            }
+            if (!matchedDoctors.isEmpty()) {
+                StringBuilder message = new StringBuilder();
+                for (int i = 0; i < matchedDoctors.size(); i++) {
+                    message.append(i + 1).append(". ").append(matchedDoctors.get(i)).append("\n");
+                }
+//            for (String entry : matchedDoctors) {
+//                message.append(entry).append("\n");
+//            }
+                CommonAlertBox.DoctorPlanPopup(this, message.toString().trim());
+
+            } else {
+                Log.e("DoctorPopup", "No matching doctors found for today.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("DoctorPopup", "Error: " + e.getMessage());
+        }
+    }
+
+    //private void showVisitedAndNotVisitedDoctors() {
+//    try {
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // 1️⃣ Planned doctors
+//        String tpDoctor = SharedPref.getTodayTPDoctor(this);
+//        List<String> plannedDoctorCodes = new ArrayList<>();
+//        if (tpDoctor != null && !tpDoctor.isEmpty()) {
+//            for (String code : tpDoctor.split(",")) {
+//                if (!code.trim().isEmpty()) plannedDoctorCodes.add(code.trim());
+//            }
+//        }
+//        if (plannedDoctorCodes.isEmpty()) {
+//            Log.d("DoctorPopup", "No TP doctors planned for today.");
+//            return; // No planned doctors → exit++
+//        }else{
+//            Log.d("TAG", "showVisitedAndNotVisitedDoctors: "+ tpDoctor);
+//        }
+//
+//        // 2️⃣ Visited doctors from DCR
+//        JSONArray dcrArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//        List<String> visitedDoctorCodes = new ArrayList<>();
+//        for (int i = 0; i < dcrArray.length(); i++) {
+//            JSONObject dcr = dcrArray.getJSONObject(i);
+//            String code = dcr.optString("Code", "").trim();
+//            if (!code.isEmpty()) visitedDoctorCodes.add(code);
+//        }
+//
+//        // 3️⃣ Prepare visited and not visited lists
+//        List<String> visitedDoctors = new ArrayList<>();
+//        List<String> notVisitedDoctors = new ArrayList<>();
+//        JSONArray doctorMasArray =new JSONArray(masterDataDao
+//                .getDataByKey(Constants.CALL_SYNC));
+//
+//
+//        for (int i = 0; i < doctorMasArray.length(); i++) {
+//            JSONObject doc = doctorMasArray.getJSONObject(i);
+//            String code = doc.optString("Code", "").trim();
+//            String name = doc.optString("Name", "Unknown Doctor");
+//
+//            if (plannedDoctorCodes.contains(code)) {
+//                if (visitedDoctorCodes.contains(code)) {
+//                    visitedDoctors.add("Dr. " + name);
+//                } else {
+//                    notVisitedDoctors.add("Dr. " + name);
+//                }
+//            }
+//        }
+//
+//        // 4️⃣ Prepare popup message
+//        if (!visitedDoctors.isEmpty() || !notVisitedDoctors.isEmpty()) {
+//        StringBuilder message = new StringBuilder();
+//        if (!visitedDoctors.isEmpty()) {
+//            message.append("✅ *Visited Doctors:*\n");
+//            for (String v : visitedDoctors) message.append("• ").append(v).append("\n");
+//            message.append("\n");
+//        }
+//        if (!notVisitedDoctors.isEmpty()) {
+//            message.append("❌ *Not Visited Doctors:*\n");
+//            for (String n : notVisitedDoctors) message.append("• ").append(n).append("\n");
+//        }
+//
+//        // 5️⃣ Show popup if any planned doctor exists
+//        //if (message.length() > 0) {
+//            CommonAlertBox.DoctorPlanPopup(this, message.toString().trim());
+//        } else {
+//            Log.d("DoctorPopup", "No planned doctors found for today.");
+//        }
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("DoctorPopup", "Error: " + e.getMessage());
+//    }
+//}
+//private void checkAndShowNotVisitedDoctorPopup() {
+//    try {
+//        Log.e("PopupCheck", "➡️ checkAndShowNotVisitedDoctorPopup() called");
+//        // 🕒 Show only after 10:30 AM
+//        Calendar cal = Calendar.getInstance();
+//        int hour = cal.get(Calendar.HOUR_OF_DAY);
+//        int minute = cal.get(Calendar.MINUTE);
+//        Log.e("PopupCheck", "Current time = " + hour + ":" + minute);
+//
+//        if (hour < 10 || (hour == 10 && minute < 50)) {
+//            Log.e("PopupCheck", "⏳ Too early (<10:50), returning");
+//            return;
+//        }
+//
+//        // 🧠 Prevent showing twice the same day
+//        SharedPreferences sp = getSharedPreferences("DoctorPopupPrefs", MODE_PRIVATE);
+//        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//        String lastShown = sp.getString("popupShownDate", "");
+//        Log.e("PopupCheck", "Today's date = " + today + ", Last shown = " + lastShown);
+//        if (today.equals(lastShown)) {
+//            Log.e("PopupCheck", "🛑 Already shown today, returning");
+//            return;
+//        }
+//
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // 1️⃣ Planned Doctors (from TP)
+//        String tpDoctor = SharedPref.getTodayTPDoctor(this);
+//        if (tpDoctor == null || tpDoctor.isEmpty()) return;
+//
+//        List<String> plannedDoctors = new ArrayList<>();
+//        for (String code : tpDoctor.split(",")) {
+//            if (!code.trim().isEmpty()) plannedDoctors.add(code.trim());
+//        }
+//
+//        // 2️⃣ Visited Doctors (from CALLSYNC)
+//        JSONArray callSyncArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.CALL_SYNC + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        List<String> visitedDoctors = new ArrayList<>();
+//        for (int i = 0; i < callSyncArray.length(); i++) {
+//            JSONObject obj = callSyncArray.getJSONObject(i);
+//            String custCode = obj.optString("CustCode", "").trim();
+//            if (!custCode.isEmpty()) visitedDoctors.add(custCode);
+//        }
+//
+//        // 3️⃣ Compare → Find Not Visited
+//        List<String> notVisitedDoctors = new ArrayList<>();
+//        for (String code : plannedDoctors) {
+//            if (!visitedDoctors.contains(code)) {
+//                notVisitedDoctors.add(code);
+//            }
+//        }
+//
+//        if (notVisitedDoctors.isEmpty()) return;
+//
+//        // 4️⃣ Prepare popup message
+//        StringBuilder msg = new StringBuilder("Doctors Not Visited Yet:\n\n");
+//        for (int i = 0; i < notVisitedDoctors.size(); i++) {
+//            msg.append(i + 1).append(". ").append("Doctor Code: ")
+//                    .append(notVisitedDoctors.get(i)).append("\n");
+//        }
+//
+//        // 5️⃣ Show popup
+//        CommonAlertBox.DoctorPlanPopup(this, msg.toString().trim());
+//
+//        // 6️⃣ Save popup shown date
+//        sp.edit().putString("popupShownDate", today).apply();
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("NotVisitedPopup", "Error: " + e.getMessage());
+//    }
+//}
+//private void showNotVisitedDoctorsPopup() {
+//    try {
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // 1️⃣ Planned doctors from TP
+//        String tpDoctor = SharedPref.getTodayTPDoctor(this);
+//        Log.e("PopupCheck", "TP Doctor raw data: " + tpDoctor);
+//
+//        if (tpDoctor == null || tpDoctor.isEmpty()) {
+//            Log.e("PopupCheck", "TP Doctor list empty!");
+//            return;
+//        }
+//
+//        List<String> plannedDoctorCodes = new ArrayList<>();
+//        for (String code : tpDoctor.split(",")) {
+//            if (!code.trim().isEmpty()) plannedDoctorCodes.add(code.trim());
+//        }
+//
+//        // 2️⃣ Get visited doctors from CALLSYNC
+//        JSONArray callSyncArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.CALL_SYNC + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Log.e("PopupCheck", "CALLSYNC Data Count: " + callSyncArray.length());
+//
+//        List<String> visitedDoctors = new ArrayList<>();
+//        for (int i = 0; i < callSyncArray.length(); i++) {
+//            JSONObject obj = callSyncArray.getJSONObject(i);
+//            String custCode = obj.optString("CustCode", "");
+//            if (!custCode.isEmpty()) visitedDoctors.add(custCode);
+//        }
+//
+//        // 3️⃣ Find not visited doctors
+//        List<String> notVisitedCodes = new ArrayList<>();
+//        for (String code : plannedDoctorCodes) {
+//            if (!visitedDoctors.contains(code)) notVisitedCodes.add(code);
+//        }
+//
+//        Log.e("PopupCheck", "Not Visited Codes: " + notVisitedCodes);
+//
+//        if (notVisitedCodes.isEmpty()) {
+//            Log.e("PopupCheck", "All planned doctors visited.");
+//            return;
+//        }
+//
+//        // 4️⃣ Get doctor names from DOCTOR_MAS
+//        JSONArray doctorMasArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Map<String, String> doctorNameMap = new HashMap<>();
+//        for (int i = 0; i < doctorMasArray.length(); i++) {
+//            JSONObject obj = doctorMasArray.getJSONObject(i);
+//            String code = obj.optString("Code", "");
+//            String name = obj.optString("Name", "");
+//            if (!code.isEmpty() && !name.isEmpty()) {
+//                doctorNameMap.put(code, name);
+//            }
+//        }
+//
+//        // 5️⃣ Build message
+//        StringBuilder msg = new StringBuilder("Not Visited Doctors:\n\n");
+//        for (int i = 0; i < notVisitedCodes.size(); i++) {
+//            String code = notVisitedCodes.get(i);
+//            String name = doctorNameMap.getOrDefault(code, "Dr. " + code);
+//            msg.append(i + 1).append(". ").append(name)
+//                    .append(" (").append(code).append(")").append("\n");
+//        }
+//
+//        // 6️⃣ Show popup after 12:10 PM, once per day
+//        Calendar calendar = Calendar.getInstance();
+//        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//        int minute = calendar.get(Calendar.MINUTE);
+//
+//        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//        SharedPreferences sp = getSharedPreferences("DoctorPopupPrefs", MODE_PRIVATE);
+//        String lastShownDate = sp.getString("popupShownDate", "");
+//
+//        Log.e("PopupCheck", "Time = " + hour + ":" + minute + ", LastShown = " + lastShownDate);
+//
+//        if (!today.equals(lastShownDate) && (hour > 13 || (hour == 13 && minute >= 55))) {
+//            // ✅ Popup condition met
+////            new AlertDialog.Builder(this)
+////                    .setTitle("Not Visited Doctors")
+////                    .setMessage(msg.toString().trim())
+////                    .setPositiveButton("OK", null)
+////                    .show();
+//            CommonAlertBox.DoctorPlanPopup(this, msg.toString().trim());
+//            sp.edit().putString("popupShownDate", today).apply();
+//            Log.e("PopupShown", "Not visited popup displayed at 14:10 PM");
+//        } else {
+//            Log.e("PopupCheck", "Condition not met for popup yet");
+//        }
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("PopupError", e.getMessage());
+//    }
+//}
+//private void showNotVisitedDoctorsPopup(String tpDoctor) {
+//    try {
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // 1️⃣ Planned doctors from TP
+//        String tpDoctor = SharedPref.getTodayTPDoctor(this);
+//        Log.e("PopupCheck", "TP Doctor raw data: " + tpDoctor);
+//
+//        if (tpDoctor == null || tpDoctor.isEmpty()) {
+//            Log.e("PopupCheck", "TP Doctor list empty!");
+//            return;
+//        }
+//
+//        List<String> plannedDoctorCodes = new ArrayList<>();
+//        for (String code : tpDoctor.split(",")) {
+//            if (!code.trim().isEmpty()) plannedDoctorCodes.add(code.trim());
+//        }
+//
+//        // 2️⃣ Get visited doctors from CALLSYNC
+//        JSONArray callSyncArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.CALL_SYNC + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Log.e("PopupCheck", "CALLSYNC Data Count: " + callSyncArray.length());
+//
+//        List<String> visitedDoctors = new ArrayList<>();
+//        for (int i = 0; i < callSyncArray.length(); i++) {
+//            JSONObject obj = callSyncArray.getJSONObject(i);
+//            String custCode = obj.optString("CustCode", "");
+//            String dcrFlag = obj.optString("Dcr_flag", "").trim(); // check visit flag
+//            if (!custCode.isEmpty() && !dcrFlag.isEmpty()) {
+//                visitedDoctors.add(custCode);
+//            }
+//        }
+//            //if (!custCode.isEmpty()) visitedDoctors.add(custCode);
+//
+//
+//        // 3️⃣ Find not visited doctors
+//        List<String> notVisitedCodes = new ArrayList<>();
+//        for (String code : plannedDoctorCodes) {
+//            if (!visitedDoctors.contains(code)) notVisitedCodes.add(code);
+//        }
+//
+//        Log.e("PopupCheck", "Not Visited Codes: " + notVisitedCodes);
+//
+//        if (notVisitedCodes.isEmpty()) {
+//            Log.e("PopupCheck", "All planned doctors visited.");
+//            return;
+//        }
+//
+//        // 4️⃣ Get doctor names from DOCTOR_MAS
+//        JSONArray doctorMasArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Map<String, String> doctorNameMap = new HashMap<>();
+//        for (int i = 0; i < doctorMasArray.length(); i++) {
+//            JSONObject obj = doctorMasArray.getJSONObject(i);
+//            String code = obj.optString("Code", "");
+//            String name = obj.optString("Name", "");
+//            if (!code.isEmpty() && !name.isEmpty()) {
+//                doctorNameMap.put(code, name);
+//            }
+//        }
+//
+//        // 5️⃣ Build message
+//        StringBuilder msg = new StringBuilder("Not Visited Doctors:\n\n");
+//        for (int i = 0; i < notVisitedCodes.size(); i++) {
+//            String code = notVisitedCodes.get(i);
+//            String name = doctorNameMap.getOrDefault(code, "Dr. " + code);
+//            msg.append(i + 1).append(". ").append(name)
+//                    .append(" (").append(code).append(")").append("\n");
+//        }
+//
+//        new AlertDialog.Builder(this)
+//                .setTitle("Not Visited Doctors")
+//                .setMessage(msg.toString().trim())
+//                .setPositiveButton("OK", null)
+//                .show();
+//        //CommonAlertBox.DoctorPlanPopup(this, msg.toString().trim());
+//        Log.e("PopupShown", "Not visited popup displayed immediately");
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("PopupError", e.getMessage());
+//    }
+//}
+//private void showNotVisitedDoctorsPopup(String tpDoctor) {
+//    try {
+//        if (tpDoctor == null || tpDoctor.isEmpty()) {
+//            Log.e("PopupCheck", "TP Doctor list empty!");
+//            return;
+//        }
+//
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // 1️⃣ Planned doctors from TP
+//        Log.e("PopupCheck", "TP Doctor raw data: " + tpDoctor);
+//        List<String> plannedDoctorCodes = new ArrayList<>();
+//        for (String code : tpDoctor.split(",")) {
+//            code = code.trim();
+//            if (!code.isEmpty()) plannedDoctorCodes.add(code);
+//            //if (!code.trim().isEmpty()) plannedDoctorCodes.add(code.trim());
+//        }
+//
+//        // 2️⃣ Get visited doctors from CALLSYNC
+//        JSONArray callSyncArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.CALL_SYNC + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Set<String> visitedDoctors = new HashSet<>();
+//        for (int i = 0; i < callSyncArray.length(); i++) {
+//            JSONObject obj = callSyncArray.getJSONObject(i);
+//            String custCode = obj.optString("CustCode", "").trim();
+//            String dayStatus = obj.optString("day_status", "").trim();
+//
+//            // ✅ Only count doctor as visited if day_status = 1 and CustCode is not empty
+//            if (!custCode.isEmpty() && dayStatus.equals("1")) {
+//                visitedDoctors.add(custCode);
+//            }
+//        }
+//        Log.e("DebugVisited", "Visited Doctors: " + visitedDoctors);
+////        List<String> visitedDoctors = new ArrayList<>();
+////        for (int i = 0; i < callSyncArray.length(); i++) {
+////            JSONObject obj = callSyncArray.getJSONObject(i);
+////            String custCode = obj.optString("CustCode", "").trim();
+////            if (!custCode.isEmpty()) visitedDoctors.add(custCode);
+//////            if (!custCode.isEmpty()) {  // ✅ ignore Dcr_flag, treat any entry as visited
+//////                visitedDoctors.add(custCode);
+//////            }
+////        }
+////        List<String> visitedDoctors = new ArrayList<>();
+////        for (int i = 0; i < callSyncArray.length(); i++) {
+////            JSONObject obj = callSyncArray.getJSONObject(i);
+////            String custCode = obj.optString("CustCode", "").trim();
+////            String dcrFlag = obj.optString("Dcr_flag", "").trim();
+////            if (!custCode.isEmpty() && !dcrFlag.isEmpty()) {
+////                visitedDoctors.add(custCode);
+////            }
+////        }
+//
+//        // 3️⃣ Find not visited doctors
+//        List<String> notVisitedCodes = new ArrayList<>();
+//        for (String code : plannedDoctorCodes) {
+//            if (!visitedDoctors.contains(code)) {
+//                notVisitedCodes.add(code); // doctor planned but NOT visited
+//            }
+//           // if (!visitedDoctors.contains(code)) notVisitedCodes.add(code);
+//        }
+//
+//        if (notVisitedCodes.isEmpty()) {
+//            Log.e("PopupCheck", "All planned doctors visited.");
+//            return;
+//        }
+//
+//        // 4️⃣ Get doctor names from DOCTOR_MAS
+//        JSONArray doctorMasArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Map<String, String> doctorNameMap = new HashMap<>();
+//        for (int i = 0; i < doctorMasArray.length(); i++) {
+//            JSONObject obj = doctorMasArray.getJSONObject(i);
+//            String code = obj.optString("Code", "").trim();
+//            String name = obj.optString("Name", "").trim();
+//            if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
+//        }
+//
+//        // 5️⃣ Build message
+//        StringBuilder msg = new StringBuilder("Not Visited Doctors:\n\n");
+//        for (int i = 0; i < notVisitedCodes.size(); i++) {
+//            String code = notVisitedCodes.get(i);
+//            String name = doctorNameMap.getOrDefault(code, "Dr. " + code);
+//            msg.append(i + 1).append(". ").append(name)
+//                    .append(" (").append(code).append(")").append("\n");
+//        }
+//
+//        // 6️⃣ Show popup
+//        CommonAlertBox.DoctorPlanPopup(this, msg.toString().trim());
+////        new AlertDialog.Builder(this)
+////                .setTitle("Not Visited Doctors")
+////                .setMessage(msg.toString().trim())
+////                .setPositiveButton("OK", null)
+////                .show();
+//
+//        Log.e("PopupShown", "Not visited popup displayed immediately");
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("PopupError", e.getMessage());
+//    }
+//}
+//private void showNotVisitedDoctorsPopup(String tpDoctor) {
+//    try {
+//        if (tpDoctor == null || tpDoctor.isEmpty()) {
+//            Log.e("PopupCheck", "TP Doctor list empty!");
+//            return;
+//        }
+//
+//        // 1️⃣ Planned doctors from TP
+//        List<String> plannedDoctorCodes = new ArrayList<>();
+//        for (String code : tpDoctor.split(",")) {
+//            code = code.trim().toUpperCase();
+//            if (!code.isEmpty()) plannedDoctorCodes.add(code);
+//        }
+//        Log.e("DebugTP", "Planned Doctors: " + plannedDoctorCodes);
+//
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        // 2️⃣ Visited doctors from CALL_SYNC but ONLY if in TP
+////        JSONArray callSyncArray = masterDataDao
+////                .getMasterDataTableOrNew(Constants.CALL_SYNC + SharedPref.getHqCode(this))
+////                .getMasterSyncDataJsonArray();
+//        JSONArray jsonArray_call = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+//        Set<String> visitedDoctors = new HashSet<>();
+//        for (int i = 0; i < jsonArray_call.length(); i++) {
+//            JSONObject obj = jsonArray_call.getJSONObject(i);
+//            String custCode = obj.optString("CustCode", "").trim().toUpperCase();
+//            if (!custCode.isEmpty() && plannedDoctorCodes.contains(custCode)) {
+//                visitedDoctors.add(custCode);
+//            }
+//        }
+//        Log.e("DebugVisited", "Visited Doctors (matched with TP): " + visitedDoctors);
+//
+//        // 3️⃣ Find not visited doctors (planned but NOT visited)
+//        List<String> notVisitedCodes = new ArrayList<>();
+//        for (String code : plannedDoctorCodes) {
+//            if (!visitedDoctors.contains(code)) {
+//                notVisitedCodes.add(code);
+//            }
+//        }
+//        Log.e("DebugNotVisited", "Not Visited Doctors: " + notVisitedCodes);
+//
+//        // 4️⃣ If all visited, no popup
+//        if (notVisitedCodes.isEmpty()) {
+//            Log.e("PopupCheck", "All planned doctors visited. No popup shown.");
+//            return;
+//        }
+//
+//        // 5️⃣ Get doctor names from DOCTOR_MAS
+//        JSONArray doctorMasArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Map<String, String> doctorNameMap = new HashMap<>();
+//        for (int i = 0; i < doctorMasArray.length(); i++) {
+//            JSONObject obj = doctorMasArray.getJSONObject(i);
+//            String code = obj.optString("Code", "").trim();
+//            String name = obj.optString("Name", "").trim();
+//            if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
+//        }
+//
+//        // 6️⃣ Build popup message
+//        StringBuilder msg = new StringBuilder("Not Visited Doctors:\n\n");
+//        for (int i = 0; i < notVisitedCodes.size(); i++) {
+//            String code = notVisitedCodes.get(i);
+//            String name = doctorNameMap.getOrDefault(code, "Dr. " + code);
+//            msg.append(i + 1).append(". ").append(name)
+//                    .append(" (").append(code).append(")").append("\n");
+//        }
+//        Log.e("PopupMessage", msg.toString().trim());
+//
+//        // 7️⃣ Show popup
+//        CommonAlertBox.DoctorPlanPopup(this, msg.toString().trim());
+//        Log.e("PopupShown", "Not visited popup displayed");
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("PopupError", e.getMessage());
+//    }
+//}
+//private void showNotVisitedDoctorsPopup(String tpDoctor) {
+//    try {
+//        // 🕒 1️⃣ Check if already shown today
+//        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//        if (today.equals(SharedPref.getDoctorRemainingShownDate(this))) {
+//            Log.e("PopupCheck", "Already shown today, skipping popup.");
+//            return;
+//        }
+//
+//        // 2️⃣ Check if time >= 11:30
+//        Calendar now = Calendar.getInstance();
+//        int hour = now.get(Calendar.HOUR_OF_DAY);
+//        int minute = now.get(Calendar.MINUTE);
+//        if (hour < 11 || (hour == 11 && minute < 50)) {
+//            Log.e("PopupCheck", "Time before 11:30 AM, not showing popup.");
+//            return;
+//        }
+//
+//        if (tpDoctor == null || tpDoctor.isEmpty()) {
+//            Log.e("PopupCheck", "TP Doctor list empty!");
+//            return;
+//        }
+//
+//        // ✅ existing logic below
+//        List<String> plannedDoctorCodes = new ArrayList<>();
+//        for (String code : tpDoctor.split(",")) {
+//            code = code.trim().toUpperCase();
+//            if (!code.isEmpty()) plannedDoctorCodes.add(code);
+//        }
+//        Log.e("DebugTP", "Planned Doctors: " + plannedDoctorCodes);
+//
+//        RoomDB roomDB = RoomDB.getDatabase(this);
+//        MasterDataDao masterDataDao = roomDB.masterDataDao();
+//
+//        JSONArray jsonArray_call = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+//        Set<String> visitedDoctors = new HashSet<>();
+//        for (int i = 0; i < jsonArray_call.length(); i++) {
+//            JSONObject obj = jsonArray_call.getJSONObject(i);
+//            String custCode = obj.optString("CustCode", "").trim().toUpperCase();
+//            if (!custCode.isEmpty() && plannedDoctorCodes.contains(custCode)) {
+//                visitedDoctors.add(custCode);
+//            }
+//        }
+//        Log.e("DebugVisited", "Visited Doctors (matched with TP): " + visitedDoctors);
+//
+//        List<String> notVisitedCodes = new ArrayList<>();
+//        for (String code : plannedDoctorCodes) {
+//            if (!visitedDoctors.contains(code)) {
+//                notVisitedCodes.add(code);
+//            }
+//        }
+//        Log.e("DebugNotVisited", "Not Visited Doctors: " + notVisitedCodes);
+//
+//        if (notVisitedCodes.isEmpty()) {
+//            Log.e("PopupCheck", "All planned doctors visited. No popup shown.");
+//            return;
+//        }
+//
+//        JSONArray doctorMasArray = masterDataDao
+//                .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Map<String, String> doctorNameMap = new HashMap<>();
+//        for (int i = 0; i < doctorMasArray.length(); i++) {
+//            JSONObject obj = doctorMasArray.getJSONObject(i);
+//            String code = obj.optString("Code", "").trim();
+//            String name = obj.optString("Name", "").trim();
+//            if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
+//        }
+//
+//        StringBuilder msg = new StringBuilder("Not Visited Doctors:\n\n");
+//        for (int i = 0; i < notVisitedCodes.size(); i++) {
+//            String code = notVisitedCodes.get(i);
+//            String name = doctorNameMap.getOrDefault(code, "Dr. " + code);
+//            msg.append(i + 1).append(". ").append(name)
+//                    .append(" (").append(code).append(")").append("\n");
+//        }
+//        Log.e("PopupMessage", msg.toString().trim());
+//
+//        CommonAlertBox.DoctorPlanPopup(this, msg.toString().trim());
+//        Log.e("PopupShown", "Not visited popup displayed");
+//
+//        // ✅  After showing popup, mark as shown for today
+//        //SharedPref.setDoctorRemainingShownDate(this, today);
+//        //for checking using doublequotes
+//        SharedPref.setDoctorRemainingShownDate(this, "");
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        Log.e("PopupError", e.getMessage());
+//    }
+//}
+    private void showNotVisitedDoctorsPopup(String tpDoctor) {
+        try {
+            // 🕒 1️⃣ Check if already shown today
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            String lastShownDate = SharedPref.getDoctorRemainingShownDate(this);
+            if (today.equals(lastShownDate)) {
+                Log.e("PopupCheck", "✅ Popup already shown today, skipping popup.");
+                return; // don't show again
+            }
+//            if (today.equals(SharedPref.getDoctorRemainingShownDate(this))) {
+//                Log.e("PopupCheck", "Already shown today, skipping popup.");
+//                return;
+//            }
+
+            // 2️⃣ Check if time >= 11:30
+            Calendar now = Calendar.getInstance();
+            int hour = now.get(Calendar.HOUR_OF_DAY);
+           // int minute = now.get(Calendar.MINUTE);
+            //if (hour < 11 || (hour == 11 && minute < 30)) {
+            if (hour < 16) {
+                Log.e("PopupCheck", "Time before 16:00 PM, not showing popup.");
+                return;
+            }
+
+            if (tpDoctor == null || tpDoctor.isEmpty()) {
+                Log.e("PopupCheck", "TP Doctor list empty!");
+                return;
+            }
+
+            // ✅ Planned doctors
+            List<String> plannedDoctorCodes = new ArrayList<>();
+            for (String code : tpDoctor.split(",")) {
+                code = code.trim().toUpperCase();
+                if (!code.isEmpty()) plannedDoctorCodes.add(code);
+            }
+            Log.e("DebugTP", "Planned Doctors: " + plannedDoctorCodes);
+
+            RoomDB roomDB = RoomDB.getDatabase(this);
+            MasterDataDao masterDataDao = roomDB.masterDataDao();
+
+            // Visited doctors from CALL_SYNC
+            JSONArray jsonArray_call = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+            Set<String> visitedDoctors = new HashSet<>(SharedPref.getCumulativeVisitedDoctors(this)); // 🔹 cumulative
+            //Set<String> visitedDoctors = new HashSet<>();
+            for (int i = 0; i < jsonArray_call.length(); i++) {
+                JSONObject obj = jsonArray_call.getJSONObject(i);
+                String custCode = obj.optString("CustCode", "").trim().toUpperCase();
+                if (!custCode.isEmpty() && plannedDoctorCodes.contains(custCode)) {
+                    visitedDoctors.add(custCode);
+                    SharedPref.addVisitedDoctor(this, custCode); // 🔹 save cumulative
+                }
+            }
+            Log.e("DebugVisited", "Visited Doctors (matched with TP): " + visitedDoctors);
+
+            // Not visited list
+            List<String> notVisitedCodes = new ArrayList<>();
+            for (String code : plannedDoctorCodes) {
+                if (!visitedDoctors.contains(code)) {
+                    notVisitedCodes.add(code);
+                }
+            }
+            Log.e("DebugNotVisited", "Not Visited Doctors: " + notVisitedCodes);
+
+            if (plannedDoctorCodes.isEmpty()) {
+                Log.e("PopupCheck", "No planned doctors. Skipping popup.");
+                return;
+            }
+
+            // Doctor names
+            JSONArray doctorMasArray = masterDataDao
+                    .getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this))
+                    .getMasterSyncDataJsonArray();
+
+            Map<String, String> doctorNameMap = new HashMap<>();
+            for (int i = 0; i < doctorMasArray.length(); i++) {
+                JSONObject obj = doctorMasArray.getJSONObject(i);
+                String code = obj.optString("Code", "").trim().toUpperCase();
+                String name = obj.optString("Name", "").trim();
+                if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
+            }
+
+            //Build "Today's Plan Summary" message
+            SpannableStringBuilder msg = new SpannableStringBuilder();
+
+            //Visited Doctors
+            SpannableString visitedTitle = new SpannableString("Visited Doctors:\n");
+            visitedTitle.setSpan(new StyleSpan(Typeface.BOLD), 0, visitedTitle.length(), 0);
+            visitedTitle.setSpan(new ForegroundColorSpan(Color.BLACK), 0, visitedTitle.length(), 0);
+            msg.append(visitedTitle);
+
+            if (visitedDoctors.isEmpty()) {
+                msg.append("None\n");
+            } else {
+                int i = 1;
+                for (String code : visitedDoctors) {
+                    String name = doctorNameMap.getOrDefault(code, "Dr. " + code);
+                    msg.append(String.valueOf(i++)).append(". Dr. ").append(name).append("\n");
+                }
+            }
+
+            msg.append("\n");
+
+            //  Not Visited Doctors
+            SpannableString notVisitedTitle = new SpannableString("Not Visited Doctors:\n");
+            notVisitedTitle.setSpan(new StyleSpan(Typeface.BOLD), 0, notVisitedTitle.length(), 0);
+            notVisitedTitle.setSpan(new ForegroundColorSpan(Color.BLACK), 0, notVisitedTitle.length(), 0);
+            msg.append(notVisitedTitle);
+
+            if (notVisitedCodes.isEmpty()) {
+                msg.append("None\n");
+            } else {
+                int i = 1;
+                for (String code : notVisitedCodes) {
+                    String name = doctorNameMap.getOrDefault(code, "Dr. " + code);
+                    msg.append(String.valueOf(i++)).append(". Dr. ").append(name).append("\n");
+                }
+            }
+
+          // Show popup
+            CommonAlertBox.DoctorPlanPopup(this, msg);
+            Log.e("PopupShown", "Plan summary popup displayed");
+
+            // ✅ Mark popup as shown today
+            SharedPref.setDoctorRemainingShownDate(this, today);
+            //for checking using doublequotes
+            //SharedPref.setDoctorRemainingShownDate(this, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("PopupError", e.getMessage());
+        }
+    }
+
 }
+
 
