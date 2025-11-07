@@ -2790,7 +2790,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void CreateJson() {
         try {
             if (DayPlanCount.equalsIgnoreCase("1")) {
-                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                     String[] clusterData = getMultiHQClusters(mHQCode1).split("\\^\\^");
                     if (clusterData.length > 1) {
                         mTowncode1 = clusterData[0];
@@ -2803,7 +2803,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 mFwFlg = mFwFlg1;
             } else {
                 if (IsFeildWorkFlag.equalsIgnoreCase("F1")) {
-                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         String[] clusterData = getMultiHQClusters(mHQCode1).split("\\^\\^");
                         if (clusterData.length > 1) {
                             mTowncode1 = clusterData[0];
@@ -2815,7 +2815,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mHQName = mHQName1;
 
                 } else if (IsFeildWorkFlag.equalsIgnoreCase("F2")) {
-                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         String[] clusterData = getMultiHQClusters(mHQCode2).split("\\^\\^");
                         if (clusterData.length > 1) {
                             mTowncode2 = clusterData[0];
@@ -4073,7 +4073,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 //                        if(!HQList.isEmpty()) {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-                            if (!FirstSeasonDayPlanObject.optString("TP_Hq").isEmpty()) {
+                            if (!FirstSeasonDayPlanObject.optString("TP_Hq").isEmpty() && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                                 mTowncode1 = FirstSeasonDayPlanObject.optString("TP_cluster");
                                 mHQCode1 = FirstSeasonDayPlanObject.optString("TP_Hq");
                                 if (!mHQCode1.isEmpty()) {
@@ -4097,6 +4097,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 mHQName1 = hqName.toString();
                                 mTownname1 = clusterName.toString();
                             } else if (mHQName1.isEmpty()) {
+                                if (!mHQCode1.isEmpty()) {
+                                    checkAndSyncMasters(CommonUtilsMethods.removeDollar(mHQCode1), true);
+                                }
                                 mHQName1 = findHQName(mHQCode1);
                             }
                         } else {
@@ -4106,6 +4109,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                        break;
 //                                    }
 //                                }
+                            if (!mHQCode1.isEmpty()) {
+                                checkAndSyncMasters(CommonUtilsMethods.removeDollar(mHQCode1), true);
+                            }
                             mHQName1 = findHQName(mHQCode1);
                         }
 //                        }
@@ -4292,7 +4298,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                        }
 //                                    }
 //                                    mHQName2 = hqName.toString();
-                                if (!SecondSeasonDayPlanObject.optString("TP_Hq").isEmpty()) {
+                                if (!SecondSeasonDayPlanObject.optString("TP_Hq").isEmpty() && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                                     mTowncode2 = SecondSeasonDayPlanObject.optString("TP_cluster");
                                     mHQCode2 = SecondSeasonDayPlanObject.optString("TP_Hq");
                                     if (!mHQCode2.isEmpty()) {
@@ -4316,6 +4322,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     mHQName2 = hqName.toString();
                                     mTownname2 = clusterName.toString();
                                 } else if (mHQName2.isEmpty()) {
+                                    if (!mHQCode2.isEmpty()) {
+                                        checkAndSyncMasters(CommonUtilsMethods.removeDollar(mHQCode2), true);
+                                    }
                                     mHQName2 = findHQName(mHQCode2);
                                 }
                             } else {
@@ -4325,6 +4334,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                            break;
 //                                        }
 //                                    }
+                                if (!mHQCode2.isEmpty()) {
+                                    checkAndSyncMasters(CommonUtilsMethods.removeDollar(mHQCode2), true);
+                                }
                                 mHQName2 = findHQName(mHQCode2);
                             }
 //                            }

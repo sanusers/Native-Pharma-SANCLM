@@ -627,6 +627,7 @@ public class ListedDoctorFragment extends Fragment {
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i, boolean isFenced) {
         try {
             String brands = getBrands(jsonObject.getString("MappProds"));
+            List<String> todayPlannedClusters = Arrays.asList(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(SharedPref.getTodayDayPlanClusterCode(requireContext()))).split(","));
             if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
                     || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) && !stpOfflineDataDao.isNotApproved()))
                     && !deviation.equalsIgnoreCase("1")) {
@@ -635,7 +636,7 @@ public class ListedDoctorFragment extends Fragment {
                     List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
                     Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                     if (!drList.isEmpty()) {
-                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                        if (todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
                             prepareData(jsonObject, i, brands, false);
                         }
                     }
@@ -655,25 +656,25 @@ public class ListedDoctorFragment extends Fragment {
 //                        }
 //                        Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
 //                        if(!drList.isEmpty()) {
-//                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+//                            if(todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
 //                                prepareData(jsonObject, i, brands, false);
 //                            }
 //                        } else {
-                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                    if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
 //                            } else {
 //                                prepareData(jsonObject, i, brands, true);
                     }
 //                        }
 //                    } else {
-//                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                        if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
 //                            prepareData(jsonObject, i, brands, false);
 //                        } else {
 //                            prepareData(jsonObject, i, brands, true);
 //                        }
 //                    }
                 } else {
-                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                    if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
                     } else {
                         prepareData(jsonObject, i, brands, true);
@@ -686,7 +687,7 @@ public class ListedDoctorFragment extends Fragment {
 //                List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
 //                Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
 //                if(!drList.isEmpty()) {
-//                    if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+//                    if(todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
 //                        prepareData(jsonObject, i, brands, false);
 //                    }
 //                } else
@@ -696,11 +697,11 @@ public class ListedDoctorFragment extends Fragment {
                         List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                         if (!drList.isEmpty()) {
-                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                            if (todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
                                 prepareData(jsonObject, i, brands, false);
                             }
                         }
-                    } else if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                    } else if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
                     }
                 } else {
@@ -709,17 +710,17 @@ public class ListedDoctorFragment extends Fragment {
                         List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                         if (!drList.isEmpty()) {
-                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                            if (todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
                                 prepareData(jsonObject, i, brands, false);
                             }
                         }
-                    } else if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                    } else if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
                     } else {
                         prepareData(jsonObject, i, brands, true);
                     }
                 }
-            } else if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+            } else if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                 prepareData(jsonObject, i, brands, false);
             } else {
                 prepareData(jsonObject, i, brands, true);
