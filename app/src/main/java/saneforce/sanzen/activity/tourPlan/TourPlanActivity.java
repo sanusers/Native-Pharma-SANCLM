@@ -1076,12 +1076,14 @@ public class TourPlanActivity extends AppCompatActivity {
                                         isClusterNotSelected = true;
                                     }
                                 }
-                                for (ModelClass.SessionList.SubClass subClass: modelClass.getHQs()) {
-                                    if (subClass.getCode().equalsIgnoreCase(multiHQHeaderModelClass.getCode())) {
-                                        int index = hqCodes.indexOf(subClass.getCode());
-                                        hqCodes.remove(index);
-                                        hqNames.remove(index);
-                                        break;
+                                if (!dataList.isEmpty()) {
+                                    for (ModelClass.SessionList.SubClass subClass : modelClass.getHQs()) {
+                                        if (subClass.getCode().equalsIgnoreCase(multiHQHeaderModelClass.getCode())) {
+                                            int index = hqCodes.indexOf(subClass.getCode());
+                                            hqCodes.remove(index);
+                                            hqNames.remove(index);
+                                            break;
+                                        }
                                     }
                                 }
                                 if (!isClusterNotSelected) {
