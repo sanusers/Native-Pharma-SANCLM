@@ -222,7 +222,6 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                             if (UtilityClass.isNetworkAvailable(context)) {
                                 if (callCaptureImageList.isNewlyAdded()) {
                                     if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
-//
                                         showImage(callCaptureImageList.getImg_view());
 //                                        progressBar.dismiss();
                                     }else {

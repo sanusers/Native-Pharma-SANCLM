@@ -283,6 +283,7 @@ public class TourPlanActivity extends AppCompatActivity {
         JoinYear = Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFTP_Date));
         isSTPBasedTP = SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0");
 
+        localDate = LocalDate.now();
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             uiInitializationOneBuild();
         } else {
@@ -1602,7 +1603,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void uiInitializationOneBuild() {
-        localDate = LocalDate.now();
         drCap = SharedPref.getDrCap(TourPlanActivity.this);
         chmCap = SharedPref.getChmCap(TourPlanActivity.this);
         stkCap = SharedPref.getStkCap(TourPlanActivity.this);
@@ -1725,8 +1725,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
 
     public void uiInitialization() {
-        localDate = LocalDate.now();
-
         drCap = SharedPref.getDrCap(TourPlanActivity.this);
         chmCap = SharedPref.getChmCap(TourPlanActivity.this);
         stkCap = SharedPref.getStkCap(TourPlanActivity.this);
@@ -4521,7 +4519,6 @@ public class TourPlanActivity extends AppCompatActivity {
             jsonObject.put("Month",  localDate1.getMonthValue()/*TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString())*/);
             jsonObject.put("Year", localDate1.getYear());
             Log.v("TAG", "json--" + jsonObject);
-
 
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "get/tp");
