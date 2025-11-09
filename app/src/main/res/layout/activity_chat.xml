@@ -53,17 +53,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/backround_graey"
-        android:padding="@dimen/_5sdp"
         android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/_5sdp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
             android:layout_marginEnd="@dimen/_5sdp"
-            android:padding="@dimen/_2sdp"
-            android:layout_weight="2">
+            android:layout_weight="2"
+            android:background="@color/white"
+            android:padding="@dimen/_2sdp">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/user_search"
@@ -97,7 +97,7 @@
                 android:layout_height="@dimen/_25sdp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout

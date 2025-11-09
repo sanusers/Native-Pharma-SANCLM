@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@drawable/master_sync_selector_stroke"
     android:orientation="horizontal"
     android:padding="@dimen/_5sdp">
 
@@ -51,8 +51,8 @@
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/_2sdp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
             android:fontFamily="@font/satoshi_bold"
             android:textColor="@color/text_grey"
             android:textSize="@dimen/_8ssp"
@@ -65,10 +65,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:textAlignment="textEnd"
         android:fontFamily="@font/satoshi_regular"
+        android:textAlignment="textEnd"
         android:textColor="@color/black"
         android:textSize="@dimen/_8ssp"
-        tools:text="Today"/>
+        tools:text="Today" />
 
 </LinearLayout>
