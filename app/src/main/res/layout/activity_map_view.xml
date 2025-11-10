@@ -68,7 +68,6 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
-        app:layout_constraintEnd_toStartOf="@id/btn_tag"
         app:layout_constraintStart_toEndOf="@id/tag_selection"
         app:layout_constraintTop_toTopOf="@id/view_top">
 

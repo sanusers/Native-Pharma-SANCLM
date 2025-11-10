@@ -1093,12 +1093,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                 }
                             }
 
-                            if (!hqNames.isEmpty()) {
-                                isClusterNotSelectedForHQ = true;
+                            if (hqName.isEmpty() && !hqNames.isEmpty()) {
                                 hqName = hqNames.get(0);
                             }
 
-                            if (isClusterNotSelectedForHQ && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+                            if ((isClusterNotSelectedForHQ || !hqName.isEmpty()) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Select any " + SharedPref.getClusterCap(context) + " for " + hqName);

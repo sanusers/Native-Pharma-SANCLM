@@ -37,7 +37,6 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
-import com.github.barteksc.pdfviewer.BuildConfig;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -57,6 +56,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.detailing.LoadBitmap;
@@ -402,7 +402,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             }
         });
     }
-
 
     private void shareImage(File path, String fileFormat) {
         Uri contentUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", path);

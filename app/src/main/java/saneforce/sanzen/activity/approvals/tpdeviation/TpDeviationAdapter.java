@@ -93,7 +93,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
         }
         if (!tpDeviationModelLists.get(position).getClusterName().isEmpty()) {
             holder.llClusterName.setVisibility(View.VISIBLE);
-            holder.tvClusterName.setText(tpDeviationModelLists.get(position).getClusterName());
+            holder.tvClusterName.setText(CommonUtilsMethods.removeLastComma(CommonUtilsMethods.removeDollar(tpDeviationModelLists.get(position).getClusterName())));
             String clusterCaption = SharedPref.getClusterCap(context);
             if (clusterCaption.isEmpty()) {
                 clusterCaption = "Cluster";

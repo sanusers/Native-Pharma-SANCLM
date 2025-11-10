@@ -717,6 +717,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         strClusterName = selectedUsers;
                     }
                 }
+                selectedId = CommonUtilsMethods.removeLastComma(selectedId) + ",$";
+                selectedUsers = CommonUtilsMethods.removeLastComma(selectedUsers) + ",$";
             }
             if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
                 mTowncode1 = strClusterID;

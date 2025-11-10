@@ -61,7 +61,7 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineSignDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class, NotificationDataTable.class, MissedTable.class,DoctorVisitTable.class}, version = 8   , exportSchema = false)
+@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineSignDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class, NotificationDataTable.class, MissedTable.class, DoctorVisitTable.class}, version = 9, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static final String DATABASE_NAME = "sanclmroom.dp";
     private static RoomDB database;
@@ -69,6 +69,7 @@ public abstract class RoomDB extends RoomDatabase {
         if (database == null) {
             database = Room.databaseBuilder(context.getApplicationContext(), RoomDB.class, DATABASE_NAME)
                     .allowMainThreadQueries()
+                    .addMigrations(MIGRATION_1_9)
                     .addMigrations(MIGRATION_1_8)
                     .addMigrations(MIGRATION_1_7)
                     .addMigrations(MIGRATION_1_6)
@@ -76,27 +77,34 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_1_4)
                     .addMigrations(MIGRATION_1_3)
                     .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_9)
                     .addMigrations(MIGRATION_2_8)
                     .addMigrations(MIGRATION_2_7)
                     .addMigrations(MIGRATION_2_6)
                     .addMigrations(MIGRATION_2_5)
                     .addMigrations(MIGRATION_2_4)
                     .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_3_9)
                     .addMigrations(MIGRATION_3_8)
                     .addMigrations(MIGRATION_3_7)
                     .addMigrations(MIGRATION_3_6)
                     .addMigrations(MIGRATION_3_5)
                     .addMigrations(MIGRATION_3_4)
+                    .addMigrations(MIGRATION_4_9)
                     .addMigrations(MIGRATION_4_8)
                     .addMigrations(MIGRATION_4_7)
                     .addMigrations(MIGRATION_4_6)
                     .addMigrations(MIGRATION_4_5)
+                    .addMigrations(MIGRATION_5_9)
                     .addMigrations(MIGRATION_5_8)
                     .addMigrations(MIGRATION_5_7)
                     .addMigrations(MIGRATION_5_6)
+                    .addMigrations(MIGRATION_6_9)
+                    .addMigrations(MIGRATION_6_8)
                     .addMigrations(MIGRATION_6_7)
+                    .addMigrations(MIGRATION_7_9)
                     .addMigrations(MIGRATION_7_8)
-
+                    .addMigrations(MIGRATION_8_9)
 //                    .fallbackToDestructiveMigration()
                     .build();
         }
@@ -153,18 +161,39 @@ public abstract class RoomDB extends RoomDatabase {
     public static final Migration MIGRATION_6_7 = new Migration(6, 7) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS `call_offline_sign_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `call_image_name_sign` TEXT, `call_file_path_sign` TEXT, `call_json_values_sign` TEXT, `call_status_sign` TEXT, `call_sync_status_sign` TEXT, `call_date_sign` TEXT, `call_cus_code_sign` TEXT, `call_cus_name_sign` TEXT)");
+            database.execSQL("CREATE TABLE `presentation_table_new` (" +
+                                     "`presentation_name` TEXT NOT NULL PRIMARY KEY, " +
+                                     "`presentation_data` TEXT DEFAULT '', " +
+                                     "`customer_type` TEXT NOT NULL DEFAULT '', " +
+                                     "`customer_codes` TEXT DEFAULT '', " +
+                                     "`headquarter_code` TEXT DEFAULT ''" +
+                                     ")");
+
+            database.execSQL("INSERT INTO `presentation_table_new` " +
+                                     "(`presentation_name`, `presentation_data`) " +
+                                     "SELECT `presentation_name`, `presentation_data` " +
+                                     "FROM `presentation_table`");
+
+            database.execSQL("DROP TABLE `presentation_table`");
+
+            database.execSQL("ALTER TABLE `presentation_table_new` RENAME TO `presentation_table`");
         }
     };
 
     public static final Migration MIGRATION_7_8 = new Migration(7, 8) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase db) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS `missed_table` (`key` TEXT NOT NULL, `values` TEXT, PRIMARY KEY(`key`))");
+            db.execSQL("CREATE TABLE IF NOT EXISTS `missed_table` (`id` TEXT NOT NULL, `sfcode` TEXT, `values` TEXT, PRIMARY KEY(`id`))");
             db.execSQL("CREATE TABLE IF NOT EXISTS `doctor_visit_table` (`sfcode` TEXT NOT NULL, `date` TEXT NOT NULL, `values` TEXT, PRIMARY KEY(`sfcode`, `date`))");
         }
     };
 
+    public static final Migration MIGRATION_8_9 = new Migration(8, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `call_offline_sign_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `call_image_name_sign` TEXT, `call_file_path_sign` TEXT, `call_json_values_sign` TEXT, `call_status_sign` TEXT, `call_sync_status_sign` INTEGER  NOT NULL, `call_date_sign` TEXT, `call_cus_code_sign` TEXT, `call_cus_name_sign` TEXT)");
+        }
+    };
 
     public static final Migration MIGRATION_1_3 = new Migration(1, 3) {
         @Override
@@ -229,6 +258,20 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_1_9 = new Migration(1, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_1_2.migrate(database);
+            MIGRATION_2_3.migrate(database);
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+            MIGRATION_7_8.migrate(database);
+            MIGRATION_8_9.migrate(database);
+        }
+    };
+
     public static final Migration MIGRATION_2_4 = new Migration(2, 4) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -279,6 +322,19 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_2_9 = new Migration(2, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_2_3.migrate(database);
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+            MIGRATION_7_8.migrate(database);
+            MIGRATION_8_9.migrate(database);
+        }
+    };
+
     public static final Migration MIGRATION_3_5 = new Migration(3, 5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -312,8 +368,20 @@ public abstract class RoomDB extends RoomDatabase {
             MIGRATION_3_4.migrate(database);
             MIGRATION_4_5.migrate(database);
             MIGRATION_5_6.migrate(database);
-            MIGRATION_6_7 .migrate(database);
-            MIGRATION_3_8 .migrate(database);
+            MIGRATION_6_7.migrate(database);
+            MIGRATION_7_8.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_3_9 = new Migration(3, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+            MIGRATION_7_8.migrate(database);
+            MIGRATION_8_9.migrate(database);
         }
     };
 
@@ -344,6 +412,17 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_4_9 = new Migration(4, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_4_5.migrate(database);
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+            MIGRATION_7_8.migrate(database);
+            MIGRATION_8_9.migrate(database);
+        }
+    };
+
     public static final Migration MIGRATION_5_7 = new Migration(5, 7) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -358,6 +437,41 @@ public abstract class RoomDB extends RoomDatabase {
             MIGRATION_5_6.migrate(database);
             MIGRATION_6_7.migrate(database);
             MIGRATION_7_8.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_5_9 = new Migration(5, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+            MIGRATION_7_8.migrate(database);
+            MIGRATION_8_9.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_6_8 = new Migration(6, 8) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_6_7.migrate(database);
+            MIGRATION_7_8.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_6_9 = new Migration(6, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_6_7.migrate(database);
+            MIGRATION_7_8.migrate(database);
+            MIGRATION_8_9.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_7_9 = new Migration(7, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_7_8.migrate(database);
+            MIGRATION_8_9.migrate(database);
         }
     };
 
