@@ -43,7 +43,6 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
-import com.github.barteksc.pdfviewer.BuildConfig;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.gson.JsonObject;
@@ -64,6 +63,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.detailing.LoadBitmap;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
@@ -195,7 +195,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             progressAnim.setVisibility(View.VISIBLE);
                             progressAnim.playAnimation();
                             pdfView.fromFile(file)
-                                    .onRender((nbPages, pageWidth, pageHeight) -> {
+                                    .onRender((nbPages) -> {
                                         progressAnim.setVisibility(View.GONE);
                                         progressAnim.cancelAnimation();
                                     }).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(context)).load();

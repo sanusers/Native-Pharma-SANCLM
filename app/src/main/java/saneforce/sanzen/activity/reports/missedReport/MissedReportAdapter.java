@@ -104,7 +104,7 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
                     context.startActivity(intent);
                 }*/
 
-                if (listener != null) {
+                if (listener != null && !listener.equals("0")) {
                     listener.onMissedClick(item, position);
                 }
             }

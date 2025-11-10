@@ -749,7 +749,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
 
         if (specialityName.equalsIgnoreCase("") && categoryName.equalsIgnoreCase("") && territoryName.equalsIgnoreCase("") && className.equalsIgnoreCase("")) {
             FilltercustArraList.addAll(filterCusList);
-            binding.tvFilterCount.setText("0");
+//            binding.tvFilterCount.setText("0");
             //Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         } else {
             for (DoctorVisitItem mList : filterCusList) {
@@ -833,7 +833,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
                 }
             }
 
-            binding.tvFilterCount.setText(String.valueOf(FilltercustArraList.size()));
+//            binding.tvFilterCount.setText(String.valueOf(FilltercustArraList.size()));
 
         }
 

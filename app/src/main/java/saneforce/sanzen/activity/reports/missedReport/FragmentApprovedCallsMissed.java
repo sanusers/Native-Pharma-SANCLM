@@ -550,6 +550,19 @@ public class FragmentApprovedCallsMissed extends Fragment {
                                 JsonElement jsonElement = response.body();
                                 if (jsonElement.isJsonArray()) {
                                     JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                    reportList.clear();
+                                    for(int i = 0;i<jsonArray.length();i++){
+                                        JSONObject obj = jsonArray.getJSONObject(i);
+                                        DoctorVisitItem model = new DoctorVisitItem();
+                                        model.setName(obj.optString("ListedDr_Name"));
+                                        model.setCode(obj.optString("ListedDrCode"));
+                                        model.setTerritory(obj.optString("territory_Name"));
+                                        model.setSpeciality(obj.optString("Doc_Special_SName"));
+                                        model.setCategory(obj.optString("Doc_Cat_SName"));
+                                        model.setClassName(obj.optString("Doc_ClsSName"));
+                                        model.setQualification(obj.optString("Doc_QuaName"));
+                                    }
+
                                     if (jsonArray.length() > 0) {
                                         String arrayAsString = jsonArray.toString();
                                         RoomDB.databaseWriteExecutor.execute(() -> {

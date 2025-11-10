@@ -190,7 +190,7 @@
             app:layout_constraintEnd_toEndOf="@id/missedfilter"
             app:layout_constraintStart_toStartOf="@id/missedfilter"
             app:layout_constraintTop_toTopOf="@id/missedfilter" />
-        <TextView
+       <!-- <TextView
             android:id="@+id/tv_filter_count"
             android:layout_width="@dimen/_10sdp"
             android:layout_height="@dimen/_10sdp"
@@ -205,7 +205,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
+            tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
