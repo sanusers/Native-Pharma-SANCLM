@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,6 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.logging.Handler;
 
 import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.S3DownloadFiles;
@@ -59,9 +59,12 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
          holder.Imageview.setOnClickListener(new SafeClickListener() {
              @Override
              public void onSafeClick(View view) {
+                 ProgressDialog existingPB = progressDialog;
                  progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                 Log.e("TAG", "onSafeClick: "+"111" );
                  progressDialog.show();
+                 if(existingPB != null && existingPB.isShowing()){
+                     new Handler().postDelayed(existingPB::dismiss, 500);
+                 }
 //                 ProgressDialog progressDialog = new ProgressDialog(context);
                  if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                      AlertDialog.Builder dialog = new AlertDialog.Builder(context);

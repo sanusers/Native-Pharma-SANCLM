@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -206,8 +207,12 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
             @Override
             public void onSafeClick(View view) {
                 Log.e("TAG", "onSafeClick: "+"on safe click " );
+                ProgressDialog existingPB = progressBar;
                 progressBar = CommonUtilsMethods.createProgressDialog(context);
                 progressBar.show();
+                if(existingPB != null && existingPB.isShowing()){
+                    new Handler().postDelayed(existingPB::dismiss, 500);
+                }
                 if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                     switch (isFromActivity) {
                         case "new":
