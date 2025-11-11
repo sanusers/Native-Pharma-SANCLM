@@ -22,6 +22,7 @@ import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class DynamicSubMenuActivity extends AppCompatActivity {
     ArrayList<SubMenuModel> subMenuModelArrayList = new ArrayList<>();
@@ -112,12 +113,12 @@ private void prepare_menu_sub_details(String menu_sub_details) {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject menuSubObject = jsonArray.getJSONObject(i);
-                String date = CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd");
-                String mnth = date.substring(5, 7);
+                String year = TimeUtils.FORMAT_10;
+                String month = TimeUtils.FORMAT_8;
 
                 String formatted_URL = SharedPref.getTagImageUrl(this) + "/" + menuSubObject.optString("OptionMenu_Page") + "?";
                 formatted_URL += "sfcode=" + SF_Code + "&rSF=" + rSF + "&div_code=" + divCode.replace(",", "") +
-                        "&cMnth=" + mnth + "&cYr=" + date.substring(0, 4) +
+                        "&cMnth=" + month + "&cYr=" + year +
                         "&doc_id=-1&IsDocView=0&cluster_code=-1";
 
                 SubMenuModel menuSubModel = new SubMenuModel(

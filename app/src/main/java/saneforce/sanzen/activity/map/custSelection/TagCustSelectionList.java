@@ -196,9 +196,8 @@ public class TagCustSelectionList extends AppCompatActivity {
             }
         });
 
-        binding.txtSelectedHq.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.txtSelectedHq.setOnClickListener(view ->  {
+
                 hideKeyboard();
                 if (binding.constraintHqList.getVisibility() == View.VISIBLE) {
                     binding.constraintHqList.setVisibility(View.GONE);
@@ -207,7 +206,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                     binding.constraintHqList.setVisibility(View.VISIBLE);
                     binding.dummyView.setVisibility(View.VISIBLE);
                 }
-            }
+
         });
 
         binding.imgClose.setOnClickListener(view ->  {

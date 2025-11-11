@@ -17,6 +17,7 @@ public class MenuModel {
         this.Menu_Name = menu_Name;
         this.Menu_Icon = menu_Icon;
         this.Menu_Option = menu_Option;
+        this.Menu_Sub_Details = (menu_Option != null) ? menu_Option.toString() : null;
     }
 
     public String getMenu_Sub_Details() {

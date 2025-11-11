@@ -562,6 +562,7 @@ public class ReportsActivity extends AppCompatActivity {
                         jsonObject.put("division_code", SharedPref.getDivisionCode(this));
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
                         jsonObject.put("tableName", "getDynamicReport");
+                        Log.v("Dyn_Rpt",jsonObject.toString());
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -579,24 +580,24 @@ public class ReportsActivity extends AppCompatActivity {
                                                 JsonObject menuObject = jsonArray.get(i).getAsJsonObject();
 
                                                 String Menu_Name = menuObject.get("Menu_Name").getAsString();
-                                                String Menu_Icon = SharedPref.getTagImageUrl(ReportsActivity.this)
-                                                        + "/" + menuObject.get("Menu_Icon").getAsString();
-                                                String Menu_Page = SharedPref.getTagImageUrl(ReportsActivity.this)
-                                                        + "/" + menuObject.get("Menu_Page").getAsString() + "?";
+                                                String Menu_Icon = SharedPref.getTagImageUrl(ReportsActivity.this) + "/" + menuObject.get("Menu_Icon").getAsString();
+                                                String Menu_Page = SharedPref.getTagImageUrl(ReportsActivity.this) + "/" + menuObject.get("Menu_Page").getAsString() + "?";
                                                 Menu_Page += "sfcode=" + SharedPref.getSfCode(ReportsActivity.this)
                                                         + "&rSF=" + SharedPref.getHqCode(ReportsActivity.this)
-                                                        + "&div_code=" + SharedPref.getDivisionCode(ReportsActivity.this)
-                                                        + "&cMnth=" + TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_9)
-                                                        + "&cYr=" + TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_12)
+                                                        + "&div_code=" + SharedPref.getDivisionCode(ReportsActivity.this).replace(",","")
+                                                        + "&cMnth=" + TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_8)
+                                                        + "&cYr=" + TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_10)
                                                         + "&doc_id=-1&IsDocView=0&cluster_code=-1";
+
+                                                Log.d("Menu_Page", Menu_Page);
 
                                                 MenuModel menuModel = new MenuModel(Menu_Name, Menu_Icon, Menu_Page);
 
-                                                // 🔑 FIX: Add both to the dynamic list and the adapter's display list
+
                                                 dynamicMenuList.add(menuModel);
                                                 reportTitles.add(Menu_Name);
                                             }
-                                            // 🔑 FIX: Notify adapter to refresh with new data
+
                                             reportsAdapter.notifyDataSetChanged();
                                         } else {
 //                                            commonUtilsMethods.showToastMessage(ReportsActivity.this, "No Dynamic Reports Found");
