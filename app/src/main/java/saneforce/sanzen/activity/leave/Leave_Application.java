@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -57,6 +58,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -78,6 +81,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -242,11 +246,11 @@ public class Leave_Application extends AppCompatActivity {
                 } else if (leavebinding.etToDate.getText().toString().equals("")) {
                     commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_to_date));
                 } else {
-                    if (!CheckStoragePermission()) {
-                        RequestStoragePermission();
-                    } else {
+//                    if (!CheckStoragePermission()) {
+//                        RequestStoragePermission();
+//                    } else {
                         Open_Storage();
-                    }
+//                    }
                 }
                 closeKeyboard();
             }
@@ -335,46 +339,110 @@ public class Leave_Application extends AppCompatActivity {
     @SuppressLint({"MissingSuperCall", "Range"})
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 7) {
-            if(resultCode == RESULT_OK && data.getData() != null) {
+        if (requestCode == 7) {
+            if (resultCode == RESULT_OK && data.getData() != null) {
                 try {
                     uri = data.getData();
-                    String fullPath = getPathFromURI(Leave_Application.this, uri);
-                    String[] parts = fullPath.split("/");
-                    String filenmae = parts[parts.length - 1];
-
-                    if(filenmae.endsWith(".zip")) {
-                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.zip_not_supported));
-                    }else {
-                        leavebinding.txtAttachement.setText(filenmae);
-                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.file_accepted));
-//                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-//                        if(!dir1.exists()) {
-//                            dir1.mkdirs();
-//                        }
-                        File file = null;
-                        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                            file = new File(this.getExternalFilesDir(null) + "/LeaveAttachment/");
-                        }else {
-                            Log.e("File Creation", "captureFile: No media mounted");
-                        }
-                        if(file != null && !file.exists()) {
-                            if(!file.mkdirs()) {
-                                Log.e("File Creation", "Directory Creation Failed.");
-                            }
-                        }
-                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+                    try {
+                        final int takeFlags = data.getFlags()
+                                & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    String filename = getFileNameFromUri(uri);
+                    if (filename == null) {
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.please_select_correct_path));
+                        return;
+                    }
+                    if (filename.endsWith(".zip")) {
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.zip_not_supported));
+                        return;
+                    }
+                    leavebinding.txtAttachement.setText(filename);
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.file_accepted));
+                    copyFileToAppDir(uri);
+//                    String fullPath = getPathFromURI(Leave_Application.this, uri);
+//                    String[] parts = fullPath.split("/");
+//                    String filenmae = parts[parts.length - 1];
+//
+//                    if (filenmae.endsWith(".zip")) {
+//                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.zip_not_supported));
+//                    } else {
+//                        FilnameTet.setText(String.valueOf(filenmae));
+//                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.file_accepted));
+////                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+////                        if(!dir1.exists()) {
+////                            dir1.mkdirs();
+////                        }
+//                        File file = null;
+//                        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//                            file = new File(getApplicationContext().getExternalFilesDir(null) + "/ActivityUpload/");
+//                        } else {
+//                            Log.e("File Creation", "captureFile: No media mounted");
+//                        }
+//                        if (file != null && !file.exists()) {
+//                            if (!file.mkdirs()) {
+//                                Log.e("File Creation", "Directory Creation Failed.");
+//                            }
+//                        }
+//                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+//                    }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
                     commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.please_select_correct_path));
                     ex.printStackTrace();
                 }
-            }else {
-                commonUtilsMethods.showToastMessage(Leave_Application.this,  Leave_Application.this.getString(R.string.no_file_selected));
+            } else {
+                commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.no_file_selected));
             }
             commonFun();
         }
+    }
+
+    private void copyFileToAppDir(Uri sourceUri) {
+        try {
+            File destDir = new File(getApplicationContext().getExternalFilesDir(null), "ActivityUpload");
+            if (!destDir.exists()) destDir.mkdirs();
+            String fileName = getFileNameFromUri(sourceUri);
+            if (fileName == null) fileName = "file_" + System.currentTimeMillis();
+            File destFile = new File(destDir, fileName);
+            try (InputStream inputStream = getContentResolver().openInputStream(sourceUri);
+                 OutputStream outputStream = new FileOutputStream(destFile)) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+            Log.d("FileCopy", "Saved to: " + destFile.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFileNameFromUri(Uri uri) {
+        String result = null;
+        try {
+            if ("content".equals(uri.getScheme())) {
+                try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (index != -1) {
+                            result = cursor.getString(index);
+                        }
+                    }
+                }
+            }
+            if (result == null) {
+                result = uri.getPath();
+                int cut = result.lastIndexOf('/');
+                if (cut != -1) result = result.substring(cut + 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public static String getPathFromURI(final Context Context, final Uri uri) {
@@ -459,33 +527,34 @@ public class Leave_Application extends AppCompatActivity {
         Leave_Application.this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
-    public boolean CheckStoragePermission() {
-        if(android.os.Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
-            int image = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_IMAGES);
-            int video = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_VIDEO);
-            int audio = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_AUDIO);
-            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
-        }else {
-            int Write = ContextCompat.checkSelfPermission(Leave_Application.this, WRITE_EXTERNAL_STORAGE);
-            int Read = ContextCompat.checkSelfPermission(Leave_Application.this, READ_EXTERNAL_STORAGE);
-            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
-        }
-    }
+//    public boolean CheckStoragePermission() {
+//        if(android.os.Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
+//            int image = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_IMAGES);
+//            int video = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_VIDEO);
+//            int audio = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_AUDIO);
+//            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
+//        }else {
+//            int Write = ContextCompat.checkSelfPermission(Leave_Application.this, WRITE_EXTERNAL_STORAGE);
+//            int Read = ContextCompat.checkSelfPermission(Leave_Application.this, READ_EXTERNAL_STORAGE);
+//            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
+//        }
+//    }
 
-    private void RequestStoragePermission() {
-        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
-            if((ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(Leave_Application.this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-            }
-        }else {
-            if(ActivityCompat.checkSelfPermission(Leave_Application.this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Leave_Application.this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(Leave_Application.this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-            }
-        }
-    }
+//    private void RequestStoragePermission() {
+//        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+//            if((ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(Leave_Application.this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+//            }
+//        }else {
+//            if(ActivityCompat.checkSelfPermission(Leave_Application.this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Leave_Application.this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(Leave_Application.this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+//            }
+//        }
+//    }
 
     private void Open_Storage() {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent chooseFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");
         startActivityForResult(chooseFile, 7);
