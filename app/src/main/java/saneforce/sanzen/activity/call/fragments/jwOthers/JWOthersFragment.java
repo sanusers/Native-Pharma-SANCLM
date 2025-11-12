@@ -20,6 +20,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,9 +54,12 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.jwOthers.AdapterCallCaptureImage;
@@ -191,6 +197,13 @@ public class JWOthersFragment extends Fragment {
                     }.getType();
                     JWKCodeList = gson.fromJson(getjwkcode, type);
 
+                    Map<String, List<String>> jcMap = SharedPref.getJCMap(requireContext());
+                    if (jcMap.containsKey(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+                        JWKCodeList = (ArrayList<String>) jcMap.get(DcrCallTabLayoutActivity.TodayPlanSfCode);
+                    } else {
+                        JWKCodeList = new ArrayList<>();
+                    }
+
                     try {
                         if (DCRCallActivity.save_valid.equals("1")) {
                             JSONArray jsonArray = dcrDocDataDao.getDCRDocData(DCRCallActivity.hqcode).getDCRDocDataJSONArray();
@@ -223,6 +236,7 @@ public class JWOthersFragment extends Fragment {
         }else {
             JWKCodeList.clear();
             SharedPref.setJWKCODE(context, JWKCodeList, "");
+            SharedPref.saveJCMap(context, new HashMap<>(), "");
             Log.v("Testing","OLD");
         }
 
@@ -277,6 +291,7 @@ public class JWOthersFragment extends Fragment {
 
     private void HiddenVisibleFunction() {
         jwOthersBinding.tagPob.setText(CapPob);
+        jwOthersBinding.edRemarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(jwOthersBinding.edRemarks, 200)});
         if (DCRCallActivity.PobNeed.equalsIgnoreCase("0")) {
             jwOthersBinding.constraintPob.setVisibility(View.VISIBLE);
         } else {

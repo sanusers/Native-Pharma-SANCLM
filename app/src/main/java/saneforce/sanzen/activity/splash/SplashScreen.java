@@ -14,12 +14,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.GifView;
 import saneforce.sanzen.databinding.ActivitySplashScreenBinding;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -34,26 +36,26 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
+        binding.splashImg.setGifResource(R.drawable.animation_slide);
         setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);   // Donot Remove it    Need To  Get Location
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         // Request storage permission if needed (for older Android versions)
-//        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.R) {
-//            if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
-//            }else {
-//                // Permission already granted, start logging
-//                ContinuousLogCollector.startLogging(getApplicationContext());
-//            }
-//        }else {
-//            // On Android 11+, start logging directly to app-specific storage
-//            ContinuousLogCollector.startLogging(getApplicationContext());
-//        }
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.R) {
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
+            }else {
+                // Permission already granted, start logging
+                ContinuousLogCollector.startLogging(getApplicationContext());
+            }
+        }else {
+            // On Android 11+, start logging directly to app-specific storage
+            ContinuousLogCollector.startLogging(getApplicationContext());
+        }
 
         new Handler().postDelayed(() -> {
             if(SharedPref.getSettingState(getApplicationContext())) {

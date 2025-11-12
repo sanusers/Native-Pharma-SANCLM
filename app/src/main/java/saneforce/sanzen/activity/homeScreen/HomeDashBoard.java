@@ -1543,9 +1543,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password)});
-        new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
-        remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
+        old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password,100)});
+        new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password,100)});
+        remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password,100)});
         String password = SharedPref.getLoginUserPwd(this).toLowerCase();
 //        System.out.println("loginPassword--->"+password);
 

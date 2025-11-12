@@ -65,7 +65,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -85,6 +84,7 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.STPDaySorter;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.WorkplanFragmentBinding;
@@ -92,12 +92,12 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataTable;
-import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDataTable;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
@@ -717,6 +717,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         strClusterName = selectedUsers;
                     }
                 }
+                selectedId = CommonUtilsMethods.removeLastComma(selectedId) + ",$";
+                selectedUsers = CommonUtilsMethods.removeLastComma(selectedUsers) + ",$";
             }
             if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
                 mTowncode1 = strClusterID;
@@ -1436,11 +1438,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtSave.setText(getString(R.string.save));
                         binding.txtAddPlan.setText(getString(R.string.add_plan));
                         if (DayPlanCount.equals("1")) {
-                            binding.txtAddPlan.setEnabled(true);
-                            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
                             if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
                                 binding.txtAddPlan.setEnabled(false);
                                 binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+                            } else {
+                                binding.txtAddPlan.setEnabled(true);
+                                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
                             }
                         } else if (DayPlanCount.equals("2")) {
                             binding.txtAddPlan.setEnabled(false);
@@ -1972,7 +1975,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             deviationJSONObject.put("location", gpsTrack.getLatitude() + ":" + gpsTrack.getLongitude());
             deviationJSONObject.put("address", CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
-            deviationJSONObject.put("InsMode", "0");
+            deviationJSONObject.put("InsMode", deviation);   // previously it was 0
             deviationJSONObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
             deviationJSONObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             deviationJSONObject.put("TpVwFlg", deviation);
@@ -2582,6 +2585,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
         }
+        if (!mFwFlg1.equalsIgnoreCase("F") && !mFwFlg2.equalsIgnoreCase("F")) {
+            checkAndClearCalls();
+        }
         DcrCallTabLayoutActivity.TodayPlanSfCode = "";
         DcrCallTabLayoutActivity.TodayPlanSfName = "";
     }
@@ -2786,7 +2792,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void CreateJson() {
         try {
             if (DayPlanCount.equalsIgnoreCase("1")) {
-                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                     String[] clusterData = getMultiHQClusters(mHQCode1).split("\\^\\^");
                     if (clusterData.length > 1) {
                         mTowncode1 = clusterData[0];
@@ -2799,7 +2805,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 mFwFlg = mFwFlg1;
             } else {
                 if (IsFeildWorkFlag.equalsIgnoreCase("F1")) {
-                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         String[] clusterData = getMultiHQClusters(mHQCode1).split("\\^\\^");
                         if (clusterData.length > 1) {
                             mTowncode1 = clusterData[0];
@@ -2811,7 +2817,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mHQName = mHQName1;
 
                 } else if (IsFeildWorkFlag.equalsIgnoreCase("F2")) {
-                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         String[] clusterData = getMultiHQClusters(mHQCode2).split("\\^\\^");
                         if (clusterData.length > 1) {
                             mTowncode2 = clusterData[0];
@@ -2884,7 +2890,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("Remarks", mRemarks1);
             jsonObject.put("location", gpsTrack.getLatitude() + ":" + gpsTrack.getLongitude());
             jsonObject.put("address", CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
-            jsonObject.put("InsMode", insMode);
+            if(SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")){
+                jsonObject.put("InsMode", deviation);
+            }else {
+                jsonObject.put("InsMode", insMode); // previously it was incMode
+            }
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
             jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             jsonObject.put("TpVwFlg", deviation);
@@ -4065,7 +4075,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 //                        if(!HQList.isEmpty()) {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-                            if (!FirstSeasonDayPlanObject.optString("TP_Hq").isEmpty()) {
+                            if (!FirstSeasonDayPlanObject.optString("TP_Hq").isEmpty() && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                                 mTowncode1 = FirstSeasonDayPlanObject.optString("TP_cluster");
                                 mHQCode1 = FirstSeasonDayPlanObject.optString("TP_Hq");
                                 if (!mHQCode1.isEmpty()) {
@@ -4089,6 +4099,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 mHQName1 = hqName.toString();
                                 mTownname1 = clusterName.toString();
                             } else if (mHQName1.isEmpty()) {
+                                if (!mHQCode1.isEmpty()) {
+                                    checkAndSyncMasters(CommonUtilsMethods.removeDollar(mHQCode1), true);
+                                }
                                 mHQName1 = findHQName(mHQCode1);
                             }
                         } else {
@@ -4098,6 +4111,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                        break;
 //                                    }
 //                                }
+                            if (!mHQCode1.isEmpty()) {
+                                checkAndSyncMasters(CommonUtilsMethods.removeDollar(mHQCode1), true);
+                            }
                             mHQName1 = findHQName(mHQCode1);
                         }
 //                        }
@@ -4284,7 +4300,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                        }
 //                                    }
 //                                    mHQName2 = hqName.toString();
-                                if (!SecondSeasonDayPlanObject.optString("TP_Hq").isEmpty()) {
+                                if (!SecondSeasonDayPlanObject.optString("TP_Hq").isEmpty() && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                                     mTowncode2 = SecondSeasonDayPlanObject.optString("TP_cluster");
                                     mHQCode2 = SecondSeasonDayPlanObject.optString("TP_Hq");
                                     if (!mHQCode2.isEmpty()) {
@@ -4308,6 +4324,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     mHQName2 = hqName.toString();
                                     mTownname2 = clusterName.toString();
                                 } else if (mHQName2.isEmpty()) {
+                                    if (!mHQCode2.isEmpty()) {
+                                        checkAndSyncMasters(CommonUtilsMethods.removeDollar(mHQCode2), true);
+                                    }
                                     mHQName2 = findHQName(mHQCode2);
                                 }
                             } else {
@@ -4317,6 +4336,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                            break;
 //                                        }
 //                                    }
+                                if (!mHQCode2.isEmpty()) {
+                                    checkAndSyncMasters(CommonUtilsMethods.removeDollar(mHQCode2), true);
+                                }
                                 mHQName2 = findHQName(mHQCode2);
                             }
 //                            }
@@ -5021,15 +5043,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                 ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
                                                 StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder();
                                                 if (modelClass.getSessionList() != null && !modelClass.getSessionList().isEmpty()) {
-                                                    for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getListedDr()) {
-                                                        listedDr.append(subClass.getCode());
-                                                        listedDr.append(",");
-                                                    }
-                                                    for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getCluster()) {
-                                                        clusterCode.append(subClass.getCode());
-                                                        clusterCode.append(",");
-                                                        clusterName.append(subClass.getName());
-                                                        clusterName.append(",");
+                                                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getListedDr()) {
+                                                            listedDr.append(subClass.getCode());
+                                                            listedDr.append(",");
+                                                        }
+                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getCluster()) {
+                                                            clusterCode.append(subClass.getCode());
+                                                            clusterCode.append(",");
+                                                            clusterName.append(subClass.getName());
+                                                            clusterName.append(",");
+                                                        }
+                                                    } else {
+                                                        for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(0).getListedDrs()) {
+                                                            for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                listedDr.append(data.getCode());
+                                                                listedDr.append(",");
+                                                            }
+                                                            listedDr.append("$");
+                                                        }
+                                                        for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(0).getClusters()) {
+                                                            for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                clusterCode.append(data.getCode());
+                                                                clusterCode.append(",");
+                                                                clusterName.append(data.getName());
+                                                                clusterName.append(",");
+                                                            }
+                                                            clusterCode.append("$");
+                                                            clusterName.append("$");
+                                                        }
                                                     }
                                                     JSONObject obj = new JSONObject();
                                                     JSONObject obj2 = new JSONObject();
@@ -5062,15 +5104,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                     jsonArray.put(obj);
 
                                                     if (modelClass.getSessionList().size() > 1) {
-                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getListedDr()) {
-                                                            listedDr.append(subClass.getCode());
-                                                            listedDr.append(",");
-                                                        }
-                                                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getCluster()) {
-                                                            clusterCode.append(subClass.getCode());
-                                                            clusterCode.append(",");
-                                                            clusterName.append(subClass.getName());
-                                                            clusterName.append(",");
+                                                        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                                                            for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getListedDr()) {
+                                                                listedDr.append(subClass.getCode());
+                                                                listedDr.append(",");
+                                                            }
+                                                            for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getCluster()) {
+                                                                clusterCode.append(subClass.getCode());
+                                                                clusterCode.append(",");
+                                                                clusterName.append(subClass.getName());
+                                                                clusterName.append(",");
+                                                            }
+                                                        } else {
+                                                            for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(1).getListedDrs()) {
+                                                                for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                    listedDr.append(data.getCode());
+                                                                    listedDr.append(",");
+                                                                }
+                                                                listedDr.append("$");
+                                                            }
+                                                            for (MultiHQHeaderModelClass header : modelClass.getSessionList().get(1).getClusters()) {
+                                                                for (MultiHQItemModelClass data : header.getItemsList()) {
+                                                                    clusterCode.append(data.getCode());
+                                                                    clusterCode.append(",");
+                                                                    clusterName.append(data.getName());
+                                                                    clusterName.append(",");
+                                                                }
+                                                                clusterCode.append("$");
+                                                                clusterName.append("$");
+                                                            }
                                                         }
                                                         obj2.put("SFCode", SharedPref.getSfCode(requireContext()));
                                                         JSONObject TPDtSecondSeasonObject = new JSONObject();
@@ -5641,15 +5703,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
         }
-        binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
         binding.rlworktype1.setEnabled(false);
         binding.rlcluster1.setEnabled(false);
         binding.rlheadquates1.setEnabled(false);
         binding.rlworkday1.setEnabled(false);
-        binding.txtAddPlan.setEnabled(true);
         if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
             binding.txtAddPlan.setEnabled(false);
             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+        } else {
+            binding.txtAddPlan.setEnabled(true);
+            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
         }
         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
         binding.txtSave.setEnabled(false);

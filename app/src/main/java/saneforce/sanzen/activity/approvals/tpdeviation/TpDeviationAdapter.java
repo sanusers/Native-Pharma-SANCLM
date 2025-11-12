@@ -93,7 +93,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
         }
         if (!tpDeviationModelLists.get(position).getClusterName().isEmpty()) {
             holder.llClusterName.setVisibility(View.VISIBLE);
-            holder.tvClusterName.setText(tpDeviationModelLists.get(position).getClusterName());
+            holder.tvClusterName.setText(CommonUtilsMethods.removeLastComma(CommonUtilsMethods.removeDollar(tpDeviationModelLists.get(position).getClusterName())));
             String clusterCaption = SharedPref.getClusterCap(context);
             if (clusterCaption.isEmpty()) {
                 clusterCaption = "Cluster";
@@ -135,7 +135,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
         EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
         Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
         Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
-        ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
+        ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason,300)});
         btn_cancel.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {

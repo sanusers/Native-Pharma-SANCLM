@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "missed_table")
 public class MissedTable {
-
-
     @PrimaryKey
     @NonNull
     @ColumnInfo (name = "id")

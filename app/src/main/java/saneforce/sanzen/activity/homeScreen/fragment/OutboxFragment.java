@@ -613,7 +613,7 @@ public class OutboxFragment extends Fragment {
             return;
         }
         Map<String, String> mapString = new HashMap<>();
-        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
             mapString.put("axn", "edetsave/dayplan");
         } else {
             mapString.put("axn", "multihqsave/dayplan");

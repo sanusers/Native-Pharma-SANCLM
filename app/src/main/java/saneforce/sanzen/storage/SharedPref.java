@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SharedPref {
 
@@ -396,6 +397,7 @@ public class SharedPref {
     public static final String IS_FEILD = "IS_FEILD";
 
     public static final String JWKCODE = "JWKCODE";
+    public static final String JCMAP = "JCMAP";
     public static final String JWKDATE = "JWKDATE";
 
     public static final String TP_MANATORY_STATUS = "TP_MANATORY_STATUS";
@@ -2588,6 +2590,25 @@ public class SharedPref {
 
     public static String getJWKDATE(Context context) {
         return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(JWKDATE, "");
+    }
+
+    public static void saveJCMap(Context context, Map<String, List<String>> map, String JwkDate) {
+        SharedPreferences prefs = context.getSharedPreferences(SETHQ_DETAILS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(map);
+        editor.putString(JCMAP, json);
+        editor.putString(JWKDATE, JwkDate);
+        editor.apply();
+    }
+
+    public static Map<String, List<String>> getJCMap(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(SETHQ_DETAILS, Context.MODE_PRIVATE);
+        String json = prefs.getString(JCMAP, null);
+        if (json == null) return null;
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, List<String>>>() {}.getType();
+        return gson.fromJson(json, type);
     }
 
     public static void setSyncHQ(Context context, List<String> List) {

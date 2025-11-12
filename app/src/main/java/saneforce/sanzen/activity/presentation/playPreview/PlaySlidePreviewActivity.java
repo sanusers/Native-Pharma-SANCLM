@@ -338,7 +338,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
 
     public void loadPdf(String fileName) {
         binding.pdfView.fromFile(new File(fileName))
-                .onRender((nbPages, pageWidth, pageHeight) -> {
+                .onRender((nbPages) -> {
                     binding.progressAnim.setVisibility(View.GONE);
                     binding.progressAnim.cancelAnimation();
                 }).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();

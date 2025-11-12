@@ -156,9 +156,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrContentList = CommonUtilsMethods.CommonObjectParameter(DcrApprovalActivity.this);
             jsonDcrContentList.put("tableName", "getvwdcrone");
             jsonDcrContentList.put("Trans_SlNo", SelectedTransCode);
-            jsonDcrContentList.put("sfcode", SelectedSfCode);
+            jsonDcrContentList.put("sfcode", SharedPref.getSfCode(this));
             jsonDcrContentList.put("division_code", SharedPref.getDivisionCode(this));
-            jsonDcrContentList.put("Rsf", SharedPref.getHqCode(this));
+            jsonDcrContentList.put("Rsf", SelectedSfCode);
             Log.v("json_get_full_dcr_list", jsonDcrContentList.toString());
 
         } catch (Exception ignored) {
@@ -388,6 +388,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         } else {
             commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
         }
+        dcrCallApprovalBinding.searchDcr.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( dcrCallApprovalBinding.searchDcr, 300)});
+
         dcrCallApprovalBinding.searchDcr.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

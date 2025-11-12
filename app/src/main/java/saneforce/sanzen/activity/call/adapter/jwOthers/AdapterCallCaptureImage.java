@@ -10,7 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -205,8 +207,12 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
             @Override
             public void onSafeClick(View view) {
                 Log.e("TAG", "onSafeClick: "+"on safe click " );
+                ProgressDialog existingPB = progressBar;
                 progressBar = CommonUtilsMethods.createProgressDialog(context);
                 progressBar.show();
+                if(existingPB != null && existingPB.isShowing()){
+                    new Handler().postDelayed(existingPB::dismiss, 500);
+                }
                 if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                     switch (isFromActivity) {
                         case "new":
@@ -221,7 +227,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                             if (UtilityClass.isNetworkAvailable(context)) {
                                 if (callCaptureImageList.isNewlyAdded()) {
                                     if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
-                                        ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
+                                        showImage(callCaptureImageList.getImg_view());
 //                                        progressBar.dismiss();
                                     }else {
                                         showImage(callCaptureImageList.getImg_view());
@@ -279,6 +285,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 }
             }
         });
+        holder.tv_image_name.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.tv_image_name, 100)});
 
         holder.tv_image_name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -296,6 +303,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded(),callCaptureImageLists.get(holder.getBindingAdapterPosition()).isShowPreview()));
             }
         });
+        holder.ed_img_desc.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText( holder.ed_img_desc, 300)});
 
         holder.ed_img_desc.addTextChangedListener(new TextWatcher() {
             @Override

@@ -365,7 +365,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             return;
         }
         Map<String, String> mapString = new HashMap<>();
-        if (SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(context).equalsIgnoreCase("1") || SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             mapString.put("axn", "edetsave/dayplan");
         } else {
             mapString.put("axn", "multihqsave/dayplan");

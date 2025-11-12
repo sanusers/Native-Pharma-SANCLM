@@ -1,4 +1,5 @@
 package saneforce.sanzen.activity.call.dcrCallSelection.adapter;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -24,28 +25,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.profile.CustomerProfile;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
-import saneforce.sanzen.activity.call.profile.CustomerProfile;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
+
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     private final Context context;
     private ArrayList<CustList> cusListArrayList;
@@ -75,16 +75,16 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         this.cusListArrayList = cusListArrayList;
         this.needCheckInOut = needCheckInOut;
         this.isFrom = isFrom;
-        this.FillteredList=cusListArrayList;
-        roomDB=RoomDB.getDatabase(context);
-        masterDataDao=roomDB.masterDataDao();
+        this.FillteredList = cusListArrayList;
+        roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
         gpsTrack = new GPSTrack(activity);
 
         if (needCheckInOut.equalsIgnoreCase("0")) {
             dialogCheckIn = new Dialog(context);
             dialogCheckIn.setContentView(R.layout.dialog_cus_checkin);
             dialogCheckIn.setCancelable(false);
-            if(dialogCheckIn.getWindow() != null) {
+            if (dialogCheckIn.getWindow() != null) {
                 dialogCheckIn.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
             btnCheckIN = dialogCheckIn.findViewById(R.id.btn_checkIn);
@@ -113,7 +113,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     public void onBindViewHolder(@NonNull AdapterDCRCallSelection.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(cusListArrayList.get(position).getName());
-        if(cusListArrayList.get(position).getCategory().isEmpty())
+        if (cusListArrayList.get(position).getCategory().isEmpty())
             holder.tv_category.setText("");
         else
             holder.tv_category.setText(cusListArrayList.get(position).getCategory());
@@ -128,7 +128,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_specialist.setVisibility(View.GONE);
 
-        }else {
+        } else {
             holder.tv_category.setVisibility(View.GONE);
             holder.tv_specialist.setVisibility(View.GONE);
         }
@@ -141,7 +141,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         });
 
         for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
-            if (cusListArrayList.get(position). getType().equalsIgnoreCase("3")) {
+            if (cusListArrayList.get(position).getType().equalsIgnoreCase("3")) {
                 if (cusListArrayList.get(position).getTown_name().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
                     holder.view_top.setVisibility(View.VISIBLE);
                     holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
@@ -217,9 +217,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             gpsTrack = new GPSTrack(activity);
             latitude = gpsTrack.getLatitude();
             longitude = gpsTrack.getLongitude();
-            if(UtilityClass.isNetworkAvailable(activity)) {
+            if (UtilityClass.isNetworkAvailable(activity)) {
                 address = CommonUtilsMethods.gettingAddress(activity, latitude, longitude, false);
-            }else {
+            } else {
                 address = activity.getString(R.string.no_address_found);
             }
         } catch (Exception e) {
@@ -275,9 +275,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                         try {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            if(UtilityClass.isNetworkAvailable(context)) {
+                            if (UtilityClass.isNetworkAvailable(context)) {
                                 address = CommonUtilsMethods.gettingAddress(activity, latitude, longitude, false);
-                            }else {
+                            } else {
                                 address = activity.getString(R.string.no_address_found);
                             }
 
@@ -327,7 +327,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     tv_dateTime.setText(currentTime);
                     handler.postDelayed(this, 1000);
                     limit++;
-                    if(limit == 120) {
+                    if (limit == 120) {
                         stopClock();
                         handleIdleTime();
                         dialogCheckIn.dismiss();
@@ -341,7 +341,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     }
 
     private void stopClock() {
-        if(gpsTrack != null) {
+        if (gpsTrack != null) {
             gpsTrack.setLocationChangeListener(null);
         }
         if (handler != null && runnable != null) {
@@ -355,10 +355,10 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dcr_cancel_alert);
         dialog.setCancelable(false);
-        if(dialog.getWindow() != null) {
+        if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-        if(!dialog.isShowing()) {
+        if (!dialog.isShowing()) {
             dialog.show();
         }
         TextView content = dialog.findViewById(R.id.ed_alert_msg);
@@ -401,10 +401,10 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
         DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(), cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(), cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(), cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(), cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(), cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(), cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(), cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(), cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(), cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
         Intent intent = new Intent(context, CustomerProfile.class);
-        if(needCheckInOut.equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+        if (needCheckInOut.equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             intent.putExtra("CheckInJsonObject", jsonObject.toString());
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 

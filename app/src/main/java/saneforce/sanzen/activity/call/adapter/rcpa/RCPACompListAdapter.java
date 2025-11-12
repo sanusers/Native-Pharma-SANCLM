@@ -214,7 +214,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                 EditText ed_remark = dialogRemarks.findViewById(R.id.ed_remark);
                 Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
                 Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
-                ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark)});
+                ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark,200)});
 
                 if (!CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks().isEmpty()) {
                     ed_remark.setText(CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks());

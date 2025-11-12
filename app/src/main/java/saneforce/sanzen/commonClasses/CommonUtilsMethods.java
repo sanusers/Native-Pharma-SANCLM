@@ -59,12 +59,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.LocaleHelper;
-
 
 public class CommonUtilsMethods {
     Context context;
@@ -76,32 +74,29 @@ public class CommonUtilsMethods {
         this.activity = activity;
     }
 
-
     public CommonUtilsMethods(Context context) {
         this.context = context;
     }
 
-
     public static String gettingAddress(Activity activity, double la, double ln, boolean toastMsg) {
-
         Geocoder geocoder;
         List<Address> addresses;
         String address = activity.getString(R.string.no_address_found);
         geocoder = new Geocoder(activity, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);
-            if(addresses != null && !addresses.isEmpty()) {
+            if (addresses != null && !addresses.isEmpty()) {
                 address = addresses.get(0).getAddressLine(0);
                 /*String city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
                 String country = addresses.get(0).getCountryName();
                 String postalCode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();*/
-            }else {
+            } else {
                 address = activity.getString(R.string.no_address_found2);
             }
 
-            if(toastMsg) {
+            if (toastMsg) {
                 LayoutInflater inflater = activity.getLayoutInflater();
 
                 View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
@@ -118,7 +113,7 @@ public class CommonUtilsMethods {
                 toast.show();*/
             }
         } catch (IOException e) {
-            if(toastMsg) {
+            if (toastMsg) {
                 LayoutInflater inflater = activity.getLayoutInflater();
 
                 View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
@@ -143,29 +138,38 @@ public class CommonUtilsMethods {
     }
 
     public static InputFilter FilterSpaceEditText(EditText editText) {
-        return (source, start, end, dest, dstart, dend) -> {
+        return new InputFilter() {
+            boolean canEnterSpace = false;
 
-            StringBuilder result = new StringBuilder(dest);
-            result.replace(dstart, dend, source.subSequence(start, end).toString());
-
-            if (result.length() > 0 && result.charAt(0) == ' ') {
-                return "";
-            }
-
-            for (int i = 1; i < result.length(); i++) {
-                if (result.charAt(i) == ' ' && result.charAt(i - 1) == ' ') {
-                    return "";
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (editText.getText().toString().equals("")) {
+                    canEnterSpace = false;
                 }
-            }
 
-            for (int i = start; i < end; i++) {
-                char c = source.charAt(i);
-                if (!Character.isLetterOrDigit(c) && c != '_' && c != '@' && c != '!' && c != '#' && c != '$' && !Character.isWhitespace(c)) {
-                    return "";
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = start; i < end; i++) {
+                    char currentChar = source.charAt(i);
+
+                    if (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+                        builder.append(currentChar);
+                        canEnterSpace = true;
+                    }
+
+                    if (Character.isWhitespace(currentChar) && canEnterSpace) {
+                        builder.append(currentChar);
+                    }
                 }
-            }
 
-            return null;
+                String result = dest.toString().substring(0, dstart) + builder.toString() + dest.toString().substring(dend);
+
+               /* if(result.length()>maxLength) {
+                    return "";
+                }*/
+
+                return builder.toString();
+            }
         };
     }
 
@@ -206,28 +210,28 @@ public class CommonUtilsMethods {
 
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                if(editText.getText().toString().equals("")) {
+                if (editText.getText().toString().equals("")) {
                     canEnterSpace = false;
                 }
 
                 StringBuilder builder = new StringBuilder();
 
-                for (int i = start; i<end; i++) {
+                for (int i = start; i < end; i++) {
                     char currentChar = source.charAt(i);
 
-                    if(Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+                    if (Character.isLetterOrDigit(currentChar) || currentChar == '_' || currentChar == '.' || currentChar == ',' || currentChar == '@' || currentChar == '-') {
                         builder.append(currentChar);
                         canEnterSpace = true;
                     }
 
-                    if(Character.isWhitespace(currentChar) && canEnterSpace) {
+                    if (Character.isWhitespace(currentChar) && canEnterSpace) {
                         builder.append(currentChar);
                     }
                 }
 
                 String result = dest.toString().substring(0, dstart) + builder.toString() + dest.toString().substring(dend);
 
-                if(result.length()>maxLength) {
+                if (result.length() > maxLength) {
                     return "";
                 }
 
@@ -248,7 +252,7 @@ public class CommonUtilsMethods {
 
     public static boolean isLocationEnabled(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if(locationManager != null) {
+        if (locationManager != null) {
             return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         }
         return false;
@@ -289,7 +293,7 @@ public class CommonUtilsMethods {
             @SuppressLint("UnsafeIntentLaunch")
             @Override
             public void onPermissionGranted() {
-                if(isRefresh) activity.startActivity(activity.getIntent());
+                if (isRefresh) activity.startActivity(activity.getIntent());
             }
 
             @Override
@@ -348,7 +352,7 @@ public class CommonUtilsMethods {
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
 
-        if(toast != null) {
+        if (toast != null) {
             toast.cancel();
         }
         toast = new Toast(activity.getApplicationContext());
@@ -362,14 +366,14 @@ public class CommonUtilsMethods {
     public void showToastMessage(Context context, String message) {
 
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_layout,((Activity) context).findViewById(R.id.toast_layout_root));
+        View layout = inflater.inflate(R.layout.toast_layout, ((Activity) context).findViewById(R.id.toast_layout_root));
 
         //ImageView image = layout.findViewById(R.id.image);
         // image.setImageResource(R.drawable.san_clm_logo);
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
 
-        if(toast != null) {
+        if (toast != null) {
             toast.cancel();
         }
         toast = new Toast(context);
@@ -399,7 +403,7 @@ public class CommonUtilsMethods {
     public void setUpLanguage(Context context) {
         String language = SharedPref.getSelectedLanguage(context);
         Resources resources = context.getResources();
-        if(language.equalsIgnoreCase("")) {
+        if (language.equalsIgnoreCase("")) {
             language = "en";
         }
         Locale myLocale = new Locale(language);
@@ -412,8 +416,8 @@ public class CommonUtilsMethods {
 
     public void recycleTestWithoutDivider(RecyclerView rv_test) {
         try {
-            if(rv_test.getItemDecorationCount()>0) {
-                for (int i = 0; i<rv_test.getItemDecorationCount(); i++) {
+            if (rv_test.getItemDecorationCount() > 0) {
+                for (int i = 0; i < rv_test.getItemDecorationCount(); i++) {
                     rv_test.removeItemDecorationAt(i);
                 }
             }
@@ -448,8 +452,8 @@ public class CommonUtilsMethods {
 
     public void recycleTestWithDivider(RecyclerView rv_test) {
 
-        if(rv_test.getItemDecorationCount()>0) {
-            for (int i = 0; i<rv_test.getItemDecorationCount(); i++) {
+        if (rv_test.getItemDecorationCount() > 0) {
+            for (int i = 0; i < rv_test.getItemDecorationCount(); i++) {
                 rv_test.removeItemDecorationAt(i);
             }
         }
@@ -461,8 +465,8 @@ public class CommonUtilsMethods {
     }
 
     public void setSpinnerText(Spinner spin, String text) {
-        for (int i = 0; i<spin.getAdapter().getCount(); i++) {
-            if(spin.getAdapter().getItem(i).toString().contains(text)) {
+        for (int i = 0; i < spin.getAdapter().getCount(); i++) {
+            if (spin.getAdapter().getItem(i).toString().contains(text)) {
                 spin.setSelection(i);
             }
         }
@@ -476,21 +480,21 @@ public class CommonUtilsMethods {
     }
 
     public static String removeDollar(String string) {
-        if(string.contains("$")) {
+        if (string.contains("$")) {
             string = string.replaceAll("\\$", "");
         }
         return string;
     }
 
     public static String removeLastComma(String string) {
-        if(string.endsWith(",")) {
+        if (string.endsWith(",")) {
             string = string.substring(0, string.length() - 1);
         }
         return string;
     }
 
     public static String removeFirstComma(String string) {
-        if(string.startsWith(",")) {
+        if (string.startsWith(",")) {
             string = string.substring(1);
         }
         return string;
@@ -528,14 +532,14 @@ public class CommonUtilsMethods {
     }
 
     public boolean isTimeZoneAutomatic(Context c) {
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return Settings.Global.getInt(c.getContentResolver(), Settings.Global.AUTO_TIME_ZONE, 0) == 1;
-        }else {
+        } else {
             return android.provider.Settings.System.getInt(c.getContentResolver(), Settings.System.AUTO_TIME_ZONE, 0) == 1;
         }
     }
 
-    public static JSONObject   CommonObjectParameter(Context context) {
+    public static JSONObject CommonObjectParameter(Context context) {
         JSONObject jsonObject = new JSONObject();
         try {
             BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
@@ -556,7 +560,7 @@ public class CommonUtilsMethods {
             jsonObject.put("key", SharedPref.getLicenseKey(context));
             jsonObject.put("Configurl", SharedPref.getBaseWebUrl(context));
             jsonObject.put("battery", String.valueOf(mBatteryPercent));
-            jsonObject.put("Mod_No","2");
+            jsonObject.put("Mod_No", "2");
 
 
         } catch (JSONException e) {
@@ -598,7 +602,7 @@ public class CommonUtilsMethods {
         @Override
         public void onClick(View view) {
             long clickTime = System.currentTimeMillis();
-            if(clickTime - lastClickTime<DOUBLE_CLICK_TIME_DELTA) {
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
                 onDoubleClick(view);
             }
             lastClickTime = clickTime;
