@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -79,6 +80,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -2132,11 +2135,11 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 FilnameTet = textfileupload;
-                if (!CheckStoragePermission()) {
-                    RequestStoragePermission();
-                } else {
+//                if (!CheckStoragePermission()) {
+//                    RequestStoragePermission();
+//                } else {
                     Open_Storage();
-                }
+//                }
             }
         });
     }
@@ -2580,7 +2583,8 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     private void Open_Storage() {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent chooseFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");
         startActivityForResult(chooseFile, 7);
@@ -2593,32 +2597,51 @@ public class DynamicActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK && data.getData() != null) {
                 try {
                     uri = data.getData();
-                    String fullPath = getPathFromURI(DynamicActivity.this, uri);
-                    String[] parts = fullPath.split("/");
-                    String filenmae = parts[parts.length - 1];
-
-                    if (filenmae.endsWith(".zip")) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
-                    } else {
-                        FilnameTet.setText(String.valueOf(filenmae));
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
-//                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-//                        if(!dir1.exists()) {
-//                            dir1.mkdirs();
-//                        }
-                        File file = null;
-                        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                            file = new File(getApplicationContext().getExternalFilesDir(null) + "/ActivityUpload/");
-                        } else {
-                            Log.e("File Creation", "captureFile: No media mounted");
-                        }
-                        if (file != null && !file.exists()) {
-                            if (!file.mkdirs()) {
-                                Log.e("File Creation", "Directory Creation Failed.");
-                            }
-                        }
-                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+                    try {
+                        final int takeFlags = data.getFlags()
+                                & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    String filename = getFileNameFromUri(uri);
+                    if (filename == null) {
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
+                        return;
+                    }
+//                    if (filename.endsWith(".zip")) {
+//                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
+//                        return;
+//                    }
+                    FilnameTet.setText(filename);
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
+                    copyFileToAppDir(uri);
+//                    String fullPath = getPathFromURI(DynamicActivity.this, uri);
+//                    String[] parts = fullPath.split("/");
+//                    String filenmae = parts[parts.length - 1];
+//
+//                    if (filenmae.endsWith(".zip")) {
+//                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
+//                    } else {
+//                        FilnameTet.setText(String.valueOf(filenmae));
+//                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
+////                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+////                        if(!dir1.exists()) {
+////                            dir1.mkdirs();
+////                        }
+//                        File file = null;
+//                        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//                            file = new File(getApplicationContext().getExternalFilesDir(null) + "/ActivityUpload/");
+//                        } else {
+//                            Log.e("File Creation", "captureFile: No media mounted");
+//                        }
+//                        if (file != null && !file.exists()) {
+//                            if (!file.mkdirs()) {
+//                                Log.e("File Creation", "Directory Creation Failed.");
+//                            }
+//                        }
+//                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+//                    }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
@@ -2629,6 +2652,51 @@ public class DynamicActivity extends AppCompatActivity {
             }
             commonFun();
         }
+    }
+
+    private void copyFileToAppDir(Uri sourceUri) {
+        try {
+            File destDir = new File(getApplicationContext().getExternalFilesDir(null), "ActivityUpload");
+            if (!destDir.exists()) destDir.mkdirs();
+            String fileName = getFileNameFromUri(sourceUri);
+            if (fileName == null) fileName = "file_" + System.currentTimeMillis();
+            File destFile = new File(destDir, fileName);
+            try (InputStream inputStream = getContentResolver().openInputStream(sourceUri);
+                 OutputStream outputStream = new FileOutputStream(destFile)) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+            Log.d("FileCopy", "Saved to: " + destFile.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFileNameFromUri(Uri uri) {
+        String result = null;
+        try {
+            if ("content".equals(uri.getScheme())) {
+                try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (index != -1) {
+                            result = cursor.getString(index);
+                        }
+                    }
+                }
+            }
+            if (result == null) {
+                result = uri.getPath();
+                int cut = result.lastIndexOf('/');
+                if (cut != -1) result = result.substring(cut + 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public void copyFileOrDirectory(String srcDir, String dstDir) {
@@ -3295,38 +3363,38 @@ public class DynamicActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    public boolean CheckStoragePermission() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            int image = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
-            int video = ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO);
-            int audio = ContextCompat.checkSelfPermission(this, READ_MEDIA_AUDIO);
-            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
-        } else {
-            int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-            int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
-            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
-        }
-    }
-
-    private void RequestStoragePermission() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if ((ActivityCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_MEDIA_IMAGES)) {
-                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-                }
-            }
-        } else {
-            if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE))) {
-                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-                }
-            }
-        }
-    }
+//    public boolean CheckStoragePermission() {
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            int image = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
+//            int video = ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO);
+//            int audio = ContextCompat.checkSelfPermission(this, READ_MEDIA_AUDIO);
+//            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
+//        } else {
+//            int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+//            int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
+//            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
+//        }
+//    }
+//
+//    private void RequestStoragePermission() {
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            if ((ActivityCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_MEDIA_IMAGES)) {
+//                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+//                } else {
+//                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+//                }
+//            }
+//        } else {
+//            if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE))) {
+//                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+//                } else {
+//                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
