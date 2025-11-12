@@ -15,8 +15,8 @@ android {
         applicationId "saneforce.sanzen"
         minSdk 23
         targetSdk 36
-        versionCode 66
-        versionName "1.0.8"
+        versionCode 68
+        versionName "1.0.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -59,13 +59,19 @@ android {
     }
 
     packagingOptions {
-        pickFirst 'META-INF/NOTICE.md'
-        pickFirst 'META-INF/LICENSE.md'
+        resources {
+            pickFirst 'META-INF/NOTICE.md'
+            pickFirst 'META-INF/LICENSE.md'
+        }
+        jniLibs {
+            useLegacyPackaging false  // Use uncompressed shared libraries for 16 KB alignment
+        }
     }
+    ndkVersion "28.2.13676358"
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+//    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
@@ -139,7 +145,12 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:5.0.5'
 
     //Pdf viewer
-    implementation 'com.github.barteksc:pdfium-android:1.9.0'
+    implementation 'io.github.oothp:pdfium-android:1.9.5-beta01'
+    implementation 'io.github.oothp:android-pdf-viewer:3.2.0-beta06'
+//    implementation 'education.honor:honor-android-pdf-viewer:4.0.0'
+//    implementation 'com.github.barteksc:pdfium-android:1.9.0'
+//    implementation 'com.github.DImuthuUpe:PdfiumAndroidKt:1.0.5'
+//    implementation 'com.github.DImuthuUpe:AndroidPdfViewer:3.1.0-beta.1'
 //    implementation 'com.github.mhiew:android-pdf-viewer:3.2.0-beta.3'
 //    implementation 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
 //    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
