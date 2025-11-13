@@ -79,7 +79,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 //            case Constants.CHEMIST_MAS:
             case Constants.CHEMIST:
             case "CHEMIST":
-                if(SharedPref.getChmRxQty(context).equalsIgnoreCase("1")) {
+                if(SharedPref.getChmRxNd(context).equalsIgnoreCase("1")) {
                     holder.tv_rxQty.setVisibility(View.INVISIBLE);
                 } else {
                     holder.tv_rxQty.setVisibility(View.VISIBLE);

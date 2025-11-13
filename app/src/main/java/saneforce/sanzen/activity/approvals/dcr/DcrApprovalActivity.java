@@ -186,27 +186,27 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
                             countAll++;
-                            if (json.getString("Type").equalsIgnoreCase("DOCTOR")) {
+                            if (json.optString("Type").equalsIgnoreCase("DOCTOR")) {
                                 countDr++;
                             }
-                            if (json.getString("Type").equalsIgnoreCase("CHEMIST")) {
+                            if (json.optString("Type").equalsIgnoreCase("CHEMIST")) {
                                 countChem++;
                             }
-                            if (json.getString("Type").equalsIgnoreCase("STOCKIST")) {
+                            if (json.optString("Type").equalsIgnoreCase("STOCKIST")) {
                                 countStk++;
                             }
-                            if (json.getString("Type").equalsIgnoreCase("ULDOCTOR")) {
+                            if (json.optString("Type").equalsIgnoreCase("ULDOCTOR")) {
                                 countUnDr++;
                             }
 
-                            if (!ClusterNames.toString().contains(json.getString("SDP_Name") + ",")) {
-                                ClusterNames.append(json.getString("SDP_Name")).append(",");
+                            if (!ClusterNames.toString().contains(json.optString("SDP_Name") + ",")) {
+                                ClusterNames.append(json.optString("SDP_Name")).append(",");
                             }
 
                             if (json.has("promoted_product"))
-                                productPromoted = getList(json.getString("promoted_product"));
+                                productPromoted = getList(json.optString("promoted_product"));
 
-                            dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.getString("Trans_Detail_Name"), json.getString("Trans_Detail_Info_Code"), json.getString("Type"), json.getString("Trans_Detail_Info_Type"), json.getString("SDP_Name"), json.getString("pob"), json.getString("remarks"), json.getString("jointwrk"), json.getString("Call_Feedback"), json.getString("visitTime"), json.getString("ModTime"), json.getString("Trans_SlNo"), json.getString("Trans_Detail_Slno")));
+                            dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.optString("Trans_Detail_Name"), json.optString("Trans_Detail_Info_Code"), json.optString("Type"), json.optString("Trans_Detail_Info_Type"), json.optString("SDP_Name"), json.optString("pob"), json.optString("remarks"), json.optString("jointwrk"), json.optString("Call_Feedback"), json.optString("visitTime"), json.optString("ModTime"), json.optString("Trans_SlNo"), json.optString("Trans_Detail_Slno")));
 
 //                            "products": "A AMOXY 2.5% SS ( 8682 ) ( 0 ) ( 0^8686 ),",
 //
@@ -218,8 +218,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
 
 
-                            if (!json.getString("products").isEmpty()) {
-                                String str = json.getString("products").replace(")", "");
+                            if (!json.optString("products").isEmpty() && !json.optString("products").equals("null")) {
+                                String str = json.optString("products").replace(")", "");
                                 String[] separated = str.split(",");
 
                                 List<String> resultList = new ArrayList<>();
@@ -244,10 +244,10 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                     Log.e("PromotedCode", productPromoted + " ???? " + item[0]);
                                     if (productPromoted.toString().contains(item[0].trim())) {
                                         Log.e("PromotedCode", "Yes");
-                                        SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), item[0], item[1], item[2], Rcpa, "Yes"));
+                                        SaveProductList.add(new SaveCallProductList(json.optString("Trans_Detail_Name"), item[0], item[1], item[2], Rcpa, "Yes"));
                                     } else {
                                         Log.e("PromotedCode", "No");
-                                        SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), item[0], item[1], item[2], Rcpa, "No"));
+                                        SaveProductList.add(new SaveCallProductList(json.optString("Trans_Detail_Name"), item[0], item[1], item[2], Rcpa, "No"));
                                     }
 
                                 }
@@ -272,9 +272,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 //                                            PrdRxQty = "0";
 //                                        }
 //                                        if (productPromoted.toString().contains(PrdName)) {
-//                                            SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "", "Yes"));
+//                                            SaveProductList.add(new SaveCallProductList(json.optString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "", "Yes"));
 //                                        } else {
-//                                            SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "No"));
+//                                            SaveProductList.add(new SaveCallProductList(json.optString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "No"));
 //                                        }
 //                                    }
 //                                }
@@ -282,14 +282,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
                             //Extract Input Values
                             String InpName, InpQty;
-                            if (!json.getString("gifts").isEmpty()) {
-                                String[] StrArray = json.getString("gifts").split(",");
+                            if (!json.optString("gifts").isEmpty()) {
+                                String[] StrArray = json.optString("gifts").split(",");
                                 for (String value : StrArray) {
                                     if (!value.equalsIgnoreCase("  )")) {
                                         InpName = value.substring(0, value.indexOf('(')).trim();
                                         InpQty = value.substring(value.indexOf("(") + 1);
                                         InpQty = InpQty.substring(0, InpQty.indexOf(")"));
-                                        saveInputList.add(new SaveCallInputList(json.getString("Trans_Detail_Name"), InpName, InpQty));
+                                        saveInputList.add(new SaveCallInputList(json.optString("Trans_Detail_Name"), InpName, InpQty));
                                     }
                                 }
                             }
@@ -511,7 +511,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     try {
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
-                        if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                        if (jsonSaveRes.optString("success").equalsIgnoreCase("true")) {
                             commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.rejected_successfully));
                             dialogReject.dismiss();
                             removeSelectedData();
@@ -575,7 +575,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     try {
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
-                        if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                        if (jsonSaveRes.optString("success").equalsIgnoreCase("true")) {
                             commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.approved_successfully));
                             removeSelectedData();
                             DcrCount--;
@@ -641,7 +641,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator"), json.getString("Submission_Date"), json.getString("Hlfday"), json.getString("Remarks"), json.getString("Additional_Temp_Details")));
+                            dcrApprovalLists.add(new DCRApprovalList(json.optString("Trans_SlNo"), json.optString("Sf_Name"), json.optString("Activity_Date"), json.optString("Plan_Name"), json.optString("WorkType_Name"), json.optString("Sf_Code"), json.optString("FieldWork_Indicator"), json.optString("Submission_Date"), json.optString("Hlfday"), json.optString("Remarks"), json.optString("Additional_Temp_Details")));
                         }
 
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());

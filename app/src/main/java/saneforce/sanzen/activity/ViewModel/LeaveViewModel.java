@@ -60,6 +60,7 @@ public class LeaveViewModel extends ViewModel {
             leaveStatusObject.put("Rsf", SharedPref.getHqCode(context));
             leaveStatusObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
 
+            Log.v("getLeaveStatus",leaveStatusObject.toString());
 //            System.out.println("leaveStatusObject--->" + leaveStatusObject);
         } catch (Exception exception) {
             exception.printStackTrace();

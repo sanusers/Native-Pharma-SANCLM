@@ -3170,7 +3170,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     OverallFeedbackNeed = SharedPref.getCfNeed(this);
                     JwNeed = SharedPref.getChmJointworkNeed(this);
                     PrdSamNeed = SharedPref.getChmsamqtyNeed(this);
-                    PrdRxNeed = SharedPref.getChmRxQty(this); //1
+                    PrdRxNeed = SharedPref.getChmRxNd(this); //1
                     PrdRcpaQtyNeed = "0"; //0
                     CusCheckInOutNeed = SharedPref.getChmSrtNd(this);
 
