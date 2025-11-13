@@ -593,6 +593,10 @@ public class FragmentApprovedCallsMissed extends Fragment {
                 progressDialog.dismiss();
                 e.printStackTrace();
             }
+            adapter = new MissedReportAdapter(requireContext(), reportList, (item, position) -> fetchAndLoadData(date, item.getSfCode()));
+            binding.recyclerMissedReports.setAdapter(adapter);
+            binding.recyclerMissedReports.setVisibility(View.GONE);
+            binding.outboxEmtyImage.setVisibility(View.VISIBLE);
         });
         networkStatusTask.execute();
     }

@@ -75,44 +75,20 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
         int missed = Integer.parseInt(item.getMissed());
 
 
-        //        if (missed == 0) {
-        //            holder.visitedTextView.setText(String.valueOf(totalDoctor));
-        //        } else {
-        //            holder.visitedTextView.setText(item.getVisited());
-        //        }
         String DrCap = SharedPref.getDrCap(context);
         holder.captionTextView.setText(SharedPref.getDrCap(context));
         holder.box1Textview.setText("Total " + SharedPref.getDrCap(context));
-        //        holder.missedBox.setOnClickListener(v -> {
-        //            Log.d("MissedReportAdapter", "missedBox clicked at position: " + position);
-        //            if (listener != null) {
-        //                listener.onMissedClick(item, position);
-        //            } else {
-        //                Log.d("MissedReportAdapter", "Listener is null!");
-        //            }
-        //        });
 
-        holder.missedBox.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        holder.missedBox.setOnClickListener(view ->  {
                 if (missed == 0) {
                     Toast.makeText(context, "No missed" + DrCap, Toast.LENGTH_SHORT).show();
                     holder.itemView.setClickable(false);
                     return;
-                }/*else{
-                    Intent intent = new Intent(context, DoctorVisitActivity.class);
-                    context.startActivity(intent);
-                }*/
-
+                }
                 if (listener != null && !listener.equals("0")) {
                     listener.onMissedClick(item, position);
                 }
-            }
         });
-
-        //            Intent intent = new Intent(context, DoctorVisitActivity.class);
-        //            intent.putExtra("missed", item.getMissed());
-        //            context.startActivity(intent);
         setupMissedChart(context, holder.missedChart, totalDoctor, visited, missed);
     }
 

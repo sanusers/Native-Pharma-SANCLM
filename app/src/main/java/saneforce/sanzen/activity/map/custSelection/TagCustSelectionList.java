@@ -41,6 +41,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.map.MapsActivity;
@@ -303,11 +305,12 @@ public class TagCustSelectionList extends AppCompatActivity {
 //                            System.out.println("MapsActivity.SelectedHqCode --->"+MapsActivity.SelectedHqCode );
                             break;
                         }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
                 binding.txtSelectedHq.setText(clickedValue);
+                custListArrayList.clear();
 
                 AddCustList(SelectedHqCode);
             }
@@ -353,7 +356,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 SelectedHqCode = HqCodeList.get(0);
                 SelectedHqName = HqNameList.get(0);
             }
-            AddCustList(SelectedHqCode);
+//            AddCustList(SelectedHqCode);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -367,37 +370,27 @@ public class TagCustSelectionList extends AppCompatActivity {
 
     public void prepareMasterToSync(String hqCode) {
         masterSyncArray.clear();
-//        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
+        custListArrayList.clear();
+        custListArrayNew.clear();
+
         MasterSyncItemModel doctorModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode);
         MasterSyncItemModel doctorModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode);
-
-//        MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
         MasterSyncItemModel cheModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode);
         MasterSyncItemModel cheModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode);
-//        MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor", "getstockist", Constants.STOCKIEST + hqCode);
         MasterSyncItemModel stockModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode);
         MasterSyncItemModel stockModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode);
-//        MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
-
         MasterSyncItemModel unListModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode);
         MasterSyncItemModel unListModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode);
 
-//        MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor", "gethospital", Constants.HOSPITAL + hqCode);
-//        MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor", "getcip", Constants.CIP + hqCode);
 
         masterSyncArray.add(doctorModel_mas);
         masterSyncArray.add(doctorModel_geo);
-//        masterSyncArray.add(cheModel);
         masterSyncArray.add(cheModel_mas);
         masterSyncArray.add(cheModel_geo);
-//        masterSyncArray.add(stockModel);
         masterSyncArray.add(stockModel_mas);
         masterSyncArray.add(stockModel_geo);
-//        masterSyncArray.add(unListModel);
         masterSyncArray.add(unListModel_mas);
         masterSyncArray.add(unListModel_geo);
-//        masterSyncArray.add(hospModel);
-//        masterSyncArray.add(ciModel);
         for (int i = 0; i < masterSyncArray.size(); i++) {
             sync(masterSyncArray.get(i), hqCode);
         }
@@ -416,7 +409,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 Log.e("test", "master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
-                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
+                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                     mapString.put("axn", "table/dcrmasterdata");
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {
@@ -430,35 +423,75 @@ public class TagCustSelectionList extends AppCompatActivity {
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
 
                             boolean success = false;
-                            if (response.isSuccessful()) {
-                                // Log.e("test","response : " + masterSyncItemModel.getRemoteTableName() +" : " + response.body().toString());
-                                try {
-                                    JsonElement jsonElement = response.body();
-                                    JSONArray jsonArray = new JSONArray();
-                                    if (!Objects.requireNonNull(jsonElement).isJsonNull()) {
-                                        if (jsonElement.isJsonArray()) {
-                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                            jsonArray = new JSONArray(jsonArray1.toString());
-                                            success = true;
-                                        } else if (jsonElement.isJsonObject()) {
-                                            JsonObject jsonObject = jsonElement.getAsJsonObject();
-                                            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
-                                            if (!jsonObject1.has("success")) { // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
-                                                jsonArray.put(jsonObject1);
-                                                success = true;
-                                            } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
-                                                masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                                            }
-                                        }
+                            JsonElement jsonElement = response.body();
+                            if (response.isSuccessful() && jsonElement != null && !jsonElement.isJsonNull()) {
+                                if (jsonElement.isJsonArray() && jsonElement.getAsJsonArray().isEmpty()) {
+                                    Log.e("test", "Response is an empty array for: " + masterSyncItemModel.getRemoteTableName());
+                                    masterSyncArray.clear();
+                                    custListArrayList.clear();
+                                    custListArrayNew.clear();
+                                    custListAdapter = new CustListAdapter(TagCustSelectionList.this, TagCustSelectionList.this, custListArrayList, custListArrayNew);
+                                    binding.rvCustList.setItemAnimator(new DefaultItemAnimator());
+                                    binding.rvCustList.setAdapter(custListAdapter);
+                                    custListAdapter.notifyDataSetChanged();
 
-                                        if (success) {
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 2));
-                                        }
-                                    } else {
-                                        masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                    switch (SelectedTab){
+                                        case "D":
+                                            binding.noCustomer.setText(TagCustSelectionList.this.getString(R.string.no)+" "+SharedPref.getDrCap(TagCustSelectionList.this)+" "+TagCustSelectionList.this.getString(R.string.found));
+                                            binding.rvCustList.setVisibility(View.GONE);
+                                            binding.noCustomer.setVisibility(View.VISIBLE);
+                                            break;
+                                        case "C":
+                                            binding.noCustomer.setText(TagCustSelectionList.this.getString(R.string.no)+" "+SharedPref.getChmCap(TagCustSelectionList.this)+" "+TagCustSelectionList.this.getString(R.string.found));
+                                            binding.rvCustList.setVisibility(View.GONE);
+                                            binding.noCustomer.setVisibility(View.VISIBLE);
+                                            break;
+                                        case "S":
+                                            binding.noCustomer.setText(TagCustSelectionList.this.getString(R.string.no)+" "+SharedPref.getStkCap(TagCustSelectionList.this)+" "+TagCustSelectionList.this.getString(R.string.found));
+                                            binding.rvCustList.setVisibility(View.GONE);
+                                            binding.noCustomer.setVisibility(View.VISIBLE);
+                                            break;
+                                        case "U":
+                                            binding.noCustomer.setText(TagCustSelectionList.this.getString(R.string.no)+" "+SharedPref.getUNLcap(TagCustSelectionList.this)+" "+TagCustSelectionList.this.getString(R.string.found));
+                                            binding.rvCustList.setVisibility(View.GONE);
+                                            binding.noCustomer.setVisibility(View.VISIBLE);
+                                            break;
                                     }
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
+                                    commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync));
+                                } else {
+                                    binding.rvCustList.setVisibility(View.VISIBLE);
+                                    binding.noCustomer.setVisibility(View.GONE);
+                                    Log.e("test", "response : " + masterSyncItemModel.getRemoteTableName() + " : " + response.body().toString());
+                                    try {
+//                                    JsonElement jsonElement = response.body();
+                                        JSONArray jsonArray = new JSONArray();
+                                        if (!Objects.requireNonNull(jsonElement).isJsonNull()) {
+                                            if (jsonElement.isJsonArray()) {
+                                                JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                                jsonArray = new JSONArray(jsonArray1.toString());
+                                                success = true;
+                                            } else if (jsonElement.isJsonObject()) {
+                                                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                                JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+                                                if (!jsonObject1.has("success")) { // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
+                                                    jsonArray.put(jsonObject1);
+                                                    success = true;
+                                                } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
+                                                    masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                                }
+                                            }
+
+                                            if (success) {
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 2));
+                                            }
+                                            masterSyncArray.clear();
+                                            AddCustList(SelectedHqCode);
+                                        } else {
+                                            masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
@@ -483,6 +516,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         custListArrayList.clear();
         Log.v("map_selected_tab", "---" + SelectedTab);
         Log.v("selected_hq", "---" + selectedHqCode);
+        binding.rvCustList.setVisibility(View.VISIBLE);
         switch (SelectedTab) {
             case "D":
                 try {
@@ -607,7 +641,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     if (docObj_che.isEmpty()) {
                         prepareMasterToSync(selectedHqCode);
                     } else {
-//                            jsonArray = new JSONArray(docObj_che.values());
                         jsonArray = new JSONArray();
                         for (JSONObject obj : sortedList) {
                             jsonArray.put(obj);
@@ -649,58 +682,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                 }
                 break;
 
-           /* case "C":
-                try {
-                    binding.tagSelection.setText(SharedPref.getChmCap(this));
-                    if (!masterDataDao.getMasterSyncDataOfHQ(Constants.CHEMIST + selectedHqCode)) {
-                        prepareMasterToSync(selectedHqCode);
-                    } else {
-                        jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + selectedHqCode).getMasterSyncDataJsonArray();
-                    }
-                    if (jsonArray.length() == 0) {
-                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
-                    }
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.has("cust_status")) {
-                            custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, "Category", "Specialty", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("cust_status")));
-                            custListArrayNew.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, "Category", "Specialty", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("cust_status")));
-                        } else {
-                            custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, "Category", "Specialty", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), "0"));
-                            custListArrayNew.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, "Category", "Specialty", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), "0"));
-                        }
-                    }
-                } catch (Exception ignored) {
-
-                }
-                break;*/
-  /*          case "S":
-                try {
-                    binding.tagSelection.setText(SharedPref.getStkCap(this));
-                    if (!masterDataDao.getMasterSyncDataOfHQ(Constants.STOCKIEST + selectedHqCode)) {
-                        prepareMasterToSync(selectedHqCode);
-                    } else {
-                        jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + selectedHqCode).getMasterSyncDataJsonArray();
-                    }
-                    if (jsonArray.length() == 0) {
-                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
-                    }
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.has("cust_status")) {
-                            custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, "Category", "Specialty", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("cust_status")));
-                            custListArrayNew.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, "Category", "Specialty", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("cust_status")));
-                        } else {
-                            custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, "Category", "Specialty", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), "0"));
-                            custListArrayNew.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, "Category", "Specialty", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), "0"));
-                        }
-
-                    }
-
-                } catch (Exception ignored) {
-
-                }
-                break;*/
             case "S":
                 try {
                     binding.tagSelection.setText(SharedPref.getStkCap(this));
@@ -853,34 +834,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                 }
                 break;
 
-/*
-            case "U":
-                try {
-                    binding.tagSelection.setText(SharedPref.getUNLcap(this));
-                    if (!masterDataDao.getMasterSyncDataOfHQ(Constants.UNLISTED_DOCTOR + selectedHqCode)) {
-                        prepareMasterToSync(selectedHqCode);
-                    } else {
-                        jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + selectedHqCode).getMasterSyncDataJsonArray();
-                    }
-                    if (jsonArray.length() == 0) {
-                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
-                    }
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.has("cust_status")) {
-                            custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, jsonObject.optString("CategoryName"), jsonObject.optString("SpecialtyName"), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("cust_status")));
-                            custListArrayNew.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, jsonObject.optString("CategoryName"), jsonObject.optString("SpecialtyName"), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("cust_status")));
-                        } else {
-                            custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, jsonObject.optString("CategoryName"), jsonObject.optString("SpecialtyName"), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), "0"));
-                            custListArrayNew.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), SelectedTab, jsonObject.optString("CategoryName"), jsonObject.optString("SpecialtyName"), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), "0"));
-                        }
-
-                    }
-
-                } catch (Exception ignored) {
-
-                }
-                break;*/
         }
 
 

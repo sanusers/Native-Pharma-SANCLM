@@ -112,17 +112,41 @@
         app:layout_constraintTop_toTopOf="@id/search_cust"
         tools:ignore="ContentDescription" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_cust_list"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/_4sdp"
-        android:background="@color/bg_grey"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/light_grey_1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_cust" />
+        app:layout_constraintTop_toBottomOf="@id/search_cust"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/no_customer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Customer Available"
+            android:textColor="@color/dark_purple"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_cust_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/_4sdp"
+            android:background="@color/bg_grey"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <TextView
         android:id="@+id/dummy_view"
