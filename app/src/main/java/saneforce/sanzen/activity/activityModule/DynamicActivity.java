@@ -2,11 +2,11 @@ package saneforce.sanzen.activity.activityModule;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+//import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+//import static android.Manifest.permission.READ_MEDIA_AUDIO;
+//import static android.Manifest.permission.READ_MEDIA_IMAGES;
+//import static android.Manifest.permission.READ_MEDIA_VIDEO;
+//import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
 

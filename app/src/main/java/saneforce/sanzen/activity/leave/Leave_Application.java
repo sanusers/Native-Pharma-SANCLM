@@ -1,11 +1,11 @@
 package saneforce.sanzen.activity.leave;
 
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+//import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+//import static android.Manifest.permission.READ_MEDIA_AUDIO;
+//import static android.Manifest.permission.READ_MEDIA_IMAGES;
+//import static android.Manifest.permission.READ_MEDIA_VIDEO;
+//import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static saneforce.sanzen.commonClasses.UtilityClass.hideKeyboard;
 
 import android.annotation.SuppressLint;

@@ -1,8 +1,8 @@
 package saneforce.sanzen.activity.call.adapter.detailing;
 
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
+//import static android.Manifest.permission.READ_MEDIA_AUDIO;
+//import static android.Manifest.permission.READ_MEDIA_IMAGES;
+//import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.slideScribble;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SelectedPosPlay;

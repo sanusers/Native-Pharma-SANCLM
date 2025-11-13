@@ -1,10 +1,10 @@
 package saneforce.sanzen.activity.reports;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+//import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+//import static android.Manifest.permission.READ_MEDIA_AUDIO;
+//import static android.Manifest.permission.READ_MEDIA_IMAGES;
+//import static android.Manifest.permission.READ_MEDIA_VIDEO;
+//import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
 import android.annotation.SuppressLint;
@@ -121,11 +121,11 @@ public class DynamicWebActivity extends AppCompatActivity {
         webView.setDownloadListener((url1, userAgent, contentDisposition, mimetype, contentLength) -> {
             Log.d("WebView", "Download URL: " + url1);
             downloadURL = url1;
-            if (!CheckStoragePermission()) {
-                RequestStoragePermission();
-            } else {
+//            if (!CheckStoragePermission()) {
+//                RequestStoragePermission();
+//            } else {
                 downloadFile(downloadURL);
-            }
+//            }
         });
 
         iv_back.setOnClickListener(new SafeClickListener() {
@@ -159,28 +159,28 @@ public class DynamicWebActivity extends AppCompatActivity {
                 });
     }
 
-    public boolean CheckStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            int image = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
-            int video = ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO);
-            int audio = ContextCompat.checkSelfPermission(this, READ_MEDIA_AUDIO);
-            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
-        } else {
-            int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-            int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
-            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
-        }
-    }
-
-    private void RequestStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-        }
-    }
+//    public boolean CheckStoragePermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            int image = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
+//            int video = ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO);
+//            int audio = ContextCompat.checkSelfPermission(this, READ_MEDIA_AUDIO);
+//            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
+//        } else {
+//            int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+//            int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
+//            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
+//        }
+//    }
+//
+//    private void RequestStoragePermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+//        } else {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+//        }
+//    }
 
     private class MyWebChromeClient extends WebChromeClient {
         @Override
