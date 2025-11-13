@@ -54,10 +54,10 @@ public class CustomizedPresentationFragment extends Fragment {
             binding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             binding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
             binding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            Collections.sort(SlideCustomList, Comparator.comparing(BrandModelClass.Presentation::getPresentationName));
             presentationAdapter = new PresentationAdapter(requireContext(), SlideCustomList, "customized");
             binding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             binding.rvBrandList.setAdapter(presentationAdapter);
-            Collections.sort(SlideCustomList, Comparator.comparing(BrandModelClass.Presentation::getPresentationName));
         });
 
         binding.tvZa.setOnClickListener(view -> {
@@ -65,10 +65,10 @@ public class CustomizedPresentationFragment extends Fragment {
             binding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             binding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
             binding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            Collections.sort(SlideCustomList, Comparator.comparing(BrandModelClass.Presentation::getPresentationName).reversed());
             presentationAdapter = new PresentationAdapter(requireContext(), SlideCustomList, "customized");
             binding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             binding.rvBrandList.setAdapter(presentationAdapter);
-            Collections.sort(SlideCustomList, Comparator.comparing(BrandModelClass.Presentation::getPresentationName).reversed());
         });
 
         populateAdapter();

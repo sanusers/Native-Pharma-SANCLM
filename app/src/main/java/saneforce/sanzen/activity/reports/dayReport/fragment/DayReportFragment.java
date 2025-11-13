@@ -1,11 +1,8 @@
 package saneforce.sanzen.activity.reports.dayReport.fragment;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,7 +46,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.CalendarAdapter;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
@@ -60,7 +56,7 @@ import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickOneBuildInterface;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentDayReportBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -90,7 +86,7 @@ public class DayReportFragment extends Fragment {
         binding = FragmentDayReportBinding.inflate(inflater, container, false);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        OneBuildSetup = SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")?0:1;
+        OneBuildSetup = SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0") ? 0 : 1;
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
         dataViewModel.getDate().observe(getViewLifecycleOwner(), s -> binding.calender.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s)));
@@ -134,12 +130,12 @@ public class DayReportFragment extends Fragment {
     }
 
     public void initialisation() {
-        if(localDate == null) {
+        if (localDate == null) {
             localDate = LocalDate.now();
         }
         daysArrayList = daysInMonthArray(localDate);
 
-        if(getActivity() instanceof ReportFragContainerActivity) {
+        if (getActivity() instanceof ReportFragContainerActivity) {
             ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
             activity.title.setText("Day Report");
         }
@@ -147,7 +143,7 @@ public class DayReportFragment extends Fragment {
         }.getType();
         arrayListOfReportData = new Gson().fromJson(dataViewModel.getSummaryData().getValue(), type);
 
-        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
             binding.clSearchSort.setVisibility(View.INVISIBLE);
         } else {
             binding.clSearchSort.setVisibility(View.VISIBLE);
@@ -269,7 +265,7 @@ public class DayReportFragment extends Fragment {
     }
 
     public void populateCalendarAdapter(RecyclerView recyclerView) {
-        if(OneBuildSetup == 0){
+        if (OneBuildSetup == 0) {
             calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), localDate, new OnDayClickOneBuildInterface() {
                 @Override
                 public void onDayClickedOneBuild(int position, String date, OneBuildModelClass oneBuildModelClass) {
@@ -281,7 +277,7 @@ public class DayReportFragment extends Fragment {
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(calendarAdapter);
-        }else {
+        } else {
             calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), localDate, new OnDayClickInterface() {
                 @Override
                 public void onDayClicked(int position, String date, ModelClass modelClass) {
@@ -307,8 +303,8 @@ public class DayReportFragment extends Fragment {
 
                         JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
                         jsonObject.put("tableName", "getdayrpt_edet");
-                        jsonObject.put("sfcode",SharedPref.getSfCode(requireContext()));
-                        jsonObject.put("divisionCode",SharedPref.getDivisionCode(requireContext()));
+                        jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
+                        jsonObject.put("divisionCode", SharedPref.getDivisionCode(requireContext()));
                         jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
                         jsonObject.put("rptDt", date);
                         jsonObject.put("srtNd", SharedPref.getSrtNd(requireContext()));
@@ -317,7 +313,7 @@ public class DayReportFragment extends Fragment {
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
-                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -372,7 +368,7 @@ public class DayReportFragment extends Fragment {
         binding.dayReportRecView.setAdapter(dayReportAdapter);
     }
 
-    private void onClickListener(){
+    private void onClickListener() {
         binding.sortIcon.setOnClickListener(view -> {
             Context wrapper = new ContextThemeWrapper(getContext(), R.style.popupMenuStyle);
             final PopupMenu popup = new PopupMenu(wrapper, binding.sortIcon, Gravity.END);
@@ -397,11 +393,11 @@ public class DayReportFragment extends Fragment {
         arrayListOfReportDataShort.clear();
         for (int i = 0; i < arrayListOfReportData.size(); i++) {
             if (Mode.equalsIgnoreCase("All") || Mode.equalsIgnoreCase("By Name      A - Z") || Mode.equalsIgnoreCase("By Name      Z - A") || Mode.equalsIgnoreCase("By Date      Newer - Older") || Mode.equalsIgnoreCase("By Date      Older - Newer")) {
-                arrayListOfReportDataShort.add(new DayReportModel(arrayListOfReportData.get(i).getUdr(), arrayListOfReportData.get(i).getIntime(), arrayListOfReportData.get(i).getDrs(), arrayListOfReportData.get(i).getInaddress(), arrayListOfReportData.get(i).getHalfDay_FW_Type(), arrayListOfReportData.get(i).getOuttime(), arrayListOfReportData.get(i).getChm(), arrayListOfReportData.get(i).getDesig_Code(), arrayListOfReportData.get(i).getSF_Code(), arrayListOfReportData.get(i).getStk(), arrayListOfReportData.get(i).getCip(),arrayListOfReportData.get(i).getAdate(),arrayListOfReportData.get(i).getHos(),arrayListOfReportData.get(i).getSF_Name(),arrayListOfReportData.get(i).getRmdr(),arrayListOfReportData.get(i).getRptdate(),arrayListOfReportData.get(i).getWtype(),arrayListOfReportData.get(i).getFWFlg(),arrayListOfReportData.get(i).getActivity_Date(),arrayListOfReportData.get(i).getOutaddress(),arrayListOfReportData.get(i).getACode(),arrayListOfReportData.get(i).getRemarks(),arrayListOfReportData.get(i).getTerrWrk(),arrayListOfReportData.get(i).getTyp(),arrayListOfReportData.get(i).getConfirmed(),arrayListOfReportData.get(i).getAdditional_Temp_Details(),arrayListOfReportData.get(i).getReasonforRejection(), arrayListOfReportData.get(i).getStart_lat(), arrayListOfReportData.get(i).getStart_lang(), arrayListOfReportData.get(i).getEnd_lat(), arrayListOfReportData.get(i).getEnd_lang()));
+                arrayListOfReportDataShort.add(new DayReportModel(arrayListOfReportData.get(i).getUdr(), arrayListOfReportData.get(i).getIntime(), arrayListOfReportData.get(i).getDrs(), arrayListOfReportData.get(i).getInaddress(), arrayListOfReportData.get(i).getHalfDay_FW_Type(), arrayListOfReportData.get(i).getOuttime(), arrayListOfReportData.get(i).getChm(), arrayListOfReportData.get(i).getDesig_Code(), arrayListOfReportData.get(i).getSF_Code(), arrayListOfReportData.get(i).getStk(), arrayListOfReportData.get(i).getCip(), arrayListOfReportData.get(i).getAdate(), arrayListOfReportData.get(i).getHos(), arrayListOfReportData.get(i).getSF_Name(), arrayListOfReportData.get(i).getRmdr(), arrayListOfReportData.get(i).getRptdate(), arrayListOfReportData.get(i).getWtype(), arrayListOfReportData.get(i).getFWFlg(), arrayListOfReportData.get(i).getActivity_Date(), arrayListOfReportData.get(i).getOutaddress(), arrayListOfReportData.get(i).getACode(), arrayListOfReportData.get(i).getRemarks(), arrayListOfReportData.get(i).getTerrWrk(), arrayListOfReportData.get(i).getTyp(), arrayListOfReportData.get(i).getConfirmed(), arrayListOfReportData.get(i).getAdditional_Temp_Details(), arrayListOfReportData.get(i).getReasonforRejection(), arrayListOfReportData.get(i).getStart_lat(), arrayListOfReportData.get(i).getStart_lang(), arrayListOfReportData.get(i).getEnd_lat(), arrayListOfReportData.get(i).getEnd_lang()));
             }
         }
 
-        dayReportAdapter = new DayReportAdapter( arrayListOfReportDataShort,requireContext());
+        dayReportAdapter = new DayReportAdapter(arrayListOfReportDataShort, requireContext());
         binding.dayReportRecView.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.dayReportRecView.setAdapter(dayReportAdapter);
         switch (Mode) {

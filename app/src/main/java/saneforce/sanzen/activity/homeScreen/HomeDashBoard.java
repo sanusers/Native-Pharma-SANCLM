@@ -73,7 +73,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 
 import org.json.JSONArray;
@@ -99,11 +98,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.DynamicMenuActivity;
-import saneforce.sanzen.activity.reports.DynamicMenuHome;
-import saneforce.sanzen.activity.reports.ReportsAdapter;
-import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
@@ -129,7 +123,10 @@ import saneforce.sanzen.activity.myresource.MyResource_Activity;
 import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
+import saneforce.sanzen.activity.reports.DynamicMenuHome;
 import saneforce.sanzen.activity.reports.ReportsActivity;
+import saneforce.sanzen.activity.reports.ReportsAdapter;
+import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.survey.SurveyActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
@@ -139,6 +136,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.InAppUpdate;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.ActivityHomeDashBoardBinding;
@@ -146,17 +144,16 @@ import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.databinding.HomeNavigationFooterBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkChangeReceiver;
-import saneforce.sanzen.utility.NetworkStatusTask;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -263,12 +260,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                }
                 String currentDate = dateFormat.format(new Date());
                 try {
-                    if(!previousDate.equals(currentDate)) {
-                        if(masterDataDao != null) {
+                    if (!previousDate.equals(currentDate)) {
+                        if (masterDataDao != null) {
                             JSONArray workPlanArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
-                            if(workPlanArray.toString().equals("[]")) {
+                            if (workPlanArray.toString().equals("[]")) {
                                 checkAndSetEntryDate(HomeDashBoard.this, true);
-                                if(HomeDashBoard.homeDashBoardActivity != null && !HomeDashBoard.homeDashBoardActivity.isFinishing() && !HomeDashBoard.homeDashBoardActivity.isDestroyed()) {
+                                if (HomeDashBoard.homeDashBoardActivity != null && !HomeDashBoard.homeDashBoardActivity.isFinishing() && !HomeDashBoard.homeDashBoardActivity.isDestroyed()) {
                                     HomeDashBoard.homeDashBoardActivity.setUpCalendar();
                                 }
                             }
@@ -402,7 +399,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             float dX, dY;
             int lastAction;
 
-            @Override public boolean onTouch(View view, MotionEvent event) {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
                 View root = binding.getRoot(); // <-- your root container id
                 if (root == null) return false;
 
@@ -497,7 +495,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                             SharedPref.setIsSetupSynced(HomeDashBoard.this, true);
                                             SharedPref.InsertLogInData(HomeDashBoard.this, jsonArray.getJSONObject(0));
                                             String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
-                                            if(signInTime.isEmpty()) {
+                                            if (signInTime.isEmpty()) {
                                                 changePassword(HomeDashBoard.this.getString(R.string.reset_password));
                                             } else {
                                                 try {
@@ -666,7 +664,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (signInTime.isEmpty() && !SharedPref.getIsSetupSynced(HomeDashBoard.this)) {
                 isResetPasswordVisible = true;
                 changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-            } else if(signInTime.isEmpty()) {
+            } else if (signInTime.isEmpty()) {
                 syncSetup();
             } else {
                 try {
@@ -691,7 +689,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     CheckingManatoryApprovals();
                 }
                 CheckedTpRange();
-              //  showBirthdayPopup();
+                //  showBirthdayPopup();
                 String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
                 if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this)) ||
@@ -1582,9 +1580,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password)});
-        new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
-        remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
+        old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password, 100)});
+        new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password, 100)});
+        remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password, 100)});
         String password = SharedPref.getLoginUserPwd(this).toLowerCase();
 //        System.out.println("loginPassword--->"+password);
 
@@ -1856,10 +1854,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
             return true;
         }
-        if(item.getTitle().toString().equalsIgnoreCase(SharedPref.getDynamicOptionCaps(HomeDashBoard.this))){
+        if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getDynamicOptionCaps(HomeDashBoard.this))) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
                 startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
-            }else{
+            } else {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
             }
 
@@ -2469,10 +2467,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //        if (SharedPref.getDocBusinessProduct(this).equalsIgnoreCase("0")) {
 //            menu.findItem(R.id.docbusinessentry).setVisible(true);
 //        } else {
-        if(SharedPref.getDynamicOptionNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
+        if (SharedPref.getDynamicOptionNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.dyn_link).setTitle(SharedPref.getDynamicOptionCaps(HomeDashBoard.this));
             menu.findItem(R.id.dyn_link).setVisible(true);
-        }else{
+        } else {
             menu.findItem(R.id.dyn_link).setVisible(false);
         }
         menu.findItem(R.id.docbusinessentry).setVisible(false);
@@ -2541,6 +2539,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void commonFun() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
+
     private void showCombinedWishesPopup() {
         Log.d("CombinedWishes", "Checking both Birthday and Anniversary...");
 
@@ -2606,7 +2605,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                            anniversaryMsg += (anniversaryMsg.isEmpty() ? "1" : String.valueOf(anniversaryMsg.split("\n\n").length + 1))
 //                                    + ". " + doctorName + "\n " + territory + "\n\n";
 
-                           // break; // stop once found
+                            // break; // stop once found
                         }
                     }
                 }
@@ -2630,13 +2629,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //        Log.d("BirthdayPopup", "Called showBirthdayPopup()");
 //
 //        try {
-////            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-////
-////            // ✅ Skip if popup already shown today
-////            if (today.equals(SharedPref.getBirthdayShownDate(this))) {
-////                Log.d("BirthdayPopup", "Already shown today. Skipping popup.");
-////                return;
-////            }
+
+    /// /            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+    /// /
+    /// /            // ✅ Skip if popup already shown today
+    /// /            if (today.equals(SharedPref.getBirthdayShownDate(this))) {
+    /// /                Log.d("BirthdayPopup", "Already shown today. Skipping popup.");
+    /// /                return;
+    /// /            }
 //
 //            RoomDB roomDB = RoomDB.getDatabase(this);
 //            MasterDataDao masterDataDao = roomDB.masterDataDao();
@@ -2764,8 +2764,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            e.printStackTrace();
 //        }
 //    }
-
-
     public void CheckedTpRange() {
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             if (SharedPref.getTpMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0") && SharedPref.getTpNeed(HomeDashBoard.this).equalsIgnoreCase("0") &&

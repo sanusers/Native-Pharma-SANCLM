@@ -5,7 +5,6 @@ import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -28,12 +27,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
-import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.CallSignCaptureImageList;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSignatureBinding;
 import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
@@ -54,8 +53,7 @@ public class SignatureFragment1 extends Fragment {
     boolean delete;
     CallOfflineSignDataDao callOfflineSignDataDao;
     RoomDB roomDB;
-
-
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -63,6 +61,7 @@ public class SignatureFragment1 extends Fragment {
         this.context = context;
         roomDB = RoomDB.getDatabase(context);
         callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
+        commonUtilsMethods = new CommonUtilsMethods(context);
         Log.d("SignatureFragment", "onAttach()");
     }
 
@@ -72,7 +71,6 @@ public class SignatureFragment1 extends Fragment {
         Log.d("SignatureFragment", "onCreate()");
         callSignCaptureImage = new ArrayList<>();
     }
-
 
 
     @Nullable
@@ -121,23 +119,23 @@ public class SignatureFragment1 extends Fragment {
                 }
                 break;
             case "edit_online":
-                if ((!imageName.isEmpty()  /*|| !filePath.isEmpty()*/ )) {
+                if ((!imageName.isEmpty()  /*|| !filePath.isEmpty()*/)) {
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                             loadImageFromS3(imageName);
-                        }else{
+                        } else {
                             loadImageFromGlide(imageName);
                         }
                     }
-                }else{
-                    Log.d("edit_online signFrag", "onResume: "+"imageName or filePAth is empty");
+                } else {
+                    Log.d("edit_online signFrag", "onResume: " + "imageName or filePAth is empty");
                 }
                 break;
             case "edit_local":
                 if (/*!filePath.isEmpty() &&*/ !imageName.isEmpty()) {
                     loadImageFromLocal(imageName);
-                }else{
-                    Log.d("Edit local SignFrag", "onResume: "+"Filepath is empty");
+                } else {
+                    Log.d("Edit local SignFrag", "onResume: " + "Filepath is empty");
                 }
                 break;
         }
@@ -160,7 +158,7 @@ public class SignatureFragment1 extends Fragment {
 
     public void clearSignature() {
         if (signatureCanvas != null) {
-            if(!callSignCaptureImage.isEmpty()) {
+            if (!callSignCaptureImage.isEmpty()) {
                 File fileDelete = new File(callSignCaptureImage.get(0).getFilepath());
                 if (fileDelete.exists()) {
                     if (fileDelete.delete()) {
@@ -222,7 +220,7 @@ public class SignatureFragment1 extends Fragment {
                         try (FileOutputStream fos = new FileOutputStream(file)) {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                             Log.d("S3ImageLoad", "Image stored locally at: " + file.getAbsolutePath());
-                            if(!fileName.contains("null")) {
+                            if (!fileName.contains("null")) {
                                 callSignCaptureImage.add(0, new CallSignCaptureImageList(file.getAbsolutePath(), fileName));
                             }
                         } catch (Exception e) {
@@ -234,6 +232,12 @@ public class SignatureFragment1 extends Fragment {
 
                     }
 
+                }
+
+                @Override
+                public void onFailure(int pos) {
+                    Log.e("S3ImageLoad", "Failed to load image from S3: " + fileName + ", bitmap is null.");
+                    commonUtilsMethods.showToastMessage(context, "Image Not Found");
                 }
             });
         } else {
@@ -259,7 +263,7 @@ public class SignatureFragment1 extends Fragment {
                                 Log.d("GlideImageLoad", "Image successfully loaded from Glide: " + fileName);
                                 try (FileOutputStream fos = new FileOutputStream(file)) {
                                     bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-                                     if(!fileName.equalsIgnoreCase("null")) {
+                                    if (!fileName.equalsIgnoreCase("null")) {
                                         callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
                                     }
                                     Log.d("GlideImageLoad", "Image stored locally at: " + file.getAbsolutePath());
@@ -283,14 +287,13 @@ public class SignatureFragment1 extends Fragment {
     }
 
 
-
     public void loadImageFromLocal(String fileName) {
         if (/*!filePath.isEmpty() && */!imageName.isEmpty()) {
-            File file = new File(context.getExternalFilesDir(null) + "/Signature/",fileName);
+            File file = new File(context.getExternalFilesDir(null) + "/Signature/", fileName);
 //            File file = new File(callSignCaptureImage.get(0).getFilepath());
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             signatureCanvas.setBackgroundBitmap(bitmap);
-            if(!imageName.contains("null")){
+            if (!imageName.contains("null")) {
                 callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
             }
             Log.d("SignatureFlow", "Loaded image from local: " + fileName);

@@ -1,8 +1,6 @@
 package saneforce.sanzen.activity.call.fragments.jwOthers;
 
 import static android.Manifest.permission.CAMERA;
-import static androidx.camera.core.impl.utils.ContextUtil.getApplicationContext;
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.call.DCRCallActivity.CapPob;
 import static saneforce.sanzen.activity.call.DCRCallActivity.SfCode;
 import static saneforce.sanzen.activity.call.DCRCallActivity.TodayPlanSfCode;
@@ -20,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +33,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -51,28 +49,28 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.jwOthers.AdapterCallCaptureImage;
 import saneforce.sanzen.activity.call.adapter.jwOthers.AdapterCallJointWorkList;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.FragmentJwothersBinding;
 import saneforce.sanzen.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
-import saneforce.sanzen.utility.TimeUtils;
-
 
 public class JWOthersFragment extends Fragment {
     public static ArrayList<CallCaptureImageList> callCaptureImageLists;
@@ -85,8 +83,8 @@ public class JWOthersFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static AdapterCallJointWorkList adapterCallJointWorkList;
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
-   public static ArrayList<String> JWKCodeList =new ArrayList<>();
-   Gson gson;
+    public static ArrayList<String> JWKCodeList = new ArrayList<>();
+    Gson gson;
     CommonUtilsMethods commonUtilsMethods;
     private String destinationFilePath;
     private RoomDB roomDB;
@@ -110,7 +108,7 @@ public class JWOthersFragment extends Fragment {
                     jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
                     jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
                     jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
-                }else if(result.getResultCode() == Activity.RESULT_CANCELED) {
+                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     Log.d("Camera", "onActivityResult: Canceled");
                 }
             } catch (Exception e) {
@@ -126,7 +124,7 @@ public class JWOthersFragment extends Fragment {
         outState.putString("EDITREMARKS", editRemarks);
         outState.putString("EDITPOB", editPob);
         outState.putString("EDITFEEDBACK", editFeedback);
-        for(int i=0; i<callCaptureImageLists.size();i++) {
+        for (int i = 0; i < callCaptureImageLists.size(); i++) {
             CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(i);
             callCaptureImageList.setImg_view(null);
             callCaptureImageLists.set(i, callCaptureImageList);
@@ -153,18 +151,18 @@ public class JWOthersFragment extends Fragment {
             editFeedback = savedInstanceState.getString("EDITFEEDBACK");
             callCaptureImageLists = savedInstanceState.getParcelableArrayList("CAPTURE");
             callAddedJointList = savedInstanceState.getParcelableArrayList("JOINTWORK");
-            if(editFeedback != null && !editFeedback.isEmpty()) {
+            if (editFeedback != null && !editFeedback.isEmpty()) {
                 jwOthersBinding.tvFeedback.setHint("");
                 jwOthersBinding.tvFeedback.setText(editFeedback);
             }
-            if(editPob != null && !editPob.isEmpty()) {
+            if (editPob != null && !editPob.isEmpty()) {
                 jwOthersBinding.edPob.setText(editPob);
             }
-            if(editRemarks != null && !editRemarks.isEmpty()) {
+            if (editRemarks != null && !editRemarks.isEmpty()) {
                 jwOthersBinding.edRemarks.setText(editRemarks);
             }
-            if(callCaptureImageLists != null && !callCaptureImageLists.isEmpty()) {
-                for(int i=0; i<callCaptureImageLists.size();i++) {
+            if (callCaptureImageLists != null && !callCaptureImageLists.isEmpty()) {
+                for (int i = 0; i < callCaptureImageLists.size(); i++) {
                     CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(i);
                     Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
                     callCaptureImageList.setImg_view(photo);
@@ -182,14 +180,21 @@ public class JWOthersFragment extends Fragment {
         HiddenVisibleFunction();
         SetupAdapter();
 
-        if(HomeDashBoard.selectedDate.toString().equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
+        if (HomeDashBoard.selectedDate.toString().equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
             if (isFromActivity.equalsIgnoreCase("new")) {
-                Log.v("Testing","new");
+                Log.v("Testing", "new");
                 String getjwkcode = SharedPref.getJWKCODE(requireContext());
                 if (!getjwkcode.equalsIgnoreCase("")) {
                     Type type = new TypeToken<List<String>>() {
                     }.getType();
                     JWKCodeList = gson.fromJson(getjwkcode, type);
+
+                    Map<String, List<String>> jcMap = SharedPref.getJCMap(requireContext());
+                    if (jcMap.containsKey(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+                        JWKCodeList = (ArrayList<String>) jcMap.get(DcrCallTabLayoutActivity.TodayPlanSfCode);
+                    } else {
+                        JWKCodeList = new ArrayList<>();
+                    }
 
                     try {
                         if (DCRCallActivity.save_valid.equals("1")) {
@@ -214,16 +219,17 @@ public class JWOthersFragment extends Fragment {
                         }
 
                     } catch (Exception e) {
-                        Log.v("Testing","issue" + e.getMessage());
+                        Log.v("Testing", "issue" + e.getMessage());
                     }
 
 
                 }
             }
-        }else {
+        } else {
             JWKCodeList.clear();
-            SharedPref.setJWKCODE(context, JWKCodeList, "");
-            Log.v("Testing","OLD");
+            SharedPref.setJWKCODE(requireContext(), JWKCodeList, "");
+            SharedPref.saveJCMap(requireContext(), new HashMap<>(), "");
+            Log.v("Testing", "OLD");
         }
 
 
@@ -277,6 +283,7 @@ public class JWOthersFragment extends Fragment {
 
     private void HiddenVisibleFunction() {
         jwOthersBinding.tagPob.setText(CapPob);
+        jwOthersBinding.edRemarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(jwOthersBinding.edRemarks, 200)});
         if (DCRCallActivity.PobNeed.equalsIgnoreCase("0")) {
             jwOthersBinding.constraintPob.setVisibility(View.VISIBLE);
         } else {
@@ -350,19 +357,19 @@ public class JWOthersFragment extends Fragment {
         imageName = SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
         Intent intent = new Intent(requireActivity(), CameraActivity.class);
         File file = null;
-        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            file = new File(context.getExternalFilesDir(null) + "/JWOthersImages/");
-        }else {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            file = new File(requireContext().getExternalFilesDir(null) + "/JWOthersImages/");
+        } else {
             Log.e("File Creation", "captureFile: No media mounted");
         }
-        if(file != null && !file.exists()) {
-            if(!file.mkdirs()) {
+        if (file != null && !file.exists()) {
+            if (!file.mkdirs()) {
                 Log.e("File Creation", "Directory Creation Failed.");
             }
         }
         File destinationFile = new File(file, imageName);
         try {
-            if(!destinationFile.createNewFile()) {
+            if (!destinationFile.createNewFile()) {
                 Log.e("File Creation", "Destination File Creation Failed.");
             }
         } catch (IOException e) {
@@ -377,60 +384,60 @@ public class JWOthersFragment extends Fragment {
             CustList custList = DCRCallActivity.CallActivityCustDetails.get(0);
             StringBuilder customerData = new StringBuilder();
             customerData.append(custList.getName());
-            if(custList.getQualification() != null && !custList.getQualification().isEmpty()) {
+            if (custList.getQualification() != null && !custList.getQualification().isEmpty()) {
                 customerData.append(" - ");
                 customerData.append(custList.getQualification());
             }
-            if(custList.getSpecialist() != null && !custList.getSpecialist().isEmpty()) {
+            if (custList.getSpecialist() != null && !custList.getSpecialist().isEmpty()) {
                 customerData.append(" - ");
                 customerData.append(custList.getSpecialist());
             }
-            if(custList.getclass() != null && !custList.getclass().isEmpty()) {
+            if (custList.getclass() != null && !custList.getclass().isEmpty()) {
                 customerData.append(" - ");
                 customerData.append(custList.getclass());
             }
-            if(custList.getCategory() != null && !custList.getCategory().isEmpty()) {
+            if (custList.getCategory() != null && !custList.getCategory().isEmpty()) {
                 customerData.append(" - ");
                 customerData.append(custList.getCategory());
             }
-            if(custList.getTown_name() != null && !custList.getTown_name().isEmpty()) {
+            if (custList.getTown_name() != null && !custList.getTown_name().isEmpty()) {
                 customerData.append(" - ");
                 customerData.append(custList.getTown_name());
             }
             intent.putExtra("CUSTOMER_DATA", customerData.toString());
             String caption = "";
             switch (custList.getType()) {
-                case "1" :
+                case "1":
                     caption = SharedPref.getDrCap(requireContext());
                     if (caption.isEmpty()) {
                         caption = "Listed Doctor";
                     }
                     break;
-                case "2" :
+                case "2":
                     caption = SharedPref.getChmCap(requireContext());
                     if (caption.isEmpty()) {
                         caption = "Chemist";
                     }
                     break;
-                case "3" :
+                case "3":
                     caption = SharedPref.getStkCap(requireContext());
                     if (caption.isEmpty()) {
                         caption = "Stockist";
                     }
                     break;
-                case "4" :
+                case "4":
                     caption = SharedPref.getUNLcap(requireContext());
                     if (caption.isEmpty()) {
                         caption = "UnListed Doctor";
                     }
                     break;
-                case "5" :
+                case "5":
                     caption = SharedPref.getCipCaption(requireContext());
                     if (caption.isEmpty()) {
                         caption = "CIP";
                     }
                     break;
-                case "6" :
+                case "6":
                     caption = SharedPref.getHospCaption(requireContext());
                     if (caption.isEmpty()) {
                         caption = "Hospital";
@@ -477,7 +484,7 @@ public class JWOthersFragment extends Fragment {
     }
 
     private void RequestCameraPermission() {
-        ActivityCompat.requestPermissions(requireActivity(), new String[] {Manifest.permission.CAMERA}, 102);
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 102);
 
     }
 
@@ -488,7 +495,7 @@ public class JWOthersFragment extends Fragment {
                 if (Boolean.TRUE.equals(cameraPermission)) {
                     captureFile();
                 } else {
-                    CommonUtilsMethods. RequestGPSPermission(requireActivity(),"Camera");
+                    CommonUtilsMethods.RequestGPSPermission(requireActivity(), "Camera");
 
                 }
             });

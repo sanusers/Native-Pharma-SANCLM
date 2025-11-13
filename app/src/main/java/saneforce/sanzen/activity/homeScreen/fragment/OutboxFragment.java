@@ -55,7 +55,6 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.outbox.OutBoxHeaderAdapter;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
@@ -70,6 +69,7 @@ import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.OutboxFragmentBinding;
 import saneforce.sanzen.network.ApiCallback;
 import saneforce.sanzen.network.ApiInterface;
@@ -82,11 +82,11 @@ import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSign
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
-import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkCheckInterface;
@@ -484,7 +484,7 @@ public class OutboxFragment extends Fragment {
 //                if (child.getChildId() == 3 || child.getChildId() == 4 || child.getChildId() == 6) {
 //                    processApisForDate(dateGroup, apiIndex + 1, callback);
 //                } else {
-                    callback.onFailure();
+                callback.onFailure();
 //                }
             }
         });
@@ -501,23 +501,23 @@ public class OutboxFragment extends Fragment {
                 break;
 
             case 2:
-                callSubmitAPI(child,0, 0, callback);
+                callSubmitAPI(child, 0, 0, callback);
                 break;
 
             case 3:
-                eventCaptureSubmitAPI(child,0, callback);
+                eventCaptureSubmitAPI(child, 0, callback);
                 break;
 
             case 4:
-                signatureSubmitAPI(child,0, callback);
+                signatureSubmitAPI(child, 0, callback);
                 break;
 
             case 5:
-                activitySubmitAPI(child,0, callback);
+                activitySubmitAPI(child, 0, callback);
                 break;
 
             case 6:
-                activityUploadSubmitAPI(child,0, callback);
+                activityUploadSubmitAPI(child, 0, callback);
                 break;
 
             case 7:
@@ -532,7 +532,7 @@ public class OutboxFragment extends Fragment {
 
     private void checkInSubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
         String address = "";
-        ArrayList<CheckInOutModelClass> checkInOutModelClasses= child.getCheckInOutModelClasses();
+        ArrayList<CheckInOutModelClass> checkInOutModelClasses = child.getCheckInOutModelClasses();
         if (checkInOutModelClasses == null || checkInOutModelClasses.isEmpty() || index >= checkInOutModelClasses.size()) {
             callback.onSuccess();
             return;
@@ -613,7 +613,7 @@ public class OutboxFragment extends Fragment {
             return;
         }
         Map<String, String> mapString = new HashMap<>();
-        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
             mapString.put("axn", "edetsave/dayplan");
         } else {
             mapString.put("axn", "multihqsave/dayplan");
@@ -777,7 +777,7 @@ public class OutboxFragment extends Fragment {
                 callback.onSuccess();
             } else {
 //                String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
-                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                 TransferNetworkLossHandler.getInstance(context);
@@ -942,7 +942,7 @@ public class OutboxFragment extends Fragment {
                     Log.d("fileToUploadSignObFrag", "not exists: " + signModelClass.getFilePath());
                 } else {
 //                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
-                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                     TransferNetworkLossHandler.getInstance(context);
@@ -1131,7 +1131,7 @@ public class OutboxFragment extends Fragment {
                 });
 
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure();
         }
@@ -1148,56 +1148,56 @@ public class OutboxFragment extends Fragment {
 //        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
 ////                CallSendAPIImageS3(ParentPos, ecModelClass, ChildPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), modelClass);
 //        } else {
-            try {
-                File file = new File(activityUploadModelClass.getFilePath());
-                MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file));
-                HashMap<String, RequestBody> values = field(activityUploadModelClass.getJsonData());
-                Call<JsonObject> saveAttachment = apiInterface.SaveImg(values, img);
-                saveAttachment.enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                        if (response.isSuccessful()) {
-                            try {
-                                JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
-                                if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                                    activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
-                                    activityUploadList.remove(activityUploadModelClass);
-                                    notifyedmethod();
-                                    callback.onSuccess();
-                                } else {
-                                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
-                                    activityUploadModelClass.setSyncStatus(Constants.FAILED);
-                                    activityUploadModelClass.setSyncCount(5);
-                                    notifyedmethod();
-                                    callback.onFailure();
-                                }
-                            } catch (Exception e) {
-                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
-                                activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+        try {
+            File file = new File(activityUploadModelClass.getFilePath());
+            MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file));
+            HashMap<String, RequestBody> values = field(activityUploadModelClass.getJsonData());
+            Call<JsonObject> saveAttachment = apiInterface.SaveImg(values, img);
+            saveAttachment.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                            if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                                activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
+                                activityUploadList.remove(activityUploadModelClass);
+                                notifyedmethod();
+                                callback.onSuccess();
+                            } else {
+                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                 activityUploadModelClass.setSyncCount(5);
-                                Log.v("SendOutboxCall", "---" + e);
-                                e.printStackTrace();
                                 notifyedmethod();
                                 callback.onFailure();
                             }
+                        } catch (Exception e) {
+                            outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+                            activityUploadModelClass.setSyncCount(5);
+                            Log.v("SendOutboxCall", "---" + e);
+                            e.printStackTrace();
+                            notifyedmethod();
+                            callback.onFailure();
                         }
                     }
+                }
 
-                    @SuppressLint("NotifyDataSetChanged")
-                    @Override
-                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
-                        outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
-                        activityUploadModelClass.setSyncStatus(Constants.FAILED);
-                        activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
-                        notifyedmethod();
-                        callback.onFailure();
-                    }
-                });
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
+                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    activityUploadModelClass.setSyncStatus(Constants.FAILED);
+                    activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
+                    notifyedmethod();
+                    callback.onFailure();
+                }
+            });
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                callback.onFailure();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onFailure();
+        }
 //        }
     }
 
@@ -1510,7 +1510,7 @@ public class OutboxFragment extends Fragment {
                 DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                 Log.d("fileToUpload", "not exists: " + filePath);
             } else {
-                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
 
@@ -1642,7 +1642,7 @@ public class OutboxFragment extends Fragment {
                     Log.d("fileToUploadSignObFrag", "not exists: " + filePath);
                 } else {
 //                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
-                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
 
 
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);

@@ -1,12 +1,7 @@
 package saneforce.sanzen.activity.reports.visitMonitor;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -30,12 +23,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +32,6 @@ import java.util.List;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -52,7 +39,6 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
 public class DoctorFragment extends Fragment {
-
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
@@ -62,7 +48,6 @@ public class DoctorFragment extends Fragment {
     private static final String ARG_MONTH_DATA = "monthData";
     private static final String ARG_STATS_DATA = "statsData";
     private static final String ARG_POSITION = "position";
-
 
     private List<VisitStatsModel> dataListDoc;
     int position;
@@ -347,4 +332,4 @@ public class DoctorFragment extends Fragment {
         pieChart.invalidate();
     }*/
 
-    }
+}

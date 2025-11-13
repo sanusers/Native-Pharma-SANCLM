@@ -1,17 +1,12 @@
 package saneforce.sanzen.activity.approvals.leave;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,15 +26,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityLeaveBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-
 import saneforce.sanzen.storage.SharedPref;
 
 public class LeaveApprovalActivity extends AppCompatActivity {
@@ -51,7 +44,6 @@ public class LeaveApprovalActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog = null;
     CommonUtilsMethods commonUtilsMethods;
-
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -95,7 +87,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String searchString = charSequence.toString().trim();
-                if(searchString.isEmpty()) UtilityClass.hideKeyboard(LeaveApprovalActivity.this);
+                if (searchString.isEmpty()) UtilityClass.hideKeyboard(LeaveApprovalActivity.this);
 
             }
 
@@ -109,7 +101,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
     private void CallApiLeave() {
         progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
         try {
-            jsonLeave=CommonUtilsMethods.CommonObjectParameter(LeaveApprovalActivity.this);
+            jsonLeave = CommonUtilsMethods.CommonObjectParameter(LeaveApprovalActivity.this);
             jsonLeave.put("tableName", "getlvlapproval");
             jsonLeave.put("sfcode", SharedPref.getSfCode(this));
             jsonLeave.put("division_code", SharedPref.getDivisionCode(this));
@@ -122,7 +114,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/approvals");
-        Call<JsonElement> callGetLeaveApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonLeave.toString());
+        Call<JsonElement> callGetLeaveApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(LeaveApprovalActivity.this), mapString, jsonLeave.toString());
         callGetLeaveApproval.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -146,7 +138,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
                 }
             }
 
@@ -154,11 +146,10 @@ public class LeaveApprovalActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 t.printStackTrace();
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
             }
         });
     }
-
 
 
     private void filter(String text) {

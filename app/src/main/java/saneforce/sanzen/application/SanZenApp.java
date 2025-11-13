@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,9 +24,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
-import saneforce.sanzen.commonClasses.EmailSender;
 
 public class SanZenApp extends Application {
     private static final String TAG = "CrashReport";
@@ -36,10 +33,10 @@ public class SanZenApp extends Application {
     public void onCreate() {
         super.onCreate();
 //        if (BuildConfig.DEBUG) {
-            // Disable Crashlytics collection for debug builds
-            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+        // Disable Crashlytics collection for debug builds
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
 //        } else {
-            // Explicitly enable for release builds (it's true by default, but this ensures it)
+        // Explicitly enable for release builds (it's true by default, but this ensures it)
 //            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 //        }
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -104,51 +101,68 @@ public class SanZenApp extends Application {
                 }
             }
 
-            @Override public void onActivityStarted(@NonNull Activity activity) {}
-            @Override public void onActivityResumed(@NonNull Activity activity) {}
-            @Override public void onActivityPaused(@NonNull Activity activity) {}
-            @Override public void onActivityStopped(@NonNull Activity activity) {}
-            @Override public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {}
-            @Override public void onActivityDestroyed(@NonNull Activity activity) {}
+            @Override
+            public void onActivityStarted(@NonNull Activity activity) {
+            }
+
+            @Override
+            public void onActivityResumed(@NonNull Activity activity) {
+            }
+
+            @Override
+            public void onActivityPaused(@NonNull Activity activity) {
+            }
+
+            @Override
+            public void onActivityStopped(@NonNull Activity activity) {
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+            }
+
+            @Override
+            public void onActivityDestroyed(@NonNull Activity activity) {
+            }
         });
 
         // Set up a custom UncaughtExceptionHandler
-//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-//            private final Thread.UncaughtExceptionHandler defaultUEH =
-//                    Thread.getDefaultUncaughtExceptionHandler();
-//
-//            @Override
-//            public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
-//                try {
-//                    Log.e(TAG, "App crashed!", throwable);
-//
-//                    // Get the latest log file
-//                    File logFile = getLatestLogFile(getApplicationContext());
-//
-//                    if (logFile != null) {
-//                        // Send the log file (you'll need to implement this method)
-////                        sendCrashLog(logFile, throwable);
-//                        StringWriter sw = new StringWriter();
-//                        PrintWriter pw = new PrintWriter(sw);
-//                        throwable.printStackTrace(pw);
-//                        String stackTrace = sw.toString();
-//
-////                        new EmailSender().sendCrashLog(getApplicationContext(), logFile, stackTrace);
-//                    }
-//
-//                } catch (Exception e) {
-//                    Log.e(TAG, "Error while handling uncaught exception", e);
-//                } finally {
-//                    // Let the default exception handler finish processing
-//                    if (defaultUEH != null) {
-//                        defaultUEH.uncaughtException(thread, throwable);
-//                    } else {
-//                        // If default handler is null, which should not happen, force termination
-//                        System.exit(1);
-//                    }
-//                }
-//            }
-//        });
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            private final Thread.UncaughtExceptionHandler defaultUEH =
+                    Thread.getDefaultUncaughtExceptionHandler();
+
+            @Override
+            public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
+                try {
+                    Log.e(TAG, "App crashed!", throwable);
+
+                    // Get the latest log file
+                    File logFile = getLatestLogFile(getApplicationContext());
+
+                    if (logFile != null) {
+                        // Send the log file (you'll need to implement this method)
+//                        sendCrashLog(logFile, throwable);
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        throwable.printStackTrace(pw);
+                        String stackTrace = sw.toString();
+
+//                        new EmailSender().sendCrashLog(getApplicationContext(), logFile, stackTrace);
+                    }
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Error while handling uncaught exception", e);
+                } finally {
+                    // Let the default exception handler finish processing
+                    if (defaultUEH != null) {
+                        defaultUEH.uncaughtException(thread, throwable);
+                    } else {
+                        // If default handler is null, which should not happen, force termination
+                        System.exit(1);
+                    }
+                }
+            }
+        });
     }
 
     // Helper method to get the latest log file (assuming your naming convention)

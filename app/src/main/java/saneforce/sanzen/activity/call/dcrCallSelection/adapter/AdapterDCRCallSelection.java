@@ -72,9 +72,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     private int limit = 1;
     private ProgressBar progressBar;
     private RelativeLayout refreshLocation;
-    private boolean isFencing;
+    private final boolean isFencing;
 
-    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, boolean isFencing, String isFrom/*, boolean isCustVisitedToday*/) {
+    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, boolean isFencing, String isFrom) {
         this.activity = activity;
         this.context = context;
         this.cusListArrayList = cusListArrayList;
@@ -83,7 +83,6 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         this.isFrom = isFrom;
         this.FillteredList = cusListArrayList;
         roomDB = RoomDB.getDatabase(context);
-//        this.isCustVisitedToday = isCustVisitedToday;
         masterDataDao = roomDB.masterDataDao();
         gpsTrack = new GPSTrack(activity);
 
@@ -212,11 +211,6 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 }
             }
         });
-      /*  if(isCustVisitedToday){
-            holder.seenDr.setVisibility(View.VISIBLE);
-        }else{
-            holder.seenDr.setVisibility(View.GONE);
-        }*/
 
         if (isFencing) {
             holder.info.setVisibility(View.VISIBLE);
@@ -471,7 +465,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         if (needCheckInOut.equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             intent.putExtra("CheckInJsonObject", jsonObject.toString());
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 
@@ -490,7 +484,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         TextView tv_name, tv_category, tv_specialist, tv_area;
         ConstraintLayout constraint_main;
         View view_top;
-        ImageView info,seenDr;
+        ImageView info, seenDr;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

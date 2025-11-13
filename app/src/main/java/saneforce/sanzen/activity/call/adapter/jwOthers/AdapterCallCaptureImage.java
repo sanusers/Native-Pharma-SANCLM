@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.call.adapter.jwOthers;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
-import static saneforce.sanzen.commonClasses.CommonAlertBox.dialog;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -10,7 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,14 +20,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -37,16 +36,13 @@ import java.util.Objects;
 import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
-import saneforce.sanzen.activity.map.MapsActivity;
-import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-
 import saneforce.sanzen.storage.SharedPref;
 
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
@@ -55,12 +51,14 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     private RoomDB roomDB;
     private CallOfflineECDataDao callOfflineECDataDao;
     ProgressDialog progressBar;
+    CommonUtilsMethods commonUtilsMethods;
 
     public AdapterCallCaptureImage(Context context, ArrayList<CallCaptureImageList> callCaptureImageLists) {
         this.context = context;
         this.callCaptureImageLists = callCaptureImageLists;
         roomDB = RoomDB.getDatabase(context);
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -75,7 +73,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
         holder.tv_image_name.setText(callCaptureImageList.getImg_name());
         holder.ed_img_desc.setText(callCaptureImageList.getImg_description());
-        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
             switch (isFromActivity) {
                 case "new":
                     if (callCaptureImageList.getImg_view() == null) {
@@ -117,10 +115,10 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     break;
 
             }
-        }else{
+        } else {
             switch (isFromActivity) {
                 case "new":
-                    if(callCaptureImageList.getImg_view() == null){
+                    if (callCaptureImageList.getImg_view() == null) {
                         try {
                             Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
                             holder.img_view.setImageBitmap(photo);
@@ -143,11 +141,11 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     }
                     break;
                 case "edit_online":
-                    if(callCaptureImageList.isShowPreview()) {
-                        if(callCaptureImageList.isNewlyAdded()) {
+                    if (callCaptureImageList.isShowPreview()) {
+                        if (callCaptureImageList.isNewlyAdded()) {
                             holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
                         } else {
-                          //  Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
+                            //  Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
                             Glide.with(context)
                                     .load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName())
                                     .diskCacheStrategy(DiskCacheStrategy.ALL) // cache both original & resized
@@ -202,9 +200,13 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         holder.img_view.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                Log.e("TAG", "onSafeClick: "+"on safe click " );
+                Log.e("TAG", "onSafeClick: " + "on safe click ");
+                ProgressDialog existingPB = progressBar;
                 progressBar = CommonUtilsMethods.createProgressDialog(context);
                 progressBar.show();
+                if (existingPB != null && existingPB.isShowing()) {
+                    new Handler().postDelayed(existingPB::dismiss, 500);
+                }
                 if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                     switch (isFromActivity) {
                         case "new":
@@ -218,18 +220,18 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                         case "edit_online":
                             if (UtilityClass.isNetworkAvailable(context)) {
                                 if (callCaptureImageList.isNewlyAdded()) {
-                                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
-                                        ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
+                                    if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                                        showImage(callCaptureImageList.getImg_view());
 //                                        progressBar.dismiss();
-                                    }else {
+                                    } else {
                                         showImage(callCaptureImageList.getImg_view());
 //                                        progressBar.dismiss();
                                     }
-                                }else{
-                                    if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+                                } else {
+                                    if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
 //                                        progressBar.dismiss();
-                                    }else {
+                                    } else {
                                         ShowImageEdit(callCaptureImageList.getSystemImgName());
 //                                        progressBar.dismiss();
                                     }
@@ -244,11 +246,11 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     switch (isFromActivity) {
                         case "new":
                             showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
-                            progressBar.dismiss();
+//                            progressBar.dismiss();
                             break;
                         case "edit_local":
                             showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
-                            progressBar.dismiss();
+//                            progressBar.dismiss();
                             break;
                         case "edit_online":
                             if (UtilityClass.isNetworkAvailable(context)) {
@@ -260,10 +262,10 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                     showImage(callCaptureImageList.getImg_view());
 //                                    progressBar.dismiss();
                                 } else {
-                                    if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+                                    if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                                         ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
 //                                        progressBar.dismiss();
-                                    }else {
+                                    } else {
                                         ShowImageEdit(callCaptureImageList.getSystemImgName());
 //                                        progressBar.dismiss();
                                     }
@@ -277,6 +279,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 }
             }
         });
+        holder.tv_image_name.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(holder.tv_image_name, 100)});
 
         holder.tv_image_name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -291,9 +294,10 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded(),callCaptureImageLists.get(holder.getBindingAdapterPosition()).isShowPreview()));
+                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isShowPreview()));
             }
         });
+        holder.ed_img_desc.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(holder.ed_img_desc, 300)});
 
         holder.ed_img_desc.addTextChangedListener(new TextWatcher() {
             @Override
@@ -326,13 +330,15 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
             builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
             builder.show();
             progressBar.dismiss();
+        } else {
+            progressBar.dismiss();
         }
     }
 
-    private void ShowImageEditS3(String systemImageName,@NonNull ViewHolder holder , int position){
+    private void ShowImageEditS3(String systemImageName, @NonNull ViewHolder holder, int position) {
         CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
         String fileName = callCaptureImageList.getSystemImgName();
-        File file = new File(context.getExternalFilesDir("JWOthersImages"),fileName);
+        File file = new File(context.getExternalFilesDir("JWOthersImages"), fileName);
         Log.d("TAG_acci", "onBindViewHolder: " + file.getAbsolutePath());
         new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
             @Override
@@ -348,6 +354,14 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     holder.img_view.setVisibility(View.GONE);
                     progressBar.dismiss();
                 }
+            }
+
+            @Override
+            public void onFailure(int pos) {
+                Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                commonUtilsMethods.showToastMessage(context, "Image Not Found");
+                holder.img_view.setVisibility(View.VISIBLE);
+                progressBar.dismiss();
             }
         });
     }
@@ -371,15 +385,15 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     }
 
     public void showImage(Bitmap img_view) {
-            Dialog builder = new Dialog(context);
-            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            builder.setCancelable(true);
-            Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            ImageView imageView = new ImageView(context);
-            imageView.setImageBitmap(img_view);
-            builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
-            builder.show();
-            progressBar.dismiss();
+        Dialog builder = new Dialog(context);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.setCancelable(true);
+        Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        ImageView imageView = new ImageView(context);
+        imageView.setImageBitmap(img_view);
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
+        builder.show();
+        progressBar.dismiss();
     }
 
     public void removeAt(int position) {

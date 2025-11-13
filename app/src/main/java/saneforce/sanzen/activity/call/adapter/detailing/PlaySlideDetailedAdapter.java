@@ -529,7 +529,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         });
     }
 
-
     private void shareImage(File path, String fileFormat) {
         Uri contentUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", path);
         if (contentUri != null) {

@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -36,18 +34,20 @@ import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -67,7 +67,10 @@ public class CIPFragment extends Fragment {
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private final DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+
+    public CIPFragment() {
+    }
 
     public CIPFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
         this.hqChangeListener = hqChangeListener;
@@ -75,7 +78,7 @@ public class CIPFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.v("fragment","---"+ "cip");
+        Log.v("fragment", "---" + "cip");
         View view = inflater.inflate(R.layout.fragment_cip, container, false);
         rv_list = view.findViewById(R.id.rv_cust_list_selection);
         ed_search = view.findViewById(R.id.search_cust);
@@ -138,16 +141,16 @@ public class CIPFragment extends Fragment {
             }
         });
 
-        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
             tv_hqName.setOnClickListener(v -> {
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                     ArrayList<String> list = new ArrayList<>();
 
-                    if(jsonArray.length()>0) {
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            if(SharedPref.getMultiHQCode(requireContext()).contains(jsonObject.optString("id"))) {
+                            if (SharedPref.getMultiHQCode(requireContext()).contains(jsonObject.optString("id"))) {
                                 list.add(jsonObject.getString("name"));
                             }
                         }
@@ -184,10 +187,10 @@ public class CIPFragment extends Fragment {
                         String selectedHq = listView.getItemAtPosition(position).toString();
                         tv_hqName.setText(selectedHq);
                         String hqID = "", hqName = "";
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             try {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if(jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
+                                if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
                                     hqID = jsonObject.getString("id");
                                     hqName = jsonObject.getString("name");
                                     break;
@@ -222,12 +225,13 @@ public class CIPFragment extends Fragment {
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CIP + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
             Log.v("call", "-cip_full_length-" + jsonArray.length());
+            List<String> todayPlannedClusters = Arrays.asList(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(SharedPref.getTodayDayPlanClusterCode(requireContext()))).split(","));
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                    if (SharedPref.getGeotagNeedCip(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
+                    if (SharedPref.getGeotagNeedCip(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                         if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
-                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
+                            if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
                                 Log.v("Cip", "--11-");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
@@ -248,7 +252,7 @@ public class CIPFragment extends Fragment {
                     } else {
                         if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
                             Log.v("Cip", "--33-");
-                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
+                            if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                                 custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "5", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
                             }
                         } else {
@@ -277,7 +281,7 @@ public class CIPFragment extends Fragment {
         }
 
         Log.v("call", "-cip--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, "1", false,"5");
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, "1", false, "5");
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

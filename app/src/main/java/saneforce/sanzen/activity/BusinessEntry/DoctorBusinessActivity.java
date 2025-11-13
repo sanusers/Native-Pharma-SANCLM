@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.BusinessEntry;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,6 +23,7 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -31,12 +31,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,11 +53,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.DoctorBusinessModel;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.ProductListModel;
 import saneforce.sanzen.activity.BusinessEntry.adapter.AdapterDoctorBusinessProduct;
@@ -63,6 +66,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityDoctorbusinessEntryBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -75,27 +79,27 @@ public class DoctorBusinessActivity extends AppCompatActivity {
     public static ActivityDoctorbusinessEntryBinding doctorbusinessEntryBinding;
     CommonUtilsMethods commonUtilsMethods;
     public static ArrayList<DoctorBusinessModel> DocBusinessProductDetails;
-    public static String  selectedhq="";
+    public static String selectedhq = "";
     String SfType = "", SfCode = "", SfName = "", DivCode = "", usersfcode = "";
     ApiInterface apiInterface;
-    String activeflag="";
+    String activeflag = "";
     ProgressDialog progressDialog;
     MasterDataDao masterDataDao;
     JSONArray jsonArray;
     JSONObject jsonObject;
     Button btn_apply, btn_clear;
-    TextView  tv_add_condition;
+    TextView tv_add_condition;
     TextView tvSpec, tvCate, tvTerritory, tvClass;
-    ListView lv_spec, lv_cate, lv_terr,lv_class;
+    ListView lv_spec, lv_cate, lv_terr, lv_class;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
     ArrayList<CustList> filteredNames = new ArrayList<>();
     AdapterDoctorBusinessProduct adaptdoctorproduct;
     private RoomDB roomDB;
     Dialog dialogFilter;
-    ConstraintLayout constraintLayout ;
+    ConstraintLayout constraintLayout;
     ImageView img_close, img_del;
-    String sfcode="",sfname="",Rsf="",selmonth="",selyear="";
+    String sfcode = "", sfname = "", Rsf = "", selmonth = "", selyear = "";
     String specialityCode = "", categoryCode = "", territoryCode = "", classCode = "";
     String specialityName = "", categoryName = "", territoryName = "", className = "";
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
@@ -114,29 +118,26 @@ public class DoctorBusinessActivity extends AppCompatActivity {
         usersfcode = SharedPref.getSfCode(this);
         SfName = SharedPref.getSfName(this);
         DivCode = SharedPref.getDivisionCode(this);
-        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             SfCode = SharedPref.getSfCode(this);
-        }
-        else {
+        } else {
             SfCode = SharedPref.getHqCode(this);
             doctorbusinessEntryBinding.edtFieldforce.setText(SfName);
             doctorbusinessEntryBinding.edtFieldforce.setEnabled(false);
-            selectedhq=SfCode;
+            selectedhq = SfCode;
         }
 
         doctorbusinessEntryBinding.btnStartentry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(SfType.equalsIgnoreCase("2")){
+                if (SfType.equalsIgnoreCase("2")) {
                     if (doctorbusinessEntryBinding.edtFieldforce.getText().toString().equalsIgnoreCase("")) {
                         doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
                         Toast.makeText(DoctorBusinessActivity.this, getString(R.string.select_fieldforce), Toast.LENGTH_LONG).show();
-                    }
-                    else if (doctorbusinessEntryBinding.edtMonth.getText().toString().equalsIgnoreCase("")) {
+                    } else if (doctorbusinessEntryBinding.edtMonth.getText().toString().equalsIgnoreCase("")) {
                         doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
                         Toast.makeText(DoctorBusinessActivity.this, getString(R.string.select_month), Toast.LENGTH_LONG).show();
-                    }
-                    else{
+                    } else {
                         doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
                         JSONObject json = CommonUtilsMethods.CommonObjectParameter(DoctorBusinessActivity.this);
                         try {
@@ -156,8 +157,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                                 json.put("bmonth", month);
                                 json.put("byear", year);
                                 Log.d("ParsedDate", "Month: " + month + ", Year: " + year);
-                            }
-                            catch (ParseException e) {
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                             json.put("sf_type", SfType);
@@ -165,17 +165,14 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                             json.put("state_code", SharedPref.getStateCode(DoctorBusinessActivity.this));
                             json.put("subdivision_code", SharedPref.getSubdivisionCode(DoctorBusinessActivity.this));
                             getDoctorProduct(json.toString());
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                         }
                     }
-                }
-                else {
+                } else {
                     if (doctorbusinessEntryBinding.edtMonth.getText().toString().equalsIgnoreCase("")) {
                         doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
                         Toast.makeText(DoctorBusinessActivity.this, getString(R.string.select_month), Toast.LENGTH_LONG).show();
-                    }
-                    else {
+                    } else {
                         doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
                         doctorbusinessEntryBinding.searchLayout.setVisibility(View.VISIBLE);
                         doctorbusinessEntryBinding.list.setVisibility(View.VISIBLE);
@@ -197,8 +194,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                                 json.put("bmonth", month);
                                 json.put("byear", year);
                                 Log.d("ParsedDate", "Month: " + month + ", Year: " + year);
-                            }
-                            catch (ParseException e) {
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                             json.put("sf_type", SfType);
@@ -206,8 +202,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                             json.put("state_code", SharedPref.getStateCode(DoctorBusinessActivity.this));
                             json.put("subdivision_code", SharedPref.getSubdivisionCode(DoctorBusinessActivity.this));
                             getDoctorProduct(json.toString());
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                         }
                     }
                 }
@@ -232,7 +227,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(imm != null) {
+                if (imm != null) {
                     imm.hideSoftInputFromWindow(doctorbusinessEntryBinding.txtMnth.getWindowToken(), 0);
                 }
                 showCustomMonthYearPicker();
@@ -244,7 +239,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Hide the keyboard
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(imm != null) {
+                if (imm != null) {
                     imm.hideSoftInputFromWindow(doctorbusinessEntryBinding.edtFieldforce.getWindowToken(), 0);
                 }
                 doctorbusinessEntryBinding.fragmentSelectHq.setVisibility(View.VISIBLE);
@@ -261,12 +256,11 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                     if (SharedPref.getSfType(DoctorBusinessActivity.this).equalsIgnoreCase("2")) {
                         sfcode = SharedPref.getSfCode(DoctorBusinessActivity.this);
                         sfname = SharedPref.getSfName(DoctorBusinessActivity.this);
-                        Rsf=SharedPref.getHqCode(DoctorBusinessActivity.this);
-                    }
-                    else {
+                        Rsf = SharedPref.getHqCode(DoctorBusinessActivity.this);
+                    } else {
                         sfcode = SharedPref.getSfCode(DoctorBusinessActivity.this);
                         sfname = SharedPref.getSfName(DoctorBusinessActivity.this);
-                        Rsf=sfcode;
+                        Rsf = sfcode;
                     }
                     String dateStr = doctorbusinessEntryBinding.edtMonth.getText().toString();
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
@@ -276,10 +270,9 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                         calendar.setTime(date);
                         int month = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is zero-based
                         int year = calendar.get(Calendar.YEAR);
-                        selmonth=String.valueOf(month);
-                        selyear=String.valueOf(year);
-                    }
-                    catch (ParseException e) {
+                        selmonth = String.valueOf(month);
+                        selyear = String.valueOf(year);
+                    } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     json.put("sfcode", sfcode);
@@ -289,10 +282,9 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                     json.put("Trans_Month", selmonth);
                     json.put("division_code", SharedPref.getDivisionCode(DoctorBusinessActivity.this));
                     json.put("current_Dt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
-                    Log.v ("products_final",json.toString());
+                    Log.v("products_final", json.toString());
                     finalsubmit(json.toString());
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                 }
             }
         });
@@ -319,18 +311,18 @@ public class DoctorBusinessActivity extends AppCompatActivity {
             }
         });
     }
+
     public void finalsubmit(String val) {
         try {
-            if(progressDialog == null) {
+            if (progressDialog == null) {
                 CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(this);
                 progressDialog = CommonUtilsMethods.createProgressDialog(this);
                 progressDialog.show();
-            }
-            else {
+            } else {
                 progressDialog.show();
             }
 
-            if(isNetworkConnected()) {
+            if (isNetworkConnected()) {
                 String baseUrl = SharedPref.getBaseWebUrl(this);
                 String pathUrl = SharedPref.getPhpPathUrl(this);
                 String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
@@ -341,31 +333,28 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                 mapString.put("axn", "submit/business_product");
                 Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DoctorBusinessActivity.this), mapString, val);
 
-                if(call != null) {
+                if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                            if(response.isSuccessful()) {
+                            if (response.isSuccessful()) {
                                 progressDialog.dismiss();
                                 try {
                                     assert response.body() != null;
                                     Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                                     try {
                                         JSONObject jsonObject = new JSONObject(response.body().toString());
-                                        if(jsonObject.getString("success").equalsIgnoreCase("true")) {
+                                        if (jsonObject.getString("success").equalsIgnoreCase("true")) {
                                             doctorbusinessEntryBinding.layoutButtons.setVisibility(View.VISIBLE);
                                             doctorbusinessEntryBinding.btnSave.setVisibility(View.GONE);
                                         }
-                                    }
-                                    catch (Exception e) {
+                                    } catch (Exception e) {
                                         Log.v("chkSamStk", "error---" + e);
                                     }
-                                }
-                                catch (Exception e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            }
-                            else {
+                            } else {
                                 doctorbusinessEntryBinding.btnSave.setEnabled(true);
                                 commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.something_wrong));
                                 progressDialog.dismiss();
@@ -380,14 +369,12 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }
-            else {
+            } else {
                 doctorbusinessEntryBinding.btnSave.setEnabled(true);
                 commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network));
                 progressDialog.dismiss();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             doctorbusinessEntryBinding.btnSave.setEnabled(true);
             progressDialog.dismiss();
             throw new RuntimeException(e);
@@ -403,7 +390,8 @@ public class DoctorBusinessActivity extends AppCompatActivity {
         }
         adaptdoctorproduct.filterList(filteredNames);
     }
-    public  void CustomizeFiltered(){
+
+    public void CustomizeFiltered() {
         dialogFilter = new Dialog(DoctorBusinessActivity.this);
         dialogFilter.setContentView(R.layout.popup_dcr_filter);
         Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -427,29 +415,26 @@ public class DoctorBusinessActivity extends AppCompatActivity {
         tv_add_condition.setVisibility(View.VISIBLE);
         img_del.setVisibility(View.GONE);
 
-        if(!territoryCode.isEmpty()) {
+        if (!territoryCode.isEmpty()) {
             tvTerritory.setVisibility(View.VISIBLE);
             img_del.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             tvTerritory.setVisibility(View.GONE);
             img_del.setVisibility(View.GONE);
         }
 
-        if(!classCode.isEmpty()) {
-            if(territoryCode.isEmpty()) {
+        if (!classCode.isEmpty()) {
+            if (territoryCode.isEmpty()) {
                 tvTerritory.setVisibility(View.INVISIBLE);
-            }
-            else {
+            } else {
                 tv_add_condition.setVisibility(View.GONE);
             }
             tvClass.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             tvClass.setVisibility(View.GONE);
         }
 
-        constraintLayout=dialogFilter.findViewById(R.id.constraint_btns);
+        constraintLayout = dialogFilter.findViewById(R.id.constraint_btns);
         img_close.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -639,108 +624,93 @@ public class DoctorBusinessActivity extends AppCompatActivity {
         });
 
     }
+
     public void Filtered() {
         ArrayList<CustList> filterCusList = new ArrayList<>();
-        if(!filteredNames.isEmpty()) {
+        if (!filteredNames.isEmpty()) {
             filterCusList.addAll(filteredNames);
-        }
-        else {
+        } else {
             filterCusList.addAll(custListArrayList);
         }
         FilltercustArraList.clear();
-        if(specialityCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("") && territoryCode.equalsIgnoreCase("") && classCode.equalsIgnoreCase("")) {
+        if (specialityCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("") && territoryCode.equalsIgnoreCase("") && classCode.equalsIgnoreCase("")) {
             FilltercustArraList.addAll(filterCusList);
             doctorbusinessEntryBinding.tvFilterCount.setText("0");
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
-        }
-        else {
+        } else {
             for (CustList mList : filterCusList) {
-                if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                if (mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                         && mList.getTown_code().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                         && mList.getTown_code().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && classCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                         && mList.getTown_code().equalsIgnoreCase(territoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && categoryCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && territoryCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                } else if (mList.getTown_code().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && specialityCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                         && mList.getTown_code().equalsIgnoreCase(territoryCode)
                         && categoryCode.isEmpty()
                         && classCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && territoryCode.isEmpty()
                         && classCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && territoryCode.isEmpty()
                         && categoryCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                } else if (mList.getTown_code().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && specialityCode.isEmpty()
                         && classCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                } else if (mList.getTown_code().equalsIgnoreCase(territoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && specialityCode.isEmpty()
                         && categoryCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                } else if (mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && specialityCode.isEmpty()
                         && territoryCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else {
-                    if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                } else {
+                    if (mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                             && territoryCode.isEmpty()
                             && categoryCode.isEmpty()
                             && classCode.isEmpty()) {
                         FilltercustArraList.add(mList);
-                    }
-                    else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                    } else if (mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                             && specialityCode.isEmpty()
                             && territoryCode.isEmpty()
                             && classCode.isEmpty()) {
                         FilltercustArraList.add(mList);
-                    }
-                    else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                    } else if (mList.getTown_code().equalsIgnoreCase(territoryCode)
                             && specialityCode.isEmpty()
                             && categoryCode.isEmpty()
                             && classCode.isEmpty()) {
                         FilltercustArraList.add(mList);
-                    }
-                    else if(mList.getClassCode().equalsIgnoreCase(classCode)
+                    } else if (mList.getClassCode().equalsIgnoreCase(classCode)
                             && specialityCode.isEmpty()
                             && territoryCode.isEmpty()
                             && categoryCode.isEmpty()) {
@@ -751,54 +721,48 @@ public class DoctorBusinessActivity extends AppCompatActivity {
             doctorbusinessEntryBinding.tvFilterCount.setText(String.valueOf(FilltercustArraList.size()));
         }
 
-        if(FilltercustArraList.isEmpty()){
+        if (FilltercustArraList.isEmpty()) {
             doctorbusinessEntryBinding.noDoctor.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getDrCap(DoctorBusinessActivity.this), getString(R.string.found)));
             doctorbusinessEntryBinding.noDoctor.setVisibility(View.VISIBLE);
             doctorbusinessEntryBinding.rvCustListSelection.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             doctorbusinessEntryBinding.noDoctor.setVisibility(View.GONE);
             doctorbusinessEntryBinding.rvCustListSelection.setVisibility(View.VISIBLE);
             adaptdoctorproduct.filterList(FilltercustArraList);
         }
         dialogFilter.dismiss();
     }
+
     private void getFilterList(String requiredList) {
         try {
             JSONArray jsonArray = new JSONArray();
             if (requiredList.equalsIgnoreCase("Speciality")) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
-            }
-            else if (requiredList.equalsIgnoreCase("Category")) {
+            } else if (requiredList.equalsIgnoreCase("Category")) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
-            }
-            else if (requiredList.equalsIgnoreCase("Territory")) {
+            } else if (requiredList.equalsIgnoreCase("Territory")) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + selectedhq).getMasterSyncDataJsonArray();
-            }
-            else if(requiredList.equalsIgnoreCase("Class")){
+            } else if (requiredList.equalsIgnoreCase("Class")) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray();
             }
             filterSelectionList.clear();
             Log.v("jsonArray", "--" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
-                filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"),jsonObject.getString("Code")));
+                filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
             }
-        }
-        catch (Exception ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public void commonFun() {
         try {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
         }
     }
 
-    private void showCustomMonthYearPicker()
-    {
+    private void showCustomMonthYearPicker() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.dialog_month_year_picker, null);
         final NumberPicker monthPicker = dialogView.findViewById(R.id.month_picker);
@@ -850,7 +814,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
         Window window = dialog.getWindow();
         if (window != null) {
             window.setLayout((int) (getResources().getDisplayMetrics().widthPixels * 0.60), // 60% width
-                    WindowManager.LayoutParams.WRAP_CONTENT);
+                             WindowManager.LayoutParams.WRAP_CONTENT);
             window.setGravity(Gravity.CENTER);
         }
     }
@@ -886,16 +850,15 @@ public class DoctorBusinessActivity extends AppCompatActivity {
 
     public void getDoctorProduct(String val) {
         try {
-            if(progressDialog == null) {
+            if (progressDialog == null) {
                 CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(this);
                 progressDialog = CommonUtilsMethods.createProgressDialog(this);
                 progressDialog.show();
-            }
-            else {
+            } else {
                 progressDialog.show();
             }
 
-            if(isNetworkConnected()) {
+            if (isNetworkConnected()) {
                 String baseUrl = SharedPref.getBaseWebUrl(this);
                 String pathUrl = SharedPref.getPhpPathUrl(this);
                 String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
@@ -906,50 +869,45 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                 mapString.put("axn", "get/business_product");
                 Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DoctorBusinessActivity.this), mapString, val);
 
-                if(call != null) {
+                if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                            if(response.isSuccessful()) {
+                            if (response.isSuccessful()) {
                                 progressDialog.dismiss();
                                 try {
                                     assert response.body() != null;
                                     DocBusinessProductDetails = new ArrayList<>();
-                                        Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-                                        try {
-                                            JsonElement jsonElement = response.body();
-                                            if(jsonElement != null) {
-                                                JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                                if (jsonArray1.length() > 0) {
-                                                    for (int j = 0; j < jsonArray1.length(); j++) {
-                                                        JSONObject jsdctrbusiness = jsonArray1.getJSONObject(j);
-                                                        activeflag = jsdctrbusiness.getString("Active");
-                                                        if (activeflag.equalsIgnoreCase("1")) {
-                                                            doctorbusinessEntryBinding.btnSave.setVisibility(View.GONE);
-                                                            doctorbusinessEntryBinding.layoutButtons.setVisibility(View.VISIBLE);
-                                                        }
-                                                        else {
-                                                            doctorbusinessEntryBinding.layoutButtons.setVisibility(View.VISIBLE);
-                                                        }
-                                                        DocBusinessProductDetails.add(0, new DoctorBusinessModel(jsdctrbusiness.getString("Head_No"), jsdctrbusiness.getString("ListedDrCode"),  jsdctrbusiness.getString("ListedDr_Name"), jsdctrbusiness.getString("Active"), jsdctrbusiness.getString("Product_data")));
+                                    Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
+                                    try {
+                                        JsonElement jsonElement = response.body();
+                                        if (jsonElement != null) {
+                                            JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                            if (jsonArray1.length() > 0) {
+                                                for (int j = 0; j < jsonArray1.length(); j++) {
+                                                    JSONObject jsdctrbusiness = jsonArray1.getJSONObject(j);
+                                                    activeflag = jsdctrbusiness.getString("Active");
+                                                    if (activeflag.equalsIgnoreCase("1")) {
+                                                        doctorbusinessEntryBinding.btnSave.setVisibility(View.GONE);
+                                                        doctorbusinessEntryBinding.layoutButtons.setVisibility(View.VISIBLE);
+                                                    } else {
+                                                        doctorbusinessEntryBinding.layoutButtons.setVisibility(View.VISIBLE);
                                                     }
+                                                    DocBusinessProductDetails.add(0, new DoctorBusinessModel(jsdctrbusiness.getString("Head_No"), jsdctrbusiness.getString("ListedDrCode"), jsdctrbusiness.getString("ListedDr_Name"), jsdctrbusiness.getString("Active"), jsdctrbusiness.getString("Product_data")));
                                                 }
-                                                else if(jsonArray1.length() == 0){
-                                                    doctorbusinessEntryBinding.layoutButtons.setVisibility(View.VISIBLE);
-                                                }
-
+                                            } else if (jsonArray1.length() == 0) {
+                                                doctorbusinessEntryBinding.layoutButtons.setVisibility(View.VISIBLE);
                                             }
+
                                         }
-                                        catch (Exception e) {
-                                            Log.v("chkSamStk", "error---" + e);
-                                        }
-                                        SetupAdapter();
-                                }
-                                catch (Exception e) {
+                                    } catch (Exception e) {
+                                        Log.v("chkSamStk", "error---" + e);
+                                    }
+                                    SetupAdapter();
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            }
-                            else {
+                            } else {
                                 doctorbusinessEntryBinding.layoutButtons.setVisibility(View.GONE);
                                 doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
                                 commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.something_wrong));
@@ -966,15 +924,13 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }
-            else {
+            } else {
                 doctorbusinessEntryBinding.layoutButtons.setVisibility(View.GONE);
                 doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
                 commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network));
                 progressDialog.dismiss();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             doctorbusinessEntryBinding.layoutButtons.setVisibility(View.GONE);
             doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
             progressDialog.dismiss();
@@ -984,18 +940,17 @@ public class DoctorBusinessActivity extends AppCompatActivity {
 
     private void SetupAdapter() {
         try {
-            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedhq ).getMasterSyncDataJsonArray();
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedhq).getMasterSyncDataJsonArray();
             if (jsonArray.length() == 0) {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) );
+                CommonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, DoctorBusinessActivity.this.getString(R.string.no_data_found) + "  " + DoctorBusinessActivity.this.getString(R.string.do_master_sync));
             }
-            Log.v("DrCall", "-dr_full_length-" + jsonArray.length());
+//            Log.v("DrCall", "-dr_full_length-" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 try {
-                      Log.v("DrCall", "333");
-                      custListArrayList = SaveData(jsonObject, i);
-                }
-                catch (Exception e) {
+//                      Log.v("DrCall", "333");
+                    custListArrayList = SaveData(jsonObject, i);
+                } catch (Exception e) {
                     Log.v("DrCall", "dr--error-1-" + e);
                 }
             }
@@ -1008,11 +963,10 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                     }
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.v("DrCall", "-dr--error-2-" + e);
         }
-        if(custListArrayList.size()>0) {
+        if (custListArrayList.size() > 0) {
             doctorbusinessEntryBinding.searchLayout.setVisibility(View.VISIBLE);
             doctorbusinessEntryBinding.list.setVisibility(View.VISIBLE);
         }
@@ -1020,12 +974,11 @@ public class DoctorBusinessActivity extends AppCompatActivity {
         FilltercustArraList.clear();
         FilltercustArraList.addAll(custListArrayList);
 
-        if(FilltercustArraList.isEmpty()){
+        if (FilltercustArraList.isEmpty()) {
             doctorbusinessEntryBinding.noDoctor.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getDrCap(DoctorBusinessActivity.this), getString(R.string.found)));
             doctorbusinessEntryBinding.noDoctor.setVisibility(View.VISIBLE);
             doctorbusinessEntryBinding.rvCustListSelection.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             doctorbusinessEntryBinding.noDoctor.setVisibility(View.GONE);
             doctorbusinessEntryBinding.rvCustListSelection.setVisibility(View.VISIBLE);
             adaptdoctorproduct = new AdapterDoctorBusinessProduct(
@@ -1094,6 +1047,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         }
     }
+
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int index) {
         try {
             String code = jsonObject.getString("Code");
@@ -1136,30 +1090,28 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                         Log.d("ProductJSON", "Doctor: " + code + ", JSON: " + json);
                         JSONArray productArray = new JSONArray(json);
                         Gson gson = new Gson();
-                        Type listType = new TypeToken<List<ProductListModel>>() {}.getType();
+                        Type listType = new TypeToken<List<ProductListModel>>() {
+                        }.getType();
                         List<ProductListModel> productList = gson.fromJson(productArray.toString(), listType);
                         for (ProductListModel product : productList) {
                             Log.d("ProductValue", "Doctor: " + code + ", Value: " + product.value);
                             if (product.value != null && !product.value.trim().isEmpty()) {
                                 try {
                                     totalValue += Double.parseDouble(product.value);
-                                }
-                                catch (NumberFormatException e) {
+                                } catch (NumberFormatException e) {
                                     Log.e("DrCall", "Invalid value for doctor " + code + ": " + product.value);
                                 }
                             }
                         }
                         break;
-                    }
-                    catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
             drList.setTotvalue(String.format(Locale.getDefault(), "%.2f", totalValue));
             custListArrayList.add(drList);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.v("DrCall", "--SaveData-error-- " + e.toString());
         }
         return custListArrayList;

@@ -1,14 +1,11 @@
 package saneforce.sanzen.activity.approvals.tp;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -39,7 +36,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
@@ -49,21 +45,20 @@ import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalAdapter;
 import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalDetailedAdapter;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpDetailedModel;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityTpApprovalBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class TpApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
-    public static String  SelectedSfCode, SelectedMonthYear, SelectedMonth, SelectedYear, SelectedDay = "", TpDrNeed, TpChemNeed, TpClusterNeed, TpJwNeed, TpStockistNeed, TpUnDrNeed, TpCipNeed, TpHospNeed;
+    public static String SelectedSfCode, SelectedMonthYear, SelectedMonth, SelectedYear, SelectedDay = "", TpDrNeed, TpChemNeed, TpClusterNeed, TpJwNeed, TpStockistNeed, TpUnDrNeed, TpCipNeed, TpHospNeed;
     @SuppressLint("StaticFieldLeak")
     public static ActivityTpApprovalBinding tpApprovalBinding;
     public static int SelectedPosition;
@@ -81,17 +76,16 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
 
-
     //To Hide the bottomNavigation When popup
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             tpApprovalBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                                                                      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                                                      | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                                                      | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                                                      | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -155,7 +149,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     private void tpApproval() {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
-        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+        if (SharedPref.getOneBuild(TpApprovalActivity.this).equalsIgnoreCase("0")) {
             try {
                 jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
                 jsonTp.put("tableName", "savetpapproval_onebuild");
@@ -164,13 +158,13 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 jsonTp.put("Year", SelectedYear);
                 jsonTp.put("division_code", SharedPref.getDivisionCode(this));
                 jsonTp.put("Rsf", SelectedSfCode);
-                jsonTp.put("approval_date_time",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonTp.put("approval_date_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
 
                 Log.v("json_tp_Approved", jsonTp.toString());
             } catch (Exception ignored) {
 
             }
-        }else {
+        } else {
             try {
                 jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
                 jsonTp.put("tableName", "savetpapproval");
@@ -189,7 +183,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/tp");
-        Call<JsonElement> callApproveTp = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonTp.toString());
+        Call<JsonElement> callApproveTp = api_interface.getJSONElement(SharedPref.getCallApiUrl(TpApprovalActivity.this), mapString, jsonTp.toString());
         callApproveTp.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -199,7 +193,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.approved_successfully));
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.approved_successfully));
                             removeSelectedData();
                             ApprovalsActivity.TpCount--;
                         }
@@ -207,14 +201,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
             }
         });
     }
@@ -229,7 +223,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
         Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
         Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
-        ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
+        ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason, 300)});
         btn_cancel.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -262,7 +256,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     private void tpReject(String reason) {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
-        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+        if (SharedPref.getOneBuild(TpApprovalActivity.this).equalsIgnoreCase("0")) {
             try {
                 jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
                 jsonTp.put("tableName", "savetpreject_onebuild");
@@ -272,12 +266,12 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 jsonTp.put("reason", reason);
                 jsonTp.put("division_code", SharedPref.getDivisionCode(this));
                 jsonTp.put("Rsf", SelectedSfCode);
-                jsonTp.put("reject_date_time",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonTp.put("reject_date_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                 Log.v("json_tp_Reject", jsonTp.toString());
             } catch (Exception ignored) {
 
             }
-        }else {
+        } else {
             try {
                 jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
                 jsonTp.put("tableName", "savetpreject");
@@ -294,7 +288,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         }
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/tp");
-        Call<JsonElement> callRejectTp = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonTp.toString());
+        Call<JsonElement> callRejectTp = api_interface.getJSONElement(SharedPref.getCallApiUrl(TpApprovalActivity.this), mapString, jsonTp.toString());
         callRejectTp.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -304,7 +298,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.rejected_successfully));
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.rejected_successfully));
                             dialogReject.dismiss();
                             removeSelectedData();
                             ApprovalsActivity.TpCount--;
@@ -315,14 +309,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
                 dialogReject.dismiss();
             }
         });
@@ -348,9 +342,9 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     private void CallTpListApi() {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
-        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+        if (SharedPref.getOneBuild(TpApprovalActivity.this).equalsIgnoreCase("0")) {
             try {
-                jsonTp=CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
                 jsonTp.put("tableName", "gettpapproval_onebuild");
                 jsonTp.put("sfcode", SharedPref.getSfCode(this));
                 jsonTp.put("division_code", SharedPref.getDivisionCode(this));
@@ -359,7 +353,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             } catch (Exception ignored) {
 
             }
-        }else {
+        } else {
             try {
                 jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
                 jsonTp.put("tableName", "gettpapproval");
@@ -375,7 +369,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/approvals");
-        Call<JsonElement> callGetTPApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonTp.toString());
+        Call<JsonElement> callGetTPApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(TpApprovalActivity.this), mapString, jsonTp.toString());
 
         callGetTPApproval.enqueue(new Callback<JsonElement>() {
             @Override
@@ -400,7 +394,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             tpApprovalBinding.rvTpList.setAdapter(tpApprovalAdapter);
                         } else {
                             tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
-                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_data_found));
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_data_found));
                         }
                     } catch (Exception ignored) {
 
@@ -408,7 +402,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 } else {
                     tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
                 }
             }
 
@@ -416,7 +410,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
             }
         });
     }
@@ -478,7 +472,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     }
 
     private void GetDetailsApi() {
-        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+        if (SharedPref.getOneBuild(TpApprovalActivity.this).equalsIgnoreCase("0")) {
             try {
                 jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
                 jsonTp.put("tableName", "gettpdetail_onebuild");
@@ -491,7 +485,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             } catch (Exception ignored) {
 
             }
-        }else {
+        } else {
             try {
                 jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
                 if (SharedPref.getSfType(TpApprovalActivity.this).equalsIgnoreCase("1")) {
@@ -511,7 +505,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         }
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/tp");
-        Call<JsonElement> callGetTPADetailedList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonTp.toString());
+        Call<JsonElement> callGetTPADetailedList = api_interface.getJSONElement(SharedPref.getCallApiUrl(TpApprovalActivity.this), mapString, jsonTp.toString());
 
         callGetTPADetailedList.enqueue(new Callback<JsonElement>() {
             @SuppressLint("SetTextI18n")
@@ -521,15 +515,15 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     tpDetailedModelsList.clear();
-                    totalWeekOffDays=0;
-                    totalPlannedDays=0;
-                    totalHolidays=0;
+                    totalWeekOffDays = 0;
+                    totalPlannedDays = 0;
+                    totalHolidays = 0;
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         if (jsonArray.length() > 0) {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject json = jsonArray.getJSONObject(i);
-                                tpDetailedModelsList.add(new TpDetailedModel(json.getString("dayno"), json.getString("Change_Status"), json.getString("Rejection_Reason"), json.getString("WTCode"), json.getString("WTCode2"), json.getString("WTCode3"), json.getString("WTName"), json.getString("WTName2"), json.getString("WTName3"),json.getString("HQCodes"), json.getString("HQCodes2"), json.getString("HQCodes3"),json.getString("HQNames"), json.getString("HQNames2"), json.getString("HQNames3"),   json.getString("ClusterCode"), json.getString("ClusterCode2"), json.getString("ClusterCode3"), json.getString("ClusterName"), json.getString("ClusterName2"), json.getString("ClusterName3"), json.getString("FWFlg"), json.getString("FWFlg2"), json.getString("FWFlg3"), json.getString("DayRemarks"), json.getString("DayRemarks2"), json.getString("DayRemarks3"), json.getString("Dr_Name"), json.getString("Dr_two_name"), json.getString("Dr_three_name"), json.getString("Chem_Name"), json.getString("Chem_two_name"), json.getString("Chem_three_name"), json.getString("Stockist_Name"), json.getString("Stockist_two_name"), json.getString("Stockist_three_name"), json.getString("JWNames"), json.getString("JWNames2"), json.getString("JWNames3"), json.getString("STP_Code"), json.getString("STP_Name")));
+                                tpDetailedModelsList.add(new TpDetailedModel(json.getString("dayno"), json.getString("Change_Status"), json.getString("Rejection_Reason"), json.getString("WTCode"), json.getString("WTCode2"), json.getString("WTCode3"), json.getString("WTName"), json.getString("WTName2"), json.getString("WTName3"), json.getString("HQCodes"), json.getString("HQCodes2"), json.getString("HQCodes3"), json.getString("HQNames"), json.getString("HQNames2"), json.getString("HQNames3"), json.getString("ClusterCode"), json.getString("ClusterCode2"), json.getString("ClusterCode3"), json.getString("ClusterName"), json.getString("ClusterName2"), json.getString("ClusterName3"), json.getString("FWFlg"), json.getString("FWFlg2"), json.getString("FWFlg3"), json.getString("DayRemarks"), json.getString("DayRemarks2"), json.getString("DayRemarks3"), json.getString("Dr_Name"), json.getString("Dr_two_name"), json.getString("Dr_three_name"), json.getString("Chem_Name"), json.getString("Chem_two_name"), json.getString("Chem_three_name"), json.getString("Stockist_Name"), json.getString("Stockist_two_name"), json.getString("Stockist_three_name"), json.getString("JWNames"), json.getString("JWNames2"), json.getString("JWNames3"), json.getString("STP_Code"), json.getString("STP_Name")));
                                 if (json.getString("FWFlg").equalsIgnoreCase("W")) {
                                     totalWeekOffDays++;
                                 } else if (json.getString("FWFlg").equalsIgnoreCase("H")) {
@@ -560,21 +554,21 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             tpApprovalBinding.rvTpContentList.setLayoutManager(mLayoutManager);
                             tpApprovalBinding.rvTpContentList.setAdapter(tpApprovalDetailedAdapter);
                         } else {
-                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_data_found));
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_data_found));
                         }
                     } catch (Exception e) {
                         Log.v("tpDetailedList", "---" + e);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
             }
         });
     }

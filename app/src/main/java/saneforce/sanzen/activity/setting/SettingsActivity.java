@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.setting;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -393,7 +391,6 @@ private void SelectedLanguage(String lang) {
 
     binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
 }
-
 
     private static boolean checkURL(CharSequence input) {
         boolean validUrl = false;

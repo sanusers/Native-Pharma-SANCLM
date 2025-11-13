@@ -36,12 +36,12 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.ListenerEditText;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapter.ViewHolder> {
     Context context;
@@ -57,7 +57,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
     ArrayList<Double> CompQty = new ArrayList<>();
 
 
-    public RCPACompListAdapter(Activity activity,Context context, ArrayList<RCPAAddedCompList> CompetitorList) {
+    public RCPACompListAdapter(Activity activity, Context context, ArrayList<RCPAAddedCompList> CompetitorList) {
         this.activity = activity;
         this.context = context;
         this.CompetitorList = CompetitorList;
@@ -86,9 +86,9 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
         getPrdTotalStatic = Double.parseDouble(CompetitorList.get(holder.getBindingAdapterPosition()).getTotalPrdValue());
 
         if (!CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks().isEmpty()) {
-            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_0));
+            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_remarks_0));
         } else {
-            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_1));
+            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_remarks_1));
         }
 
 
@@ -125,6 +125,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
 
         holder.ed_qty.addTextChangedListener(new TextWatcher() {
             boolean isUpdating = false;
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -137,7 +138,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
             @Override
             public void afterTextChanged(Editable editable) {
                 try {
-                    if (editable != null && ! editable.toString().isEmpty()) {
+                    if (editable != null && !editable.toString().isEmpty()) {
                         try {
                             if (isUpdating) return;
                             String text = editable.toString();
@@ -214,7 +215,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                 EditText ed_remark = dialogRemarks.findViewById(R.id.ed_remark);
                 Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
                 Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
-                ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark)});
+                ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark, 200)});
 
                 if (!CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks().isEmpty()) {
                     ed_remark.setText(CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks());
@@ -334,7 +335,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
             }
         }
 
-        rcpaChemistAdapter = new RCPAChemistAdapter(activity,context, ChemistSelectedList, ProductSelectedList, rcpa_comp_list);
+        rcpaChemistAdapter = new RCPAChemistAdapter(activity, context, ChemistSelectedList, ProductSelectedList, rcpa_comp_list);
         commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);
         rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
         rcpaChemistAdapter.notifyDataSetChanged();

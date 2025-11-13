@@ -1,8 +1,5 @@
 package saneforce.sanzen.activity.call.adapter.detailing;
 
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.slideScribble;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SelectedPosPlay;
@@ -14,14 +11,11 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.Speciality.
 import static saneforce.sanzen.activity.previewPresentation.fragment.Therapist.SlideTherapistList;
 import static saneforce.sanzen.activity.previewPresentation.fragment.WelcomePresentation.SlideWelcomeList;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -66,7 +60,6 @@ import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
-import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityPlaySlidePreviewDetailingBinding;
@@ -501,15 +494,15 @@ public class PlaySlideDetailing extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT >= 33) {
-            if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(PlaySlideDetailing.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(PlaySlideDetailing.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
-                CommonUtilsMethods.RequestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_AUDIO, READ_MEDIA_VIDEO}, false);
-            }
-        } else {
-            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, false);
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= 33) {
+//            if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(PlaySlideDetailing.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(PlaySlideDetailing.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+//                CommonUtilsMethods.RequestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_AUDIO, READ_MEDIA_VIDEO}, false);
+//            }
+//        } else {
+//            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, false);
+//            }
+//        }
     }
 
     public void initialisation() {

@@ -229,8 +229,11 @@ public class BrandMatrix extends Fragment {
                 brandMatrixBinding.rvBrandList.setVisibility(View.VISIBLE);
                 brandMatrixBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 if (from_where.equalsIgnoreCase("call")) {
-//                    brandMatrixBinding.tvInfo.setVisibility(View.VISIBLE);
-//                    brandMatrixBinding.viewDummy2.setVisibility(View.VISIBLE);
+                    brandMatrixBinding.tvInfo.setVisibility(View.VISIBLE);
+                    brandMatrixBinding.viewDummy2.setVisibility(View.VISIBLE);
+                } else {
+                    brandMatrixBinding.tvInfo.setVisibility(View.GONE);
+                    brandMatrixBinding.viewDummy2.setVisibility(View.INVISIBLE);
                 }
                 previewAdapter = new PreviewAdapter(context, SlideBrandMatrixList);
                 brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));

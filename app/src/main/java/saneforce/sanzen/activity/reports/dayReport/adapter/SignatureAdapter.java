@@ -1,4 +1,4 @@
-    package saneforce.sanzen.activity.reports.dayReport.adapter;
+package saneforce.sanzen.activity.reports.dayReport.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,35 +16,37 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
-import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.dayReport.model.SignatureModelClass;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 
-    public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.Viewholder>{
+public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.Viewholder> {
     Context context;
     ArrayList<SignatureModelClass> SignatureData = new ArrayList<>();
+    CommonUtilsMethods commonUtilsMethods;
 
     public SignatureAdapter(Context context, ArrayList<SignatureModelClass> signatureData) {
         this.context = context;
         SignatureData = signatureData;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
     @Override
     public Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater=LayoutInflater.from(context);
-        View view=inflater.inflate(R.layout.eventsignitem,null,false);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.eventsignitem, null, false);
         return new Viewholder(view);
     }
+
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
 
 
-        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
             String imageName = SignatureData.get(position).getSignImg().replace("photos/", "");
             String fileName = imageName;
 
@@ -63,11 +65,18 @@ import saneforce.sanzen.storage.SharedPref;
                         holder.imageView.setVisibility(View.GONE);
                     }
                 }
-            });
-        }else{
-            String url = SharedPref.getTagImageUrl(context) + "signs/" +SignatureData.get(position).getSignImg();
 
-            Log.e("Inmge",url);
+                @Override
+                public void onFailure(int pos) {
+                    Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                    commonUtilsMethods.showToastMessage(context, "Image Not Found");
+                    holder.imageView.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            String url = SharedPref.getTagImageUrl(context) + "signs/" + SignatureData.get(position).getSignImg();
+
+            Log.e("Inmge", url);
             Picasso.get()
                     .load(url)
                     .into(holder.imageView);
@@ -81,13 +90,13 @@ import saneforce.sanzen.storage.SharedPref;
     }
 
 
-
     public class Viewholder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
+
         public Viewholder(@NonNull View itemView) {
             super(itemView);
-            imageView=itemView.findViewById(R.id.image);
+            imageView = itemView.findViewById(R.id.image);
         }
     }
 }

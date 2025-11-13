@@ -2,18 +2,10 @@ package saneforce.sanzen.activity.call.fragments.activity;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
-
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
 
 import android.annotation.SuppressLint;
@@ -32,19 +24,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.PermissionChecker;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -65,6 +48,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
@@ -75,6 +67,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -99,17 +93,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
 import saneforce.sanzen.activity.activityModule.adapter.ActivityAdapter;
+import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
 import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
-import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
-import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentActivityBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -119,14 +113,14 @@ import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataDao
 import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTable;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataTable;
-import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class ActivityFragment extends Fragment {
-    
+
     private FragmentActivityBinding fragmentActivityBinding;
     private static final int PICK_FROM_GALLERY = 101;
     ApiInterface apiInterface;
@@ -196,22 +190,22 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(requireContext())));
         fragmentActivityBinding.txthqName.setText(SharedPref.getHqName(requireContext()));
         fragmentActivityBinding.btnSubmit.setEnabled(false);
-        if(activityAnswerData == null) {
+        if (activityAnswerData == null) {
             activityAnswerData = new LinkedHashMap<>();
         }
-        if(savedActivityList == null) {
+        if (savedActivityList == null) {
             savedActivityList = new HashSet<>();
         }
-        if(activityData == null) {
+        if (activityData == null) {
             activityData = new ArrayList<>();
         }
         adapter = new ActivityAdapter(requireContext(), ActivityList, (classGroup, holder, position) -> {
-            if(this.chosenActivityPosition == position) {
+            if (this.chosenActivityPosition == position) {
                 Log.d("Activity", "onViewCreated: Same activity, Do nothing");
-            }else if (this.chosenActivityPosition != -1 && chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo()) && validateActivityData()) {
+            } else if (this.chosenActivityPosition != -1 && chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo()) && validateActivityData()) {
                 activityChangeAlert(classGroup, position);
-            }else {
-                if(chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
+            } else {
+                if (chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
                     activityAnswerData.put(chosenActivityModelClass.getSlNo(), new LinkedHashMap<>());
                 }
                 fragmentActivityBinding.namechooseActivity.setText(classGroup.getActivityName());
@@ -229,7 +223,7 @@ public class ActivityFragment extends Fragment {
 //        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
 //            fragmentActivityBinding.rlheadquates.setVisibility(View.VISIBLE);
 //        }else {
-            fragmentActivityBinding.rlheadquates.setVisibility(View.GONE);
+        fragmentActivityBinding.rlheadquates.setVisibility(View.GONE);
 //        }
 
 //        fragmentActivityBinding.rlheadquates.setOnClickListener(new View.OnClickListener() {
@@ -242,9 +236,9 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.btnSubmit.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if(chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
+                if (chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
                     saveActivity();
-                }else if(chosenActivityModelClass != null && savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
+                } else if (chosenActivityModelClass != null && savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
                     showSaveAlert();
                 }
             }
@@ -286,9 +280,9 @@ public class ActivityFragment extends Fragment {
 
     private boolean validateActivityData() {
         boolean isDataEntered = false;
-        for (int i = 0; i<ActivityViewItem.size(); i++) {
+        for (int i = 0; i < ActivityViewItem.size(); i++) {
             ActivityDetailsModelClass activityDetailsModelClass = ActivityViewItem.get(i);
-            if(activityDetailsModelClass.getAnswerTxt() != null && !activityDetailsModelClass.getAnswerTxt().isEmpty() && !activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17")) {
+            if (activityDetailsModelClass.getAnswerTxt() != null && !activityDetailsModelClass.getAnswerTxt().isEmpty() && !activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17")) {
                 isDataEntered = true;
                 break;
             }
@@ -365,12 +359,12 @@ public class ActivityFragment extends Fragment {
         ActivityList.clear();
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.ACTIVITY).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
                 String activityDesignation = jsonObject.optString("Activity_Desig"), activityFor = jsonObject.optString("Activity_For");
                 String dsName = SharedPref.getDsName(requireContext());
 
-                if(activityDesignation.contains(dsName) && activityFor.contains(CallActivityCustDetails.get(0).getType())) {
+                if (activityDesignation.contains(dsName) && activityFor.contains(CallActivityCustDetails.get(0).getType())) {
                     fragmentActivityBinding.rlNoActivity.setVisibility(View.GONE);
                     fragmentActivityBinding.llMainLayout.setVisibility(View.VISIBLE);
                     fragmentActivityBinding.rlDetailsMain.setVisibility(View.VISIBLE);
@@ -379,7 +373,7 @@ public class ActivityFragment extends Fragment {
                     adapter.notifyDataSetChanged();
                 }
             }
-            if(ActivityList.isEmpty()) {
+            if (ActivityList.isEmpty()) {
                 adapter.notifyDataSetChanged();
                 fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
                 fragmentActivityBinding.rlNoActivity.setVisibility(View.VISIBLE);
@@ -396,8 +390,8 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.progrlessdetail.setVisibility(View.VISIBLE);
         ActivityDetailsList.clear();
         ActivityViewItem.clear();
-        if(!activityDetailsDataDao.isActivityDataAvailable(activityModelClass.getSlNo() + "_" + SharedPref.getHqCode(requireContext()))) {
-            if(UtilityClass.isNetworkAvailable(requireContext())) {
+        if (!activityDetailsDataDao.isActivityDataAvailable(activityModelClass.getSlNo() + "_" + SharedPref.getHqCode(requireContext()))) {
+            if (UtilityClass.isNetworkAvailable(requireContext())) {
                 callActivityDetailsAPI(activityModelClass);
             } else {
                 commonUtilsMethods.showToastMessage(requireActivity(), getString(R.string.no_network));
@@ -413,11 +407,11 @@ public class ActivityFragment extends Fragment {
             try {
                 ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo() + "_" + SharedPref.getHqCode(requireContext()));
                 JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
-                if(jsonArray.length()>0) {
+                if (jsonArray.length() > 0) {
                     fragmentActivityBinding.rlDataLayout.setVisibility(View.VISIBLE);
                     fragmentActivityBinding.btnSubmit.setVisibility(View.VISIBLE);
                     fragmentActivityBinding.rlNoData.setVisibility(View.GONE);
-                    for (int i = 0; i<jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                         String Control_Id = jsonObject1.getString("Control_Id");
                         String Field_Name = jsonObject1.getString("Field_Name");
@@ -429,11 +423,11 @@ public class ActivityFragment extends Fragment {
                         ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
                     }
                     int jjj = 0;
-                    for (int i = 0; i<ActivityDetailsList.size(); i++) {
-                        if(!activityAnswerData.containsKey(ActivityDetailsList.get(i).getSlno())) {
+                    for (int i = 0; i < ActivityDetailsList.size(); i++) {
+                        if (!activityAnswerData.containsKey(ActivityDetailsList.get(i).getSlno())) {
                             activityAnswerData.put(ActivityDetailsList.get(i).getSlno(), new LinkedHashMap<>());
                         }
-                        switch (ActivityDetailsList.get(i).getControlId()){
+                        switch (ActivityDetailsList.get(i).getControlId()) {
                             case "0":
                                 CreateLabelView(ActivityDetailsList.get(i), i);
                                 break;
@@ -492,16 +486,16 @@ public class ActivityFragment extends Fragment {
                                 break;
                         }
                         jjj++;
-                        if(ActivityDetailsList.size() == jjj) {
+                        if (ActivityDetailsList.size() == jjj) {
                             fragmentActivityBinding.btnSubmit.setEnabled(true);
                         }
                     }
                 }
-                if(!ActivityDetailsList.isEmpty()) {
+                if (!ActivityDetailsList.isEmpty()) {
                     fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
                     fragmentActivityBinding.rlNoData.setVisibility(View.GONE);
                     fragmentActivityBinding.rlDetailsMain.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     fragmentActivityBinding.rlNoData.setVisibility(View.VISIBLE);
                     fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
                     fragmentActivityBinding.btnSubmit.setVisibility(View.GONE);
@@ -533,10 +527,10 @@ public class ActivityFragment extends Fragment {
                 public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                     Log.v("Response :", "" + response);
                     fragmentActivityBinding.progressMain.setVisibility(View.GONE);
-                    if(response.isSuccessful()) {
+                    if (response.isSuccessful()) {
                         try {
                             JsonElement jsonElement = response.body();
-                            if(jsonElement != null) {
+                            if (jsonElement != null) {
                                 JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
                                 activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(activityModelClass.getSlNo() + "_" + SharedPref.getHqCode(requireContext()), jsonArray1.toString(), "0"));
                                 activityModelClass.setAvailableOffline(true);
@@ -549,6 +543,7 @@ public class ActivityFragment extends Fragment {
                         }
                     }
                 }
+
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     t.printStackTrace();
@@ -651,7 +646,7 @@ public class ActivityFragment extends Fragment {
         textlabel.setId(k);
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout);
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), List.getFieldName(), "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+        if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
             activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), List.getFieldName(), "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         }
     }
@@ -670,9 +665,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             txtLabelName.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             txtLabelName.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -700,20 +695,21 @@ public class ActivityFragment extends Fragment {
         textcharacter.setHint("Enter " + List.getFieldName());
         textcharacter.setCursorVisible(true);
         textcharacter.setClickable(true);
-        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+        if (!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
             textcharacter.setFilters(fArray);
         }
+        textcharacter.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(textcharacter)});
 
         // CreateName
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textcharacter.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textcharacter.getText().toString());
                 }
@@ -737,7 +733,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textcharacter.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textcharacter.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -752,7 +748,7 @@ public class ActivityFragment extends Fragment {
         textcharacter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                     hideKeyboard(view);
                     view.clearFocus();
                     return true;
@@ -776,9 +772,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -804,7 +800,7 @@ public class ActivityFragment extends Fragment {
         textnumber.setHint("Enter " + List.getFieldName());
         textnumber.setClickable(false);
         textnumber.setCursorVisible(true);
-        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+        if (!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
             textnumber.setFilters(fArray);
@@ -813,10 +809,10 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textnumber.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textnumber.getText().toString());
                 }
@@ -840,7 +836,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textnumber.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textnumber.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -854,7 +850,7 @@ public class ActivityFragment extends Fragment {
         textnumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                     hideKeyboard(view);
                     view.clearFocus();
                     return true;
@@ -878,9 +874,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -913,19 +909,20 @@ public class ActivityFragment extends Fragment {
         textarea.setHint("Enter " + List.getFieldName());
         textarea.setCursorVisible(true);
         textarea.setClickable(true);
-        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+        if (!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
             textarea.setFilters(fArray);
         }
+        textarea.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(textarea)});
 
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textarea.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textarea.getText().toString());
                 }
@@ -949,7 +946,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textarea.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textarea.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -963,7 +960,7 @@ public class ActivityFragment extends Fragment {
         textarea.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                     hideKeyboard(view);
                     view.clearFocus();
                     return true;
@@ -984,9 +981,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1024,10 +1021,10 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewdate1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
                 }
@@ -1051,12 +1048,12 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewdate1.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -1093,9 +1090,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -1133,10 +1130,10 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewdate1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
                 }
@@ -1160,12 +1157,12 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewdate1.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -1209,9 +1206,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1269,7 +1266,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewfromdate.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -1316,14 +1313,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewfromdate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                     textviewtodate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
                     ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
                 }
@@ -1347,7 +1344,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt2(textviewtodate.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -1363,9 +1360,9 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
-                if(fromdate.equals("")) {
+                if (fromdate.equals("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.select_from_date));
-                }else {
+                } else {
                     String datee[] = fromdate.split("-");
                     final Calendar c = Calendar.getInstance();
                     int mYear = Integer.parseInt(datee[2]);
@@ -1398,9 +1395,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1460,7 +1457,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewfromdate.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -1515,14 +1512,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewfromdate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                     textviewtodate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
                     ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
                 }
@@ -1546,7 +1543,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt2(textviewtodate.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -1562,9 +1559,9 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onClick(View view2) {
                 String fromdate = textviewfromdate.getText().toString();
-                if(fromdate.equals("")) {
+                if (fromdate.equals("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.select_from_date));
-                }else {
+                } else {
                     String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_5, fromdate);
                     String Time = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_29, fromdate);
                     String[] datas = Time.split(":");
@@ -1588,14 +1585,14 @@ public class ActivityFragment extends Fragment {
                             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                             c.set(Calendar.MINUTE, minute1);
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-                            if(monthOfYear == mMonth && year1 == mYear && dayOfMonth1 == mDay) {
-                                if(mHour<hourOfDay || mMinute<minute1) {
+                            if (monthOfYear == mMonth && year1 == mYear && dayOfMonth1 == mDay) {
+                                if (mHour < hourOfDay || mMinute < minute1) {
                                     textviewtodate.setText(dateFormat.format(c.getTime()));
-                                }else {
+                                } else {
                                     commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_as_after_from_time));
                                     textviewtodate.setText("");
                                 }
-                            }else {
+                            } else {
                                 textviewtodate.setText(dateFormat.format(c.getTime()));
                                 commonFun();
                             }
@@ -1621,9 +1618,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -1663,10 +1660,10 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textViewtime1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textViewtime1.getText().toString());
                 }
@@ -1690,7 +1687,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textViewtime1.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textViewtime1.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -1716,7 +1713,7 @@ public class ActivityFragment extends Fragment {
                     }
                 }, mHour, mMinute, true);
                 timePickerDialog.show();
-                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.R) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     timePickerDialog.getWindow().setDecorFitsSystemWindows(true);
                 }
             }
@@ -1734,9 +1731,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -1793,7 +1790,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromtime.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewfromtime.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -1839,14 +1836,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewfromtime.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textviewfromtime.getText().toString());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                     textviewtotime.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
                     ActivityViewItem.get(k).setAnswerTxt2(textviewtotime.getText().toString());
                 }
@@ -1870,7 +1867,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtotime.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt2(textviewtotime.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -1886,9 +1883,9 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 String data = textviewfromtime.getText().toString();
-                if(data.equalsIgnoreCase("")) {
+                if (data.equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_from_time));
-                }else {
+                } else {
                     String[] datas = data.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
                     final int mMinute = Integer.parseInt(datas[1]);
@@ -1896,9 +1893,9 @@ public class ActivityFragment extends Fragment {
                     TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hour, int minute) {
-                            if(mHour<hour || mMinute<minute) {
+                            if (mHour < hour || mMinute < minute) {
                                 textviewtotime.setText(String.format("%02d:%02d", hour, minute));
-                            }else {
+                            } else {
                                 commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_as_after_from_time));
                                 textviewtotime.setText("");
                             }
@@ -1921,9 +1918,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textcombosingle.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textcombosingle.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1956,14 +1953,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     singlecomboedittext.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(singlecomboedittext.getText().toString());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes() != null) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes() != null) {
                     Idview.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes());
                     ActivityViewItem.get(k).setCodes(Idview.getText().toString());
                 }
@@ -1987,7 +1984,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(singlecomboedittext.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(singlecomboedittext.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -2014,7 +2011,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setCodes(Idview.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setCodes(Idview.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -2031,8 +2028,8 @@ public class ActivityFragment extends Fragment {
                 ArrayList<ActivityModelClass> mlist = new ArrayList<>();
                 try {
                     JSONArray jsonArray = new JSONArray(List.getInput());
-                    if(jsonArray.length()>0) {
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String[] data = jsonObject.toString().replaceAll("[{}]", "").split(",");
                             String[] mCode = data[0].split(":");
@@ -2058,9 +2055,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textcombomultiple.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textcombomultiple.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -2093,14 +2090,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     multicomboeditext.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(multicomboeditext.getText().toString());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes() != null) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes() != null) {
                     TextCode.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes());
                     ActivityViewItem.get(k).setCodes(TextCode.getText().toString());
                 }
@@ -2124,7 +2121,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(multicomboeditext.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(multicomboeditext.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -2150,7 +2147,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setCodes(TextCode.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setCodes(TextCode.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -2169,16 +2166,16 @@ public class ActivityFragment extends Fragment {
                 List<String> activityForList = Arrays.asList(selectedIds);
                 try {
                     JSONArray jsonArray = new JSONArray(List.getInput());
-                    if(jsonArray.length()>0) {
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String[] data = jsonObject.toString().replaceAll("[{}]", "").split(",");
                             String[] mCode = data[0].split(":");
                             String[] mName = data[1].split(":");
                             Log.v("eeeswa", "" + mCode[1].replaceAll("\"", ""));
-                            if(activityForList.contains(mCode[1].replaceAll("\"", ""))) {
+                            if (activityForList.contains(mCode[1].replaceAll("\"", ""))) {
                                 mlist.add(new ActivityModelClass(mCode[1].replaceAll("\"", ""), mName[1].replaceAll("\"", ""), true));
-                            }else {
+                            } else {
                                 mlist.add(new ActivityModelClass(mCode[1].replaceAll("\"", ""), mName[1].replaceAll("\"", ""), false));
                             }
                         }
@@ -2203,9 +2200,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -2215,19 +2212,19 @@ public class ActivityFragment extends Fragment {
         textviewdata.setLayoutParams(params1);
         textviewdata.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textLinearLayout1.addView(textviewdata);
-        LinearLayout textLinearLayout2 = new LinearLayout(context);
+        LinearLayout textLinearLayout2 = new LinearLayout(requireContext());
         LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         linearLayoutParams.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textLinearLayout2.setLayoutParams(linearLayoutParams);
         textLinearLayout2.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout1.addView(textLinearLayout2);
 
-        TextView textfileupload = new TextView(context);
+        TextView textfileupload = new TextView(requireContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 //        params.setMargins(1, 1, 1, 1);
         params.weight = 1;
-        Drawable drawable = context.getDrawable(R.drawable.form);
+        Drawable drawable = requireContext().getDrawable(R.drawable.form);
         assert drawable != null;
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
         drawable.setTint(requireActivity().getColor(R.color.dark_purple));
@@ -2244,7 +2241,7 @@ public class ActivityFragment extends Fragment {
 //        textLinearLayout2.addView(textfileupload);
         textLinearLayout2.setId(k);
 
-        LinearLayout parentLayout = new LinearLayout(context);
+        LinearLayout parentLayout = new LinearLayout(requireContext());
         parentLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -2253,7 +2250,7 @@ public class ActivityFragment extends Fragment {
         parentLayout.setOrientation(LinearLayout.HORIZONTAL);
         parentLayout.setBackgroundResource(R.drawable.background_card_white_plan);
 
-        ImageView clearButton = new ImageView(context);
+        ImageView clearButton = new ImageView(requireContext());
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 (int) getResources().getDimension(R.dimen._15sdp),
                 (int) getResources().getDimension(R.dimen._15sdp)
@@ -2268,7 +2265,7 @@ public class ActivityFragment extends Fragment {
         parentLayout.addView(clearButton);
 
         clearButton.setOnClickListener(view -> {
-            if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+            if (textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
                 removeFile(textfileupload.getText().toString());
                 textfileupload.setText("");
             }
@@ -2279,18 +2276,18 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textfileupload.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
-                    if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
-                        drawable.setTint(context.getColor(R.color.green_60));
+                    if (textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                        drawable.setTint(requireContext().getColor(R.color.green_60));
                         clearButton.setVisibility(View.VISIBLE);
                     } else {
                         clearButton.setVisibility(View.GONE);
-                        drawable.setTint(context.getColor(R.color.dark_purple));
+                        drawable.setTint(requireContext().getColor(R.color.dark_purple));
                     }
 
                 }
@@ -2313,16 +2310,16 @@ public class ActivityFragment extends Fragment {
                 isEdited = true;
                 ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
 
-                if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
-                    drawable.setTint(context.getColor(R.color.green_60));
+                if (textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                    drawable.setTint(requireContext().getColor(R.color.green_60));
                     clearButton.setVisibility(View.VISIBLE);
                 } else {
                     clearButton.setVisibility(View.GONE);
-                    drawable.setTint(context.getColor(R.color.dark_purple));
+                    drawable.setTint(requireContext().getColor(R.color.dark_purple));
                 }
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textfileupload.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -2338,11 +2335,11 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 FilnameTet = textfileupload;
-                if(!CheckStoragePermission()) {
-                    RequestStoragePermission();
-                }else {
-                    Open_Storage();
-                }
+//                if(!CheckStoragePermission()) {
+//                    RequestStoragePermission();
+//                }else {
+                Open_Storage();
+//                }
             }
         });
     }
@@ -2361,9 +2358,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -2414,10 +2411,10 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+            } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textcurrency.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textcurrency.getText().toString());
                 }
@@ -2441,7 +2438,7 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textcurrency.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                         ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textcurrency.getText().toString());
                         activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
@@ -2516,36 +2513,36 @@ public class ActivityFragment extends Fragment {
         gpsTrack = new GPSTrack(requireActivity());
         double latitude = gpsTrack.getLatitude();
         double longitude = gpsTrack.getLongitude();
-        if(UtilityClass.isNetworkAvailable(requireContext())) {
+        if (UtilityClass.isNetworkAvailable(requireContext())) {
             address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
-        }else {
+        } else {
             address = getString(R.string.no_address_found);
         }
         AddressText.setText(address);
         LatText.setText("Lat  :" + String.valueOf(latitude));
         LongText.setText("Long  :" + String.valueOf(longitude));
 
-        if(latitude == 0.0 || longitude == 0.0) {
+        if (latitude == 0.0 || longitude == 0.0) {
             ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
             try {
                 if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                     activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-                }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
-                    if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                         String latLongStr = activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt().replace("Lat  :", "").replace("Long  :", "");
                         String[] latLongData = latLongStr.split(" ");
                         if (latLongData.length > 1) {
                             LatText.setText(String.format("Lat  :%s", latLongData[0]));
                             LongText.setText(String.format("Long  :%s", latLongData[1]));
-                        }else {
+                        } else {
                             AddressText.setText(address);
                             LatText.setText("Lat  :" + String.valueOf(latitude));
                             LongText.setText("Long  :" + String.valueOf(longitude));
                         }
                         ActivityViewItem.get(k).setAnswerTxt(LatText.getText().toString() + " " + LongText.getText().toString());
                     }
-                    if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                    if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                         AddressText.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
                         ActivityViewItem.get(k).setAnswerTxt2(AddressText.getText().toString());
                     }
@@ -2607,10 +2604,10 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
 //                LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
-                if(CommonUtilsMethods.isLocationEnabled(requireContext())) {
-                    if(!CheckLocPermission()) {
+                if (CommonUtilsMethods.isLocationEnabled(requireContext())) {
+                    if (!CheckLocPermission()) {
                         RequestLocationPermission();
-                    }else {
+                    } else {
                         commonUtilsMethods.showToastMessage(requireContext(), "Wait For Location");
                         String address;
                         gpsTrack = new GPSTrack(requireActivity());
@@ -2618,11 +2615,11 @@ public class ActivityFragment extends Fragment {
                         double longitude = gpsTrack.getLongitude();
                         address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
 
-                        if(ActivityViewItem != null && ActivityViewItem.size()>k) {
+                        if (ActivityViewItem != null && ActivityViewItem.size() > k) {
                             ActivityViewItem.get(k).setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
                             ActivityViewItem.get(k).setAnswerTxt2(address);
 
-                            if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                            if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                                 ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                                 activityDetailsModelClass.setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
                                 activityDetailsModelClass.setAnswerTxt2(address);
@@ -2633,7 +2630,7 @@ public class ActivityFragment extends Fragment {
                         LatText.setText("Lat  :" + String.valueOf(latitude));
                         LongText.setText("Long  :" + String.valueOf(longitude));
                     }
-                }else {
+                } else {
                     CommonUtilsMethods.RequestGPSPermission(requireActivity());
                 }
             }
@@ -2641,7 +2638,7 @@ public class ActivityFragment extends Fragment {
     }
 
     public void addeditcurrencyconvertor(ActivityDetailsModelClass List, int k) {
-        if(!List.getControlPara().equals("")) {
+        if (!List.getControlPara().equals("")) {
             value = List.getControlPara().split("[/]");
             valfrom = value[0].split("[-]");
             valto = value[1].split("[-]");
@@ -2667,9 +2664,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -2760,7 +2757,7 @@ public class ActivityFragment extends Fragment {
         txtcurconvert2.setHint("Amount");
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+        if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
             activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         }
 
@@ -2778,9 +2775,9 @@ public class ActivityFragment extends Fragment {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -2814,7 +2811,7 @@ public class ActivityFragment extends Fragment {
         textLinearLayout2.addView(textViewtime1);
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+        if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
             activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         }
 
@@ -2823,17 +2820,17 @@ public class ActivityFragment extends Fragment {
     public void TableList(ActivityDetailsModelClass List, int k) {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+        if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
             activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         }
 
     }
 
     public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<ActivityModelClass> List, String name, boolean isMultipleCheck) {
-        if(isMultipleCheck) {
+        if (isMultipleCheck) {
             fragmentActivityBinding.slideScreen.viewDummy1.setVisibility(View.VISIBLE);
             fragmentActivityBinding.slideScreen.txtClDone.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             fragmentActivityBinding.slideScreen.viewDummy1.setVisibility(View.GONE);
             fragmentActivityBinding.slideScreen.txtClDone.setVisibility(View.GONE);
         }
@@ -2847,11 +2844,11 @@ public class ActivityFragment extends Fragment {
         adapter1 = new ActvityList2Adapter(requireContext(), List, IdView, isMultipleCheck, new CheckBoxInterface() {
             @Override
             public void Checked(ActivityModelClass activityModelClass) {
-                if(isMultipleCheck) {
+                if (isMultipleCheck) {
                     mListName.add(activityModelClass.getName());
                     mListId.add(activityModelClass.getCode());
 //                    IdView.setText(activityModelClass.getCode());
-                }else {
+                } else {
                     fragmentActivityBinding.mainLayout.closeDrawer(Gravity.RIGHT);
                     NameView.setText(activityModelClass.getName());
                     IdView.setText(activityModelClass.getCode());
@@ -2886,9 +2883,9 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.slideScreen.txtClDone.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if(isMultipleCheck) {
+                if (isMultipleCheck) {
                     String lids = "";
-                    for (int i = 0; i<mListId.size(); i++) {
+                    for (int i = 0; i < mListId.size(); i++) {
                         lids = lids + mListId.get(i) + ",";
                     }
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
@@ -2907,7 +2904,8 @@ public class ActivityFragment extends Fragment {
     }
 
     private void Open_Storage() {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent chooseFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");
         startActivityForResult(chooseFile, 7);
@@ -2918,15 +2916,15 @@ public class ActivityFragment extends Fragment {
             File src = new File(srcDir);
             File dst = new File(dstDir, src.getName());
             Log.d("string", src.getName());
-            if(src.isDirectory()) {
+            if (src.isDirectory()) {
                 String files[] = src.list();
                 int filesLength = files.length;
-                for (int i = 0; i<filesLength; i++) {
+                for (int i = 0; i < filesLength; i++) {
                     String src1 = (new File(src, files[i]).getPath());
                     String dst1 = dst.getPath();
                     copyFileOrDirectory(src1, dst1);
                 }
-            }else {
+            } else {
                 copyFile(src, dst);
             }
         } catch (Exception e) {
@@ -2936,9 +2934,9 @@ public class ActivityFragment extends Fragment {
 
     // @RequiresApi(api = Build.VERSION_CODES.Q)
     public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if(!destFile.getParentFile().exists()) destFile.getParentFile().mkdirs();
+        if (!destFile.getParentFile().exists()) destFile.getParentFile().mkdirs();
 
-        if(!destFile.exists()) {
+        if (!destFile.exists()) {
             destFile.createNewFile();
         }
 
@@ -2955,10 +2953,10 @@ public class ActivityFragment extends Fragment {
             destination.transferFrom(source, 0, source.size());
             // destination.write(source, 0, source.size());
         } finally {
-            if(source != null) {
+            if (source != null) {
                 source.close();
             }
-            if(destination != null) {
+            if (destination != null) {
                 destination.close();
             }
         }
@@ -2967,13 +2965,13 @@ public class ActivityFragment extends Fragment {
     public void removeFile(String fileName) {
         File file = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/" + fileName);
+            file = new File(requireContext().getExternalFilesDir(null) + "/ActivityUpload/" + fileName);
         } else {
             Log.e("File Deletion", "captureFile: No media mounted");
         }
         if (file != null && !file.exists()) {
             Log.w("File Deletion", "No File Found" + file.getAbsolutePath());
-        } else if(file != null && file.exists()){
+        } else if (file != null && file.exists()) {
             if (file.delete()) {
                 Log.d("FileDeleter", "File deleted: " + file.getAbsolutePath());
             } else {
@@ -2994,7 +2992,7 @@ public class ActivityFragment extends Fragment {
             for (int j = 0; j < jsonArrayWt.length(); j++) {
                 JSONObject workTypeData = jsonArrayWt.getJSONObject(j);
                 if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
-                    wtCode =  workTypeData.getString("Code");
+                    wtCode = workTypeData.getString("Code");
                     wtName = workTypeData.getString("Name");
                     fwFlag = workTypeData.getString("FWFlg");
                 }
@@ -3006,7 +3004,7 @@ public class ActivityFragment extends Fragment {
             String dateToStr1 = format1.format(today) + " 00:00:00";
             String time = TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_32);
 
-            for (int i = 0; i<ActivityViewItem.size(); i++) {
+            for (int i = 0; i < ActivityViewItem.size(); i++) {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
@@ -3038,31 +3036,31 @@ public class ActivityFragment extends Fragment {
                 jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
                 jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
 
-                if(List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
-                    if(List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
+                if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
+                    if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
                         commonUtilsMethods.showToastMessage(requireContext(), "Fill The From " + List.getFieldName());
                         break;
-                    }else if(List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
+                    } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
                         commonUtilsMethods.showToastMessage(requireContext(), "Fill The To" + List.getFieldName());
                         break;
-                    }else {
+                    } else {
                         jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
                         jsonObject.put("codes", List.getCodes());
                         Log.v("codes", List.getCodes());
                     }
-                }else if(List.getControlId().equalsIgnoreCase("17")) {
-                    if(List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                } else if (List.getControlId().equalsIgnoreCase("17")) {
+                    if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
                         commonUtilsMethods.showToastMessage(requireContext(), "Choose The " + List.getFieldName() + "");
                         break;
-                    }else {
+                    } else {
                         jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
                         jsonObject.put("codes", List.getCodes());
                     }
-                }else {
-                    if(List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                } else {
+                    if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
                         commonUtilsMethods.showToastMessage(requireContext(), "Fill The " + List.getFieldName() + "");
                         break;
-                    }else {
+                    } else {
                         jsonObject.put("values", List.getAnswerTxt());
                         jsonObject.put("codes", List.getCodes());
                         Log.v("codes", List.getCodes());
@@ -3072,7 +3070,7 @@ public class ActivityFragment extends Fragment {
                 conut++;
             }
 
-            if(conut == ActivityViewItem.size()) {
+            if (conut == ActivityViewItem.size()) {
                 isEdited = false;
                 activityDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                 activityTime = CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
@@ -3104,9 +3102,9 @@ public class ActivityFragment extends Fragment {
 
     public void TaggedImage() {
         try {
-            for (int i = 0; i<ActivityViewItem.size(); i++) {
+            for (int i = 0; i < ActivityViewItem.size(); i++) {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
-                if(List.getControlId().equalsIgnoreCase("10") && !List.getAnswerTxt().isEmpty()) {
+                if (List.getControlId().equalsIgnoreCase("10") && !List.getAnswerTxt().isEmpty()) {
                     fragmentActivityBinding.progressSubmit.setVisibility(View.VISIBLE);
                     JSONObject jsonObject = new JSONObject();
 
@@ -3150,19 +3148,19 @@ public class ActivityFragment extends Fragment {
                     MainObject.put("val", jsonArray);
                     MainObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                     File file = null;
-                    if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                        file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/");
-                    }else {
+                    if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                        file = new File(requireContext().getExternalFilesDir(null) + "/ActivityUpload/");
+                    } else {
                         Log.e("File Creation", "captureFile: No media mounted");
                     }
-                    if(file != null && !file.exists()) {
-                        if(!file.mkdirs()) {
+                    if (file != null && !file.exists()) {
+                        if (!file.mkdirs()) {
                             Log.e("File Creation", "Directory Creation Failed.");
                         }
                     }
                     File destinationFile = new File(file, List.getAnswerTxt());
                     try {
-                        if(!destinationFile.createNewFile()) {
+                        if (!destinationFile.createNewFile()) {
                             Log.e("File Creation", "Destination File Creation Failed.");
                         }
                     } catch (IOException e) {
@@ -3192,17 +3190,17 @@ public class ActivityFragment extends Fragment {
     }
 
     public static String getPathFromURI(final Context Context, final Uri uri) {
-        if(DocumentsContract.isDocumentUri(Context, uri)) {
-            if(isExternalStorageDocument(uri)) {
+        if (DocumentsContract.isDocumentUri(Context, uri)) {
+            if (isExternalStorageDocument(uri)) {
                 Log.v("bv1", "------" + uri);
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
 
-                if("primary".equalsIgnoreCase(type)) {
+                if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-            }else if(isDownloadsDocument(uri)) {
+            } else if (isDownloadsDocument(uri)) {
                 Log.v("bv2", "------" + uri);
                 try {
                     final String id = DocumentsContract.getDocumentId(uri);
@@ -3212,17 +3210,17 @@ public class ActivityFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-            }else if(isMediaDocument(uri)) {
+            } else if (isMediaDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
                 Log.v("bv3", "------" + uri);
                 Uri contentUri = null;
-                if("image".equals(type)) {
+                if ("image".equals(type)) {
                     contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                }else if("video".equals(type)) {
+                } else if ("video".equals(type)) {
                     contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                }else if("audio".equals(type)) {
+                } else if ("audio".equals(type)) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
 
@@ -3231,10 +3229,10 @@ public class ActivityFragment extends Fragment {
 
                 return getDataColumn(Context, contentUri, selection, selectionArgs);
             }
-        }else if("content".equalsIgnoreCase(uri.getScheme())) {
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
             Log.v("bv4", "------" + uri);
             return getDataColumn(Context, uri, null, null);
-        }else if("file".equalsIgnoreCase(uri.getScheme())) {
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             Log.v("bv5", "------" + uri);
             return uri.getPath();
         }
@@ -3247,12 +3245,12 @@ public class ActivityFragment extends Fragment {
         final String[] projection = {column};
         try {
             cursor = Context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if(cursor != null && cursor.moveToFirst()) {
+            if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
         } finally {
-            if(cursor != null) cursor.close();
+            if (cursor != null) cursor.close();
         }
         return null;
     }
@@ -3278,10 +3276,10 @@ public class ActivityFragment extends Fragment {
         MultipartBody.Part yy = null;
         try {
             File file;
-            if(path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
+            if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
                 file = new Compressor(requireContext()).compressToFile(new File(path));
                 Log.d("path", tag + "-" + path);
-            }else {
+            } else {
                 file = new File(path);
             }
             RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
@@ -3353,30 +3351,30 @@ public class ActivityFragment extends Fragment {
 //        }
 //    }
 
-    public boolean CheckStoragePermission() {
-        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
-            int image = ContextCompat.checkSelfPermission(requireActivity(), READ_MEDIA_IMAGES);
-            int video = ContextCompat.checkSelfPermission(requireActivity(), READ_MEDIA_VIDEO);
-            int audio = ContextCompat.checkSelfPermission(requireActivity(), READ_MEDIA_AUDIO);
-            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
-        }else {
-            int Write = ContextCompat.checkSelfPermission(requireActivity(), WRITE_EXTERNAL_STORAGE);
-            int Read = ContextCompat.checkSelfPermission(requireActivity(), READ_EXTERNAL_STORAGE);
-            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
-        }
-    }
+//    public boolean CheckStoragePermission() {
+//        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+//            int image = ContextCompat.checkSelfPermission(requireActivity(), READ_MEDIA_IMAGES);
+//            int video = ContextCompat.checkSelfPermission(requireActivity(), READ_MEDIA_VIDEO);
+//            int audio = ContextCompat.checkSelfPermission(requireActivity(), READ_MEDIA_AUDIO);
+//            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
+//        }else {
+//            int Write = ContextCompat.checkSelfPermission(requireActivity(), WRITE_EXTERNAL_STORAGE);
+//            int Read = ContextCompat.checkSelfPermission(requireActivity(), READ_EXTERNAL_STORAGE);
+//            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
+//        }
+//    }
 
-    private void RequestStoragePermission() {
-        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
-            if((ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-            }
-        }else {
-            if(ActivityCompat.checkSelfPermission(requireActivity(), WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-            }
-        }
-    }
+//    private void RequestStoragePermission() {
+//        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+//            if((ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(requireActivity(), new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+//            }
+//        }else {
+//            if(ActivityCompat.checkSelfPermission(requireActivity(), WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(requireActivity(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+//            }
+//        }
+//    }
 
     public void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
@@ -3384,7 +3382,7 @@ public class ActivityFragment extends Fragment {
     }
 
     private void RequestLocationPermission() {
-        if(ContextCompat.checkSelfPermission(requireActivity(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireActivity(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{ACCESS_FINE_LOCATION}, 102);
         }
     }
@@ -3400,31 +3398,31 @@ public class ActivityFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         boolean DontAskAgain = false;
 
-        if(requestCode == 101) {
+        if (requestCode == 101) {
             for (String allowedPermissions : permissions) {
-                if(ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), allowedPermissions)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), allowedPermissions)) {
                     StorageFlag++;
-                }else if(PermissionChecker.checkCallingOrSelfPermission(requireActivity(), allowedPermissions) != PermissionChecker.PERMISSION_GRANTED) {
+                } else if (PermissionChecker.checkCallingOrSelfPermission(requireActivity(), allowedPermissions) != PermissionChecker.PERMISSION_GRANTED) {
                     DontAskAgain = true;
                     StorageFlag++;
                     break;
-                }else {
+                } else {
                     Open_Storage();
                 }
             }
-            if((DontAskAgain) && (StorageFlag>1)) {
+            if ((DontAskAgain) && (StorageFlag > 1)) {
                 CommonUtilsMethods.RequestGPSPermission(requireActivity(), "Files");
             }
         }
-        if(requestCode == 102) {
-            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == 102) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                Intent intent = getIntent();
 //                overridePendingTransition(0, 0);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 //                finish();
 //                overridePendingTransition(0, 0);
 //                startActivity(intent);
-            }else {
+            } else {
                 // Permission denied, show a message to the user
                 CommonUtilsMethods.RequestGPSPermission(requireActivity(), "Location");
             }
@@ -3434,46 +3432,110 @@ public class ActivityFragment extends Fragment {
     @SuppressLint({"MissingSuperCall", "Range"})
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 7) {
-            if(resultCode == RESULT_OK && data.getData() != null) {
+        if (requestCode == 7) {
+            if (resultCode == RESULT_OK && data.getData() != null) {
                 try {
                     uri = data.getData();
-                    String fullPath = getPathFromURI(requireActivity(), uri);
-                    String[] parts = fullPath.split("/");
-                    String filenmae = parts[parts.length - 1];
-
-                    if(filenmae.endsWith(".zip")) {
-                        commonUtilsMethods.showToastMessage(requireActivity(), requireActivity().getString(R.string.zip_not_supported));
-                    }else {
-                        FilnameTet.setText(String.valueOf(filenmae));
-                        commonUtilsMethods.showToastMessage(requireActivity(), requireActivity().getString(R.string.file_accepted));
-//                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-//                        if(!dir1.exists()) {
-//                            dir1.mkdirs();
-//                        }
-                        File file = null;
-                        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                            file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/");
-                        }else {
-                            Log.e("File Creation", "captureFile: No media mounted");
-                        }
-                        if(file != null && !file.exists()) {
-                            if(!file.mkdirs()) {
-                                Log.e("File Creation", "Directory Creation Failed.");
-                            }
-                        }
-                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+                    try {
+                        final int takeFlags = data.getFlags()
+                                & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        requireActivity().getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    String filename = getFileNameFromUri(uri);
+                    if (filename == null) {
+                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_correct_path));
+                        return;
+                    }
+                    if (filename.endsWith(".zip")) {
+                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.zip_not_supported));
+                        return;
+                    }
+                    FilnameTet.setText(filename);
+                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.file_accepted));
+                    copyFileToAppDir(uri);
+//                    String fullPath = getPathFromURI(requireContext(), uri);
+//                    String[] parts = fullPath.split("/");
+//                    String filenmae = parts[parts.length - 1];
+//
+//                    if (filenmae.endsWith(".zip")) {
+//                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.zip_not_supported));
+//                    } else {
+//                        FilnameTet.setText(String.valueOf(filenmae));
+//                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.file_accepted));
+////                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+////                        if(!dir1.exists()) {
+////                            dir1.mkdirs();
+////                        }
+//                        File file = null;
+//                        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//                            file = new File(getApplicationContext().getExternalFilesDir(null) + "/ActivityUpload/");
+//                        } else {
+//                            Log.e("File Creation", "captureFile: No media mounted");
+//                        }
+//                        if (file != null && !file.exists()) {
+//                            if (!file.mkdirs()) {
+//                                Log.e("File Creation", "Directory Creation Failed.");
+//                            }
+//                        }
+//                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+//                    }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
-                    commonUtilsMethods.showToastMessage(requireActivity(), requireActivity().getString(R.string.please_select_correct_path));
+                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_correct_path));
                     ex.printStackTrace();
                 }
-            }else {
-                commonUtilsMethods.showToastMessage(requireActivity(),  requireActivity().getString(R.string.no_file_selected));
+            } else {
+                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.no_file_selected));
             }
             commonFun();
         }
+    }
+
+    private void copyFileToAppDir(Uri sourceUri) {
+        try {
+            File destDir = new File(requireActivity().getApplicationContext().getExternalFilesDir(null), "ActivityUpload");
+            if (!destDir.exists()) destDir.mkdirs();
+            String fileName = getFileNameFromUri(sourceUri);
+            if (fileName == null) fileName = "file_" + System.currentTimeMillis();
+            File destFile = new File(destDir, fileName);
+            try (InputStream inputStream = requireActivity().getContentResolver().openInputStream(sourceUri);
+                 OutputStream outputStream = new FileOutputStream(destFile)) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+            Log.d("FileCopy", "Saved to: " + destFile.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFileNameFromUri(Uri uri) {
+        String result = null;
+        try {
+            if ("content".equals(uri.getScheme())) {
+                try (Cursor cursor = requireActivity().getContentResolver().query(uri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (index != -1) {
+                            result = cursor.getString(index);
+                        }
+                    }
+                }
+            }
+            if (result == null) {
+                result = uri.getPath();
+                int cut = result.lastIndexOf('/');
+                if (cut != -1) result = result.substring(cut + 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 }

@@ -13,24 +13,26 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" /> <!-- <uses-permission -->
+        tools:ignore="ScopedStorage" />
+    <!-- <uses-permission -->
     <!-- android:name="android.permission.MANAGE_EXTERNAL_STORAGE" -->
     <!-- tools:ignore="ScopedStorage" /> -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
+    <!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />-->
+    <!--    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
+    <!--    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_SECURE_SETTINGS" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION " />
     <uses-permission android:name="android.permission.READ_LOGS" />
 
     <queries>
@@ -71,12 +73,12 @@
         <activity
             android:name=".activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".activity.forms.birthdayAnniversary.birthdayAnniversay_viewscreen"-->
-<!--            android:exported="false" />-->
-<!--        <activity-->
-<!--            android:name=".activity.myresource.BirthdayWishesAndAnniversay"-->
-<!--            android:exported="false" />-->
+        <!--        <activity-->
+        <!--            android:name=".activity.forms.birthdayAnniversary.birthdayAnniversay_viewscreen"-->
+        <!--            android:exported="false" />-->
+        <!--        <activity-->
+        <!--            android:name=".activity.myresource.BirthdayWishesAndAnniversay"-->
+        <!--            android:exported="false" />-->
         <!--
           <activity
             android:name=".activity.reports.missedReport.MissedReportAdapter"
@@ -177,6 +179,7 @@
         <activity
             android:name=".activity.previewPresentation.PreviewActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
@@ -299,16 +302,19 @@
         <activity
             android:name=".activity.call.profile.CustomerProfile"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name=".activity.call.DCRCallActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
@@ -365,6 +371,7 @@
             android:name=".activity.homeScreen.HomeDashBoard"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <!--
             android:resizeableActivity="true"

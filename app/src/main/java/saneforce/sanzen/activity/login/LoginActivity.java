@@ -1,9 +1,8 @@
 package saneforce.sanzen.activity.login;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,7 +15,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -43,28 +41,25 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityLoginBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
-import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.DownloaderClass;
@@ -73,8 +68,7 @@ import saneforce.sanzen.utility.LocaleHelper;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class LoginActivity extends AppCompatActivity {
-
-   public static ActivityLoginBinding binding;
+    public static ActivityLoginBinding binding;
     ApiInterface apiInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
@@ -111,10 +105,10 @@ public class LoginActivity extends AppCompatActivity {
 
         outboxUtil = new OutboxUtil(this);
 
-        roomDB=RoomDB.getDatabase(getApplicationContext());
+        roomDB = RoomDB.getDatabase(getApplicationContext());
 
-        masterDataDao=roomDB.masterDataDao();
-        callTableDao=roomDB.callTableDao();
+        masterDataDao = roomDB.masterDataDao();
+        callTableDao = roomDB.callTableDao();
         loginDataDao = roomDB.loginDataDao();
 
         uiInitialisation();
@@ -179,15 +173,14 @@ public class LoginActivity extends AppCompatActivity {
                 userPwd = binding.password.getText().toString().trim().replaceAll("\\s", "");
 
                 if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
-
                     if (userId.isEmpty()) {
                         binding.userId.requestFocus();
-                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
+                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_user_id));
                     } else if (userPwd.isEmpty()) {
                         binding.password.requestFocus();
-                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
+                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_password));
                     } else if (SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
+                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.no_network));
                     } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                         SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
                         startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
@@ -200,15 +193,15 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     if (userId.isEmpty()) {
                         binding.userId.requestFocus();
-                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_user_id));
                     } else if (userPwd.isEmpty()) {
                         binding.password.requestFocus();
-                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_password));
                     } else {
                         if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
                             login(userId, userPwd);
                         } else {
-                            commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.no_network));
                         }
                     }
                 }
@@ -226,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        if((SharedPref.getSrtNd(this).equalsIgnoreCase("0")
+        if ((SharedPref.getSrtNd(this).equalsIgnoreCase("0")
                 || SharedPref.getCustSrtNd(LoginActivity.this).equalsIgnoreCase("0")
                 || SharedPref.getChmSrtNd(LoginActivity.this).equalsIgnoreCase("0")
                 || SharedPref.getUnlistSrtNd(LoginActivity.this).equalsIgnoreCase("0"))
@@ -316,7 +309,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(isTimerStarted) {
+        if (isTimerStarted) {
             try {
                 SharedPref.setLoginRemainingTime(LoginActivity.this, remainingTime);
                 if (countDownTimer != null) {
@@ -336,7 +329,7 @@ public class LoginActivity extends AppCompatActivity {
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
-        context = LocaleHelper.setLocale(getApplicationContext(), selectedLanguage);
+        Context context = LocaleHelper.setLocale(getApplicationContext(), selectedLanguage);
         resources = getApplicationContext().getResources();
         binding.tagUserId.setText(getString(R.string.user_id));
         binding.userId.setHint(getString(R.string.enter_user_id));
@@ -363,7 +356,7 @@ public class LoginActivity extends AppCompatActivity {
         roomDB.stpOfflineDataDao().deleteAllData();
         roomDB.quizOfflineDataDao().deleteAllData();
         roomDB.quizAssertsDao().deleteAllData();
-  //      roomDB.slidesDao().deleteAllData();
+        //      roomDB.slidesDao().deleteAllData();
 
         SharedPref.clearSP(LoginActivity.this);
         SharedPref.saveLoginState(getApplicationContext(), false);
@@ -387,11 +380,11 @@ public class LoginActivity extends AppCompatActivity {
             //  binding.userId.setEnabled(true);
         } else {
             binding.userId.setText(SharedPref.getLoginId(LoginActivity.this));
-          //  binding.password.setText(SharedPref.getLoginUserPwd(LoginActivity.this));
-              binding.userId.setEnabled(false);
-              if(binding.userId.getText().toString().isEmpty()){
-                  binding.userId.setEnabled(true);
-              }
+            //  binding.password.setText(SharedPref.getLoginUserPwd(LoginActivity.this));
+            binding.userId.setEnabled(false);
+            if (binding.userId.getText().toString().isEmpty()) {
+                binding.userId.setEnabled(true);
+            }
         }
 
         SetUpLanguage();
@@ -401,7 +394,7 @@ public class LoginActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         language = SharedPref.getSelectedLanguage(this);
 
-        String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE","ARABIC"};
+        String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE", "ARABIC"};
         languageAdapter = new ArrayAdapter<>(LoginActivity.this, R.layout.listview_items, languages);
         binding.languageListView.setAdapter(languageAdapter);
         languageAdapter.notifyDataSetChanged();
@@ -543,8 +536,8 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             jsonObject.put("AppDeviceRegId", fcmToken);
             jsonObject.put("Tt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2));
-            jsonObject.put("key",SharedPref.getLicenseKey(this));
-            jsonObject.put("Configurl",SharedPref.getBaseWebUrl(this));
+            jsonObject.put("key", SharedPref.getLicenseKey(this));
+            jsonObject.put("Configurl", SharedPref.getBaseWebUrl(this));
 
 
             jsonObject.put("location", "0.0 : 0.0");
@@ -558,18 +551,18 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject responseObject = new JSONObject(jsonObject.toString());
                         if (responseObject.getBoolean("success")) {
 //                            if (responseObject.getString("Android_Detailing").equals("1")) {
-                                Log.v("Android_Detailing", "--json-" + responseObject);
-                                appAccess = responseObject.getString("sanzen_edet");
+                            Log.v("Android_Detailing", "--json-" + responseObject);
+                            appAccess = responseObject.getString("sanzen_edet");
 //                                System.out.println("appAccess--->"+appAccess);
-                                if (appAccess.equals("1")) {
+                            if (appAccess.equals("1")) {
 
 
-                                    process(responseObject);
-                                    Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
+                                process(responseObject);
+                                Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
 //                                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
-                                }else{
-                                    CommonUtilsMethods.accessDialogBox(LoginActivity.this);
-                                }
+                            } else {
+                                CommonUtilsMethods.accessDialogBox(LoginActivity.this);
+                            }
 //                            } else {
 //                                commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.access_denied));
 //                            }
@@ -595,12 +588,12 @@ public class LoginActivity extends AppCompatActivity {
     process(JSONObject jsonObject) {
         try {
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
-            SharedPref.InsertLogInData(LoginActivity.this,jsonObject);
+            SharedPref.InsertLogInData(LoginActivity.this, jsonObject);
             SharedPref.saveKeys(LoginActivity.this, jsonObject.optString("zakey"), jsonObject.optString("zskey"));
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
-         //   SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
+            //   SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
             SharedPref.saveHqMain(LoginActivity.this, jsonObject.getString("HQName"));
 
             if (SharedPref.getAutomassyncFromSP(LoginActivity.this)) {
@@ -654,11 +647,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void timeZoneVerification() {
-        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(LoginActivity.this) && commonUtilsMethods.isTimeZoneAutomatic(LoginActivity.this);
         if (!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }
     }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -666,7 +660,6 @@ public class LoginActivity extends AppCompatActivity {
             binding.rlHead.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-
 
 
 //    boolean iscleared(){

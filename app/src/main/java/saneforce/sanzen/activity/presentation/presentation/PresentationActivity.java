@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.presentation.presentation;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
@@ -38,6 +35,7 @@ import saneforce.sanzen.activity.presentation.presentation.fragments.StockistPre
 import saneforce.sanzen.activity.presentation.presentation.fragments.UnListedDoctorPresentationFragment;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityPresentationBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -45,7 +43,6 @@ import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDa
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
-
 
 public class PresentationActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
@@ -65,7 +62,7 @@ public class PresentationActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus) {
+        if (hasFocus) {
             binding.getRoot().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -73,7 +70,7 @@ public class PresentationActivity extends AppCompatActivity {
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            if(getWindow() != null) {
+            if (getWindow() != null) {
                 getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -113,22 +110,22 @@ public class PresentationActivity extends AppCompatActivity {
 
         viewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
         viewPagerAdapter.add(new CommonPresentationFragment(), "Common");
-        if(SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getDrNeed(PresentationActivity.this).equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new DoctorPresentationFragment(this::viewSideScreen), drCap);
         }
-        if(SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getChmNeed(PresentationActivity.this).equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new ChemistPresentationFragment(this::viewSideScreen), chmCap);
         }
-        if(SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getStkNeed(PresentationActivity.this).equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new StockistPresentationFragment(this::viewSideScreen), stkCap);
         }
-        if(SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getUnlNeed(PresentationActivity.this).equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new UnListedDoctorPresentationFragment(this::viewSideScreen), unlDrCap);
         }
-        if(SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getCipNeed(PresentationActivity.this).equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new CIPPresentationFragment(this::viewSideScreen), cipCap);
         }
-        if(SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
+        if (SharedPref.getHospNeed(PresentationActivity.this).equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new HospitalPresentationFragment(this::viewSideScreen), hosCap);
         }
 
@@ -155,11 +152,11 @@ public class PresentationActivity extends AppCompatActivity {
 //        populateAdapter();
 
         binding.backArrow.setOnClickListener(new SafeClickListener() {
-                                                 @Override
-                                                 public void onSafeClick(View view) {
-                                                     selectedPosition = 0;
-                                                     getOnBackPressedDispatcher().onBackPressed();
-                                                 }
+            @Override
+            public void onSafeClick(View view) {
+                selectedPosition = 0;
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
 //        binding.createPresentationBtn.setOnClickListener(view -> startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class)));
@@ -197,7 +194,7 @@ public class PresentationActivity extends AppCompatActivity {
         });
 
         String selectedCap = "";
-        switch (customerType){
+        switch (customerType) {
   /*          case Constants.DOCTOR:
                 selectedCap = drCap;
                 break;
@@ -231,7 +228,7 @@ public class PresentationActivity extends AppCompatActivity {
         }
 
         binding.navigationView.tvSideTitle.setText(String.format("Selected %s", selectedCap));
-        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             binding.navigationView.tvSideHq.setText(getHQName(presentationDataTable.getHeadquarterCode()));
             binding.navigationView.tvSideHq.setVisibility(View.VISIBLE);
         } else {
@@ -256,20 +253,20 @@ public class PresentationActivity extends AppCompatActivity {
 
         ArrayList<CustomerDataModel> customerDataList = new ArrayList<>();
         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(customerType + presentationDataTable.getHeadquarterCode()).getMasterSyncDataJsonArray();
-        if(jsonArray.length() == 0) {
+        if (jsonArray.length() == 0) {
             commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync));
-        }else {
+        } else {
             try {
                 Set<String> customerCodes1 = new HashSet<>();
                 String code = "";
-                for (int i = 0; i<jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         code = jsonObject.getString("Code");
-                        if(!customerCodes1.contains(code)) {
+                        if (!customerCodes1.contains(code)) {
                             customerCodes1.add(code);
                             CustomerDataModel customerDataModel = new CustomerDataModel(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), "", "", "", "", "", "");
-                            if(presentationDataTable.getCustomerCodes() != null && !presentationDataTable.getCustomerCodes().isEmpty() && presentationDataTable.getCustomerCodes().contains(code)) {
+                            if (presentationDataTable.getCustomerCodes() != null && !presentationDataTable.getCustomerCodes().isEmpty() && presentationDataTable.getCustomerCodes().contains(code)) {
                                 customerDataModel.setSelected(true);
                                 customerDataList.add(customerDataModel);
                             }
@@ -305,10 +302,10 @@ public class PresentationActivity extends AppCompatActivity {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             ArrayList<String> list = new ArrayList<>();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if(jsonObject.optString("id").equalsIgnoreCase(hqCode)) {
+                    if (jsonObject.optString("id").equalsIgnoreCase(hqCode)) {
                         return jsonObject.optString("name");
                     }
                 }
@@ -322,11 +319,11 @@ public class PresentationActivity extends AppCompatActivity {
     private String getUnListedClassName(String unlDocClsCode) {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String name = jsonObject.getString("Name");
                 String code = jsonObject.getString("Code");
-                if(code.equalsIgnoreCase(unlDocClsCode))
+                if (code.equalsIgnoreCase(unlDocClsCode))
                     return name;
             }
         } catch (Exception e) {
@@ -339,11 +336,11 @@ public class PresentationActivity extends AppCompatActivity {
     private String getChemistCategory(String catCode) {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String name = jsonObject.getString("Name");
                 String code = jsonObject.getString("Code");
-                if(code.equalsIgnoreCase(catCode))
+                if (code.equalsIgnoreCase(catCode))
                     return name;
             }
         } catch (Exception e) {

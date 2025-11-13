@@ -34,7 +34,7 @@ public class AWSBucketsTag {
         this.filestored_name = filestored_name;
         util = new Util();
         transferUtility = util.getTransferUtility(context);
-        commonUtilsMethods =  new CommonUtilsMethods(context);
+        commonUtilsMethods = new CommonUtilsMethods(context);
         new AWSbucketsclassTag().execute();
     }
 
@@ -55,7 +55,7 @@ public class AWSBucketsTag {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                TransferObserver image_upload = transferUtility.upload("san-one", "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Tagging"+"/"+filestored_name+filename, file);
+                TransferObserver image_upload = transferUtility.upload("san-one", "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Tagging" + "/" + filestored_name + filename, file);
 
                 image_upload.setTransferListener(new TransferListener() {
                     @Override
@@ -76,6 +76,11 @@ public class AWSBucketsTag {
 
                     @Override
                     public void onError(int id, Exception ex) {
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+                            commonUtilsMethods.showToastMessage(context, "Network timeout. Please try again.");
+                        }
 //                        commonUtilsMethods.showToastMessage(context,"Error");
                         ex.printStackTrace();
                     }
@@ -95,7 +100,7 @@ public class AWSBucketsTag {
         protected Boolean doInBackground(Void... arg0) {
             try {
 
-                TransferObserver downloadObserver = transferUtility.download("san-one", "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Tagging"+"/"+filestored_name+filename, file);
+                TransferObserver downloadObserver = transferUtility.download("san-one", "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Tagging" + "/" + filestored_name + filename, file);
                 downloadObserver.setTransferListener(new TransferListener() {
 
                     @Override
@@ -105,7 +110,8 @@ public class AWSBucketsTag {
                             System.out.println("CHk_Data-->>" + bmp);
                             S3DownloadFiles.fileDataAdd(pos, bmp);
                         } else if (TransferState.FAILED == state) {
-                            Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
+                            S3DownloadFiles.onFailure(pos);
+                            Log.d("S3 Transfer", "onStateChanged: " + "S3 Transfer state FAILED");
                         }
                     }
 
@@ -115,6 +121,11 @@ public class AWSBucketsTag {
 
                     @Override
                     public void onError(int id, Exception ex) {
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+                            commonUtilsMethods.showToastMessage(context, "Network timeout. Please try again.");
+                        }
                         ex.printStackTrace();
                     }
                 });

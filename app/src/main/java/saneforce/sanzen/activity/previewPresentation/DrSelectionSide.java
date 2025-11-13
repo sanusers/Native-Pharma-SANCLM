@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.previewPresentation;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SelectedTab;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix.brandMatrixBinding;
@@ -11,7 +9,6 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.Speciality.
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -45,11 +42,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentDrSelectionSideBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -86,7 +83,8 @@ public class DrSelectionSide extends Fragment {
 
         drSelectionSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onSafeClick(View view) {}
+            public void onSafeClick(View view) {
+            }
         });
 
         drSelectionSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
@@ -166,19 +164,19 @@ public class DrSelectionSide extends Fragment {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
-                if(!docNames.contains(jsonObject.getString("Name"))) {
-                    if(!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-") && !jsonObject.getString("MProd").isEmpty()) {
+                if (!docNames.contains(jsonObject.getString("Name"))) {
+                    if (!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-") && !jsonObject.getString("MProd").isEmpty()) {
                         brands = getBrands(jsonObject.getString("MappProds"));
                         docNames.add(jsonObject.getString("Name"));
                         callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), brands, jsonObject.getString("MProd"), true));
-                    }else {
+                    } else {
                         docNames.add(jsonObject.getString("Name"));
                         callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), "", "", false));
                     }
                 }
             }
             selectDoctorAdapter = new SelectDoctorAdapter(requireContext(), callDrListBrand);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
             drSelectionSideBinding.selectListView.setLayoutManager(mLayoutManager);
             drSelectionSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
             drSelectionSideBinding.selectListView.setAdapter(selectDoctorAdapter);
@@ -219,13 +217,13 @@ public class DrSelectionSide extends Fragment {
     }
 
     public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode) {
-        if (UtilityClass.isNetworkAvailable(context)) {
+        if (UtilityClass.isNetworkAvailable(requireContext())) {
             try {
                 apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                jsonObject.put("sfcode", SharedPref.getSfCode(context));
-                jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                 jsonObject.put("Rsf", hqCode);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();

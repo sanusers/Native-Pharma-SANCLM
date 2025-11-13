@@ -36,7 +36,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
@@ -49,6 +48,7 @@ import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.STPDaySorter;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityStpApprovalBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -79,7 +79,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus) {
+        if (hasFocus) {
             stpApprovalBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                                                                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                                                                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -193,15 +193,15 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 Log.v("jjj", response.body() + "--" + response.isSuccessful());
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
                         stpModelLists.clear();
                         JSONArray jsonArray = new JSONArray(response.body().toString());
-                        if(jsonArray.length()>0) {
+                        if (jsonArray.length() > 0) {
                             stpApprovalBinding.constraintSelectedDetails.setVisibility(View.VISIBLE);
 
-                            for (int i = 0; i<jsonArray.length(); i++) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 stpModelLists.add(new STPModelList(json.getString("SFName"), json.getString("Sf_Code"), json.getString("Division_Code")));
                             }
@@ -209,14 +209,14 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                             stpApprovalBinding.rvStpList.setLayoutManager(mLayoutManager);
                             stpApprovalBinding.rvStpList.setAdapter(stpApprovalAdapter);
-                        }else {
+                        } else {
                             stpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                             commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_data_found));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
                     stpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                     progressDialog.dismiss();
                     commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
@@ -236,7 +236,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
     private void filter(String text) {
         ArrayList<STPModelList> filteredNames = new ArrayList<>();
         for (STPModelList s : stpModelLists) {
-            if(s.getName().toLowerCase().contains(text.toLowerCase())) {
+            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
                 filteredNames.add(s);
             }
         }
@@ -246,7 +246,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
     private void getRequiredData() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 planName = jsonObject.getString("Plan_Name");
                 planSName = jsonObject.getString("Plan_SName");
@@ -278,16 +278,16 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     stpDetailedModels.clear();
                     totalPlannedDays = 0;
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         Log.d("STP", "onResponse: " + jsonArray);
-                        if(jsonArray.length()>0) {
+                        if (jsonArray.length() > 0) {
                             totalPlannedDays = jsonArray.length();
-                            for (int i = 0; i<jsonArray.length(); i++) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 stpDetailedModels.add(new STPDetailedModel(json.getString("Trans_No"), json.getString("sf_code"), json.getString("Division_Code"), json.getString("Day_Plan_Name"), json.getString("Day_Plan_ShortName"), json.getString("Day_Plan_Code"), json.getString("Patch_Code"), json.getString("Patch_Name"), json.getString("Dr_Code"), json.getString("Dr_Name"), json.getString("Chem_Code"), json.getString("Chem_Name"), json.getString("Active_Flag"), json.getString("Created_Date")));
                             }
@@ -298,13 +298,13 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                             stpApprovalBinding.rvStpContentList.setLayoutManager(mLayoutManager);
                             stpApprovalBinding.rvStpContentList.setAdapter(stpApprovalDetailedAdapter);
-                        }else {
+                        } else {
                             commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_data_found));
                         }
                     } catch (Exception e) {
                         Log.v("tpDetailedList", "---" + e);
                     }
-                }else {
+                } else {
                     progressDialog.dismiss();
                     commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
                 }
@@ -341,12 +341,12 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
         callApproveTp.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
-                        if(jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                        if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.approved_successfully));
                             removeSelectedData();
                             ApprovalsActivity.STPCount--;
@@ -354,7 +354,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
                     progressDialog.dismiss();
                     commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
                 }
@@ -378,7 +378,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
         EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
         Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
         Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
-        ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
+        ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason, 300)});
         btn_cancel.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -430,12 +430,12 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
         callRejectTp.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
-                        if(jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                        if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.rejected_successfully));
                             dialogReject.dismiss();
                             removeSelectedData();
@@ -444,7 +444,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                     } catch (Exception e) {
                         dialogReject.dismiss();
                     }
-                }else {
+                } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
                     commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
@@ -465,8 +465,8 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
     private void removeSelectedData() {
         stpApprovalAdapter.removeAt(SelectedPosition);
         stpApprovalAdapter.notifyDataSetChanged();
-        for (int i = 0; i<stpModelLists.size(); i++) {
-            if(stpModelLists.get(i).getCode().equalsIgnoreCase(SelectedSfCode)) {
+        for (int i = 0; i < stpModelLists.size(); i++) {
+            if (stpModelLists.get(i).getCode().equalsIgnoreCase(SelectedSfCode)) {
                 stpModelLists.remove(i);
                 break;
             }

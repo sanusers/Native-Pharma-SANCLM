@@ -325,8 +325,11 @@ public class Speciality extends Fragment {
                 specialityPreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
                 if (from_where.equalsIgnoreCase("call")) {
-//                    specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
-//                    specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
+                    specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
+                    specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
+                } else {
+                    specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
+                    specialityPreviewBinding.viewDummy2.setVisibility(View.INVISIBLE);
                 }
                 previewAdapter = new PreviewAdapter(context, SlideSpecialityList);
                 specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));

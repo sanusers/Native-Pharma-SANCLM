@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minWidth="@dimen/_200sdp"
     android:orientation="vertical"
     android:padding="@dimen/_5sdp">
 
@@ -26,23 +27,22 @@
         android:id="@+id/searchET"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="@string/search"
-        android:textSize="@dimen/_6sdp"
-        android:iconifiedByDefault="false"
-        android:textColor="@color/text_dark_25"
-        android:background="@drawable/edittext_stroke"
         android:layout_marginTop="@dimen/_3sdp"
-        android:focusable="false"
+        android:background="@drawable/edittext_stroke"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/search"
+        android:textColor="@color/text_dark_25"
+        android:textSize="@dimen/_6sdp"
         tools:ignore="SpUsage" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_3sdp"
         android:divider="@color/text_dark"
         android:dividerHeight="@dimen/_1sdp"
-        android:padding="@dimen/_3sdp"
-        android:layout_marginTop="@dimen/_3sdp">
+        android:padding="@dimen/_3sdp">
 
     </ListView>
 </LinearLayout>
