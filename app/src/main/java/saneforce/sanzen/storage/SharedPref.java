@@ -509,7 +509,7 @@ public class SharedPref {
 
     public static final String TodayTPDoctor = "TodayTPDoctor";
     public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
-
+    public static final String DataClearedFlag = "DataClearedFlag";
 
     public static SharedPreferences.Editor editor;
 
@@ -3181,12 +3181,27 @@ public class SharedPref {
                 .getString(DoctorRemainingShownDate, "");
     }
 
-    public static void addVisitedDoctor(Context context, String custCode) {
+//    public static void addVisitedDoctor(Context context, String custCode) {
+//        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+//        Set<String> visited = sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>());
+//        visited.add(custCode.toUpperCase());
+//        sp.edit().putStringSet("CumulativeVisitedDoctors", visited).apply();
+//    }
+public static void addVisitedDoctor(Context context, String custCode) {
+    SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+
+    // Create mutable copy
+    Set<String> visited = new HashSet<>(sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>()));
+
+    visited.add(custCode.trim().toUpperCase());
+
+    sp.edit().putStringSet("CumulativeVisitedDoctors", visited).apply();
+}
+    public static Set<String> getVisitedDoctors(Context context) {
         SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        Set<String> visited = sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>());
-        visited.add(custCode.toUpperCase());
-        sp.edit().putStringSet("CumulativeVisitedDoctors", visited).apply();
+        return new HashSet<>(sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>()));
     }
+
 
     public static Set<String> getCumulativeVisitedDoctors(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
@@ -3198,5 +3213,27 @@ public class SharedPref {
                 .edit().remove("CumulativeVisitedDoctors")
                 .apply();
     }
+    public static void setDataCleared(Context context, boolean isCleared) {
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        sp.edit().putBoolean(DataClearedFlag, isCleared).apply();
+    }
+
+    // Get flag
+    public static boolean isDataCleared(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        return sp.getBoolean(DataClearedFlag, false);
+    }
+    // SharedPref.java additions
+    // SharedPref.java
+    public static boolean getPopupShownAfterClear(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE);
+        return sp.getBoolean("popup_shown_after_clear", false);
+    }
+
+    public static void setPopupShownAfterClear(Context context, boolean value) {
+        SharedPreferences sp = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE);
+        sp.edit().putBoolean("popup_shown_after_clear", value).apply();
+    }
+
 
 }

@@ -151,8 +151,6 @@ public class CommonAlertBox {
         okButton.setOnClickListener(view -> dialog.dismiss());
     }
 
-
-
     public static void ApprovalAlert(Activity activity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setCancelable(false);

@@ -68,6 +68,8 @@ public class Constants {
     public static final String TOUR_PLAN = "Tour Plan";
     public static final String TP_SETUP = "Tour Plan Setup";
 
+    public static final String TP_DATA = "TP_Data"; // 🔹 Added for popup logic
+
     //Quiz
     public static final String QUIZ = "Quiz";
 

@@ -2825,6 +2825,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             Log.e("SAVE JSON", "CreateJson: " + jsonObject.toString());
             insMode = "0";
 
+            String doc = jsonObject.getString("TP_Doctor");
+            SharedPref.setTodayTPDoctor(requireContext(), doc);
+            Log.d("TAG", doc);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
