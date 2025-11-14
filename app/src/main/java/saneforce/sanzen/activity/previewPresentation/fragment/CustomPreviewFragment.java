@@ -50,6 +50,9 @@ public class CustomPreviewFragment extends Fragment {
     private String drCap, chmCap, stkCap, unDrCap, cipCap, hosCap;
     private ShowSideScreenListener showSideScreenListener;
 
+    public CustomPreviewFragment() {
+    }
+
     public CustomPreviewFragment(ShowSideScreenListener showSideScreenListener) {
         this.showSideScreenListener = showSideScreenListener;
     }

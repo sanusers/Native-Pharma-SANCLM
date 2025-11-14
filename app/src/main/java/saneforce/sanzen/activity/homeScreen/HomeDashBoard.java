@@ -989,18 +989,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });
-        binding.backArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.backArrow.setOnClickListener(view -> {
+            if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
 
-                if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
-                    binding.myDrawerLayout.closeDrawer(GravityCompat.START);
-
-                } else {
-                    binding.myDrawerLayout.openDrawer(GravityCompat.START);
-                    binding.backArrow.setBackgroundResource(R.drawable.cross_img);
-                }
+            } else {
+                binding.myDrawerLayout.openDrawer(GravityCompat.START);
+                binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
     }
