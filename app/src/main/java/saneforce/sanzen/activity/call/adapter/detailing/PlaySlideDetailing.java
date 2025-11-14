@@ -69,7 +69,6 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class PlaySlideDetailing extends AppCompatActivity {
-
     @SuppressLint("StaticFieldLeak")
     public static ActivityPlaySlidePreviewDetailingBinding binding;
     @SuppressLint("StaticFieldLeak")

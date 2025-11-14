@@ -26,6 +26,9 @@ public interface CallOfflineECDataDao {
     @Query("DELETE FROM `CALL_OFFLINE_EC_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `CALL_OFFLINE_EC_TABLE` WHERE `CALL_DATE_EC` = :date")
+    void deleteAllData(String date);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveOfflineECData(CallOfflineECDataTable callOfflineECDataTable);
 

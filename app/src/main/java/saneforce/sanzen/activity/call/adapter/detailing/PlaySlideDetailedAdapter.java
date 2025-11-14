@@ -108,6 +108,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private HashMap<Integer, VideoView> videoViewList = new HashMap<>();
     private HashMap<Integer, WebView> webViewList = new HashMap<>();
     private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
+    private MediaController mediaController;
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
         this.context = context;
@@ -178,6 +179,32 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     public void autoPlaySlide(int position, int attempt) {
         if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
             try {
+                if (mediaController != null && mediaController.isShowing()) {
+                    mediaController.hide();
+                }
+                try {
+                    for (VideoView videoView : videoViewList.values()) {
+                        if (videoView != null && videoView.isPlaying()) {
+                            videoView.stopPlayback();
+                        }
+                    }
+                    for (WebView webView : webViewList.values()) {
+                        if (webView != null) {
+                            webView.loadUrl("about:blank");
+                            webView.clearHistory();
+                        }
+                    }
+                    for (PDFView pdfView : pdfViewList.values()) {
+                        if (pdfView != null) {
+                            pdfView.recycle();
+                        }
+                    }
+                    if (mediaController != null) {
+                        mediaController.hide();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 ImageView imageView = imageViewList.get(position);
                 WebView webView = webViewList.get(position);
                 VideoView videoView = videoViewList.get(position);
@@ -202,7 +229,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             break;
                         case "mp4":
                         case "avi":
-                            MediaController mediaController = new MediaController(context);
+                            mediaController = new MediaController(context);
                             mediaController.setAnchorView(videoView);
                             pdfView.setVisibility(View.GONE);
                             videoView.setVisibility(View.VISIBLE);
@@ -215,6 +242,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             videoView.setOnPreparedListener(mp -> {
                                 progressAnim.setVisibility(View.GONE);
                                 mp.start();
+                            });
+                            videoView.setOnCompletionListener(mp -> {
+                                mediaController.hide();
                             });
 //                            videoView.start();
                             break;

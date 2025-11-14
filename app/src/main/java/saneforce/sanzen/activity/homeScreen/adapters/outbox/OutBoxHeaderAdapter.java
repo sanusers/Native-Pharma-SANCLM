@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,6 +50,7 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
@@ -73,6 +75,7 @@ import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDa
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
@@ -81,6 +84,7 @@ import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapter.listDataViewholider> {
     Context context;
@@ -159,6 +163,16 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 holder.constraintContent.setVisibility(View.GONE);
                 holder.ivExpand.setImageResource(R.drawable.down_arrow);
             }
+            
+            if (!groupModelClass.getChildItems().isEmpty() && groupModelClass.getChildItems().get(1).getWorkPlanModelClass() != null && groupModelClass.getChildItems().get(1).getWorkPlanModelClass().getWtStatus() != null && groupModelClass.getChildItems().get(1).getWorkPlanModelClass().getSyncStatus() == 2 && !groupModelClass.getChildItems().get(1).getWorkPlanModelClass().getWtStatus().isEmpty()) {
+                holder.ivDelete.setVisibility(View.VISIBLE);
+                holder.ivDelete.setOnClickListener(view -> {
+                    clearData(groupModelClass);
+                    OutboxFragment.SetupOutBoxAdapter(activity, context);
+                });
+            } else {
+                holder.ivDelete.setVisibility(View.GONE);
+            }
 
             holder.ivSync.setOnClickListener(new SafeClickListener() {
                 @Override
@@ -206,6 +220,120 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         }
     }
 
+    private void clearData(GroupModelClass groupModelClass) {
+        try {
+//            if (HomeDashBoard.selectedDate != null && offlineWorkTypeDataDao.getAllCallOfflineWTDates().contains(HomeDashBoard.selectedDate.toString())) {
+//                Log.e("outbox workplan", "clearCalls: date found");
+//                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
+//                SharedPref.setDayPlanStartedDate(context, "");
+//            }
+            if (!groupModelClass.getChildItems().get(2).getOutBoxCallLists().isEmpty()) {
+                JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    for (int j = 0; j < groupModelClass.getChildItems().get(2).getOutBoxCallLists().size(); j++) {
+                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(groupModelClass.getChildItems().get(2).getOutBoxCallLists().get(j).getDates()) && (jsonObject.getString("CustCode").equalsIgnoreCase(groupModelClass.getChildItems().get(2).getOutBoxCallLists().get(j).getCusCode()) || jsonObject.getString("CustCode").isEmpty())) {
+                            jsonArray.remove(i);
+                            i--;
+                        } else if (groupModelClass.getGroupName().equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").isEmpty()) {
+                            jsonArray.remove(i);
+                            i--;
+                        }
+                    }
+                }
+                MasterDataTable data = new MasterDataTable();
+                data.setMasterKey(Constants.CALL_SYNC);
+                data.setMasterValues(jsonArray.toString());
+                data.setSyncStatus(0);
+                MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                if (mNChecked != null) {
+                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
+                } else {
+                    masterDataDao.insert(data);
+                }
+                CallDataRestClass.resetcallValues(context);
+
+            }
+        } catch (Exception e) {
+            Log.e("Outbox", "clearCalls: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        try {
+            ArrayList<OutBoxCallList> callOfflineDataTables = groupModelClass.getChildItems().get(2).getOutBoxCallLists();
+            for (OutBoxCallList callOfflineDataTable : callOfflineDataTables) {
+                String jsonArray = callOfflineDataTable.getJsonData();
+                UpdateInputSample(jsonArray);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        outboxUtil.deleteOfflineCalls(groupModelClass.getGroupName());
+    }
+
+    private void UpdateInputSample(String jsonArray) {
+        try {
+            JSONObject json = new JSONObject(jsonArray);
+            //Input
+            if (SharedPref.getInputValidation(context).equalsIgnoreCase("1")) {
+                JSONArray jsonArrayInpStk = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
+                JSONArray jsonInput = json.getJSONArray("Inputs");
+                Log.v("input_wrk", String.valueOf(jsonInput));
+                if (jsonInput.length() > 0) {
+                    for (int i = 0; i < jsonInput.length(); i++) {
+                        JSONObject jsIp = jsonInput.getJSONObject(i);
+                        //InputStockChange
+                        for (int j = 0; j < jsonArrayInpStk.length(); j++) {
+                            JSONObject jsonObject = jsonArrayInpStk.getJSONObject(j);
+                            Log.v("chkInpStk", jsIp.getString("Code") + "-----" + jsonObject.getString("Code"));
+                            if (jsIp.getString("Code").equalsIgnoreCase(jsonObject.getString("Code"))) {
+                                int EnterQty = Integer.parseInt(jsIp.getString("IQty"));
+                                int BalanceStock = Integer.parseInt(jsonObject.getString("Balance_Stock"));
+                                int FinalStock = EnterQty + BalanceStock;
+                                jsonObject.remove("Balance_Stock");
+                                jsonObject.put("Balance_Stock", FinalStock);
+                                break;
+                            }
+                        }
+                    }
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 2));
+                }
+            }
+
+            //Sample
+            if (SharedPref.getSampleValidation(context).equalsIgnoreCase("1")) {
+                JSONArray jsonArraySamStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
+                JSONArray jsonPrdArray = new JSONArray(json.getString("Products"));
+                Log.v("sample_wrk", String.valueOf(jsonPrdArray));
+                if (jsonPrdArray.length() > 0) {
+                    //InputStockChange
+                    for (int i = 0; i < jsonPrdArray.length(); i++) {
+                        JSONObject js = jsonPrdArray.getJSONObject(i);
+                        if (js.getString("Group").equalsIgnoreCase("0")) {
+                            for (int j = 0; j < jsonArraySamStk.length(); j++) {
+                                JSONObject jsonObject = jsonArraySamStk.getJSONObject(j);
+                                if (js.getString("Code").equalsIgnoreCase(jsonObject.getString("Code"))) {
+                                    int EnterQty = Integer.parseInt(js.getString("SmpQty"));
+                                    int BalanceStock = Integer.parseInt(jsonObject.getString("Balance_Stock"));
+                                    int FinalStock = EnterQty + BalanceStock;
+                                    jsonObject.remove("Balance_Stock");
+                                    jsonObject.put("Balance_Stock", FinalStock);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0));
+                }
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void stopSync() {
         System.out.println("❌ Sync stopped due to API failure.");
         if (callSyncCount > 0) {
@@ -226,7 +354,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         callApiForChild(child, new ApiCallback() {
             @Override
             public void onSuccess() {
-                processApisForDate(dateGroup, apiIndex + 1, callback);
+                if (apiIndex == 1 && !child.getWorkPlanModelClass().getWtStatus().isEmpty()) {
+                    processApisForDate(dateGroup, dateGroup.getChildItems().size(), callback);
+                } else {
+                    processApisForDate(dateGroup, apiIndex + 1, callback);
+                }
             }
 
             @Override
@@ -383,10 +515,19 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                             notifyDataSetChanged();
                             callback.onSuccess();
                         } else {
-                            offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
-                            workPlanModelClass.setSyncStatus(1);
-                            notifyDataSetChanged();
-                            callback.onFailure();
+                            if (json.optBoolean("update")) {
+                                String msg = json.optString("Msg");
+                                offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), msg, 2);
+                                workPlanModelClass.setSyncStatus(2);
+                                workPlanModelClass.setWtStatus(msg);
+                                notifyDataSetChanged();
+                                callback.onSuccess();
+                            } else {
+                                offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
+                                workPlanModelClass.setSyncStatus(1);
+                                notifyDataSetChanged();
+                                callback.onFailure();
+                            }
                         }
                     } catch (Exception ignored) {
                         offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
@@ -2014,7 +2155,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
     public static class listDataViewholider extends RecyclerView.ViewHolder {
         TextView tvDate;
-        ImageView ivSync, ivExpand;
+        ImageView ivSync, ivExpand, ivDelete;
         ConstraintLayout constraintContent;
         RecyclerView rvContentList;
         CardView cardView;
@@ -2025,6 +2166,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             tvDate = itemView.findViewById(R.id.text_date);
             ivSync = itemView.findViewById(R.id.img_sync_all);
             ivExpand = itemView.findViewById(R.id.txt_expand_status);
+            ivDelete = itemView.findViewById(R.id.img_delete);
             constraintContent = itemView.findViewById(R.id.constraint_rv);
             rvContentList = itemView.findViewById(R.id.rv_outbox_list);
             cardView = itemView.findViewById(R.id.card_view_top);

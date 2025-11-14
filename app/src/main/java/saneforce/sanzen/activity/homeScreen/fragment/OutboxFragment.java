@@ -178,38 +178,42 @@ public class OutboxFragment extends Fragment {
         outBoxBinding.clearAll.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (!listDates.isEmpty()) {
-                    Set<String> dates = outboxUtil.getOutboxDates();
-                    ArrayList<String> finalDates = new ArrayList<>();
-                    for (String date : dates) {
-                        finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
+                if (offlineDaySubmitDao.isNonSyncAvailableDaySubmit()) {
+                    CommonUtilsMethods.showToastMessage(requireActivity(), "Cannot clear when day submitted");
+                } else {
+                    if (!listDates.isEmpty()) {
+                        Set<String> dates = outboxUtil.getOutboxDates();
+                        ArrayList<String> finalDates = new ArrayList<>();
+                        for (String date : dates) {
+                            finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
+                        }
+                        String datesString = Arrays.toString(finalDates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                        TextView btn_no = dialog.findViewById(R.id.btn_no);
+                        TextView message = dialog.findViewById(R.id.ed_alert_msg);
+                        String content = "Available Outbox dates are :\n- " + datesString + "\n\n" + context.getString(R.string.are_you_sure_you_want_to_clear);
+                        message.setText(content);
+                        btn_yes.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                addDateSyncDataBack(dates);
+                                clearCalls();
+                                HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                                dialog.dismiss();
+                            }
+                        });
+                        btn_no.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
                     }
-                    String datesString = Arrays.toString(finalDates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
-                    Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                    TextView btn_no = dialog.findViewById(R.id.btn_no);
-                    TextView message = dialog.findViewById(R.id.ed_alert_msg);
-                    String content = "Available Outbox dates are :\n- " + datesString + "\n\n" + context.getString(R.string.are_you_sure_you_want_to_clear);
-                    message.setText(content);
-                    btn_yes.setOnClickListener(new SafeClickListener() {
-                        @Override
-                        public void onSafeClick(View view) {
-                            addDateSyncDataBack(dates);
-                            clearCalls();
-                            HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
-                            dialog.dismiss();
-                        }
-                    });
-                    btn_no.setOnClickListener(new SafeClickListener() {
-                        @Override
-                        public void onSafeClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
                 }
             }
         });
@@ -476,7 +480,11 @@ public class OutboxFragment extends Fragment {
         callApiForChild(child, new ApiCallback() {
             @Override
             public void onSuccess() {
-                processApisForDate(dateGroup, apiIndex + 1, callback);
+                if (apiIndex == 1 && child.getWorkPlanModelClass() != null  && child.getWorkPlanModelClass().getWtStatus() != null && !child.getWorkPlanModelClass().getWtStatus().isEmpty()) {
+                    processApisForDate(dateGroup, dateGroup.getChildItems().size(), callback);
+                } else {
+                    processApisForDate(dateGroup, apiIndex + 1, callback);
+                }
             }
 
             @Override
@@ -633,10 +641,19 @@ public class OutboxFragment extends Fragment {
                             notifyedmethod();
                             callback.onSuccess();
                         } else {
-                            offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
-                            workPlanModelClass.setSyncStatus(1);
-                            notifyedmethod();
-                            callback.onFailure();
+                            if (json.optBoolean("update")) {
+                                String msg = json.optString("Msg");
+                                offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), msg, 2);
+                                workPlanModelClass.setSyncStatus(2);
+                                workPlanModelClass.setWtStatus(msg);
+                                notifyedmethod();
+                                callback.onSuccess();
+                            } else {
+                                offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
+                                workPlanModelClass.setSyncStatus(1);
+                                notifyedmethod();
+                                callback.onFailure();
+                            }
                         }
                     } catch (Exception ignored) {
                         offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);

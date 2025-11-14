@@ -25,7 +25,10 @@ public interface CallOfflineSignDataDao {
     void delete(CallOfflineSignDataTable callOfflineSignDataTable);
 
     @Query("DELETE FROM CALL_OFFLINE_SIGN_TABLE")
-    void deleteAllSignData();
+    void deleteAllData();
+
+    @Query("DELETE FROM `CALL_OFFLINE_SIGN_TABLE` WHERE `CALL_DATE_SIGN` = :date")
+    void deleteAllData(String date);
 
     @Query("DELETE FROM `CALL_OFFLINE_SIGN_TABLE` WHERE `CALL_FILE_PATH_SIGN` = :filePath")
     void deleteOfflineSignImage(String filePath);

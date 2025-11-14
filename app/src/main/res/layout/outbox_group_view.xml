@@ -45,6 +45,16 @@
                     android:textStyle="bold"/>
 
                 <ImageView
+                    android:id="@+id/img_delete"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    android:visibility="gone"
+                    android:layout_toStartOf="@id/img_sync_all"
+                    android:src="@drawable/outline_delete_sweep_24" />
+
+                <ImageView
                     android:id="@+id/img_sync_all"
                     android:layout_width="@dimen/_10sdp"
                     android:layout_height="@dimen/_10sdp"

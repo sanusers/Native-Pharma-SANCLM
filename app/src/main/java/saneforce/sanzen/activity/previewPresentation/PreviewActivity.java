@@ -45,6 +45,7 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
 import saneforce.sanzen.activity.presentation.presentation.adapter.SideScreenAdapter;
 import saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix;
+import saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment;
 import saneforce.sanzen.activity.previewPresentation.fragment.CustomPreviewFragment;
 import saneforce.sanzen.activity.previewPresentation.fragment.CustomizedPresentationFragment;
 import saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands;
@@ -198,8 +199,8 @@ public class PreviewActivity extends AppCompatActivity {
                 }
                 viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
                 headingData.add("G");
-//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-//                headingData.add("H");
+                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                headingData.add("H");
             } else {
                 viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                 headingData.add("A");
@@ -217,8 +218,8 @@ public class PreviewActivity extends AppCompatActivity {
                 }
                 viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
                 headingData.add("G");
-//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-//                headingData.add("H");
+                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                headingData.add("H");
             }
         } else {
             viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));

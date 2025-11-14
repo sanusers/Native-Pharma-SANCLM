@@ -62,7 +62,19 @@ public class OutboxUtil {
         offlineDaySubmitDao.deleteAllData();
         activityOfflineDataDao.deleteAllData();
         activityUploadDataDao.deleteAllData();
-        callOfflineSignDataDao.deleteAllSignData();
+        callOfflineSignDataDao.deleteAllData();
+//        quizOfflineDataDao.deleteAllData();
+    }
+
+    public void deleteOfflineCalls(String date) {
+        callOfflineDataDao.deleteAllData(date);
+        callOfflineECDataDao.deleteAllData(date);
+        callOfflineWorkTypeDataDao.deleteAllData(date);
+        offlineCheckInOutDataDao.deleteAllData(date);
+        offlineDaySubmitDao.deleteAllData(date);
+        activityOfflineDataDao.deleteAllData(date);
+        activityUploadDataDao.deleteAllData(date);
+        callOfflineSignDataDao.deleteAllData(date);
 //        quizOfflineDataDao.deleteAllData();
     }
 
@@ -147,6 +159,10 @@ public class OutboxUtil {
 
     public boolean isOutBoxNonSyncDataAvailable() {
         return callOfflineECDataDao.isNonSyncAvailableEc() || callOfflineSignDataDao.isNonSyncSignDataAvailable() || offlineCheckInOutDataDao.isNonSyncAvailableCheckInOut() || offlineDaySubmitDao.isNonSyncAvailableDaySubmit() || callOfflineDataDao.isNonSyncAvailableCall() || callOfflineWorkTypeDataDao.isNonSyncAvailableWT() || activityOfflineDataDao.isNonSyncActivityAvailable() || activityUploadDataDao.isNonSyncActivityUploadAvailable();
+    }
+
+    public boolean isDaySubmitAvailable() {
+        return offlineDaySubmitDao.isNonSyncAvailableDaySubmit();
     }
 
     public boolean checkSyncAvailable(String date, int type) {

@@ -25,6 +25,9 @@ public interface CallOfflineWorkTypeDataDao {
     void deleteAllData();
 
     @Query("DELETE FROM `CALL_OFFLINE_WORK_TYPE_TABLE` WHERE `CALL_OFFLINE_WT_DATE` = :date")
+    void deleteAllData(String date);
+
+    @Query("DELETE FROM `CALL_OFFLINE_WORK_TYPE_TABLE` WHERE `CALL_OFFLINE_WT_DATE` = :date")
     void delete(String date);
 
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_WORK_TYPE_TABLE`)")
@@ -47,6 +50,9 @@ public interface CallOfflineWorkTypeDataDao {
 
     @Query("UPDATE `CALL_OFFLINE_WORK_TYPE_TABLE` SET `CALL_OFFLINE_WT_SYNC_STATUS` = :syncStatus WHERE `ID` = :id")
     void updateWorkTypeStatus(int id, int syncStatus);
+
+    @Query("UPDATE `CALL_OFFLINE_WORK_TYPE_TABLE` SET `CALL_OFFLINE_WT_STATUS` = :status, `CALL_OFFLINE_WT_SYNC_STATUS` = :syncStatus WHERE `ID` = :id")
+    void updateWorkTypeStatus(int id, String status, int syncStatus);
 
     default String getListOfflineWT(String date) {
         List<String> list = getListOfflineWTNames(date);

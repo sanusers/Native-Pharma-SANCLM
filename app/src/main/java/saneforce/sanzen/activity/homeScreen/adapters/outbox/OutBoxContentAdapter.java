@@ -175,6 +175,14 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     holder.expandContentView.setVisibility(View.GONE);
                 } else {
                     holder.expandContentView.setVisibility(View.VISIBLE);
+                    if (contentList.getWorkPlanModelClass().getSyncStatus() == 2 && !contentList.getWorkPlanModelClass().getWtStatus().isEmpty()) {
+                        holder.tvCount.setText(" i ");
+                        holder.tvCount.setVisibility(View.VISIBLE);
+                        holder.tvCount.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, contentList.getWorkPlanModelClass().getWtStatus()));
+                    } else {
+                        holder.tvCount.setText("");
+                        holder.tvCount.setVisibility(View.GONE);
+                    }
                 }
                 break;
             case 2:

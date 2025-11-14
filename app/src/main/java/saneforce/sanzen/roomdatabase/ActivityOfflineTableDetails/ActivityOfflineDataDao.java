@@ -29,6 +29,9 @@ public interface ActivityOfflineDataDao {
     @Query("DELETE FROM `ACTIVITY_OFFLINE_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `ACTIVITY_OFFLINE_TABLE` WHERE `ACTIVITY_DATE` = :date")
+    void deleteAllData(String date);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Long saveActivityOfflineData(ActivityOfflineDataTable activityOfflineDataTable);
 

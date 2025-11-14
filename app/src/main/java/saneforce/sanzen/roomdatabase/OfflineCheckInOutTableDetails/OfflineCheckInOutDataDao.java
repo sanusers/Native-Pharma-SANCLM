@@ -25,6 +25,9 @@ public interface OfflineCheckInOutDataDao {
     @Query("DELETE FROM `OFFLINE_CHECK_IN_OUT_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `OFFLINE_CHECK_IN_OUT_TABLE` WHERE `OFFLINE_CHECK_IN_OUT_DATE` = :date")
+    void deleteAllData(String date);
+
     @Query("SELECT EXISTS(SELECT 1 FROM `OFFLINE_CHECK_IN_OUT_TABLE`)")
     boolean isAvailableCheckInOut();
 

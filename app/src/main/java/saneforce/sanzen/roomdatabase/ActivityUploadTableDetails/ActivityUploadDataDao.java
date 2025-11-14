@@ -27,6 +27,9 @@ public interface ActivityUploadDataDao {
     @Query("DELETE FROM `ACTIVITY_UPLOAD_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `ACTIVITY_UPLOAD_TABLE` WHERE `ACTIVITY_DATE` = :date")
+    void deleteAllData(String date);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveActivityUploadData(ActivityUploadDataTable activityUploadDataTable);
 
