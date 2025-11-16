@@ -294,6 +294,7 @@
     <string name="add_rcpa_values">Add RCPA Values</string>
     <string name="jointwork_need"> Select Jointwork </string>
     <string name="add_pob_values">Add Pob Values</string>
+    <string name="activity_mandatory">Activity Mandatory</string>
     <string name="event_capture_needed">Event Capture Needed</string>
     <string name="need_competitors_for_prd">Need Competitor for Products</string>
     <string name="rcpa_need_qty">RCPA Competitor Qty Needed</string>

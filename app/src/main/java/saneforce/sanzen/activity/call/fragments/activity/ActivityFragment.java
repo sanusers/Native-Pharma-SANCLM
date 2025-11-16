@@ -120,7 +120,6 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class ActivityFragment extends Fragment {
-
     private FragmentActivityBinding fragmentActivityBinding;
     private static final int PICK_FROM_GALLERY = 101;
     ApiInterface apiInterface;
@@ -129,7 +128,6 @@ public class ActivityFragment extends Fragment {
     ArrayList<ActivityDetailsModelClass> ActivityViewItem = new ArrayList<>();
     String[] value, valfrom, valto;
     ActvityList2Adapter adapter1;
-
     ActivityAdapter adapter;
     GPSTrack gpsTrack;
     Typeface fontregular, fontmedium;
@@ -160,7 +158,6 @@ public class ActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         gpsTrack = new GPSTrack(requireActivity());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
@@ -174,8 +171,7 @@ public class ActivityFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentActivityBinding = FragmentActivityBinding.inflate(inflater);
         return fragmentActivityBinding.getRoot();
     }
@@ -380,6 +376,7 @@ public class ActivityFragment extends Fragment {
                 fragmentActivityBinding.llMainLayout.setVisibility(View.GONE);
 //                commonUtilsMethods.showToastMessage(requireContext(), "No " + activityCap);
             }
+            ActivityList.add(0, new ActivityModelClass("-1", "No Activity", "", "", "", "", true));
             fragmentActivityBinding.progressMain.setVisibility(View.GONE);
         } catch (Exception e) {
             e.printStackTrace();

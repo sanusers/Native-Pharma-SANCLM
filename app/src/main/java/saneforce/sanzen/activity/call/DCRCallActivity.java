@@ -147,7 +147,7 @@ public class DCRCallActivity extends AppCompatActivity {
     ProgressDialog progressDialog = null;
     GPSTrack gpsTrack;
     private JSONObject checkInOutJsonObject = new JSONObject(), checkOutJsonObject, jsonSaveDcr, jsonImage, jsonSign;
-    String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed, ActivityNeed/*, SignNeed, SignMandatory*/;
+    String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed, ActivityNeed, ActivityMandatory/*, SignNeed, SignMandatory*/;
     double lat, lng;
     ApiInterface api_interface;
     String ChemName = "", CheCode = "";
@@ -1215,6 +1215,14 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
                 if (RCPANeed.equalsIgnoreCase("0")) {
                     if (!validateRCPACompQty()) return false;
+                }
+
+                if (ActivityNeed.equalsIgnoreCase("0") && ActivityMandatory.equalsIgnoreCase("0")) {
+                    if (ActivityFragment.savedActivityList != null && ActivityFragment.savedActivityList.isEmpty()) {
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.activity_mandatory));
+                        moveToPage(capActivity);
+                        return false;
+                    }
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
@@ -3096,15 +3104,13 @@ public class DCRCallActivity extends AppCompatActivity {
             SfName = SharedPref.getSfName(this);
             DivCode = SharedPref.getDivisionCode(this);
             SubDivisionCode = SharedPref.getSubdivisionCode(this);
-            ;
             Designation = SharedPref.getDesig(this);
             StateCode = SharedPref.getStateCode(this);
             RcpaCompetitorAdd = SharedPref.getRcpaCompetitorAdd(this);
-            ;
             EventCapMandatory = SharedPref.getCipEventMd(this);
-            ;
             capActivity = SharedPref.getActivityCap(this);
             ActivityNeed = SharedPref.getActivityNd(this);
+            ActivityMandatory = SharedPref.getActivityMand(this);
 
             switch (CallActivityCustDetails.get(0).getType()) {
                 case "1": //Dr
