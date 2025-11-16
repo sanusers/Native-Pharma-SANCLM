@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".activity.chat.ChatActivity">
 
@@ -142,118 +143,91 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rlDetailsMain"
+                android:id="@+id/rlChatMain"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_4sdp"
                 android:background="@drawable/custom_backround_layout"
                 android:backgroundTint="@color/white"
+                android:fitsSystemWindows="true"
                 android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/namechooseActivity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_margin="@dimen/_2sdp"
-                    android:fontFamily="@font/satoshi_medium"
-                    android:padding="@dimen/_3sdp"
-                    android:text="Choose Activity"
-                    android:textColor="@color/black_45"
-                    android:textSize="@dimen/_7sdp"
-                    android:textStyle="bold">
-
-                </TextView>
-
-                <ScrollView
-                    android:id="@+id/rl_data_layout"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/ll_btns"
-                    android:layout_below="@id/namechooseActivity"
-                    android:layout_margin="@dimen/_2sdp"
-                    android:background="@drawable/custom_backround_layout"
-                    android:backgroundTint="@color/backround_graey"
-                    android:visibility="visible">
+                    android:orientation="vertical">
 
-                    <RelativeLayout
+                    <TextView
+                        android:id="@+id/user_name"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-
-                        <LinearLayout
-                            android:id="@+id/llActivityDetailsView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                        </LinearLayout>
-
-                        <ProgressBar
-                            android:id="@+id/progrlessdetail"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="center"
-                            android:backgroundTint="@color/black_45"
-                            android:visibility="gone" />
-                    </RelativeLayout>
-
-
-                </ScrollView>
-
-                <LinearLayout
-                    android:id="@+id/ll_btns"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_margin="@dimen/_2sdp"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_clearall"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_border_with_pink"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_margin="@dimen/_2sdp"
                         android:fontFamily="@font/satoshi_medium"
-                        android:gravity="center"
-                        android:padding="@dimen/_4sdp"
-                        android:text="@string/clear_all"
-                        android:textAllCaps="false"
-                        android:textColor="@color/dark_purple"
+                        android:padding="@dimen/_3sdp"
+                        android:text="User Name"
+                        android:textColor="@color/black_45"
                         android:textSize="@dimen/_7sdp"
                         android:textStyle="bold" />
 
                     <View
-                        android:layout_width="@dimen/_2sdp"
-                        android:layout_height="match_parent" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_submit"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_weight="1"
-                        android:background="@drawable/edittext_stroke"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:gravity="center"
-                        android:padding="@dimen/_4sdp"
-                        android:text="@string/submit"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        app:backgroundTint="@color/black_45" />
+                        android:layout_height="1dp"
+                        android:layout_margin="@dimen/_3sdp"
+                        android:background="@color/dark_purple" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerChat"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="@dimen/_3sdp" />
+
+                        <TextView
+                            android:id="@+id/tvStickyHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_date_separator"
+                            android:padding="6dp"
+                            android:textColor="#FFFFFF"
+                            android:visibility="visible" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_3sdp">
+
+                        <EditText
+                            android:id="@+id/etMessage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_light_grey_border"
+                            android:hint="Type Here..."
+                            android:padding="10dp" />
+
+                        <ImageButton
+                            android:id="@+id/btnSend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:background="@color/dark_purple"
+                            android:paddingHorizontal="@dimen/_3sdp"
+                            android:src="@android:drawable/ic_menu_send" />
+                    </LinearLayout>
+
                 </LinearLayout>
-
-                <ProgressBar
-                    android:id="@+id/progress_submit"
-                    android:layout_width="@dimen/_25sdp"
-                    android:layout_height="@dimen/_25sdp"
-                    android:layout_centerInParent="true"
-                    android:backgroundTint="@color/black_45"
-                    android:visibility="gone" />
-
 
             </RelativeLayout>
 

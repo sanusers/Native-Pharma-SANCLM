@@ -54,7 +54,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             holder.itemView.setSelected(false);
             holder.tvName.setTextColor(context.getColor(R.color.dark_purple));
         }
-        holder.tvName.setText(chatUserModel.getName() + " ( " + chatUserModel.getDesignation() + " ) ");
+        holder.tvName.setText(chatUserModel.getName());
         holder.tvProfile.setText(chatUserModel.getName().substring(0, 2));
         holder.tvMessage.setText(chatUserModel.getMessage());
         holder.tvDate.setText(chatUserModel.getDate());

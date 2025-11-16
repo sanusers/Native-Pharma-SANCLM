@@ -75,6 +75,8 @@ import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataDao;
 import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTable;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
+import saneforce.sanzen.roomdatabase.ChatTableDetails.ChatDataDao;
+import saneforce.sanzen.roomdatabase.ChatTableDetails.ChatDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -152,6 +154,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     private STPOfflineDataDao stpOfflineDataDao;
     private SlidesDao SlidesDao;
     private WelcomeSlidesDao welcomeSlidesDao;
+    private ChatDataDao chatDataDao;
     public static boolean isSingleSlideDowloaingStaus, isSingleWelcomeSlideDownloadingStatus;
     private boolean isCallSynced = false, isDateSynced = false;
     private int dayPlanDelayCount = 0;
@@ -201,6 +204,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         stpOfflineDataDao = db.stpOfflineDataDao();
         SlidesDao = db.slidesDao();
         welcomeSlidesDao = db.welcomeSlidesDao();
+        chatDataDao = db.chatDataDao();
 
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(MasterSyncActivity.this);
@@ -2003,6 +2007,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                     welcomeSlideAlertBox(true);
                                                 }
                                             }
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CHAT_CONVERSATION)) {
+                                            if (jsonArray.length() > 0) {
+                                                insertChatConversation(jsonArray);
+                                            }
                                         } else if (!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                                             if (jsonArray.length() > 0) {
                                                 SharedPref.InsertLogInData(MasterSyncActivity.this, jsonArray.getJSONObject(0));
@@ -2152,6 +2160,20 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void insertChatConversation(JSONArray jsonArray) {
+        try {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    chatDataDao.insert(new ChatDataTable(jsonObject.optString("Msg_Id"), jsonObject.optString("MsgSubject"), jsonObject.optString("MsgDt"), jsonObject.optString("Message"), jsonObject.optString("isSender"), jsonObject.optString("MsgRecvDt"), jsonObject.optString("Ref_ID"), jsonObject.optString("Ref_ID_Name"), jsonObject.optString("Ref_IDTyp"), jsonObject.optString("MsgOwnerID"), jsonObject.optString("MsgOwner"), jsonObject.optString("Files")));
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("MasterSync Chat", "insert Chat: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void syncIndividualActivityDetails() {
@@ -3460,7 +3482,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     public void SlideAlertbox(boolean servesflag) {
@@ -3572,7 +3593,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     public void welcomeSlideAlertBox(boolean servesFlag) {
