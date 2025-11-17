@@ -276,6 +276,13 @@ public class DoctorVisitActivity extends AppCompatActivity {
                         obj.optString("Category"),
                         obj.optString("Specialty"),
                         obj.optString("Doc_Class_ShortName")
+                       /* obj.optString("ListedDr_Name"),
+                        obj.optString("territory_Name"),
+                        obj.optString("ListedDrCode"),
+                        obj.optString("Doc_Special_SName"),
+                        obj.optString("Doc_Cat_SName"),
+                        obj.optString("Doc_ClsSName"),
+                        obj.optString("Doc_QuaName")*/
                         //obj.optString("DctrDOB")
                 );
                 switch (doctorType) {

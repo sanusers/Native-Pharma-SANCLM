@@ -146,7 +146,7 @@
             app:tint="@color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
+  <!--  <ImageView
         android:id="@+id/outboxEmtyImage"
         android:layout_width="@dimen/_70sdp"
         android:layout_height="@dimen/_70sdp"
@@ -167,7 +167,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/outboxEmtyImage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />-->
+    <TextView
+        android:id="@+id/outboxEmtyImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No Reports Found!"
+        android:textSize="@dimen/_10sdp"
+        android:textColor="@color/text_dark"
+        android:fontFamily="@font/satoshi_medium"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerMissedReports"

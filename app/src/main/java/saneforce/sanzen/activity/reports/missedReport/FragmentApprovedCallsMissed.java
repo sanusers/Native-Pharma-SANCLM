@@ -112,6 +112,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
     private View blockingOverlay;
     CommonUtilsMethods commonUtilsMethods;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -129,13 +130,13 @@ public class FragmentApprovedCallsMissed extends Fragment {
         binding.recyclerMissedReports.setVisibility(View.GONE);
         binding.outboxEmtyImage.setVisibility(View.VISIBLE);
 
-        if (SharedPref.getSfType(requireContext()).equals("1")) {
+      /*  if (SharedPref.getSfType(requireContext()).equals("1")) {
             binding.emptyMessage.setText("Please Select Month");
         } else if (SharedPref.getSfType(requireContext()).equals("2")) {
             binding.emptyMessage.setText("Please Select Month & Headquarters");
         } else {
             binding.emptyMessage.setText("");
-        }
+        }*/
 
         currentmonth = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8);
         currentYear = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_26);
@@ -271,7 +272,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                             break;
                         }
                     } catch (JSONException e) { e.printStackTrace(); }
-                    binding.emptyMessage.setVisibility(View.GONE);
+//                    binding.emptyMessage.setVisibility(View.GONE);
                 }
                 hqDialog.dismiss();
             });
@@ -329,7 +330,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
 
                 binding.outboxEmtyImage.setVisibility(View.GONE);
                 binding.recyclerMissedReports.setVisibility(View.VISIBLE);
-                binding.emptyMessage.setVisibility(View.GONE);
+//                binding.emptyMessage.setVisibility(View.GONE);
 
                 if (SharedPref.getSfType(requireContext()).equals("1")) tryFetchReport();
             } catch (ParseException e) { e.printStackTrace(); }
@@ -495,15 +496,13 @@ public class FragmentApprovedCallsMissed extends Fragment {
         RoomDB.databaseWriteExecutor.execute(() -> {
             DoctorVisitDao visitDao = db.doctorVisitDao();
             String doctorArrayString = visitDao.getVisitValues(sfcode, date);
-
-            requireActivity().runOnUiThread(() -> {
                 if (doctorArrayString != null && !doctorArrayString.isEmpty()) {
                     Intent intent = new Intent(requireActivity(), DoctorVisitActivity.class);
                     intent.putExtra("sfcode", sfcode);
                     intent.putExtra("date", date);
                     startActivity(intent);
                 } else getData(date, sfcode);
-            });
+
         });
     }
 
@@ -569,10 +568,27 @@ public class FragmentApprovedCallsMissed extends Fragment {
                                             DoctorVisitDao visitDao = db.doctorVisitDao();
                                             visitDao.saveVisitJson(sfcode, date, arrayAsString);
 
-                                            Intent intent = new Intent(requireActivity(), DoctorVisitActivity.class);
-                                            intent.putExtra("sfcode", sfcode);
-                                            intent.putExtra("date", date);
-                                            startActivity(intent);
+                                            if (jsonElement.isJsonArray()) {
+                                                JSONArray missedArray = null;
+                                                try {
+                                                    missedArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                String visitedArrayString = getVisitedArray(sfcode, date);
+
+                                                Intent intent = new Intent(requireActivity(), DoctorVisitActivity.class);
+                                                intent.putExtra("sfcode", sfcode);
+                                                intent.putExtra("date", date);
+                                                intent.putExtra("missed_array", missedArray.toString());
+                                                intent.putExtra("visit", visitedArrayString);
+                                                Log.d("SEND_DEBUG", "MISSED SENT = " + missedArray);
+                                                Log.d("SEND_DEBUG", "VISITED SENT = " + visitedArrayString);
+
+                                                startActivity(intent);
+                                            }
+
                                         });
                                     }
                                 }
@@ -600,4 +616,28 @@ public class FragmentApprovedCallsMissed extends Fragment {
         });
         networkStatusTask.execute();
     }
+    private String getVisitedArray(String sfCode, String date) {
+        String callSyncJson = masterDataDao.getDataByKey(Constants.CALL_SYNC);
+
+        JSONArray visitedArray = new JSONArray();
+
+        try {
+            if (callSyncJson != null && !callSyncJson.isEmpty()) {
+                JSONArray callArray = new JSONArray(callSyncJson);
+
+                for (int i = 0; i < callArray.length(); i++) {
+                    JSONObject callObj = callArray.getJSONObject(i);
+
+                    if (callObj.optString("Date", "").equals(date) &&
+                            callObj.optString("SfCode", "").equals(sfCode)) {
+
+                        visitedArray.put(callObj);
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return visitedArray.toString();
+    }
+
 }

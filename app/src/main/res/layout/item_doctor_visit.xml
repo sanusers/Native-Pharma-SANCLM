@@ -79,6 +79,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="Nandanam"
+                        android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 
                 </LinearLayout>
@@ -115,6 +116,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Qualification"
+                        android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView
@@ -142,6 +144,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Category"
+                        android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView
@@ -169,6 +172,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Speciality"
+                        android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView
@@ -195,6 +199,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Class"
+                        android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView
