@@ -510,6 +510,21 @@ public class SharedPref {
     public static final String TodayTPDoctor = "TodayTPDoctor";
     public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
     public static final String DataClearedFlag = "DataClearedFlag";
+    private static final String TodayPopupShown = "TodayPopupShown";
+
+    // Get last popup shown date
+    public static String getTodayPopupShown(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+                .getString(TodayPopupShown, "");
+    }
+
+    // Set last popup shown date
+    public static void setTodayPopupShown(Context context, String date) {
+        context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(TodayPopupShown, date)
+                .apply();
+    }
 
     public static SharedPreferences.Editor editor;
 
@@ -3235,5 +3250,10 @@ public static void addVisitedDoctor(Context context, String custCode) {
         sp.edit().putBoolean("popup_shown_after_clear", value).apply();
     }
 
-
+    public static void clearTodayTPDoctor(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("TodayTPDoctor"); // same key used in setTodayTPDoctor()
+        editor.apply();
+    }
 }
