@@ -13,23 +13,40 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonElement;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.chat.adapter.ChatAdapter;
 import saneforce.sanzen.activity.chat.adapter.ChatListAdapter;
 import saneforce.sanzen.activity.chat.model.ChatMessage;
 import saneforce.sanzen.activity.chat.model.ChatUserModel;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityChatBinding;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.ChatTableDetails.ChatDataDao;
+import saneforce.sanzen.roomdatabase.ChatTableDetails.ChatDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -41,6 +58,8 @@ public class ChatActivity extends AppCompatActivity {
     private ChatListAdapter chatListAdapter;
     private ChatAdapter chatAdapter;
     private List<ChatMessage> messages;
+    private ApiInterface apiInterface;
+    private ChatDataDao chatDataDao;
 
     @Override
     public void onBackPressed() {
@@ -55,9 +74,93 @@ public class ChatActivity extends AppCompatActivity {
         activityChatBinding.backArrow.setOnClickListener(v -> finish());
         RoomDB roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
+        chatDataDao = roomDB.chatDataDao();
+        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+        chatDataDao.deleteAllLocalData();
+        setupSearch();
+        syncChat();
         getRequiredData();
         setupAdapter();
-        setupSearch();
+    }
+
+    private void syncChat() {
+        if (UtilityClass.isNetworkAvailable(ChatActivity.this)) {
+            try {
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(ChatActivity.this);
+                jsonObject.put("tableName", "getconversation");
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("SF_Name", SharedPref.getSfName(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                jsonObject.put("Message_Date", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_42));
+                Log.d("Chat", "sync Chat: " + jsonObject);
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "get/chat");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
+                if (call != null) {
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                            boolean success = false;
+                            JSONArray jsonArray = new JSONArray();
+                            JSONObject jsonObject2 = new JSONObject();
+                            if (response.isSuccessful()) {
+                                Log.e("sync", "response : " + response.body().toString());
+                                try {
+                                    JsonElement jsonElement = response.body();
+                                    if (!jsonElement.isJsonNull()) {
+                                        if (jsonElement.isJsonArray()) {
+                                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                            success = true;
+                                        } else if (jsonElement.isJsonObject()) {
+                                            jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
+                                            if (!jsonObject2.has("success")) {
+                                                jsonArray.put(jsonObject2);
+                                                success = true;
+                                            } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                                masterDataDao.saveMasterSyncStatus(Constants.CHAT_CONVERSATION, 1); // only update sync status and no need to overwrite previously saved data when failed
+                                            }
+                                        }
+                                        if (success) {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHAT_CONVERSATION, jsonArray.toString(), 2));
+                                            insertChatConversation(jsonArray);
+                                            getRequiredData();
+                                            setupAdapter();
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            masterDataDao.saveMasterSyncStatus(Constants.CHAT_CONVERSATION, 1);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            CommonUtilsMethods.showToastMessage(ChatActivity.this, "Kindly Sync to get latest Messages!");
+        }
+    }
+
+    private void insertChatConversation(JSONArray jsonArray) {
+        try {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    chatDataDao.saveChat(new ChatDataTable(jsonObject.optString("Msg_Id"), jsonObject.optString("MsgSubject"), jsonObject.optString("MsgDt"), jsonObject.optString("Message"), jsonObject.optString("isSender"), jsonObject.optString("MsgRecvDt"), jsonObject.optString("Ref_ID"), jsonObject.optString("Ref_ID_Name"), jsonObject.optString("Ref_IDTyp"), jsonObject.optString("MsgOwnerID"), jsonObject.optString("MsgOwner"), jsonObject.optString("Files")));
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("MasterSync Chat", "insert Chat: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void getRequiredData() {
@@ -87,6 +190,11 @@ public class ChatActivity extends AppCompatActivity {
                 name = nameSplit[0];
             }
             chatUserModel = new ChatUserModel(jsonObject.optString("Name"), jsonObject.optString("Code"), jsonObject.optString("SF_Name"), jsonObject.optString("Division_Code"), jsonObject.optString("SF_Type"), jsonObject.optString("Designation"), designation, hq);
+            ChatDataTable chatDataTable = chatDataDao.getLastChatData(chatUserModel.getCode());
+            if (chatDataTable != null) {
+                chatUserModel.setMessage(chatDataTable.getMessage());
+                chatUserModel.setDate(getFriendlyDate(chatDataTable.getDate(), TimeUtils.FORMAT_35));
+            }
             chatUserModelList.add(chatUserModel);
         }
     }
@@ -115,36 +223,49 @@ public class ChatActivity extends AppCompatActivity {
         activityChatBinding.rlChatMain.setVisibility(View.VISIBLE);
         activityChatBinding.rlNoData.setVisibility(View.GONE);
         messages = new ArrayList<>();
+        List<ChatDataTable> chatDataTableList = chatDataDao.getAllChatData(chatUserModel.getCode());
+        if (!chatDataTableList.isEmpty()) {
+            for (ChatDataTable chatDataTable : chatDataTableList) {
+                String date = getFriendlyDate(chatDataTable.getDate(), TimeUtils.FORMAT_19), time = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_43, chatDataTable.getDate());
+                if (chatDataTable.getIsSender().equalsIgnoreCase("0")) {
+                    addMessageWithDateCheck(chatDataTable.getMessage(), time, date, ChatMessage.TYPE_LEFT);
+                } else {
+                    addMessageWithDateCheck(chatDataTable.getMessage(), time, date, ChatMessage.TYPE_RIGHT);
+                }
+            }
+        }
+        Log.d("Chat", "setUpChat: " + messages);
+
         chatAdapter = new ChatAdapter(this, messages);
         activityChatBinding.recyclerChat.setLayoutManager(new LinearLayoutManager(this));
         activityChatBinding.recyclerChat.setAdapter(chatAdapter);
-        activityChatBinding.recyclerChat.post(() ->
-                activityChatBinding.recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1)
-        );
-
-        activityChatBinding.recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            if (bottom < oldBottom) {
-                activityChatBinding.recyclerChat.postDelayed(() ->
-                        activityChatBinding.recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1), 100);
+        activityChatBinding.recyclerChat.post(() -> {
+            if (chatAdapter.getItemCount() > 0) {
+                activityChatBinding.recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
             }
         });
 
+        activityChatBinding.recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom < oldBottom) {
+                activityChatBinding.recyclerChat.postDelayed(() -> {
+                    if (chatAdapter.getItemCount() > 0) {
+                        activityChatBinding.recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+                    }
+                }, 100);
+            }
+        });
 
         activityChatBinding.recyclerChat.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
                 LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int firstVisible = lm.findFirstVisibleItemPosition();
-
                 if (firstVisible >= 0 && firstVisible < messages.size()) {
                     ChatMessage msg = messages.get(firstVisible);
-
                     if (msg.getMessageType() == ChatMessage.TYPE_DATE) {
                         setStickyHeader(msg.getDate());
                     } else {
-                        // Find previous date separator
                         for (int i = firstVisible; i >= 0; i--) {
                             if (messages.get(i).getMessageType() == ChatMessage.TYPE_DATE) {
                                 setStickyHeader(messages.get(i).getDate());
@@ -156,50 +277,89 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        // Dummy initial messages
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "15 Nov 2025", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "15 Nov 2025", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "15 Nov 2025", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "15 Nov 2025", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "15 Nov 2025", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "15 Nov 2025", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "15 Nov 2025", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "15 Nov 2025", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Yesterday", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Yesterday", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Yesterday", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Yesterday", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Yesterday", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Yesterday", ChatMessage.TYPE_RIGHT);
-
-
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Today", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Today", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Today", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Today", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Today", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Today", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Today", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Today", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Today", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Today", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Today", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Today", ChatMessage.TYPE_RIGHT);
-        addMessageWithDateCheck("Hi Vishnu, I need your support for my next call, Are you available now?", "5:00 PM", "Today", ChatMessage.TYPE_LEFT);
-        addMessageWithDateCheck("Sorry, I am not available now.", "5:02 PM", "Today", ChatMessage.TYPE_RIGHT);
-        chatAdapter.notifyDataSetChanged();
-
         activityChatBinding.btnSend.setOnClickListener(v -> {
             String text = activityChatBinding.etMessage.getText().toString().trim();
             if (!text.isEmpty()) {
-                addMessage(text);
-                // TODO: 17-11-2025 implement send chat 
-                /*
-                 * http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=get%2Fchat
-                 * {"AppName":"SAN ZEN","Appver":"V.1.0.4","Mod":"Android-ZEN","sf_emp_id":"RNXPDM01","sfname":"Demo Manager","Device_version":"14","Device_name":"samsung - SM-X205","language":"en","sf_type":"2","Designation":"ASM","state_code":"4","subdivision_code":"328,","key":"reva2025","Configurl":"http:\/\/edetailing.sanffa.info\/","battery":"77","tableName":"svconversation","sfcode":"MR9024","SF_Name":"Kalpana","SF_To_Code":"MR9008","SF_To_Name":"GIGI HADID","SF_Type":"1","Message_Subject":"Notification Message","Message_Content":"hello","Reference_Id":"","Reference_Name":"","Reference_Type":"","FileAttachmentPath":"","division_code":"15,","Rsf":"MR9024","Message_Date":"2025-11-05 00:00:00"}
-                 * */
+                if (UtilityClass.isNetworkAvailable(ChatActivity.this)) {
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(ChatActivity.this);
+                        jsonObject.put("tableName", "svconversation");
+                        jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                        jsonObject.put("SF_Name", SharedPref.getSfName(this));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                        jsonObject.put("SF_To_Code", chatUserModel.getCode());
+                        jsonObject.put("SF_To_Name", chatUserModel.getSfName());
+                        jsonObject.put("SF_Type", chatUserModel.getSfTypeCode());
+                        jsonObject.put("Message_Subject", "Notification Message");
+                        jsonObject.put("Message_Content", text);
+                        jsonObject.put("Reference_Id", "");
+                        jsonObject.put("Reference_Name", "");
+                        jsonObject.put("Reference_Type", "");
+                        jsonObject.put("FileAttachmentPath", "");
+                        jsonObject.put("Rsf", chatUserModel.getCode());
+                        jsonObject.put("Message_Date", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_42));
+                        Log.d("Chat", "send Chat: " + jsonObject);
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/chat");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
+                        if (call != null) {
+                            call.enqueue(new Callback<>() {
+                                @Override
+                                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                    Log.d("Chat", "onResponse: " + response.body());
+                                    if (response.body() != null) {
+                                        try {
+                                            JSONObject responseObj = new JSONObject(response.body().toString());
+                                            if (responseObj.optBoolean("success")) {
+                                                addMessage(chatUserModel, text);
+                                            } else {
+                                                CommonUtilsMethods.showToastMessage(ChatActivity.this, getString(R.string.please_try_again));
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            CommonUtilsMethods.showToastMessage(ChatActivity.this, getString(R.string.please_try_again));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                    Log.e("test", "failed : " + t);
+                                    t.printStackTrace();
+                                    CommonUtilsMethods.showToastMessage(ChatActivity.this, getString(R.string.please_check_your_internet_connection));
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        CommonUtilsMethods.showToastMessage(ChatActivity.this, getString(R.string.please_check_your_internet_connection));
+                    }
+                } else {
+                    CommonUtilsMethods.showToastMessage(ChatActivity.this, getString(R.string.no_network));
+                }
             }
         });
+    }
+
+    private String getFriendlyDate(String dateTime, String format) {
+        Calendar msgCal = Calendar.getInstance();
+        msgCal.setTimeInMillis(TimeUtils.getMillis(TimeUtils.FORMAT_1, dateTime));
+
+        Calendar today = Calendar.getInstance();
+
+        if (today.get(Calendar.YEAR) == msgCal.get(Calendar.YEAR) &&
+                today.get(Calendar.DAY_OF_YEAR) == msgCal.get(Calendar.DAY_OF_YEAR)) {
+            return "Today";
+        }
+
+        today.add(Calendar.DAY_OF_YEAR, -1);
+        if (today.get(Calendar.YEAR) == msgCal.get(Calendar.YEAR) &&
+                today.get(Calendar.DAY_OF_YEAR) == msgCal.get(Calendar.DAY_OF_YEAR)) {
+            return "Yesterday";
+        }
+
+        return TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, format, dateTime);
     }
 
     private String lastDate = "";
@@ -212,16 +372,18 @@ public class ChatActivity extends AppCompatActivity {
         messages.add(new ChatMessage(msg, time, date, type));
     }
 
-    private void addMessage(String message) {
+    private void addMessage(ChatUserModel chatUserModel, String message) {
         long now = System.currentTimeMillis();
         String friendlyDate = getFriendlyDate(now);
-        String time = TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_43);
+        String time = TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_43), dateTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1);
 
         if (messages.isEmpty() || !messages.get(messages.size() - 1).getDate().equals(friendlyDate)) {
             messages.add(new ChatMessage("", "", friendlyDate, ChatMessage.TYPE_DATE));
         }
 
         messages.add(new ChatMessage(message, time, friendlyDate, ChatMessage.TYPE_RIGHT));
+        String id = String.valueOf(Long.parseLong(chatDataDao.getLastID().getID()) + 1);
+        chatDataDao.saveChat(new ChatDataTable(id, "sub", dateTime, message, "1", dateTime, "", "", "", chatUserModel.getCode(), chatUserModel.getSfName(), ""));
         chatAdapter.notifyItemInserted(messages.size() - 1);
         activityChatBinding.recyclerChat.scrollToPosition(messages.size() - 1);
         activityChatBinding.etMessage.setText("");
@@ -233,22 +395,18 @@ public class ChatActivity extends AppCompatActivity {
 
         Calendar today = Calendar.getInstance();
 
-        // Check today
         if (today.get(Calendar.YEAR) == msgCal.get(Calendar.YEAR) &&
                 today.get(Calendar.DAY_OF_YEAR) == msgCal.get(Calendar.DAY_OF_YEAR)) {
             return "Today";
         }
 
-        // Check yesterday
         today.add(Calendar.DAY_OF_YEAR, -1);
         if (today.get(Calendar.YEAR) == msgCal.get(Calendar.YEAR) &&
                 today.get(Calendar.DAY_OF_YEAR) == msgCal.get(Calendar.DAY_OF_YEAR)) {
             return "Yesterday";
         }
 
-        // Otherwise return full date
-        return new SimpleDateFormat(TimeUtils.FORMAT_19, Locale.getDefault())
-                .format(new Date(timeMillis));
+        return new SimpleDateFormat(TimeUtils.FORMAT_19, Locale.getDefault()).format(new Date(timeMillis));
     }
 
     private void setStickyHeader(String date) {

@@ -20,14 +20,25 @@ public interface ChatDataDao {
     @Delete
     void delete(ChatDataTable chatDataTable);
 
-    @Query("DELETE FROM `chat_table`")
+    @Query("DELETE FROM `CHAT_TABLE`")
     void deleteAllData();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertDCRDocValues(ChatDataTable chatDataTable);
+    @Query("DELETE FROM `CHAT_TABLE` WHERE `SUBJECT` = 'sub'")
+    void deleteAllLocalData();
 
-    @Query("SELECT * FROM `chat_table`")
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void saveChat(ChatDataTable chatDataTable);
+
+    @Query("SELECT * FROM `CHAT_TABLE`")
     List<ChatDataTable> getAllChatData();
 
+    @Query("SELECT * FROM `CHAT_TABLE` WHERE `OWNER_ID` = :userCode ORDER BY `DATE`")
+    List<ChatDataTable> getAllChatData(String userCode);
+
+    @Query("SELECT * FROM `CHAT_TABLE` WHERE `OWNER_ID` = :userCode ORDER BY `DATE` DESC LIMIT 1")
+    ChatDataTable getLastChatData(String userCode);
+
+    @Query("SELECT * FROM `CHAT_TABLE` ORDER BY `ID` DESC LIMIT 1")
+    ChatDataTable getLastID();
 }
 

@@ -37,8 +37,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewType == ChatMessage.TYPE_RIGHT) {
             View view = LayoutInflater.from(context).inflate(R.layout.chat_item_right, parent, false);
             return new RightViewHolder(view);
-
-        } else { // TYPE_DATE
+        } else {
             View view = LayoutInflater.from(context).inflate(R.layout.item_date_separator, parent, false);
             return new DateViewHolder(view);
         }

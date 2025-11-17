@@ -193,10 +193,12 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginTop="6dp"
                             android:background="@drawable/bg_date_separator"
-                            android:padding="6dp"
-                            android:textColor="#FFFFFF"
+                            android:padding="@dimen/_3sdp"
+                            android:textSize="@dimen/_6ssp"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/satoshi_bold"
+                            android:textStyle="bold"
                             android:visibility="visible" />
 
                     </RelativeLayout>

@@ -19,7 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/_8ssp" />
+            android:fontFamily="@font/satoshi_regular"
+            android:textSize="@dimen/_6ssp" />
     </LinearLayout>
 
     <TextView
@@ -28,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/text_grey"
-        android:textSize="@dimen/_6ssp"
+        android:fontFamily="@font/satoshi_regular"
+        android:textSize="@dimen/_4ssp"
         tools:text="05:02 PM" />
 </LinearLayout>

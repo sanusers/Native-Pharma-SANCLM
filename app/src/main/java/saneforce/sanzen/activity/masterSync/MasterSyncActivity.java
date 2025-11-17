@@ -2167,7 +2167,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    chatDataDao.insert(new ChatDataTable(jsonObject.optString("Msg_Id"), jsonObject.optString("MsgSubject"), jsonObject.optString("MsgDt"), jsonObject.optString("Message"), jsonObject.optString("isSender"), jsonObject.optString("MsgRecvDt"), jsonObject.optString("Ref_ID"), jsonObject.optString("Ref_ID_Name"), jsonObject.optString("Ref_IDTyp"), jsonObject.optString("MsgOwnerID"), jsonObject.optString("MsgOwner"), jsonObject.optString("Files")));
+                    chatDataDao.saveChat(new ChatDataTable(jsonObject.optString("Msg_Id"), jsonObject.optString("MsgSubject"), jsonObject.optString("MsgDt"), jsonObject.optString("Message"), jsonObject.optString("isSender"), jsonObject.optString("MsgRecvDt"), jsonObject.optString("Ref_ID"), jsonObject.optString("Ref_ID_Name"), jsonObject.optString("Ref_IDTyp"), jsonObject.optString("MsgOwnerID"), jsonObject.optString("MsgOwner"), jsonObject.optString("Files")));
                 }
             }
         } catch (JSONException e) {
