@@ -103,6 +103,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.chat.ChatActivity;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
@@ -139,7 +141,6 @@ import saneforce.sanzen.application.AppActivityTracker;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.ContinuousLogCollector;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.InAppUpdate;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -913,8 +914,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.imgChat.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                ContinuousLogCollector.stopLogging(getApplicationContext());
-//            startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
+//                ContinuousLogCollector.stopLogging(getApplicationContext());
+            startActivity(new Intent(HomeDashBoard.this, ChatActivity.class));
             }
 
         });
@@ -1022,7 +1023,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-
             }
         });
         binding.backArrow.setOnClickListener(view -> {

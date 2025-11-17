@@ -68,6 +68,7 @@ import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.ActivityMasterSyncBinding;
@@ -76,6 +77,8 @@ import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataDao;
 import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTable;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
+import saneforce.sanzen.roomdatabase.ChatTableDetails.ChatDataDao;
+import saneforce.sanzen.roomdatabase.ChatTableDetails.ChatDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -101,7 +104,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String rsf = "";
     boolean retrystatus = false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0, profileStatus = 0;
+    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0, profileStatus = 0, chatListStatus = 0, chatConversationStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -125,6 +128,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> profileModelArray = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> chatModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
     public List<String> HQCODE_SYN = new ArrayList<>();
     public static ArrayList<String> SlideIds = new ArrayList<>();
@@ -151,6 +155,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     private STPOfflineDataDao stpOfflineDataDao;
     private SlidesDao SlidesDao;
     private WelcomeSlidesDao welcomeSlidesDao;
+    private ChatDataDao chatDataDao;
     public static boolean isSingleSlideDowloaingStaus, isSingleWelcomeSlideDownloadingStatus;
     private boolean isCallSynced = false, isDateSynced = false;
     private int dayPlanDelayCount = 0;
@@ -200,6 +205,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         stpOfflineDataDao = db.stpOfflineDataDao();
         SlidesDao = db.slidesDao();
         welcomeSlidesDao = db.welcomeSlidesDao();
+        chatDataDao = db.chatDataDao();
 
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(MasterSyncActivity.this);
@@ -601,6 +607,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             }
         });
+
         binding.Other.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -614,6 +621,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             }
         });
+
         binding.Profile.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -623,6 +631,20 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(profileModelArray);
+                    populateAdapter(arrayForAdapter);
+                }
+            }
+        });
+
+        binding.chat.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (!view.isSelected()) {
+                    listItemClicked(binding.chat);
+                    binding.childSync.setText("Sync Chat");
+
+                    arrayForAdapter.clear();
+                    arrayForAdapter.addAll(chatModelArray);
                     populateAdapter(arrayForAdapter);
                 }
             }
@@ -684,6 +706,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 arrayList.addAll(slideModelArray);
                             } else if (binding.subordinate.isSelected()) {
                                 arrayList.addAll(subordinateModelArray);
+                            } else if (binding.chat.isSelected()) {
+                                arrayList.addAll(chatModelArray);
                             } else if (binding.Other.isSelected()) {
                                 arrayList.addAll(otherModelArray);
                             } else if (binding.Profile.isSelected()) {
@@ -800,6 +824,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
         SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
         profileStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROFILE);
+        chatListStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHAT_LIST);
+        chatConversationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHAT_CONVERSATION);
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
         if (doctorStatus == 1 || doctorGeoStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
             binding.syncFailedImageDr.setVisibility(View.VISIBLE);
@@ -851,6 +877,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
         if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
             binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+        }
+        if (chatListStatus == 1 || chatConversationStatus == 1) {
+            binding.syncFailedImageChat.setVisibility(View.VISIBLE);
         }
         if (profileStatus == 1) {
             binding.syncFailedImageProfile.setVisibility(View.VISIBLE);
@@ -1097,6 +1126,15 @@ public class MasterSyncActivity extends AppCompatActivity {
                 } else {
                     binding.syncFailedImageSet.setVisibility(View.GONE);
                 }
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserlist")
+                    || masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getconversation")) {
+                chatListStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHAT_LIST);
+                chatConversationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHAT_CONVERSATION);
+                if (chatListStatus == 1 || chatConversationStatus == 1) {
+                    binding.syncFailedImageChat.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageChat.setVisibility(View.GONE);
+                }
             }
         } else if (masterSyncItemModel.getSyncSuccess() == 1) {
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
@@ -1197,6 +1235,10 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                 binding.syncFailedImageSet.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getuserlist") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getconversation")) {
+                binding.syncFailedImageChat.setVisibility(View.VISIBLE);
             }
 
         }
@@ -1436,6 +1478,13 @@ public class MasterSyncActivity extends AppCompatActivity {
 //        subordinateModelArray.add(subMgrModel);
         subordinateModelArray.add(jWorkModel);
 
+        //Chat
+        chatModelArray.clear();
+        MasterSyncItemModel chatListModel = new MasterSyncItemModel(Constants.CHAT_LIST, Constants.CHAT, "getuserlist", Constants.CHAT_LIST, chatListStatus, false);
+        MasterSyncItemModel chatConversationModel = new MasterSyncItemModel(Constants.CHAT_CONVERSATION, Constants.CHAT, "getconversation", Constants.CHAT_CONVERSATION, chatConversationStatus, false);
+        chatModelArray.add(chatListModel);
+        chatModelArray.add(chatConversationModel);
+
         //Other
         otherModelArray.clear();
         MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR_MAS, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
@@ -1481,6 +1530,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.slide.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.subordinate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.Other.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
+        binding.chat.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.Profile.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.setup.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
 
@@ -1501,6 +1551,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.slide.setSelected(false);
         binding.subordinate.setSelected(false);
         binding.Other.setSelected(false);
+        binding.chat.setSelected(false);
         binding.Profile.setSelected(false);
         binding.setup.setSelected(false);
 
@@ -1546,6 +1597,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), slideModelArray, position);
                         } else if (binding.subordinate.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
+                        } else if (binding.chat.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), chatModelArray, position);
                         } else if (binding.Other.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), otherModelArray, position);
                         } else if (binding.Profile.isSelected()) {
@@ -1611,6 +1664,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             populateAdapter(slideModelArray);
         } else if (binding.subordinate.isSelected()) {
             populateAdapter(subordinateModelArray);
+        } else if (binding.chat.isSelected()) {
+            populateAdapter(chatModelArray);
         } else if (binding.Other.isSelected()) {
             populateAdapter(otherModelArray);
         } else if (binding.Profile.isSelected()) {
@@ -1652,6 +1707,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncAllModel.add(leaveModelArray);
                         masterSyncAllModel.add(dcrModelArray);
                         masterSyncAllModel.add(slideModelArray);
+                        masterSyncAllModel.add(chatModelArray);
                         masterSyncAllModel.add(otherModelArray);
                         masterSyncAllModel.add(profileModelArray);
                         masterSyncAllModel.add(tpModelArray);
@@ -1706,7 +1762,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
-
         try {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
             JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
@@ -1762,6 +1817,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                             }
                         });
                     }
+                    break;
+                }
+                case "getconversation": {
+                    jsonObject.put("Message_Date", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_42));
+                    break;
                 }
             }
 
@@ -1806,6 +1866,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.CHECK_IN)) {
                 mapString.put("axn", "get/checKin");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.CHAT)) {
+                mapString.put("axn", "get/chat");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             }
 
@@ -1915,6 +1978,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 if (!navigateFrom.equalsIgnoreCase("Login")) {
                                                     welcomeSlideAlertBox(true);
                                                 }
+                                            }
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CHAT_CONVERSATION)) {
+                                            if (jsonArray.length() > 0) {
+                                                insertChatConversation(jsonArray);
                                             }
                                         } else if (!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                                             if (jsonArray.length() > 0) {
@@ -2065,6 +2132,20 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void insertChatConversation(JSONArray jsonArray) {
+        try {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    chatDataDao.saveChat(new ChatDataTable(jsonObject.optString("Msg_Id"), jsonObject.optString("MsgSubject"), jsonObject.optString("MsgDt"), jsonObject.optString("Message"), jsonObject.optString("isSender"), jsonObject.optString("MsgRecvDt"), jsonObject.optString("Ref_ID"), jsonObject.optString("Ref_ID_Name"), jsonObject.optString("Ref_IDTyp"), jsonObject.optString("MsgOwnerID"), jsonObject.optString("MsgOwner"), jsonObject.optString("Files")));
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("MasterSync Chat", "insert Chat: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void syncIndividualActivityDetails() {
@@ -3373,7 +3454,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     public void SlideAlertbox(boolean servesflag) {
@@ -3482,7 +3562,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     public void welcomeSlideAlertBox(boolean servesFlag) {

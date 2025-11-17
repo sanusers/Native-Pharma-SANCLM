@@ -57,6 +57,8 @@ public class TimeUtils {
     public static final String FORMAT_39 = "dd-MM-yyyy hh:mm a";
     public static final String FORMAT_40 = "mm:ss";
     public static final String FORMAT_41 = "hh:mm a";
+    public static final String FORMAT_42 = "yyyy-MM-dd 00:00:00";
+    public static final String FORMAT_43 = "hh:mm a";
 
     public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
@@ -232,6 +234,20 @@ public class TimeUtils {
                 int seconds = calendar.get(Calendar.SECOND);
 
                 millis = ((hours * 3600) + (minutes * 60) + seconds) * 1000;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return millis;
+    }
+
+    public static long getMillis(String format, String time) {
+        long millis = 0L;
+        try {
+            SimpleDateFormat timeFormat = new SimpleDateFormat(format);
+            Date dateTime = timeFormat.parse(time);
+            if(dateTime != null) {
+                millis = dateTime.getTime();
             }
         } catch (ParseException e) {
             e.printStackTrace();

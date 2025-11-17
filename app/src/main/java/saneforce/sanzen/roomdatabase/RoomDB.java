@@ -28,6 +28,8 @@ import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOffline
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataTable;
 import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.sanzen.roomdatabase.CallTableDetails.CallsLinechartTable;
+import saneforce.sanzen.roomdatabase.ChatTableDetails.ChatDataDao;
+import saneforce.sanzen.roomdatabase.ChatTableDetails.ChatDataTable;
 import saneforce.sanzen.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.sanzen.roomdatabase.DCRDocDataTableDetails.DCRDocDataTable;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
@@ -61,7 +63,7 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineSignDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class, NotificationDataTable.class, MissedTable.class, DoctorVisitTable.class}, version = 9, exportSchema = false)
+@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineSignDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class, NotificationDataTable.class, MissedTable.class, DoctorVisitTable.class, ChatDataTable.class}, version = 10, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static final String DATABASE_NAME = "sanclmroom.dp";
     private static RoomDB database;
@@ -106,6 +108,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_7_9)
                     .addMigrations(MIGRATION_7_8)
                     .addMigrations(MIGRATION_8_9)
+                    .addMigrations(MIGRATION_9_10)
 //                    .fallbackToDestructiveMigration()
                     .build();
         }
@@ -193,6 +196,13 @@ public abstract class RoomDB extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS `call_offline_sign_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `call_image_name_sign` TEXT, `call_file_path_sign` TEXT, `call_json_values_sign` TEXT, `call_status_sign` TEXT, `call_sync_status_sign` INTEGER  NOT NULL, `call_date_sign` TEXT, `call_cus_code_sign` TEXT, `call_cus_name_sign` TEXT)");
+        }
+    };
+
+    public static final Migration MIGRATION_9_10 = new Migration(9, 10) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `chat_table` (`id` TEXT PRIMARY KEY NOT NULL, `subject` TEXT, `date` TEXT, `message` TEXT, `is_sender` TEXT, `received_date` TEXT, `ref_id` TEXT, `ref_id_name` TEXT, `ref_id_type` TEXT, `owner_id` TEXT, `owner` TEXT, `files` TEXT)");
         }
     };
 
@@ -527,5 +537,7 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract NotificationDataDao notificationDataDao();
 
     public abstract CallOfflineSignDataDao callOfflineSignDataDao();
+
+    public abstract ChatDataDao chatDataDao();
 
 }

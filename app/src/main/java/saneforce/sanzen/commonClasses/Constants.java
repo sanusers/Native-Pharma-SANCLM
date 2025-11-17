@@ -137,4 +137,9 @@ public class Constants {
     public static final String WORK_DAY = "WORK DAY";
     public static final String INDEPENDENT = "Independent";
 
+    // Chat
+    public static final String CHAT = "Chat";
+    public static final String CHAT_LIST = "Chat list";
+    public static final String CHAT_CONVERSATION = "Chat Conversation";
+
 }

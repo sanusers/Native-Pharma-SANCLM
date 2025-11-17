@@ -2671,31 +2671,6 @@ public class SharedPref {
         return sharedPreferences.getString("AnniversaryShownDate", "");
     }
 
-    public static void setBirthdayShownDate(Context context, String date) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("BirthdayShownDate", date).apply();
-        editor.apply();
-    }
-
-    // ✅ Get last shown date
-    public static String getBirthdayShownDate(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        return sharedPreferences.getString("BirthdayShownDate", "");
-    }
-
-    public static void setAnniversaryShownDate(Context context, String date) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("AnniversaryShownDate", date);
-        editor.apply();
-    }
-
-    public static String getAnniversaryShownDate(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        return sharedPreferences.getString("AnniversaryShownDate", "");
-    }
-
     public static void setTpStatus(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
