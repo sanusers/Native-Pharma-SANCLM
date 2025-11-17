@@ -390,6 +390,10 @@ private void SelectedLanguage(String lang) {
     res.updateConfiguration(conf, dm);
 
     binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
+    binding.tvAppConfiguration.setText(getString(R.string.str_app_configuration));
+    binding.langTxt.setText(getString(R.string.str_language));
+    binding.deviceIdTxt.setText(getString(R.string.str_your_device_id));
+    binding.licKeyTxt.setText(getString(R.string.str_license_key));
 }
 
     private static boolean checkURL(CharSequence input) {

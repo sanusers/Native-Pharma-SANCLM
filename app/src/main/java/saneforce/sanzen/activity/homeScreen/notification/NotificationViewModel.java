@@ -12,13 +12,17 @@ public class NotificationViewModel extends AndroidViewModel {
 
     private final NotificationRepository repository;
     private final LiveData<List<NotificationDataTable>> allNotifications;
+    private final LiveData<List<NotificationDataTable>> allUnsyncedNotifications;
     private final LiveData<Integer> unreadNotificationCount;
+    private final LiveData<Integer> unsyncedNotificationCount;
 
     public NotificationViewModel (Application application) {
         super(application);
         repository = new NotificationRepository(application);
         allNotifications = repository.getAllNotifications();
+        allUnsyncedNotifications = repository.getAllUnsyncedNotifications();
         unreadNotificationCount = repository.getUnreadNotificationCount();
+        unsyncedNotificationCount = repository.getUnsyncedNotificationCount();
     }
 
     public void insert(NotificationDataTable notification) {
@@ -27,6 +31,10 @@ public class NotificationViewModel extends AndroidViewModel {
 
     public LiveData<List<NotificationDataTable>> getAllNotifications() {
         return allNotifications;
+    }
+
+    public LiveData<List<NotificationDataTable>> getAllUnsyncedNotifications() {
+        return allUnsyncedNotifications;
     }
 
     public LiveData<Integer> getUnreadNotificationCount() {
@@ -45,4 +53,7 @@ public class NotificationViewModel extends AndroidViewModel {
         repository.clearAll();
     }
 
+    public LiveData<Integer> getUnsyncedNotificationCount() {
+        return unsyncedNotificationCount;
+    }
 }

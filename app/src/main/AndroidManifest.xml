@@ -390,7 +390,7 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".activity.forms.weekoff.weekoff_viewscreen"
+            android:name=".activity.forms.weekoff.WeekOffViewScreen"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity

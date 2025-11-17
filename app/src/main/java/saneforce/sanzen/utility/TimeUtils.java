@@ -56,6 +56,7 @@ public class TimeUtils {
     public static final String FORMAT_38 = "d MMMM yyyy";
     public static final String FORMAT_39 = "dd-MM-yyyy hh:mm a";
     public static final String FORMAT_40 = "mm:ss";
+    public static final String FORMAT_41 = "hh:mm a";
 
     public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
@@ -137,8 +138,8 @@ public class TimeUtils {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_32);
             long differenceInMillis = simpleDateFormat.parse(endTime).getTime() - simpleDateFormat.parse(startTime).getTime();
             long mins = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis);
-            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis)%60;
-            return String.format("%02d:%02d",mins, secs);
+            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis) % 60;
+            return String.format("%02d:%02d", mins, secs);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,13 +158,13 @@ public class TimeUtils {
 
     public static String addTime(String oldTime, String newTime) {
         try {
-            if(!oldTime.isEmpty() && !newTime.isEmpty()) {
+            if (!oldTime.isEmpty() && !newTime.isEmpty()) {
                 LocalTime oldLocalTime = LocalTime.parse(oldTime);
                 LocalTime newLocalTime = LocalTime.parse(newTime);
                 LocalTime resultTime = oldLocalTime.plusHours(newLocalTime.getHour()).plusMinutes(newLocalTime.getMinute()).plusSeconds(newLocalTime.getSecond());
                 return resultTime.format(DateTimeFormatter.ofPattern(FORMAT_32));
-            }else if(!newTime.isEmpty()) return newTime;
-            else if(!oldTime.isEmpty()) return oldTime;
+            } else if (!newTime.isEmpty()) return newTime;
+            else if (!oldTime.isEmpty()) return oldTime;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -175,15 +176,16 @@ public class TimeUtils {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_32);
             long differenceInMillis = simpleDateFormat.parse(endTime).getTime() - simpleDateFormat.parse(startTime).getTime();
             long hrs = TimeUnit.MILLISECONDS.toHours(differenceInMillis);
-            long mins = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)%60;
-            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis)%60;
+            long mins = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis) % 60;
+            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis) % 60;
             return String.format("%02d:%02d:%02d", hrs, mins, secs);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "time";
     }
-    public static String timeConverter(String time){
+
+    public static String timeConverter(String time) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault());
 
@@ -201,7 +203,7 @@ public class TimeUtils {
             SimpleDateFormat timeFormat = new SimpleDateFormat(format);
             Date dateTime = timeFormat.parse(time);
 
-            if(dateTime != null) {
+            if (dateTime != null) {
                 long totalSeconds = dateTime.getTime() / 1000;
                 long multipliedSeconds = totalSeconds * noOfTimes;
 
@@ -221,7 +223,7 @@ public class TimeUtils {
             SimpleDateFormat timeFormat = new SimpleDateFormat(format);
             Date dateTime = timeFormat.parse(time);
 
-            if(dateTime != null) {
+            if (dateTime != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(dateTime);
 
@@ -242,14 +244,46 @@ public class TimeUtils {
         int hours = (int) (millis / 1000) / 3600;
         int minutes = (int) (millis / 1000) / 60;
         int seconds = (int) (millis / 1000) % 60;
-        if(format.equalsIgnoreCase(FORMAT_32)) {
+        if (format.equalsIgnoreCase(FORMAT_32)) {
             time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-        } else if(format.equalsIgnoreCase(FORMAT_29)) {
+        } else if (format.equalsIgnoreCase(FORMAT_29)) {
             time = String.format("%02d:%02d", hours, minutes);
-        } else if(format.equalsIgnoreCase(FORMAT_40)) {
+        } else if (format.equalsIgnoreCase(FORMAT_40)) {
             time = String.format("%02d:%02d", minutes, seconds);
         }
         return time;
     }
+
+    public static String getFriendlyDate(String inputDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_39);
+        try {
+            Date date = sdf.parse(inputDate);
+            Calendar today = Calendar.getInstance();
+            Calendar yesterday = Calendar.getInstance();
+            yesterday.add(Calendar.DATE, -1);
+
+            Calendar inputCal = Calendar.getInstance();
+            assert date != null;
+            inputCal.setTime(date);
+
+            if (isSameDay(inputCal, today)) {
+                return "Today " + GetConvertedDate(FORMAT_39, FORMAT_41, inputDate);
+            } else if (isSameDay(inputCal, yesterday)) {
+                return "Yesterday " + GetConvertedDate(FORMAT_39, FORMAT_41, inputDate);
+            } else {
+                return inputDate;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return inputDate;
+        }
+    }
+
+    private static boolean isSameDay(Calendar cal1, Calendar cal2) {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+
 
 }

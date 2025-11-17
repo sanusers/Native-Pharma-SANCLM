@@ -7,9 +7,11 @@ import static saneforce.sanzen.commonClasses.Constants.CONNECTIVITY_ACTION;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,6 +66,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -89,10 +92,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -130,6 +135,7 @@ import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.survey.SurveyActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
+import saneforce.sanzen.application.AppActivityTracker;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -152,6 +158,7 @@ import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
+import saneforce.sanzen.services.NotificationDialog;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkChangeReceiver;
 import saneforce.sanzen.utility.TimeUtils;
@@ -219,6 +226,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static final int NOTIFICATION_PERMISSION_CODE = 101;
     private NotificationViewModel notificationViewModel;
     private PopupWindow notificationPopupWindow;
+    private final Set<Integer> syncingIds = new HashSet<>();
     private HomeNavigationFooterBinding navigationFooterBinding;
     private MediaController mediaController;
     private String videoUrl = "";
@@ -734,6 +742,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onPause();
         unregisterReceiver(receiver);
         handler1.postDelayed(runnable, delay);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
     }
 
     //To Hide the bottomNavigation When popup
@@ -872,19 +881,46 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
+        notificationViewModel.getAllUnsyncedNotifications().observe(this, list -> {
+            if (!list.isEmpty()) {
+                for (NotificationDataTable notificationData : list) {
+                    if (syncingIds.contains(notificationData.getId())) continue;
+                    syncingIds.add(notificationData.getId());
+                    String title = notificationData.getTitle(), body = notificationData.getMessage(), time = notificationData.getDateTime(), type = "", hqCode = "";
+                    int id = notificationData.getId();
+                    hqCode = SharedPref.getHqCode(this);
+                    if (hqCode == null || hqCode.isEmpty()) {
+                        hqCode = SharedPref.getSfCode(this);
+                    }
+                    if (body.contains("$")) {
+                        try {
+                            if (body.contains("-MR")) {
+                                type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
+                                hqCode = body.substring(body.lastIndexOf("-MR") + 1);
+                            } else {
+                                type = body.substring(body.lastIndexOf("$") + 1);
+                            }
+                            body = body.substring(0, body.lastIndexOf("$"));
+                            showNotificationDialog(title, body, type, hqCode, id);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+
         binding.imgChat.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
                 ContinuousLogCollector.stopLogging(getApplicationContext());
 //            startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
             }
+
         });
 
-        binding.imgNotification.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                showNotificationPopup();
-            }
+        binding.imgNotification.setOnClickListener(view -> {
+            showNotificationPopup();
         });
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -1052,6 +1088,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
         notificationPopupWindow.update();
+    }
+
+    private void showNotificationDialog(String title, String body, String type, String hqCode, int id) {
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(() -> {
+            Activity currentActivity = AppActivityTracker.getInstance().getCurrentActivity();
+            if (currentActivity != null) {
+                currentActivity.runOnUiThread(() -> {
+                    NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, id);
+                });
+            }
+        });
     }
 
     private void markVisibleItemsAsRead(RecyclerView recyclerView, LinearLayoutManager layoutManager, NotificationsAdapter adapter) {
@@ -3018,5 +3066,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CommonUtilsMethods.accessDialogBox(this);
         }
     }
+
+    BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                String type = intent.getStringExtra("type");
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Sync Completed");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
 }
 

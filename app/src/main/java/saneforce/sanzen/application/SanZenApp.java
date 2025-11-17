@@ -24,7 +24,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 
+import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
+import saneforce.sanzen.commonClasses.EmailSender;
 
 public class SanZenApp extends Application {
     private static final String TAG = "CrashReport";
@@ -32,11 +34,14 @@ public class SanZenApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        AppActivityTracker.init(this);
+
 //        if (BuildConfig.DEBUG) {
-        // Disable Crashlytics collection for debug builds
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+            // Disable Crashlytics collection for debug builds
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
 //        } else {
-        // Explicitly enable for release builds (it's true by default, but this ensures it)
+            // Explicitly enable for release builds (it's true by default, but this ensures it)
 //            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 //        }
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {

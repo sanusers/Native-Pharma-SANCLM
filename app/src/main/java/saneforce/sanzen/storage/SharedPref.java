@@ -504,6 +504,12 @@ public class SharedPref {
     public static final String UNLST_DOC_APP_NEED = "Unlst_Doc_App_need";
     public static final String SUBDIVISION_NAMES = "SubdivisionNames";
     public static final String SETUP_SYNCED = "setup_synced";
+    public static final String RPT_MGR_CODE = "ReportingMgrCode";
+    public static final String RPT_MGR_NAME = "ReportingMgrName";
+    public static final String TP_MGR_CODE  = "ReportingTPMgrCode";
+    public static final String TP_MGR_NAME  = "ReportingTPMgrName";
+    public static final String LEV_MGR_CODE = "ReportingLeaveMgrCode";
+    public static final String LEV_MGR_NAME = "ReportingLeaveMgrName";
 
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
@@ -866,6 +872,13 @@ public class SharedPref {
             editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
+            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
+            editor.putString(RPT_MGR_CODE,jsonObject.optString("ReportingMgrCode"));
+            editor.putString(RPT_MGR_NAME,jsonObject.optString("ReportingMgrName"));
+            editor.putString(TP_MGR_CODE,jsonObject.optString("ReportingTPMgrCode"));
+            editor.putString(TP_MGR_NAME,jsonObject.optString("ReportingTPMgrName"));
+            editor.putString(LEV_MGR_CODE,jsonObject.optString("ReportingLeaveMgrCode"));
+            editor.putString(LEV_MGR_NAME,jsonObject.optString("ReportingLeaveMgrName"));
             editor.putString(WELCOME_SLIDES_PATH, "");
 
             editor.apply();
@@ -2633,6 +2646,30 @@ public class SharedPref {
         }.getType();
         return gson.fromJson(json, type);
     }
+    public static void setBirthdayShownDate(Context context, String date) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("BirthdayShownDate", date).apply();
+        editor.apply();
+    }
+
+    // ✅ Get last shown date
+    public static String getBirthdayShownDate(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        return sharedPreferences.getString("BirthdayShownDate", "");
+    }
+
+    public static void setAnniversaryShownDate(Context context, String date) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("AnniversaryShownDate", date);
+        editor.apply();
+    }
+
+    public static String getAnniversaryShownDate(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        return sharedPreferences.getString("AnniversaryShownDate", "");
+    }
 
     public static void setBirthdayShownDate(Context context, String date) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -3214,4 +3251,22 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
     }
 
+    public static String getReportingMgrCode(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RPT_MGR_CODE,"");
+    }
+    public static String getReportingMgrName(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RPT_MGR_NAME,"");
+    }
+    public static String getTpMgrCode(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_MGR_CODE,"");
+    }
+    public static String getTpMgrName(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_MGR_NAME,"");
+    }
+    public static String getLeaveMgrCode(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(LEV_MGR_CODE,"");
+    }
+    public static String getLeaveMgrName(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(LEV_MGR_NAME,"");
+    }
 }

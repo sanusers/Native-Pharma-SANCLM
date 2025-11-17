@@ -68,7 +68,6 @@ import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.databinding.ActivityMasterSyncBinding;
