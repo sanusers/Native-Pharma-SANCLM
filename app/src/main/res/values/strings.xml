@@ -660,5 +660,6 @@
     <string name="employe_code"> Employee Code </string>
     <string name="join_dt"> Joining Date </string>
     <string name="con_internet"> Connected to Internet </string>
+    <string name="option"> Options </string>
 
 </resources>
