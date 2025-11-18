@@ -1346,7 +1346,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         CommonAlertBox.TpAlert(requireActivity());
                     } else {
                         onSaveClicked();
-                        ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor);
+                       // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor);
                         
                     }
                     break;
@@ -2817,6 +2817,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             SharedPref.setTodayTPDoctor(requireContext(), tpDoctor);
             Log.e("TPDoctorSave", "Saved TP Doctor => " + tpDoctor);
+
+            ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP);
 
             jsonObject.put("Others_Code", workDayCode);
             jsonObject.put("Others_Name", workDayName);

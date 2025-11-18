@@ -131,6 +131,7 @@ public class CommonAlertBox {
         });
 
     }
+
     public static void DoctorPlanPopup(Activity activity, CharSequence  message) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setCancelable(false);

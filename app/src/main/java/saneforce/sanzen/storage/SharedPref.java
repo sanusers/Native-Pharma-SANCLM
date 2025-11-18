@@ -3245,6 +3245,7 @@ public static void addVisitedDoctor(Context context, String custCode) {
         return sp.getBoolean("popup_shown_after_clear", false);
     }
 
+
     public static void setPopupShownAfterClear(Context context, boolean value) {
         SharedPreferences sp = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE);
         sp.edit().putBoolean("popup_shown_after_clear", value).apply();
