@@ -1850,14 +1850,21 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
             return true;
         }
-        if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getDynamicOptionCaps(HomeDashBoard.this))) {
-            if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
-                startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
-            } else {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
-            }
-
+        String dynamicOptionCaps = SharedPref.getDynamicOptionCaps(HomeDashBoard.this);
+        String optionCaps;
+        if(dynamicOptionCaps == null || dynamicOptionCaps.isEmpty()){
+            optionCaps = getString(R.string.option);
+        }else{
+            optionCaps = dynamicOptionCaps;
         }
+            if (item.getTitle().toString().equalsIgnoreCase(optionCaps)) {
+                if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                    startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
+                } else {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
+                }
+                return true;
+            }
 
     /*    if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.reports))) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
@@ -2464,8 +2471,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            menu.findItem(R.id.docbusinessentry).setVisible(true);
 //        } else {
         if (SharedPref.getDynamicOptionNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
-            menu.findItem(R.id.dyn_link).setTitle(SharedPref.getDynamicOptionCaps(HomeDashBoard.this));
-            menu.findItem(R.id.dyn_link).setVisible(true);
+            if(!SharedPref.getDynamicOptionCaps(HomeDashBoard.this).equalsIgnoreCase("")) {
+                menu.findItem(R.id.dyn_link).setTitle(SharedPref.getDynamicOptionCaps(HomeDashBoard.this));
+                menu.findItem(R.id.dyn_link).setVisible(true);
+            }else{
+                menu.findItem(R.id.dyn_link).setTitle(R.string.option);
+                menu.findItem(R.id.dyn_link).setVisible(true);
+            }
         } else {
             menu.findItem(R.id.dyn_link).setVisible(false);
         }

@@ -507,114 +507,112 @@ public class FragmentApprovedCallsMissed extends Fragment {
     }
 
     public void getData(String date, String sfcode) {
-//        showLoadingOverlay();
-        ProgressDialog progressDialog = new ProgressDialog(requireContext());
-        progressDialog.show();
-        if (!UtilityClass.isNetworkAvailable(requireContext())) {
-//            hideLoadingOverlay();
-            progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
-            return;
-        }
-
-        NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
-            if (!status) {
-//                hideLoadingOverlay();
+        requireActivity().runOnUiThread(() -> {
+            ProgressDialog progressDialog = new ProgressDialog(requireContext());
+            progressDialog.show();
+            if (!UtilityClass.isNetworkAvailable(requireContext())) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                 return;
             }
 
-            try {
-                ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
-                jsonObject.put("sfcode", sfcode);
-                jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
-                jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
-                jsonObject.put("report_date", date);
-                jsonObject.put("tableName", "getmissedrptview");
-                Log.v("getMissedView",jsonObject.toString());
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
+                if (!status) {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
+                    return;
+                }
 
-                Map<String, String> mapString = new HashMap<>();
-                mapString.put("axn", "get/reports");
+                try {
+                    ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
+                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
+                    jsonObject.put("sfcode", sfcode);
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
+                    jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
+                    jsonObject.put("report_date", date);
+                    jsonObject.put("tableName", "getmissedrptview");
+                    Log.v("getMissedView", jsonObject.toString());
 
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
-                call.enqueue(new Callback<JsonElement>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-//                        hideLoadingOverlay();
-                        progressDialog.dismiss();
-                        try {
-                            if (response.isSuccessful() && response.body() != null) {
-                                JsonElement jsonElement = response.body();
-                                if (jsonElement.isJsonArray()) {
-                                    JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                    reportList.clear();
-                                    for(int i = 0;i<jsonArray.length();i++){
-                                        JSONObject obj = jsonArray.getJSONObject(i);
-                                        DoctorVisitItem model = new DoctorVisitItem();
-                                        model.setName(obj.optString("ListedDr_Name"));
-                                        model.setCode(obj.optString("ListedDrCode"));
-                                        model.setTerritory(obj.optString("territory_Name"));
-                                        model.setSpeciality(obj.optString("Doc_Special_SName"));
-                                        model.setCategory(obj.optString("Doc_Cat_SName"));
-                                        model.setClassName(obj.optString("Doc_ClsSName"));
-                                        model.setQualification(obj.optString("Doc_QuaName"));
-                                    }
+                    Map<String, String> mapString = new HashMap<>();
+                    mapString.put("axn", "get/reports");
 
-                                    if (jsonArray.length() > 0) {
-                                        String arrayAsString = jsonArray.toString();
-                                        RoomDB.databaseWriteExecutor.execute(() -> {
-                                            DoctorVisitDao visitDao = db.doctorVisitDao();
-                                            visitDao.saveVisitJson(sfcode, date, arrayAsString);
+                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                            progressDialog.dismiss();
+                            try {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    JsonElement jsonElement = response.body();
+                                    if (jsonElement.isJsonArray()) {
+                                        JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                        reportList.clear();
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject obj = jsonArray.getJSONObject(i);
+                                            DoctorVisitItem model = new DoctorVisitItem();
+                                            model.setName(obj.optString("ListedDr_Name"));
+                                            model.setCode(obj.optString("ListedDrCode"));
+                                            model.setTerritory(obj.optString("territory_Name"));
+                                            model.setSpeciality(obj.optString("Doc_Special_SName"));
+                                            model.setCategory(obj.optString("Doc_Cat_SName"));
+                                            model.setClassName(obj.optString("Doc_ClsSName"));
+                                            model.setQualification(obj.optString("Doc_QuaName"));
+                                        }
 
-                                            if (jsonElement.isJsonArray()) {
-                                                JSONArray missedArray = null;
-                                                try {
-                                                    missedArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
+                                        if (jsonArray.length() > 0) {
+                                            String arrayAsString = jsonArray.toString();
+                                            RoomDB.databaseWriteExecutor.execute(() -> {
+                                                DoctorVisitDao visitDao = db.doctorVisitDao();
+                                                visitDao.saveVisitJson(sfcode, date, arrayAsString);
+
+                                                if (jsonElement.isJsonArray()) {
+                                                    JSONArray missedArray = null;
+                                                    try {
+                                                        missedArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    String visitedArrayString = getVisitedArray(sfcode, date);
+
+                                                    Intent intent = new Intent(requireActivity(), DoctorVisitActivity.class);
+                                                    intent.putExtra("sfcode", sfcode);
+                                                    intent.putExtra("date", date);
+                                                    intent.putExtra("missed_array", missedArray.toString());
+                                                    intent.putExtra("visit", visitedArrayString);
+                                                    Log.d("SEND_DEBUG", "MISSED SENT = " + missedArray);
+                                                    Log.d("SEND_DEBUG", "VISITED SENT = " + visitedArrayString);
+
+                                                    startActivity(intent);
                                                 }
 
-                                                String visitedArrayString = getVisitedArray(sfcode, date);
-
-                                                Intent intent = new Intent(requireActivity(), DoctorVisitActivity.class);
-                                                intent.putExtra("sfcode", sfcode);
-                                                intent.putExtra("date", date);
-                                                intent.putExtra("missed_array", missedArray.toString());
-                                                intent.putExtra("visit", visitedArrayString);
-                                                Log.d("SEND_DEBUG", "MISSED SENT = " + missedArray);
-                                                Log.d("SEND_DEBUG", "VISITED SENT = " + visitedArrayString);
-
-                                                startActivity(intent);
-                                            }
-
-                                        });
+                                            });
+                                        }
                                     }
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) { e.printStackTrace(); }
-                    }
+                        }
 
-                    @Override
-                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-//                        hideLoadingOverlay();
-                        progressDialog.dismiss();
-                        requireActivity().runOnUiThread(() ->
-                                commonUtilsMethods.showToastMessage(requireContext(), "Failed to load data"));
-                    }
-                });
-            } catch (JSONException e) {
-//                hideLoadingOverlay();
-                progressDialog.dismiss();
-                e.printStackTrace();
-            }
-            adapter = new MissedReportAdapter(requireContext(), reportList, (item, position) -> fetchAndLoadData(date, item.getSfCode()));
-            binding.recyclerMissedReports.setAdapter(adapter);
-            binding.recyclerMissedReports.setVisibility(View.GONE);
-            binding.outboxEmtyImage.setVisibility(View.VISIBLE);
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            progressDialog.dismiss();
+                            requireActivity().runOnUiThread(() ->
+                                    commonUtilsMethods.showToastMessage(requireContext(), "Failed to load data"));
+                        }
+                    });
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+                adapter = new MissedReportAdapter(requireContext(), reportList, (item, position) -> fetchAndLoadData(date, item.getSfCode()));
+                binding.recyclerMissedReports.setAdapter(adapter);
+                binding.recyclerMissedReports.setVisibility(View.GONE);
+                binding.outboxEmtyImage.setVisibility(View.VISIBLE);
+            });
+            networkStatusTask.execute();
         });
-        networkStatusTask.execute();
     }
     private String getVisitedArray(String sfCode, String date) {
         String callSyncJson = masterDataDao.getDataByKey(Constants.CALL_SYNC);

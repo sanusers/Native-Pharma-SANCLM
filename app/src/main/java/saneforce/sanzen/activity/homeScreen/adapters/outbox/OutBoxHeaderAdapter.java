@@ -354,7 +354,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         callApiForChild(child, new ApiCallback() {
             @Override
             public void onSuccess() {
-                if (apiIndex == 1 && !child.getWorkPlanModelClass().getWtStatus().isEmpty()) {
+                if (apiIndex == 1 && child.getWorkPlanModelClass() != null && child.getWorkPlanModelClass().getWtStatus() != null && !child.getWorkPlanModelClass().getWtStatus().isEmpty()) {
                     processApisForDate(dateGroup, dateGroup.getChildItems().size(), callback);
                 } else {
                     processApisForDate(dateGroup, apiIndex + 1, callback);

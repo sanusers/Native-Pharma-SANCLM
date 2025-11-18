@@ -73,7 +73,7 @@
 
     <item android:id="@+id/dyn_link"
         android:icon="@drawable/report_monthly_icon"
-        android:title="" />
+        android:title="@string/option" />
 
     <item
         android:id="@+id/ClearSlide"

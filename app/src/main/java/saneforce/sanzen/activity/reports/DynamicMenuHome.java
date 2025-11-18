@@ -46,7 +46,6 @@ public class DynamicMenuHome extends AppCompatActivity {
     GridView gridView;
     LinearLayout backArrow;
     ApiInterface apiInterface;
-    ProgressDialog progressDialog;
     CommonUtilsMethods commonUtilsMethods;
 
     @Override
@@ -56,7 +55,11 @@ public class DynamicMenuHome extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         title = binding.title;
-        title.setText(SharedPref.getDynamicOptionCaps(DynamicMenuHome.this));
+        if(!SharedPref.getDynamicOptionCaps(DynamicMenuHome.this).equalsIgnoreCase("")) {
+            title.setText(SharedPref.getDynamicOptionCaps(DynamicMenuHome.this));
+        }else{
+            title.setText(R.string.option);
+        }
 
         gridView = findViewById(R.id.gridView);
         backArrow = findViewById(R.id.backArrow);
@@ -86,10 +89,7 @@ public class DynamicMenuHome extends AppCompatActivity {
 
     private void loadMenuFromApi() {
         if (UtilityClass.isNetworkAvailable(this)) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("Loading...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            binding.dynamicProg.setVisibility(View.VISIBLE);
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
                 if (status) {
                     try {
@@ -110,12 +110,11 @@ public class DynamicMenuHome extends AppCompatActivity {
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                progressDialog.dismiss();
+                                binding.dynamicProg.setVisibility(View.GONE);
                                 try {
                                     if (response.isSuccessful() && response.body() != null) {
                                         JsonArray jsonArray = response.body().getAsJsonArray();
                                         if (jsonArray.size() > 0) {
-                                            binding.noReportFoundTxt.setVisibility(View.GONE);
                                             for (int i = 0; i < jsonArray.size(); i++) {
                                                 JsonObject menuObject = jsonArray.get(i).getAsJsonObject();
                                                 String menu_name = menuObject.get("Menu_Name").getAsString();
@@ -129,6 +128,7 @@ public class DynamicMenuHome extends AppCompatActivity {
                                             }
                                             dynamicAdapter.notifyDataSetChanged();
                                         }else{
+                                            binding.noReportFoundTxt.setVisibility(View.VISIBLE);
                                             commonUtilsMethods.showToastMessage(DynamicMenuHome.this,"No Record Found");
 
                                         }
@@ -149,7 +149,7 @@ public class DynamicMenuHome extends AppCompatActivity {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                progressDialog.dismiss();
+                                binding.dynamicProg.setVisibility(View.GONE);
                                 binding.noReportFoundTxt.setVisibility(View.VISIBLE);
                                 commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.poor_connection)+" "+getString(R.string.please_try_again));
                             }
@@ -158,15 +158,15 @@ public class DynamicMenuHome extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    progressDialog.dismiss();
-//                    commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.poor_connection));
+                    binding.dynamicProg.setVisibility(View.GONE);
+                    commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.poor_connection));
                 }
 
             });
             networkStatusTask.execute();
         } else {
-            progressDialog.dismiss();
-//            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.no_network));
+            binding.dynamicProg.setVisibility(View.GONE);
+            commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.no_network));
         }
 
     }

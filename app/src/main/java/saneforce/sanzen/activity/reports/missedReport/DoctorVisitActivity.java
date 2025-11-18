@@ -79,6 +79,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
     private MasterDataDao masterDataDao;
     private RoomDB roomDB;
 
+
     public void afterTextChanged(Editable editable) {
         filter(editable.toString());
     }
@@ -90,7 +91,8 @@ public class DoctorVisitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDoctorVisitBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        String clickedType = getIntent().getStringExtra("clicked_type");
+        String clickedType;
+        clickedType = getIntent().getStringExtra("clicked_type");
         String selectedMonth = getIntent().getStringExtra("selected_month");
 
         if (selectedMonth == null || selectedMonth.isEmpty()) {
@@ -118,6 +120,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
                     break;
             }
         } else {
+            clickedType = "1";
             typeCaption = SharedPref.getDrCap(this);
         }
 

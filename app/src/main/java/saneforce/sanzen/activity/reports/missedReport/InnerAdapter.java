@@ -64,7 +64,6 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
         this.date = date;
         this.monthName = monthName;
 
-        // Separate models by type once
         for (MissedStatsModel model : statsList) {
             switch (model.getType()) {
                 case "1":
@@ -101,7 +100,6 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             Log.d("DoctorList", "Visited: " + doctor.getUniqueCustomers());
             Log.d("DoctorList", "Missed: " + doctor.getMissedCustomers());
 
-            // Card 1 → Doctor + Chemist
             holder.card1Layout.setVisibility(View.VISIBLE);
             holder.card2Layout.setVisibility(View.GONE);
             if (doctor != null && SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
@@ -250,11 +248,11 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             }
 
         } else if (position == 1) {
-            // Card 2 → Stockist + Unlisted
+
             holder.card1Layout.setVisibility(View.GONE);
             holder.card2Layout.setVisibility(View.VISIBLE);
 
-            if (stockist != null && (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getStkNeed(context).equalsIgnoreCase("0"))
+            if (stockist != null && (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0"))
                     || (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getUnlNeed(context).equalsIgnoreCase("1"))) {
                 holder.stkMissedCurrent.setVisibility(View.VISIBLE);
                 setPieChart(holder.missedChartStk, holder.totalstkCnt, holder.stkvisitedCnt, holder.stkmissedCnt, stockist);
@@ -290,7 +288,8 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                 holder.stkMissedCurrent.setVisibility(View.GONE);
             }
 
-            if (unlisted != null && SharedPref.getUnlNeed(context).equalsIgnoreCase("1")) {
+            if (unlisted != null && (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getStkNeed(context).equalsIgnoreCase("0"))
+            || (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getStkNeed(context).equalsIgnoreCase("1"))) {
                 holder.unlstMissedCurrent.setVisibility(View.VISIBLE);
                 setPieChart(holder.missedChartUnlst, holder.totalunlstCnt, holder.unlstvisitedCnt, holder.unlstmissedCnt, unlisted);
                 holder.unlstVisitTxt.setText(SharedPref.getUNLcap(context));

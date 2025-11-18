@@ -87,8 +87,15 @@
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_3sdp"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:ignore="SpUsage"/>
+
+        <ProgressBar
+            android:id="@+id/dynamic_prog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
     </FrameLayout>
 
 
