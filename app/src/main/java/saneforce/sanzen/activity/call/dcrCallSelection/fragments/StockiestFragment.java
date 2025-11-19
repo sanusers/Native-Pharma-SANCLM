@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -41,6 +42,7 @@ import java.util.Objects;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.HQChangeListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -73,14 +75,18 @@ public class StockiestFragment extends Fragment {
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private HQChangeListener hqChangeListener;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation;
 
     public StockiestFragment() {
     }
 
-    public StockiestFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
-        this.hqChangeListener = hqChangeListener;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof HQChangeListener) {
+            hqChangeListener = (HQChangeListener) context;
+        }
     }
 
     @Override
@@ -383,7 +389,9 @@ public class StockiestFragment extends Fragment {
         } else {
             noStockist.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection.filterList(FilltercustArraList);
+            if (adapterDCRCallSelection != null) {
+                adapterDCRCallSelection.filterList(FilltercustArraList);
+            }
         }
         dialogFilter.dismiss();
     }

@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -504,7 +505,8 @@ public class SharedPref {
     public static final String UNLST_DOC_APP_NEED = "Unlst_Doc_App_need";
     public static final String SUBDIVISION_NAMES = "SubdivisionNames";
     public static final String SETUP_SYNCED = "setup_synced";
-
+    public static final String RESET_PASSWORD_NEED = "reset_password_need";
+    public static final String RESET_PASSWORD_DAYS = "reset_password_days";
 
     public static SharedPreferences.Editor editor;
 
@@ -516,7 +518,6 @@ public class SharedPref {
 
     public static void InsertLogInData(Context context, JSONObject jsonObject) {
         try {
-
             sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
             editor = sharedPreferences.edit();
             editor.putString(SF_CODE, jsonObject.optString("SF_Code"));
@@ -862,14 +863,12 @@ public class SharedPref {
             editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
             editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
             editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
-            editor.putString(WELCOME_SLIDES_PATH, "");
-
+            editor.putString(RESET_PASSWORD_NEED,jsonObject.optString("reset_password_need"));
+            editor.putString(RESET_PASSWORD_DAYS,jsonObject.optString("reset_password_days"));
             editor.apply();
-
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
-
     }
 
     public static String getSfName(Context context) {
@@ -3157,18 +3156,30 @@ public class SharedPref {
     public static String getReportingToSf(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(REPORTING_TO_SF,"");
     }
+
     public static String getUnlstDocAppNeed(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(UNLST_DOC_APP_NEED,"");
     }
+
     public static String getSubDivisionNames(Context context){
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SUBDIVISION_NAMES, "");
     }
+
     public static void setIsSetupSynced(Context context, boolean isSynced) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putBoolean(SETUP_SYNCED, isSynced).apply();
     }
+
     public static boolean getIsSetupSynced(Context context) {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getBoolean(SETUP_SYNCED,false);
+    }
+
+    public static String getResetPasswordNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RESET_PASSWORD_NEED,"1");
+    }
+
+    public static String getResetPasswordDays(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RESET_PASSWORD_DAYS,"90");
     }
 }

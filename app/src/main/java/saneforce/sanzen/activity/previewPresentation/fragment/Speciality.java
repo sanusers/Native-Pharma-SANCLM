@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.HQChangeListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.HQSelector;
 import saneforce.sanzen.activity.previewPresentation.DrSelectionSide;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -347,7 +348,7 @@ public class Speciality extends Fragment {
         }
     }
 
-    private final DcrCallTabLayoutActivity.HQChangeListener hqChangeListener = (String hqID, String hqName) -> {
+    private final HQChangeListener hqChangeListener = (String hqID, String hqName) -> {
         this.hqID = hqID;
         this.hqName = hqName;
         Log.i("HQ change", hqID + " -> " + hqName);

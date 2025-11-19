@@ -144,7 +144,9 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 if (!playBtnClicked) {
                     playBtnClicked = true;
                     binding.playBtn.setImageResource(R.drawable.baseline_stop);
-                    timer.cancel();
+                    if (timer != null) {
+                        timer.cancel();
+                    }
                     binding.viewPager.setVisibility(View.GONE);
                     binding.upArrow.setVisibility(View.GONE);
                     binding.bottomLayout.setVisibility(View.GONE);

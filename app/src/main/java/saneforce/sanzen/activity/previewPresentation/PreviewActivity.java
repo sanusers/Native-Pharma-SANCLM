@@ -92,7 +92,6 @@ public class PreviewActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         if (isTimerEnd) {
             Log.e("TAG", "onResume: timer end");
             showDetailingTimeExceededAlert();
@@ -321,7 +320,9 @@ public class PreviewActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
-                callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
+                if (time != null && !time.isEmpty() && !time.equalsIgnoreCase("null")) {
+                    callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
+                }
             }
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
             intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
@@ -531,7 +532,7 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     public String gettingProductStartEndTime1(String jsonvalue, int i) {
-        String finalTime = null;
+        String finalTime = "";
         StoreImageTypeUrl mm, mm1, mm2;
         try {
             JSONArray json = new JSONArray(jsonvalue);

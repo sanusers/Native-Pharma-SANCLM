@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -50,6 +51,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.HQChangeListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -88,13 +90,17 @@ public class ChemistFragment extends Fragment {
     private MasterDataDao masterDataDao;
     private STPOfflineDataDao stpOfflineDataDao;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation;
-    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private HQChangeListener hqChangeListener;
 
     public ChemistFragment() {
     }
 
-    public ChemistFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
-        this.hqChangeListener = hqChangeListener;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof HQChangeListener) {
+            hqChangeListener = (HQChangeListener) context;
+        }
     }
 
     @Override
@@ -571,7 +577,9 @@ public class ChemistFragment extends Fragment {
         } else {
             noChemist.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection.filterList(FilltercustArraList);
+            if (adapterDCRCallSelection != null) {
+                adapterDCRCallSelection.filterList(FilltercustArraList);
+            }
         }
         dialogFilter.dismiss();
     }

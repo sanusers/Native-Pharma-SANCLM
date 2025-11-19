@@ -57,8 +57,6 @@ public class SignatureFragment1 extends Fragment {
     RoomDB roomDB;
     CommonUtilsMethods commonUtilsMethods;
 
-
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -75,8 +73,6 @@ public class SignatureFragment1 extends Fragment {
         Log.d("SignatureFragment", "onCreate()");
         callSignCaptureImage = new ArrayList<>();
     }
-
-
 
     @Nullable
     @Override
@@ -158,10 +154,9 @@ public class SignatureFragment1 extends Fragment {
         }
     }
 
-
     public void clearSignature() {
         if (signatureCanvas != null) {
-            if(!callSignCaptureImage.isEmpty()) {
+            if(callSignCaptureImage != null && !callSignCaptureImage.isEmpty()) {
                 File fileDelete = new File(callSignCaptureImage.get(0).getFilepath());
                 if (fileDelete.exists()) {
                     if (fileDelete.delete()) {
@@ -169,6 +164,8 @@ public class SignatureFragment1 extends Fragment {
                         callSignCaptureImage.clear();
                     }
                 }
+            } else {
+                callSignCaptureImage = new ArrayList<>();
             }
             signatureCanvas.clearCanvas();
             signatureCanvas.setSignaturePath(new Path());
@@ -289,8 +286,6 @@ public class SignatureFragment1 extends Fragment {
         }
     }
 
-
-
     public void loadImageFromLocal(String fileName) {
         if (/*!filePath.isEmpty() && */!imageName.isEmpty()) {
             File file = new File(context.getExternalFilesDir(null) + "/Signature/",fileName);
@@ -305,8 +300,6 @@ public class SignatureFragment1 extends Fragment {
             Log.d("TAG", "instance initializer: file path is empty");
         }
     }
-
-
 /*    public void loadImageFromLocal() {
         if (!filePath.isEmpty()) {
             File file = new File(filePath);

@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -49,6 +50,7 @@ import java.util.Objects;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.HQChangeListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.UnlistedDoctorAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
@@ -86,14 +88,18 @@ public class UnlistedDoctorFragment extends Fragment {
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private HQChangeListener hqChangeListener;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation;
 
     public UnlistedDoctorFragment() {
     }
 
-    public UnlistedDoctorFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
-        this.hqChangeListener = hqChangeListener;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof HQChangeListener) {
+            hqChangeListener = (HQChangeListener) context;
+        }
     }
 
     @Override
@@ -699,7 +705,9 @@ public class UnlistedDoctorFragment extends Fragment {
         } else {
             noULDoctor.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection.filterList(FilltercustArraList);
+            if (adapterDCRCallSelection != null) {
+                adapterDCRCallSelection.filterList(FilltercustArraList);
+            }
         }
         dialogFilter.dismiss();
     }

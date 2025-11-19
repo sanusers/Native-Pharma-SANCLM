@@ -37,14 +37,14 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.CallDcrSelectionBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-public class DcrCallTabLayoutActivity extends AppCompatActivity {
-
+public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQChangeListener {
     public static String TodayPlanSfCode, TodayPlanSfName;
     public static double lat, lng, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
@@ -62,11 +62,33 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     private CIPFragment cipFragment;
     private HospitalFragment hospitalFragment;
 
-    public interface HQChangeListener {
-        void onHQChange(String hqID, String hqName);
+    @Override
+    public void onHQChange(String hqID, String hqName) {
+        DcrCallTabLayoutActivity.TodayPlanSfCode = hqID;
+        DcrCallTabLayoutActivity.TodayPlanSfName = hqName;
+        SharedPref.saveHq(DcrCallTabLayoutActivity.this, DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
+        prepareClusterList();
+        if (listedDoctorFragment != null) {
+            listedDoctorFragment.SetupAdapter();
+        }
+        if (chemistFragment != null) {
+            chemistFragment.SetupAdapter();
+        }
+        if (stockiestFragment != null) {
+            stockiestFragment.SetupAdapter();
+        }
+        if (unlistedDoctorFragment != null) {
+            unlistedDoctorFragment.SetupAdapter();
+        }
+        if (cipFragment != null) {
+            cipFragment.SetupAdapter();
+        }
+        if (hospitalFragment != null) {
+            hospitalFragment.SetupAdapter();
+        }
     }
 
-    @SuppressLint("MissingSuperCall")
+    @SuppressLint({"MissingSuperCall", "GestureBackNavigation"})
     @Override
     public void onBackPressed() {
     }
@@ -127,54 +149,30 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         }
 
         getRequiredData();
-        HQChangeListener hqChangeListener = (String hqID, String hqName) -> {
-            DcrCallTabLayoutActivity.TodayPlanSfCode = hqID;
-            DcrCallTabLayoutActivity.TodayPlanSfName = hqName;
-            SharedPref.saveHq(DcrCallTabLayoutActivity.this, DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
-            prepareClusterList();
-            if (listedDoctorFragment != null) {
-                listedDoctorFragment.SetupAdapter();
-            }
-            if (chemistFragment != null) {
-                chemistFragment.SetupAdapter();
-            }
-            if (stockiestFragment != null) {
-                stockiestFragment.SetupAdapter();
-            }
-            if (unlistedDoctorFragment != null) {
-                unlistedDoctorFragment.SetupAdapter();
-            }
-            if (cipFragment != null) {
-                cipFragment.SetupAdapter();
-            }
-            if (hospitalFragment != null) {
-                hospitalFragment.SetupAdapter();
-            }
-        };
 
         viewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
         if (SharedPref.getDrNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
-            listedDoctorFragment = new ListedDoctorFragment(hqChangeListener);
+            listedDoctorFragment = new ListedDoctorFragment();
             viewPagerAdapter.add(listedDoctorFragment, SharedPref.getDrCap(DcrCallTabLayoutActivity.this));
         }
         if (SharedPref.getChmNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
-            chemistFragment = new ChemistFragment(hqChangeListener);
+            chemistFragment = new ChemistFragment();
             viewPagerAdapter.add(chemistFragment, SharedPref.getChmCap(DcrCallTabLayoutActivity.this));
         }
         if (SharedPref.getStkNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
-            stockiestFragment = new StockiestFragment(hqChangeListener);
+            stockiestFragment = new StockiestFragment();
             viewPagerAdapter.add(stockiestFragment, SharedPref.getStkCap(DcrCallTabLayoutActivity.this));
         }
         if (SharedPref.getUnlNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
-            unlistedDoctorFragment = new UnlistedDoctorFragment(hqChangeListener);
+            unlistedDoctorFragment = new UnlistedDoctorFragment();
             viewPagerAdapter.add(unlistedDoctorFragment, SharedPref.getUNLcap(DcrCallTabLayoutActivity.this));
         }
         if (SharedPref.getCipNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
-            cipFragment = new CIPFragment(hqChangeListener);
+            cipFragment = new CIPFragment();
             viewPagerAdapter.add(cipFragment, SharedPref.getCipCaption(DcrCallTabLayoutActivity.this));
         }
         if (SharedPref.getHospNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
-            hospitalFragment = new HospitalFragment(hqChangeListener);
+            hospitalFragment = new HospitalFragment();
             viewPagerAdapter.add(hospitalFragment, SharedPref.getHospCaption(DcrCallTabLayoutActivity.this));
         }
 

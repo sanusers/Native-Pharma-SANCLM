@@ -6,6 +6,7 @@ import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFra
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -44,6 +46,7 @@ import java.util.Objects;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.HQChangeListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -92,13 +95,16 @@ public class ListedDoctorFragment extends Fragment {
     private MasterDataDao masterDataDao;
     private STPOfflineDataDao stpOfflineDataDao;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation;
-    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private HQChangeListener hqChangeListener;
 
-    public ListedDoctorFragment() {
-    }
+    public ListedDoctorFragment() { }
 
-    public ListedDoctorFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
-        this.hqChangeListener = hqChangeListener;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof HQChangeListener) {
+            hqChangeListener = (HQChangeListener) context;
+        }
     }
 
     @Override
@@ -747,7 +753,9 @@ public class ListedDoctorFragment extends Fragment {
                 filteredNames.add(s);
             }
         }
-        adapterDCRCallSelection.filterList(filteredNames);
+        if (adapterDCRCallSelection != null) {
+            adapterDCRCallSelection.filterList(filteredNames);
+        }
     }
 
     public void Filtered() {
@@ -853,7 +861,9 @@ public class ListedDoctorFragment extends Fragment {
         } else {
             noDoctor.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection.filterList(FilltercustArraList);
+            if (adapterDCRCallSelection != null) {
+                adapterDCRCallSelection.filterList(FilltercustArraList);
+            }
         }
         dialogFilter.dismiss();
     }

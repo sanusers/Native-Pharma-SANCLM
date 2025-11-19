@@ -46,7 +46,6 @@ import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataTa
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
-
 public class PresentationActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static ActivityPresentationBinding binding;

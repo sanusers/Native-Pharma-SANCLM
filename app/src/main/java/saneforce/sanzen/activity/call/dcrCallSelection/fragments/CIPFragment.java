@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.HQChangeListener;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
@@ -69,13 +71,17 @@ public class CIPFragment extends Fragment {
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private HQChangeListener hqChangeListener;
 
     public CIPFragment() {
     }
 
-    public CIPFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
-        this.hqChangeListener = hqChangeListener;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof HQChangeListener) {
+            hqChangeListener = (HQChangeListener) context;
+        }
     }
 
     @Override
