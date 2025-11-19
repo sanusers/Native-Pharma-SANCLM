@@ -42,7 +42,7 @@
                 android:text="Doctor Visit"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"  />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
