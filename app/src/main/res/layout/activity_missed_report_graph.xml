@@ -86,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_3sdp"
-        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginStart="@dimen/_6sdp"
         android:background="@drawable/bg_white_border_purple"
         android:backgroundTint="@color/light_grey_1"
         android:orientation="horizontal"
@@ -102,12 +102,12 @@
             android:layout_width="@dimen/_40sdp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_2sdp"
-            android:background="@drawable/bg_darkpurple_sharp_bottom_end"
+            android:background="@drawable/bg_dark_purple"
             android:gravity="center"
             android:singleLine="true"
             android:text="As on Calls"
-            android:textSize="@dimen/_5ssp"
-            android:textColor="@color/white">
+            android:textColor="@color/white"
+            android:textSize="@dimen/_5ssp">
 
         </TextView>
 

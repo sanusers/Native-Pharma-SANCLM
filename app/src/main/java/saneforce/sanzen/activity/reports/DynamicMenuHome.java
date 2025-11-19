@@ -81,6 +81,12 @@ public class DynamicMenuHome extends AppCompatActivity {
             commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
 
         }
+        if(SharedPref.getDynamicOptionNeed(DynamicMenuHome.this).equalsIgnoreCase("0")) {
+            binding.reportSync.setVisibility(View.VISIBLE);
+            binding.reportSync.setOnClickListener(view -> {
+                loadMenuFromApi();
+            });
+        }
     }
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -90,6 +96,8 @@ public class DynamicMenuHome extends AppCompatActivity {
     private void loadMenuFromApi() {
         if (UtilityClass.isNetworkAvailable(this)) {
             binding.dynamicProg.setVisibility(View.VISIBLE);
+            menuList.clear();
+            dynamicAdapter.notifyDataSetChanged();
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
                 if (status) {
                     try {

@@ -243,7 +243,7 @@ public class VisitStatsAdapter extends RecyclerView.Adapter<VisitStatsAdapter.Vi
         int stockiestSize = stockiestStats != null ? stockiestStats.size() : 0;
         int unlistedSize = unlistedStats != null ? unlistedStats.size() : 0;
 
-        // Pick the max of all — since each represents data for that month
+
         int maxSize = Math.max(
                 Math.max(doctorSize, chemistSize),
                 Math.max(stockiestSize, unlistedSize)

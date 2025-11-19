@@ -3,37 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/grid_cl"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardview_grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:cardElevation="10dp"
-        app:contentPadding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.6">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_con"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/iv_menu_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_15sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+               app:layout_constraintTop_toTopOf="@+id/layout_con"
                 app:layout_constraintBottom_toTopOf="@+id/tv_menu_title"
                 app:srcCompat="@drawable/web_icon" />
 
@@ -41,7 +35,6 @@
                 android:id="@+id/tv_menu_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:fontFamily="@font/satoshi_bold"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_10sdp"

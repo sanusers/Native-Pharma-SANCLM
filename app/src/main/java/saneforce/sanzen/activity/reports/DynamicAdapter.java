@@ -69,7 +69,7 @@ public class DynamicAdapter extends BaseAdapter {
         MenuModel menuModel = menuModelArrayList.get(position);
 
         if (!menuModel.getMenu_Icon().equalsIgnoreCase("")) {
-            Glide.with(context).load(menuModel.getMenu_Icon()).into(holder.imageView);
+            Glide.with(context).load(menuModel.getMenu_Icon()).error(R.drawable.web_icon).into(holder.imageView);
         }else{
             holder.imageView.setImageResource(R.drawable.web_icon);
         }

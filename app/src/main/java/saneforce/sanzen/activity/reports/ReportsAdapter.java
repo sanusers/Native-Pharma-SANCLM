@@ -242,7 +242,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
                 holder.imageView.setImageResource(R.drawable.report_monthly_icon);
                 break;
             default:
-                holder.imageView.setImageResource(0);
+                holder.imageView.setImageResource(R.drawable.web_icon);
                 break;
         }
 

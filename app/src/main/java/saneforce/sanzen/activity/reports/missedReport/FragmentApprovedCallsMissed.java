@@ -109,6 +109,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
     private FragmentApprovedCallsMissedBinding binding;
     MissedReportAdapter adapter;
     final List<MissedReportItem> reportList = new ArrayList<>();
+    List<DoctorVisitItem> docList = new ArrayList<>();
     private View blockingOverlay;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -493,7 +494,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
     }
 
     public void fetchAndLoadData(String date, String sfcode) {
-        RoomDB.databaseWriteExecutor.execute(() -> {
+       /* RoomDB.databaseWriteExecutor.execute(() -> {
             DoctorVisitDao visitDao = db.doctorVisitDao();
             String doctorArrayString = visitDao.getVisitValues(sfcode, date);
                 if (doctorArrayString != null && !doctorArrayString.isEmpty()) {
@@ -503,7 +504,8 @@ public class FragmentApprovedCallsMissed extends Fragment {
                     startActivity(intent);
                 } else getData(date, sfcode);
 
-        });
+        });*/
+        getData(date, sfcode);
     }
 
     public void getData(String date, String sfcode) {
@@ -546,7 +548,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                                     JsonElement jsonElement = response.body();
                                     if (jsonElement.isJsonArray()) {
                                         JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                        reportList.clear();
+                                        docList.clear();
                                         for (int i = 0; i < jsonArray.length(); i++) {
                                             JSONObject obj = jsonArray.getJSONObject(i);
                                             DoctorVisitItem model = new DoctorVisitItem();
@@ -557,6 +559,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                                             model.setCategory(obj.optString("Doc_Cat_SName"));
                                             model.setClassName(obj.optString("Doc_ClsSName"));
                                             model.setQualification(obj.optString("Doc_QuaName"));
+                                            docList.add(model);
                                         }
 
                                         if (jsonArray.length() > 0) {
@@ -580,12 +583,12 @@ public class FragmentApprovedCallsMissed extends Fragment {
                                                     intent.putExtra("date", date);
                                                     intent.putExtra("missed_array", missedArray.toString());
                                                     intent.putExtra("visit", visitedArrayString);
+                                                    intent.putExtra("source", "api");
                                                     Log.d("SEND_DEBUG", "MISSED SENT = " + missedArray);
                                                     Log.d("SEND_DEBUG", "VISITED SENT = " + visitedArrayString);
 
                                                     startActivity(intent);
                                                 }
-
                                             });
                                         }
                                     }
@@ -606,10 +609,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                     progressDialog.dismiss();
                     e.printStackTrace();
                 }
-                adapter = new MissedReportAdapter(requireContext(), reportList, (item, position) -> fetchAndLoadData(date, item.getSfCode()));
-                binding.recyclerMissedReports.setAdapter(adapter);
-                binding.recyclerMissedReports.setVisibility(View.GONE);
-                binding.outboxEmtyImage.setVisibility(View.VISIBLE);
+
             });
             networkStatusTask.execute();
         });

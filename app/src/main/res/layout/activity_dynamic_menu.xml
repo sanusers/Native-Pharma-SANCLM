@@ -48,6 +48,13 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
                 tools:ignore="SpUsage" />
+            <ImageView
+                android:id="@+id/reportSync"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:background="@drawable/sync_img"
+                android:layout_marginStart="@dimen/_400sdp"
+                android:visibility="gone"/>
 
         </androidx.appcompat.widget.Toolbar>
 

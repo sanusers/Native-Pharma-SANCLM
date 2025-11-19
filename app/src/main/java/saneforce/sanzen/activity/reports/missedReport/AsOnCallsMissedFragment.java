@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,8 @@ public class AsOnCallsMissedFragment extends Fragment {
     int visitedUnlistedCurrentMonth;
     int previousMonthMissedUnlisted,visitedUnlistedPreviousMonth,prePreviousMonthMissedUnlisted,uniqueUnlistedPreviousMonth;
     int uniqueDoctorsPre_PrevMonth,uniqueChemistPre_PrevMonth,uniqueStockiestPre_PrevMonth,uniqueUnlistedPre_PrevMonth,visitedDoctorsPre_PrevMonth,visitedChemistPre_PrevMonth,visitedStockistPre_PrevMonth,visitedUnlistedPre_PrevMonth;
+    String JoiningDate,JoiningMonth,JoiningYear;
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -65,17 +68,61 @@ public class AsOnCallsMissedFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recyclerDoctorMissedReports);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
-
+        getJoiningDate();
         custFilter();
         return v;
 
     }
+
+    private void getJoiningDate() {
+        try {
+            String SFDCR_Date_sp = SharedPref.getSfDCRDate(requireContext());
+            JSONObject obj = new JSONObject(SFDCR_Date_sp);
+            String SFDCR_Date = obj.getString("date");
+            if (!SFDCR_Date.isEmpty()) {
+                JoiningDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFDCR_Date);
+                JoiningMonth = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFDCR_Date);
+                JoiningYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFDCR_Date);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void custFilter() {
         VisitFilter visitFilter = new VisitFilter(masterDataDao);
         Map<String, VisitFilter.MonthlyStats> monthlyData = visitFilter.callFilter();
 
 
         try {
+
+            int currentMonth = Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8));
+            int currentYear = Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_10));
+
+
+            int joinMonth = Integer.parseInt(JoiningMonth);
+            int joinYear = Integer.parseInt(JoiningYear);
+
+
+            List<String> monthsToShow = new ArrayList<>();
+
+            if (joinYear == currentYear) {
+                if (joinMonth == currentMonth) {
+                    monthsToShow.add("current");
+                } else if (joinMonth == currentMonth - 1) {
+                    monthsToShow.add("previous");
+                    monthsToShow.add("current");
+                } else if (joinMonth <= currentMonth - 2) {
+                    monthsToShow.add("prePrevious");
+                    monthsToShow.add("previous");
+                    monthsToShow.add("current");
+                }
+            } else if (joinYear < currentYear) {
+                // If joined in a previous year, just show 3 months max
+                monthsToShow.add("prePrevious");
+                monthsToShow.add("previous");
+                monthsToShow.add("current");
+            }
 
             VisitFilter.MonthlyStats currentMonthStats = monthlyData.get("current");
             VisitFilter.MonthlyStats previousMonthStats = monthlyData.get("previous");
@@ -465,7 +512,7 @@ public class AsOnCallsMissedFragment extends Fragment {
 //            );
 
             //Dr
-            dataList.add(currentMonthDrStats);
+        /*    dataList.add(currentMonthDrStats);
             dataList.add(previousMonthDrStats);
             dataList.add(prePreviousMonthDrStats);
             //Che
@@ -479,7 +526,7 @@ public class AsOnCallsMissedFragment extends Fragment {
             //unlisted
             dataList.add(currentMonthUnlistedStats);
             dataList.add(previousMonthUnlistedStats);
-            dataList.add(prePreviousMonthUnlistedStats);
+            dataList.add(prePreviousMonthUnlistedStats);*/
             // Example monthData
 
        /*     InnerAdapter adapter = new InnerAdapter( MissedReportGraph.this,
@@ -493,38 +540,48 @@ public class AsOnCallsMissedFragment extends Fragment {
             recyclerView.setAdapter(adapter);*/
 
             //current month
-            List<MissedStatsModel> currentMonthList = new ArrayList<>();
-            currentMonthList.add(currentMonthDrStats);
-            currentMonthList.add(currentMonthCheStats);
-            currentMonthList.add(currentMonthStkStats);
-            currentMonthList.add(currentMonthUnlistedStats);
+                List<MissedStatsModel> currentMonthList = new ArrayList<>();
+                currentMonthList.add(currentMonthDrStats);
+                currentMonthList.add(currentMonthCheStats);
+                currentMonthList.add(currentMonthStkStats);
+                currentMonthList.add(currentMonthUnlistedStats);
 
-            //previous month
-            List<MissedStatsModel> previousMonthList = new ArrayList<>();
-            previousMonthList.add(previousMonthDrStats);
-            previousMonthList.add(previousMonthCheStats);
-            previousMonthList.add(previousMonthStkStats);
-            previousMonthList.add(previousMonthUnlistedStats);
+                //previous month
+                List<MissedStatsModel> previousMonthList = new ArrayList<>();
+                previousMonthList.add(previousMonthDrStats);
+                previousMonthList.add(previousMonthCheStats);
+                previousMonthList.add(previousMonthStkStats);
+                previousMonthList.add(previousMonthUnlistedStats);
 
-            //pre-previous month
-            List<MissedStatsModel> prePreviousMonthList = new ArrayList<>();
-            prePreviousMonthList.add(prePreviousMonthDrStats);
-            prePreviousMonthList.add(prePreviousMonthCheStats);
-            prePreviousMonthList.add(prePreviousMonthStkStats);
-            prePreviousMonthList.add(prePreviousMonthUnlistedStats);
+                //pre-previous month
+                List<MissedStatsModel> prePreviousMonthList = new ArrayList<>();
+                prePreviousMonthList.add(prePreviousMonthDrStats);
+                prePreviousMonthList.add(prePreviousMonthCheStats);
+                prePreviousMonthList.add(prePreviousMonthStkStats);
+                prePreviousMonthList.add(prePreviousMonthUnlistedStats);
 
 
 //   all months into  list
+              /*  List<List<MissedStatsModel>> allMonthsFlatList = new ArrayList<>();
+                allMonthsFlatList.add(currentMonthList);
+                allMonthsFlatList.add(previousMonthList);
+                allMonthsFlatList.add(prePreviousMonthList);*/
             List<List<MissedStatsModel>> allMonthsFlatList = new ArrayList<>();
-            allMonthsFlatList.add(currentMonthList);
-            allMonthsFlatList.add(previousMonthList);
-            allMonthsFlatList.add(prePreviousMonthList);
+            if (monthsToShow.contains("current")) {
+                allMonthsFlatList.add(currentMonthList);
+            }
+            if (monthsToShow.contains("previous")) {
+                allMonthsFlatList.add(previousMonthList);
+            }
+            if (monthsToShow.contains("prePrevious")) {
+                allMonthsFlatList.add(prePreviousMonthList);
+            }
 
 
             OuterAdapter adapter = new OuterAdapter(requireContext(), allMonthsFlatList, sfCode, date);
-            //RecyclerView recyclerView = findViewById(R.id.recyclerDoctor);
-            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-            recyclerView.setAdapter(adapter);
+                //RecyclerView recyclerView = findViewById(R.id.recyclerDoctor);
+                recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+                recyclerView.setAdapter(adapter);
 
         } catch (Exception e) {
             e.printStackTrace();

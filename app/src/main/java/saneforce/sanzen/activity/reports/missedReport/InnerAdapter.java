@@ -130,6 +130,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                         intent.putExtra("date", date);
                         intent.putExtra("selected_month", monthName);
                         intent.putExtra("clicked_type", doctor.getType());
+                        intent.putExtra("source", "local");
                         //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
 
@@ -166,6 +167,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                         intent.putExtra("date", date);
                         intent.putExtra("selected_month", monthName);
                         intent.putExtra("clicked_type", chemist.getType());
+                        intent.putExtra("source", "local");
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
 
@@ -200,6 +202,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                         intent.putExtra("date", date);
                         intent.putExtra("selected_month", monthName);
                         intent.putExtra("clicked_type", stockist.getType());
+                        intent.putExtra("source", "local");
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
 
@@ -235,6 +238,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                         intent.putExtra("date", date);
                         intent.putExtra("selected_month", monthName);
                         intent.putExtra("clicked_type", unlisted.getType());
+                        intent.putExtra("source", "local");
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
 
@@ -277,6 +281,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                         intent.putExtra("date", date);
                         intent.putExtra("selected_month", monthName);
                         intent.putExtra("clicked_type", stockist.getType());
+                        intent.putExtra("source", "local");
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
 
@@ -314,6 +319,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
                         intent.putExtra("date", date);
                         intent.putExtra("selected_month", monthName);
                         intent.putExtra("clicked_type", unlisted.getType());
+                        intent.putExtra("source", "local");
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
 
@@ -344,10 +350,10 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
 
         int count = 0;
 
-        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) count++;   // visible
-        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) count++;  // visible
-        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) count++;  // visible
-        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) count++;  // visible
+        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) count++;
+        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) count++;
+        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) count++;
+        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) count++;
 
         if (count == 0)
             return 0;
