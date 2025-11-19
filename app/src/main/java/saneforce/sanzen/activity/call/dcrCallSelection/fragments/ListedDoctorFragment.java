@@ -493,7 +493,7 @@ public class ListedDoctorFragment extends Fragment {
                         if (SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                             if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
                                 if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
-                                    Log.v("DrCall", "111");
+//                                    Log.v("DrCall", "111");
                                     float[] distance = new float[2];
                                     Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -502,7 +502,7 @@ public class ListedDoctorFragment extends Fragment {
                                         }
                                     }
                                 } else {
-                                    Log.v("DrCall", "222");
+//                                    Log.v("DrCall", "222");
                                     float[] distance = new float[2];
                                     Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -511,7 +511,7 @@ public class ListedDoctorFragment extends Fragment {
                                 }
                             }
                         } else {
-                            Log.v("DrCall", "333");
+//                            Log.v("DrCall", "333");
 
                             // This not need TbBased DCR
 //                        if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
@@ -568,7 +568,7 @@ public class ListedDoctorFragment extends Fragment {
                         if (SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                             if (!jsonObject.optString("Lat").isEmpty() && !jsonObject.optString("Long").isEmpty()) {
                                 if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
-                                    Log.v("DrCall", "111");
+//                                    Log.v("DrCall", "111");
                                     float[] distance = new float[2];
                                     Location.distanceBetween(Double.parseDouble(jsonObject.optString("Lat")), Double.parseDouble(jsonObject.optString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -577,7 +577,7 @@ public class ListedDoctorFragment extends Fragment {
                                         }
                                     }
                                 } else {
-                                    Log.v("DrCall", "222");
+//                                    Log.v("DrCall", "222");
                                     float[] distance = new float[2];
                                     Location.distanceBetween(Double.parseDouble(jsonObject.optString("Lat")), Double.parseDouble(jsonObject.optString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -586,7 +586,7 @@ public class ListedDoctorFragment extends Fragment {
                                 }
                             }
                         } else {
-                            Log.v("DrCall", "333");
+//                            Log.v("DrCall", "333");
 
                             // This not need TbBased DCR
 //                        if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {

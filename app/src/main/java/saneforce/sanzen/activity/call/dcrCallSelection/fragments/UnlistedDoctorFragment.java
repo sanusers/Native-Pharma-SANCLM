@@ -239,7 +239,7 @@ public class UnlistedDoctorFragment extends Fragment {
                         if (SharedPref.getGeotagNeedUnlst(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                             if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
                                 if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
-                                    Log.v("UNDRCALL", "--11-");
+//                                    Log.v("UNDRCALL", "--11-");
                                     float[] distance = new float[2];
                                     Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -248,7 +248,7 @@ public class UnlistedDoctorFragment extends Fragment {
 //                                }
                                     }
                                 } else {
-                                    Log.v("UNDRCALL", "--22-");
+//                                    Log.v("UNDRCALL", "--22-");
                                     float[] distance = new float[2];
                                     Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                     if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -263,7 +263,7 @@ public class UnlistedDoctorFragment extends Fragment {
 //                                    custListArrayList = SaveData(jsonObject, i, false);
 //                                }
 //                            } else {
-                            Log.v("UNDRCALL", "--44-");
+//                            Log.v("UNDRCALL", "--44-");
                             custListArrayList = SaveData(jsonObject, i, false);
 //                            }
                         }
@@ -299,7 +299,7 @@ public class UnlistedDoctorFragment extends Fragment {
                     if (SharedPref.getGeotagNeedUnlst(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                         if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
                             if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
-                                Log.v("UNDRCALL", "--11-");
+//                                Log.v("UNDRCALL", "--11-");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -308,7 +308,7 @@ public class UnlistedDoctorFragment extends Fragment {
 //                                }
                                 }
                             } else {
-                                Log.v("UNDRCALL", "--22-");
+//                                Log.v("UNDRCALL", "--22-");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -323,7 +323,7 @@ public class UnlistedDoctorFragment extends Fragment {
 //                            custListArrayList = SaveData(jsonObject, i);
 //                        }
 //                    } else {
-                        Log.v("UNDRCALL", "--44-");
+//                        Log.v("UNDRCALL", "--44-");
                         custListArrayList = SaveData(jsonObject, i, false);
 //                    }
                     }

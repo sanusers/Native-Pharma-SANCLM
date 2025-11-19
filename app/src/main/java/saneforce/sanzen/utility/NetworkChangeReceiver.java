@@ -13,7 +13,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     Context mContext;
     String isNetworkConnected = "2";
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;
@@ -26,16 +25,13 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             if (isNetworkConnected.equalsIgnoreCase("1")) {
                 isNetworkConnected = "3";
             }
-            Log.e("Receiver ", "connected to internet");//your code when internet connection come back
-
+            Log.e("Receiver ", "connected to internet" + isNetworkConnected);//your code when internet connection come back
         }
 
         if (isNetworkConnected.equalsIgnoreCase("3")) {
             OutboxFragment.NetworkConnectCallHomeDashBoard(status);
             isNetworkConnected = "0";
         }
-
         //HomeDashBoard.NetworkConnectCallHomeDashBoard(status);
-
     }
 }
