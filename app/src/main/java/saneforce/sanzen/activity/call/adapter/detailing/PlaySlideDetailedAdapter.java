@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -649,6 +650,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         RelativeLayout rl_share = dialogPopUp.findViewById(R.id.rl_share);
         RelativeLayout rl_paint = dialogPopUp.findViewById(R.id.rl_paint);
         RelativeLayout rl_stop = dialogPopUp.findViewById(R.id.rl_stop);
+        RelativeLayout rl_play_pause = dialogPopUp.findViewById(R.id.rl_play_pause);
+        TextView tv_play_pause = dialogPopUp.findViewById(R.id.tv_play_pause);
+        ImageView iv_play_pause = dialogPopUp.findViewById(R.id.iv_play_pause);
 
         boolean isAvailable = false;
         if (!slideScribble.isEmpty()) {
@@ -773,6 +777,21 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             }
         });
 
+        rl_play_pause.setOnClickListener(view -> {
+            String playPauseCap = tv_play_pause.getText().toString().trim();
+            boolean isPaused= false;
+            if (playPauseCap.equalsIgnoreCase(context.getString(R.string.pause))) {
+                tv_play_pause.setText(context.getString(R.string.play));
+                iv_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
+                isPaused = true;
+            } else {
+                tv_play_pause.setText(context.getString(R.string.pause));
+                iv_play_pause.setImageResource(R.drawable.baseline_pause_24);
+                isPaused = false;
+            }
+            handlePausePlayDetailing(isPaused);
+        });
+
         rl_stop.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -787,6 +806,28 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         window.setAttributes(wlp);
         dialogPopUp.show();
         act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    private void handlePausePlayDetailing(boolean isPaused) {
+        if (isPaused) {
+            removeTimer();
+            if (currentPage != -1 && !pageStartTime.isEmpty()) {
+                String now = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
+                String slideName = getSlideNameAt(currentPage);
+                ArrayList<String> list = new ArrayList<>();
+                if (timer.containsKey(slideName)) {
+                    list = timer.get(slideName);
+                }
+                list.add(pageStartTime + " $ " + now);
+                timer.put(slideName, list);
+                Log.d("SlideTiming", "Pause slide " + slideName + "started at " + pageStartTime + " ended after " + now);
+//            currentPage = -1;
+//            pageStartTime = now;
+            }
+        } else {
+            pageStartTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
+            resetTimer();
+        }
     }
 
     private void handleStopDetailing() {

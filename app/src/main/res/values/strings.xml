@@ -661,5 +661,6 @@
     <string name="join_dt"> Joining Date </string>
     <string name="con_internet"> Connected to Internet </string>
     <string name="option"> Options </string>
-
+    <string name="pause">Pause</string>
+    <string name="play">Play</string>
 </resources>

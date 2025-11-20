@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.previewPresentation;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.binding;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.headingData;
 import static saneforce.sanzen.activity.call.fragments.detailing.DetailedFragment.callDetailingLists;
 
@@ -270,8 +271,15 @@ public class PreviewActivity extends AppCompatActivity {
         });
 
         previewBinding.btnFinishDet.setOnClickListener(view -> {
+            previewBinding.rlThankYou.setVisibility(View.VISIBLE);
+            previewBinding.docName.setText("Thank\nYou\n" + CallActivityCustDetails.get(0).getName());
+            previewBinding.btnFinishDet.setVisibility(View.GONE);
 //            @Override
 //            public void onSafeClick(View view) {
+//            }
+        });
+
+        previewBinding.proceed.setOnClickListener( view -> {
             Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
             String totalDuration = "";
             for (int j = 0; j < arrayStore.size(); j++) {
@@ -333,7 +341,6 @@ public class PreviewActivity extends AppCompatActivity {
 //                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
-//            }
         });
     }
 

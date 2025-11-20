@@ -221,8 +221,6 @@ public class JWOthersFragment extends Fragment {
                     } catch (Exception e) {
                         Log.v("Testing", "issue" + e.getMessage());
                     }
-
-
                 }
             }
         } else {
@@ -231,7 +229,6 @@ public class JWOthersFragment extends Fragment {
             SharedPref.saveJCMap(requireContext(), new HashMap<>(), "");
             Log.v("Testing", "OLD");
         }
-
 
         jwOthersBinding.tvFeedback.setOnClickListener(new SafeClickListener() {
             @Override
@@ -260,13 +257,10 @@ public class JWOthersFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 if (callCaptureImageLists.size() < 2) {
-                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        requestMultiplePermissionsLauncher.launch(new String[]{
-                                Manifest.permission.CAMERA,});
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.CAMERA,});
                     } else {
                         captureFile();
-
                     }
                 } else {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_add_more_images));
@@ -485,9 +479,7 @@ public class JWOthersFragment extends Fragment {
 
     private void RequestCameraPermission() {
         ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 102);
-
     }
-
 
     private final ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -496,7 +488,6 @@ public class JWOthersFragment extends Fragment {
                     captureFile();
                 } else {
                     CommonUtilsMethods.RequestGPSPermission(requireActivity(), "Camera");
-
                 }
             });
 }

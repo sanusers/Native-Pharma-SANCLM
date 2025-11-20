@@ -81,8 +81,8 @@
         android:layout_height="@dimen/_22sdp"
         android:layout_marginHorizontal="@dimen/_5sdp"
         android:layout_marginVertical="@dimen/_3sdp"
-        android:visibility="gone"
         android:background="@drawable/outline_orange"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/rl_paint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -121,10 +121,47 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_1sdp"
         android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/rl_stop"
+        app:layout_constraintBottom_toTopOf="@id/rl_play_pause"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl_paint" />
+
+    <RelativeLayout
+        android:id="@+id/rl_play_pause"
+        android:layout_width="@dimen/_22sdp"
+        android:layout_height="@dimen/_22sdp"
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        android:layout_marginVertical="@dimen/_3sdp"
+        android:background="@drawable/outline_white"
+        app:layout_constraintBottom_toTopOf="@id/rl_stop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_dummy">
+
+        <TextView
+            android:id="@+id/tv_play_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="@string/pause"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_7ssp" />
+
+        <ImageView
+            android:id="@+id/iv_play_pause"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:src="@drawable/baseline_pause_24"
+            android:visibility="visible"
+            app:tint="@color/white" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_stop"
@@ -137,7 +174,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_dummy">
+        app:layout_constraintTop_toBottomOf="@id/rl_play_pause">
 
         <TextView
             android:layout_width="wrap_content"

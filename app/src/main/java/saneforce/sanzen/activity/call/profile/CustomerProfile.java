@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -245,12 +246,6 @@ public class CustomerProfile extends AppCompatActivity {
                 break;
         }
 
-        if (detailingNeed.equalsIgnoreCase("0")) {
-            btn_start.setVisibility(View.VISIBLE);
-        } else {
-            btn_start.setVisibility(View.GONE);
-        }
-
         String skipNeed;
         switch (CallActivityCustDetails.get(0).getType()) {
             case "1":
@@ -269,13 +264,23 @@ public class CustomerProfile extends AppCompatActivity {
                 skipNeed = "0";
                 break;
         }
+        Log.e("Slide", "onCreate: " +LocalDate.now().toString()+ " -> " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_12, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString().trim()));
+        if (!TimeUtils.GetConvertedDate(TimeUtils.FORMAT_12, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString().trim()).equalsIgnoreCase(LocalDate.now().toString())) {
+            skipNeed = "0";
+            detailingNeed = "1";
+        }
+
+        if (detailingNeed.equalsIgnoreCase("0")) {
+            btn_start.setVisibility(View.VISIBLE);
+        } else {
+            btn_start.setVisibility(View.GONE);
+        }
+
         if (skipNeed.equalsIgnoreCase("0")) {
             btn_skip.setVisibility(View.VISIBLE);
         } else {
             btn_skip.setVisibility(View.GONE);
         }
-
-
         img_back.setOnClickListener(view -> finish());
     }
 
