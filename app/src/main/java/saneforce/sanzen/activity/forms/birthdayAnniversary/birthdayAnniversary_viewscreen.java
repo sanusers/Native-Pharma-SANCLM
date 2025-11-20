@@ -41,8 +41,8 @@ public class birthdayAnniversary_viewscreen extends AppCompatActivity {
             }
         });
 
-        birthdaywishes_fragment birthdaywishesFragment = new birthdaywishes_fragment();
-        AnniversaryFragment anniversaryFragment = new AnniversaryFragment();
+//        birthdaywishes_fragment birthdaywishesFragment = new birthdaywishes_fragment();
+//        AnniversaryFragment anniversaryFragment = new AnniversaryFragment();
 
 
 
@@ -50,8 +50,8 @@ public class birthdayAnniversary_viewscreen extends AppCompatActivity {
         //create viewpager adapter
         //here we will create inner class for adapter
         formsviewpager  = new forms_viewpager(getSupportFragmentManager(), 0);        //add fragments and set the adapter
-        formsviewpager.addFragment(birthdaywishesFragment,"Birthday");
-        formsviewpager.addFragment(anniversaryFragment,"Anniversary");
+//        formsviewpager.addFragment(birthdaywishesFragment,"Birthday");
+//        formsviewpager.addFragment(anniversaryFragment,"Anniversary");
         viewPager.setAdapter(formsviewpager);
         tabLayout.setupWithViewPager(viewPager);
         //set the icons

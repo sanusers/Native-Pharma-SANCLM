@@ -70,9 +70,10 @@
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
+       <!-- <activity  /// this is the crt manifest
             android:name=".activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen"
-            android:exported="false" />
+            android:exported="false" />-->
+        <!--these are not-->
         <!--        <activity-->
         <!--            android:name=".activity.forms.birthdayAnniversary.birthdayAnniversay_viewscreen"-->
         <!--            android:exported="false" />-->

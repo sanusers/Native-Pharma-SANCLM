@@ -425,8 +425,8 @@ public class ReportsActivity extends AppCompatActivity {
     public void populateAdapter() {
         reportTitles.clear();
         reportTitles.add("Day Report");
-         reportTitles.add("Visit Monitor");
-         reportTitles.add("Missed Report");
+//         reportTitles.add("Visit Monitor");
+//         reportTitles.add("Missed Report");
         if (SharedPref.getDashboard(this).equals("0")) {
             reportTitles.add("Dash Board");
         }

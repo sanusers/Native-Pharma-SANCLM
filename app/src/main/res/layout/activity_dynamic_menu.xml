@@ -79,7 +79,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/toolbar"
             android:horizontalSpacing="10dp"
-            android:numColumns="2"
+            android:numColumns="4"
             android:padding="10dp"
             android:stretchMode="columnWidth"
             android:verticalSpacing="10dp" />
