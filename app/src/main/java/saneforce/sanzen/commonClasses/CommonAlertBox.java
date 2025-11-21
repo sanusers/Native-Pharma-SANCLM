@@ -24,7 +24,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen;
+//import saneforce.sanzen.activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
