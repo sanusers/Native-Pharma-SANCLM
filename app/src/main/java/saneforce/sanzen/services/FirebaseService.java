@@ -83,6 +83,7 @@ public class FirebaseService extends FirebaseMessagingService {
                         body = remoteMessage.getNotification().getBody();
                         time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
 //                    notificationId = random.nextInt(1000);
+                        Log.d("Firebase notification", "onMessageReceived: " + title + " -> " + body + " \n- " + imageUrl);
 
                         hqCode = SharedPref.getHqCode(this);
                         if (hqCode == null || hqCode.isEmpty()) {
@@ -120,7 +121,7 @@ public class FirebaseService extends FirebaseMessagingService {
                         body = remoteMessage.getData().get("message");
                         imageUrl = remoteMessage.getData().get("imageUrl");
                         time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
-                        Log.i("Notification", "onMessageReceived: data -> " + title + " -> " + body);
+                        Log.d("Firebase notification", "onMessageReceived: " + title + " -> " + body + " \n- " + imageUrl);
                         hqCode = SharedPref.getHqCode(this);
                         if (hqCode == null || hqCode.isEmpty()) {
                             hqCode = SharedPref.getSfCode(this);

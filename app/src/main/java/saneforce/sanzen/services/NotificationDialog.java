@@ -86,7 +86,7 @@ public class NotificationDialog {
 
             new Handler().postDelayed(NotificationDialog::dismissDialog, 2000);
 
-        } else if (data.type.matches("(?i)DR|CH|ST|UL|HOS|CIP|GIF|TM|WT|PR|MI|SUB|SE|HW")) {
+        } else if (data.type.matches("(?i)DR|CH|ST|UL|HOS|CIP|GIF|TM|WT|PR|MI|SUB|SE|HW|FSD|AMS")) {
             new SyncManager(data.context, data.hqCode, data.type, data.id).sync();
         } else {
             new Handler().postDelayed(NotificationDialog::dismissDialog, 3000);
