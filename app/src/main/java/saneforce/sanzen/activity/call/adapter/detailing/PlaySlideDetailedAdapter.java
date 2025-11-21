@@ -298,6 +298,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                 }
                             });
                             break;
+                        default:
+                            pdfView.setVisibility(View.GONE);
+                            videoView.setVisibility(View.GONE);
+                            webView.setVisibility(View.GONE);
+                            progressAnim.setVisibility(View.GONE);
+                            break;
                     }
                 }
             } catch (Exception e) {
