@@ -21,7 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -99,19 +102,22 @@ public class AnniversaryFragment extends Fragment {
             upcomingList.clear();
             belatedList.clear();
 
-            java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMM d", java.util.Locale.US);
-
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("MMM d", Locale.US);
             // ✅ Current day reference (normalized year = 2000)
-            java.util.Calendar today = java.util.Calendar.getInstance();
-            today.set(java.util.Calendar.YEAR, 2000);
+            // Current day (normalized)
+            Calendar today = Calendar.getInstance();
+            today.set(Calendar.YEAR, 2000);
+            normalize(today);
 
-            // ✅ ±3 day range
-            java.util.Calendar start = (java.util.Calendar) today.clone();
-            java.util.Calendar end = (java.util.Calendar) today.clone();
-            start.add(java.util.Calendar.DATE, -3);
-            end.add(java.util.Calendar.DATE, 3);
+            // ±3 day window
+            Calendar start = (Calendar) today.clone();
+            Calendar end = (Calendar) today.clone();
+            start.add(Calendar.DATE, -3);
+            end.add(Calendar.DATE, +3);
 
+            normalize(start);
+            normalize(end);
             for (int i = 0; i < doctorJsonArray.length(); i++) {
                 JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
                 String doctorName = doctorObj.optString("Name");
@@ -180,9 +186,11 @@ public class AnniversaryFragment extends Fragment {
             todayAdapter.notifyDataSetChanged();
             upcomingAdapter.notifyDataSetChanged();
             belatedAdapter.notifyDataSetChanged();
+            txtTodayNoData.setVisibility(todayList.isEmpty() ? View.VISIBLE : View.GONE);
+            txtUpcomingNoData.setVisibility(upcomingList.isEmpty() ? View.VISIBLE : View.GONE);
+            txtBelatedNoData.setVisibility(belatedList.isEmpty() ? View.VISIBLE : View.GONE);
 
-
-            if (todayList.isEmpty()) {
+        /*    if (todayList.isEmpty()) {
                 txtTodayNoData.setVisibility(View.VISIBLE);
             } else {
                 txtTodayNoData.setVisibility(View.GONE);
@@ -199,7 +207,7 @@ public class AnniversaryFragment extends Fragment {
             } else {
                 txtBelatedNoData.setVisibility(View.GONE);
             }
-
+*/
 
             // ✅ Visibility handling
             if (todayList.isEmpty() && upcomingList.isEmpty() && belatedList.isEmpty()) {
@@ -221,6 +229,13 @@ public class AnniversaryFragment extends Fragment {
             listUpcoming.setVisibility(View.GONE);
             listBelated.setVisibility(View.GONE);
         }
+    }
+
+    private void normalize(Calendar c) {
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
     }
 
     private void setListViewHeightBasedOnChildren(ListView listView) {
