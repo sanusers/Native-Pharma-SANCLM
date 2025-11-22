@@ -177,34 +177,39 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             holder.ivSync.setOnClickListener(new SafeClickListener() {
                 @Override
                 public void onSafeClick(View view) {
-                    if (UtilityClass.isNetworkAvailable(context)) {
-                        progressDialog = CommonUtilsMethods.createProgressDialog(context);
-//                CallOfflineData(groupModelClass, 0);
-                        processApisForDate(groupModelClass, 0, new ApiCallback() {
-                            @Override
-                            public void onSuccess() {
-                                Log.v("SendOutboxCall", "--finallyOut--");
-                                progressDialog.dismiss();
-                                if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
-                                    //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
-                                }
-                                CallDataRestClass.resetcallValues(context);
-                                RefreshAdapter();
-                                if (callSyncCount > 0) {
-                                    CallsFragment.syncCalls();
-                                    callSyncCount = 0;
-                                }
-                                OutboxFragment.SetupOutBoxAdapter(activity, context);
-                            }
-
-                            @Override
-                            public void onFailure() {
-                                stopSync();
-                                progressDialog.dismiss();
-                            }
-                        });
+                    int index = groupModelClasses.indexOf(groupModelClass);
+                    if (index != 0) {
+                        CommonUtilsMethods.showToastMessage(context, "Please Sync previous dates!");
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        if (UtilityClass.isNetworkAvailable(context)) {
+                            progressDialog = CommonUtilsMethods.createProgressDialog(context);
+//                CallOfflineData(groupModelClass, 0);
+                            processApisForDate(groupModelClass, 0, new ApiCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.v("SendOutboxCall", "--finallyOut--");
+                                    progressDialog.dismiss();
+                                    if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
+                                        //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+                                    }
+                                    CallDataRestClass.resetcallValues(context);
+                                    RefreshAdapter();
+                                    if (callSyncCount > 0) {
+                                        CallsFragment.syncCalls();
+                                        callSyncCount = 0;
+                                    }
+                                    OutboxFragment.SetupOutBoxAdapter(activity, context);
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    stopSync();
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        }
                     }
                 }
             });

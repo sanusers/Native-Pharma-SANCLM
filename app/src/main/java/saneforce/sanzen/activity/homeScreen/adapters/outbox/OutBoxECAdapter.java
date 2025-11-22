@@ -129,11 +129,11 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                 final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
                 popup.inflate(R.menu.ec_call_menu);
                 MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
-//            if(offlineDaySubmitDao.getDaySubmit(ecModelClasses.get(position).getDates()) != null) {
-                deleteMenu.setVisible(false);
-//            } else {
-//                deleteMenu.setVisible(true);
-//            }
+                if (ecModelClasses.get(position).getSync_status().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || ecModelClasses.get(position).getSync_status().equalsIgnoreCase(Constants.CALL_FAILED)) {
+                    deleteMenu.setVisible(false);
+                } else {
+                    deleteMenu.setVisible(true);
+                }
                 popup.setOnMenuItemClickListener(menuItem -> {
                     if (menuItem.getItemId() == R.id.menuSync) {
                         EcModelClass ecModelClass = ecModelClasses.get(position);
@@ -180,12 +180,13 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                                     if (listDates.get(i).getGroupName().equalsIgnoreCase(ecModelClasses.get(position).getDates())) {
                                         for (int j = 0; j < listDates.get(i).getChildItems().get(2).getOutBoxCallLists().size(); j++) {
                                             OutBoxCallList outBoxCallList = listDates.get(i).getChildItems().get(2).getOutBoxCallLists().get(j);
-                                            if (outBoxCallList.getCusCode().equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                            if (outBoxCallList.getCusCode().equalsIgnoreCase(ecModelClasses.get(position).getCusCode())) {
                                                 jsonObject = new JSONObject(outBoxCallList.getJsonData());
                                                 for (int m = 0; m < jsonArray.length(); m++) {
                                                     JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
                                                     if (jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
                                                         jsonArray.remove(i);
+                                                        outBoxCallList.setJsonData(String.valueOf(jsonObject));
                                                         break;
                                                     }
                                                 }
@@ -200,6 +201,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                                 outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
                                 outBoxHeaderAdapter.notifyDataSetChanged();
                             } catch (Exception ignored) {
+                                ignored.printStackTrace();
                             }
                             File fileDelete = new File(ecModelClasses.get(position).getFilePath());
                             if (fileDelete.exists()) {
@@ -300,7 +302,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         });
     }
 
-    private void CallImageApiS3(EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
+    private void CallImageApiS3(EcModelClass ecModelClass, String jsonValues, String filePath, String id) {
         Log.d("CallImageApi", "filePath received: " + filePath);
         try {
 
@@ -326,7 +328,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
 
 
 //                String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/" + fileToUpload.getName();
-                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                 TransferNetworkLossHandler.getInstance(context);
@@ -340,7 +342,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                         bucketName,
                         s3Key,
                         fileToUpload);
-                Log.d("uploadObserver", "CallSendAPIImage: "+uploadObserver);
+                Log.d("uploadObserver", "CallSendAPIImage: " + uploadObserver);
                 uploadObserver.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int idInt, TransferState state) {
@@ -360,7 +362,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        } else {
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
                             callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
@@ -385,7 +387,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                 });
 
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             Log.v("img_tag", e.toString());
             ecModelClass.setSynced(1);
             ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
@@ -399,17 +401,17 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         File imageFile = new File(ImageUrl);
         Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
         String fileName = new File(ImageUrl).getName();
-        new AWSBuckets(context,fileName,imageFile,"");
+        new AWSBuckets(context, fileName, imageFile, "");
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void DeleteCacheFile(String filePath, String id) {
         try {
             File fileDelete = new File(filePath);
-            if(fileDelete.exists()) {
-                if(fileDelete.delete()) {
+            if (fileDelete.exists()) {
+                if (fileDelete.delete()) {
 //                System.out.println("file Deleted :" + filePath);
-                }else {
+                } else {
 //                System.out.println("file not Deleted :" + filePath);
                 }
             }
