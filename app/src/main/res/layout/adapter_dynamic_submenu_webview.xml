@@ -8,8 +8,9 @@
     app:cardElevation="@dimen/_3sdp">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/_15sdp">
 
         <ImageView
             android:id="@+id/iv_icon"
@@ -34,9 +35,10 @@
 
         <ImageView
             android:id="@+id/rightarrow_camp"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_10sdp"
             android:background="@drawable/arrow_right_"
+            android:backgroundTint="@color/light_purple"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"/>
