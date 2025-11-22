@@ -475,7 +475,9 @@ public class MyResource_Activity extends AppCompatActivity {
             listed_data.add(new Resourcemodel_class("Profile", "", "18"));
 
                 Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count + "---" + DocMas_count);
-            listed_data.add(new Resourcemodel_class("Birthday / Anniversary", "", "19"));
+             if(SharedPref.getSfType(MyResource_Activity.this).equalsIgnoreCase("1")) {
+                 listed_data.add(new Resourcemodel_class("Birthday / Anniversary", "", "19"));
+             }
                 resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1, new MyResourceInterface() {
                     @Override
                     public void onclickItem(ArrayList<Resourcemodel_class> resourcelis, String split_val, String Hqcode) {
