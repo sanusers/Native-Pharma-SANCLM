@@ -345,6 +345,7 @@ public class LoginActivity extends AppCompatActivity {
         roomDB.callTableDao().deleteAllData();
         roomDB.callOfflineDataDao().deleteAllData();
         roomDB.callOfflineECDataDao().deleteAllData();
+        roomDB.callOfflineSignDataDao().deleteAllData();
         roomDB.callOfflineWorkTypeDataDao().deleteAllData();
         roomDB.offlineCheckInOutDataDao().deleteAllData();
         roomDB.dcrDocDataDao().deleteAllData();

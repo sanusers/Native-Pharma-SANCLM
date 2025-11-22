@@ -122,17 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
-        binding.languageBtn.setOnClickListener(view -> {
-            Log.e("SettingsActivity", "Language button clicked!");
 
-            if (binding.languageListView.getVisibility() == View.VISIBLE) {
-//                binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.up_arrow_light_grey));
-                binding.languageListView.setVisibility(View.GONE);
-            } else {
-//                binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.down_arrow_light_grey));
-                binding.languageListView.setVisibility(View.VISIBLE);
-            }
-        });
 
     }
 
