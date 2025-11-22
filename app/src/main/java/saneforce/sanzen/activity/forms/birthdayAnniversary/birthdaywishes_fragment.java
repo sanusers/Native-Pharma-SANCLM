@@ -465,16 +465,16 @@ public class birthdaywishes_fragment extends Fragment {
             return;
         }
 
-        // ✅ Calculate height normally if items are present
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(
-                    View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.UNSPECIFIED
-            );
-            totalHeight += listItem.getMeasuredHeight() - requireContext().getResources().getDimension(R.dimen._10sdp);
-        }
+    // ✅ Calculate height normally if items are present
+    int totalHeight = 0;
+    for (int i = 0; i < listAdapter.getCount(); i++) {
+        View listItem = listAdapter.getView(i, null, listView);
+        listItem.measure(
+                View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.UNSPECIFIED
+        );
+        totalHeight += listItem.getMeasuredHeight()-requireContext().getResources().getDimension(R.dimen._12sdp);
+    }
 
         //int dividerTotal = listView.getDividerHeight() * Math.max(0, listAdapter.getCount() - 1);
 

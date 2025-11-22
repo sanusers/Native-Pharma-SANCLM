@@ -194,6 +194,9 @@ public class CommonAlertBox {
         tvTitle.setText("Today's Wishes !!!");
 
         LinearLayout contentRow = alertLayout.findViewById(R.id.contentRow);
+        LinearLayout layoutBirthday = alertLayout.findViewById(R.id.layoutBirthday);
+        LinearLayout layoutAnniversary = alertLayout.findViewById(R.id.layoutAnniversary);
+
 
         // Birthday section
         TextView tvBirthday = alertLayout.findViewById(R.id.imgwishes_birthday);
@@ -243,18 +246,71 @@ public class CommonAlertBox {
                 dividerView.setVisibility(View.GONE);
             }
         }
-
-        // 🔹 If only one section — center it vertically
+// 🔹 Center alignment when only one section exists
         if (hasBirthday && !hasAnniversary) {
-            contentRow.setOrientation(LinearLayout.VERTICAL);
-            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
-        } else if (!hasBirthday && hasAnniversary) {
-            contentRow.setOrientation(LinearLayout.VERTICAL);
-            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
-        } else {
-            contentRow.setOrientation(LinearLayout.HORIZONTAL);
+
+            layoutBirthday.setVisibility(View.VISIBLE);
+            layoutAnniversary.setVisibility(View.GONE);
+
+            // Parent row
+            contentRow.setGravity(Gravity.CENTER);
+
+            // Remove weights → else center won't work
+            LinearLayout.LayoutParams lp =
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+
+            layoutBirthday.setLayoutParams(lp);
+        }
+        else if (!hasBirthday && hasAnniversary) {
+
+            layoutAnniversary.setVisibility(View.VISIBLE);
+            layoutBirthday.setVisibility(View.GONE);
+
+            contentRow.setGravity(Gravity.CENTER);
+
+            LinearLayout.LayoutParams lp =
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+
+            layoutAnniversary.setLayoutParams(lp);
+        }
+        else {
+
+            layoutBirthday.setVisibility(View.VISIBLE);
+            layoutAnniversary.setVisibility(View.VISIBLE);
+
+            // Restore 50–50 width
+            LinearLayout.LayoutParams lp =
+                    new LinearLayout.LayoutParams(
+                            0,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            1
+                    );
+
+            layoutBirthday.setLayoutParams(lp);
+            layoutAnniversary.setLayoutParams(lp);
+
             contentRow.setGravity(Gravity.CENTER_VERTICAL);
         }
+
+
+
+        // 🔹 If only one section — center it vertically
+//        if (hasBirthday && !hasAnniversary) {
+//            contentRow.setOrientation(LinearLayout.VERTICAL);
+//            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
+//        } else if (!hasBirthday && hasAnniversary) {
+//            contentRow.setOrientation(LinearLayout.VERTICAL);
+//            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
+//        } else {
+//            contentRow.setOrientation(LinearLayout.HORIZONTAL);
+//            contentRow.setGravity(Gravity.CENTER_VERTICAL);
+//        }
 
         alert.setView(alertLayout);
         AlertDialog dialog = alert.create();

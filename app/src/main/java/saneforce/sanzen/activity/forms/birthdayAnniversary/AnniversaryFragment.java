@@ -251,7 +251,7 @@ public class AnniversaryFragment extends Fragment {
                     View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.UNSPECIFIED
             );
-            totalHeight += listItem.getMeasuredHeight()-requireContext().getResources().getDimension(R.dimen._10sdp);
+            totalHeight += listItem.getMeasuredHeight()-requireContext().getResources().getDimension(R.dimen._12sdp);
         }
 
        // int dividerTotal = listView.getDividerHeight() * Math.max(0, listAdapter.getCount() - 1);
