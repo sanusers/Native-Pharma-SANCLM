@@ -205,7 +205,7 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             jsonGeoTag.put("status", Status);
             jsonGeoTag.put("sfcode", SharedPref.getSfCode(context));
             jsonGeoTag.put("division_code",SharedPref.getDivisionCode(context));
-            jsonGeoTag.put("Rsf", hqCode);
+            jsonGeoTag.put("Rsf", /*hqCode*/geoTaggingModelLists.get(Position).getName());
 
             Log.v("json_getGeoTag", jsonGeoTag.toString());
         } catch (Exception ignored) {

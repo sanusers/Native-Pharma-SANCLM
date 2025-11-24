@@ -146,7 +146,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("RejRem", reason);
             jsonLeave.put("sfcode", SharedPref.getSfCode(context));
             jsonLeave.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
-            jsonLeave.put("Rsf", SharedPref.getHqCode(context));
+            jsonLeave.put("Rsf", /*SharedPref.getHqCode(context)*/leaveModelLists.get(Position).getSf_code());
             Log.v("reject_leave", jsonLeave.toString());
         } catch (Exception ignored) {
 
@@ -199,7 +199,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("RejRem", "");
             jsonLeave.put("sfcode", SharedPref.getSfCode(context));
             jsonLeave.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
-            jsonLeave.put("Rsf", SharedPref.getHqCode(context));
+            jsonLeave.put("Rsf", /*SharedPref.getHqCode(context)*/leaveModelLists.get(Position).getSf_code());
         } catch (Exception ignored) {
 
         }

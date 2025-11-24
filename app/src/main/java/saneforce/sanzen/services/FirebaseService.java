@@ -94,6 +94,7 @@ public class FirebaseService extends FirebaseMessagingService {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
                                 body = body.replace(" Kindly Logout the App &", "");
+                                body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
                                 if (isAppInForeground()) {
                                     id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
@@ -117,6 +118,7 @@ public class FirebaseService extends FirebaseMessagingService {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
                                 body = body.replace(" Kindly Logout the App &", "");
+                                body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
                                 notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
                             } catch (Exception e) {
@@ -142,6 +144,7 @@ public class FirebaseService extends FirebaseMessagingService {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
                                 body = body.replace(" Kindly Logout the App &", "");
+                                body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
                                 if (isAppInForeground()) {
                                     id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
@@ -165,6 +168,7 @@ public class FirebaseService extends FirebaseMessagingService {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
                                 body = body.replace(" Kindly Logout the App &", "");
+                                body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
                                 notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
                             } catch (Exception e) {

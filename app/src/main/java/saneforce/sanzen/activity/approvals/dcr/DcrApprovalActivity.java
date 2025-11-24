@@ -477,9 +477,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonReject.put("tableName", "dcrreject");
             jsonReject.put("date", SelectedActivityDate);
             jsonReject.put("reason", toString);
-            jsonReject.put("sfcode", SelectedSfCode);
+            jsonReject.put("sfcode", SharedPref.getSfCode(this));
             jsonReject.put("division_code", SharedPref.getDivisionCode(this));
-            jsonReject.put("Rsf", SharedPref.getHqCode(this));
+            jsonReject.put("Rsf", /*SharedPref.getHqCode(this)*/SelectedSfCode);
             Log.v("json_send_approval", jsonReject.toString());
         } catch (Exception ignored) {
 
@@ -542,9 +542,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonAccept = CommonUtilsMethods.CommonObjectParameter(DcrApprovalActivity.this);
             jsonAccept.put("tableName", "dcrapproval");
             jsonAccept.put("date", SelectedActivityDate);
-            jsonAccept.put("sfcode", SelectedSfCode);
+            jsonAccept.put("sfcode", SharedPref.getSfCode(this));
             jsonAccept.put("division_code", SharedPref.getDivisionCode(this));
-            jsonAccept.put("Rsf", SharedPref.getHqCode(this));
+            jsonAccept.put("Rsf", /*SharedPref.getHqCode(this)*/SelectedSfCode);
             Log.v("json_send_approval", jsonAccept.toString());
         } catch (Exception ignored) {
 
