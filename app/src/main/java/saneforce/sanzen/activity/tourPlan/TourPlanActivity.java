@@ -5346,7 +5346,7 @@ public class TourPlanActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM|WT|FSD|AMS")) {
+            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|WT|OTR|FSD|AMS")) {
                 if (binding.tpDrawer.isOpen()) {
                     binding.tpDrawer.closeDrawer(GravityCompat.END);
                 }

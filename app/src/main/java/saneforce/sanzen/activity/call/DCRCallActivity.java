@@ -3836,7 +3836,7 @@ public class DCRCallActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|PR|GIF|TM|FSD|AMS")) {
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|PR|GIF|TM|OTR|FSD|AMS")) {
                 startActivity(new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class));
                 finish();
             }

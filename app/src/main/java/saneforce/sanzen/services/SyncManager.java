@@ -439,6 +439,11 @@ public class SyncManager {
         if(type.equalsIgnoreCase("SE")) {
             masterSyncItemModels.add(setupModelArray.get(0));
         }
+        if(type.equalsIgnoreCase("OTR")) {
+            masterSyncItemModels.add(productModelArray.get(2));
+            masterSyncItemModels.add(workTypeModelArray.get(1));
+            masterSyncItemModels.add(workTypeModelArray.get(2));
+        }
         if(type.equalsIgnoreCase("FSD")) {
             masterSyncItemModels.addAll(doctorModelArray);
             masterSyncItemModels.add(unlistedDrModelArray.get(0));

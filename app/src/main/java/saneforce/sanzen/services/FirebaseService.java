@@ -92,9 +92,9 @@ public class FirebaseService extends FirebaseMessagingService {
                         }
                         if (body.contains("$")) {
                             try {
-                                body = body.replace("Kindly Logout the App.", "");
                                 body = body.replace(" Kindly Logout & Login the App.", "");
                                 body = body.replace(" Kindly Logout the App &", "");
+                                body = body.replace("Kindly Logout the App.", "");
                                 if (isAppInForeground()) {
                                     id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
                                 } else {
@@ -108,6 +108,7 @@ public class FirebaseService extends FirebaseMessagingService {
                                 }
                                 body = body.substring(0, body.lastIndexOf("$"));
                                 body = body.replace(" Kindly Sync it.", "");
+                                body = body.replace(" Kindly Sync these in Master Sync Screen.", "");
                                 showNotificationDialog();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -136,9 +137,9 @@ public class FirebaseService extends FirebaseMessagingService {
                         }
                         if (body.contains("$")) {
                             try {
-                                body = body.replace("Kindly Logout the App.", "");
                                 body = body.replace(" Kindly Logout & Login the App.", "");
                                 body = body.replace(" Kindly Logout the App &", "");
+                                body = body.replace("Kindly Logout the App.", "");
                                 if (isAppInForeground()) {
                                     id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
                                 } else {
@@ -152,6 +153,7 @@ public class FirebaseService extends FirebaseMessagingService {
                                 }
                                 body = body.substring(0, body.lastIndexOf("$"));
                                 body = body.replace(" Kindly Sync it.", "");
+                                body = body.replace(" Kindly Sync these in Master Sync Screen.", "");
                                 showNotificationDialog();
                             } catch (Exception e) {
                                 e.printStackTrace();
