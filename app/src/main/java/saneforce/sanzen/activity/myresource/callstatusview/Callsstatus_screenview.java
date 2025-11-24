@@ -14,12 +14,12 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
-import saneforce.sanzen.activity.forms.weekoff.forms_viewpager;
+import saneforce.sanzen.activity.forms.weekoff.FormsViewpager;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityCallsstatusScreenviewBinding;
 
 public class Callsstatus_screenview extends AppCompatActivity {
-    forms_viewpager formsviewpager;
+    FormsViewpager formsviewpager;
     public static String  currentmon="",beforefistmon="",beforesecmon="";
     ActivityCallsstatusScreenviewBinding Callsstatusscreenview;
 
@@ -65,7 +65,7 @@ public class Callsstatus_screenview extends AppCompatActivity {
         Callsstatusscreenview.tabLayout.setupWithViewPager(Callsstatusscreenview.viewPager);
         //create viewpager adapter
         //here we will create inner class for adapter
-        formsviewpager = new forms_viewpager(getSupportFragmentManager(), 0); //add fragments and set the adapter
+        formsviewpager = new FormsViewpager(getSupportFragmentManager(), 0); //add fragments and set the adapter
 //        formsviewpager.addFragment(calls_statusfram,"February");
 
         formsviewpager.addFragment(calls_statusfram,beforeTwo_MonthsName);

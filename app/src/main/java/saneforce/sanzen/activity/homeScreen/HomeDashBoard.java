@@ -633,6 +633,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             AppIdentify();
             Log.d("ACTIVITY_STATUS", "OnResume");
             commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
+            requestNotificationPermission();
             if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
                 binding.myDrawerLayout.closeDrawer(GravityCompat.START);
@@ -872,7 +873,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 RequestLocationPermission();
             }
         }
-        requestNotificationPermission();
+
         notificationViewModel.getUnreadNotificationCount().observe(this, count -> {
             if (count != null && count > 0) {
                 binding.notificationRedDot.setVisibility(View.VISIBLE);
@@ -901,6 +902,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                 type = body.substring(body.lastIndexOf("$") + 1);
                             }
                             body = body.substring(0, body.lastIndexOf("$"));
+                            body = body.replace(" Kindly Sync it.", "");
+                            body = body.replace("Kindly Logout the App.", "");
+                            body = body.replace(" Kindly Logout & Login the App.", "");
+                            body = body.replace(" Kindly Logout the App &", "");
                             showNotificationDialog(title, body, type, hqCode, id);
                         } catch (Exception e) {
                             e.printStackTrace();

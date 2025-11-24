@@ -1008,7 +1008,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM")) {
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM|FSD|AMS")) {
                 Intent intent1 = new Intent(CustomerSelectionActivity.this, CustomerSelectionActivity.class);
                 intent1.putExtras(bundle);
                 startActivity(intent1);

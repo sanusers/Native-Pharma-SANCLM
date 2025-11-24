@@ -415,7 +415,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|PR|GIF|TM")) {
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|PR|GIF|TM|FSD|AMS")) {
                 startActivity(new Intent(DcrCallTabLayoutActivity.this, DcrCallTabLayoutActivity.class));
                 finish();
             }

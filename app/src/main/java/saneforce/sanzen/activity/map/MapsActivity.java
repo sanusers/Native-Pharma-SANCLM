@@ -2740,7 +2740,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM")) {
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM|FSD|AMS")) {
                 Intent intent1 = new Intent(MapsActivity.this, MapsActivity.class);
                 if(bundle != null) {
                     intent1.putExtras(bundle);

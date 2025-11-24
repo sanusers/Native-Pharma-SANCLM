@@ -14,9 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,14 +25,14 @@ import java.util.Date;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.CommonAlertBox;
+import saneforce.sanzen.commonClasses.AutoHeightListViewHelper;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.storage.SharedPref;
 
-public class birthdaywishes_fragment extends Fragment {
+public class BirthdayWishesFragment extends Fragment {
 
     //private ListView birthList;
     private ListView listToday;
@@ -45,9 +42,9 @@ public class birthdaywishes_fragment extends Fragment {
     TextView txtTodayNoData, txtUpcomingNoData, txtBelatedNoData;
 
     //private ArrayList<birthdayModel> birthdayList = new ArrayList<>();
-    private ArrayList<birthdayModel> todayList = new ArrayList<>();
-    private ArrayList<birthdayModel> upcomingList = new ArrayList<>();
-    private ArrayList<birthdayModel> belatedList = new ArrayList<>();
+    private ArrayList<BirthdayModel> todayList = new ArrayList<>();
+    private ArrayList<BirthdayModel> upcomingList = new ArrayList<>();
+    private ArrayList<BirthdayModel> belatedList = new ArrayList<>();
 
     //private birthdayAdapter birthdayAdapter;
     CommonUtilsMethods commonUtilsMethods;
@@ -83,9 +80,6 @@ public class birthdaywishes_fragment extends Fragment {
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         loadBirthdayData();
-        setListViewHeightBasedOnChildren(listToday);
-        setListViewHeightBasedOnChildren(listUpcoming);
-        setListViewHeightBasedOnChildren(listBelated);
         return view;
     }
 
@@ -365,7 +359,7 @@ public class birthdaywishes_fragment extends Fragment {
 
                     String displayDate = outputFormat.format(parsedDate);
 
-                    birthdayModel model = new birthdayModel(
+                    BirthdayModel model = new BirthdayModel(
                             doctorName, displayDate, Code, territory,
                             qualification, category, speciality, className
                     );
@@ -396,13 +390,20 @@ public class birthdaywishes_fragment extends Fragment {
                     " | Upcoming: " + upcomingList.size() +
                     " | Belated: " + belatedList.size());
 
-            birthdayAdapter todayAdapter = new birthdayAdapter(todayList, getActivity());
-            birthdayAdapter upcomingAdapter = new birthdayAdapter(upcomingList, getActivity());
-            birthdayAdapter belatedAdapter = new birthdayAdapter(belatedList, getActivity());
+            BirthdayAdapter todayAdapter = new BirthdayAdapter(todayList, getActivity());
+            BirthdayAdapter upcomingAdapter = new BirthdayAdapter(upcomingList, getActivity());
+            BirthdayAdapter belatedAdapter = new BirthdayAdapter(belatedList, getActivity());
 
             listToday.setAdapter(todayAdapter);
             listUpcoming.setAdapter(upcomingAdapter);
             listBelated.setAdapter(belatedAdapter);
+
+            AutoHeightListViewHelper.setListViewHeight(listToday);
+            AutoHeightListViewHelper.setListViewHeight(listUpcoming);
+            AutoHeightListViewHelper.setListViewHeight(listBelated);
+//            setListViewHeightBasedOnChildren(listToday);
+//            setListViewHeightBasedOnChildren(listUpcoming);
+//            setListViewHeightBasedOnChildren(listBelated);
 
             todayAdapter.notifyDataSetChanged();
             upcomingAdapter.notifyDataSetChanged();
@@ -433,7 +434,6 @@ public class birthdaywishes_fragment extends Fragment {
         }
     }
 
-
     private void normalize(Calendar c) {
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
@@ -441,53 +441,36 @@ public class birthdaywishes_fragment extends Fragment {
         c.set(Calendar.MILLISECOND, 0);
     }
 
-
-    // Added Lines
     private void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) return;
+        ListAdapter adapter = listView.getAdapter();
+        if (adapter == null) return;
 
-        // ✅ If list has no items, make height minimal (remove big blank space)
-        if (listAdapter.getCount() == 0) {
+        if (adapter.getCount() == 0) {
+            // collapse the listView
             ViewGroup.LayoutParams params = listView.getLayoutParams();
-            params.height = 1; // minimum height
+            params.height = 0;
             listView.setLayoutParams(params);
-
-            // also remove any margins
-            if (params instanceof ViewGroup.MarginLayoutParams) {
-                ((ViewGroup.MarginLayoutParams) params).topMargin = 0;
-                ((ViewGroup.MarginLayoutParams) params).bottomMargin = 0;
-            }
-
-            listView.requestLayout();
             return;
         }
 
-    // ✅ Calculate height normally if items are present
-    int totalHeight = 0;
-    for (int i = 0; i < listAdapter.getCount(); i++) {
-        View listItem = listAdapter.getView(i, null, listView);
-        listItem.measure(
-                View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.UNSPECIFIED
-        );
-        totalHeight += listItem.getMeasuredHeight()-requireContext().getResources().getDimension(R.dimen._12sdp);
-    }
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, listView);
 
-        //int dividerTotal = listView.getDividerHeight() * Math.max(0, listAdapter.getCount() - 1);
+            listItem.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            );
 
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = Math.max(0, totalHeight);
-        listView.setLayoutParams(params);
-
-        // ✅ Remove extra top/bottom space between sections
-        if (params instanceof ViewGroup.MarginLayoutParams) {
-            ((ViewGroup.MarginLayoutParams) params).topMargin = 0;
-            ((ViewGroup.MarginLayoutParams) params).bottomMargin = 0;
+            totalHeight += listItem.getMeasuredHeight();
         }
 
-        listView.setPadding(0, 0, 0, 0);
-        listView.setClipToPadding(false);
+        int dividerHeight = listView.getDividerHeight() * (adapter.getCount() - 1);
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + dividerHeight;
+        listView.setLayoutParams(params);
         listView.requestLayout();
     }
+
 }

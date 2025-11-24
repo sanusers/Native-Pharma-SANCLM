@@ -1,6 +1,5 @@
 package saneforce.sanzen.commonClasses;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -24,8 +23,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;

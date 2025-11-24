@@ -27,7 +27,7 @@ public class WeekOffViewScreen extends AppCompatActivity {
     ImageView back_btn;
     TabLayout tabLayout;
     ViewPager viewPager;
-    forms_viewpager formsviewpager;
+    FormsViewpager formsviewpager;
     int tab_pos = 0;
 
     @SuppressLint("MissingInflatedId")
@@ -48,12 +48,12 @@ public class WeekOffViewScreen extends AppCompatActivity {
         });
 
         Holiday_fragment holidayfragment = new Holiday_fragment();
-        weekoff_fragment weekofffragment = new weekoff_fragment();
+        WeekoffFragment weekofffragment = new WeekoffFragment();
 
         tabLayout.setupWithViewPager(viewPager);
         //create viewpager adapter
         //here we will create inner class for adapter
-        formsviewpager  = new forms_viewpager(getSupportFragmentManager(), 0);        //add fragments and set the adapter
+        formsviewpager  = new FormsViewpager(getSupportFragmentManager(), 0);        //add fragments and set the adapter
         formsviewpager.addFragment(holidayfragment, getString(R.string.holiday));
         formsviewpager.addFragment(weekofffragment, getString(R.string.weekly_off));
         viewPager.setAdapter(formsviewpager);        //set the icons

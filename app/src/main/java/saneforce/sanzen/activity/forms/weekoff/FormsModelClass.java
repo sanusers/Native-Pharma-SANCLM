@@ -1,13 +1,13 @@
 package saneforce.sanzen.activity.forms.weekoff;
 
-public class fromsmodelclass {
+public class FormsModelClass {
 
     String valus,monthname,date,holidayname,weekname,holiday_date,Allclr,dub_coltcode,backgrdclr,pos;
     int image;
 
 
 
-    public fromsmodelclass(String monthname, String date, String holidayname, String weekname, String holiday_date, String Allclr, String dub_coltcode,String backgrdclr) {
+    public FormsModelClass(String monthname, String date, String holidayname, String weekname, String holiday_date, String Allclr, String dub_coltcode, String backgrdclr) {
         this.monthname = monthname;
         this.date = date;
         this.holidayname = holidayname;
@@ -67,7 +67,7 @@ public class fromsmodelclass {
         this.holiday_date = holiday_date;
     }
 
-    public fromsmodelclass(String valus,  String pos) {
+    public FormsModelClass(String valus, String pos) {
         this.valus = valus;
 
         this.pos = pos;

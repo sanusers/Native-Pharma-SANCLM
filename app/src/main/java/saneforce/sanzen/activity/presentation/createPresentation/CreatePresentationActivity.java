@@ -450,7 +450,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|PR")) {
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|PR|FSD|AMS")) {
                 startActivity(new Intent(CreatePresentationActivity.this, CreatePresentationActivity.class));
                 finishAffinity();
             }

@@ -1,6 +1,7 @@
 package saneforce.sanzen.services;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -15,8 +16,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.List;
 import java.util.Random;
 
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.application.AppActivityTracker;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
@@ -73,7 +76,6 @@ public class FirebaseService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 //        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
-
         if(SharedPref.getSettingState(getApplicationContext())) {
             if(SharedPref.getLoginState(getApplicationContext())) {
                 if(remoteMessage.getNotification() != null) {
@@ -83,15 +85,21 @@ public class FirebaseService extends FirebaseMessagingService {
                         body = remoteMessage.getNotification().getBody();
                         time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
 //                    notificationId = random.nextInt(1000);
-                        Log.d("Firebase notification", "onMessageReceived: " + title + " -> " + body + " \n- " + imageUrl);
-
+                        Log.d("Firebase notification 1", "onMessageReceived: " + title + " -> " + body + " - img url - " + imageUrl);
                         hqCode = SharedPref.getHqCode(this);
                         if (hqCode == null || hqCode.isEmpty()) {
                             hqCode = SharedPref.getSfCode(this);
                         }
                         if (body.contains("$")) {
                             try {
-                                id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1));
+                                body = body.replace("Kindly Logout the App.", "");
+                                body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(" Kindly Logout the App &", "");
+                                if (isAppInForeground()) {
+                                    id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
+                                } else {
+                                    id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 0));
+                                }
                                 if (body.contains("-MR")) {
                                     type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
                                     hqCode = body.substring(body.lastIndexOf("-MR") + 1);
@@ -99,6 +107,7 @@ public class FirebaseService extends FirebaseMessagingService {
                                     type = body.substring(body.lastIndexOf("$") + 1);
                                 }
                                 body = body.substring(0, body.lastIndexOf("$"));
+                                body = body.replace(" Kindly Sync it.", "");
                                 showNotificationDialog();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -110,7 +119,6 @@ public class FirebaseService extends FirebaseMessagingService {
                                 e.printStackTrace();
                             }
                         }
-
                         createNotification();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -121,16 +129,21 @@ public class FirebaseService extends FirebaseMessagingService {
                         body = remoteMessage.getData().get("message");
                         imageUrl = remoteMessage.getData().get("imageUrl");
                         time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
-                        Log.d("Firebase notification", "onMessageReceived: " + title + " -> " + body + " \n- " + imageUrl);
+                        Log.d("Firebase notification 2", "onMessageReceived: " + title + " -> " + body + " - img url - " + imageUrl);
                         hqCode = SharedPref.getHqCode(this);
                         if (hqCode == null || hqCode.isEmpty()) {
                             hqCode = SharedPref.getSfCode(this);
                         }
                         if (body.contains("$")) {
                             try {
-                                Log.i("Notification", "onMessageReceived: onSave -> " + title + " -> " + body);
-                                id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1));
-                                Log.i("Notification", "onMessageReceived: postSave -> " + title + " -> " + body + " -> " + id);
+                                body = body.replace("Kindly Logout the App.", "");
+                                body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(" Kindly Logout the App &", "");
+                                if (isAppInForeground()) {
+                                    id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
+                                } else {
+                                    id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 0));
+                                }
                                 if (body.contains("-MR")) {
                                     type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
                                     hqCode = body.substring(body.lastIndexOf("-MR") + 1);
@@ -138,6 +151,7 @@ public class FirebaseService extends FirebaseMessagingService {
                                     type = body.substring(body.lastIndexOf("$") + 1);
                                 }
                                 body = body.substring(0, body.lastIndexOf("$"));
+                                body = body.replace(" Kindly Sync it.", "");
                                 showNotificationDialog();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -149,7 +163,6 @@ public class FirebaseService extends FirebaseMessagingService {
                                 e.printStackTrace();
                             }
                         }
-
                         createNotification();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -160,11 +173,16 @@ public class FirebaseService extends FirebaseMessagingService {
     }
 
     private void createNotification() {
-        Intent intent = new Intent(this, NotificationClickReceiver.class);
-        intent.setAction("saneforce.sanzen.NOTIFICATION_CLICK");
-//        Intent intent = new Intent(this, HomeDashBoard.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent;
+        if (isAppInForeground()) {
+            Intent intent = new Intent(this, NotificationClickReceiver.class);
+            intent.setAction("saneforce.sanzen.NOTIFICATION_CLICK");
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            Intent intent = new Intent(this, HomeDashBoard.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         NotificationClass notificationClass = new NotificationClass(this, title, body, imageUrl, time, pendingIntent);
         notificationClass.createNotification();
     }
@@ -179,7 +197,20 @@ public class FirebaseService extends FirebaseMessagingService {
                 });
             }
         });
+    }
 
+    private boolean isAppInForeground() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> processes = activityManager.getRunningAppProcesses();
+
+        if (processes == null) return false;
+
+        for (ActivityManager.RunningAppProcessInfo processInfo : processes) {
+            if (processInfo.processName.equals(getPackageName())) {
+                return processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+            }
+        }
+        return false;
     }
 
 }

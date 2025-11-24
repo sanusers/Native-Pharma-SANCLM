@@ -19,16 +19,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
-public class weekoff_fragment extends Fragment {
+public class WeekoffFragment extends Fragment {
     RecyclerView weekofflist;
-    ArrayList<fromsmodelclass> listvalue = new ArrayList<>();
-    weekoff_adapter weekoffadapter;
+    ArrayList<FormsModelClass> listvalue = new ArrayList<>();
+    WeekoffAdapter weekoffadapter;
     CommonUtilsMethods commonUtilsMethods;
     String[] backcolr={"#EAFAF1","#E8F5FC","#FCE8EC","#FCF8E8","#FCF6E8","#E8F9FC","#FCEDFB","#FAFAED","#EEE3F7","#FEF8F8","#F2ECF9","#F5F9E9","#FBFBE7"};
     private RoomDB roomDB;
@@ -63,16 +62,16 @@ public class weekoff_fragment extends Fragment {
                 if(weekLyOffList.length > 0) {
                     for (String weekOffData: weekLyOffList) {
                         if(!weekOffData.isEmpty()) {
-                            fromsmodelclass list = new fromsmodelclass(weekOffData,colr);
+                            FormsModelClass list = new FormsModelClass(weekOffData, colr);
                             listvalue.add(list);
                         }
                     }
                 } else {
-                    fromsmodelclass list = new fromsmodelclass(weekoff, colr);
+                    FormsModelClass list = new FormsModelClass(weekoff, colr);
                     listvalue.add(list);
                 }
 
-                weekoffadapter = new weekoff_adapter(listvalue, getActivity());
+                weekoffadapter = new WeekoffAdapter(listvalue, getActivity());
                 weekofflist.setAdapter(weekoffadapter);
                 weekofflist.setLayoutManager(new LinearLayoutManager(getActivity()));
                 weekoffadapter.notifyDataSetChanged();

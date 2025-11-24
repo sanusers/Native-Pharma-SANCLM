@@ -71,7 +71,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen"
+            android:name=".activity.forms.birthdayAnniversary.BirthdayAnniversaryViewscreen"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:exported="false" />
