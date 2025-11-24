@@ -115,6 +115,9 @@ public class FirebaseService extends FirebaseMessagingService {
                             }
                         } else {
                             try {
+                                body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(" Kindly Logout the App &", "");
+                                body = body.replace("Kindly Logout the App.", "");
                                 notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -160,6 +163,9 @@ public class FirebaseService extends FirebaseMessagingService {
                             }
                         } else {
                             try {
+                                body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(" Kindly Logout the App &", "");
+                                body = body.replace("Kindly Logout the App.", "");
                                 notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
                             } catch (Exception e) {
                                 e.printStackTrace();
