@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.call.fragments.jwOthers;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.call.DCRCallActivity.TodayPlanSfCode;
 import static saneforce.sanzen.activity.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.callAddedJointList;
@@ -41,7 +40,6 @@ import saneforce.sanzen.databinding.FragmentSelectJwSideBinding;
 import saneforce.sanzen.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-
 
 public class JointWorkSelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -101,7 +99,7 @@ public class JointWorkSelectionSide extends Fragment {
                 selectJwSideBinding.searchJw.setText("");
                 dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
                 UtilityClass.hideKeyboard(requireActivity());
-                AssignRecyclerView(getActivity(), context, callAddedJointList, JwList);
+                AssignRecyclerView(getActivity(), requireContext(), callAddedJointList, JwList);
             }
         });
 
@@ -149,17 +147,17 @@ public class JointWorkSelectionSide extends Fragment {
     public void SetupAdapter() {
         JwList.clear();
         try {
-            if(DCRCallActivity.save_valid.equals("1")){
+            if (DCRCallActivity.save_valid.equals("1")) {
                 jsonArray = dcrDocDataDao.getDCRDocData(DCRCallActivity.hqcode).getDCRDocDataJSONArray();
 
-                Log.d("jw_data",jsonArray.toString()+"===="+TodayPlanSfCode);
+                Log.d("jw_data", jsonArray.toString() + "====" + TodayPlanSfCode);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     jsonObject = jsonArray.getJSONObject(i);
                     JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
                 }
-            }else{
+            } else {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + TodayPlanSfCode).getMasterSyncDataJsonArray();
-                Log.d("jw_data",jsonArray.toString()+"===="+TodayPlanSfCode);
+                Log.d("jw_data", jsonArray.toString() + "====" + TodayPlanSfCode);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     jsonObject = jsonArray.getJSONObject(i);
                     JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
@@ -168,7 +166,7 @@ public class JointWorkSelectionSide extends Fragment {
             for (int i = 0; i < JwList.size(); i++) {
                 CallCommonCheckedList JwCallCommonCheckedList = JwList.get(i);
                 for (CallCommonCheckedList callCommonCheckedList : callAddedJointList) {
-                    if(callCommonCheckedList.getCode().equalsIgnoreCase(JwCallCommonCheckedList.getCode()) || callCommonCheckedList.getName().equalsIgnoreCase(JwCallCommonCheckedList.getName())) {
+                    if (callCommonCheckedList.getCode().equalsIgnoreCase(JwCallCommonCheckedList.getCode()) || callCommonCheckedList.getName().equalsIgnoreCase(JwCallCommonCheckedList.getName())) {
                         JwCallCommonCheckedList.setCheckedItem(true);
                         break;
                     }

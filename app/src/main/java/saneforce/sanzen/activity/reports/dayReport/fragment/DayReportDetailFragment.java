@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.reports.dayReport.fragment;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
@@ -34,7 +32,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DayReportDetailAdapter;
@@ -42,6 +39,7 @@ import saneforce.sanzen.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentDayReportDetailBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -60,7 +58,7 @@ public class DayReportDetailFragment extends Fragment {
     ArrayList<DayReportDetailModel> arrayOfReportData = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
-    String rcpaItem, eventCaptureItem,pobItem,feedBackItem,inputItem,productItem = "";
+    String rcpaItem, eventCaptureItem, pobItem, feedBackItem, inputItem, productItem = "";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,22 +67,22 @@ public class DayReportDetailFragment extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         initialisation();
-        if(SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")){
+        if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.doctor.setSelected(true);
             getData("1", Constants.DOCTOR_MAS);
-        } else if(SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")){
+        } else if (SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.chemist.setSelected(true);
             getData("2", Constants.CHEMIST_MAS);
-        } else if(SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")){
+        } else if (SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.stockiest.setSelected(true);
             getData("3", Constants.STOCKIEST_MAS);
-        } else if(SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")){
+        } else if (SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.unDr.setSelected(true);
             getData("4", Constants.UNLISTED_DOCTOR_MAS);
-        } else if(SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")){
+        } else if (SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.cip.setSelected(true);
             getData("5", Constants.CIP);
-        } else if(SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")){
+        } else if (SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.hosp.setSelected(true);
             getData("6", Constants.HOSPITAL);
         }
@@ -197,7 +195,7 @@ public class DayReportDetailFragment extends Fragment {
 //        });
             dayReportModel = new Gson().fromJson(dataViewModel.getDetailedData().getValue(), type);
 
-            if(dayReportModel == null) {
+            if (dayReportModel == null) {
                 Log.e("DayReportDetailedFrag", "initialisation: dayReportModel -> null");
                 return;
             }
@@ -215,41 +213,41 @@ public class DayReportDetailFragment extends Fragment {
 
             int drCount = 0, chmCount = 0, stkCount = 0, undrCount = 0, cipCount = 0, hosCount = 0;
 
-            if(SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
                 binding.drLayout.setVisibility(View.VISIBLE);
                 drCount = Integer.parseInt(dayReportModel.getDrs());
                 binding.drCount.setText(dayReportModel.getDrs());
             }
-            if(SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
                 binding.cheLayout.setVisibility(View.VISIBLE);
                 chmCount = Integer.parseInt(dayReportModel.getChm());
                 binding.cheCount.setText(dayReportModel.getChm());
             }
-            if(SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
                 binding.stkLayout.setVisibility(View.VISIBLE);
                 stkCount = Integer.parseInt(dayReportModel.getStk());
                 binding.stkCount.setText(dayReportModel.getStk());
             }
-            if(SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
                 binding.unDrLayout.setVisibility(View.VISIBLE);
                 cipCount = Integer.parseInt(dayReportModel.getUdr());
                 binding.unDrCount.setText(dayReportModel.getUdr());
             }
-            if(SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
                 binding.cipLayout.setVisibility(View.VISIBLE);
                 undrCount = Integer.parseInt(dayReportModel.getCip());
                 binding.cipCount.setText(dayReportModel.getCip());
             }
-            if(SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
                 binding.hospLayout.setVisibility(View.VISIBLE);
                 hosCount = Integer.parseInt(dayReportModel.getCip());
                 binding.hospCount.setText(dayReportModel.getHos());
             }
-            if((dayReportModel.getTyp() == 0 || dayReportModel.getTyp() == 1) && Integer.parseInt(dayReportModel.getConfirmed()) == 2) {
+            if ((dayReportModel.getTyp() == 0 || dayReportModel.getTyp() == 1) && Integer.parseInt(dayReportModel.getConfirmed()) == 2) {
                 binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.rejectedReasonTxt.setText(dayReportModel.getReasonforRejection());
 
-            }else {
+            } else {
                 binding.rejectionReasonLayout.setVisibility(View.GONE);
             }
 
@@ -257,24 +255,24 @@ public class DayReportDetailFragment extends Fragment {
             binding.workType.setText(dayReportModel.getWtype());
             binding.cluster.setText(dayReportModel.getTerrWrk());
             binding.allCount.setText(String.valueOf(drCount + chmCount + stkCount + cipCount + undrCount + hosCount));
-            if(dayReportModel.getAdditional_Temp_Details() != null && !dayReportModel.getAdditional_Temp_Details().equals("")) {
+            if (dayReportModel.getAdditional_Temp_Details() != null && !dayReportModel.getAdditional_Temp_Details().equals("")) {
                 binding.ll2.setVisibility(View.VISIBLE);
                 binding.view3.setVisibility(View.VISIBLE);
                 binding.workType2.setText(dayReportModel.getAdditional_Temp_Details());
             }
             binding.hqLayout.setVisibility(View.GONE);
 
-            if(dayReportModel.getRemarks() == null || dayReportModel.getRemarks().equals("")) {
+            if (dayReportModel.getRemarks() == null || dayReportModel.getRemarks().equals("")) {
                 binding.remarksLayout.setVisibility(View.GONE);
-            }else {
+            } else {
                 binding.remarks.setText(dayReportModel.getRemarks());
             }
-            if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)) {
+            if (SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)) {
                 binding.clusterTxt.setText("Cluster");
-            }else {
+            } else {
                 binding.clusterTxt.setText(SharedPref.getWrkAreaName(requireContext()));
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e("DayReportDetailFrag", "initialisation: " + e.getMessage());
             e.printStackTrace();
         }
@@ -330,7 +328,7 @@ public class DayReportDetailFragment extends Fragment {
                         Log.d("paramObject", jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
-                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -427,7 +425,7 @@ public class DayReportDetailFragment extends Fragment {
                 break;
         }
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()), dayReportModel.getACode(), dayReportModel.getSF_Code(), rcpaItem, eventCaptureItem,pobItem, feedBackItem,inputItem,productItem);
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()), dayReportModel.getACode(), dayReportModel.getSF_Code(), rcpaItem, eventCaptureItem, pobItem, feedBackItem, inputItem, productItem);
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }

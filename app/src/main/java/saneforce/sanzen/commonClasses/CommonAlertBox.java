@@ -34,7 +34,6 @@ import saneforce.sanzen.utility.location.LocationFinder;
 import saneforce.sanzen.storage.SharedPref;
 
 
-
 public class CommonAlertBox {
 
     private static final String TAG = "LocationStatus";

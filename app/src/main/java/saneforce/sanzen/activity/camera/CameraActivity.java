@@ -15,7 +15,6 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
-import android.location.LocationManager;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
@@ -42,18 +41,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityCameraBinding;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class CameraActivity extends AppCompatActivity implements ImageReader.OnImageAvailableListener {
 
     private ActivityCameraBinding activityCameraBinding;
-    private static final int REQUEST_CODE = 1001;
+    private static final int CAMERA_REQUEST_CODE = 1001, LOCATION_REQUEST_CODE = 1002;
     private String frontCameraId, backCameraId;
     private CameraDevice cameraDevice;
     private ImageReader imageReader;
@@ -78,7 +77,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus) {
+        if (hasFocus) {
             activityCameraBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
@@ -86,16 +85,16 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(HomeDashBoard.selectedDate != null) {
+        if (HomeDashBoard.selectedDate != null) {
             outState.putString("date", HomeDashBoard.selectedDate.toString());
             outState.putInt(Manifest.permission.ACCESS_FINE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION));
             outState.putInt(Manifest.permission.ACCESS_COARSE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION));
             outState.putInt(Manifest.permission.CAMERA, ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA));
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
-                outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
-                outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
-                outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
-            }
+//            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+//                outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
+//                outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
+//                outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
+//            }
             outState.putInt(Manifest.permission.READ_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE));
             outState.putInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE));
         }
@@ -113,29 +112,29 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         commonUtilsMethods.setUpLanguage(this);
         gpsTrack = new GPSTrack(this);
 
-        if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
-            if(savedInstanceState.getString("date") != null) {
+        if (savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
+            if (savedInstanceState.getString("date") != null) {
                 HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
             }
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_COARSE_LOCATION, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != savedInstanceState.getInt(Manifest.permission.CAMERA, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.READ_EXTERNAL_STORAGE, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1) ) {
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1)) {
                 CommonAlertBox.permissionChangeAlert(this);
             }
         }
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null) {
+        if (extras != null) {
             filePath = extras.getString("FILE_PATH");
             lTagEnabled = extras.getBoolean("L_FLAG", false);
             cameraMode = extras.getString("CAMERA_MODE", "BACK");
             from = extras.getString("FROM");
-            if (from != null && from.equalsIgnoreCase("JWOthersFragment")){
+            if (from != null && from.equalsIgnoreCase("JWOthersFragment")) {
                 customerData = extras.getString("CUSTOMER_DATA");
                 customerCaption = extras.getString("CUSTOMER_CAPTION");
                 activityCameraBinding.customerLayout.setVisibility(View.VISIBLE);
@@ -146,8 +145,8 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             }
         }
 
-        if(cameraMode != null) {
-            switch (cameraMode){
+        if (cameraMode != null) {
+            switch (cameraMode) {
                 case "BACK":
                 case "FRONT":
                     activityCameraBinding.switchCamera.setVisibility(View.GONE);
@@ -158,7 +157,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             }
         }
 
-        if(lTagEnabled) activityCameraBinding.locationLayout.setVisibility(View.VISIBLE);
+        if (lTagEnabled) activityCameraBinding.locationLayout.setVisibility(View.VISIBLE);
         else activityCameraBinding.locationLayout.setVisibility(View.GONE);
 
         setData();
@@ -255,14 +254,6 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     protected void onResume() {
         super.onResume();
         startBackgroundThread();
-        if(CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
-            }
-        }else {
-            CommonUtilsMethods.RequestGPSPermission(this);
-        }
     }
 
     @Override
@@ -274,16 +265,31 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == REQUEST_CODE) {
-            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
-            }else {
-                if(permissionRequestCount == 3){
+            } else {
+                if (permissionRequestCount == 3) {
                     permissionRequestCount = 0;
                     setResult(RESULT_CANCELED);
                     finish();
                 }
-                commonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed));
+                CommonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed));
+                isImageCaptured = false;
+                openCamera();
+                permissionRequestCount++;
+//                finish();
+            }
+        } else if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED || (grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED))) {
+                openCamera();
+            } else {
+                if (permissionRequestCount == 3) {
+                    permissionRequestCount = 0;
+                    setResult(RESULT_CANCELED);
+                    finish();
+                }
+                CommonUtilsMethods.showToastMessage(this, getString(R.string.location_permission_needed));
                 isImageCaptured = false;
                 openCamera();
                 permissionRequestCount++;
@@ -294,8 +300,8 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
 
     private void openCamera() {
         closeCamera();
-        if(backCameraId != null && frontCameraId != null) {
-            switch (cameraMode){
+        if (backCameraId != null && frontCameraId != null) {
+            switch (cameraMode) {
                 case "BACK":
                     activityCameraBinding.switchCamera.setVisibility(View.GONE);
                     openCamera(backCameraId);
@@ -306,7 +312,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
                     break;
                 case "ALL":
                     activityCameraBinding.switchCamera.setVisibility(View.VISIBLE);
-                    if(isBackCameraOpen) {
+                    if (isBackCameraOpen) {
                         openCamera(backCameraId);
                         break;
                     }
@@ -316,20 +322,20 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
                     openCamera(backCameraId);
                     break;
             }
-        }else if(backCameraId != null) {
+        } else if (backCameraId != null) {
             activityCameraBinding.switchCamera.setVisibility(View.GONE);
             openCamera(backCameraId);
-        }else if(frontCameraId != null) {
+        } else if (frontCameraId != null) {
             activityCameraBinding.switchCamera.setVisibility(View.GONE);
             openCamera(frontCameraId);
-        }else {
+        } else {
             commonUtilsMethods.showToastMessage(this, getString(R.string.no_camera_detected));
             finish();
         }
     }
 
-    private void setData(){
-        if(currentLoc()) {
+    private void setData() {
+        if (currentLoc()) {
             latitude = gpsTrack.getLatitude();
             longitude = gpsTrack.getLongitude();
             address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
@@ -377,7 +383,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     }
 
     private void stopBackgroundThread() {
-        if(backgroundThread != null) {
+        if (backgroundThread != null) {
             backgroundThread.quitSafely();
             try {
                 backgroundThread.join();
@@ -394,10 +400,10 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             for (String cameraId : cameraManager.getCameraIdList()) {
                 CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
                 Integer lensFacing = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
-                if(lensFacing != null && lensFacing == CameraCharacteristics.LENS_FACING_FRONT) {
-                    if(frontCameraId == null) frontCameraId = cameraId;
-                }else if(lensFacing != null && lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
-                    if(backCameraId == null) backCameraId = cameraId;
+                if (lensFacing != null && lensFacing == CameraCharacteristics.LENS_FACING_FRONT) {
+                    if (frontCameraId == null) frontCameraId = cameraId;
+                } else if (lensFacing != null && lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
+                    if (backCameraId == null) backCameraId = cameraId;
                 }
             }
         } catch (CameraAccessException e) {
@@ -407,9 +413,9 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
 
     private boolean isFlashSupported(CameraCharacteristics cameraCharacteristics) {
         int[] availableModes = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_MODES);
-        if(availableModes != null) {
+        if (availableModes != null) {
             for (int mode : availableModes) {
-                if(mode == CameraCharacteristics.CONTROL_AE_MODE_ON_ALWAYS_FLASH)
+                if (mode == CameraCharacteristics.CONTROL_AE_MODE_ON_ALWAYS_FLASH)
                     return true;
             }
         }
@@ -418,9 +424,20 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
 
     private void openCamera(String cameraId) {
         try {
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CODE);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
                 return;
+            }
+
+            if (lTagEnabled) {
+                if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+                    }
+                } else {
+                    CommonUtilsMethods.RequestGPSPermission(this);
+                }
             }
             cameraManager.openCamera(cameraId, new CameraDevice.StateCallback() {
                 @Override
@@ -468,7 +485,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             cameraDevice.createCaptureSession(Arrays.asList(surface, imageReader.getSurface()), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
-                    if(cameraDevice == null) return;
+                    if (cameraDevice == null) return;
                     cameraCaptureSession = session;
                     try {
                         cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, backgroundHandler);
@@ -488,7 +505,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     }
 
     private void captureImage() {
-        if(cameraDevice == null || imageReader == null) {
+        if (cameraDevice == null || imageReader == null) {
             Log.e(TAG, "captureImage: " + cameraDevice + " , " + imageReader);
             return;
         }
@@ -503,11 +520,11 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     }
 
     private void closeCamera() {
-        if(cameraDevice != null) {
+        if (cameraDevice != null) {
             cameraDevice.close();
             cameraDevice = null;
         }
-        if(cameraCaptureSession != null) {
+        if (cameraCaptureSession != null) {
             cameraCaptureSession.close();
             cameraCaptureSession = null;
         }
@@ -544,11 +561,11 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         boolean val = false;
         gpsTrack = new GPSTrack(this);
         try {
-            if(!CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
+            if (!CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
                 new android.app.AlertDialog.Builder(this).setTitle("Alert")
                         .setCancelable(false).setMessage("Activate the Gps to proceed further")
                         .setPositiveButton("Yes", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))).show();
-            }else {
+            } else {
                 val = true;
             }
         } catch (Exception e) {

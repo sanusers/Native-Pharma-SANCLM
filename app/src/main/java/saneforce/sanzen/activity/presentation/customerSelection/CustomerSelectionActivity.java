@@ -52,8 +52,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.forms.weekoff.WeekOffViewScreen;
@@ -64,6 +62,7 @@ import saneforce.sanzen.activity.presentation.customerSelection.adapter.Customer
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityCustomerSelectionBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -107,7 +106,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus) {
+        if (hasFocus) {
             binding.getRoot().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -135,27 +134,27 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             binding.txthqName.setText(hqName);
             selectedCustomerCodes = new HashSet<>();
 
-            if(!SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+            if (!SharedPref.getSfType(this).equalsIgnoreCase("1")) {
                 binding.imgArrow.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 binding.imgArrow.setVisibility(View.GONE);
             }
 
             bundle = getIntent().getExtras();
-            if(bundle != null) {
+            if (bundle != null) {
                 customerType = bundle.getString(CUSTOMER_TYPE);
-                if(bundle.containsKey(IS_FROM)) {
+                if (bundle.containsKey(IS_FROM)) {
                     isFrom = bundle.getString(IS_FROM);
                 }
-                if(bundle.containsKey(PRESENTATION_NAME)) {
+                if (bundle.containsKey(PRESENTATION_NAME)) {
                     presentationName = bundle.getString(PRESENTATION_NAME);
                 }
-                if(bundle.containsKey(HEAD_QUARTER_CODE)) {
+                if (bundle.containsKey(HEAD_QUARTER_CODE)) {
                     selectedHQ = bundle.getString(HEAD_QUARTER_CODE);
                 }
 
-                if(customerType != null) {
-                    switch (customerType){
+                if (customerType != null) {
+                    switch (customerType) {
                /*         case Constants.DOCTOR:
                             selectedCustomerCaption = SharedPref.getDrCap(this);
                             break;
@@ -198,28 +197,28 @@ public class CustomerSelectionActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(view -> finish());
 
-        if(isFrom.equalsIgnoreCase("edit") && !presentationName.isEmpty()) {
+        if (isFrom.equalsIgnoreCase("edit") && !presentationName.isEmpty()) {
             presentationDataTable = presentationDataDao.getPresentationData(presentationName);
             String[] selectedCustomers = presentationDataTable.getCustomerCodes().split(", ");
             selectedCustomerCodes.addAll(Arrays.asList(selectedCustomers));
             binding.btnNext.setText(getString(R.string.save));
             binding.txthqName.setText(getHQName(selectedHQ));
-        }else {
+        } else {
             binding.btnNext.setText(getString(R.string.next));
         }
 
         binding.btnNext.setOnClickListener(view -> {
-            if(selectedCustomerCodes.isEmpty()) {
+            if (selectedCustomerCodes.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, "Please select any " + selectedCustomerCaption);
-            }else {
-                if(binding.btnNext.getText().toString().equals(getString(R.string.next))) {
+            } else {
+                if (binding.btnNext.getText().toString().equals(getString(R.string.next))) {
                     Intent intent = new Intent(this, CreatePresentationActivity.class);
                     intent.putExtra("customerType", customerType);
                     intent.putExtra("headquarterCode", selectedHQ);
                     intent.putExtra("customerCodes", (Arrays.toString(selectedCustomerCodes.toArray()).replaceAll("\\[", "").replaceAll("\\]", "")));
                     startActivity(intent);
                     finish();
-                }else if(binding.btnNext.getText().toString().equals(getString(R.string.save))) {
+                } else if (binding.btnNext.getText().toString().equals(getString(R.string.save))) {
                     presentationDataDao.changeSelectedCustomers(presentationName, (Arrays.toString(selectedCustomerCodes.toArray()).replaceAll("\\[", "").replaceAll("\\]", "")));
                     commonUtilsMethods.showToastMessage(this, selectedCustomerCaption + " updated successfully");
                     finish();
@@ -268,21 +267,21 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     private void setupAdapter() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(customerType + selectedHQ).getMasterSyncDataJsonArray();
-            if(jsonArray.length() == 0) {
+            if (jsonArray.length() == 0) {
                 commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync));
             }
 
             Set<String> customerCodes = new HashSet<>();
             customerDataList.clear();
             String code = "";
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     jsonObject = jsonArray.getJSONObject(i);
                     code = jsonObject.getString("Code");
-                    if(!customerCodes.contains(code)) {
+                    if (!customerCodes.contains(code)) {
                         customerCodes.add(code);
                         CustomerDataModel customerDataModel = createCustomerDataModel(customerType, jsonObject);
-                        if(presentationDataTable != null
+                        if (presentationDataTable != null
                                 && presentationDataTable.getCustomerCodes() != null
                                 && !presentationDataTable.getCustomerCodes().isEmpty()
                                 && presentationDataTable.getCustomerCodes().contains(code)) {
@@ -301,11 +300,11 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         filteredCustomerDataList.clear();
         filteredCustomerDataList.addAll(customerDataList);
 
-        if(filteredCustomerDataList.isEmpty()) {
+        if (filteredCustomerDataList.isEmpty()) {
             binding.noCustomer.setText(String.format("%s %s %s", getString(R.string.no), selectedCustomerCaption, getString(R.string.found)));
             binding.noCustomer.setVisibility(View.VISIBLE);
             binding.rvCustomerListSelection.setVisibility(View.GONE);
-        }else {
+        } else {
             binding.noCustomer.setVisibility(View.GONE);
             binding.rvCustomerListSelection.setVisibility(View.VISIBLE);
             Collections.sort(filteredCustomerDataList, Comparator.comparing(CustomerDataModel::getName));
@@ -317,9 +316,9 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     }
 
     private final CustomerListSelectionAdapter.CustomerSelectionListener customerSelectionListener = customerDataModel -> {
-        if(selectedCustomerCodes.contains(customerDataModel.getCode())) {
+        if (selectedCustomerCodes.contains(customerDataModel.getCode())) {
             selectedCustomerCodes.remove(customerDataModel.getCode());
-        }else {
+        } else {
             selectedCustomerCodes.add(customerDataModel.getCode());
         }
     };
@@ -330,7 +329,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         String townName = jsonObject.getString("Town_Name");
         String townCode = jsonObject.getString("Town_Code");
 
-        switch (customerType){
+        switch (customerType) {
 //            case Constants.DOCTOR:
             case Constants.DOCTOR_MAS:
                 return new CustomerDataModel(
@@ -389,11 +388,11 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     private String getUnListedClassName(String unlDocClsCode) {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String name = jsonObject.getString("Name");
                 String code = jsonObject.getString("Code");
-                if(code.equalsIgnoreCase(unlDocClsCode))
+                if (code.equalsIgnoreCase(unlDocClsCode))
                     return name;
             }
         } catch (Exception e) {
@@ -406,11 +405,11 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     private String getChemistCategory(String catCode) {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String name = jsonObject.getString("Name");
                 String code = jsonObject.getString("Code");
-                if(code.equalsIgnoreCase(catCode))
+                if (code.equalsIgnoreCase(catCode))
                     return name;
             }
         } catch (Exception e) {
@@ -424,7 +423,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dcr_cancel_alert);
         dialog.setCancelable(false);
-        if(dialog.getWindow() != null) {
+        if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
         dialog.show();
@@ -446,10 +445,10 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             ArrayList<String> list = new ArrayList<>();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if(jsonObject.optString("id").equalsIgnoreCase(hqCode)) {
+                    if (jsonObject.optString("id").equalsIgnoreCase(hqCode)) {
                         return jsonObject.optString("name");
                     }
                 }
@@ -464,8 +463,8 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             ArrayList<String> list = new ArrayList<>();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     list.add(jsonObject.getString("name"));
                 }
@@ -477,31 +476,45 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
             ListView listView = dialogView.findViewById(R.id.listView);
             SearchView searchView = dialogView.findViewById(R.id.searchET);
+
+            searchView.setIconified(false);
+            searchView.setIconifiedByDefault(false);
+            searchView.setMaxWidth(Integer.MAX_VALUE);
+
             headerTxt.setText(getResources().getText(R.string.select_hq));
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>(list));
             listView.setAdapter(adapter);
             AlertDialog dialog = alertDialog.create();
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String s) {
-                    adapter.getFilter().filter(s);
+//                    adapter.getFilter().filter(s);
                     return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String s) {
-                    adapter.getFilter().filter(s);
-                    return false;
+                    List<String> filtered = new ArrayList<>();
+                    for (String item : list) {
+                        if (item.toLowerCase().contains(s.toLowerCase())) {
+                            filtered.add(item);
+                        }
+                    }
+
+                    adapter.clear();
+                    adapter.addAll(filtered);
+                    adapter.notifyDataSetChanged();
+                    return true;
                 }
             });
             listView.setOnItemClickListener((adapterView, view1, position, l) -> {
                 String selectedHq = listView.getItemAtPosition(position).toString();
                 binding.txthqName.setText(selectedHq);
-                for (int i = 0; i<jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if(jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
+                        if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
                             selectedHQ = jsonObject.optString("id");
                             UtilityClass.hideKeyboard(this);
                             break;
@@ -654,7 +667,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     public void CustomizeFiltered() {
         dialogFilter = new Dialog(this);
         dialogFilter.setContentView(R.layout.popup_dcr_filter);
-        if(dialogFilter.getWindow() != null) {
+        if (dialogFilter.getWindow() != null) {
             dialogFilter.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
         dialogFilter.setCancelable(false);
@@ -679,17 +692,17 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         lv_class = dialogFilter.findViewById(R.id.lv_class);
 
 //        if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
-        if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
+        if (customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
             tvSpec.setVisibility(View.VISIBLE);
             tvClass.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             tvSpec.setVisibility(View.GONE);
             tvClass.setVisibility(View.GONE);
         }
 //        if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.CHEMIST) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
-        if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.CHEMIST_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
+        if (customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.CHEMIST_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
             tvCate.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             tvCate.setVisibility(View.GONE);
         }
         tvTerritory.setVisibility(View.VISIBLE);
@@ -725,10 +738,10 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             lv_class.setVisibility(View.GONE);
             lv_cate.setVisibility(View.GONE);
             lv_terr.setVisibility(View.GONE);
-            if(lv_spec.getVisibility() == View.VISIBLE) {
+            if (lv_spec.getVisibility() == View.VISIBLE) {
                 lv_spec.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 getFilterList("Speciality");
 
                 FillteredAdapter arrayAdapter = new FillteredAdapter(this, filterSelectionList, clickedItem -> {
@@ -748,10 +761,10 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             lv_class.setVisibility(View.GONE);
             lv_spec.setVisibility(View.GONE);
             lv_terr.setVisibility(View.GONE);
-            if(lv_cate.getVisibility() == View.VISIBLE) {
+            if (lv_cate.getVisibility() == View.VISIBLE) {
                 lv_cate.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 getFilterList("Category");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(this, filterSelectionList, clickedItem -> {
                     categoryCode = clickedItem.getCode();
@@ -770,10 +783,10 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             lv_class.setVisibility(View.GONE);
             lv_cate.setVisibility(View.GONE);
             lv_spec.setVisibility(View.GONE);
-            if(lv_terr.getVisibility() == View.VISIBLE) {
+            if (lv_terr.getVisibility() == View.VISIBLE) {
                 lv_terr.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 getFilterList("Territory");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(this, filterSelectionList, clickedItem -> {
                     territoryCode = clickedItem.getCode();
@@ -792,10 +805,10 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             lv_spec.setVisibility(View.GONE);
             lv_cate.setVisibility(View.GONE);
             lv_terr.setVisibility(View.GONE);
-            if(lv_class.getVisibility() == View.VISIBLE) {
+            if (lv_class.getVisibility() == View.VISIBLE) {
                 lv_class.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 getFilterList("Class");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(this, filterSelectionList, clickedItem -> {
                     classCode = clickedItem.getCode();
@@ -820,26 +833,26 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     private void getFilterList(String requiredList) {
         try {
             JSONArray jsonArray = new JSONArray();
-            if(requiredList.equalsIgnoreCase("Territory")) {
+            if (requiredList.equalsIgnoreCase("Territory")) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + selectedHQ).getMasterSyncDataJsonArray();
 //            }else if(customerType.equals(Constants.DOCTOR) || customerType.equals(Constants.UNLISTED_DOCTOR)) {
-            }else if(customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
-                if(requiredList.equalsIgnoreCase("Speciality")) {
+            } else if (customerType.equals(Constants.DOCTOR_MAS) || customerType.equals(Constants.UNLISTED_DOCTOR_MAS)) {
+                if (requiredList.equalsIgnoreCase("Speciality")) {
                     jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
-                }else if(requiredList.equalsIgnoreCase("Category")) {
+                } else if (requiredList.equalsIgnoreCase("Category")) {
                     jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
-                }else if(requiredList.equalsIgnoreCase("Class")) {
+                } else if (requiredList.equalsIgnoreCase("Class")) {
                     jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray();
                 }
 //            }else if(customerType.equals(Constants.CHEMIST)) {
 //                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
 //            }
-            }else if(customerType.equals(Constants.CHEMIST_MAS)) {
+            } else if (customerType.equals(Constants.CHEMIST_MAS)) {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
             }
             filterSelectionList.clear();
             Log.v("jsonArray", "--" + jsonArray.length());
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
             }
@@ -851,16 +864,16 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     private void filter(String text) {
         filteredNames.clear();
         for (CustomerDataModel s : filteredCustomerDataList) {
-            if(s.getName().toLowerCase().contains(text.toLowerCase()) || s.getClusterName().toLowerCase().contains(text.toLowerCase()) || s.getCategoryName().toLowerCase().contains(text.toLowerCase()) || s.getSpecialityName().toLowerCase().contains(text.toLowerCase())) {
+            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getClusterName().toLowerCase().contains(text.toLowerCase()) || s.getCategoryName().toLowerCase().contains(text.toLowerCase()) || s.getSpecialityName().toLowerCase().contains(text.toLowerCase())) {
                 filteredNames.add(s);
             }
         }
 
-        if(filteredNames.isEmpty()) {
+        if (filteredNames.isEmpty()) {
             binding.noCustomer.setText(String.format("%s %s %s", getString(R.string.no), selectedCustomerCaption, getString(R.string.found)));
             binding.noCustomer.setVisibility(View.VISIBLE);
             binding.rvCustomerListSelection.setVisibility(View.GONE);
-        }else {
+        } else {
             binding.noCustomer.setVisibility(View.GONE);
             binding.rvCustomerListSelection.setVisibility(View.VISIBLE);
             customerListSelectionAdapter.filterList(filteredNames);
@@ -869,90 +882,90 @@ public class CustomerSelectionActivity extends AppCompatActivity {
 
     public void Filtered() {
         ArrayList<CustomerDataModel> filterCusList = new ArrayList<>();
-        if(!filteredNames.isEmpty()) {
+        if (!filteredNames.isEmpty()) {
             filterCusList.addAll(filteredNames);
-        }else {
+        } else {
             filterCusList.addAll(customerDataList);
         }
         filteredCustomerDataList.clear();
-        if(specialityCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("") && territoryCode.equalsIgnoreCase("") && classCode.equalsIgnoreCase("")) {
+        if (specialityCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("") && territoryCode.equalsIgnoreCase("") && classCode.equalsIgnoreCase("")) {
             filteredCustomerDataList.addAll(customerDataList);
             binding.tvFilterCount.setText("0");
             Collections.sort(filteredCustomerDataList, Comparator.comparing(CustomerDataModel::getName));
-        }else {
+        } else {
             for (CustomerDataModel mList : filterCusList) {
-                if(mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
+                if (mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
                         && mList.getClusterCode().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
                         && mList.getClusterCode().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && classCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
                         && mList.getClusterCode().equalsIgnoreCase(territoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && categoryCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && territoryCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getClusterCode().equalsIgnoreCase(territoryCode)
+                } else if (mList.getClusterCode().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && specialityCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
                         && mList.getClusterCode().equalsIgnoreCase(territoryCode)
                         && categoryCode.isEmpty()
                         && classCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && territoryCode.isEmpty()
                         && classCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
+                } else if (mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && territoryCode.isEmpty()
                         && categoryCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getClusterCode().equalsIgnoreCase(territoryCode)
+                } else if (mList.getClusterCode().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && specialityCode.isEmpty()
                         && classCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getClusterCode().equalsIgnoreCase(territoryCode)
+                } else if (mList.getClusterCode().equalsIgnoreCase(territoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && specialityCode.isEmpty()
                         && categoryCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                } else if (mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                         && mList.getClassCode().equalsIgnoreCase(classCode)
                         && specialityCode.isEmpty()
                         && territoryCode.isEmpty()) {
                     filteredCustomerDataList.add(mList);
-                }else {
-                    if(mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
+                } else {
+                    if (mList.getSpecialityCode().equalsIgnoreCase(specialityCode)
                             && territoryCode.isEmpty()
                             && categoryCode.isEmpty()
                             && classCode.isEmpty()) {
                         filteredCustomerDataList.add(mList);
-                    }else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                    } else if (mList.getCategoryCode().equalsIgnoreCase(categoryCode)
                             && specialityCode.isEmpty()
                             && territoryCode.isEmpty()
                             && classCode.isEmpty()) {
                         filteredCustomerDataList.add(mList);
-                    }else if(mList.getClusterCode().equalsIgnoreCase(territoryCode)
+                    } else if (mList.getClusterCode().equalsIgnoreCase(territoryCode)
                             && specialityCode.isEmpty()
                             && categoryCode.isEmpty()
                             && classCode.isEmpty()) {
                         filteredCustomerDataList.add(mList);
-                    }else if(mList.getClassCode().equalsIgnoreCase(classCode)
+                    } else if (mList.getClassCode().equalsIgnoreCase(classCode)
                             && specialityCode.isEmpty()
                             && territoryCode.isEmpty()
                             && categoryCode.isEmpty()) {
@@ -963,11 +976,11 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             binding.tvFilterCount.setText(String.valueOf(filteredCustomerDataList.size()));
         }
 
-        if(filteredCustomerDataList.isEmpty()) {
+        if (filteredCustomerDataList.isEmpty()) {
             binding.noCustomer.setText(String.format("%s %s %s", getString(R.string.no), selectedCustomerCaption, getString(R.string.found)));
             binding.noCustomer.setVisibility(View.VISIBLE);
             binding.rvCustomerListSelection.setVisibility(View.GONE);
-        }else {
+        } else {
             binding.noCustomer.setVisibility(View.GONE);
             binding.rvCustomerListSelection.setVisibility(View.VISIBLE);
             customerListSelectionAdapter.filterList(filteredCustomerDataList);

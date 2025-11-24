@@ -1,4 +1,5 @@
 package saneforce.sanzen.roomdatabase.MissedReportTableDetails;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.login.LoginActivity;
@@ -23,10 +24,8 @@ import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.databinding.ActivitySplashScreenBinding;
 import saneforce.sanzen.storage.SharedPref;
 
-
 @SuppressLint("CustomSplashScreen")
 public class SplashScreen extends AppCompatActivity {
-
     ActivitySplashScreenBinding binding;
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 101;
     GPSTrack gpsTrack;
@@ -34,46 +33,46 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
+        binding.splashImg.setGifResource(R.drawable.animation_slide);
         setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);   // Donot Remove it    Need To  Get Location
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         // Request storage permission if needed (for older Android versions)
-//        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.R) {
-//            if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
-//            }else {
-//                // Permission already granted, start logging
-//                ContinuousLogCollector.startLogging(getApplicationContext());
-//            }
-//        }else {
-//            // On Android 11+, start logging directly to app-specific storage
-//            ContinuousLogCollector.startLogging(getApplicationContext());
-//        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
+            } else {
+                // Permission already granted, start logging
+                ContinuousLogCollector.startLogging(getApplicationContext());
+            }
+        } else {
+            // On Android 11+, start logging directly to app-specific storage
+            ContinuousLogCollector.startLogging(getApplicationContext());
+        }
 
         new Handler().postDelayed(() -> {
-            if(SharedPref.getSettingState(getApplicationContext())) {
-                if(SharedPref.getLoginState(getApplicationContext())) {
+            if (SharedPref.getSettingState(getApplicationContext())) {
+                if (SharedPref.getLoginState(getApplicationContext())) {
                     Intent intent = new Intent(SplashScreen.this, HomeDashBoard.class);
                     overridePendingTransition(0, 0);
                     startActivity(intent);
                     finish();
-                }else {
+                } else {
 
-                    if(SharedPref.getPolicy(getApplicationContext())) {
+                    if (SharedPref.getPolicy(getApplicationContext())) {
                         startActivity(new Intent(SplashScreen.this, LoginActivity.class));
                         finish();
-                    }else {
+                    } else {
                         startActivity(new Intent(SplashScreen.this, PrivacyPolicyActivity.class));
                         finish();
                     }
 
                 }
-            }else {
+            } else {
                 startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
                 finish();
             }
@@ -98,7 +97,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus) {
+        if (hasFocus) {
             binding.rlHead.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION

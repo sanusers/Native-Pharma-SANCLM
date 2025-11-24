@@ -26,6 +26,9 @@ public interface CallOfflineDataDao {
     @Query("DELETE FROM `CALL_OFFLINE_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `CALL_OFFLINE_TABLE` WHERE `CALL_DATE` = :date")
+    void deleteAllData(String date);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveCallOfflineData(CallOfflineDataTable callOfflineDataTable);
 

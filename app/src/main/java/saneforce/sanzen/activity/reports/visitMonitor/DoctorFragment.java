@@ -1,12 +1,7 @@
 package saneforce.sanzen.activity.reports.visitMonitor;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -30,12 +23,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +32,6 @@ import java.util.List;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -52,7 +39,6 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
 public class DoctorFragment extends Fragment {
-
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
@@ -62,7 +48,6 @@ public class DoctorFragment extends Fragment {
     private static final String ARG_MONTH_DATA = "monthData";
     private static final String ARG_STATS_DATA = "statsData";
     private static final String ARG_POSITION = "position";
-
 
     private List<VisitStatsModel> dataListDoc;
     int position;
@@ -149,27 +134,28 @@ public class DoctorFragment extends Fragment {
         doctorVst.setText(SharedPref.getDrCap(requireContext()));
         totalDrTxt.setText("Total" + " " + SharedPref.getDrCap(requireContext()));
         if (dataListDoc != null && !dataListDoc.isEmpty()) {
+            if (position < dataListDoc.size()) {
+                VisitStatsModel model = dataListDoc.get(position);
+                totalDrCnt.setText(model.getTotalCustomers());
+                visitedCnt.setText(model.getVisitedCustomers());
+                missedCnt.setText(model.getMissedCustomers());
+                FWDaysCnt.setText(model.getFwDays());
+                callAvgCnt.setText(model.getCallAvg());
+                callCvgCnt.setText(model.getCoverage() + "%");
 
-            VisitStatsModel model = dataListDoc.get(position);
-            totalDrCnt.setText(model.getTotalCustomers());
-            visitedCnt.setText(model.getVisitedCustomers());
-            missedCnt.setText(model.getMissedCustomers());
-            FWDaysCnt.setText(model.getFwDays());
-            callAvgCnt.setText(model.getCallAvg());
-            callCvgCnt.setText(model.getCoverage() + "%");
-
-            setupBarChart(
-                    Integer.parseInt(model.getTotalCustomers()),
-                    Integer.parseInt(model.getVisitedCustomers()),
-                    Integer.parseInt(model.getMissedCustomers()),
-                    Double.parseDouble(model.getCallAvg())
-            );
-            setupPieChart(
-                    model.getOneVisitCount(),
-                    model.getTwoVisitCount(),
-                    model.getThreeVisitCount(),
-                    model.getThreePlusVisitCount()
-            );
+                setupBarChart(
+                        Integer.parseInt(model.getTotalCustomers()),
+                        Integer.parseInt(model.getVisitedCustomers()),
+                        Integer.parseInt(model.getMissedCustomers()),
+                        Double.parseDouble(model.getCallAvg())
+                );
+                setupPieChart(
+                        model.getOneVisitCount(),
+                        model.getTwoVisitCount(),
+                        model.getThreeVisitCount(),
+                        model.getThreePlusVisitCount()
+                );
+            }
         }
 
         return view;
@@ -217,19 +203,10 @@ public class DoctorFragment extends Fragment {
     }
 
     private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
+        if (oneVisit == 0 && twoVisit == 0 && threeVisit == 0 && threePlusVisit == 0) {
+            pieChart.setCenterText("No Visits Found");
+        } else {
 
-      /*  if (oneVisit == 0 && twoVisit == 0 && threeVisit == 0 && threePlusVisit == 0) {
-            pieChart.clear();
-            pieChart.setCenterText("No Visits");
-            pieChart.setCenterTextSize(15f);
-            pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
-            pieChart.setDrawHoleEnabled(true);
-            pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
-            pieChart.setTransparentCircleColor(requireContext().getResources().getColor(R.color.black));
-            pieChart.setUsePercentValues(false);
-            pieChart.getDescription().setEnabled(false);
-            pieChart.invalidate();
-        } else {*/
             pieChart.setCenterText("Visits");
             pieChart.setCenterTextSize(15f);
             pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
@@ -288,6 +265,71 @@ public class DoctorFragment extends Fragment {
 
             pieChart.animateY(1400);
             pieChart.invalidate();
+
         }
-//    }
+    }
+   /* private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
+        pieChart.setCenterTextSize(15f);
+        pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
+        pieChart.setUsePercentValues(false);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setExtraOffsets(5f, 10f, 5f, 5f);
+        pieChart.setDragDecelerationFrictionCoef(0.95f);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
+        pieChart.setHoleRadius(63f);
+        pieChart.setTransparentCircleRadius(10f);
+        pieChart.setRotationAngle(0);
+        pieChart.setRotationEnabled(true);
+        pieChart.setHighlightPerTapEnabled(true);
+        pieChart.setDrawEntryLabels(false);
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        ArrayList<Integer> colors = new ArrayList<>();
+
+            // Normal data
+            pieChart.setCenterText("Visits");
+            entries.add(new PieEntry(oneVisit, "1 Visit"));
+            entries.add(new PieEntry(twoVisit, "2 Visits"));
+            entries.add(new PieEntry(threeVisit, "3 Visits"));
+            entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
+
+            colors.add(requireContext().getResources().getColor(R.color.blue_60));
+            colors.add(requireContext().getResources().getColor(R.color.yellow_45));
+            colors.add(requireContext().getResources().getColor(R.color.red_60));
+            colors.add(requireContext().getResources().getColor(R.color.green_2));
+
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+        dataSet.setColors(colors);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return value == 0 ? "" : String.valueOf((int) value);
+            }
+        });
+        data.setValueTextSize(20f);
+        data.setValueTextColor(requireContext().getResources().getColor(R.color.bg_lit_white));
+
+        pieChart.setData(data);
+
+        Legend legend = pieChart.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setDrawInside(false);
+        legend.setXEntrySpace(7f);
+        legend.setYEntrySpace(0f);
+        legend.setYOffset(0f);
+        legend.setWordWrapEnabled(true);
+        legend.setForm(Legend.LegendForm.CIRCLE);
+
+        pieChart.animateY(1400);
+        pieChart.invalidate();
+    }*/
+
 }

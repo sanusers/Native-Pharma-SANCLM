@@ -157,6 +157,7 @@
                             android:background="@drawable/edittext_stroke"
                             android:orientation="horizontal"
                             android:weightSum="3"
+                            android:padding="@dimen/_2sdp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/piechart">
 

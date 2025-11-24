@@ -69,6 +69,8 @@ public class VisitMonitorActivity extends AppCompatActivity {
         if(SharedPref.getSfType(VisitMonitorActivity.this).equalsIgnoreCase("2")){
             binding.self.setVisibility(View.GONE);
             binding.tvNote.setText("You Are Live! Select Month to get Data");
+            binding.live.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_dark_purple));
+            binding.live.setTextColor(getColor(R.color.white));
             loadFragment(new ApprovedCallsFragment());
         }else{
             binding.self.setVisibility(View.VISIBLE);
@@ -109,11 +111,11 @@ public class VisitMonitorActivity extends AppCompatActivity {
 
         switch (selectedTab){
             case "As on Calls":
-                binding.self.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
+                binding.self.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_dark_purple));
                 binding.self.setTextColor(getColor(R.color.white));
                 break;
             case "Approved Calls":
-                binding.live.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
+                binding.live.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_dark_purple));
                 binding.live.setTextColor(getColor(R.color.white));
                 break;
         }

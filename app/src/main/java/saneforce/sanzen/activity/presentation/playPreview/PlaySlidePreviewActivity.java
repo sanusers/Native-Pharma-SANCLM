@@ -144,7 +144,9 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 if (!playBtnClicked) {
                     playBtnClicked = true;
                     binding.playBtn.setImageResource(R.drawable.baseline_stop);
-                    timer.cancel();
+                    if (timer != null) {
+                        timer.cancel();
+                    }
                     binding.viewPager.setVisibility(View.GONE);
                     binding.upArrow.setVisibility(View.GONE);
                     binding.bottomLayout.setVisibility(View.GONE);
@@ -338,7 +340,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
 
     public void loadPdf(String fileName) {
         binding.pdfView.fromFile(new File(fileName))
-                .onRender((nbPages, pageWidth, pageHeight) -> {
+                .onRender((nbPages) -> {
                     binding.progressAnim.setVisibility(View.GONE);
                     binding.progressAnim.cancelAnimation();
                 }).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();

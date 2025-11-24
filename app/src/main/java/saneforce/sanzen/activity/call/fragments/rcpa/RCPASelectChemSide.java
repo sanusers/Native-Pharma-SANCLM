@@ -1,11 +1,9 @@
 package saneforce.sanzen.activity.call.fragments.rcpa;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.call.DCRCallActivity.dcrCallBinding;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,17 +26,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSelectChemistSideBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-import saneforce.sanzen.storage.SharedPref;
 
 public class RCPASelectChemSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -65,7 +61,8 @@ public class RCPASelectChemSide extends Fragment {
 
         selectChemistSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onSafeClick(View view) {}
+            public void onSafeClick(View view) {
+            }
         });
 
         selectChemistSideBinding.imgClose.setOnClickListener(new SafeClickListener() {

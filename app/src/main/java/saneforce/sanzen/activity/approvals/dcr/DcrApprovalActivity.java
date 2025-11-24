@@ -1,8 +1,6 @@
 package saneforce.sanzen.activity.approvals.dcr;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.approvals.ApprovalsActivity.DcrCount;
-
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -10,21 +8,15 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,7 +38,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +49,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.AdapterModel;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
@@ -74,11 +64,10 @@ import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
@@ -156,9 +145,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrContentList = CommonUtilsMethods.CommonObjectParameter(DcrApprovalActivity.this);
             jsonDcrContentList.put("tableName", "getvwdcrone");
             jsonDcrContentList.put("Trans_SlNo", SelectedTransCode);
-            jsonDcrContentList.put("sfcode", SelectedSfCode);
+            jsonDcrContentList.put("sfcode", SharedPref.getSfCode(this));
             jsonDcrContentList.put("division_code", SharedPref.getDivisionCode(this));
-            jsonDcrContentList.put("Rsf", SharedPref.getHqCode(this));
+            jsonDcrContentList.put("Rsf", SelectedSfCode);
             Log.v("json_get_full_dcr_list", jsonDcrContentList.toString());
 
         } catch (Exception ignored) {
@@ -167,7 +156,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/approvals");
-        Call<JsonElement> callGetDetailedList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonDcrContentList.toString());
+        Call<JsonElement> callGetDetailedList = api_interface.getJSONElement(SharedPref.getCallApiUrl(DcrApprovalActivity.this), mapString, jsonDcrContentList.toString());
 
         callGetDetailedList.enqueue(new Callback<JsonElement>() {
             @Override
@@ -216,8 +205,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                             //Extract Product Values
 
 
-
-
                             if (!json.getString("products").isEmpty()) {
                                 String str = json.getString("products").replace(")", "");
                                 String[] separated = str.split(",");
@@ -234,9 +221,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                     String[] item = s.split("[(]");
 
                                     String Rcpa = "";
-                                    if(item.length > 3) {
+                                    if (item.length > 3) {
                                         Rcpa = item[3];
-                                        if(item[3].contains("^")) {
+                                        if (item[3].contains("^")) {
                                             String[] rcpa = item[3].replace("^", ",").split("[,]");
                                             Rcpa = rcpa[1];
                                         }
@@ -313,7 +300,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                 progressDialog.dismiss();
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                 commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
-                SetupAdapter(context);
+                SetupAdapter(DcrApprovalActivity.this);
             }
         });
     }
@@ -339,16 +326,16 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(HomeDashBoard.selectedDate != null) {
+        if (HomeDashBoard.selectedDate != null) {
             outState.putString("date", HomeDashBoard.selectedDate.toString());
             outState.putInt(Manifest.permission.ACCESS_FINE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION));
             outState.putInt(Manifest.permission.ACCESS_COARSE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION));
             outState.putInt(Manifest.permission.CAMERA, ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA));
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
-                outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
-                outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
-                outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
-            }
+//            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+//                outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
+//                outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
+//                outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
+//            }
             outState.putInt(Manifest.permission.READ_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE));
             outState.putInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE));
         }
@@ -365,18 +352,18 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
-        if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
-            if(savedInstanceState.getString("date") != null) {
+        if (savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
+            if (savedInstanceState.getString("date") != null) {
                 HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
             }
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_COARSE_LOCATION, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != savedInstanceState.getInt(Manifest.permission.CAMERA, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.READ_EXTERNAL_STORAGE, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1) ) {
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1)) {
                 CommonAlertBox.permissionChangeAlert(this);
             }
         }
@@ -388,6 +375,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         } else {
             commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
         }
+        dcrCallApprovalBinding.searchDcr.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(dcrCallApprovalBinding.searchDcr, 300)});
+
         dcrCallApprovalBinding.searchDcr.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -498,7 +487,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/approvals");
-        Call<JsonElement> callDcrReject = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonReject.toString());
+        Call<JsonElement> callDcrReject = api_interface.getJSONElement(SharedPref.getCallApiUrl(DcrApprovalActivity.this), mapString, jsonReject.toString());
         callDcrReject.enqueue(new Callback<JsonElement>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -563,7 +552,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/approvals");
-        Call<JsonElement> callDcrApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonAccept.toString());
+        Call<JsonElement> callDcrApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(DcrApprovalActivity.this), mapString, jsonAccept.toString());
         callDcrApproval.enqueue(new Callback<JsonElement>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -602,7 +591,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                 filteredNames.add(s);
             }
         }
-        if(adapterDcrApprovalList != null) {
+        if (adapterDcrApprovalList != null) {
             adapterDcrApprovalList.filterList(filteredNames);
         }
     }
@@ -628,7 +617,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/approvals");
-        Call<JsonElement> callGetDcrList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonDcrList.toString());
+        Call<JsonElement> callGetDcrList = api_interface.getJSONElement(SharedPref.getCallApiUrl(DcrApprovalActivity.this), mapString, jsonDcrList.toString());
         callGetDcrList.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -651,7 +640,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                 assert name1 != null;
                                 assert name2 != null;
                                 int comp = name1.compareTo(name2);
-                                if(comp != 0) {
+                                if (comp != 0) {
                                     return comp;
                                 } else {
                                     Date date1 = dateFormat.parse(o1.getActivity_date());

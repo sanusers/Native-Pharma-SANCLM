@@ -1,26 +1,19 @@
 package saneforce.sanzen.activity.leave;
 
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static saneforce.sanzen.commonClasses.UtilityClass.hideKeyboard;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -39,7 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -57,6 +49,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -78,10 +72,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityLeaveApplicationBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -123,7 +117,7 @@ public class Leave_Application extends AppCompatActivity {
     //To Hide the bottomNavigation When popup
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus) {
+        if (hasFocus) {
             leavebinding.chartLayout.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -150,15 +144,15 @@ public class Leave_Application extends AppCompatActivity {
         et_Custsearch = findViewById(R.id.et_Custsearch);
         dailog_list.setVisibility(View.VISIBLE);
         leaveViewModel = new LeaveViewModel(this);
-        if(isLeaveEntitlementRequested) {
+        if (isLeaveEntitlementRequested) {
             leaveViewModel.updateLeaveStatusMasterSync();
         }
         setVisibility();
         setMaxLength();
         onClickListener();
 
-        leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason)});
-        leavebinding.edAddress.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edAddress)});
+        leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason, 300)});
+        leavebinding.edAddress.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edAddress, 300)});
 
 //        l_sideview.closeDrawer(Gravity.RIGHT);
         leavebinding.leavebackArrow.setOnClickListener(new SafeClickListener() {
@@ -242,11 +236,11 @@ public class Leave_Application extends AppCompatActivity {
                 } else if (leavebinding.etToDate.getText().toString().equals("")) {
                     commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_to_date));
                 } else {
-                    if (!CheckStoragePermission()) {
-                        RequestStoragePermission();
-                    } else {
-                        Open_Storage();
-                    }
+//                    if (!CheckStoragePermission()) {
+//                        RequestStoragePermission();
+//                    } else {
+                    Open_Storage();
+//                    }
                 }
                 closeKeyboard();
             }
@@ -314,19 +308,19 @@ public class Leave_Application extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         boolean DontAskAgain = false;
 
-        if(requestCode == 101) {
+        if (requestCode == 101) {
             for (String allowedPermissions : permissions) {
-                if(ActivityCompat.shouldShowRequestPermissionRationale(Leave_Application.this, allowedPermissions)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(Leave_Application.this, allowedPermissions)) {
                     StorageFlag++;
-                }else if(PermissionChecker.checkCallingOrSelfPermission(Leave_Application.this, allowedPermissions) != PermissionChecker.PERMISSION_GRANTED) {
+                } else if (PermissionChecker.checkCallingOrSelfPermission(Leave_Application.this, allowedPermissions) != PermissionChecker.PERMISSION_GRANTED) {
                     DontAskAgain = true;
                     StorageFlag++;
                     break;
-                }else {
+                } else {
                     Open_Storage();
                 }
             }
-            if((DontAskAgain) && (StorageFlag>1)) {
+            if ((DontAskAgain) && (StorageFlag > 1)) {
                 CommonUtilsMethods.RequestGPSPermission(Leave_Application.this, "Files");
             }
         }
@@ -335,60 +329,124 @@ public class Leave_Application extends AppCompatActivity {
     @SuppressLint({"MissingSuperCall", "Range"})
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 7) {
-            if(resultCode == RESULT_OK && data.getData() != null) {
+        if (requestCode == 7) {
+            if (resultCode == RESULT_OK && data.getData() != null) {
                 try {
                     uri = data.getData();
-                    String fullPath = getPathFromURI(Leave_Application.this, uri);
-                    String[] parts = fullPath.split("/");
-                    String filenmae = parts[parts.length - 1];
-
-                    if(filenmae.endsWith(".zip")) {
-                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.zip_not_supported));
-                    }else {
-                        leavebinding.txtAttachement.setText(filenmae);
-                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.file_accepted));
-//                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-//                        if(!dir1.exists()) {
-//                            dir1.mkdirs();
-//                        }
-                        File file = null;
-                        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                            file = new File(this.getExternalFilesDir(null) + "/LeaveAttachment/");
-                        }else {
-                            Log.e("File Creation", "captureFile: No media mounted");
-                        }
-                        if(file != null && !file.exists()) {
-                            if(!file.mkdirs()) {
-                                Log.e("File Creation", "Directory Creation Failed.");
-                            }
-                        }
-                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+                    try {
+                        final int takeFlags = data.getFlags()
+                                & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    String filename = getFileNameFromUri(uri);
+                    if (filename == null) {
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.please_select_correct_path));
+                        return;
+                    }
+                    if (filename.endsWith(".zip")) {
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.zip_not_supported));
+                        return;
+                    }
+                    leavebinding.txtAttachement.setText(filename);
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.file_accepted));
+                    copyFileToAppDir(uri);
+//                    String fullPath = getPathFromURI(Leave_Application.this, uri);
+//                    String[] parts = fullPath.split("/");
+//                    String filenmae = parts[parts.length - 1];
+//
+//                    if (filenmae.endsWith(".zip")) {
+//                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.zip_not_supported));
+//                    } else {
+//                        FilnameTet.setText(String.valueOf(filenmae));
+//                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.file_accepted));
+////                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+////                        if(!dir1.exists()) {
+////                            dir1.mkdirs();
+////                        }
+//                        File file = null;
+//                        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//                            file = new File(getApplicationContext().getExternalFilesDir(null) + "/ActivityUpload/");
+//                        } else {
+//                            Log.e("File Creation", "captureFile: No media mounted");
+//                        }
+//                        if (file != null && !file.exists()) {
+//                            if (!file.mkdirs()) {
+//                                Log.e("File Creation", "Directory Creation Failed.");
+//                            }
+//                        }
+//                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+//                    }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
                     commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.please_select_correct_path));
                     ex.printStackTrace();
                 }
-            }else {
-                commonUtilsMethods.showToastMessage(Leave_Application.this,  Leave_Application.this.getString(R.string.no_file_selected));
+            } else {
+                commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.no_file_selected));
             }
             commonFun();
         }
     }
 
+    private void copyFileToAppDir(Uri sourceUri) {
+        try {
+            File destDir = new File(getApplicationContext().getExternalFilesDir(null), "ActivityUpload");
+            if (!destDir.exists()) destDir.mkdirs();
+            String fileName = getFileNameFromUri(sourceUri);
+            if (fileName == null) fileName = "file_" + System.currentTimeMillis();
+            File destFile = new File(destDir, fileName);
+            try (InputStream inputStream = getContentResolver().openInputStream(sourceUri);
+                 OutputStream outputStream = new FileOutputStream(destFile)) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+            Log.d("FileCopy", "Saved to: " + destFile.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFileNameFromUri(Uri uri) {
+        String result = null;
+        try {
+            if ("content".equals(uri.getScheme())) {
+                try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (index != -1) {
+                            result = cursor.getString(index);
+                        }
+                    }
+                }
+            }
+            if (result == null) {
+                result = uri.getPath();
+                int cut = result.lastIndexOf('/');
+                if (cut != -1) result = result.substring(cut + 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public static String getPathFromURI(final Context Context, final Uri uri) {
-        if(DocumentsContract.isDocumentUri(Context, uri)) {
-            if(isExternalStorageDocument(uri)) {
+        if (DocumentsContract.isDocumentUri(Context, uri)) {
+            if (isExternalStorageDocument(uri)) {
                 Log.v("bv1", "------" + uri);
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
 
-                if("primary".equalsIgnoreCase(type)) {
+                if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-            }else if(isDownloadsDocument(uri)) {
+            } else if (isDownloadsDocument(uri)) {
                 Log.v("bv2", "------" + uri);
                 try {
                     final String id = DocumentsContract.getDocumentId(uri);
@@ -398,17 +456,17 @@ public class Leave_Application extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-            }else if(isMediaDocument(uri)) {
+            } else if (isMediaDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
                 Log.v("bv3", "------" + uri);
                 Uri contentUri = null;
-                if("image".equals(type)) {
+                if ("image".equals(type)) {
                     contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                }else if("video".equals(type)) {
+                } else if ("video".equals(type)) {
                     contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                }else if("audio".equals(type)) {
+                } else if ("audio".equals(type)) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
 
@@ -417,10 +475,10 @@ public class Leave_Application extends AppCompatActivity {
 
                 return getDataColumn(Context, contentUri, selection, selectionArgs);
             }
-        }else if("content".equalsIgnoreCase(uri.getScheme())) {
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
             Log.v("bv4", "------" + uri);
             return getDataColumn(Context, uri, null, null);
-        }else if("file".equalsIgnoreCase(uri.getScheme())) {
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             Log.v("bv5", "------" + uri);
             return uri.getPath();
         }
@@ -433,12 +491,12 @@ public class Leave_Application extends AppCompatActivity {
         final String[] projection = {column};
         try {
             cursor = Context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if(cursor != null && cursor.moveToFirst()) {
+            if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
         } finally {
-            if(cursor != null) cursor.close();
+            if (cursor != null) cursor.close();
         }
         return null;
     }
@@ -459,33 +517,34 @@ public class Leave_Application extends AppCompatActivity {
         Leave_Application.this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
-    public boolean CheckStoragePermission() {
-        if(android.os.Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
-            int image = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_IMAGES);
-            int video = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_VIDEO);
-            int audio = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_AUDIO);
-            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
-        }else {
-            int Write = ContextCompat.checkSelfPermission(Leave_Application.this, WRITE_EXTERNAL_STORAGE);
-            int Read = ContextCompat.checkSelfPermission(Leave_Application.this, READ_EXTERNAL_STORAGE);
-            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
-        }
-    }
+//    public boolean CheckStoragePermission() {
+//        if(android.os.Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
+//            int image = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_IMAGES);
+//            int video = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_VIDEO);
+//            int audio = ContextCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_AUDIO);
+//            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
+//        }else {
+//            int Write = ContextCompat.checkSelfPermission(Leave_Application.this, WRITE_EXTERNAL_STORAGE);
+//            int Read = ContextCompat.checkSelfPermission(Leave_Application.this, READ_EXTERNAL_STORAGE);
+//            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
+//        }
+//    }
 
-    private void RequestStoragePermission() {
-        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
-            if((ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(Leave_Application.this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-            }
-        }else {
-            if(ActivityCompat.checkSelfPermission(Leave_Application.this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Leave_Application.this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(Leave_Application.this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-            }
-        }
-    }
+//    private void RequestStoragePermission() {
+//        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+//            if((ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(Leave_Application.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(Leave_Application.this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+//            }
+//        }else {
+//            if(ActivityCompat.checkSelfPermission(Leave_Application.this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Leave_Application.this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(Leave_Application.this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+//            }
+//        }
+//    }
 
     private void Open_Storage() {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent chooseFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");
         startActivityForResult(chooseFile, 7);
@@ -496,7 +555,7 @@ public class Leave_Application extends AppCompatActivity {
             File src = new File(srcDir);
             File dst = new File(dstDir, src.getName());
             Log.d("string", src.getName());
-            if(src.isDirectory()) {
+            if (src.isDirectory()) {
                 String[] files = src.list();
                 if (files != null) {
                     for (String file : files) {
@@ -505,7 +564,7 @@ public class Leave_Application extends AppCompatActivity {
                         copyFileOrDirectory(src1, dst1);
                     }
                 }
-            }else {
+            } else {
                 copyFile(src, dst);
             }
         } catch (Exception e) {
@@ -515,9 +574,9 @@ public class Leave_Application extends AppCompatActivity {
 
     // @RequiresApi(api = Build.VERSION_CODES.Q)
     public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if(!destFile.getParentFile().exists()) destFile.getParentFile().mkdirs();
+        if (!destFile.getParentFile().exists()) destFile.getParentFile().mkdirs();
 
-        if(!destFile.exists()) {
+        if (!destFile.exists()) {
             destFile.createNewFile();
         }
 
@@ -542,7 +601,7 @@ public class Leave_Application extends AppCompatActivity {
         }
         if (file != null && !file.exists()) {
             Log.w("File Deletion", "No File Found" + file.getAbsolutePath());
-        } else if(file != null && file.exists()){
+        } else if (file != null && file.exists()) {
             if (file.delete()) {
                 Log.d("FileDeleter", "File deleted: " + file.getAbsolutePath());
             } else {
@@ -556,12 +615,12 @@ public class Leave_Application extends AppCompatActivity {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
             String days = "";
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String dates = jsonObject.getString("Created_Date");
                     JSONObject jsonval = new JSONObject(dates);
-                    if(days.equals("")) {
+                    if (days.equals("")) {
                         days = (jsonval.getString("date"));
                         String dval = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_22, TimeUtils.FORMAT_4, days);
                         ltypecount.add(dval);
@@ -590,8 +649,8 @@ public class Leave_Application extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
             Log.d("L-type", String.valueOf(jsonArray));
             String days = "";
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String Leavename = (jsonObject.getString("Leave_Name"));//Leave_Name
                     String L_code = (jsonObject.getString("Leave_code"));
@@ -601,7 +660,7 @@ public class Leave_Application extends AppCompatActivity {
                     String dates = jsonObject.getString("Created_Date");
 
                     JSONObject jsonval = new JSONObject(dates);
-                    if(days.equals("")) {
+                    if (days.equals("")) {
                         days = (jsonval.getString("date"));
 
                         String dval = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_22, TimeUtils.FORMAT_4, days);
@@ -635,19 +694,19 @@ public class Leave_Application extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 avilable = "";
                 leavety = "";
-                if(UtilityClass.isNetworkAvailable(this)) {
+                if (UtilityClass.isNetworkAvailable(this)) {
                     String selectedFromList = dailog_list.getItemAtPosition(position).toString();
-                    for (int i = 0; i<leave_typename.size(); i++) {
-                        if(selectedFromList.equals(leave_typename.get(i))) {
+                    for (int i = 0; i < leave_typename.size(); i++) {
+                        if (selectedFromList.equals(leave_typename.get(i))) {
                             leavebinding.LeaveType.setText(selectedFromList);
                             Ltype_id = leave_typeid.get(i);
                             L_typename = leave_typename.get(i);
                             Lshortname = leave_type.get(i);
                             try {
                                 JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
-                                for (int d = 0; d<jsonArray1.length(); d++) {
+                                for (int d = 0; d < jsonArray1.length(); d++) {
                                     JSONObject jsonobj1 = jsonArray1.getJSONObject(d);
-                                    if(Ltype_id.equals(jsonobj1.getString("Leave_code"))) {
+                                    if (Ltype_id.equals(jsonobj1.getString("Leave_code"))) {
                                         avilable = (jsonobj1.getString("Avail"));
                                         leavety = (jsonobj1.getString("Leave_Type_Code"));
                                         break;
@@ -676,13 +735,13 @@ public class Leave_Application extends AppCompatActivity {
 //                                Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
 //                                l_details.notifyDataSetChanged();
 //                            } else {
-                                leave_avalabledetails();
+                            leave_avalabledetails();
 //                            }
 
                         }
                     }
                     leavebinding.leaveSide.closeDrawer(Gravity.END);
-                }else {
+                } else {
                     commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection));
                 }
                 closeKeyboard();
@@ -698,7 +757,7 @@ public class Leave_Application extends AppCompatActivity {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
             Bundle bundle = getIntent().getExtras();
-            if(bundle != null) {
+            if (bundle != null) {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
 
@@ -720,24 +779,24 @@ public class Leave_Application extends AppCompatActivity {
             qry.put("axn", "get/leave");
             Call<JsonElement> call = null;
             call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
-            if(call != null) {
+            if (call != null) {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
 
-                        if(response.isSuccessful()) {
+                        if (response.isSuccessful()) {
                             Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                             try {
                                 JSONArray jsonArray = new JSONArray(response.body().toString());
                                 Log.d("responce1", String.valueOf(jsonArray));
-                                for (int i = 0; i<jsonArray.length(); i++) {
+                                for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     String Leavename = (jsonObject.getString("Flg"));//Leave_Name
                                     String msg = (jsonObject.getString("Msg"));
 //                                    System.out.println("leaveMessage--->" + msg);
-                                    if((jsonObject.getString("Msg").equals(""))) {
+                                    if ((jsonObject.getString("Msg").equals(""))) {
                                         Leavedetails(jsonObject);
-                                    }else {
+                                    } else {
                                         List_LeaveDates.clear();
                                         leavebinding.etFromDate.setText("");
                                         leavebinding.etToDate.setText("");
@@ -809,24 +868,24 @@ public class Leave_Application extends AppCompatActivity {
 
             Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
             L_count = String.valueOf(listdate.size());
-            if(isLeaveEntitlementRequested) {
+            if (isLeaveEntitlementRequested) {
                 totalval = Integer.parseInt(avilable);
                 val = Integer.parseInt(L_count);
                 Log.d("rem", totalval + "---" + val);
                 int bal = totalval - val;
 
-                if(bal<0) {
+                if (bal < 0) {
                     commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
                     leavebinding.submitLeave.setEnabled(false);
-                }else {
+                } else {
 //                    if(bal == 0) {
 //
 //                }else {
 //                    if(leavety.equals("LOP")) {
 //                        leavebinding.balanceDays.setText("");
 //                    }else {
-                        String balval = String.valueOf(bal);
-                        leavebinding.balanceDays.setText(balval + " " + "days remaining");
+                    String balval = String.valueOf(bal);
+                    leavebinding.balanceDays.setText(balval + " " + "days remaining");
 //                    }
                 }
             }
@@ -845,13 +904,13 @@ public class Leave_Application extends AppCompatActivity {
 
         try {
             JSONArray jsonarr = new JSONArray();
-            for (int s = 0; s<listdate.size(); s++) {
+            for (int s = 0; s < listdate.size(); s++) {
                 JSONObject jsonobj = new JSONObject();
                 jsonobj.put("Date", listdate.get(s));//cip_head
                 jsonarr.put(jsonobj);
             }
-            if(jsonarr.length()>0) {
-                for (int j = 0; j<jsonarr.length(); j++) {
+            if (jsonarr.length() > 0) {
+                for (int j = 0; j < jsonarr.length(); j++) {
                     JSONObject jsonObject = jsonarr.getJSONObject(j);
                     String listed_date = jsonObject.getString("Date");
                     Leave_modelclass model = new Leave_modelclass(listed_date, "5");//,ref_source_id
@@ -873,11 +932,11 @@ public class Leave_Application extends AppCompatActivity {
 
         try {
             String attachmentStr = data.optString("attchment");
-            int attachment = attachmentStr.isEmpty()?0:Integer.parseInt(attachmentStr);
+            int attachment = attachmentStr.isEmpty() ? 0 : Integer.parseInt(attachmentStr);
             if (attachment == 0) {
                 leavebinding.tlAttachment.setVisibility(View.VISIBLE);
             } else {
-                leavebinding.tlAttachment.setVisibility(View.GONE);
+                leavebinding.tlAttachment.setVisibility(View.INVISIBLE);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -907,27 +966,27 @@ public class Leave_Application extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
             String lstatus = (jsonArray.get(0).toString());
-            if(lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
+            if (lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
                 leavebinding.chartLayout.setVisibility(View.GONE);
                 leavebinding.mtcard.setVisibility(View.VISIBLE);
-            }else {
+            } else {
 //                Log.d("Leave_data", jsonArray + "--" + jsonArray1);
                 HashMap<String, LeaveStatusModelClass> leaveStatusMap = new HashMap<>();
-                for (int i = 0; i<jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
                     LeaveStatusModelClass leaveStatusModelClass = new LeaveStatusModelClass(jsonObject.optString("Leave_Type_Code"), jsonObject.optString("Elig"), jsonObject.optString("Taken"), jsonObject.optString("Avail"), jsonObject.optString("Leave_code"));
                     leaveStatusMap.put(leaveStatusModelClass.getLeaveCode(), leaveStatusModelClass);
                 }
 
-                for (int i = 0; i<jsonArray1.length(); i++) {
+                for (int i = 0; i < jsonArray1.length(); i++) {
                     JSONObject jsonObject = jsonArray1.optJSONObject(i);
-                    if(leaveStatusMap.containsKey(jsonObject.optString("Leave_code"))) {
+                    if (leaveStatusMap.containsKey(jsonObject.optString("Leave_code"))) {
                         LeaveStatusModelClass leaveStatusModelClass = leaveStatusMap.get(jsonObject.optString("Leave_code"));
-                        if(leaveStatusModelClass != null) {
+                        if (leaveStatusModelClass != null) {
                             Leave_modelclass leave = new Leave_modelclass(jsonObject.optString("Leave_Name"), leaveStatusModelClass.getEligible(), leaveStatusModelClass.getTaken(), leaveStatusModelClass.getAvailable(), leaveStatusModelClass.getLeaveTypeCode());
                             Chart_list.add(leave);
                         }
-                    }else {
+                    } else {
                         Leave_modelclass leave = new Leave_modelclass(jsonObject.optString("Leave_Name"), "0", "0", "0", jsonObject.optString("Leave_SName"));
                         Chart_list.add(leave);
                     }
@@ -1031,14 +1090,14 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     public void Submit() {
-        if(isNetworkConnected()) {
+        if (isNetworkConnected()) {
             String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
             String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
             String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
             Log.e("test", "login url : " + baseUrl + replacedUrl);
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
             Bundle bundle = getIntent().getExtras();
-            if(bundle != null) {
+            if (bundle != null) {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
 
@@ -1067,19 +1126,19 @@ public class Leave_Application extends AppCompatActivity {
                 mapString.put("axn", "save/leavemodule");
                 Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonobj.toString());
 
-                if(call != null) {
+                if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                            if(response.isSuccessful()) {
+                            if (response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                                 try {
                                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                     JSONArray wtJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
                                     String FWIndicator = "", WTName = "";
-                                    for (int i = 0; i<wtJsonArray.length(); i++) {
+                                    for (int i = 0; i < wtJsonArray.length(); i++) {
                                         JSONObject jsonObject = wtJsonArray.optJSONObject(i);
-                                        if(jsonObject.optString("FWFlg").equalsIgnoreCase("L")) {
+                                        if (jsonObject.optString("FWFlg").equalsIgnoreCase("L")) {
                                             FWIndicator = jsonObject.optString("FWFlg");
                                             WTName = jsonObject.optString("Name");
                                             break;
@@ -1116,7 +1175,7 @@ public class Leave_Application extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                                 commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
-                                if(isLeaveEntitlementRequested) {
+                                if (isLeaveEntitlementRequested) {
                                     leaveViewModel.updateLeaveStatusMasterSync();
                                 }
                                 finish();
@@ -1135,7 +1194,7 @@ public class Leave_Application extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             leavebinding.etFromDate.setText("");
             leavebinding.etToDate.setText("");
             leavebinding.LeaveType.setText("");
@@ -1162,9 +1221,9 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     private void setVisibility() {
-        if(isLeaveEntitlementRequested) {
+        if (isLeaveEntitlementRequested) {
             leavebinding.chartLayout.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             leavebinding.chartLayout.setVisibility(View.GONE);
         }
     }
@@ -1177,14 +1236,14 @@ public class Leave_Application extends AppCompatActivity {
 
     private void timeZoneVerification() {
         boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(this) && commonUtilsMethods.isTimeZoneAutomatic(this);
-        if(!isAutoTimeZoneEnabled) {
+        if (!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }
     }
 
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
-        if(view != null) {
+        if (view != null) {
             InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
@@ -1202,7 +1261,7 @@ public class Leave_Application extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // TODO Auto-generated method stub
                 String str = s.toString();
-                if(str.length()>300) {
+                if (str.length() > 300) {
                     String truncated = str.substring(0, 300);
                     leavebinding.edAddress.setText(truncated);
                     leavebinding.edAddress.setSelection(truncated.length());
@@ -1226,7 +1285,7 @@ public class Leave_Application extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // TODO Auto-generated method stub
                 String str = s.toString();
-                if(str.length()>300) {
+                if (str.length() > 300) {
                     String truncated = str.substring(0, 300);
                     leavebinding.edReason.setText(truncated);
                     leavebinding.edReason.setSelection(truncated.length());

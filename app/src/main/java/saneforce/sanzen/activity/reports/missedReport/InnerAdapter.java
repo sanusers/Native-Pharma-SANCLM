@@ -44,126 +44,6 @@ import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
-//public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> {
-//    private final Context context;
-//    private final List<MissedStatsModel> statsList;
-//    String val;
-//    public InnerAdapter(Context context, List<MissedStatsModel> statsList, String val) {
-//        this.context = context;
-//        this.statsList = statsList;
-//        this.val = val;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(context).inflate(R.layout.layout_drchm_missed_current, parent, false);
-//        return new ViewHolder(view);
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        MissedStatsModel model = statsList.get(position);
-//        if (model.getType().equalsIgnoreCase("1")) {
-//            int totalCount = model.getTotalCustomers().length();
-//            int visitedCount = model.getUniqueCustomers().size();
-//            int missedCount = totalCount - visitedCount;
-//            holder.totalDrCnt.setText(String.valueOf(totalCount));
-//            holder.visitedCnt.setText(String.valueOf(visitedCount));
-//            holder.missedCnt.setText(String.valueOf(missedCount));
-//            float missedPercentage = (((float) missedCount / (float) totalCount) * 100.0f);
-//            ArrayList<Integer> colors = new ArrayList<>();
-//            colors.add(context.getResources().getColor(R.color.green_60));
-//            colors.add(context.getResources().getColor(R.color.mildRed));
-//            ArrayList<PieEntry> missedDataList = new ArrayList<>();
-//            missedDataList.add(new PieEntry(100.0f - missedPercentage)); // visited
-//            missedDataList.add(new PieEntry(missedPercentage, ""));      // missed
-//            PieDataSet missedDataSet = new PieDataSet(missedDataList, "");
-//            missedDataSet.setColors(colors);
-//            PieData missedData = new PieData(missedDataSet);
-//            missedData.setValueTextSize(0f);
-//            missedData.setValueTextColor(Color.WHITE);
-//            holder.missedChart.setData(missedData);
-//            holder.missedChart.setUsePercentValues(true);
-//            holder.missedChart.setDrawHoleEnabled(true);
-//            holder.missedChart.setCenterTextSize(18f);
-//            holder.missedChart.setCenterTextColor(holder.missedChart.getContext().getColor(R.color.black));
-//            holder.missedChart.setTransparentCircleRadius(30f);
-//            holder.missedChart.setHoleRadius(75f);
-//            holder.missedChart.animateXY(1400, 1400);
-//            holder.missedChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
-//            holder.missedChart.setCenterText(String.format("%.1f %%", missedPercentage));
-//            Description description2 = holder.missedChart.getDescription();
-//            description2.setEnabled(false);
-//            Legend legend2 = holder.missedChart.getLegend();
-//            legend2.setEnabled(false);
-//            holder.missedChart.invalidate();
-//        }
-//        if (model.getType().equalsIgnoreCase("2")) {
-//            int totalCountchm = model.getTotalCustomers().length();
-//            int visitedCountchm = model.getUniqueCustomers().size();
-//            int missedCountchm = totalCountchm - visitedCountchm;
-//            holder.totalchmCnt.setText(String.valueOf(totalCountchm));
-//            holder.chmvisitedCnt.setText(String.valueOf(visitedCountchm));
-//            holder.chmmissedCnt.setText(String.valueOf(missedCountchm));
-//            float missedPercentagechm = (((float) missedCountchm / (float) totalCountchm) * 100.0f);
-//            ArrayList<Integer> colorschm = new ArrayList<>();
-//            colorschm.add(context.getResources().getColor(R.color.green_60));
-//            colorschm.add(context.getResources().getColor(R.color.mildRed));
-//            ArrayList<PieEntry> missedDataListchm = new ArrayList<>();
-//            missedDataListchm.add(new PieEntry(100.0f - missedPercentagechm)); // visited
-//            missedDataListchm.add(new PieEntry(missedPercentagechm, ""));      // missed
-//            PieDataSet missedDataSetchm = new PieDataSet(missedDataListchm, "");
-//            missedDataSetchm.setColors(colorschm);
-//            PieData missedDatachm = new PieData(missedDataSetchm);
-//            missedDatachm.setValueTextSize(0f);
-//            missedDatachm.setValueTextColor(Color.WHITE);
-//            holder.missedChartChem.setData(missedDatachm);
-//            holder.missedChartChem.setUsePercentValues(true);
-//            holder.missedChart.setDrawHoleEnabled(true);
-//            holder.missedChartChem.setCenterTextSize(18f);
-//            holder.missedChartChem.setCenterTextColor(holder.missedChartChem.getContext().getColor(R.color.black));
-//            holder.missedChartChem.setTransparentCircleRadius(30f);
-//            holder.missedChartChem.setHoleRadius(75f);
-//            holder.missedChartChem.animateXY(1400, 1400);
-//            holder.missedChartChem.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
-//            holder.missedChartChem.setCenterText(String.format("%.1f %%", missedPercentagechm));
-//            Description description2chm = holder.missedChartChem.getDescription();
-//            description2chm.setEnabled(false);
-//            Legend legend2chm = holder.missedChartChem.getLegend();
-//            legend2chm.setEnabled(false);
-//            holder.missedChartChem.invalidate();
-//        }
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return statsList.size();
-//    }
-//
-//    public static class ViewHolder extends RecyclerView.ViewHolder {
-//        public PieChart missedChart, missedChartChem;
-//        TextView totalDr, visited, missed, totalDrCnt, visitedCnt, missedCnt;
-//        TextView totalchm, totalchmCnt, chmvisited, chmvisitedCnt, chmmissed, chmmissedCnt;
-//        public ViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//            missedChart = itemView.findViewById(R.id.pBar);
-//            totalDr = itemView.findViewById(R.id.totalDr);
-//            totalDrCnt = itemView.findViewById(R.id.totalDrCnt);
-//            visited = itemView.findViewById(R.id.visited);
-//            visitedCnt = itemView.findViewById(R.id.visitedCnt);
-//            missed = itemView.findViewById(R.id.missed);
-//            missedCnt = itemView.findViewById(R.id.missedCnt);
-//            missedChartChem = itemView.findViewById(R.id.pBar2);
-//            totalchm = itemView.findViewById(R.id.totalchm);
-//            totalchmCnt = itemView.findViewById(R.id.totalchmCnt);
-//            chmvisited = itemView.findViewById(R.id.chmvisited);
-//            chmvisitedCnt = itemView.findViewById(R.id.chmvisitedCnt);
-//            chmmissed = itemView.findViewById(R.id.chmmissed);
-//            chmmissedCnt = itemView.findViewById(R.id.chmmissedCnt);
-//        }
-//    }
-//}
 
 public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> {
 
@@ -184,7 +64,6 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
         this.date = date;
         this.monthName = monthName;
 
-        // Separate models by type once
         for (MissedStatsModel model : statsList) {
             switch (model.getType()) {
                 case "1":
@@ -215,152 +94,275 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MissedStatsModel doctor = statsList.get(position);
+
         if (position == 0) {
             Log.d("DoctorList", "Total: " + doctor.getTotalCustomers());
             Log.d("DoctorList", "Visited: " + doctor.getUniqueCustomers());
             Log.d("DoctorList", "Missed: " + doctor.getMissedCustomers());
 
-            // Card 1 → Doctor + Chemist
             holder.card1Layout.setVisibility(View.VISIBLE);
             holder.card2Layout.setVisibility(View.GONE);
-            if (doctor != null && SharedPref.getDrNeed(context).equalsIgnoreCase("0"))
+            if (doctor != null && SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
+                holder.drMissedCurrent.setVisibility(View.VISIBLE);
+                holder.drVisitTxt.setText(SharedPref.getDrCap(context));
                 setPieChart(holder.missedChart, holder.totalDrCnt, holder.visitedCnt, holder.missedCnt, doctor);
-            holder.missedBox.setClickable(true);
-            holder.missedBox.setFocusable(true);
+                holder.missedBox.setClickable(true);
+                holder.missedBox.setFocusable(true);
 
-            holder.missedBox.setOnClickListener(v -> {
-                Log.d("CLICK_TEST", "Missed box clicked at position " + position);
-                try {
-                    //Prepare array
-                    JSONArray missedDoctors = doctor.getMissedCustomers();
-                    JSONArray visitDoctors = doctor.getVisitedCustomers();
+                holder.missedBox.setOnClickListener(v -> {
+                    Log.d("CLICK_TEST", "Missed box clicked at position " + position);
+                    try {
+                        //Prepare array
+                        JSONArray missedDoctors = doctor.getMissedCustomers();
+                        JSONArray visitDoctors = doctor.getVisitedCustomers();
 
-                    Log.d("MissedDoctorsJSON", missedDoctors.toString());
-                    Log.d("MissedDoctorsCount", "Length = " + missedDoctors.length());
-                    // Save to RoomDB
-                    RoomDB localRoomDB = RoomDB.getDatabase(context);
-                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, missedDoctors.toString());
-                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitDoctors.toString());
-                    // Pass to next activity
-                    Intent intent = new Intent(context, DoctorVisitActivity.class);
-                    intent.putExtra("missed_array", missedDoctors.toString());
-                    intent.putExtra("visit", visitDoctors.toString());
-                    intent.putExtra("sfcode", sfCode);
-                    intent.putExtra("date", date);
-                    intent.putExtra("selected_month", monthName);
-                    intent.putExtra("clicked_type", doctor.getType());
-                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                        Log.d("MissedDoctorsJSON", missedDoctors.toString());
+                        Log.d("MissedDoctorsCount", "Length = " + missedDoctors.length());
+                        // Save to RoomDB
+                        RoomDB localRoomDB = RoomDB.getDatabase(context);
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, missedDoctors.toString());
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitDoctors.toString());
+                        // Pass to next activity
+                        Intent intent = new Intent(context, DoctorVisitActivity.class);
+                        intent.putExtra("missed_array", missedDoctors.toString());
+                        intent.putExtra("visit", visitDoctors.toString());
+                        intent.putExtra("sfcode", sfCode);
+                        intent.putExtra("date", date);
+                        intent.putExtra("selected_month", monthName);
+                        intent.putExtra("clicked_type", doctor.getType());
+                        intent.putExtra("source", "local");
+                        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
+                holder.drMissedCurrent.setVisibility(View.GONE);
+            }
+
+            if (chemist != null && SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
+                holder.cheMissedCurrent.setVisibility(View.VISIBLE);
+                setPieChart(holder.missedChartChem, holder.totalchmCnt, holder.chmvisitedCnt, holder.chmmissedCnt, chemist);
+                holder.chmVisitTxt.setText(SharedPref.getChmCap(context));
+                holder.chemistBox.setOnClickListener(v -> {
+                    try {
+                        //Prepare array
+                        JSONArray chemistDoctors = chemist.getMissedCustomers();
+                        JSONArray visitchemist = chemist.getVisitedCustomers();
+
+                        Log.d("MissedDoctorsJSON", chemistDoctors.toString());
+                        Log.d("MissedDoctorsCount", "Length = " + chemistDoctors.length());
+
+                        // Save to RoomDB
+                        RoomDB localRoomDB = RoomDB.getDatabase(context);
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, chemistDoctors.toString());
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitchemist.toString());
+                        // Pass to next activity
+                        Intent intent = new Intent(context, DoctorVisitActivity.class);
+                        intent.putExtra("missed_array", chemistDoctors.toString());
+                        intent.putExtra("visit", visitchemist.toString());
+                        intent.putExtra("sfcode", sfCode);
+                        intent.putExtra("date", date);
+                        intent.putExtra("selected_month", monthName);
+                        intent.putExtra("clicked_type", chemist.getType());
+                        intent.putExtra("source", "local");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
+                holder.cheMissedCurrent.setVisibility(View.GONE);
+            }
+            if (stockist != null && SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
+                holder.stkMissedCurrent1.setVisibility(View.VISIBLE);
+                setPieChart(holder.missedChartStk1, holder.totalstkCnt1, holder.stkvisitedCnt1, holder.stkmissedCnt1, stockist);
+                holder.stkVisitTxt.setText(SharedPref.getStkCap(context));
+                holder.stockiestBox1.setOnClickListener(v -> {
+                    try {
+                        //Prepare array
+                        JSONArray stockistDoctors = stockist.getMissedCustomers();
+                        JSONArray visitstockist = stockist.getVisitedCustomers();
+
+                        Log.d("MissedDoctorsJSON", stockistDoctors.toString());
+                        Log.d("MissedDoctorsCount", "Length = " + stockistDoctors.length());
+                        // Save to RoomDB
+                        RoomDB localRoomDB = RoomDB.getDatabase(context);
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, stockistDoctors.toString());
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitstockist.toString());
+                        // Pass to next activity
+                        Intent intent = new Intent(context, DoctorVisitActivity.class);
+                        intent.putExtra("missed_array", stockistDoctors.toString());
+                        intent.putExtra("visit", visitstockist.toString());
+                        intent.putExtra("sfcode", sfCode);
+                        intent.putExtra("date", date);
+                        intent.putExtra("selected_month", monthName);
+                        intent.putExtra("clicked_type", stockist.getType());
+                        intent.putExtra("source", "local");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
+                holder.stkMissedCurrent1.setVisibility(View.GONE);
+            }
+            if (unlisted != null && SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
+                holder.unlstMissedCurrent1.setVisibility(View.VISIBLE);
+                setPieChart(holder.missedChartUnlst1, holder.totalunlstCnt1, holder.unlstvisitedCnt1, holder.unlstmissedCnt1, unlisted);
+                holder.unlstVisitTxt.setText(SharedPref.getUNLcap(context));
+                holder.unlistedBox1.setOnClickListener(v -> {
+
+                    try {
+                        //Prepare array
+                        JSONArray unlistedDoctors = unlisted.getMissedCustomers();
+                        JSONArray visitunlisted = unlisted.getVisitedCustomers();
+
+                        Log.d("MissedDoctorsJSON", unlistedDoctors.toString());
+                        Log.d("MissedDoctorsCount", "Length = " + unlistedDoctors.length());
+                        // Save to RoomDB
+                        RoomDB localRoomDB = RoomDB.getDatabase(context);
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, unlistedDoctors.toString());
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitunlisted.toString());
+                        // Pass to next activity
+                        Intent intent = new Intent(context, DoctorVisitActivity.class);
+                        intent.putExtra("missed_array", unlistedDoctors.toString());
+                        intent.putExtra("visit", visitunlisted.toString());
+                        intent.putExtra("sfcode", sfCode);
+                        intent.putExtra("date", date);
+                        intent.putExtra("selected_month", monthName);
+                        intent.putExtra("clicked_type", unlisted.getType());
+                        intent.putExtra("source", "local");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
+                holder.unlstMissedCurrent1.setVisibility(View.GONE);
+
+            }
 
         } else if (position == 1) {
-//
-            if (chemist != null && SharedPref.getChmNeed(context).equalsIgnoreCase("0"))
-                setPieChart(holder.missedChartChem, holder.totalchmCnt, holder.chmvisitedCnt, holder.chmmissedCnt, chemist);
-            holder.chemistBox.setOnClickListener(v -> {
-                try {
-                    //Prepare array
-                    JSONArray chemistDoctors = chemist.getMissedCustomers();
-                    JSONArray visitchemist = chemist.getVisitedCustomers();
 
-                    Log.d("MissedDoctorsJSON", chemistDoctors.toString());
-                    Log.d("MissedDoctorsCount", "Length = " + chemistDoctors.length());
-
-                    // Save to RoomDB
-                    RoomDB localRoomDB = RoomDB.getDatabase(context);
-                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, chemistDoctors.toString());
-                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitchemist.toString());
-                    // Pass to next activity
-                    Intent intent = new Intent(context, DoctorVisitActivity.class);
-                    intent.putExtra("missed_array", chemistDoctors.toString());
-                    intent.putExtra("visit", visitchemist.toString());
-                    intent.putExtra("sfcode", sfCode);
-                    intent.putExtra("date", date);
-                    intent.putExtra("selected_month", monthName);
-                    intent.putExtra("clicked_type", chemist.getType());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-
-        } else if (position == 2) {
-            // Card 2 → Stockist + Unlisted
             holder.card1Layout.setVisibility(View.GONE);
             holder.card2Layout.setVisibility(View.VISIBLE);
-            if (stockist != null && SharedPref.getStkNeed(context).equalsIgnoreCase("0"))
+
+            if (stockist != null && (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0"))
+                    || (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getUnlNeed(context).equalsIgnoreCase("1"))) {
+                holder.stkMissedCurrent.setVisibility(View.VISIBLE);
                 setPieChart(holder.missedChartStk, holder.totalstkCnt, holder.stkvisitedCnt, holder.stkmissedCnt, stockist);
-            holder.stockiestBox.setOnClickListener(v -> {
-                try {
-                    //Prepare array
-                    JSONArray stockistDoctors = stockist.getMissedCustomers();
-                    JSONArray visitstockist = stockist.getVisitedCustomers();
+                holder.stkVisitTxt.setText(SharedPref.getStkCap(context));
+                holder.stockiestBox.setOnClickListener(v -> {
+                    try {
+                        //Prepare array
+                        JSONArray stockistDoctors = stockist.getMissedCustomers();
+                        JSONArray visitstockist = stockist.getVisitedCustomers();
 
-                    Log.d("MissedDoctorsJSON", stockistDoctors.toString());
-                    Log.d("MissedDoctorsCount", "Length = " + stockistDoctors.length());
-                    // Save to RoomDB
-                    RoomDB localRoomDB = RoomDB.getDatabase(context);
-                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, stockistDoctors.toString());
-                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitstockist.toString());
-                    // Pass to next activity
-                    Intent intent = new Intent(context, DoctorVisitActivity.class);
-                    intent.putExtra("missed_array", stockistDoctors.toString());
-                    intent.putExtra("visit", visitstockist.toString());
-                    intent.putExtra("sfcode", sfCode);
-                    intent.putExtra("date", date);
-                    intent.putExtra("selected_month", monthName);
-                    intent.putExtra("clicked_type", stockist.getType());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                        Log.d("MissedDoctorsJSON", stockistDoctors.toString());
+                        Log.d("MissedDoctorsCount", "Length = " + stockistDoctors.length());
+                        // Save to RoomDB
+                        RoomDB localRoomDB = RoomDB.getDatabase(context);
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, stockistDoctors.toString());
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitstockist.toString());
+                        // Pass to next activity
+                        Intent intent = new Intent(context, DoctorVisitActivity.class);
+                        intent.putExtra("missed_array", stockistDoctors.toString());
+                        intent.putExtra("visit", visitstockist.toString());
+                        intent.putExtra("sfcode", sfCode);
+                        intent.putExtra("date", date);
+                        intent.putExtra("selected_month", monthName);
+                        intent.putExtra("clicked_type", stockist.getType());
+                        intent.putExtra("source", "local");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        } else if (position == 3) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
+                holder.stkMissedCurrent.setVisibility(View.GONE);
+            }
 
-            if (unlisted != null && SharedPref.getUnlNeed(context).equalsIgnoreCase("0"))
+            if (unlisted != null && (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getStkNeed(context).equalsIgnoreCase("0"))
+            || (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getStkNeed(context).equalsIgnoreCase("1"))) {
+                holder.unlstMissedCurrent.setVisibility(View.VISIBLE);
                 setPieChart(holder.missedChartUnlst, holder.totalunlstCnt, holder.unlstvisitedCnt, holder.unlstmissedCnt, unlisted);
-            holder.unlistedBox.setOnClickListener(v -> {
+                holder.unlstVisitTxt.setText(SharedPref.getUNLcap(context));
+                holder.unlistedBox.setOnClickListener(v -> {
 
-                try {
-                    //Prepare array
-                    JSONArray unlistedDoctors = unlisted.getMissedCustomers();
-                    JSONArray visitunlisted = unlisted.getVisitedCustomers();
+                    try {
+                        //Prepare array
+                        JSONArray unlistedDoctors = unlisted.getMissedCustomers();
+                        JSONArray visitunlisted = unlisted.getVisitedCustomers();
 
-                    Log.d("MissedDoctorsJSON", unlistedDoctors.toString());
-                    Log.d("MissedDoctorsCount", "Length = " + unlistedDoctors.length());
-                    // Save to RoomDB
-                    RoomDB localRoomDB = RoomDB.getDatabase(context);
-                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, unlistedDoctors.toString());
-                    localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitunlisted.toString());
-                    // Pass to next activity
-                    Intent intent = new Intent(context, DoctorVisitActivity.class);
-                    intent.putExtra("missed_array", unlistedDoctors.toString());
-                    intent.putExtra("visit", visitunlisted.toString());
-                    intent.putExtra("sfcode", sfCode);
-                    intent.putExtra("date", date);
-                    intent.putExtra("selected_month", monthName);
-                    intent.putExtra("clicked_type", unlisted.getType());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                        Log.d("MissedDoctorsJSON", unlistedDoctors.toString());
+                        Log.d("MissedDoctorsCount", "Length = " + unlistedDoctors.length());
+                        // Save to RoomDB
+                        RoomDB localRoomDB = RoomDB.getDatabase(context);
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, unlistedDoctors.toString());
+                        localRoomDB.doctorVisitDao().saveVisitJson(sfCode, date, visitunlisted.toString());
+                        // Pass to next activity
+                        Intent intent = new Intent(context, DoctorVisitActivity.class);
+                        intent.putExtra("missed_array", unlistedDoctors.toString());
+                        intent.putExtra("visit", visitunlisted.toString());
+                        intent.putExtra("sfcode", sfCode);
+                        intent.putExtra("date", date);
+                        intent.putExtra("selected_month", monthName);
+                        intent.putExtra("clicked_type", unlisted.getType());
+                        intent.putExtra("source", "local");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
+                holder.unlstMissedCurrent.setVisibility(View.GONE);
+            }
+        }
+
+        if ((SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getStkNeed(context).equalsIgnoreCase("1") && SharedPref.getUnlNeed(context).equalsIgnoreCase("1")) ||
+                (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("1") && SharedPref.getStkNeed(context).equalsIgnoreCase("0") && SharedPref.getUnlNeed(context).equalsIgnoreCase("1")) ||
+                (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && SharedPref.getChmNeed(context).equalsIgnoreCase("1") && SharedPref.getStkNeed(context).equalsIgnoreCase("1") && SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) ||
+                (SharedPref.getDrNeed(context).equalsIgnoreCase("1") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getStkNeed(context).equalsIgnoreCase("0") && SharedPref.getUnlNeed(context).equalsIgnoreCase("1")) ||
+                (SharedPref.getDrNeed(context).equalsIgnoreCase("1") && SharedPref.getChmNeed(context).equalsIgnoreCase("0") && SharedPref.getStkNeed(context).equalsIgnoreCase("1") && SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) ||
+                (SharedPref.getDrNeed(context).equalsIgnoreCase("1") && SharedPref.getChmNeed(context).equalsIgnoreCase("1") && SharedPref.getStkNeed(context).equalsIgnoreCase("0") && SharedPref.getUnlNeed(context).equalsIgnoreCase("0"))) {
+
+            holder.card2Layout.setVisibility(View.GONE);
+        }else{
+            holder.card2Layout.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public int getItemCount() {
+
+        int count = 0;
+
+        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) count++;
+        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) count++;
+        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) count++;
+        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) count++;
+
+        if (count == 0)
+            return 0;
+
+        if (count == 1)
+            return 1;
+
         return 2;
+
 
     }
 
@@ -375,13 +377,22 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
 
         float missedPercentage = (((float) missedCount / (float) totalCount) * 100.0f);
 
-         int colorVisited;
+        int colorVisited;
         switch (model.getType()) {
-            case "1": colorVisited = context.getColor(R.color.green_60); break;   // Doctor
-            case "2": colorVisited = context.getColor(R.color.blue_60); break; // Chemist
-            case "3": colorVisited = context.getColor(R.color.txt_sample); break;  // Stockist
-            case "4": colorVisited = context.getColor(R.color.gray_45); break; // Unlisted
-            default: colorVisited = context.getColor(R.color.gray_20);
+            case "1":
+                colorVisited = context.getColor(R.color.green_60);
+                break;   // Doctor
+            case "2":
+                colorVisited = context.getColor(R.color.blue_60);
+                break; // Chemist
+            case "3":
+                colorVisited = context.getColor(R.color.txt_sample);
+                break;  // Stockist
+            case "4":
+                colorVisited = context.getColor(R.color.gray_45);
+                break; // Unlisted
+            default:
+                colorVisited = context.getColor(R.color.gray_20);
         }
         int colorMissed = context.getResources().getColor(R.color.tab_gray);
 
@@ -422,15 +433,29 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout card1Layout, card2Layout; // root layouts for swipe cards
 
-        PieChart missedChart, missedChartChem, missedChartStk, missedChartUnlst;
+        PieChart missedChart, missedChartChem, missedChartStk, missedChartUnlst, missedChartStk1, missedChartUnlst1;
         TextView totalDrCnt, visitedCnt, missedCnt;
         TextView totalchmCnt, chmvisitedCnt, chmmissedCnt;
-        TextView totalstkCnt, stkvisitedCnt, stkmissedCnt;
-        TextView totalunlstCnt, unlstvisitedCnt, unlstmissedCnt;
-        LinearLayout missedBox, chemistBox,stockiestBox,unlistedBox;
+        TextView totalstkCnt, stkvisitedCnt, stkmissedCnt, totalstkCnt1, stkvisitedCnt1, stkmissedCnt1;
+        TextView totalunlstCnt, unlstvisitedCnt, unlstmissedCnt, totalunlstCnt1, unlstvisitedCnt1, unlstmissedCnt1;
+        LinearLayout missedBox, chemistBox, stockiestBox, unlistedBox, drMissedCurrent, cheMissedCurrent, stkMissedCurrent, unlstMissedCurrent, stkMissedCurrent1, unlstMissedCurrent1, stockiestBox1, unlistedBox1;
         View visitedLegend, missedLegend;
+        TextView drVisitTxt, chmVisitTxt, stkVisitTxt, unlstVisitTxt;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            drMissedCurrent = itemView.findViewById(R.id.doctor_missed_current);
+            cheMissedCurrent = itemView.findViewById(R.id.chemist_missed_current);
+            stkMissedCurrent = itemView.findViewById(R.id.stk_missed_current);
+            unlstMissedCurrent = itemView.findViewById(R.id.unlst_missed_current);
+
+            stkMissedCurrent1 = itemView.findViewById(R.id.stk_missed_current1);
+            unlstMissedCurrent1 = itemView.findViewById(R.id.unlst_missed_current1);
+
+            drVisitTxt = itemView.findViewById(R.id.doctorVisitTxt);
+            chmVisitTxt = itemView.findViewById(R.id.chemistTxt);
+            stkVisitTxt = itemView.findViewById(R.id.stktxt);
+            unlstVisitTxt = itemView.findViewById(R.id.unlsttxt);
 
             card1Layout = itemView.findViewById(R.id.missedcard1);
             card2Layout = itemView.findViewById(R.id.missedcard2);
@@ -453,11 +478,23 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             stkmissedCnt = itemView.findViewById(R.id.missedstkmissedCnt);
             stockiestBox = itemView.findViewById(R.id.stkgrid3);
 
+            missedChartStk1 = itemView.findViewById(R.id.pBar31);
+            totalstkCnt1 = itemView.findViewById(R.id.missedtotalstkCnt1);
+            stkvisitedCnt1 = itemView.findViewById(R.id.missedstkvisitedCnt1);
+            stkmissedCnt1 = itemView.findViewById(R.id.missedstkmissedCnt1);
+            stockiestBox1 = itemView.findViewById(R.id.stkgrid31);
+
             missedChartUnlst = itemView.findViewById(R.id.pBar4);
             totalunlstCnt = itemView.findViewById(R.id.missedtotalunlstCnt);
             unlstvisitedCnt = itemView.findViewById(R.id.missedunlstvisitedCnt);
             unlstmissedCnt = itemView.findViewById(R.id.missedunlstmissedCnt);
             unlistedBox = itemView.findViewById(R.id.unlstgrid3);
+
+            missedChartUnlst1 = itemView.findViewById(R.id.pBar41);
+            totalunlstCnt1 = itemView.findViewById(R.id.missedtotalunlstCnt1);
+            unlstvisitedCnt1 = itemView.findViewById(R.id.missedunlstvisitedCnt1);
+            unlstmissedCnt1 = itemView.findViewById(R.id.missedunlstmissedCnt1);
+            unlistedBox1 = itemView.findViewById(R.id.unlstgrid31);
 
             visitedLegend = itemView.findViewById(R.id.visitedLegend);
             missedLegend = itemView.findViewById(R.id.missedLegend);
@@ -465,95 +502,3 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
         }
     }
 }
-
-
-//// InnerAdapter.java
-//package saneforce.sanzen.activity.reports.missedReport;
-//
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//
-//import androidx.annotation.NonNull;
-//import androidx.fragment.app.FragmentActivity;
-//import androidx.recyclerview.widget.RecyclerView;
-//import androidx.viewpager2.widget.ViewPager2;
-//
-//import java.util.List;
-//
-//import saneforce.sanzen.R;
-//
-//public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerAdapterViewHolder> {
-//
-//    private final List<InnerAdapter> doctorStats;
-//    private final List<InnerAdapter> chemistStats;
-//    private final List<InnerAdapter> stockiestStats;
-//    private final List<InnerAdapter> unlistedStats;
-//    private final FragmentActivity fragmentActivity;
-//    int position;
-//
-//    public InnerAdapter(FragmentActivity fragmentActivity,
-//                             List<InnerAdapter> doctorStats,
-//                             List<InnerAdapter> chemistStats,
-//                             List<InnerAdapter> stockiestStats,
-//                             List<InnerAdapter> unlistedStats) {
-//        this.fragmentActivity = fragmentActivity;
-//        this.doctorStats = doctorStats;
-//        this.chemistStats = chemistStats;
-//        this.stockiestStats = stockiestStats;
-//        this.unlistedStats = unlistedStats;
-//    }
-//
-//    public InnerAdapter(MissedReportGraph fragmentActivity, List<MissedStatsModel> allMonthsFlatList) {
-//    }
-//
-//    @NonNull
-//    @Override
-//    public InnerAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext())
-//                .inflate(R.layout.item_row, parent, false);
-//        return new InnerAdapter.InnerAdapterViewHolder(view);
-//    }
-//
-//
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull InnerAdapter.InnerAdapterViewHolder holder, int position) {
-//        InnerAdapter InnerAdapter = new InnerAdapter(
-//                fragmentActivity,
-//                doctorStats,
-//                chemistStats,
-//                stockiestStats,
-//                unlistedStats
-//        );
-//        holder.viewPager2.setAdapter(InnerAdapter);
-//
-//
-//        holder.viewPager2.setOffscreenPageLimit(4);
-//    }
-//    @Override
-//    public int getItemCount() {
-//    /*    switch (position){
-//            case 0:
-//                return doctorStats.size();
-//            case 1:
-//                return chemistStats.size();
-//            case 2:
-//                return stockiestStats.size();
-//            case 3:
-//                return unlistedStats.size();
-//        }
-//       return position; */
-//        return 3;
-//    }
-//
-//    static class InnerAdapterViewHolder extends RecyclerView.ViewHolder {
-//        ViewPager2 viewPager2;
-//        InnerAdapterViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//            viewPager2 = itemView.findViewById(R.id.missed_pager);
-//        }
-//
-//
-//    }
-//}

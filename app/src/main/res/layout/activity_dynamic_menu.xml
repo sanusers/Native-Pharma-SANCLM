@@ -48,6 +48,13 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
                 tools:ignore="SpUsage" />
+            <ImageView
+                android:id="@+id/reportSync"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:background="@drawable/sync_img"
+                android:layout_marginStart="@dimen/_400sdp"
+                android:visibility="gone"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -72,7 +79,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/toolbar"
             android:horizontalSpacing="10dp"
-            android:numColumns="2"
+            android:numColumns="4"
             android:padding="10dp"
             android:stretchMode="columnWidth"
             android:verticalSpacing="10dp" />
@@ -87,8 +94,15 @@
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_3sdp"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:ignore="SpUsage"/>
+
+        <ProgressBar
+            android:id="@+id/dynamic_prog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
     </FrameLayout>
 
 

@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -33,9 +31,11 @@ import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
@@ -47,10 +47,10 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
-
 
 public class StockiestFragment extends Fragment {
     RecyclerView rv_list;
@@ -73,8 +73,11 @@ public class StockiestFragment extends Fragment {
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private final DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
+    private DcrCallTabLayoutActivity.HQChangeListener hqChangeListener;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation;
+
+    public StockiestFragment() {
+    }
 
     public StockiestFragment(DcrCallTabLayoutActivity.HQChangeListener hqChangeListener) {
         this.hqChangeListener = hqChangeListener;
@@ -102,8 +105,11 @@ public class StockiestFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
 
-        iv_filter.setOnClickListener(view -> {
-            CustomizeFiltered();
+        iv_filter.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                CustomizeFiltered();
+            }
         });
 
         ed_search.addTextChangedListener(new TextWatcher() {
@@ -123,82 +129,9 @@ public class StockiestFragment extends Fragment {
             }
         });
 
-//        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-//            tv_hqName.setOnClickListener(view -> {
-//                try {
-//                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-//                    ArrayList<String> list = new ArrayList<>();
-//
-//                    if (jsonArray.length() > 0) {
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                            if (SharedPref.getMultiHQCode(requireContext()).contains(jsonObject.optString("id"))) {
-//                                list.add(jsonObject.optString("name"));
-//                            }
-//                        }
-//                    }
-//
-//                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(requireContext());
-////                LayoutInflater inflater = requireActivity().getLayoutInflater();
-//                    View dialogView = inflater.inflate(R.layout.dialog_listview, null);
-//                    alertDialog.setView(dialogView);
-//                    TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
-//                    ListView listView = dialogView.findViewById(R.id.listView);
-//                    SearchView searchView = dialogView.findViewById(R.id.searchET);
-//
-//                    headerTxt.setText(getResources().getText(R.string.select_hq));
-//                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, list);
-//                    listView.setAdapter(adapter);
-//                    AlertDialog dialog = alertDialog.create();
-//
-//                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                        @Override
-//                        public boolean onQueryTextSubmit(String s) {
-//                            adapter.getFilter().filter(s);
-//                            return false;
-//                        }
-//
-//                        @Override
-//                        public boolean onQueryTextChange(String s) {
-//                            adapter.getFilter().filter(s);
-//                            return false;
-//                        }
-//                    });
-//
-//                    listView.setOnItemClickListener((adapterView, view1, position, l) -> {
-//                        String selectedHq = listView.getItemAtPosition(position).toString();
-//                        tv_hqName.setText(selectedHq);
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//                            try {
-//                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                                if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
-//                                    DcrCallTabLayoutActivity.TodayPlanSfCode = jsonObject.optString("id");
-//                                    DcrCallTabLayoutActivity.TodayPlanSfName = jsonObject.optString("name");
-//                                    SharedPref.saveHq(requireContext(), DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
-//                                    break;
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-////                        DcrCallTabLayoutActivity.prepareClusterList(requireActivity());
-////                        SetupAdapter();
-//                        hqChangeListener.onHQChange();
-//                        dialog.dismiss();
-//                    });
-//
-//                    alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
-//
-//                    dialog.show();
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                UtilityClass.hideKeyboard(requireActivity());
-//
-//            });
-//        }
         HQSelector.setupHQSelector(
                 this,
+                requireContext(),
                 tv_hqName,
                 img_drop_down,
                 masterDataDao,
@@ -222,7 +155,7 @@ public class StockiestFragment extends Fragment {
     public void SetupAdapter() {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         custListArrayList.clear();
-        if (SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1")) {
+        if (SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1")) {
             try {
                 JSONArray masterJsonArrayStkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 JSONArray masterJsonArrayStkGeo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
@@ -269,9 +202,9 @@ public class StockiestFragment extends Fragment {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                    if (SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                         if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
-                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
+                            if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
                                 Log.v("STKCALL", "--11-");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
@@ -290,7 +223,7 @@ public class StockiestFragment extends Fragment {
                             }
                         }
                     } else {
-//                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
+//                        if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
 //                            Log.v("STKCALL", "--33-");
 //                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
 //                                custListArrayList = SaveData(jsonObject,i);
@@ -328,9 +261,9 @@ public class StockiestFragment extends Fragment {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                    if (SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                         if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
-                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
+                            if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
                                 Log.v("STKCALL", "--11-");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
@@ -349,7 +282,7 @@ public class StockiestFragment extends Fragment {
                             }
                         }
                     } else {
-//                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
+//                        if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
 //                            Log.v("STKCALL", "--33-");
 //                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
 //                                custListArrayList = SaveData(jsonObject,i);
@@ -401,11 +334,12 @@ public class StockiestFragment extends Fragment {
 
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i, boolean isFenced) {
         try {
+            List<String> todayPlannedClusters = Arrays.asList(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(SharedPref.getTodayDayPlanClusterName(requireContext()))).split(","));
 //            if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
 //                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
 //                    && !deviation.equalsIgnoreCase("1")) {
 //                if (tpDataObj != null) {
-//                    if (SharedPref.getTodayDayPlanClusterName(requireContext()).contains(jsonObject.optString("Town_Name"))) {
+//                    if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
 //                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", false));
 //                    }
 //                }
@@ -413,19 +347,19 @@ public class StockiestFragment extends Fragment {
 //                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
 //                    && deviation.equalsIgnoreCase("1")) {
             if (isFenced) {
-//                if (SharedPref.getTodayDayPlanClusterName(requireContext()).contains(jsonObject.optString("Town_Name"))) {
+//                if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
 //                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
-                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", ""));
+                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", ""));
 //                }
             } else {
-                if (SharedPref.getTodayDayPlanClusterName(requireContext()).contains(jsonObject.optString("Town_Name"))) {
+                if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
 //                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
-                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty","", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
-                    } else {
-                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", true));
-                    }
+                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
+                } else {
+                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", true));
                 }
-//            } else if (SharedPref.getTodayDayPlanClusterName(requireContext()).contains(jsonObject.optString("Town_Name"))) {
+            }
+//            } else if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
 //                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", false));
 //            } else {
 //                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", true));
@@ -450,10 +384,7 @@ public class StockiestFragment extends Fragment {
         }
     }
 
-
     public void CustomizeFiltered() {
-
-
         dialogFilter = new Dialog(requireContext());
         dialogFilter.setContentView(R.layout.popup_dcr_filter);
         Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -468,51 +399,65 @@ public class StockiestFragment extends Fragment {
         tvTerritory.setVisibility(View.VISIBLE);
 
         lv_terr = dialogFilter.findViewById(R.id.lv_territory);
-        img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
-
-        btn_apply.setOnClickListener(view1 -> Filtered());
-
-        btn_clear.setOnClickListener(view -> {
-            territoryCode = "";
-            territoryName = "";
-            tvTerritory.setText("");
-            tvTerritory.setHint(R.string.territory);
+        img_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogFilter.dismiss();
+            }
         });
 
-        tvTerritory.setOnClickListener(view -> {
-            if (lv_terr.getVisibility() == View.VISIBLE) {
-                lv_terr.setVisibility(View.GONE);
+        btn_apply.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Filtered();
+            }
+        });
 
-            } else {
-                filterSelectionList.clear();
-                try {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-                    Log.v("jsonArray", "--" + jsonArray.length());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.optString("Name"), jsonObject.optString("Code")));
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                territoryCode = "";
+                territoryName = "";
+                tvTerritory.setText("");
+                tvTerritory.setHint(R.string.territory);
+            }
+        });
+
+        tvTerritory.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (lv_terr.getVisibility() == View.VISIBLE) {
+                    lv_terr.setVisibility(View.GONE);
+
+                } else {
+                    filterSelectionList.clear();
+                    try {
+                        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+                        Log.v("jsonArray", "--" + jsonArray.length());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
+                        }
+
+                        FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                            territoryCode = clickedItem.getCode();
+                            territoryName = clickedItem.getName();
+                            tvTerritory.setText(clickedItem.getName());
+                            lv_terr.setVisibility(View.GONE);
+
+                        });
+                        lv_terr.setAdapter(arrayAdapter);
+                        lv_terr.setVisibility(View.VISIBLE);
+
+
+                    } catch (Exception ignored) {
+
                     }
 
-                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                        territoryCode = clickedItem.getCode();
-                        territoryName = clickedItem.getName();
-                        tvTerritory.setText(clickedItem.getName());
-                        lv_terr.setVisibility(View.GONE);
-
-                    });
-                    lv_terr.setAdapter(arrayAdapter);
-                    lv_terr.setVisibility(View.VISIBLE);
-
-
-                } catch (Exception ignored) {
-
                 }
-
             }
-
         });
     }
-
 
     public void Filtered() {
         ArrayList<CustList> filterCusList = new ArrayList<>();

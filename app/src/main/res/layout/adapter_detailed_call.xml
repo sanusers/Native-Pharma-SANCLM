@@ -27,7 +27,7 @@
 
     <RatingBar
         android:id="@+id/rating_bar"
-        android:layout_width="@dimen/_90sdp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:numStars="5"
@@ -40,7 +40,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_brand_name"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="@dimen/_1sdp" />
+        />
 
     <ImageView
         android:id="@+id/img_feedback"

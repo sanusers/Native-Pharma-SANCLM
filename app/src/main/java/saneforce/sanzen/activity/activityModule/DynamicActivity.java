@@ -2,14 +2,8 @@ package saneforce.sanzen.activity.activityModule;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
-
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
 import android.annotation.SuppressLint;
@@ -23,17 +17,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -49,7 +42,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -79,6 +71,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -100,19 +94,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.activityModule.adapter.ActivityAdapter;
 import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
 import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
-import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -297,9 +289,9 @@ public class DynamicActivity extends AppCompatActivity {
 
     private boolean validateActivityData() {
         boolean isDataEntered = false;
-        for (int i = 0; i<ActivityViewItem.size(); i++) {
+        for (int i = 0; i < ActivityViewItem.size(); i++) {
             ActivityDetailsModelClass activityDetailsModelClass = ActivityViewItem.get(i);
-            if(activityDetailsModelClass.getAnswerTxt() != null && !activityDetailsModelClass.getAnswerTxt().isEmpty() && !activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17")) {
+            if (activityDetailsModelClass.getAnswerTxt() != null && !activityDetailsModelClass.getAnswerTxt().isEmpty() && !activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17")) {
                 isDataEntered = true;
                 break;
             }
@@ -405,8 +397,8 @@ public class DynamicActivity extends AppCompatActivity {
         binding.progrlessdetail.setVisibility(View.VISIBLE);
         ActivityDetailsList.clear();
         ActivityViewItem.clear();
-        if(!activityDetailsDataDao.isActivityDataAvailable(activityModelClass.getSlNo() + "_" + selectedHQ)) {
-            if(UtilityClass.isNetworkAvailable(this)) {
+        if (!activityDetailsDataDao.isActivityDataAvailable(activityModelClass.getSlNo() + "_" + selectedHQ)) {
+            if (UtilityClass.isNetworkAvailable(this)) {
                 callActivityDetailsAPI(activityModelClass);
             } else {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
@@ -422,11 +414,11 @@ public class DynamicActivity extends AppCompatActivity {
             try {
                 ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo() + "_" + selectedHQ);
                 JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
-                if(jsonArray.length()>0) {
+                if (jsonArray.length() > 0) {
                     binding.rlDataLayout.setVisibility(View.VISIBLE);
                     binding.btnSubmit.setVisibility(View.VISIBLE);
                     binding.rlNoData.setVisibility(View.GONE);
-                    for (int i = 0; i<jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                         String Control_Id = jsonObject1.getString("Control_Id");
                         String Field_Name = jsonObject1.getString("Field_Name");
@@ -437,7 +429,7 @@ public class DynamicActivity extends AppCompatActivity {
                         String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
                         ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
                         String controlParam = Control_Para.toLowerCase();
-                        if(SharedPref.getSfType(DynamicActivity.this).equalsIgnoreCase("2") && selectedHQ.equalsIgnoreCase(SharedPref.getSfCode(DynamicActivity.this)) && (controlParam.contains("doctor") || controlParam.contains("dr")
+                        if (SharedPref.getSfType(DynamicActivity.this).equalsIgnoreCase("2") && selectedHQ.equalsIgnoreCase(SharedPref.getSfCode(DynamicActivity.this)) && (controlParam.contains("doctor") || controlParam.contains("dr")
                                 || controlParam.contains("chemist") || controlParam.contains("chm")
                                 || controlParam.contains("stockist") || controlParam.contains("stock") || controlParam.contains("stk")
                                 || controlParam.contains("unlisted") || controlParam.contains("un") || controlParam.contains("unlst")
@@ -456,8 +448,8 @@ public class DynamicActivity extends AppCompatActivity {
                         }
                     }
                     int jjj = 0;
-                    for (int i = 0; i<ActivityDetailsList.size(); i++) {
-                        switch (ActivityDetailsList.get(i).getControlId()){
+                    for (int i = 0; i < ActivityDetailsList.size(); i++) {
+                        switch (ActivityDetailsList.get(i).getControlId()) {
                             case "0":
                                 CreateLabelView(ActivityDetailsList.get(i), i);
                                 break;
@@ -516,16 +508,16 @@ public class DynamicActivity extends AppCompatActivity {
                                 break;
                         }
                         jjj++;
-                        if(ActivityDetailsList.size() == jjj) {
+                        if (ActivityDetailsList.size() == jjj) {
                             binding.btnSubmit.setEnabled(true);
                         }
                     }
                 }
-                if(!ActivityDetailsList.isEmpty()) {
+                if (!ActivityDetailsList.isEmpty()) {
                     binding.progrlessdetail.setVisibility(View.GONE);
                     binding.rlNoData.setVisibility(View.GONE);
                     binding.rlDetailsMain.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     binding.rlNoData.setVisibility(View.VISIBLE);
                     binding.rlDetailsMain.setVisibility(View.GONE);
                     binding.btnSubmit.setVisibility(View.GONE);
@@ -557,10 +549,10 @@ public class DynamicActivity extends AppCompatActivity {
                 public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                     Log.v("Response :", "" + response);
                     binding.progressMain.setVisibility(View.GONE);
-                    if(response.isSuccessful()) {
+                    if (response.isSuccessful()) {
                         try {
                             JsonElement jsonElement = response.body();
-                            if(jsonElement != null) {
+                            if (jsonElement != null) {
                                 JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
                                 activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(activityModelClass.getSlNo() + "_" + selectedHQ, jsonArray1.toString(), "0"));
                                 activityModelClass.setAvailableOffline(true);
@@ -573,6 +565,7 @@ public class DynamicActivity extends AppCompatActivity {
                         }
                     }
                 }
+
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     t.printStackTrace();
@@ -865,11 +858,12 @@ public class DynamicActivity extends AppCompatActivity {
         textcharacter.setHint("Enter " + List.getFieldName());
         textcharacter.setCursorVisible(true);
         textcharacter.setClickable(true);
-        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+        if (!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
             textcharacter.setFilters(fArray);
         }
+        textcharacter.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(textcharacter)});
 
         // CreateName
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
@@ -945,7 +939,7 @@ public class DynamicActivity extends AppCompatActivity {
         textnumber.setHint("Enter " + List.getFieldName());
         textnumber.setClickable(false);
         textnumber.setCursorVisible(true);
-        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+        if (!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
             textnumber.setFilters(fArray);
@@ -1029,11 +1023,12 @@ public class DynamicActivity extends AppCompatActivity {
         textarea.setHint("Enter " + List.getFieldName());
         textarea.setCursorVisible(true);
         textarea.setClickable(true);
-        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+        if (!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
             textarea.setFilters(fArray);
         }
+        textarea.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(textarea)});
 
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
@@ -2116,7 +2111,7 @@ public class DynamicActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 isEdited = true;
                 ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
-                if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                if (textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
                     drawable.setTint(getColor(R.color.green_60));
                     clearButton.setVisibility(View.VISIBLE);
                 } else {
@@ -2130,11 +2125,11 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 FilnameTet = textfileupload;
-                if (!CheckStoragePermission()) {
-                    RequestStoragePermission();
-                } else {
-                    Open_Storage();
-                }
+//                if (!CheckStoragePermission()) {
+//                    RequestStoragePermission();
+//                } else {
+                Open_Storage();
+//                }
             }
         });
     }
@@ -2301,8 +2296,8 @@ public class DynamicActivity extends AppCompatActivity {
         LabelText.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if(CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
-                    if(!CheckLocPermission()) {
+                if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
+                    if (!CheckLocPermission()) {
                         RequestLocationPermission();
                     } else {
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, "Wait For Location");
@@ -2560,7 +2555,7 @@ public class DynamicActivity extends AppCompatActivity {
                 if (isMultipleCheck) {
                     String lids = "";
                     for (int i = 0; i < mListId.size(); i++) {
-                        lids = lids+ mListId.get(i) + "," ;
+                        lids = lids + mListId.get(i) + ",";
                     }
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
                     IdView.setText(lids);
@@ -2578,7 +2573,8 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     private void Open_Storage() {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent chooseFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");
         startActivityForResult(chooseFile, 7);
@@ -2591,32 +2587,51 @@ public class DynamicActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK && data.getData() != null) {
                 try {
                     uri = data.getData();
-                    String fullPath = getPathFromURI(DynamicActivity.this, uri);
-                    String[] parts = fullPath.split("/");
-                    String filenmae = parts[parts.length - 1];
-
-                    if (filenmae.endsWith(".zip")) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
-                    } else {
-                        FilnameTet.setText(String.valueOf(filenmae));
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
-//                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-//                        if(!dir1.exists()) {
-//                            dir1.mkdirs();
-//                        }
-                        File file = null;
-                        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                            file = new File(getApplicationContext().getExternalFilesDir(null) + "/ActivityUpload/");
-                        } else {
-                            Log.e("File Creation", "captureFile: No media mounted");
-                        }
-                        if (file != null && !file.exists()) {
-                            if (!file.mkdirs()) {
-                                Log.e("File Creation", "Directory Creation Failed.");
-                            }
-                        }
-                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+                    try {
+                        final int takeFlags = data.getFlags()
+                                & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    String filename = getFileNameFromUri(uri);
+                    if (filename == null) {
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
+                        return;
+                    }
+//                    if (filename.endsWith(".zip")) {
+//                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
+//                        return;
+//                    }
+                    FilnameTet.setText(filename);
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
+                    copyFileToAppDir(uri);
+//                    String fullPath = getPathFromURI(DynamicActivity.this, uri);
+//                    String[] parts = fullPath.split("/");
+//                    String filenmae = parts[parts.length - 1];
+//
+//                    if (filenmae.endsWith(".zip")) {
+//                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
+//                    } else {
+//                        FilnameTet.setText(String.valueOf(filenmae));
+//                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
+////                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+////                        if(!dir1.exists()) {
+////                            dir1.mkdirs();
+////                        }
+//                        File file = null;
+//                        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//                            file = new File(getApplicationContext().getExternalFilesDir(null) + "/ActivityUpload/");
+//                        } else {
+//                            Log.e("File Creation", "captureFile: No media mounted");
+//                        }
+//                        if (file != null && !file.exists()) {
+//                            if (!file.mkdirs()) {
+//                                Log.e("File Creation", "Directory Creation Failed.");
+//                            }
+//                        }
+//                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
+//                    }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
@@ -2627,6 +2642,51 @@ public class DynamicActivity extends AppCompatActivity {
             }
             commonFun();
         }
+    }
+
+    private void copyFileToAppDir(Uri sourceUri) {
+        try {
+            File destDir = new File(getApplicationContext().getExternalFilesDir(null), "ActivityUpload");
+            if (!destDir.exists()) destDir.mkdirs();
+            String fileName = getFileNameFromUri(sourceUri);
+            if (fileName == null) fileName = "file_" + System.currentTimeMillis();
+            File destFile = new File(destDir, fileName);
+            try (InputStream inputStream = getContentResolver().openInputStream(sourceUri);
+                 OutputStream outputStream = new FileOutputStream(destFile)) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+            Log.d("FileCopy", "Saved to: " + destFile.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFileNameFromUri(Uri uri) {
+        String result = null;
+        try {
+            if ("content".equals(uri.getScheme())) {
+                try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (index != -1) {
+                            result = cursor.getString(index);
+                        }
+                    }
+                }
+            }
+            if (result == null) {
+                result = uri.getPath();
+                int cut = result.lastIndexOf('/');
+                if (cut != -1) result = result.substring(cut + 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public void copyFileOrDirectory(String srcDir, String dstDir) {
@@ -2688,7 +2748,7 @@ public class DynamicActivity extends AppCompatActivity {
         }
         if (file != null && !file.exists()) {
             Log.w("File Deletion", "No File Found" + file.getAbsolutePath());
-        } else if(file != null && file.exists()){
+        } else if (file != null && file.exists()) {
             if (file.delete()) {
                 Log.d("FileDeleter", "File deleted: " + file.getAbsolutePath());
             } else {
@@ -3050,7 +3110,7 @@ public class DynamicActivity extends AppCompatActivity {
             independent.put("name", "Independent");
             independent.put("id", SharedPref.getSfCode(DynamicActivity.this));
             newJsonArray.put(independent);
-            for (int i = 0; i<jsonArray1.length(); i++) {
+            for (int i = 0; i < jsonArray1.length(); i++) {
                 newJsonArray.put(jsonArray1.optJSONObject(i));
             }
             ArrayList<String> list = new ArrayList<>();
@@ -3067,22 +3127,36 @@ public class DynamicActivity extends AppCompatActivity {
             TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
             ListView listView = dialogView.findViewById(R.id.listView);
             SearchView searchView = dialogView.findViewById(R.id.searchET);
+
+            searchView.setIconified(false);
+            searchView.setIconifiedByDefault(false);
+            searchView.setMaxWidth(Integer.MAX_VALUE);
+
             headerTxt.setText(getResources().getText(R.string.select_hq));
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(DynamicActivity.this, android.R.layout.simple_list_item_1, list);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(DynamicActivity.this, android.R.layout.simple_list_item_1, new ArrayList<>(list));
             listView.setAdapter(adapter);
             AlertDialog dialog = alertDialog.create();
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String s) {
-                    adapter.getFilter().filter(s);
+//                    adapter.getFilter().filter(s);
                     return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String s) {
-                    adapter.getFilter().filter(s);
-                    return false;
+                    List<String> filtered = new ArrayList<>();
+                    for (String item : list) {
+                        if (item.toLowerCase().contains(s.toLowerCase())) {
+                            filtered.add(item);
+                        }
+                    }
+
+                    adapter.clear();
+                    adapter.addAll(filtered);
+                    adapter.notifyDataSetChanged();
+                    return true;
                 }
             });
             listView.setOnItemClickListener((adapterView, view1, position, l) -> {
@@ -3260,38 +3334,38 @@ public class DynamicActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    public boolean CheckStoragePermission() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            int image = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
-            int video = ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO);
-            int audio = ContextCompat.checkSelfPermission(this, READ_MEDIA_AUDIO);
-            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
-        } else {
-            int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-            int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
-            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
-        }
-    }
-
-    private void RequestStoragePermission() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if ((ActivityCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_MEDIA_IMAGES)) {
-                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-                }
-            }
-        } else {
-            if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE))) {
-                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-                }
-            }
-        }
-    }
+//    public boolean CheckStoragePermission() {
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            int image = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
+//            int video = ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO);
+//            int audio = ContextCompat.checkSelfPermission(this, READ_MEDIA_AUDIO);
+//            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
+//        } else {
+//            int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+//            int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
+//            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
+//        }
+//    }
+//
+//    private void RequestStoragePermission() {
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            if ((ActivityCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_MEDIA_IMAGES)) {
+//                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+//                } else {
+//                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+//                }
+//            }
+//        } else {
+//            if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE))) {
+//                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+//                } else {
+//                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

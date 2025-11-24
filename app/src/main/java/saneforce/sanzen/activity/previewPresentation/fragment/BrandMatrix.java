@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,14 +33,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.fragments.HQSelector;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.previewPresentation.DrSelectionSide;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
+import saneforce.sanzen.activity.previewPresentation.adapter.SlideWiseAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.FragmentSpecialityPreviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 public class BrandMatrix extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -48,10 +53,12 @@ public class BrandMatrix extends Fragment {
     public static ArrayList<String> brandCodeList = new ArrayList<>();
     public static ArrayList<String> slideIdList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
-    public static PreviewAdapter previewAdapter;
+    public static RecyclerView.Adapter previewAdapter;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private boolean isSlideWiseEnabled = false;
+    private String hqName = "", hqID = "";
 
     public static void getSelectedMatrix(Context context, String mappedBrands, String mappedSlides, MasterDataDao masterDataDao) {
         try {
@@ -224,6 +231,9 @@ public class BrandMatrix extends Fragment {
                 if (from_where.equalsIgnoreCase("call")) {
                     brandMatrixBinding.tvInfo.setVisibility(View.VISIBLE);
                     brandMatrixBinding.viewDummy2.setVisibility(View.VISIBLE);
+                } else {
+                    brandMatrixBinding.tvInfo.setVisibility(View.GONE);
+                    brandMatrixBinding.viewDummy2.setVisibility(View.INVISIBLE);
                 }
                 previewAdapter = new PreviewAdapter(context, SlideBrandMatrixList);
                 brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
@@ -241,6 +251,19 @@ public class BrandMatrix extends Fragment {
         }
     }
 
+    private final DcrCallTabLayoutActivity.HQChangeListener hqChangeListener = (String hqID, String hqName) -> {
+        this.hqID = hqID;
+        this.hqName = hqName;
+        Log.i("HQ change", hqID + " -> " + hqName);
+        brandMatrixBinding.tvSelectHq.setText(hqName);
+        brandMatrixBinding.constraintNoData.setVisibility(View.VISIBLE);
+        brandMatrixBinding.rvBrandList.setVisibility(View.GONE);
+        brandMatrixBinding.tvSelectDoctor.setVisibility(View.VISIBLE);
+        brandMatrixBinding.tvSelectDoctor.setText("");
+        brandMatrixBinding.tvInfo.setVisibility(View.GONE);
+        brandMatrixBinding.viewDummy2.setVisibility(View.INVISIBLE);
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -251,24 +274,79 @@ public class BrandMatrix extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         brandMatrixBinding.tvSelectSpeciality.setVisibility(View.GONE);
+
+        if (SharedPref.getSlideWiseDetailingNeed(requireContext()).equalsIgnoreCase("0")) {
+            brandMatrixBinding.tabBrandSlide.setVisibility(View.VISIBLE);
+        } else {
+            brandMatrixBinding.tabBrandSlide.setVisibility(View.GONE);
+        }
+
         if (from_where.equalsIgnoreCase("call")) {
             brandMatrixBinding.tvSelectDoctor.setVisibility(View.GONE);
+            brandMatrixBinding.tvSelectHq.setVisibility(View.GONE);
             getSelectedMatrix(requireContext(), BrandCode, SlideCode, masterDataDao);
         } else {
             brandMatrixBinding.constraintNoData.setVisibility(View.VISIBLE);
             brandMatrixBinding.rvBrandList.setVisibility(View.GONE);
             brandMatrixBinding.tvSelectDoctor.setVisibility(View.VISIBLE);
+            if (!SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                brandMatrixBinding.tvSelectHq.setVisibility(View.VISIBLE);
+            } else {
+                hqID = SharedPref.getSfCode(requireContext());
+                hqName = SharedPref.getSfName(requireContext());
+                brandMatrixBinding.tvSelectHq.setVisibility(View.GONE);
+            }
             brandMatrixBinding.tvInfo.setVisibility(View.GONE);
-            brandMatrixBinding.viewDummy2.setVisibility(View.GONE);
+            brandMatrixBinding.viewDummy2.setVisibility(View.INVISIBLE);
         }
 
+        HQSelector.setupClickForHQ(
+                this,
+                requireContext(),
+                brandMatrixBinding.tvSelectHq,
+                masterDataDao,
+                getLayoutInflater(),
+                hqChangeListener::onHQChange);
 
-        brandMatrixBinding.tvSelectDoctor.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        brandMatrixBinding.tvSelectDoctor.setOnClickListener(view1 -> {
+            if (brandMatrixBinding.tvSelectHq.getText().toString().isEmpty() && !SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
+            } else {
+                try {
+                    DrSelectionSide drSelectionSide = (DrSelectionSide) requireActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_select_dr_side);
+                    if (drSelectionSide != null) {
+                        drSelectionSide.setTodayPlanSfCode(hqID);
+                        drSelectionSide.setTodayPlanSfName(hqName);
+                        drSelectionSide.SetDrAdapter();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 SelectedTab = "Matrix";
                 previewBinding.fragmentSelectDrSide.setVisibility(View.VISIBLE);
             }
+        });
+
+        brandMatrixBinding.brandWise.setOnClickListener(view1 -> {
+            isSlideWiseEnabled = false;
+            brandMatrixBinding.brandWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+            brandMatrixBinding.brandWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            brandMatrixBinding.slideWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+            brandMatrixBinding.slideWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+            brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
+        });
+
+        brandMatrixBinding.slideWise.setOnClickListener(view1 -> {
+            isSlideWiseEnabled = true;
+            brandMatrixBinding.slideWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+            brandMatrixBinding.slideWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            brandMatrixBinding.brandWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+            brandMatrixBinding.brandWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new SlideWiseAdapter(requireContext(), SlideBrandMatrixList);
+            brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
         });
 
         brandMatrixBinding.tvAz.setOnClickListener(view1 -> {
@@ -276,10 +354,14 @@ public class BrandMatrix extends Fragment {
             brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             brandMatrixBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
             brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+            Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
+            if (isSlideWiseEnabled) {
+                previewAdapter = new SlideWiseAdapter(requireContext(), SlideBrandMatrixList);
+            } else {
+                previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+            }
             brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
         });
 
         brandMatrixBinding.tvZa.setOnClickListener(view1 -> {
@@ -287,10 +369,14 @@ public class BrandMatrix extends Fragment {
             brandMatrixBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             brandMatrixBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
             brandMatrixBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+            Collections.sort(SlideBrandMatrixList, Collections.reverseOrder(new SortByName()));
+            if (isSlideWiseEnabled) {
+                previewAdapter = new SlideWiseAdapter(requireContext(), SlideBrandMatrixList);
+            } else {
+                previewAdapter = new PreviewAdapter(requireContext(), SlideBrandMatrixList);
+            }
             brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
-            Collections.sort(SlideBrandMatrixList, Collections.reverseOrder(new SortByName()));
         });
 
         return view;

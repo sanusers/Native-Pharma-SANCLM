@@ -22,6 +22,7 @@ import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class DynamicSubMenuActivity extends AppCompatActivity {
     ArrayList<SubMenuModel> subMenuModelArrayList = new ArrayList<>();
@@ -66,38 +67,80 @@ public class DynamicSubMenuActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint({"Range", "NotifyDataSetChanged"})
-    private void prepare_menu_sub_details(String menu_sub_details) {
-        try {
-            JSONArray jsonArray = new JSONArray(menu_sub_details);
-            if (jsonArray.length() > 0) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject menuSubObject = jsonArray.getJSONObject(i);
-                    String date = CommonUtilsMethods.getCurrentInstance("yyyy-mm-dd");
-                    String mnth;
-                    if (date.substring(5, 6).equalsIgnoreCase("0"))
-                        mnth = date.substring(6, 7);
-                    else
-                        mnth = date.substring(5, 7);
-                    String formatted_URL =SharedPref.getTagImageUrl(this) + "/" + menuSubObject.optString("OptionMenu_Page")+ "?";
-                    formatted_URL = formatted_URL + "sfcode=" + SF_Code + "&" + "rSF=" + rSF + "&" + "div_code=" +
-                            divCode.replace(",", "") + "&" + "cMnth=" +
-                            mnth + "&" + "cYr=" + date.substring(0, 4)+ "&doc_id=-1&IsDocView=0&cluster_code=-1";
-
-                    SubMenuModel menuSubModel = new SubMenuModel(menuSubObject.optString("OptionMenu_Id"), menuSubObject.optString("OptionMenu_Name"), formatted_URL);
-                    subMenuModelArrayList.add(menuSubModel);
-                }
-                dynamicSubMenuAdapter = new DynamicSubMenuAdapter(subMenuModelArrayList,this);
-                recyclerView.setAdapter(dynamicSubMenuAdapter);
-                dynamicSubMenuAdapter.notifyDataSetChanged();
-            } else {
-                commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this,"No Record Found");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+//    @SuppressLint({"Range", "NotifyDataSetChanged"})
+//    private void prepare_menu_sub_details(String menu_sub_details) {
+//        try {
+//            JSONArray jsonArray = new JSONArray(menu_sub_details);
+//            if (jsonArray.length() > 0) {
+//                for (int i = 0; i < jsonArray.length(); i++) {
+//                    JSONObject menuSubObject = jsonArray.getJSONObject(i);
+//                    String date = CommonUtilsMethods.getCurrentInstance("yyyy-mm-dd");
+//                    String mnth;
+//                    if (date.substring(5, 6).equalsIgnoreCase("0"))
+//                        mnth = date.substring(6, 7);
+//                    else
+//                        mnth = date.substring(5, 7);
+//                    String formatted_URL =SharedPref.getTagImageUrl(this) + "/" + menuSubObject.optString("OptionMenu_Page")+ "?";
+//                    formatted_URL = formatted_URL + "sfcode=" + SF_Code + "&" + "rSF=" + rSF + "&" + "div_code=" +
+//                            divCode.replace(",", "") + "&" + "cMnth=" +
+//                            mnth + "&" + "cYr=" + date.substring(0, 4)+ "&doc_id=-1&IsDocView=0&cluster_code=-1";
+//
+//                    SubMenuModel menuSubModel = new SubMenuModel(menuSubObject.optString("OptionMenu_Id"), menuSubObject.optString("OptionMenu_Name"), formatted_URL);
+//                    subMenuModelArrayList.add(menuSubModel);
+//                }
+//                dynamicSubMenuAdapter = new DynamicSubMenuAdapter(subMenuModelArrayList,this);
+//                recyclerView.setAdapter(dynamicSubMenuAdapter);
+//                dynamicSubMenuAdapter.notifyDataSetChanged();
+//            } else {
+//                commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this,"No Record Found");
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+@SuppressLint({"Range", "NotifyDataSetChanged"})
+private void prepare_menu_sub_details(String menu_sub_details) {
+    try {
+        if (menu_sub_details == null || menu_sub_details.trim().equals("") || menu_sub_details.trim().equalsIgnoreCase("null")) {
+            commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, "No submenu data available");
+            return;
         }
 
+        JSONArray jsonArray = new JSONArray(menu_sub_details);
+        if (jsonArray.length() > 0) {
+            subMenuModelArrayList.clear();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject menuSubObject = jsonArray.getJSONObject(i);
+                String year = TimeUtils.FORMAT_10;
+                String month = TimeUtils.FORMAT_8;
+
+                String formatted_URL = SharedPref.getTagImageUrl(this) + "/" + menuSubObject.optString("OptionMenu_Page") + "?";
+                formatted_URL += "sfcode=" + SF_Code + "&rSF=" + rSF + "&div_code=" + divCode.replace(",", "") +
+                        "&cMnth=" + month + "&cYr=" + year +
+                        "&doc_id=-1&IsDocView=0&cluster_code=-1";
+
+                SubMenuModel menuSubModel = new SubMenuModel(
+                        menuSubObject.optString("OptionMenu_Id"),
+                        menuSubObject.optString("OptionMenu_Name"),
+                        formatted_URL
+                );
+                subMenuModelArrayList.add(menuSubModel);
+            }
+
+            dynamicSubMenuAdapter = new DynamicSubMenuAdapter(subMenuModelArrayList, this);
+            recyclerView.setAdapter(dynamicSubMenuAdapter);
+            dynamicSubMenuAdapter.notifyDataSetChanged();
+        } else {
+            commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, "No Record Found");
+        }
+
+    } catch (JSONException e) {
+        e.printStackTrace();
+        commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, "Invalid submenu data format");
     }
+}
 
 
 }

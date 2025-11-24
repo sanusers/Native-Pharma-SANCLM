@@ -110,7 +110,7 @@ public class MissedReport extends AppCompatActivity {
                     Toast.makeText(MissedReport.this, "Please select month", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                showHeadquartersPicker();
+//                showHeadquartersPicker();
             });
         } else {
             binding.headquarters.setVisibility(View.GONE);
@@ -123,7 +123,7 @@ public class MissedReport extends AppCompatActivity {
         getJoiningDate();
         adapter = new MissedReportAdapter(this, reportList, (item, position) -> {
 //            getData(date, item.getSfCode());
-            fetchAndLoadData(date, item.getSfCode());
+//            fetchAndLoadData(date, item.getSfCode());
         });
         binding.recyclerMissedReports.setAdapter(adapter);
         binding.recyclerMissedReports.setVisibility(View.GONE);
@@ -196,7 +196,7 @@ public class MissedReport extends AppCompatActivity {
 //            showMonthYearPicker(binding.calender);
 //            finish();
 //        });
-        binding.calender.setOnClickListener(view -> showMonthYearPicker(binding.calender));
+//        binding.calender.setOnClickListener(view -> showMonthYearPicker(binding.calender));
 //        binding.doctorStatsLayout.setOnClickListener(v -> {
 //            Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
 //            startActivity(intent);
@@ -206,114 +206,114 @@ public class MissedReport extends AppCompatActivity {
         hideSystemBars();
         TextView monthYearTextView = findViewById(R.id.calender);
 
-        monthYearTextView.setOnClickListener(view ->
-
-                showMonthYearPicker(monthYearTextView));
+//        monthYearTextView.setOnClickListener(view ->
+//
+//                showMonthYearPicker(monthYearTextView));
     }
 
-    private void showHeadquartersPicker() {
-        if (hqDialog != null && hqDialog.isShowing()) {
-            return;
-        }
-        try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();//object to add
-            ArrayList<String> list = new ArrayList<>();
+//    private void showHeadquartersPicker() {
+//        if (hqDialog != null && hqDialog.isShowing()) {
+//            return;
+//        }
+//        try {
+//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();//object to add
+//            ArrayList<String> list = new ArrayList<>();
+//
+//            // added lines
+//            JSONObject  object= new JSONObject();
+//            object.put("name", SharedPref.getSfName(this));
+//            object.put("id", SharedPref.getSfCode(this));
+//            jsonArray.put(object);
+//            list.add(object.optString("name", " "));
+//
+//            if (jsonArray.length() > 0) {
+//                for (int i = 0; i < jsonArray.length(); i++) {
+//                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                    //list.add(jsonObject.getString("name"));
+//                    String name = jsonObject.getString("name");
+//                    if (!name.equalsIgnoreCase(SharedPref.getSfName(this))) {
+//                        list.add(name);
+//                    }
+//                }//sfname sharedpref
+//            }
+//
+//            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MissedReport.this);
+//            LayoutInflater inflater = MissedReport.this.getLayoutInflater();
+//            View dialogView = inflater.inflate(R.layout.dialog_headquarters_picker, null);
+//            alertDialog.setView(dialogView);
+//            TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
+//            ListView listView = dialogView.findViewById(R.id.listView);
+//            SearchView searchView = dialogView.findViewById(R.id.searchET);
+//
+//            headerTxt.setText(getResources().getText(R.string.select_hq));
+//            ArrayAdapter<String> adapter = new ArrayAdapter<>(MissedReport.this, android.R.layout.simple_list_item_1, list);
+//            listView.setAdapter(adapter);
+//            hqDialog = alertDialog.create();
+//
+////            AlertDialog dialog = alertDialog.create();
+//
+//            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//                @Override
+//                public boolean onQueryTextSubmit(String s) {
+//                    adapter.getFilter().filter(s);
+//                    return false;
+//                }
+//                @Override
+//                public boolean onQueryTextChange(String s) {
+//                    adapter.getFilter().filter(s);
+//                    return false;
+//                }
+//            });
+//
+//            listView.setOnItemClickListener((adapterView, view1, position, l) -> {
+//                String selectedHq = listView.getItemAtPosition(position).toString();
+//                binding.headquarters.setText(selectedHq);
+//
+//                for (int i = 0; i < jsonArray.length(); i++) {
+//                    try {
+//                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                        if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
+//                            selectedHqId = jsonObject.optString("id", "");
+//
+//                            if (!selectedDate.isEmpty() && !selectedHqId.isEmpty()) {
+//                                tryFetchReport();
+//                            }
+//                            break;
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    binding.emptyMessage.setVisibility(View.GONE);
+//                }
+//                hqDialog.dismiss();
+//            });
+//
+//
+//            alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+//            hqDialog.show();
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        UtilityClass.hideKeyboard(MissedReport.this);
+//    }
 
-            // added lines
-            JSONObject  object= new JSONObject();
-            object.put("name", SharedPref.getSfName(this));
-            object.put("id", SharedPref.getSfCode(this));
-            jsonArray.put(object);
-            list.add(object.optString("name", " "));
-
-            if (jsonArray.length() > 0) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    //list.add(jsonObject.getString("name"));
-                    String name = jsonObject.getString("name");
-                    if (!name.equalsIgnoreCase(SharedPref.getSfName(this))) {
-                        list.add(name);
-                    }
-                }//sfname sharedpref
-            }
-
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MissedReport.this);
-            LayoutInflater inflater = MissedReport.this.getLayoutInflater();
-            View dialogView = inflater.inflate(R.layout.dialog_headquarters_picker, null);
-            alertDialog.setView(dialogView);
-            TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
-            ListView listView = dialogView.findViewById(R.id.listView);
-            SearchView searchView = dialogView.findViewById(R.id.searchET);
-
-            headerTxt.setText(getResources().getText(R.string.select_hq));
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(MissedReport.this, android.R.layout.simple_list_item_1, list);
-            listView.setAdapter(adapter);
-            hqDialog = alertDialog.create();
-
-//            AlertDialog dialog = alertDialog.create();
-
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String s) {
-                    adapter.getFilter().filter(s);
-                    return false;
-                }
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    adapter.getFilter().filter(s);
-                    return false;
-                }
-            });
-
-            listView.setOnItemClickListener((adapterView, view1, position, l) -> {
-                String selectedHq = listView.getItemAtPosition(position).toString();
-                binding.headquarters.setText(selectedHq);
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    try {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
-                            selectedHqId = jsonObject.optString("id", "");
-
-                            if (!selectedDate.isEmpty() && !selectedHqId.isEmpty()) {
-                                tryFetchReport();
-                            }
-                            break;
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    binding.emptyMessage.setVisibility(View.GONE);
-                }
-                hqDialog.dismiss();
-            });
-
-
-            alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
-            hqDialog.show();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        UtilityClass.hideKeyboard(MissedReport.this);
-    }
-
-    private void tryFetchReport() {
-        if (selectedDate == null || selectedDate.isEmpty()) {
-            Log.d("MissedReport", "Date not selected → skipping API call");
-            return;
-        }
-        if (SharedPref.getSfType(this).equals("1")) {
-            fetchAndLoadMonthlyData(selectedDate,SharedPref.getSfCode(this));
-        } else if (SharedPref.getSfType(this).equals("2")) {
-            if (selectedHqId != null && !selectedHqId.isEmpty()) {
-                fetchAndLoadMonthlyData(selectedDate,selectedHqId);
-            } else {
-                Log.d("MissedReport", "HQ not selected → skipping API call");
-            }
-        }
-    }
+//    private void tryFetchReport() {
+//        if (selectedDate == null || selectedDate.isEmpty()) {
+//            Log.d("MissedReport", "Date not selected → skipping API call");
+//            return;
+//        }
+//        if (SharedPref.getSfType(this).equals("1")) {
+//            fetchAndLoadMonthlyData(selectedDate,SharedPref.getSfCode(this));
+//        } else if (SharedPref.getSfType(this).equals("2")) {
+//            if (selectedHqId != null && !selectedHqId.isEmpty()) {
+//                fetchAndLoadMonthlyData(selectedDate,selectedHqId);
+//            } else {
+//                Log.d("MissedReport", "HQ not selected → skipping API call");
+//            }
+//        }
+//    }
 
 
     private void getJoiningDate() {
@@ -331,64 +331,64 @@ public class MissedReport extends AppCompatActivity {
         }
     }
 
-    public void showMonthYearPicker(TextView monthYearTextView) {
-        if (monthDialog != null && monthDialog.isShowing()) {
-            return;
-        }
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View dialogView = inflater.inflate(R.layout.activity_month_year, null);
-        ImageView crossImage = dialogView.findViewById(R.id.crossImage);
-        ListView monthYearListView = dialogView.findViewById(R.id.monthYearListView);
-
-        // Combine month & year into single string
-        List<String> monthYearList = getCurrentAndPreviousMonths();
-
-        // Adapter for combined month-year list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, monthYearList);
-        monthYearListView.setAdapter(adapter);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView);
-        monthDialog = builder.create();
-//        AlertDialog dialog = builder.create();
-        monthDialog.setCanceledOnTouchOutside(false);
-        crossImage.setOnClickListener(view -> monthDialog.dismiss());
-        monthDialog.show();
-
-        // When item is clicked, set to TextView and close dialog
-        monthYearListView.setOnItemClickListener((parent, view, position, id) -> {
-            String selected = monthYearList.get(position);
-
-            monthYearTextView.setText(selected);
-            try {
-//                added lines
-                reportList.clear();
-                adapter. notifyDataSetChanged();;
-                binding.recyclerMissedReports.setVisibility(View.GONE);
-                hqDialog = null; // reset HQ dialog reference
-                binding.headquarters.setText("Select HeadQuarters");
-                // Input format: "MMMM yyyy" (August 2025)
-                SimpleDateFormat inputFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-                // Output format: "yyyy-MM-dd" (2025-08-01) - set day as 01 by default
-                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                date = outputFormat.format(inputFormat.parse(selected));
-                selectedDate=date;
-
-                binding.outboxEmtyImage.setVisibility(View.GONE);
-                binding.recyclerMissedReports.setVisibility(View.VISIBLE);
-                binding.emptyMessage.setVisibility(View.GONE);
-
-                if (SharedPref.getSfType(this).equals("1")) {
-                    tryFetchReport();
-                }
-//                binding.boxCombined.setVisibility(View.VISIBLE);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            monthDialog.dismiss();
-        });
-    }
+//    public void showMonthYearPicker(TextView monthYearTextView) {
+//        if (monthDialog != null && monthDialog.isShowing()) {
+//            return;
+//        }
+//        LayoutInflater inflater = LayoutInflater.from(this);
+//        View dialogView = inflater.inflate(R.layout.activity_month_year, null);
+//        ImageView crossImage = dialogView.findViewById(R.id.crossImage);
+//        ListView monthYearListView = dialogView.findViewById(R.id.monthYearListView);
+//
+//        // Combine month & year into single string
+//        List<String> monthYearList = getCurrentAndPreviousMonths();
+//
+//        // Adapter for combined month-year list
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, monthYearList);
+//        monthYearListView.setAdapter(adapter);
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setView(dialogView);
+//        monthDialog = builder.create();
+////        AlertDialog dialog = builder.create();
+//        monthDialog.setCanceledOnTouchOutside(false);
+//        crossImage.setOnClickListener(view -> monthDialog.dismiss());
+//        monthDialog.show();
+//
+//        // When item is clicked, set to TextView and close dialog
+//        monthYearListView.setOnItemClickListener((parent, view, position, id) -> {
+//            String selected = monthYearList.get(position);
+//
+//            monthYearTextView.setText(selected);
+//            try {
+////                added lines
+//                reportList.clear();
+//                adapter. notifyDataSetChanged();;
+//                binding.recyclerMissedReports.setVisibility(View.GONE);
+//                hqDialog = null; // reset HQ dialog reference
+//                binding.headquarters.setText("Select HeadQuarters");
+//                // Input format: "MMMM yyyy" (August 2025)
+//                SimpleDateFormat inputFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+//                // Output format: "yyyy-MM-dd" (2025-08-01) - set day as 01 by default
+//                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+//                date = outputFormat.format(inputFormat.parse(selected));
+//                selectedDate=date;
+//
+//                binding.outboxEmtyImage.setVisibility(View.GONE);
+//                binding.recyclerMissedReports.setVisibility(View.VISIBLE);
+//                binding.emptyMessage.setVisibility(View.GONE);
+//
+//                if (SharedPref.getSfType(this).equals("1")) {
+//                    tryFetchReport();
+//                }
+////                binding.boxCombined.setVisibility(View.VISIBLE);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//
+//            monthDialog.dismiss();
+//        });
+//    }
 
     private List<String> getCurrentAndPreviousMonths() {
         List<String> months = new ArrayList<>();
@@ -426,254 +426,254 @@ public class MissedReport extends AppCompatActivity {
         }
     }
 
-    public void fetchAndLoadMonthlyData(String date,String sfcode) {
-        RoomDB.databaseWriteExecutor.execute(() -> {
-            RoomDB db = RoomDB.getDatabase(MissedReport.this);
-            MissedDao missedDao = db.missedDao();
-            String storedJson = missedDao.getMissedValues(sfcode,date);
+//    public void fetchAndLoadMonthlyData(String date,String sfcode) {
+//        RoomDB.databaseWriteExecutor.execute(() -> {
+//            RoomDB db = RoomDB.getDatabase(MissedReport.this);
+//            MissedDao missedDao = db.missedDao();
+//            String storedJson = missedDao.getMissedValues(sfcode,date);
+//
+//            runOnUiThread(() -> {
+//                if (storedJson != null && !storedJson.isEmpty()) {
+//                    try {
+//                        JSONArray storedArray = new JSONArray(storedJson);
+//                        reportList.clear();
+//                        for (int i = 0; i < storedArray.length(); i++) {
+//                            JSONObject obj = storedArray.optJSONObject(i);
+//                            String name = obj.optString("Name");
+//                            String hq = obj.optString("Cluster");
+//                            String totalDoctor = obj.optString("Dcnt", "0");
+//                            String visited = obj.optString("Dmet", "0");
+//                            String missed = obj.optString("Dmis", "0");
+//                            String sfCode = obj.optString("sf_code");
+//
+//                            MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
+//                            reportList.add(missedReportItem);
+//                        }
+//
+//                        adapter.updateData(reportList);
+//                        binding.recyclerMissedReports.setVisibility(View.VISIBLE);
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    getReportData(date,sfcode);
+//                }
+//            });
+//        });
+//    }
 
-            runOnUiThread(() -> {
-                if (storedJson != null && !storedJson.isEmpty()) {
-                    try {
-                        JSONArray storedArray = new JSONArray(storedJson);
-                        reportList.clear();
-                        for (int i = 0; i < storedArray.length(); i++) {
-                            JSONObject obj = storedArray.optJSONObject(i);
-                            String name = obj.optString("Name");
-                            String hq = obj.optString("Cluster");
-                            String totalDoctor = obj.optString("Dcnt", "0");
-                            String visited = obj.optString("Dmet", "0");
-                            String missed = obj.optString("Dmis", "0");
-                            String sfCode = obj.optString("sf_code");
+//    public void getReportData(String date ,String sfcode) {
+//        showLoadingOverlay();
+//        if (UtilityClass.isNetworkAvailable(this)) {
+//            NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
+//                if (status) {
+//                    try {
+//                        ApiInterface apiInterface = RetrofitClient.getRetrofit(MissedReport.this, SharedPref.getCallApiUrl(MissedReport.this));
+//                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+//                        jsonObject.put("sfcode", sfcode);
+//                        jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+//                        jsonObject.put("Rsf", SharedPref.getHqCode(this));
+//                        jsonObject.put("rptDt", date);
+//                        jsonObject.put("tableName", "getmissedrpt");
+//                        Log.d("TAG", "getData: " + jsonObject);
+//
+//                        Map<String, String> mapString = new HashMap<>();
+//                        mapString.put("axn", "get/reports");
+//
+//                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
+//                        call.enqueue(new Callback<JsonElement>() {
+//                            @Override
+//                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+//                                hideLoadingOverlay();
+//                                try {
+//                                    if (response.isSuccessful() && response.body() != null) {
+//                                        JsonElement jsonElement = response.body();
+//
+//                                        if (jsonElement.isJsonArray()) {
+//                                            JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+//
+//                                            if (jsonArray.length() > 0) {
+//                                                String jsonString = jsonArray.toString();
+//
+//                                                // Save and retrieve from Room
+//                                                RoomDB.databaseWriteExecutor.execute(() -> {
+//                                                    RoomDB db = RoomDB.getDatabase(MissedReport.this);
+//                                                    MissedDao missedDao = db.missedDao();
+//                                                    missedDao.saveMissedJson(date,sfcode,jsonString);
+//
+//                                                    if (jsonString != null && !jsonString.equals("[]")) {
+//
+//                                                        missedDao.saveMissedJson(date, sfcode, jsonString);
+//
+//                                                        String storedJson = missedDao.getMissedValues(sfcode,date); // retrieve
+//
+//                                                        try {
+//                                                            JSONArray storedArray = new JSONArray(storedJson);
+//
+//                                                            reportList.clear();
+//                                                            for (int i = 0; i < storedArray.length(); i++) {
+//                                                                JSONObject obj = storedArray.optJSONObject(i);
+//                                                                String name = obj.optString("Name");
+//                                                                String hq = obj.optString("Cluster");
+//                                                                String totalDoctor = obj.optString("Dcnt", "0");
+//                                                                String visited = obj.optString("Dmet", "0");
+//                                                                String missed = obj.optString("Dmis", "0");
+//                                                                String sfCode = obj.optString("sf_code");
+//
+//                                                                MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
+//                                                                reportList.add(missedReportItem);
+//                                                            }
+//
+//                                                            runOnUiThread(() -> {
+//                                                                adapter.updateData(reportList);
+//                                                                binding.recyclerMissedReports.setVisibility(View.VISIBLE);
+//                                                            });
+//
+//                                                        } catch (JSONException e) {
+//                                                            e.printStackTrace();
+//                                                        }
+//                                                    }
+//                                                });
+//                                            }
+//                                            //added lines
+//                                            else {
+//                                                runOnUiThread(() -> {
+//                                                    reportList.clear();
+//                                                    adapter.updateData(reportList);
+//                                                    binding.recyclerMissedReports.setVisibility(View.GONE);
+//                                                });
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//
+//
+//                            @Override
+//                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+//                                hideLoadingOverlay();
+//                                runOnUiThread(() -> {
+//                                    CommonUtilsMethods.showToastMessage(MissedReport.this, "Failed to load data");//fails
+//                                });
+//                                // Handle failure here if needed
+//                            }
+//                        });
+//                    } catch (JSONException e) {
+//                        hideLoadingOverlay();
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    hideLoadingOverlay();
+//                    CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.poor_connection));
+//                }
+//            });
+//            networkStatusTask.execute();
+//        } else {
+//            hideLoadingOverlay();
+//            CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.no_network));
+//        }
+//    }
 
-                            MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
-                            reportList.add(missedReportItem);
-                        }
-
-                        adapter.updateData(reportList);
-                        binding.recyclerMissedReports.setVisibility(View.VISIBLE);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    getReportData(date,sfcode);
-                }
-            });
-        });
-    }
-
-    public void getReportData(String date ,String sfcode) {
-        showLoadingOverlay();
-        if (UtilityClass.isNetworkAvailable(this)) {
-            NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
-                if (status) {
-                    try {
-                        ApiInterface apiInterface = RetrofitClient.getRetrofit(MissedReport.this, SharedPref.getCallApiUrl(MissedReport.this));
-                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-                        jsonObject.put("sfcode", sfcode);
-                        jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                        jsonObject.put("Rsf", SharedPref.getHqCode(this));
-                        jsonObject.put("rptDt", date);
-                        jsonObject.put("tableName", "getmissedrpt");
-                        Log.d("TAG", "getData: " + jsonObject);
-
-                        Map<String, String> mapString = new HashMap<>();
-                        mapString.put("axn", "get/reports");
-
-                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
-                        call.enqueue(new Callback<JsonElement>() {
-                            @Override
-                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                hideLoadingOverlay();
-                                try {
-                                    if (response.isSuccessful() && response.body() != null) {
-                                        JsonElement jsonElement = response.body();
-
-                                        if (jsonElement.isJsonArray()) {
-                                            JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-
-                                            if (jsonArray.length() > 0) {
-                                                String jsonString = jsonArray.toString();
-
-                                                // Save and retrieve from Room
-                                                RoomDB.databaseWriteExecutor.execute(() -> {
-                                                    RoomDB db = RoomDB.getDatabase(MissedReport.this);
-                                                    MissedDao missedDao = db.missedDao();
-                                                    missedDao.saveMissedJson(date,sfcode,jsonString);
-
-                                                    if (jsonString != null && !jsonString.equals("[]")) {
-
-                                                        missedDao.saveMissedJson(date, sfcode, jsonString);
-
-                                                        String storedJson = missedDao.getMissedValues(sfcode,date); // retrieve
-
-                                                        try {
-                                                            JSONArray storedArray = new JSONArray(storedJson);
-
-                                                            reportList.clear();
-                                                            for (int i = 0; i < storedArray.length(); i++) {
-                                                                JSONObject obj = storedArray.optJSONObject(i);
-                                                                String name = obj.optString("Name");
-                                                                String hq = obj.optString("Cluster");
-                                                                String totalDoctor = obj.optString("Dcnt", "0");
-                                                                String visited = obj.optString("Dmet", "0");
-                                                                String missed = obj.optString("Dmis", "0");
-                                                                String sfCode = obj.optString("sf_code");
-
-                                                                MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
-                                                                reportList.add(missedReportItem);
-                                                            }
-
-                                                            runOnUiThread(() -> {
-                                                                adapter.updateData(reportList);
-                                                                binding.recyclerMissedReports.setVisibility(View.VISIBLE);
-                                                            });
-
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                            //added lines
-                                            else {
-                                                runOnUiThread(() -> {
-                                                    reportList.clear();
-                                                    adapter.updateData(reportList);
-                                                    binding.recyclerMissedReports.setVisibility(View.GONE);
-                                                });
-                                            }
-                                        }
-                                    }
-                                }
-                                catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-
-                            @Override
-                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                hideLoadingOverlay();
-                                runOnUiThread(() -> {
-                                    CommonUtilsMethods.showToastMessage(MissedReport.this, "Failed to load data");//fails
-                                });
-                                // Handle failure here if needed
-                            }
-                        });
-                    } catch (JSONException e) {
-                        hideLoadingOverlay();
-                        e.printStackTrace();
-                    }
-                } else {
-                    hideLoadingOverlay();
-                    CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.poor_connection));
-                }
-            });
-            networkStatusTask.execute();
-        } else {
-            hideLoadingOverlay();
-            CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.no_network));
-        }
-    }
-
-    public void getData(String date, String sfcode) {
-        showLoadingOverlay();
-        if (UtilityClass.isNetworkAvailable(this)) {
-            NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
-                if (status) {
-                    try {
-                        ApiInterface apiInterface = RetrofitClient.getRetrofit(MissedReport.this, SharedPref.getCallApiUrl(MissedReport.this));
-                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-                        jsonObject.put("sfcode", sfcode);
-                        jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                        jsonObject.put("Rsf", SharedPref.getHqCode(this));
-                        jsonObject.put("report_date", date);
-                        jsonObject.put("tableName", "getmissedrptview");
-                        Log.d("TAG", "getData: " + jsonObject);
-
-                        Map<String, String> mapString = new HashMap<>();
-                        mapString.put("axn", "get/reports");
-
-                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
-                        call.enqueue(new Callback<JsonElement>() {
-                            @Override
-                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                hideLoadingOverlay();
-                                try {
-                                    if (response.isSuccessful() && response.body() != null) {
-                                        JsonElement jsonElement = response.body();
-
-                                        if (jsonElement.isJsonArray()) {
-                                            JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-
-                                            if (jsonArray.length() > 0) {
-                                                String arrayAsString = jsonArray.toString();
-                                                RoomDB.databaseWriteExecutor.execute(() -> {
-                                                    Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
-//                                                    intent.putExtra("doctor_array", arrayAsString);
+//    public void getData(String date, String sfcode) {
+//        showLoadingOverlay();
+//        if (UtilityClass.isNetworkAvailable(this)) {
+//            NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
+//                if (status) {
+//                    try {
+//                        ApiInterface apiInterface = RetrofitClient.getRetrofit(MissedReport.this, SharedPref.getCallApiUrl(MissedReport.this));
+//                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+//                        jsonObject.put("sfcode", sfcode);
+//                        jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+//                        jsonObject.put("Rsf", SharedPref.getHqCode(this));
+//                        jsonObject.put("report_date", date);
+//                        jsonObject.put("tableName", "getmissedrptview");
+//                        Log.d("TAG", "getData: " + jsonObject);
+//
+//                        Map<String, String> mapString = new HashMap<>();
+//                        mapString.put("axn", "get/reports");
+//
+//                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
+//                        call.enqueue(new Callback<JsonElement>() {
+//                            @Override
+//                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+//                                hideLoadingOverlay();
+//                                try {
+//                                    if (response.isSuccessful() && response.body() != null) {
+//                                        JsonElement jsonElement = response.body();
+//
+//                                        if (jsonElement.isJsonArray()) {
+//                                            JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+//
+//                                            if (jsonArray.length() > 0) {
+//                                                String arrayAsString = jsonArray.toString();
+//                                                RoomDB.databaseWriteExecutor.execute(() -> {
+//                                                    Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
+////                                                    intent.putExtra("doctor_array", arrayAsString);
+////                                                    startActivity(intent);
+//                                                    RoomDB db = RoomDB.getDatabase(MissedReport.this);  // context = MissedReport.this or your Activity context
+//                                                    DoctorVisitDao visitDao = db.doctorVisitDao();
+//                                                    visitDao.saveVisitJson(sfcode, date,jsonArray.toString());
+//                                                    intent.putExtra("sfcode", sfcode);
+//                                                    intent.putExtra("date",date);
 //                                                    startActivity(intent);
-                                                    RoomDB db = RoomDB.getDatabase(MissedReport.this);  // context = MissedReport.this or your Activity context
-                                                    DoctorVisitDao visitDao = db.doctorVisitDao();
-                                                    visitDao.saveVisitJson(sfcode, date,jsonArray.toString());
-                                                    intent.putExtra("sfcode", sfcode);
-                                                    intent.putExtra("date",date);
-                                                    startActivity(intent);
-                                                });
-
-                                            }
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                hideLoadingOverlay();
-                                runOnUiThread(() -> {
-                                    CommonUtilsMethods.showToastMessage(MissedReport.this, "Failed to load data");//fails
-                                });
-                            }
-                        });
-                    } catch (JSONException e) {
-                        hideLoadingOverlay();
-
-                        e.printStackTrace();
-                    }
-                } else {
-                    hideLoadingOverlay();
-                    CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.poor_connection));
-                }
-            });
-            networkStatusTask.execute();
-        } else {
-            hideLoadingOverlay();
-            CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.no_network));
-        }
-    }
-    public void fetchAndLoadData(String date, String sfcode) {
-
-        RoomDB.databaseWriteExecutor.execute(() -> {
-            RoomDB db = RoomDB.getDatabase(MissedReport.this);
-            DoctorVisitDao visitDao = db.doctorVisitDao();
-            String doctorArrayString = visitDao.getVisitValues(sfcode, date);
-
-            runOnUiThread(() -> {
-                if (doctorArrayString != null && !doctorArrayString.isEmpty()) {
-                    Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
-//                    intent.putExtra("doctor_array", doctorArrayString);
-                    intent.putExtra("sfcode", sfcode);
-                    intent.putExtra("date", date);
-                    startActivity(intent);
-                } else {
-                    getData(date, sfcode);
-                }
-            });
-        });
-    }
+//                                                });
+//
+//                                            }
+//                                        }
+//                                    }
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+//                                hideLoadingOverlay();
+//                                runOnUiThread(() -> {
+//                                    CommonUtilsMethods.showToastMessage(MissedReport.this, "Failed to load data");//fails
+//                                });
+//                            }
+//                        });
+//                    } catch (JSONException e) {
+//                        hideLoadingOverlay();
+//
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    hideLoadingOverlay();
+//                    CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.poor_connection));
+//                }
+//            });
+//            networkStatusTask.execute();
+//        } else {
+//            hideLoadingOverlay();
+//            CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.no_network));
+//        }
+//    }
+//    public void fetchAndLoadData(String date, String sfcode) {
+//
+//        RoomDB.databaseWriteExecutor.execute(() -> {
+//            RoomDB db = RoomDB.getDatabase(MissedReport.this);
+//            DoctorVisitDao visitDao = db.doctorVisitDao();
+//            String doctorArrayString = visitDao.getVisitValues(sfcode, date);
+//
+//            runOnUiThread(() -> {
+//                if (doctorArrayString != null && !doctorArrayString.isEmpty()) {
+//                    Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
+////                    intent.putExtra("doctor_array", doctorArrayString);
+//                    intent.putExtra("sfcode", sfcode);
+//                    intent.putExtra("date", date);
+//                    startActivity(intent);
+//                } else {
+//                    getData(date, sfcode);
+//                }
+//            });
+//        });
+//    }
 }
 
 

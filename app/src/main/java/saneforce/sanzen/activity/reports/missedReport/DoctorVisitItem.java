@@ -25,7 +25,9 @@ public class DoctorVisitItem implements Serializable {
 
        //this.monthKey =monthKey;
     }
+    public DoctorVisitItem(){
 
+    }
 
 
 
@@ -55,6 +57,16 @@ public class DoctorVisitItem implements Serializable {
 
     public String getClassName() {
         return className;
+    }
+
+    public void setName(String name) {this.name = name; }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setTerritory(String territory) {
+        this.territory = territory;
     }
 
     public void setCategory(String category) {

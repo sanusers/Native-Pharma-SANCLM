@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.previewPresentation;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SelectedTab;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix.brandMatrixBinding;
@@ -11,7 +9,6 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.Speciality.
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -45,11 +42,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentDrSelectionSideBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -61,7 +58,6 @@ import saneforce.sanzen.storage.SharedPref;
 
 public class DrSelectionSide extends Fragment {
     public static ArrayList<CustList> callDrListBrand = new ArrayList<>();
-    public static ArrayList<CustList> callDrListSpeciality = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static FragmentDrSelectionSideBinding drSelectionSideBinding;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
@@ -69,14 +65,12 @@ public class DrSelectionSide extends Fragment {
     JSONArray jsonArray;
     JSONObject jsonObject;
     SelectDoctorAdapter selectDoctorAdapter;
-
-    String TodayPlanSfCode;
+    private String TodayPlanSfCode, TodayPlanSfName;
     String brands;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         drSelectionSideBinding = FragmentDrSelectionSideBinding.inflate(inflater);
@@ -85,11 +79,12 @@ public class DrSelectionSide extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        SetDrAdapter();
+//        SetDrAdapter();
 
         drSelectionSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onSafeClick(View view) {}
+            public void onSafeClick(View view) {
+            }
         });
 
         drSelectionSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
@@ -101,7 +96,6 @@ public class DrSelectionSide extends Fragment {
                 previewBinding.fragmentSelectDrSide.setVisibility(View.GONE);
             }
         });
-
 
         drSelectionSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override
@@ -126,7 +120,6 @@ public class DrSelectionSide extends Fragment {
         return view;
     }
 
-
     private void filter(String text) {
         ArrayList<CustList> filteredNames = new ArrayList<>();
         if (SelectedTab.equalsIgnoreCase("Spec")) {
@@ -148,20 +141,6 @@ public class DrSelectionSide extends Fragment {
     public void SetDrAdapter() {
         try {
             callDrListBrand.clear();
-            if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
-                TodayPlanSfCode = SharedPref.getSfCode(requireContext());
-            } else {
-                if (SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                    for (int i = 0; i < 1; i++) {
-                        JSONObject jsonHQList = jsonArray.getJSONObject(0);
-                        TodayPlanSfCode = jsonHQList.getString("id");
-                    }
-                } else {
-                    TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(requireContext());
-                }
-            }
-
 //            if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
             if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR_MAS + TodayPlanSfCode)) {
                 prepareMasterToSync(TodayPlanSfCode);
@@ -185,19 +164,19 @@ public class DrSelectionSide extends Fragment {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
-                if(!docNames.contains(jsonObject.getString("Name"))) {
-                    if(!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-") && !jsonObject.getString("MProd").isEmpty()) {
+                if (!docNames.contains(jsonObject.getString("Name"))) {
+                    if (!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-") && !jsonObject.getString("MProd").isEmpty()) {
                         brands = getBrands(jsonObject.getString("MappProds"));
                         docNames.add(jsonObject.getString("Name"));
                         callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), brands, jsonObject.getString("MProd"), true));
-                    }else {
+                    } else {
                         docNames.add(jsonObject.getString("Name"));
                         callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), "", "", false));
                     }
                 }
             }
             selectDoctorAdapter = new SelectDoctorAdapter(requireContext(), callDrListBrand);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
             drSelectionSideBinding.selectListView.setLayoutManager(mLayoutManager);
             drSelectionSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
             drSelectionSideBinding.selectListView.setAdapter(selectDoctorAdapter);
@@ -205,8 +184,6 @@ public class DrSelectionSide extends Fragment {
         } catch (Exception e) {
             Log.v("dsds", "---error---" + e + "----" + SelectedTab);
         }
-
-
     }
 
     public String getBrands(String mappProds) {
@@ -240,13 +217,13 @@ public class DrSelectionSide extends Fragment {
     }
 
     public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode) {
-        if (UtilityClass.isNetworkAvailable(context)) {
+        if (UtilityClass.isNetworkAvailable(requireContext())) {
             try {
                 apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                jsonObject.put("sfcode", SharedPref.getSfCode(context));
-                jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                 jsonObject.put("Rsf", hqCode);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
@@ -311,6 +288,22 @@ public class DrSelectionSide extends Fragment {
         }
     }
 
+    public String getTodayPlanSfCode() {
+        return TodayPlanSfCode;
+    }
+
+    public void setTodayPlanSfCode(String todayPlanSfCode) {
+        TodayPlanSfCode = todayPlanSfCode;
+    }
+
+    public String getTodayPlanSfName() {
+        return TodayPlanSfName;
+    }
+
+    public void setTodayPlanSfName(String todayPlanSfName) {
+        TodayPlanSfName = todayPlanSfName;
+    }
+
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(drSelectionSideBinding.getRoot().getWindowToken(), 0);
@@ -352,7 +345,6 @@ public class DrSelectionSide extends Fragment {
                     holder.tvBrandAvailable.setVisibility(View.GONE);
                 }
             }
-
 
             holder.tvName.setOnClickListener(new SafeClickListener() {
                 @Override

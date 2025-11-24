@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.tourPlan.summary;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,11 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.storage.SharedPref;
-
 
 public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.MyViewHolder> {
     ArrayList<ModelClass.CountModel> modelClass;
@@ -28,31 +24,29 @@ public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.
     Context context;
 //    private int OneBuildSetup = 0;
 
-    public SummaryIconAdapter (ArrayList<ModelClass.CountModel> modelClass, Context context) {
+    public SummaryIconAdapter(ArrayList<ModelClass.CountModel> modelClass, Context context) {
         this.modelClass = modelClass;
         this.context = context;
     }
 
-    public SummaryIconAdapter(Context context,ArrayList<OneBuildModelClass.CountModel> oneBuildModelClass) {
+    public SummaryIconAdapter(Context context, ArrayList<OneBuildModelClass.CountModel> oneBuildModelClass) {
         this.context = context;
         this.oneBuildModelClass = oneBuildModelClass;
     }
 
     public SummaryIconAdapter() {
-
     }
-
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tp_summary_icon_item,parent,false);
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tp_summary_icon_item, parent, false);
         return new MyViewHolder(view);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             OneBuildModelClass.CountModel oneBuildModel = oneBuildModelClass.get(holder.getAbsoluteAdapterPosition());
 
@@ -92,52 +86,52 @@ public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.
             }
             holder.count.setText(String.valueOf(oneBuildModel.getCount()));
 
-        }else{
+        } else {
 
-        ModelClass.CountModel model = modelClass.get(holder.getAbsoluteAdapterPosition());
+            ModelClass.CountModel model = modelClass.get(holder.getAbsoluteAdapterPosition());
 
-        switch (model.getName().toUpperCase()) {
-            case "CLUSTER": {
-                holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_cluster_location_ic));
-                break;
+            switch (model.getName().toUpperCase()) {
+                case "CLUSTER": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_cluster_location_ic));
+                    break;
+                }
+                case "JW": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_joint_work_ic));
+                    break;
+                }
+                case "DR": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_dr_icon));
+                    break;
+                }
+                case "CHEMIST": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_chemist_icon));
+                    break;
+                }
+                case "STOCKIEST": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_stockiest_icon));
+                    break;
+                }
+                case "UNLISTEDDR": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_unlist_dr_icon));
+                    break;
+                }
+                case "CIP": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_cip_icon));
+                    break;
+                }
+                case "HOSP": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_hospital_icon));
+                    break;
+                }
             }
-            case "JW": {
-                holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_joint_work_ic));
-                break;
-            }
-            case "DR": {
-                holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_dr_icon));
-                break;
-            }
-            case "CHEMIST": {
-                holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_chemist_icon));
-                break;
-            }
-            case "STOCKIEST": {
-                holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_stockiest_icon));
-                break;
-            }
-            case "UNLISTEDDR": {
-                holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_unlist_dr_icon));
-                break;
-            }
-            case "CIP": {
-                holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_cip_icon));
-                break;
-            }
-            case "HOSP": {
-                holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_hospital_icon));
-                break;
-            }
+            holder.count.setText(String.valueOf(model.getCount()));
         }
-        holder.count.setText(String.valueOf(model.getCount()));
-    }
 
     }
 
     @Override
-    public int getItemCount () {
-        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")) return oneBuildModelClass.size();
+    public int getItemCount() {
+        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) return oneBuildModelClass.size();
         else return modelClass.size();
     }
 
@@ -145,7 +139,8 @@ public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.
 
         ImageView iconImage;
         TextView count;
-        public MyViewHolder (@NonNull View itemView) {
+
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             iconImage = itemView.findViewById(R.id.icon);
             count = itemView.findViewById(R.id.countTxtView);

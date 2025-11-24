@@ -55,7 +55,6 @@ import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.outbox.OutBoxHeaderAdapter;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
@@ -70,6 +69,7 @@ import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.OutboxFragmentBinding;
 import saneforce.sanzen.network.ApiCallback;
 import saneforce.sanzen.network.ApiInterface;
@@ -82,19 +82,19 @@ import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSign
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
-import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkCheckInterface;
 import saneforce.sanzen.utility.NetworkUtil;
 import saneforce.sanzen.utility.TimeUtils;
 
-
 public class OutboxFragment extends Fragment {
+    private static final String TAG = "Outbox";
     @SuppressLint("StaticFieldLeak")
     public static OutboxFragmentBinding outBoxBinding;
     public static ArrayList<GroupModelClass> listDates = new ArrayList<>();
@@ -178,38 +178,42 @@ public class OutboxFragment extends Fragment {
         outBoxBinding.clearAll.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (!listDates.isEmpty()) {
-                    Set<String> dates = outboxUtil.getOutboxDates();
-                    ArrayList<String> finalDates = new ArrayList<>();
-                    for (String date : dates) {
-                        finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
+                if (offlineDaySubmitDao.isNonSyncAvailableDaySubmit()) {
+                    CommonUtilsMethods.showToastMessage(requireActivity(), "Cannot clear when day submitted");
+                } else {
+                    if (!listDates.isEmpty()) {
+                        Set<String> dates = outboxUtil.getOutboxDates();
+                        ArrayList<String> finalDates = new ArrayList<>();
+                        for (String date : dates) {
+                            finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
+                        }
+                        String datesString = Arrays.toString(finalDates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                        TextView btn_no = dialog.findViewById(R.id.btn_no);
+                        TextView message = dialog.findViewById(R.id.ed_alert_msg);
+                        String content = "Available Outbox dates are :\n- " + datesString + "\n\n" + context.getString(R.string.are_you_sure_you_want_to_clear);
+                        message.setText(content);
+                        btn_yes.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                addDateSyncDataBack(dates);
+                                clearCalls();
+                                HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                                dialog.dismiss();
+                            }
+                        });
+                        btn_no.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
                     }
-                    String datesString = Arrays.toString(finalDates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
-                    Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                    TextView btn_no = dialog.findViewById(R.id.btn_no);
-                    TextView message = dialog.findViewById(R.id.ed_alert_msg);
-                    String content = "Available Outbox dates are :\n- " + datesString + "\n\n" + context.getString(R.string.are_you_sure_you_want_to_clear);
-                    message.setText(content);
-                    btn_yes.setOnClickListener(new SafeClickListener() {
-                        @Override
-                        public void onSafeClick(View view) {
-                            addDateSyncDataBack(dates);
-                            clearCalls();
-                            HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
-                            dialog.dismiss();
-                        }
-                    });
-                    btn_no.setOnClickListener(new SafeClickListener() {
-                        @Override
-                        public void onSafeClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
                 }
             }
         });
@@ -263,18 +267,13 @@ public class OutboxFragment extends Fragment {
                     SharedPref.setSelectedDateCal(requireContext(), "");
                 }
             }
-            if (!outBoxCallLists.isEmpty()) {
+            if (!dates.isEmpty()) {
                 JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    for (int j = 0; j < outBoxCallLists.size(); j++) {
-                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(j).getDates()) && (jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(j).getCusCode()) || jsonObject.getString("CustCode").isEmpty())) {
-                            jsonArray.remove(i);
-                            i--;
-                        } else if (dates.contains(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").isEmpty()) {
-                            jsonArray.remove(i);
-                            i--;
-                        }
+                    if (dates.contains(jsonObject.getString("Dcr_dt"))) {
+                        jsonArray.remove(i);
+                        i--;
                     }
                 }
                 MasterDataTable data = new MasterDataTable();
@@ -410,6 +409,7 @@ public class OutboxFragment extends Fragment {
             callSyncCount = 0;
         }
 
+        Log.d(TAG, "sendingOfflineCalls: " + listDates.size());
         processDatesSequentially(listDates, 0);
 
 //        //CheckInOutData
@@ -443,6 +443,7 @@ public class OutboxFragment extends Fragment {
         }
 
         GroupModelClass dateGroup = datesList.get(dateIndex);
+        Log.d(TAG, "processDatesSequentially: " + dateIndex + " -> " + dateGroup.getGroupName());
         processApisForDate(dateGroup, 0, new ApiCallback() {
             @Override
             public void onSuccess() {
@@ -476,7 +477,11 @@ public class OutboxFragment extends Fragment {
         callApiForChild(child, new ApiCallback() {
             @Override
             public void onSuccess() {
-                processApisForDate(dateGroup, apiIndex + 1, callback);
+                if (apiIndex == 1 && child.getWorkPlanModelClass() != null && child.getWorkPlanModelClass().getWtStatus() != null && !child.getWorkPlanModelClass().getWtStatus().isEmpty()) {
+                    processApisForDate(dateGroup, dateGroup.getChildItems().size(), callback);
+                } else {
+                    processApisForDate(dateGroup, apiIndex + 1, callback);
+                }
             }
 
             @Override
@@ -484,7 +489,7 @@ public class OutboxFragment extends Fragment {
 //                if (child.getChildId() == 3 || child.getChildId() == 4 || child.getChildId() == 6) {
 //                    processApisForDate(dateGroup, apiIndex + 1, callback);
 //                } else {
-                    callback.onFailure();
+                callback.onFailure();
 //                }
             }
         });
@@ -493,35 +498,35 @@ public class OutboxFragment extends Fragment {
     private void callApiForChild(ChildListModelClass child, ApiCallback callback) {
         switch (child.getChildId()) {
             case 0:
-                checkInSubmitAPI(child, 0, callback);
+                checkInSubmitAPI(child, 0, 0, callback);
                 break;
 
             case 1:
-                workPlanSubmitAPI(child, callback);
+                workPlanSubmitAPI(child, 0, callback);
                 break;
 
             case 2:
-                callSubmitAPI(child,0, 0, callback);
+                callSubmitAPI(child, 0, 0, callback);
                 break;
 
             case 3:
-                eventCaptureSubmitAPI(child,0, callback);
+                eventCaptureSubmitAPI(child, 0, 0, callback);
                 break;
 
             case 4:
-                signatureSubmitAPI(child,0, callback);
+                signatureSubmitAPI(child, 0, 0, callback);
                 break;
 
             case 5:
-                activitySubmitAPI(child,0, callback);
+                activitySubmitAPI(child, 0, 0, callback);
                 break;
 
             case 6:
-                activityUploadSubmitAPI(child,0, callback);
+                activityUploadSubmitAPI(child, 0, 0, callback);
                 break;
 
             case 7:
-                daySubmitAPI(child, callback);
+                daySubmitAPI(child, 0, callback);
                 break;
 
             default:
@@ -530,9 +535,9 @@ public class OutboxFragment extends Fragment {
         }
     }
 
-    private void checkInSubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
+    private void checkInSubmitAPI(ChildListModelClass child, int index, int attempt, ApiCallback callback) {
         String address = "";
-        ArrayList<CheckInOutModelClass> checkInOutModelClasses= child.getCheckInOutModelClasses();
+        ArrayList<CheckInOutModelClass> checkInOutModelClasses = child.getCheckInOutModelClasses();
         if (checkInOutModelClasses == null || checkInOutModelClasses.isEmpty() || index >= checkInOutModelClasses.size()) {
             callback.onSuccess();
             return;
@@ -572,25 +577,25 @@ public class OutboxFragment extends Fragment {
                         if (CheckInOutStatus.equalsIgnoreCase("1")) {
                             offlineCheckInOutDataDao.deleteOfflineCheckInOut(checkInOutModelClass.getDates(), checkInOutModelClass.getCheckCount());
                             checkInOutModelClasses.remove(checkInOutModelClass);
-                            notifyedmethod();
-                            checkInSubmitAPI(child, index, callback);
+                            //notifyedmethod();
+                            checkInSubmitAPI(child, index, 0, callback);
                         } else {
                             offlineCheckInOutDataDao.updateCheckInOutStatus(checkInOutModelClass.getId(), 1);
                             checkInOutModelClass.setCheckStatus(1);
-                            notifyedmethod();
+                            //notifyedmethod();
                             callback.onFailure();
                         }
                     } catch (Exception e) {
                         offlineCheckInOutDataDao.deleteOfflineCheckInOut(checkInOutModelClass.getDates(), checkInOutModelClass.getCheckCount());
                         checkInOutModelClasses.remove(checkInOutModelClass);
-                        notifyedmethod();
+                        //notifyedmethod();
                         callback.onFailure();
                     }
 
 
                 } else {
                     checkInOutModelClass.setCheckStatus(1);
-                    notifyedmethod();
+                    //notifyedmethod();
                     callback.onFailure();
                 }
             }
@@ -600,20 +605,24 @@ public class OutboxFragment extends Fragment {
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 offlineCheckInOutDataDao.updateCheckInOutStatus(checkInOutModelClass.getId(), 1);
                 checkInOutModelClass.setCheckStatus(1);
-                notifyedmethod();
-                callback.onFailure();
+                //notifyedmethod();
+                if (attempt != 5) {
+                    checkInSubmitAPI(child, index, attempt + 1, callback);
+                } else {
+                    callback.onFailure();
+                }
             }
         });
     }
 
-    private void workPlanSubmitAPI(ChildListModelClass child, ApiCallback callback) {
+    private void workPlanSubmitAPI(ChildListModelClass child, int attempt, ApiCallback callback) {
         WorkPlanModelClass workPlanModelClass = child.getWorkPlanModelClass();
         if (workPlanModelClass == null || workPlanModelClass.getSyncStatus() != 0) {
             callback.onSuccess();
             return;
         }
         Map<String, String> mapString = new HashMap<>();
-        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
             mapString.put("axn", "edetsave/dayplan");
         } else {
             mapString.put("axn", "multihqsave/dayplan");
@@ -630,24 +639,33 @@ public class OutboxFragment extends Fragment {
                         if (json.getString("success").equalsIgnoreCase("true")) {
                             offlineWorkTypeDataDao.delete(workPlanModelClass.getDate());
                             child.setWorkPlanModelClass(null);
-                            notifyedmethod();
+                            //notifyedmethod();
                             callback.onSuccess();
                         } else {
-                            offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
-                            workPlanModelClass.setSyncStatus(1);
-                            notifyedmethod();
-                            callback.onFailure();
+                            if (json.optBoolean("update")) {
+                                String msg = json.optString("Msg");
+                                offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), msg, 2);
+                                workPlanModelClass.setSyncStatus(2);
+                                workPlanModelClass.setWtStatus(msg);
+                                //notifyedmethod();
+                                callback.onSuccess();
+                            } else {
+                                offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
+                                workPlanModelClass.setSyncStatus(1);
+                                //notifyedmethod();
+                                callback.onFailure();
+                            }
                         }
                     } catch (Exception ignored) {
                         offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
                         workPlanModelClass.setSyncStatus(1);
-                        notifyedmethod();
+                        //notifyedmethod();
                         callback.onFailure();
                     }
                 } else {
                     offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
                     workPlanModelClass.setSyncStatus(1);
-                    notifyedmethod();
+                    //notifyedmethod();
                     callback.onFailure();
                 }
             }
@@ -656,9 +674,13 @@ public class OutboxFragment extends Fragment {
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
                 workPlanModelClass.setSyncStatus(1);
-                notifyedmethod();
+                //notifyedmethod();
                 t.printStackTrace();
-                callback.onFailure();
+                if (attempt != 5) {
+                    workPlanSubmitAPI(child, attempt + 1, callback);
+                } else {
+                    callback.onFailure();
+                }
             }
         });
     }
@@ -686,7 +708,7 @@ public class OutboxFragment extends Fragment {
                                 outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 0, Constants.WAITING_FOR_SYNC, 0);
                                 outboxUtil.deleteOfflineCalls(outBoxCallList.getCusCode(), outBoxCallList.getCusName(), outBoxCallList.getDates());
                                 callsList.remove(outBoxCallList);
-                                notifyedmethod();
+                                //notifyedmethod();
                                 callSyncCount++;
                                 callSubmitAPI(child, index, 0, callback);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
@@ -695,7 +717,7 @@ public class OutboxFragment extends Fragment {
                                 outBoxCallList.setSyncCount(5);
                                 UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.DUPLICATE_CALL, 1);
                                 DeleteUpdateDcrTable(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusType());
-                                notifyedmethod();
+                                //notifyedmethod();
                                 callback.onSuccess();
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
                                 if (jsonSaveRes.has("msg")) {
@@ -704,7 +726,7 @@ public class OutboxFragment extends Fragment {
                                     outBoxCallList.setSyncCount(5);
                                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), jsonSaveRes.getString("msg"), 1);
                                     DeleteUpdateDcrTable(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusType());
-                                    notifyedmethod();
+                                    //notifyedmethod();
                                     callback.onFailure();
                                 } else if (jsonSaveRes.has("Msg")) {
                                     outboxUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), 5, jsonSaveRes.getString("Msg"), 1);
@@ -712,7 +734,7 @@ public class OutboxFragment extends Fragment {
                                     outBoxCallList.setSyncCount(5);
                                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), jsonSaveRes.getString("Msg"), 1);
                                     DeleteUpdateDcrTable(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusType());
-                                    notifyedmethod();
+                                    //notifyedmethod();
                                     callback.onFailure();
                                 }
                             }
@@ -722,7 +744,7 @@ public class OutboxFragment extends Fragment {
                             outBoxCallList.setSyncCount(5);
                             UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.EXCEPTION_ERROR, 0);
                             e.printStackTrace();
-                            notifyedmethod();
+                            //notifyedmethod();
                             callback.onFailure();
                         }
                     }
@@ -735,7 +757,7 @@ public class OutboxFragment extends Fragment {
                     outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(attempt + 1);
                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.CALL_FAILED, 1);
-                    notifyedmethod();
+                    //notifyedmethod();
                     if (attempt != 5) {
                         callSubmitAPI(child, index, attempt + 1, callback);
                     } else {
@@ -748,7 +770,7 @@ public class OutboxFragment extends Fragment {
         }
     }
 
-    private void eventCaptureSubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
+    private void eventCaptureSubmitAPI(ChildListModelClass child, int index, int attempt, ApiCallback callback) {
         ArrayList<EcModelClass> callsImageList = child.getEcModelClasses();
         if (callsImageList == null || callsImageList.isEmpty() || index >= callsImageList.size()) {
             callback.onSuccess();
@@ -757,16 +779,16 @@ public class OutboxFragment extends Fragment {
         EcModelClass ecModelClass = callsImageList.get(index);
         if (ecModelClass.getSynced() == 0) {
             if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
-                CallSendAPIImageS3(child, index, ecModelClass, callback);
+                CallSendAPIImageS3(child, index, attempt, ecModelClass, callback);
             } else {
-                CallSendAPIImage(child, index, ecModelClass, callback);
+                CallSendAPIImage(child, index, attempt, ecModelClass, callback);
             }
         } else {
-            eventCaptureSubmitAPI(child, index + 1, callback);
+            eventCaptureSubmitAPI(child, index + 1, 0, callback);
         }
     }
 
-    private void CallSendAPIImageS3(ChildListModelClass child, int index, EcModelClass ecModelClass, ApiCallback callback) {
+    private void CallSendAPIImageS3(ChildListModelClass child, int index, int attempt, EcModelClass ecModelClass, ApiCallback callback) {
         try {
             util.getS3Client(context);
             String bucketName = "san-one";
@@ -777,7 +799,7 @@ public class OutboxFragment extends Fragment {
                 callback.onSuccess();
             } else {
 //                String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
-                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                 TransferNetworkLossHandler.getInstance(context);
@@ -812,15 +834,15 @@ public class OutboxFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             child.getEcModelClasses().remove(ecModelClass);
-                            notifyedmethod();
-                            eventCaptureSubmitAPI(child, index, callback);
+                            //notifyedmethod();
+                            eventCaptureSubmitAPI(child, index, 0, callback);
                         } else if (state == TransferState.FAILED) {
                             Log.e("S3 Upload", "Upload Failed");
                             InsertImage(ecModelClass.getFilePath(), context);
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.CALL_FAILED);
                             callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.CALL_FAILED, 1);
-                            notifyedmethod();
+                            //notifyedmethod();
                             callback.onFailure();
                         }
 
@@ -838,8 +860,12 @@ public class OutboxFragment extends Fragment {
                         ecModelClass.setSynced(1);
                         ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
                         callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
-                        notifyedmethod();
-                        callback.onFailure();
+                        //notifyedmethod();
+                        if (attempt != 5) {
+                            CallSendAPIImageS3(child, index, attempt + 1, ecModelClass, callback);
+                        } else {
+                            callback.onFailure();
+                        }
                     }
                 });
 
@@ -849,12 +875,12 @@ public class OutboxFragment extends Fragment {
             ecModelClass.setSynced(1);
             ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
             callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
-            notifyedmethod();
+            //notifyedmethod();
             callback.onFailure();
         }
     }
 
-    private void CallSendAPIImage(ChildListModelClass child, int index, EcModelClass ecModelClass, ApiCallback callback) {
+    private void CallSendAPIImage(ChildListModelClass child, int index, int attempt, EcModelClass ecModelClass, ApiCallback callback) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
         MultipartBody.Part img = convertImg("EventImg", ecModelClass.getFilePath());
         HashMap<String, RequestBody> values = field(ecModelClass.getJson_values());
@@ -881,13 +907,13 @@ public class OutboxFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             child.getEcModelClasses().remove(ecModelClass);
-                            notifyedmethod();
-                            eventCaptureSubmitAPI(child, index, callback);
+                            //notifyedmethod();
+                            eventCaptureSubmitAPI(child, index, 0, callback);
                         } else {
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
                             callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.DUPLICATE_CALL, 1);
-                            notifyedmethod();
+                            //notifyedmethod();
                             callback.onSuccess();
                         }
                     } catch (Exception e) {
@@ -895,7 +921,7 @@ public class OutboxFragment extends Fragment {
                         ecModelClass.setSynced(1);
                         ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
                         callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
-                        notifyedmethod();
+                        //notifyedmethod();
                         callback.onFailure();
                     }
                 }
@@ -906,13 +932,17 @@ public class OutboxFragment extends Fragment {
                 ecModelClass.setSynced(1);
                 ecModelClass.setSync_status(Constants.CALL_FAILED);
                 callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.CALL_FAILED, 1);
-                notifyedmethod();
-                callback.onFailure();
+                //notifyedmethod();
+                if (attempt != 5) {
+                    CallSendAPIImage(child, index, attempt + 1, ecModelClass, callback);
+                } else {
+                    callback.onFailure();
+                }
             }
         });
     }
 
-    private void signatureSubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
+    private void signatureSubmitAPI(ChildListModelClass child, int index, int attempt, ApiCallback callback) {
         ArrayList<SignModelClass> callsSignList = child.getSignModelClasses();
         if (callsSignList == null || callsSignList.isEmpty() || index >= callsSignList.size()) {
             callback.onSuccess();
@@ -922,16 +952,16 @@ public class OutboxFragment extends Fragment {
 
         if (signModelClass.getSynced() == 0) {
             if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
-                CallSendAPIImageS3(child, index, signModelClass, callback);
+                CallSendAPIImageS3(child, index, attempt, signModelClass, callback);
             } else {
-                CallSendAPISignImage(child, index, signModelClass, callback);
+                CallSendAPISignImage(child, index, attempt, signModelClass, callback);
             }
         } else {
-            signatureSubmitAPI(child, index + 1, callback);
+            signatureSubmitAPI(child, index + 1, 0, callback);
         }
     }
 
-    private void CallSendAPIImageS3(ChildListModelClass child, int index, SignModelClass signModelClass, ApiCallback callback) {
+    private void CallSendAPIImageS3(ChildListModelClass child, int index, int attempt, SignModelClass signModelClass, ApiCallback callback) {
         try {
             util.getS3Client(context);
             String bucketName = "san-one";
@@ -942,7 +972,7 @@ public class OutboxFragment extends Fragment {
                     Log.d("fileToUploadSignObFrag", "not exists: " + signModelClass.getFilePath());
                 } else {
 //                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
-                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                     TransferNetworkLossHandler.getInstance(context);
@@ -976,15 +1006,15 @@ public class OutboxFragment extends Fragment {
                                     e.printStackTrace();
                                 }
                                 child.getSignModelClasses().remove(signModelClass);
-                                notifyedmethod();
-                                signatureSubmitAPI(child, index, callback);
+                                //notifyedmethod();
+                                signatureSubmitAPI(child, index, 0, callback);
                             } else if (state == TransferState.FAILED) {
                                 Log.e("S3 Upload", "Upload Failed");
                                 InsertImageSign(signModelClass.getFilePath(), context);
                                 signModelClass.setSynced(1);
                                 signModelClass.setSync_status(Constants.CALL_FAILED);
                                 callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.CALL_FAILED, 1);
-                                notifyedmethod();
+                                //notifyedmethod();
                                 callback.onFailure();
                             }
 
@@ -1002,8 +1032,12 @@ public class OutboxFragment extends Fragment {
                             signModelClass.setSynced(1);
                             signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
                             callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
-                            notifyedmethod();
-                            callback.onFailure();
+                            //notifyedmethod();
+                            if (attempt != 5) {
+                                CallSendAPIImageS3(child, index, attempt + 1, signModelClass, callback);
+                            } else {
+                                callback.onFailure();
+                            }
                         }
                     });
                 }
@@ -1014,12 +1048,12 @@ public class OutboxFragment extends Fragment {
             signModelClass.setSynced(1);
             signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
             callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
-            notifyedmethod();
+            //notifyedmethod();
             callback.onFailure();
         }
     }
 
-    private void CallSendAPISignImage(ChildListModelClass child, int index, SignModelClass signModelClass, ApiCallback callback) {
+    private void CallSendAPISignImage(ChildListModelClass child, int index, int attempt, SignModelClass signModelClass, ApiCallback callback) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getTagApiImageUrl(requireContext()));
         MultipartBody.Part img = convertImg("SignImg", signModelClass.getFilePath());
         HashMap<String, RequestBody> values = field(signModelClass.getJson_values());
@@ -1046,8 +1080,8 @@ public class OutboxFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             child.getSignModelClasses().remove(signModelClass);
-                            notifyedmethod();
-                            signatureSubmitAPI(child, index, callback);
+                            //notifyedmethod();
+                            signatureSubmitAPI(child, index, 0, callback);
                         } else {
                             signModelClass.setSynced(1);
                             signModelClass.setSync_status(Constants.DUPLICATE_CALL);
@@ -1071,12 +1105,16 @@ public class OutboxFragment extends Fragment {
                 signModelClass.setSynced(1);
                 signModelClass.setSync_status(Constants.CALL_FAILED);
                 callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.CALL_FAILED, 1);
-                callback.onFailure();
+                if (attempt != 5) {
+                    CallSendAPISignImage(child, index, attempt + 1, signModelClass, callback);
+                } else {
+                    callback.onFailure();
+                }
             }
         });
     }
 
-    private void activitySubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
+    private void activitySubmitAPI(ChildListModelClass child, int index, int attempt, ApiCallback callback) {
         try {
             ArrayList<ActivityModelClass> activityList = child.getActivityModelClasses();
             if (activityList == null || activityList.isEmpty() || index >= activityList.size()) {
@@ -1098,13 +1136,13 @@ public class OutboxFragment extends Fragment {
                                 if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                                     activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
                                     activityList.remove(activityModelClass);
-                                    notifyedmethod();
+                                    //notifyedmethod();
                                     callback.onSuccess();
                                 } else {
                                     outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                     activityModelClass.setSyncStatus(Constants.FAILED);
                                     activityModelClass.setSyncCount(5);
-                                    notifyedmethod();
+                                    //notifyedmethod();
                                     callback.onFailure();
                                 }
                             } catch (Exception e) {
@@ -1113,7 +1151,7 @@ public class OutboxFragment extends Fragment {
                                 activityModelClass.setSyncCount(5);
                                 Log.v("SendOutboxCall", "---" + e);
                                 e.printStackTrace();
-                                notifyedmethod();
+                                //notifyedmethod();
                                 callback.onFailure();
                             }
                         }
@@ -1125,19 +1163,23 @@ public class OutboxFragment extends Fragment {
                         outboxUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
                         activityModelClass.setSyncStatus(Constants.FAILED);
                         activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
-                        notifyedmethod();
-                        callback.onFailure();
+                        //notifyedmethod();
+                        if (attempt != 5) {
+                            activitySubmitAPI(child, index, attempt + 1, callback);
+                        } else {
+                            callback.onFailure();
+                        }
                     }
                 });
 
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure();
         }
     }
 
-    private void activityUploadSubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
+    private void activityUploadSubmitAPI(ChildListModelClass child, int index, int attempt, ApiCallback callback) {
         ArrayList<ActivityUploadModelClass> activityUploadList = child.getActivityUploadModelClasses();
         if (activityUploadList == null || activityUploadList.isEmpty() || index >= activityUploadList.size()) {
             callback.onSuccess();
@@ -1148,60 +1190,64 @@ public class OutboxFragment extends Fragment {
 //        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
 ////                CallSendAPIImageS3(ParentPos, ecModelClass, ChildPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), modelClass);
 //        } else {
-            try {
-                File file = new File(activityUploadModelClass.getFilePath());
-                MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file));
-                HashMap<String, RequestBody> values = field(activityUploadModelClass.getJsonData());
-                Call<JsonObject> saveAttachment = apiInterface.SaveImg(values, img);
-                saveAttachment.enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                        if (response.isSuccessful()) {
-                            try {
-                                JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
-                                if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                                    activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
-                                    activityUploadList.remove(activityUploadModelClass);
-                                    notifyedmethod();
-                                    callback.onSuccess();
-                                } else {
-                                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
-                                    activityUploadModelClass.setSyncStatus(Constants.FAILED);
-                                    activityUploadModelClass.setSyncCount(5);
-                                    notifyedmethod();
-                                    callback.onFailure();
-                                }
-                            } catch (Exception e) {
-                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
-                                activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+        try {
+            File file = new File(activityUploadModelClass.getFilePath());
+            MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file));
+            HashMap<String, RequestBody> values = field(activityUploadModelClass.getJsonData());
+            Call<JsonObject> saveAttachment = apiInterface.SaveImg(values, img);
+            saveAttachment.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                            if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                                activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
+                                activityUploadList.remove(activityUploadModelClass);
+                                //notifyedmethod();
+                                callback.onSuccess();
+                            } else {
+                                outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                 activityUploadModelClass.setSyncCount(5);
-                                Log.v("SendOutboxCall", "---" + e);
-                                e.printStackTrace();
-                                notifyedmethod();
+                                //notifyedmethod();
                                 callback.onFailure();
                             }
+                        } catch (Exception e) {
+                            outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+                            activityUploadModelClass.setSyncCount(5);
+                            Log.v("SendOutboxCall", "---" + e);
+                            e.printStackTrace();
+                            //notifyedmethod();
+                            callback.onFailure();
                         }
                     }
+                }
 
-                    @SuppressLint("NotifyDataSetChanged")
-                    @Override
-                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
-                        outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
-                        activityUploadModelClass.setSyncStatus(Constants.FAILED);
-                        activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
-                        notifyedmethod();
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
+                    outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    activityUploadModelClass.setSyncStatus(Constants.FAILED);
+                    activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
+                    //notifyedmethod();
+                    if (attempt != 5) {
+                        activityUploadSubmitAPI(child, index, attempt + 1, callback);
+                    } else {
                         callback.onFailure();
                     }
-                });
+                }
+            });
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                callback.onFailure();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onFailure();
+        }
 //        }
     }
 
-    private void daySubmitAPI(ChildListModelClass child, ApiCallback callback) {
+    private void daySubmitAPI(ChildListModelClass child, int attempt, ApiCallback callback) {
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/daysubmit");
         DaySubmitModelClass daySubmitModelClass = child.getDaySubmitModelClass();
@@ -1219,23 +1265,23 @@ public class OutboxFragment extends Fragment {
                             if (jsonObject.getString("success").equalsIgnoreCase("true")) {
                                 offlineDaySubmitDao.delete(daySubmitModelClass.getDate());
                                 child.setDaySubmitModelClass(null);
-                                notifyedmethod();
+                                //notifyedmethod();
                                 callback.onSuccess();
                             } else {
                                 offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
                                 daySubmitModelClass.setSyncStatus(1);
-                                notifyedmethod();
+                                //notifyedmethod();
                                 callback.onFailure();
                             }
                         } catch (Exception ignored) {
                             offlineDaySubmitDao.delete(daySubmitModelClass.getDate());
                             offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
-                            notifyedmethod();
+                            //notifyedmethod();
                             callback.onFailure();
                         }
                     } else {
                         daySubmitModelClass.setSyncStatus(1);
-                        notifyedmethod();
+                        //notifyedmethod();
                         callback.onFailure();
                     }
                 }
@@ -1244,7 +1290,11 @@ public class OutboxFragment extends Fragment {
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
                     daySubmitModelClass.setSyncStatus(1);
-                    callback.onFailure();
+                    if (attempt != 5) {
+                        daySubmitAPI(child, attempt + 1, callback);
+                    } else {
+                        callback.onFailure();
+                    }
                 }
             });
         } else {
@@ -1452,7 +1502,7 @@ public class OutboxFragment extends Fragment {
             } else {
                 modelClass.setSynced(1);
             }
-            notifyedmethod();
+            //notifyedmethod();
             sendingOfflineCalls();
         }
     }
@@ -1510,7 +1560,7 @@ public class OutboxFragment extends Fragment {
                 DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                 Log.d("fileToUpload", "not exists: " + filePath);
             } else {
-                String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
 
@@ -1539,7 +1589,7 @@ public class OutboxFragment extends Fragment {
                                     listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
                                     CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
                                 }
-                                notifyedmethod();
+                                //notifyedmethod();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1557,7 +1607,7 @@ public class OutboxFragment extends Fragment {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            notifyedmethod();
+                            //notifyedmethod();
                         }
 
                     }
@@ -1581,7 +1631,7 @@ public class OutboxFragment extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        notifyedmethod();
+                        //notifyedmethod();
                     }
                 });
 
@@ -1598,7 +1648,7 @@ public class OutboxFragment extends Fragment {
             } catch (Exception a) {
                 a.printStackTrace();
             }
-            notifyedmethod();
+            //notifyedmethod();
         }
 
     }
@@ -1623,7 +1673,7 @@ public class OutboxFragment extends Fragment {
             } catch (Exception a) {
                 a.printStackTrace();
             }
-            notifyedmethod();
+            //notifyedmethod();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1642,7 +1692,7 @@ public class OutboxFragment extends Fragment {
                     Log.d("fileToUploadSignObFrag", "not exists: " + filePath);
                 } else {
 //                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
-                    String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
 
 
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
@@ -1672,7 +1722,7 @@ public class OutboxFragment extends Fragment {
                                         CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
                                     }
 
-                                    notifyedmethod();
+                                    //notifyedmethod();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -1690,7 +1740,7 @@ public class OutboxFragment extends Fragment {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                notifyedmethod();
+                                //notifyedmethod();
                             }
 
                         }
@@ -1714,7 +1764,7 @@ public class OutboxFragment extends Fragment {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            notifyedmethod();
+                            //notifyedmethod();
                         }
                     });
                 }
@@ -1732,7 +1782,7 @@ public class OutboxFragment extends Fragment {
             } catch (Exception a) {
                 a.printStackTrace();
             }
-            notifyedmethod();
+            //notifyedmethod();
         }
 
     }
@@ -1797,7 +1847,7 @@ public class OutboxFragment extends Fragment {
             } catch (Exception a) {
                 a.printStackTrace();
             }
-            notifyedmethod();
+            //notifyedmethod();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1857,7 +1907,7 @@ public class OutboxFragment extends Fragment {
                             Log.v("SendOutboxCall", "---" + e);
                         }
                     }
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
 
                 @SuppressLint("NotifyDataSetChanged")
@@ -1869,7 +1919,7 @@ public class OutboxFragment extends Fragment {
                     outBoxCallList.setSyncCount(syncCount + 1);
                     UpdateEcData(date, cusCode, cusName, Constants.CALL_FAILED, 1);
                     CallOfflineCalls(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists(), modelClass);
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
             });
 
@@ -1984,7 +2034,7 @@ public class OutboxFragment extends Fragment {
                             CallAPIOfflineActivity(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityModelClasses(), groupModelClass);
                         }
                     }
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
 
                 @SuppressLint("NotifyDataSetChanged")
@@ -1995,7 +2045,7 @@ public class OutboxFragment extends Fragment {
                     activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
                     listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
                     CallAPIOfflineActivity(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityModelClasses(), groupModelClass);
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
             });
 
@@ -2036,7 +2086,7 @@ public class OutboxFragment extends Fragment {
                             CallAPIActivityUpload(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityUploadModelClasses(), groupModelClass);
                         }
                     }
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
 
                 @SuppressLint("NotifyDataSetChanged")
@@ -2047,7 +2097,7 @@ public class OutboxFragment extends Fragment {
                     activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
                     listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
                     CallAPIActivityUpload(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityUploadModelClasses(), groupModelClass);
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
             });
 
@@ -2093,19 +2143,19 @@ public class OutboxFragment extends Fragment {
                             checkClass.setCheckStatus(1);
                         }
                         CallCheckInOut(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses(), modelClass);
-                        notifyedmethod();
+                        //notifyedmethod();
                     } catch (Exception e) {
                         offlineCheckInOutDataDao.deleteOfflineCheckInOut(checkClass.getDates(), checkClass.getCheckCount());
                         listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses().remove(CurrentPos);
                         CallCheckInOut(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses(), modelClass);
-                        notifyedmethod();
+                        //notifyedmethod();
                     }
 
 
                 } else {
                     checkClass.setCheckStatus(1);
                     CallCheckInOut(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses(), modelClass);
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
             }
 
@@ -2115,7 +2165,7 @@ public class OutboxFragment extends Fragment {
                 offlineCheckInOutDataDao.updateCheckInOutStatus(checkClass.getId(), 1);
                 checkClass.setCheckStatus(1);
                 CallCheckInOut(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses(), modelClass);
-                notifyedmethod();
+                //notifyedmethod();
             }
         });
     }
@@ -2144,17 +2194,17 @@ public class OutboxFragment extends Fragment {
                             workPlanModelClass.setSyncStatus(1);
                         }
                         CallAPIWorkPlan(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getWorkPlanModelClass(), modelClass);
-                        notifyedmethod();
+                        //notifyedmethod();
                     } catch (Exception ignored) {
                         offlineWorkTypeDataDao.delete(workPlanModelClass.getDate());
                         listDates.get(ParentPos).getChildItems().get(ChildPos).setWorkPlanModelClass(null);
                         CallAPIWorkPlan(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getWorkPlanModelClass(), modelClass);
-                        notifyedmethod();
+                        //notifyedmethod();
                     }
                 } else {
                     workPlanModelClass.setSyncStatus(1);
                     CallAPIWorkPlan(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getWorkPlanModelClass(), modelClass);
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
             }
 
@@ -2163,7 +2213,7 @@ public class OutboxFragment extends Fragment {
                 offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
                 workPlanModelClass.setSyncStatus(1);
                 CallAPIWorkPlan(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getWorkPlanModelClass(), modelClass);
-                notifyedmethod();
+                //notifyedmethod();
             }
         });
     }
@@ -2189,17 +2239,17 @@ public class OutboxFragment extends Fragment {
                             daySubmitModelClass.setSyncStatus(1);
                         }
                         CallAPIDaySubmit(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getDaySubmitModelClass(), modelClass);
-                        notifyedmethod();
+                        //notifyedmethod();
                     } catch (Exception ignored) {
                         offlineDaySubmitDao.delete(daySubmitModelClass.getDate());
                         offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
                         CallAPIDaySubmit(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getDaySubmitModelClass(), modelClass);
-                        notifyedmethod();
+                        //notifyedmethod();
                     }
                 } else {
                     daySubmitModelClass.setSyncStatus(1);
                     CallAPIDaySubmit(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getDaySubmitModelClass(), modelClass);
-                    notifyedmethod();
+                    //notifyedmethod();
                 }
             }
 

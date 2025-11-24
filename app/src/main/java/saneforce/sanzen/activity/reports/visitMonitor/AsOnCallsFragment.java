@@ -81,6 +81,36 @@ public class AsOnCallsFragment extends Fragment {
 
 
         try {
+
+            int currentMonth = Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8));
+            int currentYear = Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_10));
+
+
+            int joinMonth = Integer.parseInt(JoiningMonth);
+            int joinYear = Integer.parseInt(JoiningYear);
+
+
+            List<String> monthsToShow = new ArrayList<>();
+
+            if (joinYear == currentYear) {
+                if (joinMonth == currentMonth) {
+                    monthsToShow.add("current");
+                } else if (joinMonth == currentMonth - 1) {
+                    monthsToShow.add("previous");
+                    monthsToShow.add("current");
+                } else if (joinMonth <= currentMonth - 2) {
+                    monthsToShow.add("prePrevious");
+                    monthsToShow.add("previous");
+                    monthsToShow.add("current");
+                }
+            } else if (joinYear < currentYear) {
+                // If joined in a previous year, just show 3 months max
+                monthsToShow.add("prePrevious");
+                monthsToShow.add("previous");
+                monthsToShow.add("current");
+            }
+
+
             VisitFilter.MonthlyStats currentMonthStats = monthlyData.get("current");
             VisitFilter.MonthlyStats previousMonthStats = monthlyData.get("previous");
             VisitFilter.MonthlyStats prePreviousMonthStats = monthlyData.get("prePrevious");
@@ -169,57 +199,75 @@ public class AsOnCallsFragment extends Fragment {
             double callAvgPreviousMonthDoc;
             double callAvgPrePrevMonthDoc;
 
-            callAvgCurrentMonthDoc = (double) visitedDoctorsCurrentMonth / fwDaysCurrentMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgCurrent = String.format("%.1f", callAvgCurrentMonthDoc);
+          /*  callAvgCurrentMonthDoc = (double) visitedDoctorsCurrentMonth / fwDaysCurrentMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgCurrent = String.format("%.1f", callAvgCurrentMonthDoc);*/
+            String formattedCallAvgCurrent = safeDivide(visitedDoctorsCurrentMonth, fwDaysCurrentMonth, 1);
 
-            callAvgPreviousMonthDoc = (double) visitedDoctorsPreviousMonth / fwDaysPreviousMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgPrevious = String.format("%.1f", callAvgPreviousMonthDoc);
 
-            callAvgPrePrevMonthDoc = (double) visitedDoctorsPre_PrevMonth / fwDaysPrePreviousMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgPre_Previous = String.format("%.1f", callAvgPrePrevMonthDoc);
+          /*  callAvgPreviousMonthDoc = (double) visitedDoctorsPreviousMonth / fwDaysPreviousMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgPrevious = String.format("%.1f", callAvgPreviousMonthDoc);*/
+            String formattedCallAvgPrevious = safeDivide(visitedDoctorsPreviousMonth, fwDaysPreviousMonth, 1);
+
+
+          /*  callAvgPrePrevMonthDoc = (double) visitedDoctorsPre_PrevMonth / fwDaysPrePreviousMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgPre_Previous = String.format("%.1f", callAvgPrePrevMonthDoc);*/
+            String formattedCallAvgPre_Previous = safeDivide(visitedDoctorsPre_PrevMonth, fwDaysPrePreviousMonth, 1);
+
 
             //Che
             double callAvgCurrentMonthChe;
             double callAvgPreviousMonthChe;
             double callAvgPrePrevMonthChe;
 
-            callAvgCurrentMonthChe = (double) visitedChemistCurrentMonth / fwDaysCurrentMonth;
+          /*  callAvgCurrentMonthChe = (double) visitedChemistCurrentMonth / fwDaysCurrentMonth;
             @SuppressLint("DefaultLocale") String formattedCallAvgCurrentChe = String.format("%.1f", callAvgCurrentMonthChe);
+            */
+            String formattedCallAvgCurrentChe = safeDivide(visitedChemistCurrentMonth,fwDaysCurrentMonth,1);
 
-            callAvgPreviousMonthChe = (double) visitedChemistPreviousMonth / fwDaysPreviousMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgPreviousChe = String.format("%.1f", callAvgPreviousMonthChe);
+           /* callAvgPreviousMonthChe = (double) visitedChemistPreviousMonth / fwDaysPreviousMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgPreviousChe = String.format("%.1f", callAvgPreviousMonthChe);*/
+            String formattedCallAvgPreviousChe = safeDivide(visitedChemistPreviousMonth,fwDaysPreviousMonth,1);
 
-            callAvgPrePrevMonthChe = (double) visitedChemistPre_PrevMonth / fwDaysPrePreviousMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgPre_PreviousChe = String.format("%.1f", callAvgPrePrevMonthChe);
+            /*callAvgPrePrevMonthChe = (double) visitedChemistPre_PrevMonth / fwDaysPrePreviousMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgPre_PreviousChe = String.format("%.1f", callAvgPrePrevMonthChe);*/
+            String formattedCallAvgPre_PreviousChe = safeDivide(visitedChemistPre_PrevMonth,fwDaysPrePreviousMonth,1);
+
 
             //Stk
             double callAvgCurrentMonthStk;
             double callAvgPreviousMonthStk;
             double callAvgPrePrevMonthStk;
 
-            callAvgCurrentMonthStk = (double) visitedStockiestCurrentMonth / fwDaysCurrentMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgCurrentStk = String.format("%.1f", callAvgCurrentMonthStk);
+          /*  callAvgCurrentMonthStk = (double) visitedStockiestCurrentMonth / fwDaysCurrentMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgCurrentStk = String.format("%.1f", callAvgCurrentMonthStk);*/
 
-            callAvgPreviousMonthStk = (double) visitedStockiestPreviousMonth / fwDaysPreviousMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgPreviousStk = String.format("%.1f", callAvgPreviousMonthStk);
+            String formattedCallAvgCurrentStk = safeDivide(visitedStockiestCurrentMonth,fwDaysCurrentMonth,1);
+            /*callAvgPreviousMonthStk = (double) visitedStockiestPreviousMonth / fwDaysPreviousMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgPreviousStk = String.format("%.1f", callAvgPreviousMonthStk);*/
+            String formattedCallAvgPreviousStk = safeDivide(visitedStockiestPreviousMonth,fwDaysPreviousMonth,1);
 
-            callAvgPrePrevMonthStk = (double) visitedStockiestPre_PrevMonth / fwDaysPrePreviousMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgPre_PreviousStk = String.format("%.1f", callAvgPrePrevMonthStk);
+           /* callAvgPrePrevMonthStk = (double) visitedStockiestPre_PrevMonth / fwDaysPrePreviousMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgPre_PreviousStk = String.format("%.1f", callAvgPrePrevMonthStk);*/
+            String formattedCallAvgPre_PreviousStk = safeDivide(visitedStockiestPre_PrevMonth,fwDaysPrePreviousMonth,1);
 
             //Unlisted
             double callAvgCurrentMonthUnlisted;
             double callAvgPreviousMonthUnlisted;
             double callAvgPrePrevMonthUnlisted;
 
-            callAvgCurrentMonthUnlisted = (double) visitedUnlistedCurrentMonth / fwDaysCurrentMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgCurrentUnlisted = String.format("%.1f", callAvgCurrentMonthUnlisted);
+           /* callAvgCurrentMonthUnlisted = (double) visitedUnlistedCurrentMonth / fwDaysCurrentMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgCurrentUnlisted = String.format("%.1f", callAvgCurrentMonthUnlisted);*/
 
-            callAvgPreviousMonthUnlisted = (double) visitedUnlistedPreviousMonth / fwDaysPreviousMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgPreviousUnlisted = String.format("%.1f", callAvgPreviousMonthUnlisted);
+            String formattedCallAvgCurrentUnlisted = safeDivide(visitedUnlistedCurrentMonth,fwDaysCurrentMonth,1);
 
-            callAvgPrePrevMonthUnlisted = (double) visitedUnlistedPre_PrevMonth / fwDaysPrePreviousMonth;
-            @SuppressLint("DefaultLocale") String formattedCallAvgPre_PreviousUnlisted = String.format("%.1f", callAvgPrePrevMonthUnlisted);
+            /*callAvgPreviousMonthUnlisted = (double) visitedUnlistedPreviousMonth / fwDaysPreviousMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgPreviousUnlisted = String.format("%.1f", callAvgPreviousMonthUnlisted);*/
+            String formattedCallAvgPreviousUnlisted = safeDivide(visitedUnlistedPreviousMonth,fwDaysPreviousMonth,1);
 
+           /* callAvgPrePrevMonthUnlisted = (double) visitedUnlistedPre_PrevMonth / fwDaysPrePreviousMonth;
+            @SuppressLint("DefaultLocale") String formattedCallAvgPre_PreviousUnlisted = String.format("%.1f", callAvgPrePrevMonthUnlisted);*/
+
+            String formattedCallAvgPre_PreviousUnlisted = safeDivide(visitedUnlistedPre_PrevMonth,fwDaysPrePreviousMonth,1);
 
             //Call Coverage
             //Doc
@@ -228,14 +276,19 @@ public class AsOnCallsFragment extends Fragment {
             double callCvgPreviousMonthDoc;
             double callCvgPrePrevMonthDoc;
 
-            callCvgCurrentMonthDoc =  (double) visitedDoctorsCurrentMonth / (fwDaysCurrentMonth * 100);
-            @SuppressLint("DefaultLocale") String formattedCallCvgCurrent = String.format("%.2f", callCvgCurrentMonthDoc);
+/*            callCvgCurrentMonthDoc =  (double) visitedDoctorsCurrentMonth / (fwDaysCurrentMonth * 100);
+            @SuppressLint("DefaultLocale") String formattedCallCvgCurrent = String.format("%.2f", callCvgCurrentMonthDoc);*/
+            String formattedCallCvgCurrent = safeDivide(visitedDoctorsCurrentMonth, fwDaysCurrentMonth * 100, 2);
 
-            callCvgPreviousMonthDoc = (double) visitedDoctorsPreviousMonth / (fwDaysPreviousMonth * 100);
-            @SuppressLint("DefaultLocale") String formattedCallCvgPrevious = String.format("%.2f", callCvgPreviousMonthDoc);
+           /* callCvgPreviousMonthDoc = (double) visitedDoctorsPreviousMonth / (fwDaysPreviousMonth * 100);
+            @SuppressLint("DefaultLocale") String formattedCallCvgPrevious = String.format("%.2f", callCvgPreviousMonthDoc);*/
 
-            callCvgPrePrevMonthDoc = (double) visitedDoctorsPre_PrevMonth / (fwDaysPrePreviousMonth * 100);
-            @SuppressLint("DefaultLocale") String formattedCallCvgPre_Previous = String.format("%.2f", callCvgPrePrevMonthDoc);
+            String formattedCallCvgPrevious = safeDivide(visitedDoctorsPreviousMonth, fwDaysPreviousMonth * 100, 2);
+
+           /* callCvgPrePrevMonthDoc = (double) visitedDoctorsPre_PrevMonth / (fwDaysPrePreviousMonth * 100);
+            @SuppressLint("DefaultLocale") String formattedCallCvgPre_Previous = String.format("%.2f", callCvgPrePrevMonthDoc);*/
+            String formattedCallCvgPre_Previous = safeDivide(visitedDoctorsPre_PrevMonth, fwDaysPrePreviousMonth * 100, 2);
+
 
             //Che
 
@@ -243,14 +296,18 @@ public class AsOnCallsFragment extends Fragment {
             double callCvgPreviousMonthChe;
             double callCvgPrePrevMonthChe;
 
-            callCvgCurrentMonthChe = (double) visitedChemistCurrentMonth / (fwDaysCurrentMonth * 100);
-            @SuppressLint("DefaultLocale") String formattedCallCvgCurrentChe = String.format("%.2f", callCvgCurrentMonthChe);
+           /* callCvgCurrentMonthChe = (double) visitedChemistCurrentMonth / (fwDaysCurrentMonth * 100);
+            @SuppressLint("DefaultLocale") String formattedCallCvgCurrentChe = String.format("%.2f", callCvgCurrentMonthChe);*/
+            String formattedCallCvgCurrentChe = safeDivide(visitedChemistCurrentMonth, fwDaysCurrentMonth * 100, 2);
+            String formattedCallCvgPreviousChe = safeDivide(visitedChemistPreviousMonth, fwDaysPreviousMonth * 100, 2);
+            String formattedCallCvgPre_PreviousChe = safeDivide(visitedChemistPre_PrevMonth, fwDaysPrePreviousMonth * 100, 2);
 
-            callCvgPreviousMonthChe = (double) visitedChemistPreviousMonth / (fwDaysPreviousMonth * 100);
+
+            /*callCvgPreviousMonthChe = (double) visitedChemistPreviousMonth / (fwDaysPreviousMonth * 100);
             @SuppressLint("DefaultLocale") String formattedCallCvgPreviousChe = String.format("%.2f", callCvgPreviousMonthChe);
 
             callCvgPrePrevMonthChe = (double) visitedChemistPre_PrevMonth / (fwDaysPrePreviousMonth * 100);
-            @SuppressLint("DefaultLocale") String formattedCallCvgPre_PreviousChe = String.format("%.2f", callCvgPrePrevMonthChe);
+            @SuppressLint("DefaultLocale") String formattedCallCvgPre_PreviousChe = String.format("%.2f", callCvgPrePrevMonthChe);*/
 
             //Stk
 
@@ -258,14 +315,19 @@ public class AsOnCallsFragment extends Fragment {
             double callCvgPreviousMonthStk;
             double callCvgPrePrevMonthStk;
 
-            callCvgCurrentMonthStk = (double) visitedStockiestCurrentMonth / (fwDaysCurrentMonth * 100);
-            @SuppressLint("DefaultLocale") String formattedCallCvgCurrentStk = String.format("%.2f", callCvgCurrentMonthStk);
+           /* callCvgCurrentMonthStk = (double) visitedStockiestCurrentMonth / (fwDaysCurrentMonth * 100);
+            @SuppressLint("DefaultLocale") String formattedCallCvgCurrentStk = String.format("%.2f", callCvgCurrentMonthStk);*/
 
-            callCvgPreviousMonthStk = (double) visitedStockiestPreviousMonth / (fwDaysPreviousMonth * 100);
+            String formattedCallCvgCurrentStk = safeDivide(visitedStockiestCurrentMonth, fwDaysCurrentMonth * 100, 2);
+            String formattedCallCvgPreviousStk = safeDivide(visitedStockiestPreviousMonth, fwDaysPreviousMonth * 100, 2);
+            String formattedCallCvgPre_PreviousStk = safeDivide(visitedStockiestPre_PrevMonth, fwDaysPrePreviousMonth * 100, 2);
+
+
+           /* callCvgPreviousMonthStk = (double) visitedStockiestPreviousMonth / (fwDaysPreviousMonth * 100);
             @SuppressLint("DefaultLocale") String formattedCallCvgPreviousStk = String.format("%.2f", callCvgPreviousMonthStk);
 
             callCvgPrePrevMonthStk = (double) visitedStockiestPre_PrevMonth / (fwDaysPrePreviousMonth * 100);
-            @SuppressLint("DefaultLocale") String formattedCallCvgPre_PreviousStk = String.format("%.2f", callCvgPrePrevMonthStk);
+            @SuppressLint("DefaultLocale") String formattedCallCvgPre_PreviousStk = String.format("%.2f", callCvgPrePrevMonthStk);*/
 
             //Unlisted
 
@@ -273,14 +335,18 @@ public class AsOnCallsFragment extends Fragment {
             double callCvgPreviousMonthUnlisted;
             double callCvgPrePrevMonthUnlisted;
 
-            callCvgCurrentMonthUnlisted = (double) visitedUnlistedCurrentMonth / (fwDaysCurrentMonth * 100);
+            String formattedCallCvgCurrentUnlisted = safeDivide(visitedUnlistedCurrentMonth, fwDaysCurrentMonth * 100, 2);
+            String formattedCallCvgPreviousUnlisted = safeDivide(visitedUnlistedPreviousMonth, fwDaysPreviousMonth * 100, 2);
+            String formattedCallCvgPre_PreviousUnlisted = safeDivide(visitedUnlistedPre_PrevMonth, fwDaysPrePreviousMonth * 100, 2);
+
+            /*callCvgCurrentMonthUnlisted = (double) visitedUnlistedCurrentMonth / (fwDaysCurrentMonth * 100);
             @SuppressLint("DefaultLocale") String formattedCallCvgCurrentUnlisted = String.format("%.2f", callCvgCurrentMonthUnlisted);
 
             callCvgPreviousMonthUnlisted = (double) visitedUnlistedPreviousMonth / (fwDaysPreviousMonth * 100);
             @SuppressLint("DefaultLocale") String formattedCallCvgPreviousUnlisted = String.format("%.2f", callCvgPreviousMonthUnlisted);
 
             callCvgPrePrevMonthUnlisted = (double) visitedUnlistedPre_PrevMonth / (fwDaysPrePreviousMonth * 100);
-            @SuppressLint("DefaultLocale") String formattedCallCvgPre_PreviousUnlisted = String.format("%.2f", callCvgPrePrevMonthUnlisted);
+            @SuppressLint("DefaultLocale") String formattedCallCvgPre_PreviousUnlisted = String.format("%.2f", callCvgPrePrevMonthUnlisted);*/
 
             //Doctor
             List<VisitStatsModel> dataListDoc = new ArrayList<>();
@@ -417,21 +483,45 @@ public class AsOnCallsFragment extends Fragment {
                     formattedCallCvgPre_PreviousUnlisted
             );
             //Dr
-            dataListDoc.add(currentMonthDrStats);
+           /* dataListDoc.add(currentMonthDrStats);
             dataListDoc.add(previousMonthDrStats);
-            dataListDoc.add(prePreviousMonthDrStats);
+            dataListDoc.add(prePreviousMonthDrStats);*/
+            if (monthsToShow.contains("current"))
+                dataListDoc.add(currentMonthDrStats);
+            if (monthsToShow.contains("previous"))
+                dataListDoc.add(previousMonthDrStats);
+            if (monthsToShow.contains("prePrevious"))
+                dataListDoc.add(prePreviousMonthDrStats);
             //Che
-            dataListChm.add(currentMonthCheStats);
+            /*dataListChm.add(currentMonthCheStats);
             dataListChm.add(previousMonthCheStats);
-            dataListChm.add(prePreviousMonthCheStats);
+            dataListChm.add(prePreviousMonthCheStats);*/
+            if (monthsToShow.contains("current"))
+                dataListChm.add(currentMonthCheStats);
+            if (monthsToShow.contains("previous"))
+                dataListChm.add(previousMonthCheStats);
+            if (monthsToShow.contains("prePrevious"))
+                dataListChm.add(prePreviousMonthCheStats);
             //stk
-            dataListStk.add(currentMonthStkStats);
-            dataListStk.add(previousMonthStkStats);
-            dataListStk.add(prePreviousMonthStkStats);
+//            dataListStk.add(currentMonthStkStats);
+//            dataListStk.add(previousMonthStkStats);
+//            dataListStk.add(prePreviousMonthStkStats);
+            if (monthsToShow.contains("current"))
+                dataListStk.add(currentMonthStkStats);
+            if (monthsToShow.contains("previous"))
+                dataListStk.add(previousMonthStkStats);
+            if (monthsToShow.contains("prePrevious"))
+                dataListStk.add(prePreviousMonthStkStats);
             //unlisted
-            dataListUnlisted.add(currentMonthUnlistedStats);
-            dataListUnlisted.add(previousMonthUnlistedStats);
-            dataListUnlisted.add(prePreviousMonthUnlistedStats);
+//            dataListUnlisted.add(currentMonthUnlistedStats);
+//            dataListUnlisted.add(previousMonthUnlistedStats);
+//            dataListUnlisted.add(prePreviousMonthUnlistedStats);
+            if (monthsToShow.contains("current"))
+                dataListUnlisted.add(currentMonthUnlistedStats);
+            if (monthsToShow.contains("previous"))
+                dataListUnlisted.add(previousMonthUnlistedStats);
+            if (monthsToShow.contains("prePrevious"))
+                dataListUnlisted.add(prePreviousMonthUnlistedStats);
 
 
 //            RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -439,7 +529,7 @@ public class AsOnCallsFragment extends Fragment {
             Log.w("DEBUG", "RecyclerView object = " + recyclerView);
 
             VisitStatsAdapter adapter = new VisitStatsAdapter(
-                    monthlyData.size(),AsOnCallsFragment.super.getActivity(), // FragmentActivity
+                    AsOnCallsFragment.super.getActivity(), // FragmentActivity
                     dataListDoc,
                     dataListChm,
                     dataListStk,
@@ -453,4 +543,10 @@ public class AsOnCallsFragment extends Fragment {
             e.printStackTrace();
         }
     }
+    private String safeDivide(int numerator, int denominator, int decimalPlaces) {
+        if (denominator == 0) return "0";
+        double result = (double) numerator / denominator;
+        return String.format("%." + decimalPlaces + "f", result);
+    }
+
 }

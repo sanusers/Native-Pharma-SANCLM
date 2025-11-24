@@ -131,27 +131,29 @@ public class StockiestVisitFragment extends Fragment {
         stockiestImage.setImageDrawable(getResources().getDrawable(R.drawable.map_stockist_img));
 
         if (dataListStk != null && !dataListStk.isEmpty()) {
-            VisitStatsModel model = dataListStk.get(position);
+            if (position < dataListStk.size()) {
+                VisitStatsModel model = dataListStk.get(position);
 
-            totalStkCnt.setText(model.getTotalCustomers());
-            visitedCnt.setText(model.getVisitedCustomers());
-            missedCnt.setText(model.getMissedCustomers());
-            FWDaysCnt.setText(model.getFwDays());
-            callAvgCnt.setText(model.getCallAvg());
-            callCvgCnt.setText(model.getCoverage() + "%");
+                totalStkCnt.setText(model.getTotalCustomers());
+                visitedCnt.setText(model.getVisitedCustomers());
+                missedCnt.setText(model.getMissedCustomers());
+                FWDaysCnt.setText(model.getFwDays());
+                callAvgCnt.setText(model.getCallAvg());
+                callCvgCnt.setText(model.getCoverage() + "%");
 
-            setupBarChart(
-                    Integer.parseInt(model.getTotalCustomers()),
-                    Integer.parseInt(model.getVisitedCustomers()),
-                    Integer.parseInt(model.getMissedCustomers()),
-                    Double.parseDouble(model.getCallAvg())
-            );
+                setupBarChart(
+                        Integer.parseInt(model.getTotalCustomers()),
+                        Integer.parseInt(model.getVisitedCustomers()),
+                        Integer.parseInt(model.getMissedCustomers()),
+                        Double.parseDouble(model.getCallAvg())
+                );
        /*     setupPieChart(
                     (int) model.getOneVisitCount(),
                     (int) model.getTwoVisitCount(),
                     (int) model.getThreeVisitCount(),
                     (int) model.getThreePlusVisitCount()
             );*/
+            }
         }
 
         return view;

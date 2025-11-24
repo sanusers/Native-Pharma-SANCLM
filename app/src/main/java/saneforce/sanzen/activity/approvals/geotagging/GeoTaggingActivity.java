@@ -1,14 +1,9 @@
 package saneforce.sanzen.activity.approvals.geotagging;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,12 +35,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityGeoTaggingBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -87,16 +81,16 @@ public class GeoTaggingActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(HomeDashBoard.selectedDate != null) {
+        if (HomeDashBoard.selectedDate != null) {
             outState.putString("date", HomeDashBoard.selectedDate.toString());
             outState.putInt(Manifest.permission.ACCESS_FINE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION));
             outState.putInt(Manifest.permission.ACCESS_COARSE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION));
             outState.putInt(Manifest.permission.CAMERA, ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA));
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
-                outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
-                outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
-                outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
-            }
+//            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+//                outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
+//                outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
+//                outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
+//            }
             outState.putInt(Manifest.permission.READ_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE));
             outState.putInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE));
         }
@@ -113,18 +107,18 @@ public class GeoTaggingActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
-        if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
-            if(savedInstanceState.getString("date") != null) {
+        if (savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
+            if (savedInstanceState.getString("date") != null) {
                 HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
             }
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_COARSE_LOCATION, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != savedInstanceState.getInt(Manifest.permission.CAMERA, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
+//                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.READ_EXTERNAL_STORAGE, -1)
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1) ) {
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1)) {
                 CommonAlertBox.permissionChangeAlert(this);
             }
         }
@@ -275,10 +269,10 @@ public class GeoTaggingActivity extends AppCompatActivity {
     }
 
 
-
     private void CallGeoTagApi() {
         progressDialog = CommonUtilsMethods.createProgressDialog(GeoTaggingActivity.this);
-        try {jsonGeoTagList=CommonUtilsMethods.CommonObjectParameter(GeoTaggingActivity.this);
+        try {
+            jsonGeoTagList = CommonUtilsMethods.CommonObjectParameter(GeoTaggingActivity.this);
             jsonGeoTagList.put("tableName", "getgeoappr");
             jsonGeoTagList.put("sfcode", SharedPref.getSfCode(this));
             jsonGeoTagList.put("division_code", SharedPref.getDivisionCode(this));
@@ -290,7 +284,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/approvals");
-        Call<JsonElement> callGetGeoTagList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGeoTagList.toString());
+        Call<JsonElement> callGetGeoTagList = api_interface.getJSONElement(SharedPref.getCallApiUrl(GeoTaggingActivity.this), mapString, jsonGeoTagList.toString());
 
         callGetGeoTagList.enqueue(new Callback<JsonElement>() {
             @Override
@@ -303,7 +297,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            if (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("D") || SharedPref.getChmNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("C") || SharedPref.getStkNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("S") || SharedPref.getUnlNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("U") || SharedPref.getCipNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("CIP") || SharedPref.getHospNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("H")) {
+                            if (SharedPref.getDrNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("D") || SharedPref.getChmNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("C") || SharedPref.getStkNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("S") || SharedPref.getUnlNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("U") || SharedPref.getCipNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("CIP") || SharedPref.getHospNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("H")) {
                                 geoTaggingModelLists.add(new GeoTaggingModelList(json.getString("cust_name"), json.getString("Cust_Code"), json.getString("Sf_Name"), json.getString("tagged_sfCode"), json.getString("tagged_cluster"), json.getString("addrs"), json.getString("lat"), json.getString("long"), json.getString("cus_mode"), json.getString("tagged_time"), json.getString("MapId")));
                                 geoTaggingModelSort.add(new GeoTaggingModelList(json.getString("cust_name"), json.getString("Cust_Code"), json.getString("Sf_Name"), json.getString("tagged_sfCode"), json.getString("tagged_cluster"), json.getString("addrs"), json.getString("lat"), json.getString("long"), json.getString("cus_mode"), json.getString("tagged_time"), json.getString("MapId")));
                             }

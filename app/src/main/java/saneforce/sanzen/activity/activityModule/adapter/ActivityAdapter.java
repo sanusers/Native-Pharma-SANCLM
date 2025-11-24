@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -27,10 +30,10 @@ import saneforce.sanzen.activity.activityModule.ActivityView;
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewholder> {
 
     Context context;
-    ArrayList<ActivityModelClass>  DataList=new ArrayList<>();
+    ArrayList<ActivityModelClass> DataList = new ArrayList<>();
 
     ActivityView activityView;
-    int rowindex=-1;
+    int rowindex = -1;
 
     public ActivityAdapter(Context context, ArrayList<ActivityModelClass> dataList, ActivityView activityView) {
         this.context = context;
@@ -49,26 +52,42 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     @Override
     public void onBindViewHolder(@NonNull ActivityAdapter.Viewholder holder, int position) {
         holder.activityName.setText(DataList.get(position).getActivityName());
-        if(context instanceof DynamicActivity) {
+        if (context instanceof DynamicActivity) {
             Log.e("ActivityAdapter", "onBindViewHolder: Dynamic Activity");
-        } else if(context instanceof DCRCallActivity) {
+        } else if (context instanceof DCRCallActivity) {
             Log.e("ActivityAdapter", "onBindViewHolder: Activity Fragment");
-            if(ActivityFragment.savedActivityList != null && !ActivityFragment.savedActivityList.isEmpty() && ActivityFragment.savedActivityList.contains(DataList.get(position).getSlNo())) {
+            if (ActivityFragment.savedActivityList != null && !ActivityFragment.savedActivityList.isEmpty() && ActivityFragment.savedActivityList.contains(DataList.get(position).getSlNo())) {
                 holder.imgEdit.setVisibility(View.VISIBLE);
+                if (DataList.get(position).getSlNo().equalsIgnoreCase("-1")) {
+                    holder.checkBox.setChecked(true);
+                    holder.imgEdit.setVisibility(View.GONE);
+                } else {
+                    holder.checkBox.setChecked(false);
+                }
             } else {
                 holder.imgEdit.setVisibility(View.GONE);
             }
+            if (DataList.get(position).getSlNo().equalsIgnoreCase("-1")) {
+                holder.checkBox.setVisibility(View.VISIBLE);
+                boolean isChecked = ActivityFragment.savedActivityList.contains("-1");
+                if (isChecked) {
+                    ActivityFragment.savedActivityList.add(DataList.get(position).getSlNo());
+                } else {
+                    ActivityFragment.savedActivityList.remove(DataList.get(position).getSlNo());
+                }
+                holder.imgOffline.setVisibility(View.GONE);
+            } else {
+                holder.imgOffline.setVisibility(View.VISIBLE);
+                holder.checkBox.setVisibility(View.GONE);
+            }
         }
-        if(DataList.get(position).isAvailableOffline()) {
+        if (DataList.get(position).isAvailableOffline()) {
             holder.imgOffline.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.green_60)));
         } else {
             holder.imgOffline.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.red_60)));
         }
 
-        holder.layout.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-
+        holder.layout.setOnClickListener(view -> {
 //                if (DynamicActivity.isEdited) {
 //                    Dialog dialog = new Dialog(context);
 //                    dialog.setContentView(R.layout.dcr_cancel_alert);
@@ -90,13 +109,26 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 //                        dialog.dismiss();
 //                    });
 //                }else {
+            if (DataList.get(position).getSlNo().equalsIgnoreCase("-1")) {
+                boolean isChecked = ActivityFragment.savedActivityList.contains("-1");
+                isChecked = !isChecked;
+                if (isChecked) {
+                    ActivityFragment.savedActivityList.add(DataList.get(position).getSlNo());
+                    holder.checkBox.setChecked(true);
+                } else {
+                    ActivityFragment.savedActivityList.remove(DataList.get(position).getSlNo());
+                    holder.checkBox.setChecked(false);
+                }
+//                    notifyDataSetChanged();
+            } else {
+                if (ActivityFragment.savedActivityList.size() > 1) {
+                    ActivityFragment.savedActivityList.remove("-1");
+                }
                 rowindex = position;
                 notifyDataSetChanged();
-                    activityView.ChooseActivity(DataList.get(position), holder, position);
-//                }
-
-
+                activityView.ChooseActivity(DataList.get(position), holder, position);
             }
+//                }
         });
 
         if (rowindex == position) {
@@ -132,15 +164,17 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     public class Viewholder extends RecyclerView.ViewHolder {
         TextView activityName;
         RelativeLayout layout;
+        CheckBox checkBox;
         ImageView imageView, imgOffline, imgEdit;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
-            activityName=itemView.findViewById(R.id.txtActivityName);
-            layout=itemView.findViewById(R.id.rl_layout);
-            imageView=itemView.findViewById(R.id.img_arrow_1);
+            activityName = itemView.findViewById(R.id.txtActivityName);
+            layout = itemView.findViewById(R.id.rl_layout);
+            imageView = itemView.findViewById(R.id.img_arrow_1);
             imgEdit = itemView.findViewById(R.id.img_edit);
             imgOffline = itemView.findViewById(R.id.img_available_offline);
+            checkBox = itemView.findViewById(R.id.checkbox);
         }
     }
 

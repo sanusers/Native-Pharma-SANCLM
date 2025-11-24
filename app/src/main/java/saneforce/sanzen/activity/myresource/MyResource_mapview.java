@@ -2,10 +2,8 @@ package saneforce.sanzen.activity.myresource;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
-
 import static saneforce.sanzen.activity.map.MapsActivity.BitmapFromVector;
 
 import android.Manifest;
@@ -38,7 +36,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,12 +48,11 @@ import java.util.ArrayList;
 import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
-import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.myresource.myresourcemodel.ResourcerviewModelClass;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityMyResourceMapviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -81,7 +77,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         binding = ActivityMyResourceMapviewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        context=this;
+        context = this;
         gpsTrack = new GPSTrack(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
@@ -91,7 +87,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         limitKm = Double.parseDouble(SharedPref.getDisRad(this));
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        commonUtilsMethods = new CommonUtilsMethods(context);
 
         CurrentLat = gpsTrack.getLatitude();
         CurrentLong = gpsTrack.getLongitude();
@@ -166,6 +162,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             binding.viewImg.setVisibility(View.GONE);
         }
     }
+
     private void parseJsonData(String jsonResponse) {
         try {
             if (mMap != null) {
@@ -273,7 +270,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, new NetworkStatusTask.NetworkStatusInterface() {
                 @Override
                 public void isNetworkAvailable(Boolean status) {
-                    if (status){
+                    if (status) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         LayoutInflater inflater = getLayoutInflater();
                         View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
@@ -312,10 +309,19 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                                         dialog_fullScreen.dismiss();
                                     }
                                 }
+
+                                @Override
+                                public void onFailure(int pos) {
+                                    Log.d("bitmap image", "image: " + "bitmap image is null");
+                                    commonUtilsMethods.showToastMessage(context, "Image Not Found");
+                                    fullScreenImage.setVisibility(View.GONE);
+                                    progressBar.setVisibility(View.GONE);
+                                    dialog_fullScreen.dismiss();
+                                }
                             });
                             closeButton.setOnClickListener(view -> dialog_fullScreen.dismiss());
                         }
-                    }else{
+                    } else {
                         commonUtilsMethods.showToastMessage(MyResource_mapview.this, getString(R.string.no_network));
                     }
                 }
@@ -332,7 +338,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
             ImageButton closeButton = dialogView.findViewById(R.id.close_button);
             ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
-            fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+//            fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
             builder.setView(dialogView);
             AlertDialog dialog_fullScreen = builder.create();
             fullScreenImage.setVisibility(View.GONE);

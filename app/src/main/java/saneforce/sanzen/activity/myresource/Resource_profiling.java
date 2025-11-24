@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.myresource;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -25,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,17 +63,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-
-import saneforce.sanzen.activity.login.LoginActivity;
+import saneforce.sanzen.activity.remaindercalls.cuslistadapter;
+import saneforce.sanzen.activity.remaindercalls.remainder_modelclass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-import saneforce.sanzen.activity.remaindercalls.cuslistadapter;
-import saneforce.sanzen.activity.remaindercalls.remainder_modelclass;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -536,26 +531,19 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             jsonobj.put("Doc_Spec_ShortName", Speciality.getText().toString());
             jsonobj.put("Map_ListedDr_Products", "");
             jsonobj.put("ListedDr_Visit_Days", "");
-            jsonobj.put("versionNo",  getString(R.string.app_version));
+            jsonobj.put("versionNo", getString(R.string.app_version));
             jsonobj.put("mod", Constants.APP_MODE);
             jsonobj.put("Device_version", Build.VERSION.RELEASE);
             jsonobj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
             jsonobj.put("AppName", getString(R.string.str_app_name));
             jsonobj.put("language", SharedPref.getSelectedLanguage(this));
 
-
             Log.d("prifiling", jsonobj.toString());
 
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "table/dcrmasterdata");
             Call<JsonElement> call = null;
-            call = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonobj.toString());
-
-
-
-
-
-
+            call = api_interface.getJSONElement(SharedPref.getCallApiUrl(Resource_profiling.this), mapString, jsonobj.toString());
             call.enqueue(new Callback<JsonElement>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -770,8 +758,8 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
 
 
                         Marker marker = mMap.addMarker(new MarkerOptions()
-                                .position(location)
-                                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                                                               .position(location)
+                                                               .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
 
 
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 10f);

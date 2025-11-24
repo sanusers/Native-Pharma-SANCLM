@@ -1,22 +1,17 @@
 package saneforce.sanzen.activity.approvals.leave;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,11 +34,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -98,7 +91,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
                 Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
 
-                ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
+                ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason, 300)});
 
                 btn_cancel.setOnClickListener(new SafeClickListener() {
                     @Override
@@ -146,7 +139,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     private void RejectedLeave(String leave_id, int Position, String reason) {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
-            jsonLeave=CommonUtilsMethods.CommonObjectParameter(context);
+            jsonLeave = CommonUtilsMethods.CommonObjectParameter(context);
             jsonLeave.put("tableName", "leaveapproverej");
             jsonLeave.put("LvID", leave_id);
             jsonLeave.put("LvAPPFlag", "1");
@@ -199,7 +192,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     private void ApprovedLeave(String leave_id, int Position) {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
-            jsonLeave=CommonUtilsMethods.CommonObjectParameter(context);
+            jsonLeave = CommonUtilsMethods.CommonObjectParameter(context);
             jsonLeave.put("tableName", "leaveapproverej");
             jsonLeave.put("LvID", leave_id);
             jsonLeave.put("LvAPPFlag", "0");
@@ -210,7 +203,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         } catch (Exception ignored) {
 
         }
-        Log.e("Response :",""+jsonLeave.toString());
+        Log.e("Response :", "" + jsonLeave.toString());
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/approvals");
         Call<JsonElement> callApprovedLeave = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonLeave.toString());
@@ -218,7 +211,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         callApprovedLeave.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                Log.e("Response :",""+response);
+                Log.e("Response :", "" + response);
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -245,12 +238,14 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             }
         });
     }
-    private void closeKeyBoard(View view){
+
+    private void closeKeyBoard(View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null && view != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
     @Override
     public int getItemCount() {
         return leaveModelLists.size();

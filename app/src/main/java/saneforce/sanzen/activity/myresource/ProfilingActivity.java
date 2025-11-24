@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.myresource;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -12,22 +10,18 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,11 +32,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -52,11 +44,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.call.dcrCallSelection.MapsAddition;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityProfilingBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -69,7 +60,6 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
-
     public static TextView Qualification, Speciality, Category;
     public static String Qual_code = "", spec_code = "", cate_code = "", SfType = "", SfCode = "", SfName = "", DivCode = "", Code, gender = "", drgender = "";
 
@@ -220,7 +210,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             }
             address = extra.getString("ADDRESS");
             geotagcount = extra.getString("tagcount");
-            if(geotagcount == null || geotagcount.trim().isEmpty()){
+            if (geotagcount == null || geotagcount.trim().isEmpty()) {
                 geotagcount = "0";
             }
             maxcount = extra.getString("maxcount");
@@ -611,12 +601,12 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         activityProfilingBinding.txtViewonmap.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, MapView.class);
+                if (UtilityClass.isNetworkAvailable(ProfilingActivity.this)) {
+                    Intent intent = new Intent(ProfilingActivity.this, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Lat", Latitude.get(0));
                     intent.putExtra("Long", Longitude.get(0));
-                    context.startActivity(intent);
+                    ProfilingActivity.this.startActivity(intent);
                 } else {
                     commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
                 }
@@ -625,12 +615,12 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         activityProfilingBinding.txtViewonmap2.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, MapView.class);
+                if (UtilityClass.isNetworkAvailable(ProfilingActivity.this)) {
+                    Intent intent = new Intent(ProfilingActivity.this, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Lat", Latitude.get(1));
                     intent.putExtra("Long", Longitude.get(1));
-                    context.startActivity(intent);
+                    ProfilingActivity.this.startActivity(intent);
 
                 } else {
                     commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
@@ -641,12 +631,12 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         activityProfilingBinding.txtViewonmap3.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, MapView.class);
+                if (UtilityClass.isNetworkAvailable(ProfilingActivity.this)) {
+                    Intent intent = new Intent(ProfilingActivity.this, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Lat", Latitude.get(2));
                     intent.putExtra("Long", Longitude.get(2));
-                    context.startActivity(intent);
+                    ProfilingActivity.this.startActivity(intent);
 
                 } else {
                     commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
@@ -657,12 +647,12 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         activityProfilingBinding.txtChmviewonmap.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, MapView.class);
+                if (UtilityClass.isNetworkAvailable(ProfilingActivity.this)) {
+                    Intent intent = new Intent(ProfilingActivity.this, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Lat", Latitude.get(0));
                     intent.putExtra("Long", Longitude.get(0));
-                    context.startActivity(intent);
+                    ProfilingActivity.this.startActivity(intent);
 
                 } else {
                     commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
@@ -673,12 +663,12 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         activityProfilingBinding.txtChmviewonmap2.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, MapView.class);
+                if (UtilityClass.isNetworkAvailable(ProfilingActivity.this)) {
+                    Intent intent = new Intent(ProfilingActivity.this, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Lat", Latitude.get(1));
                     intent.putExtra("Long", Longitude.get(1));
-                    context.startActivity(intent);
+                    ProfilingActivity.this.startActivity(intent);
 
                 } else {
                     commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
@@ -689,12 +679,12 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         activityProfilingBinding.txtChmviewonmap3.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, MapView.class);
+                if (UtilityClass.isNetworkAvailable(ProfilingActivity.this)) {
+                    Intent intent = new Intent(ProfilingActivity.this, MapView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Lat", Latitude.get(2));
                     intent.putExtra("Long", Longitude.get(2));
-                    context.startActivity(intent);
+                    ProfilingActivity.this.startActivity(intent);
 
                 } else {
                     commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
@@ -831,7 +821,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                         json.put("sfcode", SfCode);
                         json.put("division_code", DivCode);
                         json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                        json.put("DeviceID", SharedPref.getDeviceId(context));
+                        json.put("DeviceID", SharedPref.getDeviceId(ProfilingActivity.this));
                         json.put("DrCode", Code);
                         if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
                             json.put("DrGender", "M");
@@ -895,7 +885,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                                 //json.put("DrDOW", "");
                             }
                         }
-                        json.put("key", SharedPref.getSaveLicenseSetting(context));
+                        json.put("key", SharedPref.getSaveLicenseSetting(ProfilingActivity.this));
                         json.put("DrType", CustType);
                         //json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
                         Log.v("printing_add_dr", json.toString());
@@ -929,7 +919,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 Log.d("save_obj", String.valueOf(val));
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "save/masterdata");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, val);
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(ProfilingActivity.this), mapString, val);
 
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {

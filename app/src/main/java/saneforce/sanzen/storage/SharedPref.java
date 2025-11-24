@@ -8,12 +8,12 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SharedPref {
 
@@ -396,6 +396,7 @@ public class SharedPref {
     public static final String IS_FEILD = "IS_FEILD";
 
     public static final String JWKCODE = "JWKCODE";
+    public static final String JCMAP = "JCMAP";
     public static final String JWKDATE = "JWKDATE";
 
     public static final String TP_MANATORY_STATUS = "TP_MANATORY_STATUS";
@@ -510,6 +511,8 @@ public class SharedPref {
     public static final String LEV_MGR_CODE = "ReportingLeaveMgrCode";
     public static final String LEV_MGR_NAME = "ReportingLeaveMgrName";
 
+    public static final String SLIDE_AUTO_PLAY = "Html_Play";
+    public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
 
     public static SharedPreferences.Editor editor;
 
@@ -866,6 +869,9 @@ public class SharedPref {
             editor.putString(REPORTING_TO_SF, jsonObject.optString("Reporting_To_SF"));
             editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
             editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
+            editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
+            editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
+            editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
             editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
             editor.putString(RPT_MGR_CODE,jsonObject.optString("ReportingMgrCode"));
             editor.putString(RPT_MGR_NAME,jsonObject.optString("ReportingMgrName"));
@@ -912,7 +918,7 @@ public class SharedPref {
     }
 
     public static String getTBase(Context context) {
-        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(   T_BASE, "");
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(T_BASE, "");
     }
 
     public static String getGeoChk(Context context) {
@@ -2602,6 +2608,26 @@ public class SharedPref {
         return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(JWKDATE, "");
     }
 
+    public static void saveJCMap(Context context, Map<String, List<String>> map, String JwkDate) {
+        SharedPreferences prefs = context.getSharedPreferences(SETHQ_DETAILS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(map);
+        editor.putString(JCMAP, json);
+        editor.putString(JWKDATE, JwkDate);
+        editor.apply();
+    }
+
+    public static Map<String, List<String>> getJCMap(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(SETHQ_DETAILS, Context.MODE_PRIVATE);
+        String json = prefs.getString(JCMAP, null);
+        if (json == null) return null;
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, List<String>>>() {
+        }.getType();
+        return gson.fromJson(json, type);
+    }
+
     public static void setSyncHQ(Context context, List<String> List) {
         Gson gson = new Gson();
         String json = gson.toJson(List);
@@ -2620,6 +2646,7 @@ public class SharedPref {
         }.getType();
         return gson.fromJson(json, type);
     }
+
     public static void setBirthdayShownDate(Context context, String date) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -3170,22 +3197,26 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_TIMER, "");
     }
 
-    public static String getReportingToSf(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(REPORTING_TO_SF,"");
+    public static String getReportingToSf(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(REPORTING_TO_SF, "");
     }
-    public static String getUnlstDocAppNeed(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(UNLST_DOC_APP_NEED,"");
+
+    public static String getUnlstDocAppNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(UNLST_DOC_APP_NEED, "");
     }
-    public static String getSubDivisionNames(Context context){
+
+    public static String getSubDivisionNames(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SUBDIVISION_NAMES, "");
     }
+
     public static void setIsSetupSynced(Context context, boolean isSynced) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putBoolean(SETUP_SYNCED, isSynced).apply();
     }
+
     public static boolean getIsSetupSynced(Context context) {
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getBoolean(SETUP_SYNCED,false);
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETUP_SYNCED, false);
     }
     public static String getReportingMgrCode(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RPT_MGR_CODE,"");
@@ -3205,4 +3236,13 @@ public class SharedPref {
     public static String getLeaveMgrName(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(LEV_MGR_NAME,"");
     }
+
+    public static String getSlideAutoPlay(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDE_AUTO_PLAY, "0");
+    }
+
+    public static String getSlideWiseDetailingNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
+    }
+
 }

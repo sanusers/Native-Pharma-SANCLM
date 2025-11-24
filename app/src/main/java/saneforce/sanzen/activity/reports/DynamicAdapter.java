@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -59,8 +60,8 @@ public class DynamicAdapter extends BaseAdapter {
 
             holder = new MyViewHolder();
             holder.cardView = convertView.findViewById(R.id.cardview_grid);
-            holder.imageView = convertView.findViewById(R.id.iv_menu_icon);
-            holder.textView = convertView.findViewById(R.id.tv_menu_title);
+            holder.imageView = convertView.findViewById(R.id.image);
+            holder.textView = convertView.findViewById(R.id.reportName);
             convertView.setTag(holder);
         } else {
             holder = (MyViewHolder) convertView.getTag();
@@ -69,7 +70,7 @@ public class DynamicAdapter extends BaseAdapter {
         MenuModel menuModel = menuModelArrayList.get(position);
 
         if (!menuModel.getMenu_Icon().equalsIgnoreCase("")) {
-            Glide.with(context).load(menuModel.getMenu_Icon()).into(holder.imageView);
+            Glide.with(context).load(menuModel.getMenu_Icon()).error(R.drawable.web_icon).into(holder.imageView);
         }else{
             holder.imageView.setImageResource(R.drawable.web_icon);
         }
@@ -95,7 +96,7 @@ public class DynamicAdapter extends BaseAdapter {
     }
 
     public static class MyViewHolder {
-        CardView cardView;
+        LinearLayout cardView;
         ImageView imageView;
         TextView textView;
     }

@@ -181,14 +181,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/edittext_stroke"
-                                    android:focusable="true"
+                                    android:focusable="false"
                                     android:padding="@dimen/_7sdp"
                                     android:gravity="center|start"
-                                    android:clickable="true"/>
+                                    android:clickable="false"/>
 
                                 <ImageView
                                     android:id="@+id/drop_down"
-                                    android:visibility="visible"
+                                    android:visibility="gone"
                                     android:layout_width="@dimen/_7sdp"
                                     android:layout_height="@dimen/_4sdp"
                                     android:layout_alignParentEnd="true"

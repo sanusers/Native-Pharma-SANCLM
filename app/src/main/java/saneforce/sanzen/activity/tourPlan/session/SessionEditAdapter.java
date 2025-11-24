@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -69,7 +70,6 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
 public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.MyViewHolder> {
-
     public static ModelClass inputDataArray = new ModelClass();
     public static OneBuildModelClass inputDataArrayOneBuild = new OneBuildModelClass();
     public int itemPosition;
@@ -1026,6 +1026,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
+            holder.remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(holder.remarks, 300)});
             holder.remarks.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -1278,7 +1279,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
                 }
-                prepareMGRInputData(holder.jcsModelArray, holder.mgrJointCallArray);
+                prepareMGRJCData(holder.jcsModelArray, holder.mgrJointCallArray);
             } else {
                 for (int i = 0; i < holder.jcModelArray.size(); i++) {
                     if (jcName.length() == 0) {
@@ -1443,7 +1444,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
             prepareInputData(holder.hospitalModelArray, holder.hospArray);
             holder.remarks.setText(holder.sessionData.getRemarks());
-
+            holder.searchET.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(holder.searchET, 100)});
             holder.searchET.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -2029,6 +2030,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
+            holder.remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(holder.remarks, 300)});
             holder.remarks.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -2037,7 +2039,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
+                    holder.sessionData.setRemarks(holder.remarks.getText().toString());
                 }
 
                 @Override
@@ -2766,7 +2768,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
 
                                 prepareMGRInputData(holder.clustersModelArray, holder.mgrClusterArray);
-                                prepareMGRInputData(holder.jcsModelArray, holder.mgrJointCallArray);
+                                prepareMGRJCData(holder.jcsModelArray, holder.mgrJointCallArray);
                                 prepareMGRInputData(holder.listedDrsModelArray, holder.mgrListedDrArray);
                                 prepareMGRInputData(holder.chemistsModelArray, holder.mgrChemistArray);
                                 prepareMGRInputData(holder.stockistsModelArray, holder.mgrStockiestArray);
@@ -2837,6 +2839,30 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     });
             Log.d("TAG", "prepareMGRInputData: " + modelArray);
+        }
+    }
+
+    private void prepareMGRJCData(ArrayList<MultiHQHeaderModelClass> modelArray, ArrayList<MultiHQHeaderModelClass> mgrArray) {
+        if (!modelArray.isEmpty()) {
+            Map<String, List<String>> selectedData = new HashMap<>();
+            for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelArray) {
+                ArrayList<MultiHQItemModelClass> multiHQItemModelClassList = multiHQHeaderModelClass.getItemsList();
+                List<String> selectedJC = new ArrayList<>();
+                for (MultiHQItemModelClass multiHQItemModelClass : multiHQItemModelClassList) {
+                    selectedJC.add(multiHQItemModelClass.getCode());
+                }
+                selectedData.put(multiHQHeaderModelClass.getCode(), selectedJC);
+            }
+            for (MultiHQHeaderModelClass multiHQHeaderModelClass : mgrArray) {
+                if (selectedData.containsKey(multiHQHeaderModelClass.getCode())) {
+                    for (MultiHQItemModelClass multiHQItemModelClass : multiHQHeaderModelClass.getItemsList()) {
+                        if (selectedData.get(multiHQHeaderModelClass.getCode()).contains(multiHQItemModelClass.getCode())) {
+                            multiHQItemModelClass.setChecked(true);
+                        }
+                    }
+                }
+            }
+            Log.d("TAG", "prepareMGRJCData: " + modelArray);
         }
     }
 
@@ -3735,13 +3761,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                    clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
 //                    clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
 //                    clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
-
-                    clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
-                    clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
-                    clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
-                    clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
-                    clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
-                    clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
 
                     setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.clusterField, holder.clusterCount);
                     inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");

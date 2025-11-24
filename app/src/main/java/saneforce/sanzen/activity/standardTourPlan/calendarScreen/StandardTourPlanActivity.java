@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.standardTourPlan.calendarScreen;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -54,7 +52,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.MapsAddition;
@@ -73,7 +70,6 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DoctorCat
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.PlanForModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.SelectedDCRModel;
 import saneforce.sanzen.activity.standardTourPlan.unplannedVisitScreen.UnplannedVisitActivity;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -91,7 +87,6 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class StandardTourPlanActivity extends AppCompatActivity {
-
     private ActivityStandardTourPlanBinding activityStandardTourPlanBinding;
     private List<DoctorCategoryXVisitFrequencyModel> doctorCategoryXVisitFrequencyModelList;
     private DocCategoryXVisitAdapter docCategoryXVisitAdapter;
@@ -139,31 +134,31 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(stpFlag == null || stpFlag.isEmpty()) {
+        if (stpFlag == null || stpFlag.isEmpty()) {
             stpFlag = "3";
         }
         checkApprovalButtonStatus();
 
-        if(stpFlag != null && !stpFlag.isEmpty()) {
-            if(stpFlag.equalsIgnoreCase("1")) {
+        if (stpFlag != null && !stpFlag.isEmpty()) {
+            if (stpFlag.equalsIgnoreCase("1")) {
                 activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
                 activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Rejected");
                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
                 activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.rejected));
-            }else {
+            } else {
                 activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
-                if(stpFlag.equalsIgnoreCase("0")) {
+                if (stpFlag.equalsIgnoreCase("0")) {
                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.approved));
                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                }else if(stpFlag.equalsIgnoreCase("2")) {
+                } else if (stpFlag.equalsIgnoreCase("2")) {
                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                }else if(stpFlag.equalsIgnoreCase("3")) {
+                } else if (stpFlag.equalsIgnoreCase("3")) {
                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
@@ -202,14 +197,14 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         activityStandardTourPlanBinding.checkUnplannedVisits.setOnClickListener(view -> startActivity(new Intent(StandardTourPlanActivity.this, UnplannedVisitActivity.class)));
 
         activityStandardTourPlanBinding.sendToApproval.setOnClickListener(view -> {
-            if(UtilityClass.isNetworkAvailable(this)) {
-                if(!stpOfflineDataDao.isNonSyncAvailable()) {
+            if (UtilityClass.isNetworkAvailable(this)) {
+                if (!stpOfflineDataDao.isNonSyncAvailable()) {
                     sendToApproval();
-                }else {
+                } else {
                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                     saveAllSTPData();
                 }
-            }else {
+            } else {
                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
             }
         });
@@ -256,7 +251,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         allSelectedDocXCatMap = new HashMap<>();
         allSelectedDocList = new ArrayList<>();
 
-        if(!stpCap.isEmpty()) {
+        if (!stpCap.isEmpty()) {
             activityStandardTourPlanBinding.title.setText(stpCap);
         }
         getData();
@@ -287,11 +282,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         totalCategoryCodeList = new HashSet<>();
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String code = jsonObject.optString("Code");
-                    if(!code.isEmpty() && !totalCategoryCodeList.contains(code)) {
+                    if (!code.isEmpty() && !totalCategoryCodeList.contains(code)) {
                         totalCategoryCodeList.add(code);
                         String name = (jsonObject.optString("Name"));
                         String docCatName = (jsonObject.optString("Doc_Cat_Name"));
@@ -309,11 +304,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         totalClusterCodeList = new HashSet<>();
         try {
             JSONArray jsonculst = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray();
-            if(jsonculst.length()>0) {
-                for (int i = 0; i<jsonculst.length(); i++) {
+            if (jsonculst.length() > 0) {
+                for (int i = 0; i < jsonculst.length(); i++) {
                     JSONObject jsonObject = jsonculst.getJSONObject(i);
                     String clusterCode = jsonObject.optString("Code");
-                    if(!clusterCode.isEmpty() && !totalClusterCodeList.contains(clusterCode)) {
+                    if (!clusterCode.isEmpty() && !totalClusterCodeList.contains(clusterCode)) {
                         totalClusterCodeList.add(clusterCode);
                         String custom_name = (jsonObject.optString("Name"));
                     }
@@ -327,8 +322,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private void saveSTPDataToLocal() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String dayID = jsonObject.optString("Day_Plan_ShortName");
                     String dayCaption = jsonObject.optString("Day_Plan_Name");
@@ -343,25 +338,25 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     String activeFlag = jsonObject.optString("Active_Flag");
                     Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
 
-                    if(stpFlag == null || !stpFlag.isEmpty()) {
+                    if (stpFlag == null || !stpFlag.isEmpty()) {
                         stpFlag = jsonObject.optString("Active_Flag", "3");
                         rejectReason = jsonObject.optString("Stp_Reject_Reason");
-                        if(stpFlag.equalsIgnoreCase("1")) {
+                        if (stpFlag.equalsIgnoreCase("1")) {
                             activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
                             activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
                             SharedPref.setStpStatus(StandardTourPlanActivity.this, "Rejected");
                             activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
-                        }else {
+                        } else {
                             activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
-                            if(stpFlag.equalsIgnoreCase("0")) {
+                            if (stpFlag.equalsIgnoreCase("0")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
                                 activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                            }else if(stpFlag.equalsIgnoreCase("2")) {
+                            } else if (stpFlag.equalsIgnoreCase("2")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                                 activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                            }else if(stpFlag.equalsIgnoreCase("3")) {
+                            } else if (stpFlag.equalsIgnoreCase("3")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
                             }
@@ -441,25 +436,25 @@ public class StandardTourPlanActivity extends AppCompatActivity {
            /* if(drNeed.equalsIgnoreCase("0")) {
                 dcrNameList.add(Constants.DOCTOR);
             }*/
-            if(drNeed.equalsIgnoreCase("0")) {
+            if (drNeed.equalsIgnoreCase("0")) {
                 dcrNameList.add(Constants.DOCTOR_MAS);
             }
          /*   if(chmNeed.equalsIgnoreCase("0")) {
                 dcrNameList.add(Constants.CHEMIST);
             }*/
-            if(chmNeed.equalsIgnoreCase("0")) {
+            if (chmNeed.equalsIgnoreCase("0")) {
                 dcrNameList.add(Constants.CHEMIST_MAS);
             }
-            if(stkNeed.equalsIgnoreCase("0")) {
+            if (stkNeed.equalsIgnoreCase("0")) {
 //                dcrNameList.add(Constants.STOCKIEST);
             }
-            if(unDrNeed.equalsIgnoreCase("0")) {
+            if (unDrNeed.equalsIgnoreCase("0")) {
 //                dcrNameList.add(Constants.UNLISTED_DOCTOR);
             }
-            if(cipNeed.equalsIgnoreCase("0")) {
+            if (cipNeed.equalsIgnoreCase("0")) {
 //            dcrNameList.add(Constants.CIP);
             }
-            if(hosNeed.equalsIgnoreCase("0")) {
+            if (hosNeed.equalsIgnoreCase("0")) {
 //            dcrNameList.add(Constants.HOSPITAL);
             }
 
@@ -479,15 +474,15 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             for (String dcrName : dcrNameList) {
                 ArrayList<String> codes = new ArrayList<>();
                 JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(dcrName + hqCode).getMasterSyncDataJsonArray();
-                if(jsonArray.length()>0) {
-                    for (int i = 0; i<jsonArray.length(); i++) {
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         try {
                             String code = "-", name = "-", category = "-", categoryCode = "-", speciality = "-", townName = "-", townCode = "-";
                             int visitCount = 0;
 
                             code = jsonObject.optString("Code");
-                            if(!codes.contains(code)) {
+                            if (!codes.contains(code)) {
                                 codes.add(code);
                                 name = jsonObject.optString("Name");
                                 townName = jsonObject.optString("Town_Name");
@@ -496,25 +491,25 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 /*if(dcrName.equalsIgnoreCase(Constants.DOCTOR)
 //                                    || dcrName.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)
                                 ) */
-                                if(dcrName.equalsIgnoreCase(Constants.DOCTOR_MAS)
+                                if (dcrName.equalsIgnoreCase(Constants.DOCTOR_MAS)
 //                                    || dcrName.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)
                                 ) {
                                     category = jsonObject.optString("Category");
                                     categoryCode = jsonObject.optString("CategoryCode");
                                     speciality = jsonObject.optString("Specialty");
 //                                    if(dcrName.equalsIgnoreCase(Constants.DOCTOR)) {
-                                    if(dcrName.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                                    if (dcrName.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                                         String vstCount = jsonObject.optString("Tlvst");
-                                        if(!vstCount.equalsIgnoreCase("null") && !vstCount.isEmpty()) {
+                                        if (!vstCount.equalsIgnoreCase("null") && !vstCount.isEmpty()) {
                                             visitCount = Integer.parseInt(vstCount);
                                         }
                                     }
-                                    if(allSelectedDocList.contains(code)) {
-                                        if(!allSelectedDocXCatMap.containsKey(categoryCode)) {
+                                    if (allSelectedDocList.contains(code)) {
+                                        if (!allSelectedDocXCatMap.containsKey(categoryCode)) {
                                             allSelectedDocXCatMap.put(categoryCode, new ArrayList<>());
                                         }
                                         List<String> docCodes = allSelectedDocXCatMap.get(categoryCode);
-                                        if(docCodes == null) {
+                                        if (docCodes == null) {
                                             docCodes = new ArrayList<>();
                                         }
                                         int docSelectedFreq = Collections.frequency(allSelectedDocList, code);
@@ -526,15 +521,15 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //                                categoryCode = jsonObject.optString("Chm_cat");
 //                                category = chmCatMap.getOrDefault(categoryCode, "");
 //                            }
-                                if(!code.isEmpty()) {
-                                    switch (dcrName){
+                                if (!code.isEmpty()) {
+                                    switch (dcrName) {
 //                                        case Constants.DOCTOR:
                                         case Constants.DOCTOR_MAS:
-                                            if(!totalDocCodeList.contains(code)) {
+                                            if (!totalDocCodeList.contains(code)) {
                                                 totalDocCodeList.add(code);
-                                                if(docCategoryModelMap.containsKey(categoryCode)) {
+                                                if (docCategoryModelMap.containsKey(categoryCode)) {
                                                     DocCategoryModel docCategoryModel = docCategoryModelMap.get(categoryCode);
-                                                    if(docCategoryModel != null) {
+                                                    if (docCategoryModel != null) {
                                                         docCategoryModel.incrementDocCount();
                                                         docCategoryModelMap.put(categoryCode, docCategoryModel);
                                                     }
@@ -542,12 +537,12 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                               /*  if(!selectedDcrMap.containsKey(Constants.DOCTOR)) {
                                                     selectedDcrMap.put(Constants.DOCTOR, new ArrayList<>());
                                                 }*/
-                                                if(!selectedDcrMap.containsKey(Constants.DOCTOR_MAS)) {
+                                                if (!selectedDcrMap.containsKey(Constants.DOCTOR_MAS)) {
                                                     selectedDcrMap.put(Constants.DOCTOR_MAS, new ArrayList<>());
                                                 }
 //                                                List<DCRModel> docModelList = selectedDcrMap.get(Constants.DOCTOR);
                                                 List<DCRModel> docModelList = selectedDcrMap.get(Constants.DOCTOR_MAS);
-                                                if(docModelList == null) {
+                                                if (docModelList == null) {
                                                     docModelList = new ArrayList<>();
                                                 }
                                                 docModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
@@ -557,17 +552,17 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                             break;
 //                                        case Constants.CHEMIST:
                                         case Constants.CHEMIST_MAS:
-                                            if(!totalChmCodeList.contains(code)) {
+                                            if (!totalChmCodeList.contains(code)) {
                                                 totalChmCodeList.add(code);
                                         /*        if(!selectedDcrMap.containsKey(Constants.CHEMIST)) {
                                                     selectedDcrMap.put(Constants.CHEMIST, new ArrayList<>());
                                                 }*/
-                                                if(!selectedDcrMap.containsKey(Constants.CHEMIST_MAS)) {
+                                                if (!selectedDcrMap.containsKey(Constants.CHEMIST_MAS)) {
                                                     selectedDcrMap.put(Constants.CHEMIST_MAS, new ArrayList<>());
                                                 }
 //                                                List<DCRModel> chmModelList = selectedDcrMap.get(Constants.CHEMIST);
                                                 List<DCRModel> chmModelList = selectedDcrMap.get(Constants.CHEMIST_MAS);
-                                                if(chmModelList == null) {
+                                                if (chmModelList == null) {
                                                     chmModelList = new ArrayList<>();
                                                 }
                                                 chmModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
@@ -576,13 +571,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                             }
                                             break;
                                         case Constants.STOCKIEST_MAS:
-                                            if(!totalStkCodeList.contains(code)) {
+                                            if (!totalStkCodeList.contains(code)) {
                                                 totalStkCodeList.add(code);
-                                                if(!selectedDcrMap.containsKey(Constants.STOCKIEST_MAS)) {
+                                                if (!selectedDcrMap.containsKey(Constants.STOCKIEST_MAS)) {
                                                     selectedDcrMap.put(Constants.STOCKIEST_MAS, new ArrayList<>());
                                                 }
                                                 List<DCRModel> stkModelList = selectedDcrMap.get(Constants.STOCKIEST_MAS);
-                                                if(stkModelList == null) {
+                                                if (stkModelList == null) {
                                                     stkModelList = new ArrayList<>();
                                                 }
                                                 stkModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
@@ -590,13 +585,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                             }
                                             break;
                                         case Constants.UNLISTED_DOCTOR_MAS:
-                                            if(!totalUnDrCodeList.contains(code)) {
+                                            if (!totalUnDrCodeList.contains(code)) {
                                                 totalUnDrCodeList.add(code);
-                                                if(!selectedDcrMap.containsKey(Constants.UNLISTED_DOCTOR_MAS)) {
+                                                if (!selectedDcrMap.containsKey(Constants.UNLISTED_DOCTOR_MAS)) {
                                                     selectedDcrMap.put(Constants.UNLISTED_DOCTOR_MAS, new ArrayList<>());
                                                 }
                                                 List<DCRModel> unDrModelList = selectedDcrMap.get(Constants.UNLISTED_DOCTOR_MAS);
-                                                if(unDrModelList == null) {
+                                                if (unDrModelList == null) {
                                                     unDrModelList = new ArrayList<>();
                                                 }
                                                 unDrModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
@@ -604,13 +599,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                             }
                                             break;
                                         case Constants.CIP:
-                                            if(!totalCipCodeList.contains(code)) {
+                                            if (!totalCipCodeList.contains(code)) {
                                                 totalCipCodeList.add(code);
-                                                if(!selectedDcrMap.containsKey(Constants.CIP)) {
+                                                if (!selectedDcrMap.containsKey(Constants.CIP)) {
                                                     selectedDcrMap.put(Constants.CIP, new ArrayList<>());
                                                 }
                                                 List<DCRModel> cipModelList = selectedDcrMap.get(Constants.CIP);
-                                                if(cipModelList == null) {
+                                                if (cipModelList == null) {
                                                     cipModelList = new ArrayList<>();
                                                 }
                                                 cipModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
@@ -618,13 +613,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                             }
                                             break;
                                         case Constants.HOSPITAL:
-                                            if(!totalHosCodeList.contains(code)) {
+                                            if (!totalHosCodeList.contains(code)) {
                                                 totalHosCodeList.add(code);
-                                                if(!selectedDcrMap.containsKey(Constants.HOSPITAL)) {
+                                                if (!selectedDcrMap.containsKey(Constants.HOSPITAL)) {
                                                     selectedDcrMap.put(Constants.HOSPITAL, new ArrayList<>());
                                                 }
                                                 List<DCRModel> hosModelList = selectedDcrMap.get(Constants.HOSPITAL);
-                                                if(hosModelList == null) {
+                                                if (hosModelList == null) {
                                                     hosModelList = new ArrayList<>();
                                                 }
                                                 hosModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
@@ -648,7 +643,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private void getSTPSetup() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
-            if(jsonArray != null && jsonArray.length()>0) {
+            if (jsonArray != null && jsonArray.length() > 0) {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
                 dayCaptions = jsonObject.optString("Plan_Name", "");
                 dayIDs = jsonObject.optString("Plan_SName", "");
@@ -657,14 +652,14 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //                    activityStandardTourPlanBinding.title.setText(stpCap);
 //                }
             }
-            if(dayIDs == null || dayIDs.isEmpty()) {
+            if (dayIDs == null || dayIDs.isEmpty()) {
                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
                 startActivity(new Intent(StandardTourPlanActivity.this, MasterSyncActivity.class));
                 finish();
             } else {
                 List<String> dayIDs = stpOfflineDataDao.getAllSTPDayID();
                 for (String dayID : dayIDs) {
-                    if(!this.dayIDs.contains(dayID)) {
+                    if (!this.dayIDs.contains(dayID)) {
                         stpOfflineDataDao.deleteByDayID(dayID);
                     }
                 }
@@ -695,7 +690,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         doctorCategoryXVisitFrequencyModelList = new ArrayList<>();
         for (String key : docCategoryModelMap.keySet()) {
             DocCategoryModel docCategoryModel = docCategoryModelMap.get(key);
-            if(docCategoryModel != null) {
+            if (docCategoryModel != null) {
                 doctorCategoryXVisitFrequencyModelList.add(new DoctorCategoryXVisitFrequencyModel(docCategoryModel.getCategoryName(), docCategoryModel.getVisitCount()));
             }
         }
@@ -713,9 +708,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         docDataModelList = new ArrayList<>();
         for (String key : docCategoryModelMap.keySet()) {
             DocCategoryModel docCategoryModel = docCategoryModelMap.get(key);
-            if(docCategoryModel != null) {
+            if (docCategoryModel != null) {
                 List<String> allDocCodes = allSelectedDocXCatMap.get(key);
-                if(allDocCodes == null) allDocCodes = new ArrayList<>();
+                if (allDocCodes == null) allDocCodes = new ArrayList<>();
                 Set<String> uniqueDocCodes = new HashSet<>(allDocCodes);
                 docDataModelList.add(new DocDataModel(docCategoryModel.getCategoryName(), docCategoryModel.getDocCount(), (docCategoryModel.getDocCount() * docCategoryModel.getVisitCount()), uniqueDocCodes.size(), allDocCodes.size()));
             }
@@ -728,7 +723,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void populateCalendarAdapter() {
-        if(dayIDs != null && !dayIDs.isEmpty()) {
+        if (dayIDs != null && !dayIDs.isEmpty()) {
             totalDaysCount = 0;
             String[] dayIDValues = dayIDs.split("/");
             String[] dayCaptionValues = dayCaptions.split("/");
@@ -736,56 +731,56 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //            String[] dayCaptionValues = (dayCaptions + "Friday 1/Friday 2/Friday 3/Friday 4/").split("/");
             calendarMap = new LinkedHashMap<>();
 
-            for (int index = 0; index<dayIDValues.length; index++) {
+            for (int index = 0; index < dayIDValues.length; index++) {
                 String dayID = dayIDValues[index];
-                if(!dayID.isEmpty()) {
+                if (!dayID.isEmpty()) {
                     totalDaysCount++;
                 }
-                if(dayID.toLowerCase().contains("mo")) {
+                if (dayID.toLowerCase().contains("mo")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("monday");
-                    if(calendarModelList == null) {
+                    if (calendarModelList == null) {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("monday", calendarModelList);
-                }else if(dayID.toLowerCase().contains("tu")) {
+                } else if (dayID.toLowerCase().contains("tu")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
-                    if(calendarModelList == null) {
+                    if (calendarModelList == null) {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("tuesday", calendarModelList);
-                }else if(dayID.toLowerCase().contains("we")) {
+                } else if (dayID.toLowerCase().contains("we")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
-                    if(calendarModelList == null) {
+                    if (calendarModelList == null) {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("wednesday", calendarModelList);
-                }else if(dayID.toLowerCase().contains("th")) {
+                } else if (dayID.toLowerCase().contains("th")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("thursday");
-                    if(calendarModelList == null) {
+                    if (calendarModelList == null) {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("thursday", calendarModelList);
-                }else if(dayID.toLowerCase().contains("fr")) {
+                } else if (dayID.toLowerCase().contains("fr")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("friday");
-                    if(calendarModelList == null) {
+                    if (calendarModelList == null) {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("friday", calendarModelList);
-                }else if(dayID.toLowerCase().contains("sa")) {
+                } else if (dayID.toLowerCase().contains("sa")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("saturday");
-                    if(calendarModelList == null) {
+                    if (calendarModelList == null) {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("saturday", calendarModelList);
-                }else if(dayID.toLowerCase().contains("su")) {
+                } else if (dayID.toLowerCase().contains("su")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("sunday");
-                    if(calendarModelList == null) {
+                    if (calendarModelList == null) {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
@@ -794,26 +789,26 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
 
             for (String key : calendarMap.keySet()) {
-                if(key.equalsIgnoreCase("monday")) {
+                if (key.equalsIgnoreCase("monday")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("monday");
-                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
                         String caption = "";
-                        for (int index = 1; index<5; index++) {
+                        for (int index = 1; index < 5; index++) {
                             String dayID = "MO" + index;
                             boolean isDayFound = false;
                             for (CalendarModel calendarModel : calendarModelList) {
-                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
                                     isDayFound = true;
-                                    if(caption.isEmpty()) {
+                                    if (caption.isEmpty()) {
                                         caption = calendarModel.getCaption();
                                     }
                                     break;
                                 }
                             }
-                            if(!isDayFound) {
+                            if (!isDayFound) {
                                 String newCaption = changeCaptionNumber(caption, index);
                                 calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            }else {
+                            } else {
                                 List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                                 selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
                                 calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
@@ -821,26 +816,26 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         calendarMap.put("monday", calendarModelList);
                     }
-                }else if(key.equalsIgnoreCase("tuesday")) {
+                } else if (key.equalsIgnoreCase("tuesday")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
-                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
                         String caption = "";
-                        for (int index = 1; index<5; index++) {
+                        for (int index = 1; index < 5; index++) {
                             String dayID = "TU" + index;
                             boolean isDayFound = false;
                             for (CalendarModel calendarModel : calendarModelList) {
-                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
                                     isDayFound = true;
-                                    if(caption.isEmpty()) {
+                                    if (caption.isEmpty()) {
                                         caption = calendarModel.getCaption();
                                     }
                                     break;
                                 }
                             }
-                            if(!isDayFound) {
+                            if (!isDayFound) {
                                 String newCaption = changeCaptionNumber(caption, index);
                                 calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            }else {
+                            } else {
                                 List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                                 selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
                                 calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
@@ -848,26 +843,26 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         calendarMap.put("tuesday", calendarModelList);
                     }
-                }else if(key.equalsIgnoreCase("wednesday")) {
+                } else if (key.equalsIgnoreCase("wednesday")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
-                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
                         String caption = "";
-                        for (int index = 1; index<5; index++) {
+                        for (int index = 1; index < 5; index++) {
                             String dayID = "WE" + index;
                             boolean isDayFound = false;
                             for (CalendarModel calendarModel : calendarModelList) {
-                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
                                     isDayFound = true;
-                                    if(caption.isEmpty()) {
+                                    if (caption.isEmpty()) {
                                         caption = calendarModel.getCaption();
                                     }
                                     break;
                                 }
                             }
-                            if(!isDayFound) {
+                            if (!isDayFound) {
                                 String newCaption = changeCaptionNumber(caption, index);
                                 calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            }else {
+                            } else {
                                 List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                                 selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
                                 calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
@@ -875,26 +870,26 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         calendarMap.put("wednesday", calendarModelList);
                     }
-                }else if(key.equalsIgnoreCase("thursday")) {
+                } else if (key.equalsIgnoreCase("thursday")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("thursday");
-                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
                         String caption = "";
-                        for (int index = 1; index<5; index++) {
+                        for (int index = 1; index < 5; index++) {
                             String dayID = "TH" + index;
                             boolean isDayFound = false;
                             for (CalendarModel calendarModel : calendarModelList) {
-                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
                                     isDayFound = true;
-                                    if(caption.isEmpty()) {
+                                    if (caption.isEmpty()) {
                                         caption = calendarModel.getCaption();
                                     }
                                     break;
                                 }
                             }
-                            if(!isDayFound) {
+                            if (!isDayFound) {
                                 String newCaption = changeCaptionNumber(caption, index);
                                 calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            }else {
+                            } else {
                                 List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                                 selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
                                 calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
@@ -902,26 +897,26 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         calendarMap.put("thursday", calendarModelList);
                     }
-                }else if(key.equalsIgnoreCase("friday")) {
+                } else if (key.equalsIgnoreCase("friday")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("friday");
-                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
                         String caption = "";
-                        for (int index = 1; index<5; index++) {
+                        for (int index = 1; index < 5; index++) {
                             String dayID = "FR" + index;
                             boolean isDayFound = false;
                             for (CalendarModel calendarModel : calendarModelList) {
-                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
                                     isDayFound = true;
-                                    if(caption.isEmpty()) {
+                                    if (caption.isEmpty()) {
                                         caption = calendarModel.getCaption();
                                     }
                                     break;
                                 }
                             }
-                            if(!isDayFound) {
+                            if (!isDayFound) {
                                 String newCaption = changeCaptionNumber(caption, index);
                                 calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            }else {
+                            } else {
                                 List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                                 selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
                                 calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
@@ -929,26 +924,26 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         calendarMap.put("friday", calendarModelList);
                     }
-                }else if(key.equalsIgnoreCase("saturday")) {
+                } else if (key.equalsIgnoreCase("saturday")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("saturday");
-                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
                         String caption = "";
-                        for (int index = 1; index<5; index++) {
+                        for (int index = 1; index < 5; index++) {
                             String dayID = "SA" + index;
                             boolean isDayFound = false;
                             for (CalendarModel calendarModel : calendarModelList) {
-                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
                                     isDayFound = true;
-                                    if(caption.isEmpty()) {
+                                    if (caption.isEmpty()) {
                                         caption = calendarModel.getCaption();
                                     }
                                     break;
                                 }
                             }
-                            if(!isDayFound) {
+                            if (!isDayFound) {
                                 String newCaption = changeCaptionNumber(caption, index);
                                 calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            }else {
+                            } else {
                                 List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                                 selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
                                 calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
@@ -956,26 +951,26 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         calendarMap.put("saturday", calendarModelList);
                     }
-                }else if(key.equalsIgnoreCase("sunday")) {
+                } else if (key.equalsIgnoreCase("sunday")) {
                     List<CalendarModel> calendarModelList = calendarMap.get("sunday");
-                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
                         String caption = "";
-                        for (int index = 1; index<5; index++) {
+                        for (int index = 1; index < 5; index++) {
                             String dayID = "SU" + index;
                             boolean isDayFound = false;
                             for (CalendarModel calendarModel : calendarModelList) {
-                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
                                     isDayFound = true;
-                                    if(caption.isEmpty()) {
+                                    if (caption.isEmpty()) {
                                         caption = calendarModel.getCaption();
                                     }
                                     break;
                                 }
                             }
-                            if(!isDayFound) {
+                            if (!isDayFound) {
                                 String newCaption = changeCaptionNumber(caption, index);
                                 calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            }else {
+                            } else {
                                 List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                                 selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
                                 calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
@@ -998,15 +993,15 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private String changeCaptionNumber(String str, int value) {
         try {
             int index = -1;
-            for (int i = 0; i<str.length(); i++) {
-                if(Character.isDigit(str.charAt(i))) {
+            for (int i = 0; i < str.length(); i++) {
+                if (Character.isDigit(str.charAt(i))) {
                     index = i;
                     break;
                 }
             }
-            if(index != -1) {
+            if (index != -1) {
                 return str.substring(0, index) + value + str.substring(index + 1);
-            }else {
+            } else {
                 return str;
             }
         } catch (Exception e) {
@@ -1019,7 +1014,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private List<SelectedDCRModel> getSelectedDCRDataList(String dayID, String caption) {
         List<SelectedDCRModel> selectedDCRModels = new ArrayList<>();
         boolean isDayAvailable = stpOfflineDataDao.isDayAvailable(dayID);
-        if(isDayAvailable) {
+        if (isDayAvailable) {
             STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(dayID);
             String[] docList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",");
             String[] chmList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",");
@@ -1029,10 +1024,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             selectedDCRModels.add(new SelectedDCRModel(R.drawable.chemist_img, 2, Arrays.toString(chmList), chmList.length));
 //            List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR);
             List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR_MAS);
-            if(selectedDocList != null && !selectedDocList.isEmpty()) {
-                for (int index = 0; index<selectedDocList.size(); index++) {
+            if (selectedDocList != null && !selectedDocList.isEmpty()) {
+                for (int index = 0; index < selectedDocList.size(); index++) {
                     DCRModel dcrModel = selectedDocList.get(index);
-                    if(stpOfflineDataTable.getDoctorCode().contains(dcrModel.getCode())) {
+                    if (stpOfflineDataTable.getDoctorCode().contains(dcrModel.getCode())) {
                         String plannedForName = dcrModel.getPlannedForName().replace("-", "") + caption + ",";
                         String plannedForCode = dcrModel.getPlannedForCode().replace("-", "") + dayID + ",";
                         dcrModel.setPlannedForName(plannedForName);
@@ -1045,10 +1040,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             selectedDcrMap.put(Constants.DOCTOR_MAS, selectedDocList);
 //            List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST);
             List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST_MAS);
-            if(selectedChmList != null && !selectedChmList.isEmpty()) {
-                for (int index = 0; index<selectedChmList.size(); index++) {
+            if (selectedChmList != null && !selectedChmList.isEmpty()) {
+                for (int index = 0; index < selectedChmList.size(); index++) {
                     DCRModel dcrModel = selectedChmList.get(index);
-                    if(stpOfflineDataTable.getChemistCode().contains(dcrModel.getCode())) {
+                    if (stpOfflineDataTable.getChemistCode().contains(dcrModel.getCode())) {
                         String plannedForName = dcrModel.getPlannedForName().replace("-", "") + caption + ",";
                         String plannedForCode = dcrModel.getPlannedForCode().replace("-", "") + dayID + ",";
                         dcrModel.setPlannedForName(plannedForName);
@@ -1067,10 +1062,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(ActivityResult activityResult) {
             try {
-                if(activityResult.getResultCode() == Activity.RESULT_OK) {
+                if (activityResult.getResultCode() == Activity.RESULT_OK) {
                     getRequiredData();
                     populateAdapters();
-                }else {
+                } else {
                     Log.d("STP", "onActivityResult: nothing changed");
                 }
             } catch (Exception e) {
@@ -1082,11 +1077,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private final CalendarAdapter.CalendarDayClickListener calendarDayClickListener = (calendarModel, mode) -> {
 //        if(!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
-            Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
-            intent.putExtra("MODE", String.valueOf(mode));
-            intent.putExtra("DAY_ID", calendarModel.getId());
-            intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
-            activityResultLauncher.launch(intent);
+        Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
+        intent.putExtra("MODE", String.valueOf(mode));
+        intent.putExtra("DAY_ID", calendarModel.getId());
+        intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
+        activityResultLauncher.launch(intent);
 //        }else if (stpFlag.equalsIgnoreCase("0")){
 //            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
 //        }else if (stpFlag.equalsIgnoreCase("2")){
@@ -1095,24 +1090,24 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     };
 
     private final CalendarAdapter.CalendarDayMenuClickListener calendarDayMenuClickListener = (calendarModel, menuItem) -> {
-        if(!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
-            if(menuItem.getItemId() == R.id.menuEdit) {
+        if (!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
+            if (menuItem.getItemId() == R.id.menuEdit) {
                 Log.d("STP Item", "Edit");
                 Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
                 intent.putExtra("MODE", String.valueOf(CalendarAdapter.Mode.EDIT));
                 intent.putExtra("DAY_ID", calendarModel.getId());
                 intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
                 activityResultLauncher.launch(intent);
-            }else if(menuItem.getItemId() == R.id.menuDelete) {
+            } else if (menuItem.getItemId() == R.id.menuDelete) {
                 Log.d("STP Item", "Delete");
                 showDeleteDialog(calendarModel.getId(), calendarModel.getCaption());
-            }else if(menuItem.getItemId() == R.id.menuSwap) {
+            } else if (menuItem.getItemId() == R.id.menuSwap) {
                 Log.d("STP Item", "Swap");
                 showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
             }
-        }else if (stpFlag.equalsIgnoreCase("0")){
+        } else if (stpFlag.equalsIgnoreCase("0")) {
             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
-        }else if (stpFlag.equalsIgnoreCase("2")){
+        } else if (stpFlag.equalsIgnoreCase("2")) {
             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
         }
     };
@@ -1144,10 +1139,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             btn_cancel.setOnClickListener(view12 -> dialogFilter.dismiss());
 
             tvTo.setOnClickListener(view -> {
-                if(lv_to.getVisibility() == View.VISIBLE) {
+                if (lv_to.getVisibility() == View.VISIBLE) {
                     lv_to.setVisibility(View.GONE);
                     constraintLayout.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     getSTPData(id);
                     FillteredAdapter arrayAdapter = new FillteredAdapter(this, stpDataModels, clickedItem -> {
                         swapCode = clickedItem.getCode();
@@ -1191,10 +1186,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         ed_remarks.setVisibility(View.INVISIBLE);
         btn_save.setOnClickListener(view -> {
             dialogOptionSelection.dismiss();
-            if(UtilityClass.isNetworkAvailable(this)) {
+            if (UtilityClass.isNetworkAvailable(this)) {
                 createSwapJson(fromID, fromName, toID, toName);
                 callSwapAPI(fromID, fromName, toID, toName);
-            }else {
+            } else {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
             }
         });
@@ -1213,16 +1208,16 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "swap/stp");
-            Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, swapJsonArray.toString());
+            Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(StandardTourPlanActivity.this), mapString, swapJsonArray.toString());
             saveMyDayPlan.enqueue(new Callback<JsonElement>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     Log.d("swap:Code", response.code() + " - " + response);
                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
-                    if(response.isSuccessful()) {
+                    if (response.isSuccessful()) {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
-                            if(json.getString("success").equalsIgnoreCase("true")) {
+                            if (json.getString("success").equalsIgnoreCase("true")) {
                                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Swap between " + fromName + " And " + toName + " was successful");
                             }
                         } catch (Exception e) {
@@ -1271,27 +1266,27 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     JSONArray jsonArray = new JSONArray();
                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
 
-                    if(response.isSuccessful()) {
+                    if (response.isSuccessful()) {
                         Log.e("test mydayplan", "response : " + Objects.requireNonNull(response.body()));
                         try {
                             JsonElement jsonElement = response.body();
-                            if(!jsonElement.isJsonNull()) {
-                                if(jsonElement.isJsonArray()) {
+                            if (!jsonElement.isJsonNull()) {
+                                if (jsonElement.isJsonArray()) {
                                     JsonArray jsonArray1 = jsonElement.getAsJsonArray();
                                     jsonArray = new JSONArray(jsonArray1.toString());
                                     success = true;
-                                }else if(jsonElement.isJsonObject()) {
+                                } else if (jsonElement.isJsonObject()) {
                                     JsonObject jsonObject1 = jsonElement.getAsJsonObject();
                                     JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
-                                    if(!jsonObject2.has("success")) {
+                                    if (!jsonObject2.has("success")) {
                                         jsonArray.put(jsonObject2);
                                         success = true;
-                                    }else if(jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                    } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
                                         masterDataDao.saveMasterSyncStatus(Constants.STANDARD_TOUR_PLAN, 1);
                                     }
                                 }
 
-                                if(success) {
+                                if (success) {
                                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STANDARD_TOUR_PLAN, jsonArray.toString(), 2));
                                 }
                             }
@@ -1374,7 +1369,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             List<STPOfflineDataTable> stpData = stpOfflineDataDao.getAllSTPData();
             stpDataModels.clear();
             for (STPOfflineDataTable stpOfflineDataTable : stpData) {
-                if(!stpOfflineDataTable.getDayID().equals(id)) {
+                if (!stpOfflineDataTable.getDayID().equals(id)) {
                     stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
                 }
             }
@@ -1402,17 +1397,17 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
         btn_save.setOnClickListener(view -> {
-            if(UtilityClass.isNetworkAvailable(this)) {
+            if (UtilityClass.isNetworkAvailable(this)) {
                 createDeleteJson(dayID);
                 callDeleteAPI(dayID, caption);
-            }else {
+            } else {
 //                if(stpOfflineDataDao.getSTPDataOfDayOrNew(dayID).getSyncStatus().equalsIgnoreCase("1")) {
 //                    stpOfflineDataDao.deleteByDayID(dayID);
 //                    getRequiredData();
 //                    populateAdapters();
 //                    checkApprovalButtonStatus();
 //                } else {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
 //                }
             }
             dialogOptionSelection.dismiss();
@@ -1432,16 +1427,16 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "delete/stp");
-            Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, deleteJsonObject.toString());
+            Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(StandardTourPlanActivity.this), mapString, deleteJsonObject.toString());
             saveMyDayPlan.enqueue(new Callback<JsonElement>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     Log.d("delete:Code", response.code() + " - " + response);
                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
-                    if(response.isSuccessful()) {
+                    if (response.isSuccessful()) {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
-                            if(json.getString("success").equalsIgnoreCase("true")) {
+                            if (json.getString("success").equalsIgnoreCase("true")) {
                                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + " Deleted Successfully");
                             }
                         } catch (Exception e) {
@@ -1482,11 +1477,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private boolean checkAllDocsSelected() {
 //        List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR);
         List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR_MAS);
-        if(selectedDocList != null && !selectedDocList.isEmpty()) {
+        if (selectedDocList != null && !selectedDocList.isEmpty()) {
             for (DCRModel dcrModel : selectedDocList) {
                 String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
                 docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-                if(docList.length<dcrModel.getVisitFrequency()) {
+                if (docList.length < dcrModel.getVisitFrequency()) {
                     return false;
                 }
             }
@@ -1495,10 +1490,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void saveAllSTPData() {
-        if(UtilityClass.isNetworkAvailable(this)) {
+        if (UtilityClass.isNetworkAvailable(this)) {
             try {
                 List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllNonSyncSTPData();
-                if(stpOfflineDataTableList != null && !stpOfflineDataTableList.isEmpty()) {
+                if (stpOfflineDataTableList != null && !stpOfflineDataTableList.isEmpty()) {
                     activityStandardTourPlanBinding.flProgress.setVisibility(View.VISIBLE);
                     activityStandardTourPlanBinding.tvProgressTitle.setText("Syncing Offline Data...");
                     final int[] apiCount = {0};
@@ -1508,19 +1503,19 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "save/stp");
-                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject);
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(StandardTourPlanActivity.this), mapString, jsonObject);
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.v("stp save", "--res--" + response.body());
                                 apiCount[0]++;
                                 try {
-                                    if(response.isSuccessful() && response.body() != null) {
+                                    if (response.isSuccessful() && response.body() != null) {
                                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
-                                        if(jsonObject1.optString("success").equals("true")) {
+                                        if (jsonObject1.optString("success").equals("true")) {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
                                             stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
-                                        }else {
+                                        } else {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
                                         }
                                     }
@@ -1528,7 +1523,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
                                 }
-                                if(apiCount[0] == stpOfflineDataTableList.size()) {
+                                if (apiCount[0] == stpOfflineDataTableList.size()) {
                                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
                                     activityStandardTourPlanBinding.sendToApproval.setEnabled(true);
                                 }
@@ -1538,7 +1533,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 t.printStackTrace();
                                 apiCount[0]++;
-                                if(apiCount[0] == stpOfflineDataTableList.size()) {
+                                if (apiCount[0] == stpOfflineDataTableList.size()) {
                                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
                                     activityStandardTourPlanBinding.sendToApproval.setEnabled(true);
                                 }
@@ -1570,19 +1565,19 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         try {
-            if(UtilityClass.isNetworkAvailable(this)) {
+            if (UtilityClass.isNetworkAvailable(this)) {
                 apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "save/stp");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(StandardTourPlanActivity.this), mapString, jsonObject.toString());
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                         Log.v("stp save", "--res--" + response.body());
                         try {
-                            if(response.isSuccessful() && response.body() != null) {
+                            if (response.isSuccessful() && response.body() != null) {
                                 JSONObject jsonObject1 = new JSONObject(response.body().toString());
-                                if(jsonObject1.optString("success", "false").equals("true")) {
+                                if (jsonObject1.optString("success", "false").equals("true")) {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.send_approved_successfully));
                                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
@@ -1591,7 +1586,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
                                     stpFlag = "2";
                                     syncSTP();
-                                }else {
+                                } else {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                 }
                             }
@@ -1607,7 +1602,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
                     }
                 });
-            }else {
+            } else {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
             }
         } catch (Exception e) {

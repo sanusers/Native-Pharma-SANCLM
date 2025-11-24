@@ -41,13 +41,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -77,7 +77,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         this.apiInterface = apiInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
         db = RoomDB.getDatabase(context);
-        masterDataDao =db.masterDataDao();
+        masterDataDao = db.masterDataDao();
         callTableDao = db.callTableDao();
         dialogTransparent = new Dialog(context, android.R.style.Theme_Black);
         View view = LayoutInflater.from(context).inflate(R.layout.remove_border_progress, null);
@@ -169,12 +169,20 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                     CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode(), checkInOutNeed);
                                     String mMdata = masterDataDao.getDataByKey(Constants.CALL_SYNC);
                                     JSONArray jsonArray = new JSONArray(mMdata);
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
-                                            jsonArray.remove(i);
-                                            break;
+                                    try {
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                            String date = callslist.getCallsDateTime().substring(0, 10);
+                                            if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                                                date = callslist.getDcrDate().substring(0, 10);
+                                            }
+                                            if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
+                                                jsonArray.remove(i);
+                                                break;
+                                            }
                                         }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                     MasterDataTable data = new MasterDataTable();
                                     data.setMasterKey(Constants.CALL_SYNC);
@@ -235,9 +243,9 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         String name = s.substring(0, s.lastIndexOf("~")), data = s.substring(s.lastIndexOf("~") + 1);
                         String sampleQty = data.split("\\$")[0];
                         //InputStockChange
-                        for (int j = 0; j<jsonArrayInpStk.length(); j++) {
+                        for (int j = 0; j < jsonArrayInpStk.length(); j++) {
                             JSONObject jsonObject = jsonArrayInpStk.optJSONObject(j);
-                            if(name.equalsIgnoreCase(jsonObject.optString("Name"))) {
+                            if (name.equalsIgnoreCase(jsonObject.optString("Name"))) {
                                 int EnterQty = Integer.parseInt(sampleQty);
                                 int BalanceStock = Integer.parseInt(jsonObject.getString("Balance_Stock"));
                                 int FinalStock = EnterQty + BalanceStock;
@@ -259,9 +267,9 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     for (String s : products) {
                         String name = s.substring(0, s.lastIndexOf("~")), data = s.substring(s.lastIndexOf("~") + 1);
                         String sampleQty = data.split("\\$")[0];
-                        for (int j = 0; j<jsonArraySamStk.length(); j++) {
+                        for (int j = 0; j < jsonArraySamStk.length(); j++) {
                             JSONObject jsonObject = jsonArraySamStk.getJSONObject(j);
-                            if(name.equalsIgnoreCase(jsonObject.getString("Name"))) {
+                            if (name.equalsIgnoreCase(jsonObject.getString("Name"))) {
                                 int EnterQty = Integer.parseInt(sampleQty);
                                 int BalanceStock = Integer.parseInt(jsonObject.getString("Balance_Stock"));
                                 int FinalStock = EnterQty + BalanceStock;
@@ -283,18 +291,18 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode, String checkInOutNeed) {
         JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
         try {
-            jsonObject.put("sfcode",  SharedPref.getSfCode(context));
-            jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
-            jsonObject.put("Rsf",  SharedPref.getHqCode(context));
+            jsonObject.put("sfcode", SharedPref.getSfCode(context));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+            jsonObject.put("Rsf", SharedPref.getHqCode(context));
             jsonObject.put("amc", aDetSLNo);
             jsonObject.put("CusType", type);
-            jsonObject.put("headerno",  TranslNo);
+            jsonObject.put("headerno", TranslNo);
             jsonObject.put("detno", aDetSLNo);
             jsonObject.put("sample_validation", SharedPref.getSampleValidation(context));
-            jsonObject.put("input_validation",  SharedPref.getInputValidation(context));
+            jsonObject.put("input_validation", SharedPref.getInputValidation(context));
             jsonObject.put("activitynd", SharedPref.getActivityNd(context));
             jsonObject.put("checkinoutneed", checkInOutNeed);
-            if(HomeDashBoard.selectedDate != null) {
+            if (HomeDashBoard.selectedDate != null) {
                 jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
             }
             Log.v("delCall", jsonObject.toString());
@@ -325,7 +333,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         }
                         SharedPref.setTodayCallList(context, jsonArray.toString());
                         commonUtilsMethods.showToastMessage(context, "Call Deleted");
-                        if(jsonArray.length() <= 0) {
+                        if (jsonArray.length() <= 0) {
                             SharedPref.setLastCallDate(context, "");
                         }
 
@@ -362,16 +370,16 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         try {
             jsonObject.put("headerno", transSlno);
             jsonObject.put("detno", aDetSLNo);
-            jsonObject.put("sfcode",  SharedPref.getSfCode(context));
-            jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
-            jsonObject.put("Rsf",  SharedPref.getHqCode(context));
+            jsonObject.put("sfcode", SharedPref.getSfCode(context));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+            jsonObject.put("Rsf", SharedPref.getHqCode(context));
             jsonObject.put("cusname", docName);
             jsonObject.put("cuscode", docCode);
             jsonObject.put("custype", type);
             jsonObject.put("pob", "1");
             jsonObject.put("activitynd", SharedPref.getActivityNd(context));
             jsonObject.put("checkinoutneed", checkInOutNeed);
-            if(HomeDashBoard.selectedDate != null) {
+            if (HomeDashBoard.selectedDate != null) {
                 jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
             }
             Log.v("editCall", jsonObject.toString());
@@ -443,7 +451,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                         intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");
                         intent.putExtra("remainder_save", "0");
-                        intent.putExtra("hq_code", "" );
+                        intent.putExtra("hq_code", "");
 
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(intent);

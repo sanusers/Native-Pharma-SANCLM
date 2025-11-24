@@ -916,7 +916,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 ContinuousLogCollector.stopLogging(getApplicationContext());
 //            startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
             }
-
         });
 
         binding.imgNotification.setOnClickListener(view -> {
@@ -1025,18 +1024,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });
-        binding.backArrow.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.backArrow.setOnClickListener(view -> {
+            if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
 
-                if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
-                    binding.myDrawerLayout.closeDrawer(GravityCompat.START);
-
-                } else {
-                    binding.myDrawerLayout.openDrawer(GravityCompat.START);
-                    binding.backArrow.setBackgroundResource(R.drawable.cross_img);
-                }
+            } else {
+                binding.myDrawerLayout.openDrawer(GravityCompat.START);
+                binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
     }
@@ -1628,9 +1623,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password)});
-        new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
-        remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
+        old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password, 100)});
+        new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password, 100)});
+        remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password, 100)});
         String password = SharedPref.getLoginUserPwd(this).toLowerCase();
 //        System.out.println("loginPassword--->"+password);
 
@@ -1902,14 +1897,21 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
             return true;
         }
-        if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getDynamicOptionCaps(HomeDashBoard.this))) {
-            if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
-                startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
-            } else {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
-            }
-
+        String dynamicOptionCaps = SharedPref.getDynamicOptionCaps(HomeDashBoard.this);
+        String optionCaps;
+        if(dynamicOptionCaps == null || dynamicOptionCaps.isEmpty()){
+            optionCaps = getString(R.string.option);
+        }else{
+            optionCaps = dynamicOptionCaps;
         }
+            if (item.getTitle().toString().equalsIgnoreCase(optionCaps)) {
+                if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                    startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
+                } else {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
+                }
+                return true;
+            }
 
     /*    if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.reports))) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
@@ -2516,8 +2518,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            menu.findItem(R.id.docbusinessentry).setVisible(true);
 //        } else {
         if (SharedPref.getDynamicOptionNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
-            menu.findItem(R.id.dyn_link).setTitle(SharedPref.getDynamicOptionCaps(HomeDashBoard.this));
-            menu.findItem(R.id.dyn_link).setVisible(true);
+            if(!SharedPref.getDynamicOptionCaps(HomeDashBoard.this).equalsIgnoreCase("")) {
+                menu.findItem(R.id.dyn_link).setTitle(SharedPref.getDynamicOptionCaps(HomeDashBoard.this));
+                menu.findItem(R.id.dyn_link).setVisible(true);
+            }else{
+                menu.findItem(R.id.dyn_link).setTitle(R.string.option);
+                menu.findItem(R.id.dyn_link).setVisible(true);
+            }
         } else {
             menu.findItem(R.id.dyn_link).setVisible(false);
         }

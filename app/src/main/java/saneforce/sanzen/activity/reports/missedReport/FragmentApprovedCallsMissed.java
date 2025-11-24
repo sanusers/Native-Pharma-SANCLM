@@ -109,8 +109,10 @@ public class FragmentApprovedCallsMissed extends Fragment {
     private FragmentApprovedCallsMissedBinding binding;
     MissedReportAdapter adapter;
     final List<MissedReportItem> reportList = new ArrayList<>();
+    List<DoctorVisitItem> docList = new ArrayList<>();
     private View blockingOverlay;
     CommonUtilsMethods commonUtilsMethods;
+
 
     @Nullable
     @Override
@@ -129,13 +131,13 @@ public class FragmentApprovedCallsMissed extends Fragment {
         binding.recyclerMissedReports.setVisibility(View.GONE);
         binding.outboxEmtyImage.setVisibility(View.VISIBLE);
 
-        if (SharedPref.getSfType(requireContext()).equals("1")) {
+      /*  if (SharedPref.getSfType(requireContext()).equals("1")) {
             binding.emptyMessage.setText("Please Select Month");
         } else if (SharedPref.getSfType(requireContext()).equals("2")) {
             binding.emptyMessage.setText("Please Select Month & Headquarters");
         } else {
             binding.emptyMessage.setText("");
-        }
+        }*/
 
         currentmonth = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8);
         currentYear = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_26);
@@ -271,7 +273,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                             break;
                         }
                     } catch (JSONException e) { e.printStackTrace(); }
-                    binding.emptyMessage.setVisibility(View.GONE);
+//                    binding.emptyMessage.setVisibility(View.GONE);
                 }
                 hqDialog.dismiss();
             });
@@ -329,7 +331,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
 
                 binding.outboxEmtyImage.setVisibility(View.GONE);
                 binding.recyclerMissedReports.setVisibility(View.VISIBLE);
-                binding.emptyMessage.setVisibility(View.GONE);
+//                binding.emptyMessage.setVisibility(View.GONE);
 
                 if (SharedPref.getSfType(requireContext()).equals("1")) tryFetchReport();
             } catch (ParseException e) { e.printStackTrace(); }
@@ -492,95 +494,148 @@ public class FragmentApprovedCallsMissed extends Fragment {
     }
 
     public void fetchAndLoadData(String date, String sfcode) {
-        RoomDB.databaseWriteExecutor.execute(() -> {
+       /* RoomDB.databaseWriteExecutor.execute(() -> {
             DoctorVisitDao visitDao = db.doctorVisitDao();
             String doctorArrayString = visitDao.getVisitValues(sfcode, date);
-
-            requireActivity().runOnUiThread(() -> {
                 if (doctorArrayString != null && !doctorArrayString.isEmpty()) {
                     Intent intent = new Intent(requireActivity(), DoctorVisitActivity.class);
                     intent.putExtra("sfcode", sfcode);
                     intent.putExtra("date", date);
                     startActivity(intent);
                 } else getData(date, sfcode);
-            });
-        });
+
+        });*/
+        getData(date, sfcode);
     }
 
     public void getData(String date, String sfcode) {
-//        showLoadingOverlay();
-        ProgressDialog progressDialog = new ProgressDialog(requireContext());
-        progressDialog.show();
-        if (!UtilityClass.isNetworkAvailable(requireContext())) {
-//            hideLoadingOverlay();
-            progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
-            return;
-        }
-
-        NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
-            if (!status) {
-//                hideLoadingOverlay();
+        requireActivity().runOnUiThread(() -> {
+            ProgressDialog progressDialog = new ProgressDialog(requireContext());
+            progressDialog.show();
+            if (!UtilityClass.isNetworkAvailable(requireContext())) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                 return;
             }
 
-            try {
-                ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
-                jsonObject.put("sfcode", sfcode);
-                jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
-                jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
-                jsonObject.put("report_date", date);
-                jsonObject.put("tableName", "getmissedrptview");
-                Log.v("getMissedView",jsonObject.toString());
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
+                if (!status) {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
+                    return;
+                }
 
-                Map<String, String> mapString = new HashMap<>();
-                mapString.put("axn", "get/reports");
+                try {
+                    ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
+                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
+                    jsonObject.put("sfcode", sfcode);
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
+                    jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
+                    jsonObject.put("report_date", date);
+                    jsonObject.put("tableName", "getmissedrptview");
+                    Log.v("getMissedView", jsonObject.toString());
 
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
-                call.enqueue(new Callback<JsonElement>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-//                        hideLoadingOverlay();
-                        progressDialog.dismiss();
-                        try {
-                            if (response.isSuccessful() && response.body() != null) {
-                                JsonElement jsonElement = response.body();
-                                if (jsonElement.isJsonArray()) {
-                                    JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                    if (jsonArray.length() > 0) {
-                                        String arrayAsString = jsonArray.toString();
-                                        RoomDB.databaseWriteExecutor.execute(() -> {
-                                            DoctorVisitDao visitDao = db.doctorVisitDao();
-                                            visitDao.saveVisitJson(sfcode, date, arrayAsString);
+                    Map<String, String> mapString = new HashMap<>();
+                    mapString.put("axn", "get/reports");
 
-                                            Intent intent = new Intent(requireActivity(), DoctorVisitActivity.class);
-                                            intent.putExtra("sfcode", sfcode);
-                                            intent.putExtra("date", date);
-                                            startActivity(intent);
-                                        });
+                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                            progressDialog.dismiss();
+                            try {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    JsonElement jsonElement = response.body();
+                                    if (jsonElement.isJsonArray()) {
+                                        JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                        docList.clear();
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject obj = jsonArray.getJSONObject(i);
+                                            DoctorVisitItem model = new DoctorVisitItem();
+                                            model.setName(obj.optString("ListedDr_Name"));
+                                            model.setCode(obj.optString("ListedDrCode"));
+                                            model.setTerritory(obj.optString("territory_Name"));
+                                            model.setSpeciality(obj.optString("Doc_Special_SName"));
+                                            model.setCategory(obj.optString("Doc_Cat_SName"));
+                                            model.setClassName(obj.optString("Doc_ClsSName"));
+                                            model.setQualification(obj.optString("Doc_QuaName"));
+                                            docList.add(model);
+                                        }
+
+                                        if (jsonArray.length() > 0) {
+                                            String arrayAsString = jsonArray.toString();
+                                            RoomDB.databaseWriteExecutor.execute(() -> {
+                                                DoctorVisitDao visitDao = db.doctorVisitDao();
+                                                visitDao.saveVisitJson(sfcode, date, arrayAsString);
+
+                                                if (jsonElement.isJsonArray()) {
+                                                    JSONArray missedArray = null;
+                                                    try {
+                                                        missedArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    String visitedArrayString = getVisitedArray(sfcode, date);
+
+                                                    Intent intent = new Intent(requireActivity(), DoctorVisitActivity.class);
+                                                    intent.putExtra("sfcode", sfcode);
+                                                    intent.putExtra("date", date);
+                                                    intent.putExtra("missed_array", missedArray.toString());
+                                                    intent.putExtra("visit", visitedArrayString);
+                                                    intent.putExtra("source", "api");
+                                                    Log.d("SEND_DEBUG", "MISSED SENT = " + missedArray);
+                                                    Log.d("SEND_DEBUG", "VISITED SENT = " + visitedArrayString);
+
+                                                    startActivity(intent);
+                                                }
+                                            });
+                                        }
                                     }
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) { e.printStackTrace(); }
-                    }
+                        }
 
-                    @Override
-                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-//                        hideLoadingOverlay();
-                        progressDialog.dismiss();
-                        requireActivity().runOnUiThread(() ->
-                                commonUtilsMethods.showToastMessage(requireContext(), "Failed to load data"));
-                    }
-                });
-            } catch (JSONException e) {
-//                hideLoadingOverlay();
-                progressDialog.dismiss();
-                e.printStackTrace();
-            }
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            progressDialog.dismiss();
+                            requireActivity().runOnUiThread(() ->
+                                    commonUtilsMethods.showToastMessage(requireContext(), "Failed to load data"));
+                        }
+                    });
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+
+            });
+            networkStatusTask.execute();
         });
-        networkStatusTask.execute();
     }
+    private String getVisitedArray(String sfCode, String date) {
+        String callSyncJson = masterDataDao.getDataByKey(Constants.CALL_SYNC);
+
+        JSONArray visitedArray = new JSONArray();
+
+        try {
+            if (callSyncJson != null && !callSyncJson.isEmpty()) {
+                JSONArray callArray = new JSONArray(callSyncJson);
+
+                for (int i = 0; i < callArray.length(); i++) {
+                    JSONObject callObj = callArray.getJSONObject(i);
+
+                    if (callObj.optString("Date", "").equals(date) &&
+                            callObj.optString("SfCode", "").equals(sfCode)) {
+
+                        visitedArray.put(callObj);
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return visitedArray.toString();
+    }
+
 }

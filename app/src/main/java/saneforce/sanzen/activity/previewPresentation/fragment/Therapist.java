@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,7 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.activity.previewPresentation.adapter.SlideWiseAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -38,6 +39,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentTherapistBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 public class Therapist extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -45,16 +47,22 @@ public class Therapist extends Fragment {
     public static ArrayList<BrandModelClass> SlideTherapistList = new ArrayList<>();
     private static final ArrayList<String> brandCodeList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
-    private static PreviewAdapter previewAdapter;
+    private static RecyclerView.Adapter previewAdapter;
+    private boolean isSlideWiseEnabled = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentTherapistBinding = FragmentTherapistBinding.inflate(inflater);
         RoomDB roomDB = RoomDB.getDatabase(requireContext());
         MasterDataDao masterDataDao = roomDB.masterDataDao();
         CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+
+        if (SharedPref.getSlideWiseDetailingNeed(requireContext()).equalsIgnoreCase("0")) {
+            fragmentTherapistBinding.tabBrandSlide.setVisibility(View.VISIBLE);
+        } else {
+            fragmentTherapistBinding.tabBrandSlide.setVisibility(View.GONE);
+        }
 
         if (from_where.equalsIgnoreCase("call")) {
             if (CusType.equalsIgnoreCase("1")) {
@@ -75,15 +83,41 @@ public class Therapist extends Fragment {
             previewBinding.fragmentSelectTherapistSide.setVisibility(View.VISIBLE);
         });
 
+        fragmentTherapistBinding.brandWise.setOnClickListener(view1 -> {
+            isSlideWiseEnabled = false;
+            fragmentTherapistBinding.brandWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+            fragmentTherapistBinding.brandWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            fragmentTherapistBinding.slideWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+            fragmentTherapistBinding.slideWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideTherapistList);
+            fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            fragmentTherapistBinding.rvTherapistList.setAdapter(previewAdapter);
+        });
+
+        fragmentTherapistBinding.slideWise.setOnClickListener(view1 -> {
+            isSlideWiseEnabled = true;
+            fragmentTherapistBinding.slideWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+            fragmentTherapistBinding.slideWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            fragmentTherapistBinding.brandWise.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+            fragmentTherapistBinding.brandWise.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new SlideWiseAdapter(requireContext(), SlideTherapistList);
+            fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            fragmentTherapistBinding.rvTherapistList.setAdapter(previewAdapter);
+        });
+
         fragmentTherapistBinding.tvAz.setOnClickListener(v13 -> {
             fragmentTherapistBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
             fragmentTherapistBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             fragmentTherapistBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
             fragmentTherapistBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideTherapistList);
+            Collections.sort(SlideTherapistList, Comparator.comparing(BrandModelClass::getBrandName));
+            if (isSlideWiseEnabled) {
+                previewAdapter = new SlideWiseAdapter(requireContext(), SlideTherapistList);
+            } else {
+                previewAdapter = new PreviewAdapter(requireContext(), SlideTherapistList);
+            }
             fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             fragmentTherapistBinding.rvTherapistList.setAdapter(previewAdapter);
-            Collections.sort(SlideTherapistList, Comparator.comparing(BrandModelClass::getBrandName));
         });
 
         fragmentTherapistBinding.tvZa.setOnClickListener(v12 -> {
@@ -91,10 +125,14 @@ public class Therapist extends Fragment {
             fragmentTherapistBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             fragmentTherapistBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
             fragmentTherapistBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
-            previewAdapter = new PreviewAdapter(requireContext(), SlideTherapistList);
+            Collections.sort(SlideTherapistList, Collections.reverseOrder(new BrandMatrix.SortByName()));
+            if (isSlideWiseEnabled) {
+                previewAdapter = new SlideWiseAdapter(requireContext(), SlideTherapistList);
+            } else {
+                previewAdapter = new PreviewAdapter(requireContext(), SlideTherapistList);
+            }
             fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             fragmentTherapistBinding.rvTherapistList.setAdapter(previewAdapter);
-            Collections.sort(SlideTherapistList, Collections.reverseOrder(new BrandMatrix.SortByName()));
         });
 
         return fragmentTherapistBinding.getRoot();
@@ -250,8 +288,8 @@ public class Therapist extends Fragment {
                 fragmentTherapistBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 fragmentTherapistBinding.rvTherapistList.setVisibility(View.VISIBLE);
                 if(from_where.equalsIgnoreCase("call")) {
-                    fragmentTherapistBinding.tvInfo.setVisibility(View.VISIBLE);
-                    fragmentTherapistBinding.viewDummy2.setVisibility(View.VISIBLE);
+//                    fragmentTherapistBinding.tvInfo.setVisibility(View.VISIBLE);
+//                    fragmentTherapistBinding.viewDummy2.setVisibility(View.VISIBLE);
                 }
                 previewAdapter = new PreviewAdapter(context, SlideTherapistList);
                 fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
@@ -320,8 +358,8 @@ public class Therapist extends Fragment {
                 fragmentTherapistBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 fragmentTherapistBinding.rvTherapistList.setVisibility(View.VISIBLE);
                 if (from_where.equalsIgnoreCase("call")) {
-                    fragmentTherapistBinding.tvInfo.setVisibility(View.VISIBLE);
-                    fragmentTherapistBinding.viewDummy2.setVisibility(View.VISIBLE);
+//                    fragmentTherapistBinding.tvInfo.setVisibility(View.VISIBLE);
+//                    fragmentTherapistBinding.viewDummy2.setVisibility(View.VISIBLE);
                 }
                 previewAdapter = new PreviewAdapter(context, SlideTherapistList);
                 fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));

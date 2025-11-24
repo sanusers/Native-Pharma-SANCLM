@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/_25sdp"
+    android:layout_margin="@dimen/_3sdp"
+    app:cardCornerRadius="@dimen/_3sdp"
+    app:cardElevation="@dimen/_3sdp">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/_15sdp">
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/_13sdp"
+            android:layout_height="@dimen/_13sdp"
             android:src="@drawable/web_icon"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp" />
+            android:layout_margin="10dp" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -27,7 +27,7 @@
             android:layout_toRightOf="@id/iv_icon"
             android:layout_centerVertical="true"
             android:text="Option Name"
-            android:textSize="14sp"
+            android:textSize="@dimen/_7ssp"
             android:textColor="@color/black"
             android:fontFamily="@font/satoshi_bold"
             android:layout_marginEnd="20dp"
@@ -35,9 +35,10 @@
 
         <ImageView
             android:id="@+id/rightarrow_camp"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_10sdp"
             android:background="@drawable/arrow_right_"
+            android:backgroundTint="@color/light_purple"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"/>

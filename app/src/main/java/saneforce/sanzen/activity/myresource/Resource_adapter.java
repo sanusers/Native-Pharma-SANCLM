@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen;
+//import saneforce.sanzen.activity.forms.birthdayAnniversary.birthdayAnniversary_viewscreen;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.forms.weekoff.WeekOffViewScreen;
 import saneforce.sanzen.activity.myresource.Categoryview.Cate_viewscreen;
@@ -934,12 +934,12 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                             MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                             break;
-                    case("19"):
+                   /* case("19"):
                         Intent birthdayWishes = new Intent(context, birthdayAnniversary_viewscreen.class);
                         context.startActivity(birthdayWishes);
                         MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                         MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        break;
+                        break;*/
                         default:
                             throw new IllegalStateException("Unexpected value: " + app_adapt.getListed_data());
                     }

@@ -173,8 +173,6 @@ public class birthdaywishes_fragment extends Fragment {
 //                constraintNoData.setVisibility(View.GONE);
 //            }
 //
-//
-//
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            birthList.setVisibility(View.GONE);

@@ -28,7 +28,6 @@ public class AWSBucketsSign {
     CommonUtilsMethods commonUtilsMethods;
 
 
-
     public AWSBucketsSign(Context context, String Filename, File File, String filestored_name) {  // for upload
         this.context = context;
         this.filename = Filename;
@@ -36,7 +35,7 @@ public class AWSBucketsSign {
         this.filestored_name = filestored_name;
         util = new Util();
         transferUtility = util.getTransferUtility(context);
-        commonUtilsMethods =  new CommonUtilsMethods(context);
+        commonUtilsMethods = new CommonUtilsMethods(context);
         new AWSbucketsclassSign().execute();
     }
 
@@ -59,7 +58,7 @@ public class AWSBucketsSign {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                TransferObserver downloadObserver = transferUtility.download("san-one","uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ filestored_name+filename, file);
+                TransferObserver downloadObserver = transferUtility.download("san-one", "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + filestored_name + filename, file);
                 downloadObserver.setTransferListener(new TransferListener() {
 
                     @Override
@@ -69,7 +68,7 @@ public class AWSBucketsSign {
                             System.out.println("CHk_Data-->>" + bmp);
                             S3DownloadFiles.fileDataAdd(pos, bmp);
                         } else if (TransferState.FAILED == state) {
-                            Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
+                            Log.d("S3 Transfer", "onStateChanged: " + "S3 Transfer state FAILED");
                         }
                     }
 
@@ -79,6 +78,11 @@ public class AWSBucketsSign {
 
                     @Override
                     public void onError(int id, Exception ex) {
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+                            commonUtilsMethods.showToastMessage(context, "Network timeout. Please try again.");
+                        }
                         ex.printStackTrace();
                     }
                 });
@@ -95,7 +99,7 @@ public class AWSBucketsSign {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                TransferObserver image_upload = transferUtility.upload("san-one","uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ filestored_name+filename, file);
+                TransferObserver image_upload = transferUtility.upload("san-one", "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + filestored_name + filename, file);
                 if (image_upload == null) {
                     Log.e("AWSUpload", "TransferObserver is null - upload() may have failed silently.");
                     return false;
@@ -103,14 +107,18 @@ public class AWSBucketsSign {
                 image_upload.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
-//                        if (TransferState.COMPLETED == state) {
-//                            commonUtilsMethods.showToastMessage(context,"Upload Successful!");
-//
-//
-//
-//                        } else if (TransferState.FAILED == state) {
-//                            commonUtilsMethods.showToastMessage(context,"Upload Failed");
-//                        }
+                        if (TransferState.COMPLETED == state) {
+                            Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath());
+                            System.out.println("CHk_Data-->>" + bmp);
+                            if (S3DownloadFiles != null) {
+                                S3DownloadFiles.fileDataAdd(pos, bmp);
+                            }
+                        } else if (TransferState.FAILED == state) {
+                            if (S3DownloadFiles != null) {
+                                S3DownloadFiles.onFailure(pos);
+                            }
+                            Log.d("S3 Transfer", "onStateChanged: " + "S3 Transfer state FAILED");
+                        }
                     }
 
                     @Override
@@ -119,7 +127,12 @@ public class AWSBucketsSign {
 
                     @Override
                     public void onError(int id, Exception ex) {
-//                        commonUtilsMethods.showToastMessage(context,"Error");
+                        if (ex instanceof com.amazonaws.AmazonClientException &&
+                                ex.getMessage() != null &&
+                                ex.getMessage().contains("SocketTimeoutException")) {
+//                            Toast.makeText(context, "Network timeout. Please try again.", Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.showToastMessage(context, "Network timeout. Please try again.");
+                        }
                         ex.printStackTrace();
                     }
                 });

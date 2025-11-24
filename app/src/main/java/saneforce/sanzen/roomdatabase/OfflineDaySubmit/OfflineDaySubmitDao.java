@@ -25,6 +25,9 @@ public interface OfflineDaySubmitDao {
     void deleteAllData();
 
     @Query("DELETE FROM `OFFLINE_DAY_SUBMIT_TABLE` WHERE `DATE` = :date")
+    void deleteAllData(String date);
+
+    @Query("DELETE FROM `OFFLINE_DAY_SUBMIT_TABLE` WHERE `DATE` = :date")
     void delete(String date);
 
     @Query("SELECT EXISTS(SELECT 1 FROM `OFFLINE_DAY_SUBMIT_TABLE`)")
