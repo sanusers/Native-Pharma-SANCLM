@@ -18,7 +18,6 @@ import saneforce.sanzen.databinding.ActivityFakeGpsBinding;
 import saneforce.sanzen.databinding.ActivityFaqBinding;
 
 public class FAQ extends ApprovalsActivity {
-
     ActivityFaqBinding binding;
 
     @Override
@@ -39,11 +38,9 @@ public class FAQ extends ApprovalsActivity {
         settings.setDisplayZoomControls(false);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
-// Allow redirects and handle SSL errors gracefully
         binding.privacyWebview.setWebViewClient(new WebViewClient() {
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                // ⚠️ TEMP: Ignore SSL errors for testing (do NOT use in production)
                 handler.proceed();
                 // handler.cancel();  <-- use this in production if you want to stop loading on SSL errors
             }
