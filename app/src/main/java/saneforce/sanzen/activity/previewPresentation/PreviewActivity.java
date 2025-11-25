@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.previewPresentation;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
-import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.binding;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.headingData;
 import static saneforce.sanzen.activity.call.fragments.detailing.DetailedFragment.callDetailingLists;
 
@@ -268,25 +267,51 @@ public class PreviewActivity extends AppCompatActivity {
             }
         });
 
-        previewBinding.btnFinishDet.setOnClickListener(view -> {
-            previewBinding.rlThankYou.setVisibility(View.VISIBLE);
-            previewBinding.docName.setText("Thank\nYou\n" + CallActivityCustDetails.get(0).getName());
-            previewBinding.btnFinishDet.setVisibility(View.GONE);
-//            @Override
-//            public void onSafeClick(View view) {
-//            }
-        });
+        previewBinding.btnFinishDet.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
+                String totalDuration = "";
+                for (int j = 0; j < arrayStore.size(); j++) {
+                    if (j == 0) {
+                        gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j);
+                        finalPrdNam = arrayStore.get(j).getBrdName();
+                    } else if (finalPrdNam.equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                String duration = TimeUtils.timeDurationHMS(jsonArray.optJSONObject(i).optString("sT"), jsonArray.optJSONObject(i).optString("eT"));
+                                totalDuration = TimeUtils.addTime(totalDuration, duration);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        String time = gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j) + " " + gettingProductTiming(arrayStore.get(j - 1).getBrdName());
+                        if (time.contains("00:00:00")) {
+                            time = time.replace("00:00:00", time.substring(0, 8));
+                        }
+                        Log.v("printing_all_time", time);
+                        try {
+                            JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                String duration = TimeUtils.timeDurationHMS(jsonArray.optJSONObject(i).optString("sT"), jsonArray.optJSONObject(i).optString("eT"));
+                                totalDuration = TimeUtils.addTime(totalDuration, duration);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (!time.isEmpty()) {
+                            callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
+                        }
+                        finalPrdNam = arrayStore.get(j).getBrdName();
+                        totalDuration = "";
+                    }
+                }
 
-        previewBinding.proceed.setOnClickListener( view -> {
-            Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
-            String totalDuration = "";
-            for (int j = 0; j < arrayStore.size(); j++) {
-                if (j == 0) {
-                    gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j);
-                    finalPrdNam = arrayStore.get(j).getBrdName();
-                } else if (finalPrdNam.equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
+                if (!arrayStore.isEmpty()) {
                     try {
-                        JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
+                        JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size() - 1).getRemTime());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             String duration = TimeUtils.timeDurationHMS(jsonArray.optJSONObject(i).optString("sT"), jsonArray.optJSONObject(i).optString("eT"));
                             totalDuration = TimeUtils.addTime(totalDuration, duration);
@@ -294,53 +319,21 @@ public class PreviewActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    String time = gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j) + " " + gettingProductTiming(arrayStore.get(j - 1).getBrdName());
-                    if (time.contains("00:00:00")) {
-                        time = time.replace("00:00:00", time.substring(0, 8));
+                    String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
+                    if (time != null && !time.isEmpty() && !time.equalsIgnoreCase("null")) {
+                        callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
                     }
-                    Log.v("printing_all_time", time);
-                    try {
-                        JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            String duration = TimeUtils.timeDurationHMS(jsonArray.optJSONObject(i).optString("sT"), jsonArray.optJSONObject(i).optString("eT"));
-                            totalDuration = TimeUtils.addTime(totalDuration, duration);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (!time.isEmpty()) {
-                        callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
-                    }
-                    finalPrdNam = arrayStore.get(j).getBrdName();
-                    totalDuration = "";
                 }
-            }
-
-            if (!arrayStore.isEmpty()) {
-                try {
-                    JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size() - 1).getRemTime());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        String duration = TimeUtils.timeDurationHMS(jsonArray.optJSONObject(i).optString("sT"), jsonArray.optJSONObject(i).optString("eT"));
-                        totalDuration = TimeUtils.addTime(totalDuration, duration);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
-                if (time != null && !time.isEmpty() && !time.equalsIgnoreCase("null")) {
-                    callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
-                }
-            }
-            Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
-            intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
-            intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
-            intent1.putExtra("remainder_save", "0");
-            intent1.putExtra("hq_code", "");
-            intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
+                Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
+                intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
+                intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
+                intent1.putExtra("remainder_save", "0");
+                intent1.putExtra("hq_code", "");
+                intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
 //                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
-            startActivity(intent1);
+                callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+                startActivity(intent1);
+            }
         });
     }
 
