@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.leave;
 
+import org.json.JSONObject;
+
 public class LeaveStatusModelClass {
     private final String leaveTypeCode, eligible, taken, available, leaveCode;
 
@@ -30,4 +32,19 @@ public class LeaveStatusModelClass {
     public String getLeaveCode() {
         return leaveCode;
     }
+
+
+    public JSONObject toJson() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("Leave_Type_Code", leaveTypeCode);
+            obj.put("Elig", eligible);
+            obj.put("Taken", taken);
+            obj.put("Avail", available);
+            obj.put("Leave_code", leaveCode);
+        } catch (Exception ignored) {}
+
+        return obj;
+    }
+
 }

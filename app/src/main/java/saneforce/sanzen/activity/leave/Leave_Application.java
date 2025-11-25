@@ -147,7 +147,7 @@ public class Leave_Application extends AppCompatActivity {
         if (isLeaveEntitlementRequested) {
             leaveViewModel.updateLeaveStatusMasterSync();
         }
-        setVisibility();
+        //setVisibility();
         setMaxLength();
         onClickListener();
 
@@ -868,27 +868,27 @@ public class Leave_Application extends AppCompatActivity {
 
             Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
             L_count = String.valueOf(listdate.size());
-            if (isLeaveEntitlementRequested) {
-                totalval = Integer.parseInt(avilable);
-                val = Integer.parseInt(L_count);
-                Log.d("rem", totalval + "---" + val);
-                int bal = totalval - val;
-
-                if (bal < 0) {
-                    commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
-                    leavebinding.submitLeave.setEnabled(false);
-                } else {
-//                    if(bal == 0) {
+//            if (isLeaveEntitlementRequested) {
+//                totalval = Integer.parseInt(avilable);
+//                val = Integer.parseInt(L_count);
+//                Log.d("rem", totalval + "---" + val);
+//                int bal = totalval - val;
 //
-//                }else {
-//                    if(leavety.equals("LOP")) {
-//                        leavebinding.balanceDays.setText("");
-//                    }else {
-                    String balval = String.valueOf(bal);
-                    leavebinding.balanceDays.setText(balval + " " + "days remaining");
-//                    }
-                }
-            }
+//                if (bal < 0) {
+//                    commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
+//                    leavebinding.submitLeave.setEnabled(false);
+//                } else {
+////                    if(bal == 0) {
+////
+////                }else {
+////                    if(leavety.equals("LOP")) {
+////                        leavebinding.balanceDays.setText("");
+////                    }else {
+//                    String balval = String.valueOf(bal);
+//                    leavebinding.balanceDays.setText(balval + " " + "days remaining");
+////                    }
+//                }
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1171,13 +1171,35 @@ public class Leave_Application extends AppCompatActivity {
                                         jsonArray.put(jsonObject);
                                     }
                                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
+
+                                    JSONArray leaveArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
+
+                                    for (int i = 0; i < leaveArray.length(); i++) {
+                                        JSONObject obj = leaveArray.getJSONObject(i);
+
+                                        if (obj.optString("Leave_Type_Code").equalsIgnoreCase(Lshortname)) {
+
+                                            int taken = obj.optInt("Taken", 0);
+                                            int avail = obj.optInt("Avail", 0);
+                                            int days = Integer.parseInt(L_count);
+
+                                            obj.put("Taken", taken + days);
+                                            obj.put("Avail", Math.max(avail - days, 0));
+                                        }
+                                    }
+
+                                    masterDataDao.saveMasterSyncData(
+                                            new MasterDataTable(Constants.LEAVE_STATUS, leaveArray.toString(), 2)
+                                    );
+
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
-                                if (isLeaveEntitlementRequested) {
-                                    leaveViewModel.updateLeaveStatusMasterSync();
-                                }
+//                                if (isLeaveEntitlementRequested) {
+//                                    leaveViewModel.updateLeaveStatusMasterSync();
+//                                }
                                 finish();
 
                             }
@@ -1220,13 +1242,13 @@ public class Leave_Application extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null;
     }
 
-    private void setVisibility() {
-        if (isLeaveEntitlementRequested) {
-            leavebinding.chartLayout.setVisibility(View.VISIBLE);
-        } else {
-            leavebinding.chartLayout.setVisibility(View.GONE);
-        }
-    }
+//    private void setVisibility() {
+//        if (isLeaveEntitlementRequested) {
+//            leavebinding.chartLayout.setVisibility(View.VISIBLE);
+//        } else {
+//            leavebinding.chartLayout.setVisibility(View.GONE);
+//        }
+//    }
 
     @Override
     protected void onResume() {
