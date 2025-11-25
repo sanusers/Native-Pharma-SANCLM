@@ -9,11 +9,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -32,6 +34,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -49,6 +52,7 @@ import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
+import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.fragments.signature.SignatureCanvas;
 import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
@@ -128,7 +132,12 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
                 final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
                 popup.inflate(R.menu.sign_call_menu);
-
+                MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
+                if (signModelClasses.get(position).getSync_status().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || signModelClasses.get(position).getSync_status().equalsIgnoreCase(Constants.CALL_FAILED)) {
+                    deleteMenu.setVisible(false);
+                } else {
+                    deleteMenu.setVisible(true);
+                }
                 popup.setOnMenuItemClickListener(menuItem -> {
                     if (menuItem.getItemId() == R.id.menuSync) {
 //                        if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
@@ -146,12 +155,82 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                         } else {
                             commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                         }
+                    } else if (menuItem.getItemId() == R.id.menuDelete) {
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                        TextView btn_no = dialog.findViewById(R.id.btn_no);
+                        TextView titte = dialog.findViewById(R.id.ed_alert_msg);
+                        titte.setText(R.string.are_you_sure_to_delete);
+
+                        btn_yes.setOnClickListener(view1 -> {
+                            dialog.dismiss();
+                            try {
+                                JSONObject jsonObject;
+                                jsonObject = new JSONObject(callOfflineDataDao.getJsonCallList(signModelClasses.get(position).getDates(), signModelClasses.get(position).getCusCode()));
+                                jsonObject.remove("sign_path");
+                                jsonObject.remove("sign_Img");
+
+                                for (int i = 0; i < listDates.size(); i++) {
+                                    if (listDates.get(i).getGroupName().equalsIgnoreCase(signModelClasses.get(position).getDates())) {
+                                        for (int j = 0; j < listDates.get(i).getChildItems().get(2).getOutBoxCallLists().size(); j++) {
+                                            OutBoxCallList outBoxCallList = listDates.get(i).getChildItems().get(2).getOutBoxCallLists().get(j);
+                                            if (outBoxCallList.getCusCode().equalsIgnoreCase(signModelClasses.get(position).getCusCode())) {
+                                                jsonObject = new JSONObject(outBoxCallList.getJsonData());
+                                                jsonObject.remove("sign_path");
+                                                jsonObject.remove("sign_Img");
+                                                outBoxCallList.setJsonData(String.valueOf(jsonObject));
+                                            }
+                                        }
+                                    }
+                                }
+
+                                callOfflineDataDao.saveOfflineUpdateJson(signModelClasses.get(position).getDates(), signModelClasses.get(position).getCusCode(), jsonObject.toString());
+                                outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
+                                commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
+                                outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+                                outBoxHeaderAdapter.notifyDataSetChanged();
+                            } catch (Exception ignored) {
+                                ignored.printStackTrace();
+                            }
+                            File fileDelete = new File(signModelClasses.get(position).getFilePath());
+                            if (fileDelete.exists()) {
+                                if (fileDelete.delete()) {
+//                                System.out.println("file Deleted :" + signModelClasses.get(position).getFilePath());
+                                } else {
+//                                System.out.println("file not Deleted :" + signModelClasses.get(position).getFilePath());
+                                }
+                            }
+                            callOfflineSignDataDao.deleteSignDataByImageName(signModelClasses.get(position).getImg_name());
+                            removeAt(position);
+                        });
+
+                        btn_no.setOnClickListener(new SafeClickListener() {
+                            @Override
+                            public void onSafeClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
                     }
                     return true;
                 });
                 popup.show();
             }
         });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void removeAt(int position) {
+        signModelClasses.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, signModelClasses.size());
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
+        commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
+        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+        outBoxHeaderAdapter.notifyDataSetChanged();
     }
 
     private void CallSignImageApi(String id, SignModelClass signModelClass, String filePath, String jsonValues){

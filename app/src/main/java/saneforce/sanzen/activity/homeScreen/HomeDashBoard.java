@@ -702,7 +702,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this)) ||
                         !today.equals(SharedPref.getAnniversaryShownDate(HomeDashBoard.this))) {
 
-                    new Handler().postDelayed(this::showCombinedWishesPopup, 1000);
+//                    new Handler().postDelayed(this::showCombinedWishesPopup, 1000);
                 }
 //                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 //                if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this))) {

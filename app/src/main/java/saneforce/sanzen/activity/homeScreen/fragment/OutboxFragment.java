@@ -267,18 +267,13 @@ public class OutboxFragment extends Fragment {
                     SharedPref.setSelectedDateCal(requireContext(), "");
                 }
             }
-            if (!outBoxCallLists.isEmpty()) {
+            if (!dates.isEmpty()) {
                 JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    for (int j = 0; j < outBoxCallLists.size(); j++) {
-                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(j).getDates()) && (jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(j).getCusCode()) || jsonObject.getString("CustCode").isEmpty())) {
-                            jsonArray.remove(i);
-                            i--;
-                        } else if (dates.contains(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").isEmpty()) {
-                            jsonArray.remove(i);
-                            i--;
-                        }
+                    if (dates.contains(jsonObject.getString("Dcr_dt"))) {
+                        jsonArray.remove(i);
+                        i--;
                     }
                 }
                 MasterDataTable data = new MasterDataTable();
@@ -482,7 +477,7 @@ public class OutboxFragment extends Fragment {
         callApiForChild(child, new ApiCallback() {
             @Override
             public void onSuccess() {
-                if (apiIndex == 1 && child.getWorkPlanModelClass() != null  && child.getWorkPlanModelClass().getWtStatus() != null && !child.getWorkPlanModelClass().getWtStatus().isEmpty()) {
+                if (apiIndex == 1 && child.getWorkPlanModelClass() != null && child.getWorkPlanModelClass().getWtStatus() != null && !child.getWorkPlanModelClass().getWtStatus().isEmpty()) {
                     processApisForDate(dateGroup, dateGroup.getChildItems().size(), callback);
                 } else {
                     processApisForDate(dateGroup, apiIndex + 1, callback);
@@ -682,7 +677,7 @@ public class OutboxFragment extends Fragment {
                 //notifyedmethod();
                 t.printStackTrace();
                 if (attempt != 5) {
-                    workPlanSubmitAPI(child,attempt + 1, callback);
+                    workPlanSubmitAPI(child, attempt + 1, callback);
                 } else {
                     callback.onFailure();
                 }
@@ -867,7 +862,7 @@ public class OutboxFragment extends Fragment {
                         callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
                         //notifyedmethod();
                         if (attempt != 5) {
-                            CallSendAPIImageS3(child, index,attempt + 1, ecModelClass, callback);
+                            CallSendAPIImageS3(child, index, attempt + 1, ecModelClass, callback);
                         } else {
                             callback.onFailure();
                         }
@@ -913,7 +908,7 @@ public class OutboxFragment extends Fragment {
                             }
                             child.getEcModelClasses().remove(ecModelClass);
                             //notifyedmethod();
-                            eventCaptureSubmitAPI(child, index,0, callback);
+                            eventCaptureSubmitAPI(child, index, 0, callback);
                         } else {
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
