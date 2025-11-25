@@ -135,6 +135,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     String changeStatus = "";
 
+    String multiHqOneBuild = "0", getAddSessionCountLimitMgr = "5";
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
@@ -585,80 +586,158 @@ public class TourPlanActivity extends AppCompatActivity {
 
                     OneBuildModelClass oneBuildModelClass = inputDataArrayOneBuild;
                     ArrayList<OneBuildModelClass.SessionList> sessionLists = oneBuildModelClass.getSessionList();
-                    if (sessionLists.size() < Integer.parseInt(addSessionCountLimit)) {
-                        for (int i = 0; i < sessionLists.size(); i++) {
-                            OneBuildModelClass.SessionList modelClass1 = sessionLists.get(i);
-                            if (modelClass1.getWorkType().getName().isEmpty()) {
-                                isEmpty = true;
-                                position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
-                                break;
-                            } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                                if (modelClass1.getHeadquarters().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+                    if(multiHqOneBuild.equalsIgnoreCase("0") && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") || multiHqOneBuild.equalsIgnoreCase("1")) {
+                        if (sessionLists.size() < Integer.parseInt(addSessionCountLimit)) {
+                            for (int i = 0; i < sessionLists.size(); i++) {
+                                OneBuildModelClass.SessionList modelClass1 = sessionLists.get(i);
+                                if (modelClass1.getWorkType().getName().isEmpty()) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
                                     break;
-                                } else if (modelClass1.getTerritories().size() == 0) {
-                                    isEmpty = true;
-                                    position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
-                                    break;
-                                } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                    if (FW_meetup_mandatory.equals("0")) {
-                                        if (drNeed.equals("0")) {
-                                            if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                                    if (modelClass1.getHeadquarters().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+                                        isEmpty = true;
+                                        position = i;
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+                                        break;
+                                    } else if (modelClass1.getTerritories().size() == 0) {
+                                        isEmpty = true;
+                                        position = i;
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+                                        break;
+                                    } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                                        if (FW_meetup_mandatory.equals("0")) {
+                                            if (drNeed.equals("0")) {
+                                                if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                                    isEmpty = true;
+                                                    position = i;
+                                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                    break;
+                                                }
+                                            }
+
+                                            if (modelClass1.getDoctors().size() == 0 && modelClass1.getChemists().size() == 0 && modelClass1.getStockists().size() == 0 && modelClass1.getUnlistedDoctors().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospitals().size() == 0) {
                                                 isEmpty = true;
                                                 position = i;
-                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + " " + (i + 1));
                                                 break;
                                             }
                                         }
-
+                                    }
+                                } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                                    if (FW_meetup_mandatory.equals("0")) {
+                                        if (drNeed.equals("0")) {
+                                            if (modelClass1.getDoctors().size() == 0) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
+                                                break;
+                                            } else if (modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                break;
+                                            }
+                                        }
                                         if (modelClass1.getDoctors().size() == 0 && modelClass1.getChemists().size() == 0 && modelClass1.getStockists().size() == 0 && modelClass1.getUnlistedDoctors().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospitals().size() == 0) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + " " + (i + 1));
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                             break;
                                         }
-                                    }
-                                }
-                            } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                if (FW_meetup_mandatory.equals("0")) {
-                                    if (drNeed.equals("0")) {
-                                        if (modelClass1.getDoctors().size() == 0) {
-                                            isEmpty = true;
-                                            position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
-                                            break;
-                                        } else if (modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) {
-                                            isEmpty = true;
-                                            position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + " " + maxDrCount);
-                                            break;
-                                        }
-                                    }
-                                    if (modelClass1.getDoctors().size() == 0 && modelClass1.getChemists().size() == 0 && modelClass1.getStockists().size() == 0 && modelClass1.getUnlistedDoctors().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospitals().size() == 0) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
-                                        break;
                                     }
                                 }
                             }
-                        }
 
 
-                        if (!isEmpty) {
-                            sessionLists.add(prepareSessionListForAdapterOneBuild());
-                            populateSessionEditAdapterOneBuild(oneBuildModelClass);
-                            scrollToPosition(oneBuildModelClass.getSessionList().size() - 1, false);
+                            if (!isEmpty) {
+                                sessionLists.add(prepareSessionListForAdapterOneBuild());
+                                populateSessionEditAdapterOneBuild(oneBuildModelClass);
+                                scrollToPosition(oneBuildModelClass.getSessionList().size() - 1, false);
+                            } else {
+                                scrollToPosition(position, true);
+                            }
                         } else {
-                            scrollToPosition(position, true);
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.reached_session_limit));
                         }
-                    } else {
+                    } else if (multiHqOneBuild.equalsIgnoreCase("0") && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                        if (sessionLists.size() < Integer.parseInt(getAddSessionCountLimitMgr)) {
+                            for (int i = 0; i < sessionLists.size(); i++) {
+                                OneBuildModelClass.SessionList modelClass1 = sessionLists.get(i);
+                                if (modelClass1.getWorkType().getName().isEmpty()) {
+                                    isEmpty = true;
+                                    position = i;
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
+                                    break;
+                                } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                                    if (modelClass1.getHeadquarters().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+                                        isEmpty = true;
+                                        position = i;
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+                                        break;
+                                    } else if (modelClass1.getTerritories().size() == 0) {
+                                        isEmpty = true;
+                                        position = i;
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+                                        break;
+                                    } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                                        if (FW_meetup_mandatory.equals("0")) {
+                                            if (drNeed.equals("0")) {
+                                                if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                                    isEmpty = true;
+                                                    position = i;
+                                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                    break;
+                                                }
+                                            }
+
+                                            if (modelClass1.getDoctors().size() == 0 && modelClass1.getChemists().size() == 0 && modelClass1.getStockists().size() == 0 && modelClass1.getUnlistedDoctors().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospitals().size() == 0) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + " " + (i + 1));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                                    if (FW_meetup_mandatory.equals("0")) {
+                                        if (drNeed.equals("0")) {
+                                            if (modelClass1.getDoctors().size() == 0) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
+                                                break;
+                                            } else if (modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                break;
+                                            }
+                                        }
+                                        if (modelClass1.getDoctors().size() == 0 && modelClass1.getChemists().size() == 0 && modelClass1.getStockists().size() == 0 && modelClass1.getUnlistedDoctors().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospitals().size() == 0) {
+                                            isEmpty = true;
+                                            position = i;
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            if (!isEmpty) {
+                                sessionLists.add(prepareSessionListForAdapterOneBuild());
+                                populateSessionEditAdapterOneBuild(oneBuildModelClass);
+                                scrollToPosition(oneBuildModelClass.getSessionList().size() - 1, false);
+                            } else {
+                                scrollToPosition(position, true);
+                            }
+                        }
+                    }else {
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.reached_session_limit));
                     }
+
                 }
             });
         } else {
@@ -3498,13 +3577,19 @@ public class TourPlanActivity extends AppCompatActivity {
                                     String dString = outer.getString("d");
                                     JSONObject inner = new JSONObject(dString);
                                     boolean status = inner.getBoolean("Status");
-                                    status = true;
-                                    /*int data = inner.getInt("Data");*/
                                     String message = inner.optString("Message", "");
+                                    if(message.isEmpty()){
+                                        message = "Something went wrong.Please Try Again";
+                                    }
+
+                                    if (!status) {
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, message);
+                                        SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
+                                        binding.progressBar.setVisibility(View.GONE);
+                                        return;
+                                    }
                                     if (response.body() != null && !response.body().isJsonNull() && status) {
                                         try {
-                                            //JsonObject jsonObject = new JsonObject(response.body().toString());
-                                            JSONObject jsonObject = new JSONObject(response.body().toString());
                                             SharedPref.setTpSyncStaus(TourPlanActivity.this, true);
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.draft_save));
                                             binding.progressBar.setVisibility(View.GONE);
@@ -3560,7 +3645,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 e.printStackTrace();
                                             }
 
-                                        } catch (JSONException e) {
+                                        } catch (Exception e) {
                                             e.printStackTrace();
                                         }
                                         get1MonthRemoteTPDataOneBuild(localDate);
