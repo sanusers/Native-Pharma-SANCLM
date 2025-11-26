@@ -146,6 +146,8 @@ public class Leave_Application extends AppCompatActivity {
         leaveViewModel = new LeaveViewModel(this);
         if (isLeaveEntitlementRequested) {
             leaveViewModel.updateLeaveStatusMasterSync();
+        }else{
+            leaveViewModel.syncLeaveStatus();
         }
         //setVisibility();
         setMaxLength();
@@ -1197,6 +1199,14 @@ public class Leave_Application extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                                 commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
+
+//                                String entitlement = SharedPref.getLeaveEntitlementNeed(Leave_Application.this);
+//
+//                                if (entitlement.equals("0")) {
+//                                    leaveViewModel.updateLeaveStatusMasterSync();   // OLD API
+//                                } else {
+//                                    leaveViewModel.syncLeaveStatus(Leave_Application.this);  // EXTERNAL API
+//                                }
 //                                if (isLeaveEntitlementRequested) {
 //                                    leaveViewModel.updateLeaveStatusMasterSync();
 //                                }
@@ -1339,7 +1349,8 @@ public class Leave_Application extends AppCompatActivity {
             Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
             l_details.notifyDataSetChanged();
             leavebinding.progressBar.setVisibility(View.VISIBLE);
-            leaveViewModel.updateLeaveStatusMasterSync();
+           leaveViewModel.updateLeaveStatusMasterSync();
+//            leaveViewModel.syncLeaveStatus(Leave_Application.this);
 //            Runnable runnable = new Runnable() {
 //                @Override
 //                public void run() {
