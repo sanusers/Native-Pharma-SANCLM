@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -125,7 +126,7 @@ public class LeaveViewModel extends ViewModel {
             requestObject.put("division_code", SharedPref.getDivisionCode(context));
             requestObject.put("Rsf", SharedPref.getHqCode(context));
             requestObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-
+            Log.e("LeaveAPI_Request", requestObject.toString());
         } catch (Exception e) {
             e.printStackTrace();
             leavebinding.progressBar.setVisibility(View.GONE);
@@ -149,6 +150,7 @@ public class LeaveViewModel extends ViewModel {
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 try {
                     if (response.isSuccessful() && response.body() != null) {
+                        Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
 
                         JsonElement jsonElement = response.body();
                         JSONArray jsonArray = new JSONArray(jsonElement.toString());
