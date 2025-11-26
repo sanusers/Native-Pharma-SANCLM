@@ -1302,6 +1302,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
             ArrayList<String> days = new ArrayList<>(daysInMonth(date));
             String monthYear = monthYearFromDate(date);
+
+            Locale[] locales = {Locale.ENGLISH, Locale.FRENCH, Locale.GERMAN};
             String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
             String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
 

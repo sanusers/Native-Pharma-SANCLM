@@ -42,7 +42,7 @@
         android:fontFamily="@font/satoshi_bold"
         android:gravity="center"
         android:padding="@dimen/_2sdp"
-        android:text="Category"
+        android:text="@string/catogy"
         android:textColor="@color/white"
         android:textSize="@dimen/_8sdp"
         android:textStyle="bold"

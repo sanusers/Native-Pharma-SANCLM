@@ -662,4 +662,13 @@
     <string name="con_internet"> Connected to Internet </string>
     <string name="option"> Options </string>
 
+    <string name="leavestatus"> LeaveStatus </string>
+    <string name="call_summary">Calls Summary</string>
+    <string name="stock_balance">Stock Balance</string>
+    <string name="profile">Profile</string>
+    <string name="birthday"> Birthday </string>
+    <string name="anniversary"> Anniversary </string>
+    <string name="select_headquaters">Select Headquarters</string>
+
+
 </resources>

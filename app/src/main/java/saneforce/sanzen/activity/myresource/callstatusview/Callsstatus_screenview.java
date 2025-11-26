@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.forms.weekoff.FormsViewpager;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityCallsstatusScreenviewBinding;
@@ -35,7 +36,7 @@ public class Callsstatus_screenview extends AppCompatActivity {
                 finish();
             }
         });
-
+        Callsstatusscreenview.tagSelection.setText(R.string.call_summary);
         LocalDate currentDate = LocalDate.now();
         String current_MonthName = currentDate.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());
 //        System.out.println("Current month: " + current_MonthName);

@@ -440,43 +440,43 @@ public class MyResource_Activity extends AppCompatActivity {
 
             }
             if (isInputRequested) {
-                listed_data.add(new Resourcemodel_class("Input", String.valueOf(inputCount), "7"));            //7
+                listed_data.add(new Resourcemodel_class(getString(R.string.input), String.valueOf(inputCount), "7"));            //7
             }
             if (isProductRequested) {
-                listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));     //8
+                listed_data.add(new Resourcemodel_class(getString(R.string.product), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));     //8
             }
             listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));          //9
-            listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));     //10
+            listed_data.add(new Resourcemodel_class(getString(R.string.holiday)+ "/" +getString(R.string.weekly_off) , masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));     //10
             if (SharedPref.getDrNeed(this).equalsIgnoreCase("0") && SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
-                listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));     //11
+                listed_data.add(new Resourcemodel_class(getString(R.string.catogy), String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));     //11
             } else if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
-                listed_data.add(new Resourcemodel_class("Category", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length()), "11"));
+                listed_data.add(new Resourcemodel_class(getString(R.string.catogy), String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length()), "11"));
             } else if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
-                listed_data.add(new Resourcemodel_class("Category", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
+                listed_data.add(new Resourcemodel_class(getString(R.string.catogy), String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
             }
-            listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "12"));     //12
+            listed_data.add(new Resourcemodel_class(getString(R.string.worktype), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "12"));     //12
             if (isLeaveEntitlementRequested) {
-                listed_data.add(new Resourcemodel_class("LeaveStatus", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()), "13"));
+                listed_data.add(new Resourcemodel_class(getString(R.string.leavestatus), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()), "13"));
             }
             if (SharedPref.getDrNeed(this).equals("0") && SharedPref.getVstNd(this).equalsIgnoreCase("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
-                listed_data.add(new Resourcemodel_class(dcrCaption + " " + "Visit", "", "14"));
+                listed_data.add(new Resourcemodel_class(dcrCaption + " " + getString(R.string.txt_visit), "", "14"));
             }
 //            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
-            listed_data.add(new Resourcemodel_class("Calls Summary", "", "15"));
-            listed_data.add(new Resourcemodel_class("Date Summary", "", "16"));
+            listed_data.add(new Resourcemodel_class(getString(R.string.call_summary), "", "15"));
+            listed_data.add(new Resourcemodel_class(getString(R.string.date_summary), "", "16"));
             if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1") && SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
-                listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
+                listed_data.add(new Resourcemodel_class(getString(R.string.stock_balance), String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
             } else if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1")) {
-                listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
+                listed_data.add(new Resourcemodel_class(getString(R.string.stock_balance), String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
             } else if (SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
-                listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
+                listed_data.add(new Resourcemodel_class(getString(R.string.stock_balance), String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
             }
-            listed_data.add(new Resourcemodel_class("Profile", "", "18"));
+            listed_data.add(new Resourcemodel_class(getString(R.string.profile), "", "18"));
 
                 Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count + "---" + DocMas_count);
              if(SharedPref.getSfType(MyResource_Activity.this).equalsIgnoreCase("1")) {
-                 listed_data.add(new Resourcemodel_class("Birthday / Anniversary", "", "19"));
+                 listed_data.add(new Resourcemodel_class(getString(R.string.birthday)+ "/" +getString(R.string.anniversary), "", "19"));
              }
                 resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1, new MyResourceInterface() {
                     @Override

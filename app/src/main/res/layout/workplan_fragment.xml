@@ -485,7 +485,7 @@
                                         android:layout_marginBottom="@dimen/_2sdp"
                                         android:layout_toStartOf="@id/img_arrow_1"
                                         android:fontFamily="@font/satoshi_medium"
-                                        android:hint="Select Work Type"
+                                        android:hint="@string/select_worktype"
                                         android:padding="@dimen/_4sdp"
                                         android:textColor="@color/text_dark"
                                         android:textColorHint="@color/text_dark"

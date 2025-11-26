@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -22,6 +23,7 @@ public class BirthdayAnniversaryViewscreen extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
     FormsViewpager formsviewpager;
+    TextView heading;
     int tab_pos = 0;
 
     @SuppressLint("MissingInflatedId")
@@ -32,7 +34,8 @@ public class BirthdayAnniversaryViewscreen extends AppCompatActivity {
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
         back_btn = findViewById(R.id.iv_back);
-
+        heading = findViewById(R.id.tag_selection);
+        heading.setText(getString(R.string.birthday) + "/" + getString(R.string.anniversary));
         back_btn.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {

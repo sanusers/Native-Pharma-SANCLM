@@ -119,7 +119,7 @@
     <string name="leave_approvals">Approbations de congé</string>
     <string name="tp_approvals">Approbations du plan de tournée</string>
     <string name="emp_code">Code Employé</string>
-    <string name="designation">Fonction</string>
+    <string name="designation">Désignation</string>
     <string name="leave_type">Type de congé</string>
     <string name="from">De</string>
     <string name="to">À</string>
@@ -639,6 +639,12 @@
     <string name="avg">Moyenne</string>
     <string name="cvg">Couverture</string>
     <string name="draft_save">Données du plan de tournée enregistrées avec succès</string>
+    <string name="leavestatus"> Statut de Congé </string>
+    <string name="call_summary"> Résumé des Appels </string>
+    <string name="stock_balance"> Solde de Stock </string>
+    <string name="profile"> Profil </string>
+    <string name="birthday"> Anniversaire </string>
+    <string name="anniversary"> Anniversaire de Mariage </string>
 
     <!--<string name="txt_tagging">Marquage</string>
     <string name="txt_doctor">Médecin</string>
