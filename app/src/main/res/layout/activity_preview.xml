@@ -197,7 +197,7 @@
                 android:textAlignment="textStart"
                 tools:text="Thank\nYou\nDoctor"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_35ssp"
+                android:textSize="@dimen/_20ssp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

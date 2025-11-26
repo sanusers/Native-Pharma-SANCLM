@@ -137,7 +137,7 @@ public class DCRCallActivity extends AppCompatActivity {
     public static String clickedLocalDate, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, CusCheckInOutNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, PrdRcpaQtyNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd, SamQtyRestriction, SamQtyRestrictValue, InpQtyRestriction, InpQtyRestrictValue, TodayPlanSfCode, PrdMandatory = "0", InpMandatory = "0", SignNeed, SignMandatory;
     public static ArrayList<CallCommonCheckedList> StockSample = new ArrayList<>();
     public static ArrayList<CallCommonCheckedList> StockInput = new ArrayList<>();
-    public static String isFromActivity, save_valid, hqcode;
+    public static String isFromActivity, save_valid, hqcode, detailedProducts;
     public static String isDetailingRequired;
     ArrayList<StoreImageTypeUrl> arr = new ArrayList<>();
     DCRCallTabLayoutAdapter viewPagerAdapter;
@@ -259,7 +259,6 @@ public class DCRCallActivity extends AppCompatActivity {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -348,10 +347,13 @@ public class DCRCallActivity extends AppCompatActivity {
 //            }
 //            HomeDashBoard.binding.textDate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, savedInstanceState.getString("date")));
         }
+
+        detailedProducts = "";
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             isDetailingRequired = extra.getString(Constants.DETAILING_REQUIRED);
             isFromActivity = extra.getString(Constants.DCR_FROM_ACTIVITY);
+            detailedProducts = extra.getString("DetailedProducts", "");
             save_valid = extra.getString("remainder_save");
             hqcode = extra.getString("hq_code");
             if (extra.containsKey("CheckInJsonObject")) {
@@ -1722,7 +1724,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                 remArray.put(remObj);
                             }
 //                            }
-                            arrayStore.add(new StoreImageTypeUrl("", SlideName, SlideType, "", "0", "", remArray.toString(), ProductName, ProductCode, false));
+                            arrayStore.add(new StoreImageTypeUrl("", "", SlideName, SlideType, "", "0", "", remArray.toString(), ProductName, ProductCode, "", false));
                         }
                         DetailedFragment.callDetailingLists.add(new CallDetailingList(ProductName, ProductCode, SlideName, SlideType, "", StartTime.trim() + " " + EndTime.trim(), StartTime.trim(), Integer.parseInt(Rating), PrdFeedBack, Date, timeDuration));
                     }
@@ -2042,6 +2044,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
                 Log.d("jsonExtractOnline", "----- " + ActivityFragment.activityAnswerData);
+            } else {
+                if (ActivityNeed.equalsIgnoreCase("0") && ActivityMandatory.equalsIgnoreCase("0")) {
+                    ActivityFragment.savedActivityList.add("-1");
+                }
             }
 
             if (json.has("Dcr_checkin") && !json.getString("Dcr_checkin").equalsIgnoreCase("[]")) {
@@ -2183,7 +2189,7 @@ public class DCRCallActivity extends AppCompatActivity {
                             Log.v("rem_obj_print", remObj.toString());
                             remArray.put(remObj);
                         }
-                        arrayStore.add(new StoreImageTypeUrl(SlideScr, SlideName, SlideType, SlidePath, "0", SlideRating, remArray.toString(), js.getString("Name"), js.getString("Code"), false));
+                        arrayStore.add(new StoreImageTypeUrl(SlideScr, "", SlideName, SlideType, SlidePath, "0", SlideRating, remArray.toString(), js.getString("Name"), js.getString("Code"), "", false));
                     }
                     Log.e("TAG", "jsonExtractLocal: " + timeDuration);
                     DetailedFragment.callDetailingLists.add(new CallDetailingList(js.getString("Name"), js.getString("Code"), SlideName, SlideType, SlidePath, STm.trim() + " " + ETm.trim(), STm.trim(), Integer.parseInt(js.getString("Rating")), js.getString("ProdFeedbk"), dt, timeDuration));
@@ -2415,6 +2421,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
                 Log.d("activity", "jsonExtractLocal: " + ActivityFragment.activityAnswerData.keySet().toString());
+            } else {
+                if (ActivityNeed.equalsIgnoreCase("0") && ActivityMandatory.equalsIgnoreCase("0")) {
+                    ActivityFragment.savedActivityList.add("-1");
+                }
             }
 
             if (json.has("CheckInOut") && !json.getString("CheckInOut").equalsIgnoreCase("[]")) {
@@ -3711,6 +3721,22 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
                     }
                 }
+            }
+
+            try {
+                if (detailedProducts != null && !detailedProducts.isEmpty()) {
+                    Set<String> detailedProductsSet = new HashSet<>(Arrays.asList(detailedProducts.split(",")));
+                    for (int j = 0; j < ProductFragment.checkedPrdList.size(); j++) {
+                        CallCommonCheckedList PrdList = ProductFragment.checkedPrdList.get(j);
+                        if (detailedProductsSet.contains(PrdList.getCode())) {
+                            CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(PrdList.getName(), PrdList.getCode(), PrdList.getCategory(), PrdList.getStock_balance(), PrdList.getStock_balance(), "", "", "", "0", true));
+                            PrdList.setCheckedItem(true);
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             Log.v("chkSample", "---size---" + AddCallSelectPrdSide.callSampleList.size());

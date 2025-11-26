@@ -181,7 +181,7 @@ public class JWOthersFragment extends Fragment {
         SetupAdapter();
 
         if (HomeDashBoard.selectedDate.toString().equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
-            if (isFromActivity.equalsIgnoreCase("new")) {
+            if (isFromActivity.equalsIgnoreCase("new") && SharedPref.getJwAutoSelectionNeed(requireContext()).equalsIgnoreCase("0")) {
                 Log.v("Testing", "new");
                 String getjwkcode = SharedPref.getJWKCODE(requireContext());
                 if (!getjwkcode.equalsIgnoreCase("")) {

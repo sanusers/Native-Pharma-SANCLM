@@ -29,11 +29,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import saneforce.sanzen.R;
@@ -74,7 +76,7 @@ public class PreviewActivity extends AppCompatActivity {
     PreviewTabAdapter viewPagerAdapter;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
-    String startT, endT, presentationNeed, therapticNeed;
+    String startT, endT, presentationNeed, therapticNeed, caption = "";
     CommonUtilsMethods commonUtilsMethods;
     //    CustomSetupResponse customSetupResponse;
     private RoomDB roomDB;
@@ -158,7 +160,27 @@ public class PreviewActivity extends AppCompatActivity {
                 SpecialityName = extra.getString("SpecialityName");
                 BrandCode = extra.getString("MappedProdCode");
                 SlideCode = extra.getString("MappedSlideCode");
-                CusType = extra.getString("CusType");
+                CusType = extra.getString("CusType", "");
+                switch (CusType) {
+                    case "1":
+                        caption = SharedPref.getDrCap(PreviewActivity.this);
+                        break;
+                    case "2":
+                        caption = SharedPref.getChmCap(PreviewActivity.this);
+                        break;
+                    case "3":
+                        caption = SharedPref.getStkCap(PreviewActivity.this);
+                        break;
+                    case "4":
+                        caption = SharedPref.getUNLcap(PreviewActivity.this);
+                        break;
+                    case "5":
+                        caption = SharedPref.getCipCaption(PreviewActivity.this);
+                        break;
+                    case "6":
+                        caption = SharedPref.getHospCaption(PreviewActivity.this);
+                        break;
+                }
                 if (extra.containsKey("CheckInJsonObject")) {
                     String jsonObject = extra.getString("CheckInJsonObject");
                     try {
@@ -272,7 +294,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         previewBinding.btnFinishDet.setOnClickListener(view -> {
             previewBinding.rlThankYou.setVisibility(View.VISIBLE);
-            previewBinding.docName.setText("Thank\nYou\n" + CallActivityCustDetails.get(0).getName());
+            previewBinding.docName.setText("Thank You\n"+ caption + " " + CallActivityCustDetails.get(0).getName());
             previewBinding.btnFinishDet.setVisibility(View.GONE);
 //            @Override
 //            public void onSafeClick(View view) {
@@ -332,9 +354,16 @@ public class PreviewActivity extends AppCompatActivity {
                 String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
                 callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
             }
+            Set<String> detailedProducts = new HashSet<>();
+            for (StoreImageTypeUrl storeImageTypeUrl : arrayStore) {
+                String[] productCode = storeImageTypeUrl.getProductCode().split(",");
+                detailedProducts.addAll(Arrays.asList(productCode));
+            }
+            Log.d("Slide detailed", "onCreate: " + detailedProducts.toString());
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
             intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
             intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
+            intent1.putExtra("DetailedProducts", detailedProducts.stream().collect(Collectors.joining(",")));
             intent1.putExtra("remainder_save", "0");
             intent1.putExtra("hq_code", "");
             intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());

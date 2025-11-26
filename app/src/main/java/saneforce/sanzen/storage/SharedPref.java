@@ -507,6 +507,7 @@ public class SharedPref {
 
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
+    public static final String JW_AUTO_SELECTION_NEED = "jw_auto_selection_need";
 
     public static SharedPreferences.Editor editor;
 
@@ -866,10 +867,8 @@ public class SharedPref {
             editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
-            editor.putString(WELCOME_SLIDES_PATH, "");
-
+            editor.putString(JW_AUTO_SELECTION_NEED, jsonObject.optString("jw_auto_selection_need"));
             editor.apply();
-
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
@@ -3212,6 +3211,10 @@ public class SharedPref {
 
     public static String getSlideWiseDetailingNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
+    }
+
+    public static String getJwAutoSelectionNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(JW_AUTO_SELECTION_NEED, "1");
     }
 
 }

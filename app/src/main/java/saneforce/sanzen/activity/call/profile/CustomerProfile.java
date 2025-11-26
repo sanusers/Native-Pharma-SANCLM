@@ -268,6 +268,9 @@ public class CustomerProfile extends AppCompatActivity {
         if (!TimeUtils.GetConvertedDate(TimeUtils.FORMAT_12, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString().trim()).equalsIgnoreCase(LocalDate.now().toString())) {
             skipNeed = "0";
             detailingNeed = "1";
+            btn_skip.setText(getString(R.string.next));
+        } else {
+            btn_skip.setText(getString(R.string.skip));
         }
 
         if (detailingNeed.equalsIgnoreCase("0")) {

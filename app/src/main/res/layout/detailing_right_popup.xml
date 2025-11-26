@@ -32,7 +32,6 @@
             android:src="@drawable/hand_up" />
     </RelativeLayout>
 
-
     <RelativeLayout
         android:id="@+id/rl_hand_down"
         android:layout_width="@dimen/_22sdp"
@@ -53,7 +52,6 @@
             android:src="@drawable/hand_down" />
     </RelativeLayout>
 
-
     <RelativeLayout
         android:id="@+id/rl_comments"
         android:layout_width="@dimen/_22sdp"
@@ -73,7 +71,6 @@
             android:layout_centerInParent="true"
             android:src="@drawable/comments" />
     </RelativeLayout>
-
 
     <RelativeLayout
         android:id="@+id/rl_share"
