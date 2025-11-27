@@ -120,7 +120,7 @@ public class TourPlanActivity extends AppCompatActivity {
     OneBuildModelClass.SessionList.WorkType holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
 
     LocalDate localDate;
-    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "", remarksNeed = "";
+    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", minDrCount = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "", remarksNeed = "";
     private String drCap, chmCap, stkCap, unListDrCap, cipCap, hosCap, masters;
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable, isEdited;
@@ -607,6 +607,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                 } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                                     if (FW_meetup_mandatory.equals("0")) {
                                         if (drNeed.equals("0")) {
+                                            if ((modelClass1.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
+                                                break;
+                                            }
                                             if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
                                                 isEmpty = true;
                                                 position = i;
@@ -631,6 +637,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
                                             break;
+                                        } else if ((modelClass1.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                            isEmpty = true;
+                                            position = i;
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
+                                            break;
                                         } else if (modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) {
                                             isEmpty = true;
                                             position = i;
@@ -641,7 +652,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     if (modelClass1.getDoctors().size() == 0 && modelClass1.getChemists().size() == 0 && modelClass1.getStockists().size() == 0 && modelClass1.getUnlistedDoctors().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospitals().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + " " + (i + 1));
                                         break;
                                     }
                                 }
@@ -712,7 +723,12 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
 //                                            break;
 //                                        }else
-
+                                            if ((modelClass1.getListedDr().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
+                                                break;
+                                            }
                                             if ((modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                                 isEmpty = true;
                                                 position = i;
@@ -754,6 +770,12 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
 //                                        break;
 //                                    }else
+                                        if ((modelClass1.getListedDr().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                            isEmpty = true;
+                                            position = i;
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
+                                            break;
+                                        }
                                         if ((modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                             isEmpty = true;
                                             position = i;
@@ -841,6 +863,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
                                         break;
+                                    } else if ((oneBuildModelClass.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                        isEmpty = true;
+                                        position = i;
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
+                                        break;
                                     } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) {
                                         isEmpty = true;
                                         position = i;
@@ -864,6 +891,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + " " + (i + 1));
+                                    break;
+                                } else if ((oneBuildModelClass.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                    isEmpty = true;
+                                    position = i;
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
                                     break;
                                 } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
                                     isEmpty = true;
@@ -1114,6 +1146,12 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " +SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
 //                                    break;
 //                                }else
+                                    if ((modelClass.getListedDr().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                        isEmpty = true;
+                                        position = i;
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
+                                        break;
+                                    }
                                     if ((modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                         isEmpty = true;
                                         position = i;
@@ -1238,7 +1276,12 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
 //                                break;
 //                            }else
-
+                                if ((modelClass.getListedDr().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                    isEmpty = true;
+                                    position = i;
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
+                                    break;
+                                }
                                 if ((modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                     isEmpty = true;
                                     position = i;
@@ -1606,6 +1649,7 @@ public class TourPlanActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 drNeed = jsonObject.getString("DrNeed");
+                minDrCount = jsonObject.getString("min_doc");
                 maxDrCount = jsonObject.getString("max_doc");
                 addSessionNeed = jsonObject.getString("AddsessionNeed");
                 addSessionCountLimit = jsonObject.getString("AddsessionCount");
@@ -1728,6 +1772,7 @@ public class TourPlanActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 drNeed = jsonObject.getString("DrNeed");
+                minDrCount = jsonObject.getString("min_doc");
                 maxDrCount = jsonObject.getString("max_doc");
                 addSessionNeed = jsonObject.getString("AddsessionNeed");
                 addSessionCountLimit = jsonObject.getString("AddsessionCount");
@@ -2204,47 +2249,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateCalendarAdapter(ArrayList<ModelClass> arrayList) {
         binding.monthYear.setText(monthYearFromDate(localDate));
-
-        try {
-            int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
-            for (ModelClass modelClass : arrayList) {
-                boolean isFWFound = false, isNFWFound = false, isWOFound = false, isHoFound = false, isLFound = false;
-                for (ModelClass.SessionList sessionList : modelClass.getSessionList()) {
-                    String fwFlag = sessionList.getWorkType().getFWFlg();
-                    if (fwFlag.equalsIgnoreCase("F")) {
-                        isFWFound = true;
-                        break;
-                    } else if (fwFlag.equalsIgnoreCase("L")) {
-                        isLFound = true;
-                        break;
-                    } else if (fwFlag.equalsIgnoreCase("H")) {
-                        isHoFound = true;
-                        break;
-                    } else if (fwFlag.equalsIgnoreCase("W")) {
-                        isWOFound = true;
-                        break;
-                    } else if (fwFlag.equalsIgnoreCase("N")) {
-                        isNFWFound = true;
-                    }
-                }
-                if (isFWFound) fw++;
-                else if (isLFound) l++;
-                else if (isWOFound) wo++;
-                else if (isHoFound) ho++;
-                else if (isNFWFound) nfw++;
-            }
-
-            binding.txtFieldWork.setText(getString(R.string.field_work) + " - " + fw);
-            binding.txtNonFieldWork.setText(getString(R.string.non_field_work) + " - " + nfw);
-            binding.txtLeave.setText(getString(R.string.leave) + " - " + l);
-            binding.txtWeekOff.setText(getString(R.string.weekly_off) + " - " + wo);
-            binding.txtHoliday.setText(getString(R.string.holiday) + " - " + ho);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         calendarAdapter = new CalendarAdapter(arrayList, TourPlanActivity.this, (position, date, modelClass) -> {
-            if (!date.equals("")) {
+            if (!date.isEmpty()) {
                 binding.tpDrawer.openDrawer(GravityCompat.END);
                 binding.tpNavigation.planDate.setText(modelClass.getDate());
                 ModelClass modelClass1 = new ModelClass(modelClass);
@@ -2266,47 +2272,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateCalenderAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
         binding.monthYear.setText(monthYearFromDate(localDate));
-
-        try {
-            int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
-            for (OneBuildModelClass modelClass : arrayListOneBuild) {
-                boolean isFWFound = false, isNFWFound = false, isWOFound = false, isHoFound = false, isLFound = false;
-                for (OneBuildModelClass.SessionList sessionList : modelClass.getSessionList()) {
-                    String fwFlag = sessionList.getWorkType().getFWFlg();
-                    if (fwFlag.equalsIgnoreCase("F")) {
-                        isFWFound = true;
-                        break;
-                    } else if (fwFlag.equalsIgnoreCase("L")) {
-                        isLFound = true;
-                        break;
-                    } else if (fwFlag.equalsIgnoreCase("H")) {
-                        isHoFound = true;
-                        break;
-                    } else if (fwFlag.equalsIgnoreCase("W")) {
-                        isWOFound = true;
-                        break;
-                    } else if (fwFlag.equalsIgnoreCase("N")) {
-                        isNFWFound = true;
-                    }
-                }
-                if (isFWFound) fw++;
-                else if (isLFound) l++;
-                else if (isWOFound) wo++;
-                else if (isHoFound) ho++;
-                else if (isNFWFound) nfw++;
-            }
-
-            binding.txtFieldWork.setText(getString(R.string.field_work) + " - " + fw);
-            binding.txtNonFieldWork.setText(getString(R.string.non_field_work) + " - " + nfw);
-            binding.txtLeave.setText(getString(R.string.leave) + " - " + l);
-            binding.txtWeekOff.setText(getString(R.string.weekly_off) + " - " + wo);
-            binding.txtHoliday.setText(getString(R.string.holiday) + " - " + ho);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         calendarAdapter = new CalendarAdapter(TourPlanActivity.this, arrayListOneBuild, (position, date, oneBuildmodelClass) -> {
-            if (!date.equals("")) {
+            if (!date.isEmpty()) {
                 binding.tpDrawer.openDrawer(GravityCompat.END);
                 binding.tpNavigation.planDate.setText(oneBuildmodelClass.getDate());
                 OneBuildModelClass oneBuildModelClass1 = new OneBuildModelClass(oneBuildmodelClass);
@@ -2552,7 +2519,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void populateSessionViewAdapterOneBuild(OneBuildModelClass oneBuildModelClass) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         binding.tpDrawer.openDrawer(GravityCompat.END);
         sessionViewAdapter = new SessionViewAdapter(oneBuildModelClass, TourPlanActivity.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(TourPlanActivity.this);
@@ -2581,13 +2547,48 @@ public class TourPlanActivity extends AppCompatActivity {
     public void populateSummaryAdapter(ArrayList<ModelClass> arrayList) {
         try {
             ArrayList<ModelClass> modelClasses = new ArrayList<>();
+            int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
             for (ModelClass modelClass : arrayList) {
-                if (!modelClass.getDayNo().isEmpty() && !modelClass.getSessionList().get(0).getWorkType().getName().isEmpty())
+                if (!modelClass.getDayNo().isEmpty() && !modelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) {
                     modelClasses.add(modelClass);
+                }
+                try {
+                    boolean isFWFound = false, isNFWFound = false, isWOFound = false, isHoFound = false, isLFound = false;
+                    for (ModelClass.SessionList sessionList : modelClass.getSessionList()) {
+                        String fwFlag = sessionList.getWorkType().getFWFlg();
+                        if (fwFlag.equalsIgnoreCase("F")) {
+                            isFWFound = true;
+                            break;
+                        } else if (fwFlag.equalsIgnoreCase("L")) {
+                            isLFound = true;
+                            break;
+                        } else if (fwFlag.equalsIgnoreCase("H")) {
+                            isHoFound = true;
+                            break;
+                        } else if (fwFlag.equalsIgnoreCase("W")) {
+                            isWOFound = true;
+                            break;
+                        } else if (fwFlag.equalsIgnoreCase("N")) {
+                            isNFWFound = true;
+                        }
+                    }
+                    if (isFWFound) fw++;
+                    else if (isLFound) l++;
+                    else if (isWOFound) wo++;
+                    else if (isHoFound) ho++;
+                    else if (isNFWFound) nfw++;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            binding.txtFieldWork.setText(getString(R.string.field_work) + " - " + fw);
+            binding.txtNonFieldWork.setText(getString(R.string.non_field_work) + " - " + nfw);
+            binding.txtLeave.setText(getString(R.string.leave) + " - " + l);
+            binding.txtWeekOff.setText(getString(R.string.weekly_off) + " - " + wo);
+            binding.txtHoliday.setText(getString(R.string.holiday) + " - " + ho);
 
             summaryAdapter = new SummaryAdapter(modelClasses, TourPlanActivity.this, (modelClass, position) -> {
-
                 populateSessionViewAdapter(modelClass);
                 binding.tpNavigation.addEditViewTxt.setText("View Plan");
                 binding.tpNavigation.planDate.setText(modelClass.getDate());
@@ -2597,23 +2598,56 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.summaryRecView.setAdapter(summaryAdapter);
 
             changeApprovalBtnState(arrayList);
-
         } catch (Exception e) {
             Log.v("error", "---" + e);
         }
     }
 
     public void populateSummaryAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
-
         try {
             ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
+            int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
             for (OneBuildModelClass oneBuildModelClass : arrayListOneBuild) {
-                if (!oneBuildModelClass.getDayNo().isEmpty() && !oneBuildModelClass.getSessionList().get(0).getWorkType().getName().isEmpty())
+                if (!oneBuildModelClass.getDayNo().isEmpty() && !oneBuildModelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) {
                     oneBuildModelClasses.add(oneBuildModelClass);
+                }
+                try {
+                    boolean isFWFound = false, isNFWFound = false, isWOFound = false, isHoFound = false, isLFound = false;
+                    for (OneBuildModelClass.SessionList sessionList : oneBuildModelClass.getSessionList()) {
+                        String fwFlag = sessionList.getWorkType().getFWFlg();
+                        if (fwFlag.equalsIgnoreCase("F")) {
+                            isFWFound = true;
+                            break;
+                        } else if (fwFlag.equalsIgnoreCase("L")) {
+                            isLFound = true;
+                            break;
+                        } else if (fwFlag.equalsIgnoreCase("H")) {
+                            isHoFound = true;
+                            break;
+                        } else if (fwFlag.equalsIgnoreCase("W")) {
+                            isWOFound = true;
+                            break;
+                        } else if (fwFlag.equalsIgnoreCase("N")) {
+                            isNFWFound = true;
+                        }
+                    }
+                    if (isFWFound) fw++;
+                    else if (isLFound) l++;
+                    else if (isWOFound) wo++;
+                    else if (isHoFound) ho++;
+                    else if (isNFWFound) nfw++;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            binding.txtFieldWork.setText(getString(R.string.field_work) + " - " + fw);
+            binding.txtNonFieldWork.setText(getString(R.string.non_field_work) + " - " + nfw);
+            binding.txtLeave.setText(getString(R.string.leave) + " - " + l);
+            binding.txtWeekOff.setText(getString(R.string.weekly_off) + " - " + wo);
+            binding.txtHoliday.setText(getString(R.string.holiday) + " - " + ho);
 
             summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
-
                 populateSessionViewAdapterOneBuild(oneBuildmodelClass);
                 binding.tpNavigation.addEditViewTxt.setText("View Plan");
                 binding.tpNavigation.planDate.setText(oneBuildmodelClass.getDate());
@@ -2623,8 +2657,6 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.summaryRecView.setAdapter(summaryAdapter);
 
             changeApprovalBtnStateOneBuild(arrayListOneBuild);
-
-
         } catch (Exception e) {
             Log.v("error", "---" + e);
         }
