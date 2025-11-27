@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.FragmentReportsListBinding;
 
@@ -36,11 +37,11 @@ public class ReportsListFragment extends Fragment {
 
     public void populateAdapter() {
         ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("Day Report");
+        arrayList.add(getString(R.string.day_report));
         arrayList.add("Monthly Report");
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
-        arrayList.add("Visit Monitor");
+        arrayList.add(getString(R.string.visit_monitor));
 
         reportsAdapter = new ReportsAdapter(arrayList, requireContext());
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 4);

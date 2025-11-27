@@ -165,11 +165,11 @@ public class Leave_Application extends AppCompatActivity {
             }
         });
 
-        String colorText = "<font color=\"#85929e\">" + "Leave Date From" + "</font>"
+        String colorText = "<font color=\"#85929e\">" + getString(R.string.leave_dt_from) + "</font>"
                 + " " + "<font color=\"#F1536E\">" + "*";
-        String colorText1 = "<font color=\"#85929e\">" + "Leave Date To" + "</font>"
+        String colorText1 = "<font color=\"#85929e\">" + getString(R.string.leave_dt_to) + "</font>"
                 + " " + "<font color=\"#F1536E\">" + "*";
-        String colorText2 = "<font color=\"#85929e\">" + "Leave Type" + "</font>"
+        String colorText2 = "<font color=\"#85929e\">" + getString(R.string.leave_type) + "</font>"
                 + " " + "<font color=\"#F1536E\">" + "*";
 
         leavebinding.HeadFromdate.setText(Html.fromHtml(colorText));
@@ -186,7 +186,7 @@ public class Leave_Application extends AppCompatActivity {
         leave_applydates();
 
 
-        leavebinding.LeaveType.setText("Leave Type");
+        leavebinding.LeaveType.setText(R.string.leave_type);
         leavebinding.etFromDate.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {

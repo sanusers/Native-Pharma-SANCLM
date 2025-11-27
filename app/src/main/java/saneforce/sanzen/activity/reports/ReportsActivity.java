@@ -424,15 +424,40 @@ public class ReportsActivity extends AppCompatActivity {
 
     public void populateAdapter() {
         reportTitles.clear();
-        reportTitles.add("Day Report");
+        reportTitles.add(getString(R.string.day_report));
 //         reportTitles.add("Visit Monitor");
 //         reportTitles.add("Missed Report");
         if (SharedPref.getDashboard(this).equals("0")) {
-            reportTitles.add("Dash Board");
+            reportTitles.add(getString(R.string.dashboard));
         }
         reportsAdapter = new ReportsAdapter(reportTitles, this, reportName -> {
-            switch (reportName.toUpperCase()) {
-                case "DAY REPORT":
+
+            String name  =  reportName.toString();
+            if(name.equalsIgnoreCase(getString(R.string.day_report))){
+                progressDialog = CommonUtilsMethods.createProgressDialog(this);
+                getData(reportName, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
+            } else if (name.equalsIgnoreCase(getString(R.string.visit_monitor))) {
+                startActivity(new Intent(this, VisitMonitorActivity.class));
+            } else if (name.equalsIgnoreCase(getString(R.string.missed_report))) {
+                startActivity(new Intent(this, MissedReportGraph.class));
+            } else if (name.equalsIgnoreCase(getString(R.string.dashboard))) {
+                startActivity(new Intent(this, ReportWebActivity.class));
+            } else{
+                if (SharedPref.getDynamicOptionNeed(this).equalsIgnoreCase("0")) {
+                    MenuModel dynamicReport = findDynamicReport(reportName);
+                    if (dynamicReport != null) {
+                        Intent intent = new Intent(this, DynamicWebActivity.class);
+                        intent.putExtra("title", reportName);
+                        intent.putExtra("url", dynamicReport.getMenu_Sub_Details()); // Pass the generated URL
+                        startActivity(intent);
+                    } else {
+                        commonUtilsMethods.showToastMessage(this, "Dynamic Report URL not found.");
+                    }
+                }
+            }
+
+         /*   switch (reportName) {
+                case DAYREPORT:
                     progressDialog = CommonUtilsMethods.createProgressDialog(this);
                     getData(reportName, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
                     break;
@@ -445,7 +470,7 @@ public class ReportsActivity extends AppCompatActivity {
                     startActivity(new Intent(this, MissedReportGraph.class));
                     break;
 
-                case "DASH BOARD":
+                case "DASHBOARD":
                     startActivity(new Intent(this, ReportWebActivity.class));
                     break;
 
@@ -462,7 +487,7 @@ public class ReportsActivity extends AppCompatActivity {
                         }
                     }
                     break;
-            }
+            }*/
         });
 
         binding.recView.setLayoutManager(new GridLayoutManager(this, 4));
@@ -489,7 +514,7 @@ public class ReportsActivity extends AppCompatActivity {
                         jsonObject.put("divisionCode", SharedPref.getDivisionCode(this));
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
                         jsonObject.put("rptDt", date);
-                        if (report.equalsIgnoreCase("DAY REPORT")) {
+                        if (report.equalsIgnoreCase(getString(R.string.day_report))) {
                             jsonObject.put("tableName", "getdayrpt_edet");
                         }
 

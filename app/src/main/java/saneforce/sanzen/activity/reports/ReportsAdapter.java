@@ -227,8 +227,20 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
         String name = arrayList.get(holder.getAbsoluteAdapterPosition());
         holder.reportName.setText(name);
 
-        // Set icons for hardcoded reports. Dynamic reports will need a default icon or a separate logic
-        switch (name.toUpperCase()) {
+
+        if(name.equalsIgnoreCase(context.getString(R.string.day_report))){
+            holder.imageView.setImageResource(R.drawable.report_day_icon);
+        } else if (name.equalsIgnoreCase(context.getString(R.string.visit_monitor))) {
+            holder.imageView.setImageResource(R.drawable.report_visit_monitor_icon);
+        } else if (name.equalsIgnoreCase(context.getString(R.string.missed_report))) {
+            holder.imageView.setImageResource(R.drawable.report_day_icon);
+        } else if (name.equalsIgnoreCase(context.getString(R.string.dashboard))) {
+            holder.imageView.setImageResource(R.drawable.report_monthly_icon);
+        } else {
+            holder.imageView.setImageResource(R.drawable.web_icon);
+        }
+
+  /*      switch (name.toUpperCase()) {
             case "DAY REPORT":
                 holder.imageView.setImageResource(R.drawable.report_day_icon);
                 break;
@@ -244,7 +256,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
             default:
                 holder.imageView.setImageResource(R.drawable.web_icon);
                 break;
-        }
+        }*/
 
         holder.itemView.setOnClickListener(new SafeClickListener() {
             @Override

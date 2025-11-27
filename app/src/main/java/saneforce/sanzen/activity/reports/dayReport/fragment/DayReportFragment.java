@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -137,7 +138,7 @@ public class DayReportFragment extends Fragment {
 
         if (getActivity() instanceof ReportFragContainerActivity) {
             ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
-            activity.title.setText("Day Report");
+            activity.title.setText(getString(R.string.day_report));
         }
         Type type = new TypeToken<ArrayList<DayReportModel>>() {
         }.getType();
@@ -235,8 +236,9 @@ public class DayReportFragment extends Fragment {
             ImageView prevArrow = view.findViewById(R.id.calendar_prev_button);
             ImageView nextArrow = view.findViewById(R.id.calendar_next_button);
 
-            monthYear.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_23, binding.calender.getText().toString()));
-            localDate = LocalDate.parse(binding.calender.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
+//            monthYear.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_23, binding.calender.getText().toString()));
+            monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
+            localDate = parseMultiLocale(binding.calender.getText().toString(), TimeUtils.FORMAT_19);
             nextArrow.setEnabled(false);
             nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
             prevArrow.setOnClickListener(view1 -> {
@@ -416,4 +418,18 @@ public class DayReportFragment extends Fragment {
             return a.getSF_Name().compareTo(b.getSF_Name());
         }
     }
+    public static LocalDate parseMultiLocale(String date, String pattern) {
+        Locale[] locales = {Locale.ENGLISH, Locale.FRENCH, Locale.GERMAN, Locale.ITALIAN};
+
+        for (Locale locale : locales) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, locale);
+                return LocalDate.parse(date, formatter);
+            } catch (Exception ignored) {}
+        }
+
+
+        return null;
+    }
+
 }

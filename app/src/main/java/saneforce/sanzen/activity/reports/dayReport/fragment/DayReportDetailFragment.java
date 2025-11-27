@@ -203,7 +203,7 @@ public class DayReportDetailFragment extends Fragment {
             ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
             String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dayReportModel.getAdate());
             assert activity != null;
-            activity.title.setText(String.format("Day Report ( %s )", date));
+            activity.title.setText(String.format(getString(R.string.day_report) +"( %s )", date));
             binding.textDoctor.setText((SharedPref.getDrCap(requireContext())));
             binding.textChemist.setText((SharedPref.getChmCap(requireContext())));
             binding.textStock.setText((SharedPref.getStkCap(requireContext())));

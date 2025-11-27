@@ -177,7 +177,7 @@
     <string name="week_off_days_holidays">Week Off days / Holidays</string>
     <string name="total">Total</string>
     <string name="view_actual_plan">View Actual Plan</string>
-    <string name="worktype">WorkType</string>
+    <string name="worktype">Work Type</string>
     <string name="other_wt">Other WorkType</string>
     <string name="toast_enter_reason_for_reject">Enter reason for Reject</string>
     <string name="toast_enter_remarks">Enter Remarks</string>
@@ -643,6 +643,7 @@
     <string name="avg">Average</string>
     <string name="cvg">Coverage</string>
     <string name="draft_save"> Tour Plan Data Saved Successfully</string>
+    //need to convert
     <string name="need_remarks"> Enter Remarks in session </string>
     <string name="reset_password">Reset Password</string>
     <string name="moile_mand"> Mobile Number Mandatory </string>
@@ -669,6 +670,33 @@
     <string name="birthday"> Birthday </string>
     <string name="anniversary"> Anniversary </string>
     <string name="select_headquaters">Select Headquarters</string>
+    <string name="quick_links"> Quick Link </string>
+    <string name="call_analysis"> Call Analysis </string>
+    <string name="day_report"> Day Report </string>
+    <string name="visit_monitor"> Visit Monitor </string>
+    <string name="missed_report"> Missed Report </string>
+    <string name="leave_available"> Leave Available </string>
+    <string name="leave_dt_to"> Leave Date To </string>
+    <string name="leave_dt_from"> Leave Date From </string>
+    <string name="reason_for_leave"> Reason for leave</string>
+    <string name="address_on_leave"> Address on Leave </string>
+    <string name="your_lv_req_inc"> Your Leave Request includes </string>
+    <string name="master_sync"> Master Sync </string>
+    <string name="master_note"> Tap on each to sync individually </string>
+    <string name="slide"> Slide </string>
+    <string name="subordinate"> Subordinate </string>
+    <string name="other"> Other </string>
+    <string name="setup"> Setup </string>
+    <string name="sync_all"> Sync All </string>
+    <string name="last_sync"> Last Sync : </string>
+    <string name="presentation_name">Presentation Name</string>
+    <string name="play"> Play </string>
+    <string name="slides"> Slides </string>
+    <string name="brand_wise"> Brand Wise </string>
+    <string name="slide_wise"> Slide Wise </string>
+
+
+
 
 
 </resources>

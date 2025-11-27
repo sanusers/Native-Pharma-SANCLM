@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_8sdp"
                         android:fontFamily="@font/satoshi_variable"
-                        android:text="Leave Application"
+                        android:text="@string/leave_application"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_8sdp"
                         tools:ignore="SpUsage" />
@@ -193,7 +193,7 @@
                                             android:layout_weight="1"
                                             android:fontFamily="@font/satoshi_medium"
                                             android:gravity="left"
-                                            android:hint="From Date"
+                                            android:hint="@string/select_from_date"
                                             android:padding="@dimen/_6sdp"
                                             android:textColor="#282A3C"
                                             android:textSize="@dimen/_7sdp" />
@@ -232,7 +232,7 @@
                                             android:layout_weight="1"
                                             android:fontFamily="@font/satoshi_medium"
                                             android:gravity="left"
-                                            android:hint="To Date "
+                                            android:hint="@string/select_to_date"
                                             android:padding="@dimen/_6sdp"
 
                                             android:textColor="#282A3C"
@@ -342,7 +342,7 @@
                                             android:focusableInTouchMode="true"
                                             android:fontFamily="@font/satoshi_medium"
                                             android:gravity="left"
-                                            android:hint="Select Leave Type"
+                                            android:hint="@string/select_leave_type"
 
                                             android:longClickable="false"
                                             android:padding="@dimen/_6sdp"
@@ -436,7 +436,7 @@
                                                 android:layout_marginEnd="@dimen/_1sdp"
                                                 android:layout_weight=".5"
                                                 android:gravity="left"
-                                                android:text="Reason for Leave"
+                                                android:text="@string/reason_for_leave"
                                                 android:textColor="#85929e"
                                                 android:textSize="@dimen/_7sdp"
                                                 android:textStyle="bold" />
@@ -449,7 +449,7 @@
                                                 android:layout_marginEnd="@dimen/_1sdp"
                                                 android:background="@drawable/square_box"
                                                 android:gravity="top|left"
-                                                android:hint="Remarks"
+                                                android:hint="@string/remarks"
                                                 android:lines="8"
                                                 android:maxLines="10"
                                                 android:minLines="6"
@@ -480,7 +480,7 @@
                                                 android:layout_marginEnd="@dimen/_1sdp"
                                                 android:layout_weight=".5"
                                                 android:gravity="left"
-                                                android:text="Address on Leave"
+                                                android:text="@string/address_on_leave"
                                                 android:textColor="#85929e"
                                                 android:textSize="@dimen/_7sdp"
                                                 android:textStyle="bold" />
@@ -493,7 +493,7 @@
                                                 android:layout_marginEnd="@dimen/_1sdp"
                                                 android:background="@drawable/square_box"
                                                 android:gravity="top|left"
-                                                android:hint="Remarks"
+                                                android:hint="@string/remarks"
                                                 android:lines="8"
                                                 android:maxLines="10"
                                                 android:minLines="6"
@@ -552,7 +552,7 @@
                                             android:layout_marginEnd="@dimen/_1sdp"
                                             android:fontFamily="@font/satoshi_medium"
                                             android:paddingBottom="@dimen/_2sdp"
-                                            android:text="Leave Available"
+                                            android:text="@string/leave_available"
                                             android:textColor="#282A3C"
                                             android:textSize="@dimen/_8sdp"
                                             android:textStyle="bold" />
@@ -590,7 +590,7 @@
                                                     android:layout_marginEnd="@dimen/_3sdp"
                                                     android:layout_toRightOf="@+id/refresh"
                                                     android:fontFamily="@font/satoshi_regular"
-                                                    android:text="Sync"
+                                                    android:text="@string/sync"
                                                     android:textColor="@color/text_sync"
                                                     android:textSize="@dimen/_7sdp"
                                                     android:textStyle="bold">
@@ -670,7 +670,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:padding="@dimen/_1sdp"
-                                    android:text="Your Leave Request includes"
+                                    android:text="@string/your_lv_req_inc"
                                     android:textSize="@dimen/_7sdp"
                                     android:textStyle="bold" />
 

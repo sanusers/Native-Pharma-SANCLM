@@ -174,7 +174,7 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tag_tv_cip"
-                    app:layout_constraintLeft_toRightOf="@id/tag_tv_stockist"
+                    app:layout_constraintStart_toEndOf="@id/tag_tv_stockist"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView

@@ -58,7 +58,7 @@ public class ReportFragContainerActivity extends AppCompatActivity {
             fragmentStr = bundle.getString("fragment");
         }
 
-        if (fragmentStr.toUpperCase().equals("DAY REPORT")) {
+        if (fragmentStr.equalsIgnoreCase(getString(R.string.day_report))) {
             loadFragment(new DayReportFragment());
 //            case "MONTHLY REPORT" : {
 //                break;
