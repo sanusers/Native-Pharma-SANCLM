@@ -2205,8 +2205,45 @@ public class TourPlanActivity extends AppCompatActivity {
     public void populateCalendarAdapter(ArrayList<ModelClass> arrayList) {
         binding.monthYear.setText(monthYearFromDate(localDate));
 
-        calendarAdapter = new CalendarAdapter(arrayList, TourPlanActivity.this, (position, date, modelClass) -> {
+        try {
+            int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
+            for (ModelClass modelClass : arrayList) {
+                boolean isFWFound = false, isNFWFound = false, isWOFound = false, isHoFound = false, isLFound = false;
+                for (ModelClass.SessionList sessionList : modelClass.getSessionList()) {
+                    String fwFlag = sessionList.getWorkType().getFWFlg();
+                    if (fwFlag.equalsIgnoreCase("F")) {
+                        isFWFound = true;
+                        break;
+                    } else if (fwFlag.equalsIgnoreCase("L")) {
+                        isLFound = true;
+                        break;
+                    } else if (fwFlag.equalsIgnoreCase("H")) {
+                        isHoFound = true;
+                        break;
+                    } else if (fwFlag.equalsIgnoreCase("W")) {
+                        isWOFound = true;
+                        break;
+                    } else if (fwFlag.equalsIgnoreCase("N")) {
+                        isNFWFound = true;
+                    }
+                }
+                if (isFWFound) fw++;
+                else if (isLFound) l++;
+                else if (isWOFound) wo++;
+                else if (isHoFound) ho++;
+                else if (isNFWFound) nfw++;
+            }
 
+            binding.txtFieldWork.setText(getString(R.string.field_work) + " - " + fw);
+            binding.txtNonFieldWork.setText(getString(R.string.non_field_work) + " - " + nfw);
+            binding.txtLeave.setText(getString(R.string.leave) + " - " + l);
+            binding.txtWeekOff.setText(getString(R.string.weekly_off) + " - " + wo);
+            binding.txtHoliday.setText(getString(R.string.holiday) + " - " + ho);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        calendarAdapter = new CalendarAdapter(arrayList, TourPlanActivity.this, (position, date, modelClass) -> {
             if (!date.equals("")) {
                 binding.tpDrawer.openDrawer(GravityCompat.END);
                 binding.tpNavigation.planDate.setText(modelClass.getDate());
@@ -2229,6 +2266,44 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateCalenderAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
         binding.monthYear.setText(monthYearFromDate(localDate));
+
+        try {
+            int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
+            for (OneBuildModelClass modelClass : arrayListOneBuild) {
+                boolean isFWFound = false, isNFWFound = false, isWOFound = false, isHoFound = false, isLFound = false;
+                for (OneBuildModelClass.SessionList sessionList : modelClass.getSessionList()) {
+                    String fwFlag = sessionList.getWorkType().getFWFlg();
+                    if (fwFlag.equalsIgnoreCase("F")) {
+                        isFWFound = true;
+                        break;
+                    } else if (fwFlag.equalsIgnoreCase("L")) {
+                        isLFound = true;
+                        break;
+                    } else if (fwFlag.equalsIgnoreCase("H")) {
+                        isHoFound = true;
+                        break;
+                    } else if (fwFlag.equalsIgnoreCase("W")) {
+                        isWOFound = true;
+                        break;
+                    } else if (fwFlag.equalsIgnoreCase("N")) {
+                        isNFWFound = true;
+                    }
+                }
+                if (isFWFound) fw++;
+                else if (isLFound) l++;
+                else if (isWOFound) wo++;
+                else if (isHoFound) ho++;
+                else if (isNFWFound) nfw++;
+            }
+
+            binding.txtFieldWork.setText(getString(R.string.field_work) + " - " + fw);
+            binding.txtNonFieldWork.setText(getString(R.string.non_field_work) + " - " + nfw);
+            binding.txtLeave.setText(getString(R.string.leave) + " - " + l);
+            binding.txtWeekOff.setText(getString(R.string.weekly_off) + " - " + wo);
+            binding.txtHoliday.setText(getString(R.string.holiday) + " - " + ho);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         calendarAdapter = new CalendarAdapter(TourPlanActivity.this, arrayListOneBuild, (position, date, oneBuildmodelClass) -> {
             if (!date.equals("")) {
