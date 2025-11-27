@@ -2,6 +2,7 @@ package saneforce.sanzen.application;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Presentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 
+import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
+import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
 
 public class SanZenApp extends Application {
@@ -74,10 +80,12 @@ public class SanZenApp extends Application {
             public void onActivityPostCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
 //                ActivityLifecycleCallbacks.super.onActivityPostCreated(activity, savedInstanceState);
                 if (activity.getWindow() != null) {
-//                    activity.getWindow().setFlags(
-//                            WindowManager.LayoutParams.FLAG_SECURE,
-//                            WindowManager.LayoutParams.FLAG_SECURE
-//                    );
+                    if ((activity instanceof PreviewActivity) || (activity instanceof DCRCallActivity) || (activity instanceof PresentationActivity)) {
+                        activity.getWindow().setFlags(
+                                WindowManager.LayoutParams.FLAG_SECURE,
+                                WindowManager.LayoutParams.FLAG_SECURE
+                        );
+                    }
 //                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
                         final WindowInsetsController insetsController = activity.getWindow().getInsetsController();

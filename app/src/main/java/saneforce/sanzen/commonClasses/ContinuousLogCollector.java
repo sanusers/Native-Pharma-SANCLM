@@ -129,16 +129,30 @@ public class ContinuousLogCollector {
         File logDir = getLogDirectory(context);
         File[] files = logDir.listFiles();
 
-        if (files != null && files.length > 2) {
-            // Sort files by last modified date (which should correspond to creation time)
-            Arrays.sort(files, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
-
-            // Keep the first two (most recent) and delete the rest
-            for (int i = 2; i < files.length; i++) {
-                if (files[i].delete()) {
-                    Log.i(TAG, "Deleted old log file: " + files[i].getName());
-                } else {
-                    Log.w(TAG, "Failed to delete old log file: " + files[i].getName());
+//        if (files != null && files.length > 2) {
+//            // Sort files by last modified date (which should correspond to creation time)
+//            Arrays.sort(files, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
+//
+//            // Keep the first two (most recent) and delete the rest
+//            for (int i = 2; i < files.length; i++) {
+//                if (files[i].delete()) {
+//                    Log.i(TAG, "Deleted old log file: " + files[i].getName());
+//                } else {
+//                    Log.w(TAG, "Failed to delete old log file: " + files[i].getName());
+//                }
+//            }
+//        }
+        if (files != null && files.length > 0) {
+            long currentTime = System.currentTimeMillis();
+            long oneWeekMillis = 7L * 24 * 60 * 60 * 1000; // 7 days
+            for (File file : files) {
+                long lastModified = file.lastModified();
+                if ((currentTime - lastModified) > oneWeekMillis) {
+                    if (file.delete()) {
+                        Log.i(TAG, "Deleted log file older than a week: " + file.getName());
+                    } else {
+                        Log.w(TAG, "Failed to delete old log file: " + file.getName());
+                    }
                 }
             }
         }

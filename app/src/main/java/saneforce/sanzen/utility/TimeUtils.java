@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -250,6 +251,13 @@ public class TimeUtils {
             time = String.format("%02d:%02d", minutes, seconds);
         }
         return time;
+    }
+
+    public static boolean isBeforeOrToday(String date, String givenFormat) {
+        String parsedDate = GetConvertedDate(givenFormat, FORMAT_4, date);
+        LocalDate givenDate = LocalDate.parse(parsedDate);
+        LocalDate today = LocalDate.now();
+        return !givenDate.isAfter(today); // means: givenDate <= today
     }
 
 }

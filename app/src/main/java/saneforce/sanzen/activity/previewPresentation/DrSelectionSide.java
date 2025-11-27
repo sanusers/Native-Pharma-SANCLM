@@ -79,7 +79,7 @@ public class DrSelectionSide extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        SetDrAdapter();
+//        SetDrAdapter();
 
         drSelectionSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
             @Override

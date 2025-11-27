@@ -64,10 +64,8 @@
 
         <saneforce.sanzen.commonClasses.GifView
             android:id="@+id/splashImg"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_280sdp"
             android:layout_height="@dimen/_200sdp"
-            android:layout_marginHorizontal="@dimen/_60sdp"
-            android:layout_marginVertical="@dimen/_40sdp"
             android:src="@drawable/animation_slide"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/microScopeImg"

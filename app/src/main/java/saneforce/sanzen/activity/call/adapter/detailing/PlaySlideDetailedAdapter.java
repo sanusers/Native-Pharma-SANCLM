@@ -299,6 +299,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                 }
                             });
                             break;
+                        default:
+                            pdfView.setVisibility(View.GONE);
+                            videoView.setVisibility(View.GONE);
+                            webView.setVisibility(View.GONE);
+                            progressAnim.setVisibility(View.GONE);
+                            break;
                     }
                 }
             } catch (Exception e) {
@@ -953,6 +959,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                 scribblePos = j;
                                 break;
                             }
+                        }
+                        if (arrayStore == null) {
+                            arrayStore = new ArrayList<>();
                         }
                         if (isAvailableScrib) {
                             arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), slideID, SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, productCode, false));

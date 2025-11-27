@@ -37,8 +37,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -275,51 +277,56 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         holder.sync.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                    switch (contentList.getChildId()) {
-                        case 0:
-                            CallAPICheckInOut(position);
-                            break;
-                        case 1:
-                            if (!outboxUtil.checkSyncAvailable(date, 1)) {
-                                CallAPIWorkPlan(position);
-                            } else {
-                                commonUtilsMethods.showToastMessage(context, "Sync Check In/Out!");
-                                progressDialog.dismiss();
-                            }
-                            break;
-                        case 2:
-                            if (!outboxUtil.checkSyncAvailable(date, 2)) {
-                                CallAPIList(position);
-                            } else {
-                                commonUtilsMethods.showToastMessage(context, "Sync Work Plan!");
-                                progressDialog.dismiss();
-                            }
-                            break;
-                        case 3:
-                            CallAPIListImage(position);
-                            break;
-                        case 4:
-                            CallApiSignImage(position);
-                            break;
-                        case 5:
-                            CallAPIActivity(position);
-                            break;
-                        case 6:
-                            CallAPIActivityUpload(position);
-                            break;
-                        case 7:
-                            if (!outboxUtil.checkSyncAvailable(date, 7)) {
-                                CallAPIDaySubmit(position);
-                            } else {
-                                commonUtilsMethods.showToastMessage(context, "Sync Calls!");
-                                progressDialog.dismiss();
-                            }
-                            break;
-                    }
+                List<String> dates = List.copyOf(outboxUtil.getOutboxDates());
+                if (dates.indexOf(date) > 0) {
+                    CommonUtilsMethods.showToastMessage(context, "Please Sync previous dates!");
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                        switch (contentList.getChildId()) {
+                            case 0:
+                                CallAPICheckInOut(position);
+                                break;
+                            case 1:
+                                if (!outboxUtil.checkSyncAvailable(date, 1)) {
+                                    CallAPIWorkPlan(position);
+                                } else {
+                                    commonUtilsMethods.showToastMessage(context, "Sync Check In/Out!");
+                                    progressDialog.dismiss();
+                                }
+                                break;
+                            case 2:
+                                if (!outboxUtil.checkSyncAvailable(date, 2)) {
+                                    CallAPIList(position);
+                                } else {
+                                    commonUtilsMethods.showToastMessage(context, "Sync Work Plan!");
+                                    progressDialog.dismiss();
+                                }
+                                break;
+                            case 3:
+                                CallAPIListImage(position);
+                                break;
+                            case 4:
+                                CallApiSignImage(position);
+                                break;
+                            case 5:
+                                CallAPIActivity(position);
+                                break;
+                            case 6:
+                                CallAPIActivityUpload(position);
+                                break;
+                            case 7:
+                                if (!outboxUtil.checkSyncAvailable(date, 7)) {
+                                    CallAPIDaySubmit(position);
+                                } else {
+                                    commonUtilsMethods.showToastMessage(context, "Sync Work Plan and Calls!");
+                                    progressDialog.dismiss();
+                                }
+                                break;
+                        }
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    }
                 }
             }
         });

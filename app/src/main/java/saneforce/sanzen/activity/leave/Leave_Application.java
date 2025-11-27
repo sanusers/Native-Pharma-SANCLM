@@ -936,7 +936,7 @@ public class Leave_Application extends AppCompatActivity {
             if (attachment == 0) {
                 leavebinding.tlAttachment.setVisibility(View.VISIBLE);
             } else {
-                leavebinding.tlAttachment.setVisibility(View.GONE);
+                leavebinding.tlAttachment.setVisibility(View.INVISIBLE);
             }
         } catch (Exception e) {
             e.printStackTrace();
