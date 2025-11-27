@@ -1012,6 +1012,7 @@ public class Leave_Application extends AppCompatActivity {
 
                                 Chart_list.add(leave);
                             }
+
                         }
                     } else {
                         Leave_modelclass leave = new Leave_modelclass(jsonObject.optString("Leave_Name"), "0", "0", "0", jsonObject.optString("Leave_SName"));
@@ -1217,12 +1218,18 @@ public class Leave_Application extends AppCompatActivity {
 //                                                int totalApplied = obj.optInt("Total_Applied_Days", 0);
 //                                                obj.put("Total_Applied_Days", totalApplied);
 //                                            }
+                                          //  else if (entitlement.equals("1")){
                                         } else {
                                             //if (entitlement.equals("1")) {
-                                                if (obj.optString("Leave_SName").equalsIgnoreCase(Lshortname)) {
+                                            if (obj.optString("Leave_SName").trim().equalsIgnoreCase(Lshortname.trim())) {
                                                     int days = Integer.parseInt(L_count);
                                                     int totalApplied = obj.optInt("Total_Applied_Days", 0);
-                                                    obj.put("Total_Applied_Days", Math.max(totalApplied+days,0));
+                                                  //  obj.put("Total_Applied_Days", Math.max(totalApplied + days,0));
+                                                    //obj.put("Total_Applied_Days", totalApplied + days);
+                                                totalApplied += days;
+
+                                                // Save as string
+                                                obj.put("Total_Applied_Days", String.valueOf(totalApplied));
 
                                                 }
                                             }
@@ -1232,6 +1239,11 @@ public class Leave_Application extends AppCompatActivity {
                                             new MasterDataTable(Constants.LEAVE_STATUS, leaveArray.toString(), 2)
                                     );
 
+// 🔹 Reload chart with updated values
+                                    if (leavebinding != null) {
+                                        Chart_list.clear(); // clear old data
+                                        Leave_Application.AvailableLeave(Leave_Application.this);
+                                    }
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
