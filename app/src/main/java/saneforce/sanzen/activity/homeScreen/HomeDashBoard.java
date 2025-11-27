@@ -2675,9 +2675,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (!birthdayMsg.isEmpty() || !anniversaryMsg.isEmpty()) {
                 SharedPref.setBirthdayShownDate(this, today);
                 SharedPref.setAnniversaryShownDate(this, today);
-
-                CommonAlertBox.ShowCombinedWishesAlert(this, birthdayMsg, anniversaryMsg
-                );
+                CommonAlertBox.ShowCombinedWishesAlert(this, birthdayMsg, anniversaryMsg);
             }
 
         } catch (Exception e) {

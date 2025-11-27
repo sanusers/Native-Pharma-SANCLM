@@ -15,6 +15,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -244,12 +246,11 @@ public class CommonAlertBox {
         }
 // 🔹 Center alignment when only one section exists
         if (hasBirthday && !hasAnniversary) {
-
             layoutBirthday.setVisibility(View.VISIBLE);
             layoutAnniversary.setVisibility(View.GONE);
 
             // Parent row
-            contentRow.setGravity(Gravity.CENTER);
+//            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
 
             // Remove weights → else center won't work
             LinearLayout.LayoutParams lp =
@@ -258,14 +259,13 @@ public class CommonAlertBox {
                             LinearLayout.LayoutParams.WRAP_CONTENT
                     );
 
-            layoutBirthday.setLayoutParams(lp);
-        }
-        else if (!hasBirthday && hasAnniversary) {
-
+            layoutAnniversary.setLayoutParams(lp);
+            tvBirthday.setPadding((int) activity.getResources().getDimension(R.dimen._60sdp), 0 , 0, 0);
+        } else if (!hasBirthday && hasAnniversary) {
             layoutAnniversary.setVisibility(View.VISIBLE);
             layoutBirthday.setVisibility(View.GONE);
 
-            contentRow.setGravity(Gravity.CENTER);
+//            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
 
             LinearLayout.LayoutParams lp =
                     new LinearLayout.LayoutParams(
@@ -273,10 +273,9 @@ public class CommonAlertBox {
                             LinearLayout.LayoutParams.WRAP_CONTENT
                     );
 
-            layoutAnniversary.setLayoutParams(lp);
-        }
-        else {
-
+            layoutBirthday.setLayoutParams(lp);
+            tvAnniversary.setPadding((int) activity.getResources().getDimension(R.dimen._60sdp), 0 , 0, 0);
+        } else {
             layoutBirthday.setVisibility(View.VISIBLE);
             layoutAnniversary.setVisibility(View.VISIBLE);
 
@@ -291,10 +290,8 @@ public class CommonAlertBox {
             layoutBirthday.setLayoutParams(lp);
             layoutAnniversary.setLayoutParams(lp);
 
-            contentRow.setGravity(Gravity.CENTER_VERTICAL);
+            contentRow.setGravity(Gravity.TOP);
         }
-
-
 
         // 🔹 If only one section — center it vertically
 //        if (hasBirthday && !hasAnniversary) {
@@ -312,15 +309,38 @@ public class CommonAlertBox {
         AlertDialog dialog = alert.create();
         dialog.show();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setLayout(
-                    (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.60),
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-        }
-
+//        if (dialog.getWindow() != null) {
+//            if ((hasBirthday && !hasAnniversary) || (!hasBirthday && hasAnniversary)) {
+//                dialog.getWindow().setLayout(
+//                        ViewGroup.LayoutParams.WRAP_CONTENT,
+//                        ViewGroup.LayoutParams.WRAP_CONTENT
+//                );
+//            }
+//            else {
+//                dialog.getWindow().setLayout(
+//                        (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.60),
+//                        ViewGroup.LayoutParams.WRAP_CONTENT
+//                );
+//            }
+//        }
+        dialog.setOnShowListener(d -> {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                if ((hasBirthday && !hasAnniversary) || (!hasBirthday && hasAnniversary)) {
+                    window.setLayout(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                } else {
+                    window.setLayout(
+                            (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.70),
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                }
+            }
+        });
         btnOk.setOnClickListener(v -> {
-            v.setEnabled(false); // prevents double-tap
+            v.setEnabled(false);
             Log.d("CombinedWishes", "OK clicked, dismissing...");
             dialog.dismiss();
         });

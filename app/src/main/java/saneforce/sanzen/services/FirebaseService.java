@@ -93,6 +93,7 @@ public class FirebaseService extends FirebaseMessagingService {
                         if (body.contains("$")) {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(".Kindly Logout & Login the App", "");
                                 body = body.replace(" Kindly Logout the App &", "");
                                 body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
@@ -117,6 +118,7 @@ public class FirebaseService extends FirebaseMessagingService {
                         } else {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(".Kindly Logout & Login the App", "");
                                 body = body.replace(" Kindly Logout the App &", "");
                                 body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
