@@ -664,4 +664,6 @@
     <string name="pause">Pause</string>
     <string name="play">Play</string>
     <string name="please_select_at_least">"Please select at least "</string>
+    <string name="please_plan_all_the">"Please plan all the "</string>
+    <string name="at_least_one_time">" at least one time"</string>
 </resources>
