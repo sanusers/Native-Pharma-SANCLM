@@ -956,7 +956,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
             yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return yy;
     }

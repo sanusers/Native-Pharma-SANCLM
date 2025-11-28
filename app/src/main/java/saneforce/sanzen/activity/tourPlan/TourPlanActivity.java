@@ -2127,8 +2127,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return new ModelClass();
     }
 
-    private OneBuildModelClass prepareAndSaveSTPModelClassOneBuild(String
-                                                                           day, String date, String dayName, String dayOfWeek, LocalDate localDate2) {
+    private OneBuildModelClass prepareAndSaveSTPModelClassOneBuild(String day, String date, String dayName, String dayOfWeek, LocalDate localDate2) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayOfWeek);
         String monthYear = monthYearFromDate(localDate2);

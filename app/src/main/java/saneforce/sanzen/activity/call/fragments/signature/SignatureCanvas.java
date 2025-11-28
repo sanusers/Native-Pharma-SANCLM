@@ -165,7 +165,7 @@ public class SignatureCanvas extends View {
 //        imageName = DCRCallActivity.CallActivityCustDetails.get(0).getCode();
         imageName = DCRCallActivity.CallActivityCustDetails.get(0).getName();
         if(imageName != null) {
-            this.imageName = "Sign" + SfCode + "_" + imageName + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
+            this.imageName = /*"Sign" + SfCode + "_" +*/ imageName + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
 
             File file = null;
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {

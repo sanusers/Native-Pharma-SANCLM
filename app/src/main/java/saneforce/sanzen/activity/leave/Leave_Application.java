@@ -267,6 +267,7 @@ public class Leave_Application extends AppCompatActivity {
                                 jsonImage.put("tableName", "uploadphoto");
                                 jsonImage.put("sfcode", SharedPref.getSfCode(Leave_Application.this));
                                 jsonImage.put("division_code", SharedPref.getDivisionCode(Leave_Application.this));
+                                Log.v("LeaveImage",jsonImage.toString());
                                 File file = null;
                                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                                     file = new File(Leave_Application.this.getExternalFilesDir(null) + "/LeaveAttachment/");
@@ -284,7 +285,7 @@ public class Leave_Application extends AppCompatActivity {
                                         Log.e("File Creation", "Destination File Creation Failed.");
                                     }
                                     attachmentFilePath = destinationFile.getAbsolutePath();
-                                } catch (IOException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             } catch (Exception e) {
@@ -392,7 +393,7 @@ public class Leave_Application extends AppCompatActivity {
 
     private void copyFileToAppDir(Uri sourceUri) {
         try {
-            File destDir = new File(getApplicationContext().getExternalFilesDir(null), "ActivityUpload");
+            File destDir = new File(getApplicationContext().getExternalFilesDir(null), "LeaveAttachment");
             if (!destDir.exists()) destDir.mkdirs();
             String fileName = getFileNameFromUri(sourceUri);
             if (fileName == null) fileName = "file_" + System.currentTimeMillis();
@@ -1056,7 +1057,8 @@ public class Leave_Application extends AppCompatActivity {
             yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
 
             Log.d("path", String.valueOf(yy));
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return yy;
     }
@@ -1074,6 +1076,7 @@ public class Leave_Application extends AppCompatActivity {
                         try {
                             Submit();
                         } catch (Exception e) {
+                            e.printStackTrace();
                             Log.v("SendOutboxCall", "-error---" + e);
                         }
                     }
