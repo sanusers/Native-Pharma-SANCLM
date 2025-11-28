@@ -26,6 +26,7 @@ import java.util.List;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -72,7 +73,7 @@ public class HQSelector {
                         }
                     }
                 }
-                showDialog(context, inflater, tv_hqName, jsonArray, list, hqChangeListener);
+                showDialog(fragment, context, inflater, tv_hqName, jsonArray, list, hqChangeListener);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -93,7 +94,7 @@ public class HQSelector {
                         }
                     }
                 }
-                showDialog(context, inflater, tv_hqName, jsonArray, list, hqChangeListener);
+                showDialog(fragment, context, inflater, tv_hqName, jsonArray, list, hqChangeListener);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -112,7 +113,7 @@ public class HQSelector {
                         list.add(jsonObject.optString("name"));
                     }
                 }
-                showDialog(context, inflater, tv_hqName, jsonArray, list, hqChangeListener);
+                showDialog(fragment, context, inflater, tv_hqName, jsonArray, list, hqChangeListener);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -120,7 +121,7 @@ public class HQSelector {
         });
     }
 
-    private static void showDialog(Context context, LayoutInflater inflater, TextView tv_hqName, JSONArray jsonArray, List<String> list, OnHQChangeListener hqChangeListener) {
+    private static void showDialog(Fragment fragment, Context context, LayoutInflater inflater, TextView tv_hqName, JSONArray jsonArray, List<String> list, OnHQChangeListener hqChangeListener) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         View dialogView = inflater.inflate(R.layout.dialog_listview, null);
         alertDialog.setView(dialogView);
@@ -176,6 +177,7 @@ public class HQSelector {
                 }
             }
             hqChangeListener.onHQChange(hqID, hqName);
+            hideKeyboard(fragment, context, searchView);
             dialog.dismiss();
         });
 

@@ -190,6 +190,12 @@ public class JWOthersFragment extends Fragment {
                     JWKCodeList = gson.fromJson(getjwkcode, type);
 
                     Map<String, List<String>> jcMap = SharedPref.getJCMap(requireContext());
+                    if (jcMap == null) {
+                        jcMap = new HashMap<>();
+                    }
+                    jcMap.put(TodayPlanSfCode, JWKCodeList);
+                    SharedPref.setJWKCODE(requireContext(), JWKCodeList, HomeDashBoard.selectedDate.toString());
+                    SharedPref.saveJCMap(requireContext(), jcMap, HomeDashBoard.selectedDate.toString());
                     if (jcMap.containsKey(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
                         JWKCodeList = (ArrayList<String>) jcMap.get(DcrCallTabLayoutActivity.TodayPlanSfCode);
                     } else {

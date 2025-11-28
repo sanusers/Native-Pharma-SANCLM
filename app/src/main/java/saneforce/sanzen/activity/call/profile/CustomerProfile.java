@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.profile;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
+import static saneforce.sanzen.activity.call.DCRCallActivity.CusCheckInOutNeed;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.storingSlide;
 
 import android.Manifest;
@@ -176,7 +177,14 @@ public class CustomerProfile extends AppCompatActivity {
         viewPagerAdapter.add(new OverviewFragment(), "Overview");
         viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        cusName.setText(CallActivityCustDetails.get(0).getName());
+        if (CallActivityCustDetails != null) {
+            cusName.setText(CallActivityCustDetails.get(0).getName());
+        } else {
+            Intent intent = new Intent(CustomerProfile.this, HomeDashBoard.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

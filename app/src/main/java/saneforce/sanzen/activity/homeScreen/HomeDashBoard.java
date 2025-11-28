@@ -164,7 +164,6 @@ import saneforce.sanzen.utility.NetworkChangeReceiver;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-
     @SuppressLint("StaticFieldLeak")
     public static ActivityHomeDashBoardBinding binding;
     public static HomeDashBoard homeDashBoardActivity;
@@ -173,6 +172,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
     public static String CustomPresentationNeed, PresentationNeed, SequentialEntry, CheckInOutNeed;
     public static LocalDate selectedDate;
+    public static String workingDate = "";
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
     ProgressDialog progressDialog;
@@ -669,28 +669,35 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CommonAlertBox.CheckLocationStatus(HomeDashBoard.this, gpsTrack);
 
             boolean isResetPasswordVisible = false;
-            String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
-            if (signInTime.isEmpty() && !SharedPref.getIsSetupSynced(HomeDashBoard.this)) {
-                isResetPasswordVisible = true;
-                changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-            } else if (signInTime.isEmpty()) {
-                syncSetup();
-            } else {
-                try {
+            if (SharedPref.getResetPasswordNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
+                String signInTime = SharedPref.getSignInTime(HomeDashBoard.this);
+                if (signInTime.isEmpty() && !SharedPref.getIsSetupSynced(HomeDashBoard.this)) {
+                    isResetPasswordVisible = true;
+                    changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+                } else if (signInTime.isEmpty()) {
+                    syncSetup();
+                } else {
+                    try {
 //                    JSONObject jsonObject = new JSONObject(signInTime);
 //                    String date = jsonObject.optString("date");
 //                    Log.i("Login date", "onPostCreate: " + date);
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_1);
-                    LocalDateTime givenDate = LocalDateTime.parse(signInTime, formatter);
-                    LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(90);
-                    if (givenDate.isBefore(ninetyDaysAgo)) {
-                        isResetPasswordVisible = true;
-                        changePassword(HomeDashBoard.this.getString(R.string.reset_password));
-                    } else {
-                        System.out.println("The given date is within the last 90 days.");
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_1);
+                        LocalDateTime givenDate = LocalDateTime.parse(signInTime, formatter);
+                        String resetPasswordDays = SharedPref.getResetPasswordDays(HomeDashBoard.this);
+                        int days = 90;
+                        if (resetPasswordDays != null && !resetPasswordDays.isEmpty()) {
+                            days = Integer.parseInt(resetPasswordDays);
+                        }
+                        LocalDateTime ninetyDaysAgo = LocalDateTime.now().minusDays(days);
+                        if (givenDate.isBefore(ninetyDaysAgo)) {
+                            isResetPasswordVisible = true;
+                            changePassword(HomeDashBoard.this.getString(R.string.reset_password));
+                        } else {
+                            System.out.println("The given date is within the last 90 days.");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
             if (!isResetPasswordVisible) {
@@ -795,6 +802,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (savedInstanceState.getString("date") != null) {
                 binding.textDate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, savedInstanceState.getString("date")));
                 selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                workingDate = selectedDate.toString();
             }
         }
 
@@ -1439,14 +1447,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     @SuppressLint("WrongConstant")
     public void showPopup(ImageView viewed_img) {
-
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams") View popupView = layoutInflater.inflate(R.layout.user_details, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 //        popupWindow.showAtLocation(viewed_img, Gravity.END, 68, -148);
         int y = -(getResources().getDimensionPixelSize(R.dimen._64sdp));
         int x = (getResources().getDimensionPixelSize(R.dimen._20sdp));
-        popupWindow.showAtLocation(viewed_img, Gravity.END, x, y);
+        if (!activity.isFinishing() && !activity.isDestroyed()) {
+            popupWindow.showAtLocation(viewed_img, Gravity.END, x, y);
+        }
 
         TextView user_name = popupView.findViewById(R.id.user_name);
         TextView sf_name = popupView.findViewById(R.id.sf_name);
@@ -2006,6 +2015,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_27, dateRequired);
                     selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
                     binding.textDate.setText(monthDateYear);
+                    workingDate = selectedDate.toString();
                     SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
                     Log.e("TAG 0", "checkAndSetEntryDate: " + selectedDate);
                 } else if (canMoveNextDate) {
@@ -2013,12 +2023,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_27, dateRequired);
                     selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
                     binding.textDate.setText(monthDateYear);
+                    workingDate = selectedDate.toString();
                     SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
                     Log.e("TAG 1", "checkAndSetEntryDate: " + selectedDate);
                 } else {
                     canMoveNextDate = true;
                     selectedDate = null;
                     binding.textDate.setText(null);
+                    workingDate = "";
                     Log.e("TAG 3", "checkAndSetEntryDate: " + selectedDate);
                 }
                 binding.viewPagerProgress.setVisibility(View.GONE);
@@ -2040,6 +2052,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             public void noDatesFound() {
                 selectedDate = null;
                 binding.textDate.setText(null);
+                workingDate = "";
                 binding.viewPagerProgress.setVisibility(View.GONE);
                 if (shouldShowCalender) {
                     setupLeftViewPager(context, fragmentManager);
@@ -2215,7 +2228,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 break;
 
             case R.id.img_account:
-                showPopup(binding.imgAccount);
+                if (!HomeDashBoard.this.isFinishing() && !HomeDashBoard.this.isDestroyed()) {
+                    showPopup(binding.imgAccount);
+                }
                 break;
 
             case R.id.cancel_img:

@@ -567,6 +567,7 @@ public class WorkPlanEntriesNeeded {
             pastDates.addAll(datesNeeded);
             datesNeeded = pastDates;
             Log.i("past dates", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(pastDates.toArray()));
+            Log.v("TAG 5", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
 //            }
 
             datesNeededDup = new TreeSet<>(datesNeeded);
@@ -579,6 +580,7 @@ public class WorkPlanEntriesNeeded {
                     break;
                 }
             }
+            Log.i("TAG 6", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -635,8 +637,15 @@ public class WorkPlanEntriesNeeded {
                 syncTaskStatus.noDatesFound();
             }
         }else {
-            if(!SharedPref.getSelectedDateCal(context).isEmpty()) {
+            if(!SharedPref.getSelectedDateCal(context).isEmpty() && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
                 WorkPlanFragment.dayStatus = dayFlagMap.get(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)));
+                syncTaskStatus.datesFound();
+            }else if(!SharedPref.getSelectedDateCal(context).isEmpty()
+                    && !datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))
+                    && date != null && !date.isEmpty()
+                    && TimeUtils.isBeforeOrToday(date, TimeUtils.FORMAT_34)) {
+                SharedPref.setSelectedDateCal(context, date);
+                WorkPlanFragment.dayStatus = dayFlagMap.get(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, date));
                 syncTaskStatus.datesFound();
             }else {
                 SharedPref.setSelectedDateCal(context, "");
