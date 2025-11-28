@@ -135,7 +135,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     String changeStatus = "";
 
-    String multiHqOneBuild = "0", getAddSessionCountLimitMgr = "5";
+    String getAddSessionCountLimitMgr = "5";
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
@@ -586,7 +586,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                     OneBuildModelClass oneBuildModelClass = inputDataArrayOneBuild;
                     ArrayList<OneBuildModelClass.SessionList> sessionLists = oneBuildModelClass.getSessionList();
-                    if(multiHqOneBuild.equalsIgnoreCase("0") && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") || multiHqOneBuild.equalsIgnoreCase("1")) {
+                    if(SharedPref.getMultiHqNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") || SharedPref.getMultiHqNeed(TourPlanActivity.this).equalsIgnoreCase("1")) {
                         if (sessionLists.size() < Integer.parseInt(addSessionCountLimit)) {
                             for (int i = 0; i < sessionLists.size(); i++) {
                                 OneBuildModelClass.SessionList modelClass1 = sessionLists.get(i);
@@ -661,7 +661,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         } else {
                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.reached_session_limit));
                         }
-                    } else if (multiHqOneBuild.equalsIgnoreCase("0") && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                    } else if (SharedPref.getMultiHqNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
                         if (sessionLists.size() < Integer.parseInt(getAddSessionCountLimitMgr)) {
                             for (int i = 0; i < sessionLists.size(); i++) {
                                 OneBuildModelClass.SessionList modelClass1 = sessionLists.get(i);
