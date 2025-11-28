@@ -830,7 +830,7 @@
                                 android:fontFamily="@font/satoshi_variable"
                                 android:gravity="center"
                                 android:padding="@dimen/_9sdp"
-                                android:text="Sync Listed Doctor"
+                                android:text="@string/sync_listed_doctor"
                                 android:textAllCaps="false"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_6sdp"

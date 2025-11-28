@@ -126,7 +126,10 @@ public class QuizActivity extends AppCompatActivity {
         quizOfflineDataDao = roomDB.quizOfflineDataDao();
         quizAssertsDao = roomDB.quizAssertsDao();
         binding.startQuizBtn.setText(String.format("Start %s", quizCap));
-        binding.tvNoQuiz.setText(String.format("No %s Found", quizCap));
+       // binding.tvNoQuiz.setText(String.format("No %s Found", quizCap));
+        //String quizCap = SharedPref.getQuizCap(this);
+        binding.tvNoQuiz.setText(getString(R.string.no_item_found, quizCap));
+
         assertsNames.clear();
         isSingleAssertDownloadingStatus = false;
         boolean syncNeeded = false;

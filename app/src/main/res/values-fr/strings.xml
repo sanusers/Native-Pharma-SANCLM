@@ -670,6 +670,40 @@
     <string name="brand_wise"> Par marque </string>
     <string name="slide_wise"> Par diapositive </string>
     <string name="play"> Lire </string>
+    <string name="slide_downloader">Téléchargeur de diapositives</string>
+    <string name="welcome_slide_downloader">Bienvenue Téléchargeur de diapositives</string>
+    <string name="brand">Marque</string>
+    <string name="mapped_competitor_prod">Produit concurrent mappé</string>
+    <string name="call_sync">Sync des appels</string>
+    <string name="date_sync">Sync de la date</string>
+    <string name="work_plan">Plan de travail</string>
+    <string name="visit_control">Contrôle des visites</string>
+    <string name="work_type">Type de travail</string>
+    <string name="tp_setup">Configuration TP</string>
+    <string name="stp_setup">Configuration STP</string>
+    <string name="product_slide">Diapositive Produit</string>
+    <string name="speciality_slide">Diapositive Spécialité</string>
+    <string name="brand_slide">Diapositive Marque</string>
+    <string name="therapeutic_slide">Diapositive Thérapeutique</string>
+    <string name="welcome_slide">Diapositive d\'accueil</string>
+    <string name="hierarchy">Hiérarchie</string>
+    <string name="sync_listed_doctor">Sync les médecins listés</string>
+    <string name="sync_input">Sync %1$s</string>
+    <string name="sync_product">Sync %1$s</string>
+    <string name="sync_leave">Sync %1$s</string>
+    <string name="sync_activity">Sync %1$s</string>
+    <string name="sync_worktype">Sync %1$s</string>
+    <string name="sync_tourplan">Sync %1$s</string>
+    <string name="sync_slide">Sync %1$s</string>
+    <string name="sync_subordinate">Sync %1$s</string>
+    <string name="sync_other">Sync %1$s</string>
+    <string name="sync_profile">Sync %1$s</string>
+    <string name="sync_setup">Sync %1$s</string>
+    <string name="no_item_found">Aucun %1$s trouvé</string>
+    <string name="warning_label">Avertissement !</string>
+
+
+
 
 
 

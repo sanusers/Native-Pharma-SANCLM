@@ -643,6 +643,7 @@
     <string name="avg">Average</string>
     <string name="cvg">Coverage</string>
     <string name="draft_save"> Tour Plan Data Saved Successfully</string>
+
     //need to convert
     <string name="need_remarks"> Enter Remarks in session </string>
     <string name="reset_password">Reset Password</string>
@@ -694,6 +695,41 @@
     <string name="slides"> Slides </string>
     <string name="brand_wise"> Brand Wise </string>
     <string name="slide_wise"> Slide Wise </string>
+    <string name="slide_downloader">Slide downloader</string>
+    <string name="welcome_slide_downloader">Welcome Slide Downloader</string>
+    <string name="brand">Brand</string>
+    <string name="mapped_competitor_prod">Mapped Competitor Product</string>
+    <string name="call_sync">Call Sync</string>
+    <string name="date_sync">Date Sync</string>
+    <string name="work_plan">Work Plan</string>
+    <string name="visit_control">Visit Control</string>
+    <string name="work_type">Work Type</string>
+    <string name="tp_setup">TP Setup</string>
+    <string name="stp_setup">STP Setup</string>
+    <string name="product_slide">Product Slide</string>
+    <string name="speciality_slide">Speciality Slide</string>
+    <string name="brand_slide">Brand Slide</string>
+    <string name="therapeutic_slide">Therapeutic Slide</string>
+    <string name="welcome_slide">Welcome Slide</string>
+    <string name="hierarchy">Hierarchy</string>
+    <string name="sync_listed_doctor">Sync Listed Doctor</string>
+    <string name="sync_input">Sync %1$s</string>
+    <string name="sync_product">Sync %1$s</string>
+    <string name="sync_leave">Sync %1$s</string>
+    <string name="sync_activity">Sync %1$s</string>
+    <string name="sync_worktype">Sync %1$s</string>
+    <string name="sync_tourplan">Sync %1$s</string>
+    <string name="sync_slide">Sync %1$s</string>
+    <string name="sync_subordinate">Sync %1$s</string>
+    <string name="sync_other">Sync %1$s</string>
+    <string name="sync_profile">Sync %1$s</string>
+    <string name="sync_setup">Sync %1$s</string>
+    <string name="no_item_found">No %1$s Found</string>
+    <string name="warning_label">Warning !</string>
+
+
+
+
 
 
 
