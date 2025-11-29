@@ -27,7 +27,11 @@ import java.io.StringWriter;
 import java.util.Arrays;
 
 import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
+import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
+import saneforce.sanzen.activity.presentation.playPreview.PlaySlidePreviewActivity;
 import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
@@ -83,7 +87,7 @@ public class SanZenApp extends Application {
             public void onActivityPostCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
 //                ActivityLifecycleCallbacks.super.onActivityPostCreated(activity, savedInstanceState);
                 if (activity.getWindow() != null) {
-                    if ((activity instanceof PreviewActivity) || (activity instanceof DCRCallActivity) || (activity instanceof PresentationActivity)) {
+                    if ((activity instanceof PreviewActivity) || (activity instanceof PresentationActivity) || (activity instanceof CreatePresentationActivity) || (activity instanceof PlaySlideDetailing) || (activity instanceof PlaySlidePreviewActivity) || (activity instanceof CameraActivity)) {
                         activity.getWindow().setFlags(
                                 WindowManager.LayoutParams.FLAG_SECURE,
                                 WindowManager.LayoutParams.FLAG_SECURE

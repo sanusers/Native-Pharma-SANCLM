@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -510,6 +511,8 @@ public class SharedPref {
     public static final String TP_MGR_NAME  = "ReportingTPMgrName";
     public static final String LEV_MGR_CODE = "ReportingLeaveMgrCode";
     public static final String LEV_MGR_NAME = "ReportingLeaveMgrName";
+    public static final String RESET_PASSWORD_NEED = "reset_password_need";
+    public static final String RESET_PASSWORD_DAYS = "reset_password_days";
 
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
@@ -524,7 +527,6 @@ public class SharedPref {
 
     public static void InsertLogInData(Context context, JSONObject jsonObject) {
         try {
-
             sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
             editor = sharedPreferences.edit();
             editor.putString(SF_CODE, jsonObject.optString("SF_Code"));
@@ -869,6 +871,9 @@ public class SharedPref {
             editor.putString(REPORTING_TO_SF, jsonObject.optString("Reporting_To_SF"));
             editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
             editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
+            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
+            editor.putString(RESET_PASSWORD_NEED,jsonObject.optString("reset_password_need"));
+            editor.putString(RESET_PASSWORD_DAYS,jsonObject.optString("reset_password_days"));
             editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
@@ -879,14 +884,10 @@ public class SharedPref {
             editor.putString(TP_MGR_NAME,jsonObject.optString("ReportingTPMgrName"));
             editor.putString(LEV_MGR_CODE,jsonObject.optString("ReportingLeaveMgrCode"));
             editor.putString(LEV_MGR_NAME,jsonObject.optString("ReportingLeaveMgrName"));
-            editor.putString(WELCOME_SLIDES_PATH, "");
-
             editor.apply();
-
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
-
     }
 
     public static String getSfName(Context context) {
@@ -3235,6 +3236,14 @@ public class SharedPref {
     }
     public static String getLeaveMgrName(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(LEV_MGR_NAME,"");
+    }
+
+    public static String getResetPasswordNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RESET_PASSWORD_NEED,"1");
+    }
+
+    public static String getResetPasswordDays(Context context) {
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RESET_PASSWORD_DAYS,"90");
     }
 
     public static String getSlideAutoPlay(Context context) {

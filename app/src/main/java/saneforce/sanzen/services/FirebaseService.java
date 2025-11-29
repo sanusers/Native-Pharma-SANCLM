@@ -19,7 +19,14 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.List;
 import java.util.Random;
 
+import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
+import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
+import saneforce.sanzen.activity.presentation.playPreview.PlaySlidePreviewActivity;
+import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
+import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.application.AppActivityTracker;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
@@ -93,11 +100,20 @@ public class FirebaseService extends FirebaseMessagingService {
                         if (body.contains("$")) {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(".Kindly Logout & Login the App", "");
                                 body = body.replace(" Kindly Logout the App &", "");
                                 body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
                                 if (isAppInForeground()) {
-                                    id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
+                                    AppActivityTracker appActivityTracker = AppActivityTracker.getInstance();
+                                    if (appActivityTracker != null) {
+                                        Activity activity = AppActivityTracker.getInstance().getCurrentActivity();
+                                        if (activity != null && !((activity instanceof DCRCallActivity) || (activity instanceof PreviewActivity) || (activity instanceof PresentationActivity) || (activity instanceof PlaySlideDetailing) || (activity instanceof PlaySlidePreviewActivity) || (activity instanceof CameraActivity))) {
+                                            id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
+                                        } else {
+                                            id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 0));
+                                        }
+                                    }
                                 } else {
                                     id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 0));
                                 }
@@ -117,6 +133,7 @@ public class FirebaseService extends FirebaseMessagingService {
                         } else {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(".Kindly Logout & Login the App", "");
                                 body = body.replace(" Kindly Logout the App &", "");
                                 body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
@@ -143,11 +160,20 @@ public class FirebaseService extends FirebaseMessagingService {
                         if (body.contains("$")) {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(".Kindly Logout & Login the App", "");
                                 body = body.replace(" Kindly Logout the App &", "");
                                 body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");
                                 if (isAppInForeground()) {
-                                    id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
+                                    AppActivityTracker appActivityTracker = AppActivityTracker.getInstance();
+                                    if (appActivityTracker != null) {
+                                        Activity activity = AppActivityTracker.getInstance().getCurrentActivity();
+                                        if (activity != null && !((activity instanceof DCRCallActivity) || (activity instanceof PreviewActivity) || (activity instanceof PresentationActivity) || (activity instanceof PlaySlideDetailing) || (activity instanceof PlaySlidePreviewActivity) || (activity instanceof CameraActivity))) {
+                                            id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 1));
+                                        } else {
+                                            id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 0));
+                                        }
+                                    }
                                 } else {
                                     id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1, 0));
                                 }
@@ -167,6 +193,7 @@ public class FirebaseService extends FirebaseMessagingService {
                         } else {
                             try {
                                 body = body.replace(" Kindly Logout & Login the App.", "");
+                                body = body.replace(".Kindly Logout & Login the App", "");
                                 body = body.replace(" Kindly Logout the App &", "");
                                 body = body.replace(".Kindly Logout the App &", ".");
                                 body = body.replace("Kindly Logout the App.", "");

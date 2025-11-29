@@ -184,7 +184,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 }
                 try {
                     for (VideoView videoView : videoViewList.values()) {
-                        if (videoView != null && videoView.isPlaying()) {
+                        if (videoView != null) {
+                            if (videoView.isPlaying()) videoView.stopPlayback();
+                            videoView.suspend();
+                            videoView.clearAnimation();
+                            videoView.setVisibility(View.GONE);
                             videoView.stopPlayback();
                         }
                     }
@@ -907,7 +911,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                 break;
                             }
                         }
-                        if (isAvailableScrib) {
+                        if (arrayStore == null) {
+                            arrayStore = new ArrayList<>();
+                        }
+                        if(isAvailableScrib) {
                             arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
                         } else {
                             arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
@@ -968,7 +975,16 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {        View view = (View) object;
+        VideoView videoView = view.findViewById(R.id.videoView);
+        if (videoView != null) {
+            try {
+                videoView.stopPlayback();
+                videoView.suspend();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         container.removeView((View) object);
     }
 

@@ -17,7 +17,6 @@ import java.util.Locale;
 
 import saneforce.sanzen.storage.SharedPref;
 
-
 public class UtilityClass {
     public static boolean isOnline(Context context) {
         Log.v("nettt", "--0000--");
@@ -81,7 +80,6 @@ public class UtilityClass {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return (netInfo != null && netInfo.isConnected());
     }
-
 
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
