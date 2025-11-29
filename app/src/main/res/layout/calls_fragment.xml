@@ -13,7 +13,7 @@
       android:layout_marginLeft="@dimen/_3sdp"
       android:layout_marginTop="@dimen/_3sdp"
       android:fontFamily="@font/satoshi_medium"
-      android:text="Call Count :"
+      android:text="@string/call_count"
       android:textColor="@color/black_45"
       android:textSize="@dimen/_7sdp">
 
@@ -105,7 +105,7 @@
         android:background="@drawable/background_button_border_black"
         android:fontFamily="@font/satoshi_medium"
         android:gravity="center"
-        android:text="Add Call"
+        android:text="@string/add_call"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="@dimen/_7sdp"
@@ -120,7 +120,7 @@
         android:background="@drawable/background_button_border_black"
         android:fontFamily="@font/satoshi_medium"
         android:gravity="center"
-        android:text="Add Activity"
+        android:text="@string/add_activity"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="@dimen/_7sdp"

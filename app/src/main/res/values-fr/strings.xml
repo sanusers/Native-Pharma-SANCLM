@@ -688,19 +688,30 @@
     <string name="welcome_slide">Diapositive d\'accueil</string>
     <string name="hierarchy">Hiérarchie</string>
     <string name="sync_listed_doctor">Sync les médecins listés</string>
-    <string name="sync_input">Sync %1$s</string>
-    <string name="sync_product">Sync %1$s</string>
-    <string name="sync_leave">Sync %1$s</string>
-    <string name="sync_activity">Sync %1$s</string>
-    <string name="sync_worktype">Sync %1$s</string>
-    <string name="sync_tourplan">Sync %1$s</string>
-    <string name="sync_slide">Sync %1$s</string>
-    <string name="sync_subordinate">Sync %1$s</string>
-    <string name="sync_other">Sync %1$s</string>
-    <string name="sync_profile">Sync %1$s</string>
-    <string name="sync_setup">Sync %1$s</string>
+<!--    <string name="sync_input">Sync %1$s</string>-->
+<!--    <string name="sync_product">Sync %1$s</string>-->
+<!--    <string name="sync_leave">Sync %1$s</string>-->
+<!--    <string name="sync_activity">Sync %1$s</string>-->
+<!--    <string name="sync_worktype">Sync %1$s</string>-->
+<!--    <string name="sync_tourplan">Sync %1$s</string>-->
+<!--    <string name="sync_slide">Sync %1$s</string>-->
+<!--    <string name="sync_subordinate">Sync %1$s</string>-->
+<!--    <string name="sync_other">Sync %1$s</string>-->
+<!--    <string name="sync_profile">Sync %1$s</string>-->
+<!--    <string name="sync_setup">Sync %1$s</string>-->
     <string name="no_item_found">Aucun %1$s trouvé</string>
     <string name="warning_label">Avertissement !</string>
+    <string name="call_count">Nombre d\appels :</string>
+    <string name="add_call">Ajouter un appel</string>
+    <string name="cancel_confirmation">Êtes-vous sûr de vouloir annuler ?</string>
+    <string name="add_activity">Ajouter %1$s</string>
+    <string name="no_activity_details">Aucune %1$s</string>
+    <string name="select_activity">Sélectionnez une activité dans la liste pour afficher le contenu</string>
+    <string name="location_captured">Emplacement capturé</string>
+
+
+
+
 
 
 

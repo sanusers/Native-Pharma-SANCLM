@@ -471,7 +471,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.input);
                     //binding.childSync.setText("Sync Input");
                     String inputLabel = getString(R.string.input);
-                    binding.childSync.setText(getString(R.string.sync_input, inputLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + inputLabel);
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(inputModelArray);
                     populateAdapter(arrayForAdapter);
@@ -486,7 +486,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.product);
                    // binding.childSync.setText("Sync Product");
                     String productLabel = getString(R.string.product);
-                    binding.childSync.setText(getString(R.string.sync_product, productLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + productLabel);
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(productModelArray);
                     populateAdapter(arrayForAdapter);
@@ -515,7 +515,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.leave);
                    // binding.childSync.setText("Sync Leave");
                     String leaveLabel = getString(R.string.leave);
-                    binding.childSync.setText(getString(R.string.sync_leave, leaveLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + leaveLabel);
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(leaveModelArray);
                     populateAdapter(arrayForAdapter);
@@ -545,7 +545,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 //                    String activityLabel = SharedPref.getActivityCap(MasterSyncActivity.this);
 //                    binding.childSync.setText(getString(R.string.sync_activity, activityLabel));
                     String activityLabel = getString(R.string.activity);
-                    binding.childSync.setText(getString(R.string.sync_activity, activityLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + activityLabel);
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(activityModelArray);
                     populateAdapter(arrayForAdapter);
@@ -560,7 +560,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.workType);
                    // binding.childSync.setText("Sync Work Type");
                     String worktypeLabel = getString(R.string.worktype);
-                    binding.childSync.setText(getString(R.string.sync_worktype, worktypeLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + worktypeLabel);
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(workTypeModelArray);
@@ -576,7 +576,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.tourPlan);
                     //binding.childSync.setText("Sync Tour Plan");
                     String tourplanLabel = getString(R.string.tour_plan);
-                    binding.childSync.setText(getString(R.string.sync_tourplan, tourplanLabel));
+                    binding.childSync.setText(getString(R.string.sync) +" " + tourplanLabel);
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(tpModelArray);
@@ -592,7 +592,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.slide);
                     //binding.childSync.setText("Sync Slide");
                     String slideLabel = getString(R.string.slide);
-                    binding.childSync.setText(getString(R.string.sync_slide, slideLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + slideLabel);
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(slideModelArray);
@@ -608,7 +608,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.subordinate);
                    // binding.childSync.setText("Sync Subordinate");
                     String subordinateLabel = getString(R.string.subordinate);
-                    binding.childSync.setText(getString(R.string.sync_subordinate, subordinateLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + subordinateLabel);
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(subordinateModelArray);
@@ -623,7 +623,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.Other);
                     //binding.childSync.setText("Sync Other");
                     String otherLabel = getString(R.string.other);
-                    binding.childSync.setText(getString(R.string.sync_other, otherLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " +  otherLabel);
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(otherModelArray);
                     populateAdapter(arrayForAdapter);
@@ -637,7 +637,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.Profile);
                    // binding.childSync.setText("Sync Profile");
                     String profileLabel = getString(R.string.profile);
-                    binding.childSync.setText(getString(R.string.sync_profile, profileLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + profileLabel);
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(profileModelArray);
                     populateAdapter(arrayForAdapter);
@@ -652,7 +652,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     listItemClicked(binding.setup);
                     //binding.childSync.setText("Sync Setup");
                     String setupLabel = getString(R.string.setup);
-                    binding.childSync.setText(getString(R.string.sync_setup, setupLabel));
+                    binding.childSync.setText(getString(R.string.sync) + " " + setupLabel);
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(setupModelArray);
                     populateAdapter(arrayForAdapter);

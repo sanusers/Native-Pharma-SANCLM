@@ -98,7 +98,8 @@ public class CommonUtilsMethods {
 
                 View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
                 TextView text = layout.findViewById(R.id.text);
-                text.setText("Location Captured:" + address);
+//                text.setText(R.string.location_captured + address);
+                text.setText(activity.getString(R.string.location_captured ) + address);
                 Toast toast = new Toast(activity);
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
                 toast.setDuration(Toast.LENGTH_LONG);

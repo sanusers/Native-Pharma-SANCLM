@@ -383,8 +383,9 @@ public class DynamicActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 binding.rlDetailsMain.setVisibility(View.GONE);
                 binding.rlNoActivity.setVisibility(View.VISIBLE);
+                binding.tvNoActivity.setText(getString(R.string.no) + " " + activityCap);
                 binding.llMainLayout.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap);
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + " " + activityCap);
             }
             binding.progressMain.setVisibility(View.GONE);
         } catch (Exception e) {

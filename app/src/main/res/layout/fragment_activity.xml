@@ -30,6 +30,7 @@
                 android:src="@drawable/no_data_folder" />
 
             <TextView
+                android:id="@+id/tvNoActivity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/img_not_found1"
@@ -37,7 +38,6 @@
                 android:layout_marginVertical="@dimen/_2sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:padding="@dimen/_2sdp"
-                android:text="No Activity "
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_7ssp"
                 android:textStyle="bold" />

@@ -713,19 +713,32 @@
     <string name="welcome_slide">Welcome Slide</string>
     <string name="hierarchy">Hierarchy</string>
     <string name="sync_listed_doctor">Sync Listed Doctor</string>
-    <string name="sync_input">Sync %1$s</string>
-    <string name="sync_product">Sync %1$s</string>
-    <string name="sync_leave">Sync %1$s</string>
-    <string name="sync_activity">Sync %1$s</string>
-    <string name="sync_worktype">Sync %1$s</string>
-    <string name="sync_tourplan">Sync %1$s</string>
-    <string name="sync_slide">Sync %1$s</string>
-    <string name="sync_subordinate">Sync %1$s</string>
-    <string name="sync_other">Sync %1$s</string>
-    <string name="sync_profile">Sync %1$s</string>
-    <string name="sync_setup">Sync %1$s</string>
+<!--    <string name="sync_input">Sync %1$s</string>-->
+<!--    <string name="sync_product">Sync %1$s</string>-->
+<!--    <string name="sync_leave">Sync %1$s</string>-->
+<!--    <string name="sync_activity">Sync %1$s</string>-->
+<!--    <string name="sync_worktype">Sync %1$s</string>-->
+<!--    <string name="sync_tourplan">Sync %1$s</string>-->
+<!--    <string name="sync_slide">Sync %1$s</string>-->
+<!--    <string name="sync_subordinate">Sync %1$s</string>-->
+<!--    <string name="sync_other">Sync %1$s</string>-->
+<!--    <string name="sync_profile">Sync %1$s</string>-->
+<!--    <string name="sync_setup">Sync %1$s</string>-->
     <string name="no_item_found">No %1$s Found</string>
     <string name="warning_label">Warning !</string>
+    <string name="call_count">Call Count :</string>
+    <string name="add_call">Add Call</string>
+    <string name="cancel_confirmation">Are you sure, you want to cancel ?</string>
+    <string name="add_activity">Add %1$s</string>
+    <string name="no_activity_details">No %1$s</string>
+    <string name="select_activity">Select any activity on the list to view content</string>
+    <string name="location_captured">Location Captured</string>
+
+
+
+
+
+
 
 
 

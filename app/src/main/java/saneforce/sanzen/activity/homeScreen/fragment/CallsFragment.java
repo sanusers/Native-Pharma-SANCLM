@@ -258,7 +258,9 @@ public class CallsFragment extends Fragment {
                     }
                 }
             }
-            binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+            //binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+            binding.txtCallcount.setText((R.string.call_count) + " " + TodayCallList.size());
+
 
             adapter.notifyDataSetChanged();
         } catch (Exception ignored) {
@@ -296,6 +298,7 @@ public class CallsFragment extends Fragment {
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = CallsFragmentBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
@@ -319,7 +322,10 @@ public class CallsFragment extends Fragment {
         } else {
             binding.TvAddActivty.setVisibility(View.GONE);
         }
-        binding.TvAddActivty.setText("Add " + SharedPref.getActivityCap(requireContext()));
+        //binding.TvAddActivty.setText("Add " + SharedPref.getActivityCap(requireContext()));
+        String activityCap = SharedPref.getActivityCap(requireContext());
+        binding.TvAddActivty.setText(getString(R.string.add_activity, activityCap));
+
 
         adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
         LinearLayoutManager manager = new LinearLayoutManager(requireContext());
