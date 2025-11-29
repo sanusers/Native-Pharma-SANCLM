@@ -3076,7 +3076,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-
     private void accessibility() {
         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
         for (int bean = 0; bean < input.length(); bean++) {
