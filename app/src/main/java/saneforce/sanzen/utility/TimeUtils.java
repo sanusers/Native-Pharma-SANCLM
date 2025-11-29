@@ -61,14 +61,14 @@ public class TimeUtils {
 
     public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
         return simpleDateFormat.format(new Date(timestampMilliseconds));
     }
 
     public static String GetCurrentTimeStamp(String mFormat) {
         String stringDate;
         long timestampMilliseconds = System.currentTimeMillis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mFormat, Locale.ENGLISH);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mFormat, Locale.getDefault());
         stringDate = simpleDateFormat.format(new Date(timestampMilliseconds));
         return stringDate;
     }
@@ -86,7 +86,7 @@ public class TimeUtils {
 
     public static String GetCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
         String Str_Date = simpleDateFormat.format(new Date(timestampMilliseconds));
         Log.d(TAG, "GetCurrentDateTime: => " + Str_Date);
         return Str_Date;
