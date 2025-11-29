@@ -708,9 +708,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
               //  showBirthdayPopup();
                 String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-                if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this)) ||
-                        !today.equals(SharedPref.getAnniversaryShownDate(HomeDashBoard.this))) {
-
+                if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this)) || !today.equals(SharedPref.getAnniversaryShownDate(HomeDashBoard.this))) {
                     new Handler().postDelayed(this::showCombinedWishesPopup, 1000);
                 }
 //                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -2648,7 +2646,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         String birthDate = outputFormat.format(date);
                         if (birthDate.equalsIgnoreCase(todayStr)) {
                             int count = birthdayMsg.isEmpty() ? 1 : birthdayMsg.split("\n\n").length + 1;
-                            birthdayMsg += count + ". Dr. " + doctorName + "\n    " + territory + "\n\n";
+                            birthdayMsg += count + ". Dr. " + doctorName + "\n• " + territory + "\n\n";
 //                        if (birthDate.equalsIgnoreCase(todayStr)) {
 //                           // birthdayMsg = "🎉 Wish Dr. " + doctorName + "\n" + territory;
 //                            birthdayMsg += (birthdayMsg.isEmpty() ? "1" : String.valueOf(birthdayMsg.split("\n\n").length + 1))
@@ -2674,7 +2672,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         String annivDate = outputFormat.format(date);
                         if (annivDate.equalsIgnoreCase(todayStr)) {
                             int count = anniversaryMsg.isEmpty() ? 1 : anniversaryMsg.split("\n\n").length + 1;
-                            anniversaryMsg += count + ". Dr. " + doctorName + "\n    " + territory + "\n\n";
+                            anniversaryMsg += count + ". Dr. " + doctorName + "\n• " + territory + "\n\n";
 //                        if (annivDate.equalsIgnoreCase(todayStr)) {
 //                           // anniversaryMsg = "💐 Congratulate Dr. " + doctorName + " \n " + territory;
 //                            anniversaryMsg += (anniversaryMsg.isEmpty() ? "1" : String.valueOf(anniversaryMsg.split("\n\n").length + 1))

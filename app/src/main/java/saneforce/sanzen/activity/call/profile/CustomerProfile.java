@@ -214,7 +214,6 @@ public class CustomerProfile extends AppCompatActivity {
             }
         });
 
-
         btn_skip.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -307,8 +306,6 @@ public class CustomerProfile extends AppCompatActivity {
         } else {
             btn_skip.setVisibility(View.GONE);
         }
-
-
         img_back.setOnClickListener(view -> finish());
     }
 

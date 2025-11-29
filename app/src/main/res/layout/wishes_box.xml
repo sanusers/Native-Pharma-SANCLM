@@ -10,7 +10,7 @@
     <!-- 🎉 Title -->
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Today's Wishes !!!"
         android:gravity="center"
@@ -71,7 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Birthday!!!"
+                        android:text="Birthday"
                         android:textStyle="bold"
                         android:textColor="#000000"
                         android:textSize="@dimen/_7sdp" />
@@ -120,7 +120,8 @@
                         android:id="@+id/imgAnniversary"
                         android:layout_width="@dimen/_30sdp"
                         android:layout_height="@dimen/_30sdp"
-                        android:src="@drawable/birthday"
+                        android:padding="@dimen/_5sdp"
+                        android:src="@drawable/anniversary"
                         android:layout_marginEnd="6dp" />
 
                     <TextView
@@ -128,7 +129,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Anniversary!!!"
+                        android:text="Anniversary"
                         android:textStyle="bold"
                         android:textColor="#000000"
                         android:textSize="@dimen/_7sdp" />

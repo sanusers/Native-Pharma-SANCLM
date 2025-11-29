@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.location.Location;
 
 import android.provider.Settings;
@@ -188,8 +189,12 @@ public class CommonAlertBox {
         LayoutInflater inflater = activity.getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.wishes_box, null);
 
+        alert.setView(alertLayout);
+        AlertDialog dialog = alert.create();
+        dialog.show();
+
         TextView tvTitle = alertLayout.findViewById(R.id.tvTitle);
-        tvTitle.setText("Today's Wishes !!!");
+        tvTitle.setText("Today's Wishes");
 
         LinearLayout contentRow = alertLayout.findViewById(R.id.contentRow);
         LinearLayout layoutBirthday = alertLayout.findViewById(R.id.layoutBirthday);
@@ -253,39 +258,66 @@ public class CommonAlertBox {
 //            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
 
             // Remove weights → else center won't work
-            LinearLayout.LayoutParams lp =
-                    new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                    );
-
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutAnniversary.setLayoutParams(lp);
-            tvBirthday.setPadding((int) activity.getResources().getDimension(R.dimen._60sdp), 0 , 0, 0);
+
+            ViewGroup.LayoutParams params = tvBirthday.getLayoutParams();
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            tvBirthday.setLayoutParams(params);
+
+            tvBirthday.post(() -> {
+                float textSizePx = tvBirthday.getTextSize();
+                Paint paint = new Paint();
+                paint.setTextSize(textSizePx);
+                float textWidth = paint.measureText(tvBirthday.getText().toString());
+                int padding = tvBirthday.getPaddingLeft() + tvBirthday.getPaddingRight();
+                int finalWidth = (int) (textWidth + padding);
+                if (finalWidth < 400) finalWidth = 400;
+
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    int windowWidth = window.getDecorView().getMeasuredWidth();
+                    window.setLayout(Math.min(windowWidth, finalWidth), WindowManager.LayoutParams.WRAP_CONTENT);
+                }
+            });
+//            tvBirthday.setPadding((int) activity.getResources().getDimension(R.dimen._60sdp), 0 , (int) activity.getResources().getDimension(R.dimen._60sdp), 0);
         } else if (!hasBirthday && hasAnniversary) {
             layoutAnniversary.setVisibility(View.VISIBLE);
             layoutBirthday.setVisibility(View.GONE);
 
 //            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            LinearLayout.LayoutParams lp =
-                    new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                    );
-
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutBirthday.setLayoutParams(lp);
-            tvAnniversary.setPadding((int) activity.getResources().getDimension(R.dimen._60sdp), 0 , 0, 0);
+
+            ViewGroup.LayoutParams params = tvAnniversary.getLayoutParams();
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            tvAnniversary.setLayoutParams(params);
+
+            tvAnniversary.post(() -> {
+                float textSizePx = tvAnniversary.getTextSize();
+                Paint paint = new Paint();
+                paint.setTextSize(textSizePx);
+                float textWidth = paint.measureText(tvAnniversary.getText().toString());
+                int padding = tvAnniversary.getPaddingLeft() + tvAnniversary.getPaddingRight();
+                int finalWidth = (int) (textWidth + padding);
+                if (finalWidth < 400) finalWidth = 400;
+
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    int windowWidth = window.getDecorView().getMeasuredWidth();
+                    window.setLayout(Math.min(windowWidth, finalWidth), WindowManager.LayoutParams.WRAP_CONTENT);
+                }
+            });
+//            tvAnniversary.setPadding((int) activity.getResources().getDimension(R.dimen._60sdp), 0 , (int) activity.getResources().getDimension(R.dimen._60sdp), 0);
         } else {
             layoutBirthday.setVisibility(View.VISIBLE);
             layoutAnniversary.setVisibility(View.VISIBLE);
 
             // Restore 50–50 width
-            LinearLayout.LayoutParams lp =
-                    new LinearLayout.LayoutParams(
-                            0,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            1
-                    );
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
 
             layoutBirthday.setLayoutParams(lp);
             layoutAnniversary.setLayoutParams(lp);
@@ -305,10 +337,6 @@ public class CommonAlertBox {
 //            contentRow.setGravity(Gravity.CENTER_VERTICAL);
 //        }
 
-        alert.setView(alertLayout);
-        AlertDialog dialog = alert.create();
-        dialog.show();
-
 //        if (dialog.getWindow() != null) {
 //            if ((hasBirthday && !hasAnniversary) || (!hasBirthday && hasAnniversary)) {
 //                dialog.getWindow().setLayout(
@@ -327,15 +355,9 @@ public class CommonAlertBox {
             Window window = dialog.getWindow();
             if (window != null) {
                 if ((hasBirthday && !hasAnniversary) || (!hasBirthday && hasAnniversary)) {
-                    window.setLayout(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
+                    window.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 } else {
-                    window.setLayout(
-                            (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.70),
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
+                    window.setLayout((int) (activity.getResources().getDisplayMetrics().widthPixels * 0.70), ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
             }
         });

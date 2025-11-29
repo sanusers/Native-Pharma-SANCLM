@@ -848,5 +848,4 @@ public class PlaySlideDetailing extends AppCompatActivity {
         }
     }
 
-
 }
