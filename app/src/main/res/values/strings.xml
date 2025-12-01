@@ -666,4 +666,5 @@
     <string name="please_select_at_least">"Please select at least "</string>
     <string name="please_plan_all_the">"Please plan all the "</string>
     <string name="at_least_one_time">" at least one time"</string>
+    <string name="not_planned">Not planned</string>
 </resources>

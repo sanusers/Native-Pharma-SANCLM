@@ -1,13 +1,16 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
 import android.content.Context;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
+import saneforce.sanzen.activity.tourPlan.model.DoctorVisitModel;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -23,11 +28,10 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.storage.SharedPref;
 
 public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.MyViewHolder> implements Filterable {
-
     ArrayList<EditModelClass> arrayList = new ArrayList<>();
     ArrayList<EditModelClass> arrayForFilter = new ArrayList<>();
     ArrayList<EditModelClass> supportModelArray = new ArrayList<>();
-    private boolean checkBoxVisibility = false, isHQ = false;
+    private boolean checkBoxVisibility = false, isHQ = false, isDr = false;
     private int selectedHQCount = 0;
     private ValueFilter valueFilter;
     SessionItemInterface sessionItemInterface;
@@ -38,11 +42,12 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     public SessionItemAdapter() {
     }
 
-    public SessionItemAdapter(Context context, ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, boolean isHQ, SessionItemInterface sessionItemInterface) {
+    public SessionItemAdapter(Context context, ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, boolean isHQ, boolean isDr, SessionItemInterface sessionItemInterface) {
         this.context =context;
         this.arrayList = arrayList;
         this.arrayForFilter = arrayList;
         this.isHQ = isHQ;
+        this.isDr = isDr;
         this.checkBoxVisibility = checkBoxVisibility;
         this.sessionItemInterface = sessionItemInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -72,6 +77,36 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         }
         holder.textView.setText(editModelClass.getName());
         holder.checkBox.setChecked(editModelClass.isChecked());
+
+        if (isDr && SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+            holder.infoView.setVisibility(View.VISIBLE);
+            holder.infoView.setOnClickListener(view -> {
+                String code = arrayList.get(position).getCode();
+                DoctorVisitModel doctorVisitModel = TourPlanActivity.doctorVisitMap.get(code);
+                StringBuilder data = new StringBuilder();
+                if (doctorVisitModel != null) {
+                    String category = "Category : " + doctorVisitModel.getCategory();
+                    String totalVisits = "Total Visits : " + doctorVisitModel.getTotalVisit();
+                    String plannedVisits = "Planned Visits : " + doctorVisitModel.getPlannedVisit();
+                    String plannedDatesList = doctorVisitModel.getPlannedDates().toString();
+                    String dates = plannedDatesList.replaceAll("\\[", "").replaceAll("\\]", "");
+                    String plannedDates = "Planned Dates : " + dates;
+                    data.append(category);
+                    data.append("\n");
+                    data.append(totalVisits);
+                    data.append("\n");
+                    data.append(plannedVisits);
+                    data.append("\n");
+                    data.append(plannedDates);
+                }
+                if (data.toString().isEmpty()) {
+                    data.append(context.getString(R.string.not_planned));
+                }
+                showDocDataPopUp(view, data.toString());
+            });
+        } else {
+            holder.infoView.setVisibility(View.GONE);
+        }
 
         holder.itemView.setOnClickListener(new SafeClickListener() {
             @Override
@@ -119,11 +154,33 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                         selectedHQCount--;
                     }
                 }
-
                 sessionItemInterface.itemClicked(arrayList, clickedItem);
             }
         });
+    }
 
+    private void showDocDataPopUp(View view, String data) {
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.timeline_popup, null);
+        TextView timelineTV = popupView.findViewById(R.id.timeline);
+        timelineTV.setText(data);
+        timelineTV.setVisibility(View.VISIBLE);
+        PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, false);
+        popupWindow.setOutsideTouchable(true);
+        ImageView close = popupView.findViewById(R.id.img_close);
+        RecyclerView timeLineRecyclerview = popupView.findViewById(R.id.timeline_recyclerview);
+        TextView tv_head = popupView.findViewById(R.id.tv_head);
+        View divider = popupView.findViewById(R.id.view_dummy);
+        close.setVisibility(View.GONE);
+        timeLineRecyclerview.setVisibility(View.GONE);
+        tv_head.setVisibility(View.GONE);
+        divider.setVisibility(View.GONE);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int width = popupView.getMeasuredWidth();
+        int height = popupView.getMeasuredHeight();
+        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - width + 25, location[1] - height + 5);
     }
 
     @Override
@@ -142,17 +199,17 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         CheckBox checkBox;
         TextView textView;
+        ImageView infoView;
 
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.tp_item_checkbox);
             textView = itemView.findViewById(R.id.tp_item_text);
-
+            infoView = itemView.findViewById(R.id.info);
         }
     }
 
     private class ValueFilter extends Filter {
-
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults results=new FilterResults();
@@ -181,9 +238,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                 results.count=arrayForFilter.size();
                 results.values=arrayForFilter;
             }
-
             return results;
-
         }
 
         @SuppressWarnings("unchecked")
@@ -193,7 +248,5 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
             notifyDataSetChanged();
         }
     }
-
-
 
 }

@@ -644,7 +644,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                         }
                         holder.sessionItemAdapterArray = filteredArray;
-                        populateSessionItemAdapterOneBuild(holder, false, true);
+                        populateSessionItemAdapterOneBuild(holder, false, true, false);
                         holder.fieldSelected = true;
                         onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_TYPE);
                     } else {
@@ -684,7 +684,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 holder.workDayArray = workDayArray;
                             }
                             holder.sessionItemAdapterArray = holder.workDayArray;
-                            populateSessionItemAdapterOneBuild(holder, false, false);
+                            populateSessionItemAdapterOneBuild(holder, false, false, false);
                             holder.fieldSelected = true;
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
                         } else {
@@ -715,7 +715,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
                             }
                             holder.sessionItemAdapterArray = holder.hqArray;
-                            populateSessionItemAdapterOneBuild(holder, false, true);
+                            populateSessionItemAdapterOneBuild(holder, false, true, false);
                             holder.fieldSelected = true;
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
                         } else {
@@ -751,7 +751,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     }
                                     holder.fieldSelected = true;
                                     holder.sessionItemAdapterArray = holder.clusterArray;
-                                    populateSessionItemAdapterOneBuild(holder, true, true);
+                                    populateSessionItemAdapterOneBuild(holder, true, true, false);
                                     onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);  // change
                                 } else {
                                     holder.fieldSelected = false;
@@ -788,7 +788,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = holder.jointCallArray;
-                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            populateSessionItemAdapterOneBuild(holder, true, true, false);
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);   //change
                         } else {
                             holder.fieldSelected = false;
@@ -823,7 +823,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
-                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            populateSessionItemAdapterOneBuild(holder, true, true, true);
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR_MAS);  //change
                         } else {
                             holder.fieldSelected = false;
@@ -860,7 +860,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
-                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            populateSessionItemAdapterOneBuild(holder, true, true, false);
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST_MAS);   //change
                         } else {
                             holder.fieldSelected = false;
@@ -894,7 +894,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = holder.stockiestArray;
-                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            populateSessionItemAdapterOneBuild(holder, true, true, false);
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST_MAS);  //change
                         } else {
                             holder.fieldSelected = false;
@@ -930,7 +930,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
-                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            populateSessionItemAdapterOneBuild(holder, true, true, false);
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR_MAS);   //change
                         } else {
                             holder.fieldSelected = false;
@@ -966,7 +966,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.cipArray);
-                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            populateSessionItemAdapterOneBuild(holder, true, true, false);
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.CIP);  //change
                         } else {
                             holder.fieldSelected = false;
@@ -1001,7 +1001,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.hospArray);
-                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            populateSessionItemAdapterOneBuild(holder, true, true, false);
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.HOSPITAL); //change
                         } else {
                             holder.fieldSelected = false;
@@ -1509,7 +1509,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                         }
                         holder.sessionItemAdapterArray = filteredArray;
-                        populateSessionItemAdapter(holder, false, true, false);
+                        populateSessionItemAdapter(holder, false, true, false, false);
                         holder.fieldSelected = true;
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_TYPE);
                     } else {
@@ -1552,7 +1552,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     holder.workDayArray = workDayArray;
                                 }
                                 holder.sessionItemAdapterArray = holder.workDayArray;
-                                populateSessionItemAdapter(holder, false, false, false);
+                                populateSessionItemAdapter(holder, false, false, false, false);
                                 holder.fieldSelected = true;
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
                             } else {
@@ -1584,7 +1584,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.hqArray;
-                                populateSessionItemAdapter(holder, true, true, true);
+                                populateSessionItemAdapter(holder, true, true, true, false);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
                             } else {
                                 holder.fieldSelected = false;
@@ -1603,7 +1603,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.hqArray;
-                                populateSessionItemAdapter(holder, false, true, false);
+                                populateSessionItemAdapter(holder, false, true, false, false);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
                             } else {
                                 holder.fieldSelected = false;
@@ -1658,7 +1658,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                         }
                                         holder.fieldSelected = true;
                                         holder.sessionItemAdapterArray = holder.clusterArray;
-                                        populateSessionItemAdapter(holder, true, true, false);
+                                        populateSessionItemAdapter(holder, true, true, false, false);
                                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);
                                     } else {
                                         holder.fieldSelected = false;
@@ -1715,7 +1715,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.jointCallArray;
-                                populateSessionItemAdapter(holder, true, true, false);
+                                populateSessionItemAdapter(holder, true, true, false, false);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
                             } else {
                                 holder.fieldSelected = false;
@@ -1775,7 +1775,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     }
                                     holder.fieldSelected = true;
                                     holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
-                                    populateSessionItemAdapter(holder, true, true, false);
+                                    populateSessionItemAdapter(holder, true, true, false, true);
 //                                    onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
                                     onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR_MAS);
                                 } else {
@@ -1836,7 +1836,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     }
                                     holder.fieldSelected = true;
                                     holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
-                                    populateSessionItemAdapter(holder, true, true, false);
+                                    populateSessionItemAdapter(holder, true, true, false, false);
 //                                    onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
                                     onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST_MAS);
                                 } else {
@@ -1895,7 +1895,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.stockiestArray;
-                                populateSessionItemAdapter(holder, true, true, false);
+                                populateSessionItemAdapter(holder, true, true, false, false);
 //                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST_MAS);
                             } else {
@@ -1933,7 +1933,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
-                            populateSessionItemAdapter(holder, true, true, false);
+                            populateSessionItemAdapter(holder, true, true, false, false);
 //                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);
                             onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR_MAS);
                         } else {
@@ -1970,7 +1970,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.cipArray);
-                            populateSessionItemAdapter(holder, true, true, false);
+                            populateSessionItemAdapter(holder, true, true, false, false);
                             onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CIP);
                         } else {
                             holder.fieldSelected = false;
@@ -2005,7 +2005,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.hospArray);
-                            populateSessionItemAdapter(holder, true, true, false);
+                            populateSessionItemAdapter(holder, true, true, false, false);
                             onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.HOSPITAL);
                         } else {
                             holder.fieldSelected = false;
@@ -2866,7 +2866,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded, boolean isHQ) {
+    public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded, boolean isHQ, boolean isDr) {
         if (isSortNeeded) {
             Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
                 @Override
@@ -2877,7 +2877,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
         }
-        sessionItemAdapter = new SessionItemAdapter(context, holder.sessionItemAdapterArray, checkBoxNeed, isHQ, new SessionItemInterface() {
+        sessionItemAdapter = new SessionItemAdapter(context, holder.sessionItemAdapterArray, checkBoxNeed, isHQ, isDr, new SessionItemInterface() {
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
                 if (holder.workTypeLayout.getVisibility() == View.VISIBLE) {
@@ -3102,7 +3102,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     }
 
-    public void populateSessionItemAdapterOneBuild(MyViewHolder holder, boolean checkBoxNeed, boolean idSortNeeded) {
+    public void populateSessionItemAdapterOneBuild(MyViewHolder holder, boolean checkBoxNeed, boolean idSortNeeded, boolean isDr) {
         if (idSortNeeded) {
             Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
                 @Override
@@ -3113,7 +3113,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
         }
-        sessionItemAdapter = new SessionItemAdapter(context, holder.sessionItemAdapterArray, checkBoxNeed, false, new SessionItemInterface() {
+        sessionItemAdapter = new SessionItemAdapter(context, holder.sessionItemAdapterArray, checkBoxNeed, false, isDr, new SessionItemInterface() {
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
                 if (holder.workTypeLayout.getVisibility() == View.VISIBLE) {
