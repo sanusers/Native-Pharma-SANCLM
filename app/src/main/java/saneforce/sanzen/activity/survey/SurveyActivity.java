@@ -308,7 +308,8 @@ public class SurveyActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.please_check_your_internet_connection));
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(SurveyActivity.this, "Please fill at-least any one question");
+                   // commonUtilsMethods.showToastMessage(SurveyActivity.this, "Please fill at-least any one question");
+                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.please_fill_atleast_any_one_question));
                 }
             }
         });

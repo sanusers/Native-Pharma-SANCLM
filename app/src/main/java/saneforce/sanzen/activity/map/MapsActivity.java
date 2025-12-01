@@ -1880,7 +1880,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (!fileToUpload.exists()) {
                     Log.e("S3Upload", "File does not exist: " + destinationFilePath);
                     dialogTagCust.dismiss();
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, "File does not exist.");
+             //       commonUtilsMethods.showToastMessage(MapsActivity.this, "File does not exist.");
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.file_does_not_exist));
                     return;
                 }
 

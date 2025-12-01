@@ -741,6 +741,10 @@
     <string name="deviate_to_edit_work_plan">Dévier pour modifier le Plan de travail</string>
     <string name="please_update_session_2">Veuillez mettre à jour la session 2</string>
     <string name="please_update_session_1">Veuillez mettre à jour la session 1</string>
+    <string name="standard_tour_plan_must_be_approved_to_enter_tour_plan_fr">Le plan de tournée standard doit être approuvé pour accéder au plan de tournée</string>
+    <string name="file_does_not_exist_fr">Le fichier n\'existe pas</string>
+    <string name="please_fill_atleast_any_one_question_fr">Veuillez remplir au moins une question</string>
+    <string name="slide_updated_fr">Diapositive mise à jour</string>
 
 
 

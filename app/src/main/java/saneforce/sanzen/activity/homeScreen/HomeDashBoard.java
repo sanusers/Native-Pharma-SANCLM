@@ -1818,7 +1818,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     && SharedPref.getStpBasedMtp(this).equalsIgnoreCase("0")
                     && !SharedPref.getSfType(this).equalsIgnoreCase("2")
                     && !SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
-                commonUtilsMethods.showToastMessage(this, "Standard Tour Plan must be approved to enter Tour Plan");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.standard_tour_plan_must_be_approved_to_enter_tour_plan));
             } else {
                 Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
                 startActivity(intent);

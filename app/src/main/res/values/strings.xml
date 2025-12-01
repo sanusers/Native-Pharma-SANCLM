@@ -764,6 +764,11 @@
     <string name="deviate_to_edit_work_plan">Deviate to edit Work plan</string>
     <string name="please_update_session_2">Please update Session 2</string>
     <string name="please_update_session_1">Please update Session 1</string>
+    <string name="standard_tour_plan_must_be_approved_to_enter_tour_plan">Standard tour plan must be approved to enter tour plan</string>
+    <string name="file_does_not_exist">File does not exist</string>
+    <string name="please_fill_atleast_any_one_question">Please fill at least any one question</string>
+    <string name="slide_updated">Slide updated</string>
+
 
 
 

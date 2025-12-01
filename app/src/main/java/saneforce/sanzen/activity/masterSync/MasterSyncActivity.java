@@ -3560,7 +3560,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                 SharedPref.putSlidestatus(MasterSyncActivity.this, true);
                 if (isSingleSlideDowloaingStaus) {
                     isSingleSlideDowloaingStaus = false;
-                    commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                  //  commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.slide_updated));
                 } else {
                     commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
                 }
