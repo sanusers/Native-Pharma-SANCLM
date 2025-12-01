@@ -136,11 +136,20 @@ public class AddListActivity extends AppCompatActivity {
             }*/
             else if(selectedDCRMap.get(Constants.DOCTOR_MAS) != null && selectedDCRMap.get(Constants.DOCTOR_MAS).isEmpty()
                     && selectedDCRMap.get(Constants.CHEMIST_MAS) != null && selectedDCRMap.get(Constants.CHEMIST_MAS).isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or " + chmCap);
+
+
+               commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + drCap + " or " + chmCap);
+//                String message = getString(R.string.please_select_any) + " " + drCap + " "
+//                        + getString(R.string.or_text) + " " + chmCap;
+//                commonUtilsMethods.showToastMessage(this, message);
+
+
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
-                commonUtilsMethods.showToastMessage(this, "Cannot Save, Already Approved");
+               // commonUtilsMethods.showToastMessage(this, "Cannot Save, Already Approved");
+                commonUtilsMethods.showToastMessage(this,getString(R.string.cannot_save_already_approved));
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
-                commonUtilsMethods.showToastMessage(this, "Cannot Save, Waiting For Approval");
+//                commonUtilsMethods.showToastMessage(this, "Cannot Save, Waiting For Approval");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_save_waiting_for_approval));
             } else {
                 saveSelectedDCR();
             }
@@ -149,9 +158,11 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.selectedClusters.setOnClickListener(view -> {
             isRouteSelected = true;
             if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
-                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
+//                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_already_approved));
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
-                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
+//                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_waiting_for_approval));
             } else {
                 showMultiCluster();
             }
@@ -232,15 +243,18 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.btnClear.setOnClickListener(view -> {
             if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
-                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
+              //  commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_already_approved));
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
-                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
+                //commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_waiting_for_approval));
             } else {
                 List<DCRModel> dcrModels = selectedDCRMap.get(selectedDCR);
                 if(dcrModels != null && !dcrModels.isEmpty()) {
                     clearSelection(selectedDCR, false);
                 }else {
-                    commonUtilsMethods.showToastMessage(this, "Nothing selected to clear");
+//                    commonUtilsMethods.showToastMessage(this, "Nothing selected to clear");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.nothing_selected_to_clear));
                 }
             }
         });
@@ -722,9 +736,11 @@ public class AddListActivity extends AppCompatActivity {
     private final SelectedDCRAdapter.DeleteClickListener deleteClickListener = (dcrModel, selectedDCR) -> {
 
         if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
-            commonUtilsMethods.showToastMessage(this, "Cannot Delete, Already Approved");
+          //  commonUtilsMethods.showToastMessage(this, "Cannot Delete, Already Approved");
+            commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_already_approved));
         }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
-            commonUtilsMethods.showToastMessage(this, "Cannot Delete, Waiting For Approval");
+            //commonUtilsMethods.showToastMessage(this, "Cannot Delete, Waiting For Approval");
+            commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_waiting_for_approval));
         } else {
             List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
             if (dcrModelList != null && !dcrModelList.isEmpty()) {
