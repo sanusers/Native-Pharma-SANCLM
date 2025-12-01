@@ -1148,8 +1148,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private static void setupLeftViewPager(Context context, FragmentManager fragmentManager) {
         leftViewPagerAdapter = new TabLayoutAdapter(fragmentManager);
-        leftViewPagerAdapter.add(new WorkPlanFragment(), "Work Plan");
-        leftViewPagerAdapter.add(new CallsFragment(), "Calls");
+        leftViewPagerAdapter.add(new WorkPlanFragment(), homeDashBoardActivity.getString(R.string.work_plan));
+        leftViewPagerAdapter.add(new CallsFragment(), homeDashBoardActivity.getString(R.string.calls));
         leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
         binding.viewPager.setAdapter(leftViewPagerAdapter);
         binding.tabLayout.setupWithViewPager(binding.viewPager);

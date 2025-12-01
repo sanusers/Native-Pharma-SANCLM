@@ -27,7 +27,7 @@
                 android:layout_marginTop="@dimen/_2sdp"
                 android:padding="@dimen/_2sdp"
                 android:fontFamily="@font/satoshi_medium"
-                android:text="@string/Signature"
+                android:text="@string/signature"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_7ssp"
                 android:textStyle="bold" />

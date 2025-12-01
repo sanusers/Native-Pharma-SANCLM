@@ -441,7 +441,7 @@
     <string name="dcr_ap_not_available">Approbations DCR non disponibles</string>
     <string name="tpdevication_ap_not_available">Approbations de déviation TP non disponibles</string>
     <string name="geoTagging_ap_not_available">Approbations de géolocalisation non disponibles</string>
-    <string name="alert">Alerte</string>
+    <string name="alert">Alerte!</string>
     <string name="please_select_a_date">Veuillez Sélectionnez une date !</string>
     <string name="remarks_must_contain_at_least_3_characters">Les remarques doivent contenir au moins 3 caractères</string>
     <string name="should_have_a_call">Il doit y avoir un appel à la date sélectionnée pour soumettre !</string>
@@ -693,8 +693,8 @@
     <string name="call_count">Nombre d appels :</string>
     <string name="add_call">Ajouter un appel</string>
     <string name="cancel_confirmation">Êtes-vous sûr de vouloir annuler ?</string>
-    <string name="add_activity">Ajouter</string>
-    <string name="no_activity_details">Aucune </string>
+    <string name="add_activity">Ajouter </string>
+    <string name="no_activity_details">Aucune %1$s</string>
     <string name="select_activity">Sélectionnez une activité dans la liste pour afficher le contenu</string>
     <string name="location_captured">Emplacement capturé</string>
 <!--    <string name="message">Message</string>-->
@@ -721,7 +721,7 @@
     <string name="kindly_sync_leave_available">Veuillez synchroniser les congés disponibles!</string>
     <string name="no_leave_available">Aucun congé disponible!</string>
     <string name="leave_submitted_successfully">Congé soumis avec succès</string>
-    <string name="maximum_address_length_reached_please_keep_it_under_300_characters">Longueur maximale de l'adresse atteinte. Veuillez la garder sous 300 caractères</string>
+    <string name="maximum_address_length_reached_please_keep_it_under_300_characters">Longueur maximale de l\'adresse atteinte. Veuillez la garder sous 300 caractères</string>
     <string name="maximum_reason_length_reached_please_keep_it_under_300_characters">Longueur maximale de la raison atteinte. Veuillez la garder sous 300 caractères</string>
     <string name="get_deviation_approval">Obtenir l’approbation de la déviation</string>
     <string name="image_not_found">Image non trouvée</string>

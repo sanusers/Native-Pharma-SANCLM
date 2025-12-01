@@ -258,8 +258,7 @@ public class CallsFragment extends Fragment {
                     }
                 }
             }
-            //binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-            binding.txtCallcount.setText((R.string.call_count) + " " + TodayCallList.size());
+            binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
 
 
             adapter.notifyDataSetChanged();
