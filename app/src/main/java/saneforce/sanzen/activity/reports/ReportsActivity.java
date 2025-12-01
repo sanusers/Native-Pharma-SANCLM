@@ -451,7 +451,8 @@ public class ReportsActivity extends AppCompatActivity {
                         intent.putExtra("url", dynamicReport.getMenu_Sub_Details()); // Pass the generated URL
                         startActivity(intent);
                     } else {
-                        commonUtilsMethods.showToastMessage(this, "Dynamic Report URL not found.");
+                      //  commonUtilsMethods.showToastMessage(this, "Dynamic Report URL not found.");
+                        commonUtilsMethods.showToastMessage(this, getString(R.string.dynamic_report_url_not_found));
                     }
                 }
             }

@@ -1238,7 +1238,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             } else {
-                commonUtilsMethods.showToastMessage(requireContext(), "Kindly sync Subordinate!");
+                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.kindly_sync_subordinate));
             }
         } catch (Exception e) {
             Log.e("Work plan", "Find HQ : " + e.getMessage());
@@ -1397,7 +1397,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.txtAddPlan:
                     if (isTPorSTPBased() && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.VISIBLE && !binding.switchButton.isChecked()) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Deviate to Add Plan...");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_add_plan));
                     } else if (!EditSession.equalsIgnoreCase("1") && DayPlanCount.equals("1")) {
                         if (mFwFlg1 != null && mFwFlg1.equalsIgnoreCase("W")) {
                             String weekOffName = findWTName("W");
@@ -1407,7 +1407,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             commonUtilsMethods.showToastMessage(requireContext(), "Already " + holidayName + " has been submitted");
                         } else {
                             if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
-                                commonUtilsMethods.showToastMessage(requireContext(), "Cannot add plan in Tour Plan based DCR!");
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.cannot_add_plan_in_tour_plan_based_dcr));
                             }
                             DayPlanCount = "2";
                             binding.llDelete.setVisibility(View.VISIBLE);
@@ -1505,7 +1505,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 case R.id.fl_session1:
                     Log.d("Plan Edit", "onClick: Plan 1");
                     if (TPDCRDeviation.equalsIgnoreCase("0") && !binding.switchButton.isChecked() && binding.llDeviation.getVisibility() == View.VISIBLE && !deviation.equalsIgnoreCase("1")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
                         break;
                     }
 //                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1") && binding.flSession2.getVisibility() == View.VISIBLE) {
@@ -1529,7 +1529,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             dialogEditOrDelete("1");
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
-                                commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
+                                commonUtilsMethods.showToastMessage(requireContext(),  getString(R.string.deviate_to_edit_work_plan));
                             } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("1", mWTName1);
                             } else {
@@ -1537,14 +1537,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Please update session 2");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_update_session_2));
                     }
                     break;
 
                 case R.id.fl_session2:
                     Log.d("Plan Edit", "onClick: Plan 2");
                     if (TPDCRDeviation.equalsIgnoreCase("0") && !binding.switchButton.isChecked() && binding.llDeviation.getVisibility() == View.VISIBLE && !deviation.equalsIgnoreCase("1")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
+                        commonUtilsMethods.showToastMessage(requireContext(),  getString(R.string.deviate_to_edit_work_plan));
                         break;
                     }
 //                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1")) {
@@ -1572,7 +1572,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             dialogEditOrDelete("2");
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
-                                commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
                             } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg2.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("2", mWTName2);
                             } else {
@@ -1580,7 +1580,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Please update session 1");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_update_session_1));
                     }
                     break;
 

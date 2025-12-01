@@ -137,8 +137,8 @@ public class DynamicMenuHome extends AppCompatActivity {
                                             dynamicAdapter.notifyDataSetChanged();
                                         }else{
                                             binding.noReportFoundTxt.setVisibility(View.VISIBLE);
-                                            commonUtilsMethods.showToastMessage(DynamicMenuHome.this,"No Record Found");
-
+                                            //commonUtilsMethods.showToastMessage(DynamicMenuHome.this,"No Record Found");
+                                            commonUtilsMethods.showToastMessage(DynamicMenuHome.this,getString(R.string.no_record_found));
                                         }
 
 

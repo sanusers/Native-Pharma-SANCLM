@@ -136,8 +136,8 @@ public class DynamicMenuActivity extends AppCompatActivity {
                                             }
                                             dynamicAdapter.notifyDataSetChanged();
                                         }else{
-                                            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this,"No Record Found");
-
+                                          //  commonUtilsMethods.showToastMessage(DynamicMenuActivity.this,"No Record Found");
+                                            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this,getString(R.string.no_record_found));
                                         }
 
 

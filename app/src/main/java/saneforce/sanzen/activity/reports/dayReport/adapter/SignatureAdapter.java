@@ -69,7 +69,7 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.View
                 @Override
                 public void onFailure(int pos) {
                     Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                    commonUtilsMethods.showToastMessage(context, "Image Not Found");
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.image_not_found));
                     holder.imageView.setVisibility(View.GONE);
                 }
             });

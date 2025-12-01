@@ -180,7 +180,7 @@ public class AdditionalCallDetailedSide extends Fragment {
                     if (!addInputAdditionalCallArrayList.isEmpty()) {
                         for (int i = 0; i < addInputAdditionalCallArrayList.size(); i++) {
                             if (addInputAdditionalCallArrayList.get(i).getInp_qty().isEmpty()) {
-                                commonUtilsMethods.showToastMessage(requireContext(), "Qty cannot be empty!");
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_cannot_be_empty));
                                 callDetailsSideBinding.tabLayout.selectTab(callDetailsSideBinding.tabLayout.getTabAt(1));
                                 return;
                             }
@@ -192,7 +192,7 @@ public class AdditionalCallDetailedSide extends Fragment {
                     if (!addInputAdditionalCallArrayList.isEmpty()) {
                         for (int i = 0; i < addInputAdditionalCallArrayList.size(); i++) {
                             if (addInputAdditionalCallArrayList.get(i).getInp_qty().isEmpty()) {
-                                commonUtilsMethods.showToastMessage(requireContext(), "Qty cannot be empty!");
+                                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.qty_cannot_be_empty));
                                 callDetailsSideBinding.tabLayout.selectTab(callDetailsSideBinding.tabLayout.getTabAt(1));
                                 return;
                             }

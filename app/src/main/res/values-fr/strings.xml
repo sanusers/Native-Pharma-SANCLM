@@ -455,8 +455,8 @@
     <string name="new_app_is_ready">Mise à jour téléchargée.\nLa nouvelle application est prête à être installée !</string>
     <string name="install">Installer</string>
     <string name="permission_change_content"><![CDATA[Vous avez tenté de changer la permission, nous bloquons donc la procédure. Vous serez redirigé vers l\'écran d\'accueil.Veuillez cliquer sur CONTINUER pour continuer.]]></string>
-    <string name="clear_all_approvals_content">Les approbations de l\'équipe sont toujours en attente. Veuillez valider toutes les approbations...</string>
-    <string name="tp_alert_content">"La plage de planification du tournage a été dépassée. Veuillez préparer votre plan de tournée...."</string>
+    <string name="clear_all_approvals_content">Les approbations de l\'équipe sont toujours en attente. Veuillez valider toutes les approbations</string>
+    <string name="tp_alert_content">"La plage de planification du tournage a été dépassée. Veuillez préparer votre plan de tournée"</string>
     <string name="outboxAlertContent"><![CDATA[Vous avez déjà 3 appels ou plus dans la boîte d\'envoi.
         Il est recommandé de synchroniser les appels de la boîte d\'envoi]]></string>
     <string name="please_check_your_internet_connection">Veuillez vérifier votre connexion Internet</string>
@@ -493,7 +493,7 @@
     <string name="deleting_field_work_with_calls">La suppression du travail sur le terrain supprimera également tous les appels</string>
     <string name="select_workday">Sélectionnez le jour de travail</string>
     <string name="refresh">Actualiser</string>
-    <string name="Signature">Signature</string>
+    <string name="signature">Signature</string>
     <string name="fill">Veuillez remplir </string>
     <string name="select_headquater">Sélectionnez LE SIÈGE</string>
     <string name="location_add">Tagué avec succès</string>
@@ -685,29 +685,66 @@
     <string name="speciality_slide">Diapositive Spécialité</string>
     <string name="brand_slide">Diapositive Marque</string>
     <string name="therapeutic_slide">Diapositive Thérapeutique</string>
-    <string name="welcome_slide">Diapositive d\'accueil</string>
+    <string name="welcome_slide">Diapositive d accueil</string>
     <string name="hierarchy">Hiérarchie</string>
     <string name="sync_listed_doctor">Sync les médecins listés</string>
-<!--    <string name="sync_input">Sync %1$s</string>-->
-<!--    <string name="sync_product">Sync %1$s</string>-->
-<!--    <string name="sync_leave">Sync %1$s</string>-->
-<!--    <string name="sync_activity">Sync %1$s</string>-->
-<!--    <string name="sync_worktype">Sync %1$s</string>-->
-<!--    <string name="sync_tourplan">Sync %1$s</string>-->
-<!--    <string name="sync_slide">Sync %1$s</string>-->
-<!--    <string name="sync_subordinate">Sync %1$s</string>-->
-<!--    <string name="sync_other">Sync %1$s</string>-->
-<!--    <string name="sync_profile">Sync %1$s</string>-->
-<!--    <string name="sync_setup">Sync %1$s</string>-->
-    <string name="no_item_found">Aucun %1$s trouvé</string>
+    <string name="no_item_found">Aucun trouvé</string>
     <string name="warning_label">Avertissement !</string>
-    <string name="call_count">Nombre d\appels :</string>
+    <string name="call_count">Nombre d appels :</string>
     <string name="add_call">Ajouter un appel</string>
     <string name="cancel_confirmation">Êtes-vous sûr de vouloir annuler ?</string>
-    <string name="add_activity">Ajouter %1$s</string>
-    <string name="no_activity_details">Aucune %1$s</string>
+    <string name="add_activity">Ajouter</string>
+    <string name="no_activity_details">Aucune </string>
     <string name="select_activity">Sélectionnez une activité dans la liste pour afficher le contenu</string>
     <string name="location_captured">Emplacement capturé</string>
+<!--    <string name="message">Message</string>-->
+    <string name="update_canceled">Mise à jour annulée</string>
+    <string name="please_check_the_internet_connection">Veuillez vérifier la connexion Internet</string>
+    <string name="maximum_password_length_reached_please_keep_it_under_30_characters">Longueur maximale du mot de passe atteinte. Veuillez le garder sous 30 caractères</string>
+    <string name="cannot_clear_when_day_submitted">Impossible de supprimer lorsque le jour est soumis</string>
+
+    <string name="poor_connection_please_check_after_sometime">Connexion faible. Veuillez vérifier plus tard</string>
+    <string name="no_record_found">Aucun enregistrement trouvé</string>
+    <string name="dynamic_report_url_not_found">URL du rapport dynamique introuvable</string>
+    <string name="select_attachment">Sélectionner la pièce jointe</string>
+    <string name="please_select_any">Veuillez sélectionner</string>
+
+    <string name="cannot_save_already_approved">Impossible d enregistrer, déjà approuvé</string>
+    <string name="cannot_save_waiting_for_approval">Impossible d enregistrer, en attente d approbation</string>
+    <string name="cannot_clear_already_approved">Impossible de supprimer, déjà approuvé</string>
+    <string name="cannot_clear_waiting_for_approval">Impossible de supprimer, en attente d approbation</string>
+    <string name="nothing_selected_to_clear">Rien de sélectionné à supprimer</string>
+    <string name="kindly_sync_standard_tour_plan_setup">Veuillez synchroniser la configuration du Plan de Tour Standard!</string>
+    <string name="no_update_available">Aucune mise à jour disponible</string>
+    <string name="cannot_delete_already_approved">Impossible de supprimer, déjà approuvé</string>
+    <string name="cannot_delete_waiting_for_approval">Impossible de supprimer, en attente d approbation</string>
+    <string name="kindly_sync_leave_available">Veuillez synchroniser les congés disponibles!</string>
+    <string name="no_leave_available">Aucun congé disponible!</string>
+    <string name="leave_submitted_successfully">Congé soumis avec succès</string>
+    <string name="maximum_address_length_reached_please_keep_it_under_300_characters">Longueur maximale de l'adresse atteinte. Veuillez la garder sous 300 caractères</string>
+    <string name="maximum_reason_length_reached_please_keep_it_under_300_characters">Longueur maximale de la raison atteinte. Veuillez la garder sous 300 caractères</string>
+    <string name="get_deviation_approval">Obtenir l’approbation de la déviation</string>
+    <string name="image_not_found">Image non trouvée</string>
+    <string name="no_network_available">Aucun réseau disponible</string>
+    <string name="network_timeout_please_try_again">Délai réseau dépassé, veuillez réessayer</string>
+    <string name="no_event_capture">Aucun événement capturé</string>
+    <string name="signature_not_available">Signature non disponible</string>
+    <string name="slides_details_not_available">Détails des diapositives non disponibles</string>
+    <string name="product_selection_is_mandatory">La sélection du produit est obligatoire</string>
+    <string name="please_deselect_the_selected_products">Veuillez désélectionner les produits sélectionnés</string>
+    <string name="cannot_deselect_no_product">Impossible de désélectionner, aucun produit sélectionné</string>
+    <string name="check_in_successfully">Enregistrement effectué avec succès</string>
+    <string name="qty_cannot_be_empty">La quantité ne peut pas être vide</string>
+    <string name="kindly_sync_subordinate">Veuillez synchroniser les subordonnés</string>
+    <string name="deviate_to_add_plan">Dévier pour ajouter un plan</string>
+    <string name="cannot_add_plan_in_tour_plan_based_dcr">Impossible d ajouter un plan dans un DCR basé sur le Plan de tournée</string>
+    <string name="deviate_to_edit_work_plan">Dévier pour modifier le Plan de travail</string>
+    <string name="please_update_session_2">Veuillez mettre à jour la session 2</string>
+    <string name="please_update_session_1">Veuillez mettre à jour la session 1</string>
+
+
+
+
 
 
 

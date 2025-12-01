@@ -174,16 +174,17 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                             }
                         }
 //                        noProductHolder.checkBox.setChecked(false);
-                        commonUtilsMethods.showToastMessage(context, "Product selection is mandatory!");
+                        //commonUtilsMethods.showToastMessage(context, "Product selection is mandatory!");
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.product_selection_is_mandatory));
                     }else {
 //                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         if(holder.checkBox.isChecked() && checkAnyProductSelected()) {
                             holder.checkBox.setChecked(false);
                             CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                            commonUtilsMethods.showToastMessage(context, "Please deselect the selected Products!");
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_deselect_the_selected_products));
                         }else {
                             if(noProductSelected) {
-                                commonUtilsMethods.showToastMessage(context, "Cannot deselect No Product!");
+                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.cannot_deselect_no_product));
                             }
                             holder.checkBox.setChecked(true);
                             CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());

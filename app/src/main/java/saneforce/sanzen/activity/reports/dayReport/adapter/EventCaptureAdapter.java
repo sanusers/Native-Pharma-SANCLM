@@ -86,7 +86,7 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
                         if (holder.progressBar != null) {
                             holder.progressBar.setVisibility(View.GONE);
                         }
-                        commonUtilsMethods.showToastMessage(context, "Image Not Found");
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.image_not_found));
                     }
                 });
             }

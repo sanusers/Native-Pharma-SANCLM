@@ -238,7 +238,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                 }
                             } else {
                                 progressBar.dismiss();
-                                new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
+                                new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_network_available));
                             }
                             break;
                     }
@@ -272,7 +272,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                 }
                             } else {
                                 progressBar.dismiss();
-                                new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
+                                new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_network_available));
                             }
                             break;
                     }
@@ -359,7 +359,8 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
             @Override
             public void onFailure(int pos) {
                 Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                commonUtilsMethods.showToastMessage(context, "Image Not Found");
+               // commonUtilsMethods.showToastMessage(context, "Image Not Found");
+                commonUtilsMethods.showToastMessage(context,context.getString(R.string.image_not_found));
                 holder.img_view.setVisibility(View.VISIBLE);
                 progressBar.dismiss();
             }

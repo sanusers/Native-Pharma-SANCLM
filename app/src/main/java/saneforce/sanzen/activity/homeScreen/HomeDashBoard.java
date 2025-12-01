@@ -765,7 +765,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == InAppUpdate.updateRequestCode) {
             if (resultCode != RESULT_OK) {
-                commonUtilsMethods.showToastMessage(this, "Update canceled !");
+               // commonUtilsMethods.showToastMessage(this, "Update canceled !");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.update_canceled));
                 // Handle update failure or cancellation
             }
 //            else {
@@ -1495,7 +1496,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     popupWindow.dismiss();
                     changePassword(HomeDashBoard.this.getString(R.string.change_password));
                 } else {
-                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, "Please Check The Internet Connection");
+                    //CommonUtilsMethods.showToastMessage(HomeDashBoard.this, "Please Check The Internet Connection");
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.please_check_the_internet_connection));
                 }
             }
         });
@@ -1566,7 +1568,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     old_password.setText(truncated);
                     old_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
+//                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this,getString(R.string.maximum_password_length_reached_please_keep_it_under_30_characters));
                 }
             }
 
@@ -1595,7 +1598,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     new_password.setText(truncated);
                     new_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
+                   // commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.maximum_password_length_reached_please_keep_it_under_30_characters));
                 }
             }
 
@@ -1624,7 +1628,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     remain_password.setText(truncated);
                     remain_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
+                  // commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.maximum_password_length_reached_please_keep_it_under_30_characters));
                 }
             }
 
@@ -1706,7 +1711,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                 progressBar.setVisibility(View.VISIBLE);
                                 CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar, title);
                             } else {
-                                CommonUtilsMethods.showToastMessage(HomeDashBoard.this, "Please check Your Internet Connection");
+                                //CommonUtilsMethods.showToastMessage(HomeDashBoard.this, "Please check Your Internet Connection");
+                                CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.please_check_your_internet_connection));
                             }
                         } catch (Exception ignored) {
                         }

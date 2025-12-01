@@ -306,7 +306,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                                 dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                                 dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
                                                 progressDialog.dismiss();
-                                                commonUtilsMethods.showToastMessage(context, "No Event Capture");
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_event_capture));
                                             }
 
                                         }
@@ -394,7 +394,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                                 setSignatureData(SignatureData);
                                             }else {
                                                 progressDialog.dismiss();
-                                                commonUtilsMethods.showToastMessage(context, " Signature Not Available");
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.signature_not_available));
                                             }
 
                                         }
@@ -560,7 +560,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             }else {
                                                 layout.setVisibility(View.GONE);
                                                 dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                                                commonUtilsMethods.showToastMessage(context, " Slides   Details Not Available");
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.slides_details_not_available));
                                             }
                                         }
                                     }

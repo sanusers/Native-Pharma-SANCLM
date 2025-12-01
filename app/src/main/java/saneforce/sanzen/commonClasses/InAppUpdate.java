@@ -2,6 +2,7 @@ package saneforce.sanzen.commonClasses;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.IntentSender;
 import android.util.Log;
 import android.view.View;
@@ -59,7 +60,10 @@ public class InAppUpdate {
                                 break;
                             case UpdateAvailability.UPDATE_NOT_AVAILABLE:
                                 Log.d("App update", "onNavigationItemSelected: update not available");
-                                commonUtilsMethods.showToastMessage(activity, "No Update Available");
+                               // commonUtilsMethods.showToastMessage(activity, "No Update Available");
+                                commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_update_available));
+
+
                                 break;
                             case UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS:
                                 Log.d("App update", "onNavigationItemSelected: update in progress");

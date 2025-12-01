@@ -653,7 +653,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //                }
             }
             if (dayIDs == null || dayIDs.isEmpty()) {
-                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
+                //commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.kindly_sync_standard_tour_plan_setup));
                 startActivity(new Intent(StandardTourPlanActivity.this, MasterSyncActivity.class));
                 finish();
             } else {

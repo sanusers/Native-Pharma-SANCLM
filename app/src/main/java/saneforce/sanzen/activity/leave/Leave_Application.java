@@ -221,7 +221,8 @@ public class Leave_Application extends AppCompatActivity {
                     if (UtilityClass.isNetworkAvailable(Leave_Application.this)) {
                         showalert_leavetype();
                     } else {
-                        commonUtilsMethods.showToastMessage(Leave_Application.this, "Please Check Your Internet Connection");
+                       // commonUtilsMethods.showToastMessage(Leave_Application.this, "Please Check Your Internet Connection");
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.please_check_your_internet_connection));
                     }
                 }
                 closeKeyboard();
@@ -258,7 +259,8 @@ public class Leave_Application extends AppCompatActivity {
                 } else if (leavebinding.edReason.getText().toString().isEmpty() || leavebinding.edReason.getText().toString().equalsIgnoreCase("")) {
                     CommonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.enter_reason_for_leave));
                 } else if (leavebinding.tlAttachment.getVisibility() == View.VISIBLE && leavebinding.txtAttachement.getText().toString().isEmpty()) {
-                    CommonUtilsMethods.showToastMessage(Leave_Application.this, "Select Attachment");
+                  //  CommonUtilsMethods.showToastMessage(Leave_Application.this, "Select Attachment");
+                    CommonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_attachment));
                 } else {
                     if (UtilityClass.isNetworkAvailable(Leave_Application.this)) {
                         if (leavebinding.tlAttachment.getVisibility() == View.VISIBLE && !leavebinding.txtAttachement.getText().toString().isEmpty()) {
@@ -343,15 +345,15 @@ public class Leave_Application extends AppCompatActivity {
                     }
                     String filename = getFileNameFromUri(uri);
                     if (filename == null) {
-                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.please_select_correct_path));
+                        commonUtilsMethods.showToastMessage(Leave_Application.this,getString(R.string.please_select_correct_path));
                         return;
                     }
                     if (filename.endsWith(".zip")) {
-                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.zip_not_supported));
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.zip_not_supported));
                         return;
                     }
                     leavebinding.txtAttachement.setText(filename);
-                    commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.file_accepted));
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.file_accepted));
                     copyFileToAppDir(uri);
 //                    String fullPath = getPathFromURI(Leave_Application.this, uri);
 //                    String[] parts = fullPath.split("/");
@@ -381,11 +383,11 @@ public class Leave_Application extends AppCompatActivity {
 //                    }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
-                    commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.please_select_correct_path));
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.please_select_correct_path));
                     ex.printStackTrace();
                 }
             } else {
-                commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.no_file_selected));
+                commonUtilsMethods.showToastMessage(Leave_Application.this,getString(R.string.no_file_selected));
             }
             commonFun();
         }
@@ -840,7 +842,7 @@ public class Leave_Application extends AppCompatActivity {
                         Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
                         l_details.notifyDataSetChanged();
 
-                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.poor_connection));
                     }
 
                 });
@@ -876,7 +878,8 @@ public class Leave_Application extends AppCompatActivity {
                 int bal = totalval - val;
 
                 if (bal < 0) {
-                    commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
+                  //  commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.kindly_sync_leave_available));
                     leavebinding.submitLeave.setEnabled(false);
                 } else {
 //                    if(bal == 0) {
@@ -897,7 +900,8 @@ public class Leave_Application extends AppCompatActivity {
             List_LeaveDates.clear();
             leavebinding.balanceDays.setText("");
             Leave_Application.leavebinding.lDays.setText("");
-            commonUtilsMethods.showToastMessage(this, "No Leave Available!");
+          //  commonUtilsMethods.showToastMessage(this, "No Leave Available!");
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_leave_available));
             leavebinding.submitLeave.setEnabled(false);
             return;
         }
@@ -1084,7 +1088,7 @@ public class Leave_Application extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(Leave_Application.this,getString(R.string.poor_connection));
                 }
             });
         } catch (Exception e) {
@@ -1177,7 +1181,8 @@ public class Leave_Application extends AppCompatActivity {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
+                                //commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
+                                commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.leave_submitted_successfully));
                                 if (isLeaveEntitlementRequested) {
                                     leaveViewModel.updateLeaveStatusMasterSync();
                                 }
@@ -1188,7 +1193,7 @@ public class Leave_Application extends AppCompatActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                            commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
+                            commonUtilsMethods.showToastMessage(Leave_Application.this,getString(R.string.poor_connection));
                         }
                     });
                 }
@@ -1213,7 +1218,7 @@ public class Leave_Application extends AppCompatActivity {
             Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
             l_details.notifyDataSetChanged();
 
-            commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
+            commonUtilsMethods.showToastMessage(Leave_Application.this,getString(R.string.poor_connection));
         }
 
     }
@@ -1269,7 +1274,8 @@ public class Leave_Application extends AppCompatActivity {
                     leavebinding.edAddress.setText(truncated);
                     leavebinding.edAddress.setSelection(truncated.length());
                     closeKeyboard();
-                    commonUtilsMethods.showToastMessage(Leave_Application.this, "Maximum address length reached. Please keep it under 300 characters");
+                   // commonUtilsMethods.showToastMessage(Leave_Application.this, "Maximum address length reached. Please keep it under 300 characters");
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.maximum_address_length_reached_please_keep_it_under_300_characters));
                 }
             }
 
@@ -1292,7 +1298,8 @@ public class Leave_Application extends AppCompatActivity {
                     String truncated = str.substring(0, 300);
                     leavebinding.edReason.setText(truncated);
                     leavebinding.edReason.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(Leave_Application.this, "Maximum Reason length reached. Please keep it under 300 characters");
+//                    commonUtilsMethods.showToastMessage(Leave_Application.this, "Maximum Reason length reached. Please keep it under 300 characters");
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.maximum_reason_length_reached_please_keep_it_under_300_characters));
                 }
             }
 

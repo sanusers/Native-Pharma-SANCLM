@@ -431,7 +431,7 @@ public class CallsFragment extends Fragment {
                         } else if (WorkPlanFragment.isFromTP) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                         } else if (WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
-                            commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.get_deviation_approval));
                         } else {
                             startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                         }
@@ -447,7 +447,8 @@ public class CallsFragment extends Fragment {
                             } else if (WorkPlanFragment.isFromTP && WorkPlanFragment.binding.txtSave.isEnabled()) {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                             } else if (WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
-                                commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
+                               // commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.get_deviation_approval));
                             } else if (workTypeArray.length() > 0) {
                                 JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
                                 String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").optString("date");

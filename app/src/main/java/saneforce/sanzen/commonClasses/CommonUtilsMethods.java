@@ -117,7 +117,8 @@ public class CommonUtilsMethods {
                 View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
 
                 TextView text = layout.findViewById(R.id.text);
-                text.setText("No Address Found!  Try Again!");
+                //text.setText("No Address Found!  Try Again!");
+                text.setText(activity.getString(R.string.no_address_found));
 
                 Toast toast = new Toast(activity);
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
@@ -348,7 +349,9 @@ public class CommonUtilsMethods {
         LayoutInflater inflater = activity.getLayoutInflater();
         View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
         TextView text = layout.findViewById(R.id.text);
-        text.setText(message);
+       text.setText(message);
+       // text.setText(activity.getString(R.string.message));
+
 
         if (toast != null) {
             toast.cancel();
@@ -370,6 +373,7 @@ public class CommonUtilsMethods {
         // image.setImageResource(R.drawable.san_clm_logo);
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
+        // text.setText(context.getString(R.string.message));
 
         if (toast != null) {
             toast.cancel();
@@ -443,7 +447,8 @@ public class CommonUtilsMethods {
         popup.setContentView(layout);
         popup.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         TextView tv_name = layout.findViewById(R.id.tv_name);
-        tv_name.setText(name);
+        //tv_name.setText(name);
+       tv_name.setText(activity.getString(R.string.name));
         popup.setOutsideTouchable(true);
         popup.showAsDropDown(view);
     }

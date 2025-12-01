@@ -367,7 +367,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 @Override
                 public void onSafeClick(View view) {
                     stopClock();
-                    commonUtilsMethods.showToastMessage(context, "Check In Successfully");
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.check_in_successfully));
                     changeActivity(position);
                 }
             });

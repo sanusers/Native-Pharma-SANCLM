@@ -991,7 +991,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             commonUtilsMethods.showToastMessage(MapsActivity.this, jsonSaveRes.getString("Msg"));
                             dialogTagCust.dismiss();
                         } else {
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                            //commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
                             dialogTagCust.dismiss();
                         }
                     } catch (Exception e) {
@@ -1002,7 +1003,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     btn_confirm.setBackground(ContextCompat.getDrawable(MapsActivity.this, R.drawable.bg_purple));
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                   // commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
                     dialogTagCust.dismiss();
                     btn_confirm.setEnabled(true);
                     btn_confirm.setBackground(ContextCompat.getDrawable(MapsActivity.this, R.drawable.bg_purple));
@@ -1012,7 +1014,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+              //  commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
                 dialogTagCust.dismiss();
                 btn_confirm.setEnabled(true);
                 btn_confirm.setBackground(ContextCompat.getDrawable(MapsActivity.this, R.drawable.bg_purple));
@@ -1838,13 +1841,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     } else {
                         dialogTagCust.dismiss();
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                       // commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                   // commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
                     dialogTagCust.dismiss();
                 }
             });
