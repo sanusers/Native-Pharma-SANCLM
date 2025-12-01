@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="@dimen/_5sdp"
     android:gravity="center_horizontal">
 
     <!-- 🎉 Title -->
@@ -30,8 +30,7 @@
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
+        android:layout_height="@dimen/_100sdp"
         android:layout_marginBottom="10dp">
 
         <!-- BOTH COLUMNS -->
@@ -168,7 +167,7 @@
         android:text="OK"
         android:backgroundTint="@color/dark_purple"
         android:textColor="#FFFFFF"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/_3sdp"
         android:fontFamily="@font/satoshi_bold"
         android:textStyle="bold"
         android:textSize="@dimen/_6ssp" />
