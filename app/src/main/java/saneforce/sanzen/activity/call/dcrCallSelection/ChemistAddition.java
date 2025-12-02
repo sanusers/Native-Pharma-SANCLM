@@ -1193,7 +1193,7 @@ public class ChemistAddition extends AppCompatActivity {
             Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
             if(!fileToUpload.exists()) {
                 Log.e("S3Upload", "File does not exist: " + destinationFilePath);
-                commonUtilsMethods.showToastMessage(ChemistAddition.this, "File does not exist.");
+                commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.file_does_not_exist));
                 return;
             }
 
@@ -1231,7 +1231,7 @@ public class ChemistAddition extends AppCompatActivity {
                 public void onError(int id, Exception ex) {
                     Log.e("S3Upload", "Error: " + ex.getMessage());
 
-                    commonUtilsMethods.showToastMessage(ChemistAddition.this, "Upload failed. Please try again.");
+                    commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.upload_failed_please_try_again));
                 }
             });
 

@@ -768,6 +768,82 @@
     <string name="file_does_not_exist">File does not exist</string>
     <string name="please_fill_atleast_any_one_question">Please fill at least any one question</string>
     <string name="slide_updated">Slide updated</string>
+    <string name="survey_submitted_successfully">Survey submitted successfully</string>
+    <string name="select_option_for">Select option for</string>
+    <string name="slides_cleared_successfully">Slides cleared successfully</string>
+    <string name="no_submenu_data_available">No submenu data available</string>
+    <string name="upload_failed_please_try_again">Upload failed. Please try again</string>
+    <string name="no_survey_found">No survey found</string>
+    <string name="slides_downloading_completed">Slides downloading completed</string>
+    <string name="welcome_slides_downloading_completed">Welcome slides downloading completed</string>
+    <string name="invalid_submenu_data_format">Invalid submenu data format</string>
+    <string name="swap_between">Swap between</string>
+    <string name="was_successful">was successful</string>
+    <string name="deleted_successfully">Deleted successfully</string>
+    <string name="not_checked_in">Not checked in</string>
+    <string name="not_checked_out">Not checked out</string>
+    <string name="asserts_updated">Assets updated</string>
+    <string name="asserts_downloading_completed">Assets downloading completed</string>
+    <string name="please_complete">Please complete</string>
+    <string name="submitted_successfully">Submitted successfully</string>
+    <string name="please_try_after_sometime">Please try after sometime</string>
+    <string name="from_master_sync">From Master Sync</string>
+    <string name="complete">Complete</string>
+    <string name="prepare_your_tourplan">Prepare your Tour Plan</string>
+    <string name="sync_completed">Sync completed</string>
+    <string name="details">Details</string>
+    <string name="wait_for_location">Wait for location</string>
+    <string name="fill_the_from">Fill the From</string>
+    <string name="fill_the_to">Fill the To</string>
+    <string name="choose_the">Choose the</string>
+    <string name="fill_the">Fill the</string>
+    <string name="checked_out_successfully">Checked out successfully</string>
+    <string name="gathering_location_information_failed_please_try_again">Gathering location information failed, please try again</string>
+    <string name="offline_tourplan_uploading">Offline Tour Plan uploading</string>
+    <string name="prepare">Prepare</string>
+    <string name="and_get_approved_to_prepare_tour_plan">and get approved to prepare Tour Plan</string>
+    <string name="no_rcpa_values">No RCPA values</string>
+    <string name="call_deleted">Call deleted</string>
+    <string name="weekly_off_auto_post_is_enabled">Weekly off auto post is enabled</string>
+    <string name="holiday_auto_post_is_enabled">Holiday auto post is enabled</string>
+    <string name="already">Already</string>
+    <string name="has_been_submitted">has been submitted</string>
+    <string name="has_been_rejected_kindly_select_other_work_type_and_save_work_plan">Has been rejected, kindly select other work type and save Work Plan</string>
+    <string name="apply_leave_in_the_leave_application">Apply leave in the Leave Application</string>
+    <string name="select_work_day_for_session">Select work day for session</string>
+    <string name="already_submitted_work_plan">Already submitted Work Plan</string>
+    <string name="save_work_plan_to_delete_session">Save Work Plan to delete session</string>
+    <string name="failed_to_load_data">Failed to load data</string>
+    <string name="please_select_headquarters">Please select headquarters</string>
+    <string name="something_went_wrong_please_try_again">Something went wrong, please try again</string>
+    <string name="poor_network_connection">Poor network connection</string>
+    <string name="cannot_select_more_than_5">Cannot select more than 5</string>
+    <string name="event_capture_not_available">Event capture not available</string>
+    <string name="rcpa_details_not_available">RCPA details not available</string>
+    <string name="please_deselect_the_selected_inputs">Please deselect the selected inputs</string>
+    <string name="cannot_deselect_no_input">Cannot deselect, no input selected</string>
+    <string name="please_sync_previous_dates">Please sync previous dates</string>
+    <string name="sync_work_plan">Sync work plan</string>
+    <string name="sync_check_in_out">Sync check-in/out</string>
+    <string name="sync_work_plan_and_calls">Sync work plan and calls</string>
+    <string name="deviation_not_approved">Deviation not approved</string>
+    <string name="cannot_edit_already_approved">Cannot edit, already approved</string>
+    <string name="cannot_edit_waiting_for_approval">Cannot edit, waiting for approval</string>
+    <string name="visit_frequency_already_met">Visit frequency already met</string>
+    <string name="last_visit_date_time">Last Visit date &amp; Time</string>
+    <string name="products_promoted">Products promoted</string>
+    <string name="overview">Overview</string>
+    <string name="pre_call_analysis">Pre Call Analysis</string>
+<!--    <string name="inputs">Inputs</string>-->
+
+
+
+
+
+
+
+
+
 
 
 

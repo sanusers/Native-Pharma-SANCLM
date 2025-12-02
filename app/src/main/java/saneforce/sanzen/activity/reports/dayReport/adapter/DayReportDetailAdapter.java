@@ -721,7 +721,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 setEventCaptureData(EventCaptureData);
                                             }else {
                                                 progressDialog.dismiss();
-                                                commonUtilsMethods.showToastMessage(context, " Event Capture Not Available");
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.event_capture_not_available));
                                             }
                                         }
                                     }
@@ -801,7 +801,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 setSignatureData(SignatureData);
                                             }else {
                                                 progressDialog.dismiss();
-                                                commonUtilsMethods.showToastMessage(context, " Signature Not Available");
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.signature_not_available));
                                             }
 
                                         }
@@ -886,7 +886,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 layout.setVisibility(View.VISIBLE);
                                                 rcpadataid = arrayList.get(position).getTrans_Detail_Slno();
                                             }else {
-                                                commonUtilsMethods.showToastMessage(context, " RCPA  Details Not Available");
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rcpa_details_not_available));
                                             }
 
                                         }
@@ -958,7 +958,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 Slededataid = arrayList.get(position).getTrans_Detail_Slno();
                                             }else {
                                                 holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.click_logo));
-                                                commonUtilsMethods.showToastMessage(context, " Slides   Details Not Available");
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.slides_details_not_available));
                                             }
                                         }
                                     }

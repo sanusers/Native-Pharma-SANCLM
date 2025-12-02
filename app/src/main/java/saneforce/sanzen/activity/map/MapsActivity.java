@@ -1920,7 +1920,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onError(int id, Exception ex) {
                         Log.e("S3Upload", "Error: " + ex.getMessage());
                         dialogTagCust.dismiss();
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Upload failed. Please try again.");
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.upload_failed_please_try_again));
                     }
                 });
             }
@@ -2482,7 +2482,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     @Override
                                     public void onFailure(int pos) {
                                         Log.d("bitmap image", "image: " + "bitmap image is null");
-                                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Image Not Found");
+                                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.image_not_found));
                                         fullScreenImage.setVisibility(View.GONE);
                                     }
                                 });

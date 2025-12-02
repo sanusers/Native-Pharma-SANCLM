@@ -884,7 +884,7 @@ public class DCRCallActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 stopClock();
                 prepareCheckInOutJsonObject(checkInOutJsonObject);
-                commonUtilsMethods.showToastMessage(DCRCallActivity.this, "Checked-Out successfully...");
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.checked_out_successfully));
 //            onSubmitClicked();
                 callSubmit();
                 dialogCheckOut.dismiss();
@@ -2888,10 +2888,10 @@ public class DCRCallActivity extends AppCompatActivity {
 
                                         if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
                                             if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                                                commonUtilsMethods.showToastMessage(this, "Fill The From " + List.getFieldName());
+                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the_from) + List.getFieldName());
                                                 break;
                                             } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                                                commonUtilsMethods.showToastMessage(this, "Fill The To" + List.getFieldName());
+                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the_to) + List.getFieldName());
                                                 break;
                                             } else {
                                                 jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
@@ -2900,7 +2900,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                             }
                                         } else if (List.getControlId().equalsIgnoreCase("17")) {
                                             if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                                                commonUtilsMethods.showToastMessage(this, "Choose The " + List.getFieldName() + "");
+                                                commonUtilsMethods.showToastMessage(this, getString(R.string.choose_the) + List.getFieldName() + "");
                                                 break;
                                             } else {
                                                 jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -2908,7 +2908,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                             }
                                         } else {
                                             if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                                                commonUtilsMethods.showToastMessage(this, "Fill The " + List.getFieldName() + "");
+                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the) + List.getFieldName() + "");
                                                 break;
                                             } else {
                                                 jsonObject.put("values", List.getAnswerTxt());
@@ -2945,7 +2945,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("CustName", CallActivityCustDetails.get(0).getName());
             if (isFromActivity.equalsIgnoreCase("new")) {
                 if (SharedPref.getGeoChk(this).equalsIgnoreCase("0") && (lat == 0.0 || lng == 0.0)) {
-                    commonUtilsMethods.showToastMessage(this, "Gathering location information failed, Please try again!");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.gathering_location_information_failed_please_try_again));
                     isCreateJsonSuccess = false;
                     return;
                 } else {

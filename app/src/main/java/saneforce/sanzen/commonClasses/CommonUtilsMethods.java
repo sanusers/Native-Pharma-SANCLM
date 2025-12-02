@@ -447,8 +447,8 @@ public class CommonUtilsMethods {
         popup.setContentView(layout);
         popup.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         TextView tv_name = layout.findViewById(R.id.tv_name);
-        //tv_name.setText(name);
-       tv_name.setText(activity.getString(R.string.name));
+        tv_name.setText(name);
+       //tv_name.setText(activity.getString(R.string.name));
         popup.setOutsideTouchable(true);
         popup.showAsDropDown(view);
     }

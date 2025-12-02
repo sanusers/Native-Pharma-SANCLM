@@ -137,7 +137,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                     checkInCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation, zoomLevel);
                     mMap.moveCamera(checkInCameraUpdate);
                 } else {
-                    commonUtilsMethods.showToastMessage(MapViewActivity.this, "Not Checked In");
+                    commonUtilsMethods.showToastMessage(MapViewActivity.this, getString(R.string.not_checked_in));
                 }
             }
         });
@@ -155,7 +155,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                     checkOutCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation, zoomLevel);
                     mMap.moveCamera(checkOutCameraUpdate);
                 } else {
-                    commonUtilsMethods.showToastMessage(MapViewActivity.this, "Not Checked Out");
+                    commonUtilsMethods.showToastMessage(MapViewActivity.this, getString(R.string.not_checked_out));
                 }
             }
         });

@@ -179,7 +179,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 public void onSafeClick(View view) {
                     int index = groupModelClasses.indexOf(groupModelClass);
                     if (index != 0) {
-                        CommonUtilsMethods.showToastMessage(context, "Please Sync previous dates!");
+                        CommonUtilsMethods.showToastMessage(context, context.getString(R.string.please_sync_previous_dates));
                     } else {
                         if (UtilityClass.isNetworkAvailable(context)) {
                             progressDialog = CommonUtilsMethods.createProgressDialog(context);

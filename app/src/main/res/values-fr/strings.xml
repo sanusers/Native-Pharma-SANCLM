@@ -741,10 +741,86 @@
     <string name="deviate_to_edit_work_plan">Dévier pour modifier le Plan de travail</string>
     <string name="please_update_session_2">Veuillez mettre à jour la session 2</string>
     <string name="please_update_session_1">Veuillez mettre à jour la session 1</string>
-    <string name="standard_tour_plan_must_be_approved_to_enter_tour_plan_fr">Le plan de tournée standard doit être approuvé pour accéder au plan de tournée</string>
-    <string name="file_does_not_exist_fr">Le fichier n\'existe pas</string>
-    <string name="please_fill_atleast_any_one_question_fr">Veuillez remplir au moins une question</string>
-    <string name="slide_updated_fr">Diapositive mise à jour</string>
+    <string name="standard_tour_plan_must_be_approved_to_enter_tour_plan">Le plan de tournée standard doit être approuvé pour accéder au plan de tournée</string>
+    <string name="file_does_not_exist">Le fichier n\'existe pas</string>
+    <string name="please_fill_atleast_any_one_question">Veuillez remplir au moins une question</string>
+    <string name="slide_updated">Diapositive mise à jour</string>
+    <string name="survey_submitted_successfully">Enquête soumise avec succès</string>
+    <string name="select_option_for">Sélectionnez une option pour</string>
+    <string name="slides_cleared_successfully">Diapositives effacées avec succès</string>
+    <string name="no_submenu_data_available">Aucune donnée de sous-menu disponible</string>
+    <string name="upload_failed_please_try_again">Échec du téléchargement. Veuillez réessayer</string>
+    <string name="no_survey_found">Aucune enquête trouvée</string>
+    <string name="slides_downloading_completed">Téléchargement des diapositives terminé</string>
+    <string name="welcome_slides_downloading_completed">Téléchargement des diapositives d\’accueil terminé</string>
+    <string name="invalid_submenu_data_format">Format de données du sous-menu invalide</string>
+    <string name="swap_between">Permuter entre</string>
+    <string name="was_successful">a réussi</string>
+    <string name="deleted_successfully">Supprimé avec succès</string>
+    <string name="not_checked_in">Non enregistré</string>
+    <string name="not_checked_out">Non sorti</string>
+    <string name="asserts_updated">Actifs mis à jour</string>
+    <string name="asserts_downloading_completed">Téléchargement des actifs terminé</string>
+    <string name="please_complete">Veuillez compléter</string>
+    <string name="submitted_successfully">Soumis avec succès</string>
+    <string name="please_try_after_sometime">Veuillez réessayer plus tard</string>
+    <string name="from_master_sync">Depuis la sync principale</string>
+    <string name="complete">Terminé</string>
+    <string name="prepare_your_tourplan">Préparez votre plan de tournée</string>
+    <string name="sync_completed">Sync terminée</string>
+    <string name="details">Détails</string>
+    <string name="wait_for_location">Attendez la localisation</string>
+    <string name="fill_the_from">Remplissez le champ "De"</string>
+    <string name="fill_the_to">Remplissez le champ "À"</string>
+    <string name="choose_the">Choisissez le/la</string>
+    <string name="fill_the">Remplissez le/la</string>
+    <string name="checked_out_successfully">Sortie effectuée avec succès</string>
+    <string name="gathering_location_information_failed_please_try_again">Échec de la récupération des informations de localisation, veuillez réessayer</string>
+    <string name="offline_tourplan_uploading">Téléversement du plan de tournée hors ligne</string>
+    <string name="prepare">Préparer</string>
+    <string name="and_get_approved_to_prepare_tour_plan">et obtenir l\'approbation pour préparer le plan de tournée</string>
+    <string name="no_rcpa_values">Aucune valeur RCPA</string>
+    <string name="call_deleted">Appel supprimé</string>
+    <string name="weekly_off_auto_post_is_enabled">La publication automatique du jour de repos hebdomadaire est activée</string>
+    <string name="holiday_auto_post_is_enabled">La publication automatique des jours fériés est activée</string>
+    <string name="already">Déjà</string>
+    <string name="has_been_submitted">a été soumis</string>
+    <string name="has_been_rejected_kindly_select_other_work_type_and_save_work_plan">A été rejeté, veuillez sélectionner un autre type de travail et enregistrer le plan de travail</string>
+    <string name="apply_leave_in_the_leave_application">Demandez un congé dans la demande de congé</string>
+    <string name="select_work_day_for_session">Sélectionnez le jour ouvrable pour la session</string>
+    <string name="already_submitted_work_plan">Plan de travail déjà soumis</string>
+    <string name="save_work_plan_to_delete_session">Enregistrez le plan de travail pour supprimer la session</string>
+    <string name="failed_to_load_data">Échec du chargement des données</string>
+    <string name="please_select_headquarters">Veuillez sélectionner le siège</string>
+    <string name="something_went_wrong_please_try_again">Une erreur s\'est produite, veuillez réessayer</string>
+    <string name="poor_network_connection">Connexion réseau faible</string>
+    <string name="cannot_select_more_than_5">Impossible de sélectionner plus de 5</string>
+    <string name="event_capture_not_available">La capture d\'événement n\'est pas disponible</string>
+    <string name="rcpa_details_not_available">Les détails RCPA ne sont pas disponibles</string>
+    <string name="please_deselect_the_selected_inputs">Veuillez désélectionner les entrées sélectionnées</string>
+    <string name="cannot_deselect_no_input">Impossible de désélectionner, aucune entrée sélectionnée</string>
+    <string name="please_sync_previous_dates">Veuillez sync les dates précédentes</string>
+    <string name="sync_work_plan">Sync le plan de travail</string>
+    <string name="sync_check_in_out">Sync l\’enregistrement/déconnexion</string>
+    <string name="sync_work_plan_and_calls">Sync le plan de travail et les appels</string>
+    <string name="deviation_not_approved">Déviation non approuvée</string>
+    <string name="cannot_edit_already_approved">Impossible de modifier, déjà approuvé</string>
+    <string name="cannot_edit_waiting_for_approval">Impossible de modifier, en attente d’approbation</string>
+    <string name="visit_frequency_already_met">Fréquence de visite déjà atteinte</string>
+    <string name="last_visit_date_time">Date et heure de la dernière visite</string>
+    <string name="products_promoted">Produits promus</string>
+    <string name="overview">Aperçu</string>
+    <string name="pre_call_analysis">Analyse pré-appel</string>
+<!--    <string name="inputs">Entrées</string>-->
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1897,7 +1897,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         }
                     }
 
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, " Slides Cleared Successfully");
+//                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, " Slides Cleared Successfully");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.slides_cleared_successfully));
 
                 }
             });
@@ -1991,7 +1992,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            if (SharedPref.getHqCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getHqCode(HomeDashBoard.this).isEmpty()) {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.kindly_submit_field_work));
             } else if (WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(HomeDashBoard.this).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(HomeDashBoard.this).equalsIgnoreCase("3")) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Get Deviation Approval");
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.get_deviation_approval));
             } else {
                 Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
                 intent.putExtra("from", "not_tagging");
@@ -2075,7 +2076,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             Log.d("TAG", "setUpQuiz: new sync");
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
             if (!jsonArray.toString().equalsIgnoreCase("[]")) {
-                commonUtilsMethods.showToastMessage(this, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.complete) + SharedPref.getQuizHeading(HomeDashBoard.this));
                 startActivity(new Intent(this, QuizActivity.class));
             }
         } else if (selectedDate != null && !SharedPref.getLastQuizSyncDate(this).equalsIgnoreCase(selectedDate.toString())) {
@@ -2115,7 +2116,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                             jsonArray.put(object);
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, jsonArray.toString(), 2));
                                             SharedPref.setQuizAvailableDate(HomeDashBoard.this, HomeDashBoard.selectedDate.toString());
-                                            commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
+                                            commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.complete) + SharedPref.getQuizHeading(HomeDashBoard.this));
                                             Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
                                             intent.putExtra(QuizActivity.SYNC_NEEDED, false);
                                             startActivity(intent);
@@ -2865,13 +2866,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
                 if (tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.prepare_your_tourplan));
                     TourplanFlog = "0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
                     Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
                     startActivity(intent);
                 } else if (tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3") && ((mCurrentDate >= Start_Date))) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.prepare_your_tourplan));
                     if (End_Date < mCurrentDate) {
                         SharedPref.setTpStatus(HomeDashBoard.this, true);
                     } else {
@@ -3107,7 +3108,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         public void onReceive(Context context, Intent intent) {
             try {
                 String type = intent.getStringExtra("type");
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Sync Completed");
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.sync_completed));
             } catch (Exception e) {
                 e.printStackTrace();
             }

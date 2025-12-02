@@ -433,9 +433,9 @@ public class QuizActivity extends AppCompatActivity {
                 SharedPref.putQuizAssertDownloadingStatus(QuizActivity.this, true);
                 if(isSingleAssertDownloadingStatus) {
                     isSingleAssertDownloadingStatus = false;
-                    commonUtilsMethods.showToastMessage(this, quizCap + " Asserts Updated ");
+                    commonUtilsMethods.showToastMessage(this, quizCap + getString(R.string.asserts_updated));
                 }else {
-                    commonUtilsMethods.showToastMessage(this, quizCap + " Asserts Downloading Completed ");
+                    commonUtilsMethods.showToastMessage(this, quizCap + getString(R.string.asserts_downloading_completed));
                 }
                 dialog.dismiss();
                 if(!isFinishing()) {
@@ -573,7 +573,7 @@ public class QuizActivity extends AppCompatActivity {
                         unAttendedQuestions.remove(index);
                     }
                 }
-                commonUtilsMethods.showToastMessage(QuizActivity.this, "Please Complete " + Arrays.toString(unAttendedQuestions.toArray()).replaceAll("\\[", "").replaceAll("]", ""));
+                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.please_complete) + Arrays.toString(unAttendedQuestions.toArray()).replaceAll("\\[", "").replaceAll("]", ""));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -846,7 +846,7 @@ public class QuizActivity extends AppCompatActivity {
                                 if(response.body() != null) {
                                     Log.e("test", "response : " + " : " + response.body());
                                 }
-                                commonUtilsMethods.showToastMessage(QuizActivity.this, quizCap + " Submitted Successfully");
+                                commonUtilsMethods.showToastMessage(QuizActivity.this, quizCap + getString(R.string.submitted_successfully));
                                 int attempts = SharedPref.getQuizAttempts(QuizActivity.this);
 //                            if(attempts == 1) {
                                 SharedPref.setLastQuizSubmittedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
@@ -1052,7 +1052,7 @@ public class QuizActivity extends AppCompatActivity {
                 populateQuestionNumber();
                 setQuestion(0);
             }else {
-                commonUtilsMethods.showToastMessage(QuizActivity.this, "Sync " + quizCap + " from Master Sync");
+                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.sync) + quizCap + getString(R.string.from_master_sync));
                 finish();
             }
         } catch (Exception e) {
@@ -1209,7 +1209,7 @@ public class QuizActivity extends AppCompatActivity {
             }.start();
         } catch (Exception e) {
             e.printStackTrace();
-            commonUtilsMethods.showToastMessage(QuizActivity.this, "Please try after sometime");
+            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.please_try_after_sometime));
         }
     }
 

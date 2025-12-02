@@ -1227,7 +1227,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             Log.d("fileToUpload", "CallImageAPIS3: " + fileToUpload.getAbsolutePath());
             if (!fileToUpload.exists()) {
                 Log.e("S3Upload", "File does not exist: " + destinationFilePath);
-                commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, "File does not exist.");
+                commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getString(R.string.file_does_not_exist));
                 return;
             }
 

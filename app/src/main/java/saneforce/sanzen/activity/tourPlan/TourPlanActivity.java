@@ -245,12 +245,12 @@ public class TourPlanActivity extends AppCompatActivity {
                 && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpNeed(this).equalsIgnoreCase("0")
                 && !SharedPref.getTpStartDate(this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(this).equalsIgnoreCase("-1")
                 && !SharedPref.getTpEndDate(this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(this).equalsIgnoreCase("-1")) {
-            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare " + SharedPref.getStpCaption(this) + " and get Approved to prepare Tour Plan");
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare)  + SharedPref.getStpCaption(this) + getString(R.string.and_get_approved_to_prepare_tour_plan));
             Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
             startActivity(intent);
             finish();
         } else if (SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Waiting for approval"))) {
-            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Standard Tour Plan must be approved to enter Tour Plan");
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.standard_tour_plan_must_be_approved_to_enter_tour_plan));
             finish();
         }
 //        else if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Waiting for approval"))) {
@@ -946,11 +946,11 @@ public class TourPlanActivity extends AppCompatActivity {
 
 
                     if (isEdited) {
-                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Updated Successfully");
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.updated_successfully));
                         calendarAdapter.notifyDataSetChanged();
                         isEdited = false;
                     } else {
-                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Saved Successfully");
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.saved_successfully));
                     }
                     calendarAdapter.notifyDataSetChanged();
                 } else {
@@ -1100,7 +1100,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         if ((isClusterNotSelectedForHQ || !hqName.isEmpty()) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
                             isEmpty = true;
                             position = i;
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Select any " + SharedPref.getClusterCap(TourPlanActivity.this) + " for " + hqName);
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + SharedPref.getClusterCap(TourPlanActivity.this) + " for " + hqName);
                             break;
                         }
                         if (modelClass.getHQs().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
@@ -1409,10 +1409,10 @@ public class TourPlanActivity extends AppCompatActivity {
 
 
                     if (isEdited) {
-                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Updated Successfully");
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.updated_successfully));
                         isEdited = false;
                     } else {
-                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Saved Successfully");
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this,  getString(R.string.saved_successfully));
                     }
                     calendarAdapter.notifyDataSetChanged();
                 } else {
@@ -1446,7 +1446,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                             for (ModelClass modelClass : arrayList) {
                                 if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, " Offline TourPlan Uploading…");
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this,  getString(R.string.offline_tourplan_uploading));
                                     dummy.add(modelClass.getDayNo());
                                     Log.v("tpApproval", "---" + modelClass.getDayNo());
                                     binding.progressBar.setVisibility(View.VISIBLE);

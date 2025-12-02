@@ -103,7 +103,8 @@ public class DynamicSubMenuActivity extends AppCompatActivity {
 private void prepare_menu_sub_details(String menu_sub_details) {
     try {
         if (menu_sub_details == null || menu_sub_details.trim().equals("") || menu_sub_details.trim().equalsIgnoreCase("null")) {
-            commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, "No submenu data available");
+//            commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, "No submenu data available");
+            commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, getString(R.string.no_submenu_data_available));
             return;
         }
 
@@ -133,12 +134,12 @@ private void prepare_menu_sub_details(String menu_sub_details) {
             recyclerView.setAdapter(dynamicSubMenuAdapter);
             dynamicSubMenuAdapter.notifyDataSetChanged();
         } else {
-            commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, "No Record Found");
+            commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, getString(R.string.no_record_found));
         }
 
     } catch (JSONException e) {
         e.printStackTrace();
-        commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, "Invalid submenu data format");
+        commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, getString(R.string.invalid_submenu_data_format));
     }
 }
 

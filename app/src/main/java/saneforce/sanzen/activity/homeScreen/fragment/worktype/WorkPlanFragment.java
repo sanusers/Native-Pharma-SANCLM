@@ -680,7 +680,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         e.printStackTrace();
                     }
                     if (isClusterNotSelected) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Select any " + SharedPref.getClusterCap(requireContext()) + " for " + hqName);
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_any) + SharedPref.getClusterCap(requireContext()) + " for " + hqName);
                         return;
                     }
                 }
@@ -1401,10 +1401,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     } else if (!EditSession.equalsIgnoreCase("1") && DayPlanCount.equals("1")) {
                         if (mFwFlg1 != null && mFwFlg1.equalsIgnoreCase("W")) {
                             String weekOffName = findWTName("W");
-                            commonUtilsMethods.showToastMessage(requireContext(), "Already " + weekOffName + " has been submitted");
+                            commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.already) + weekOffName + getString(R.string.has_been_submitted));
                         } else if (mFwFlg1 != null && mFwFlg1.equalsIgnoreCase("H")) {
                             String holidayName = findWTName("H");
-                            commonUtilsMethods.showToastMessage(requireContext(), "Already " + holidayName + " has been submitted");
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.already) + holidayName + getString(R.string.has_been_submitted));
                         } else {
                             if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.cannot_add_plan_in_tour_plan_based_dcr));
@@ -1757,7 +1757,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     }
                                 } else {
                                     if (isToSetupWorkPlan) {
-                                        commonUtilsMethods.showToastMessage(requireContext(), "Deviation Not Approved");
+                                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviation_not_approved));
                                     }
                                 }
                             } else {
@@ -2300,7 +2300,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if (leaveName.isEmpty()) {
                     leaveName = "Leave";
                 }
-                commonUtilsMethods.showToastMessage(requireContext(), leaveName + " has been rejected, Kindly select other Work Type and Save Work Plan");
+                commonUtilsMethods.showToastMessage(requireContext(), leaveName + getString(R.string.has_been_rejected_kindly_select_other_work_type_and_save_work_plan));
             } else {
 //                SharedPref.setCheckTodayCheckInOut(requireContext(), HomeDashBoard.selectedDate.toString());
                 if (CheckInOutManager.isCheckInAvailable(requireContext())) {
@@ -2355,7 +2355,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                     if (isClusterNotSelected) {
-                        showToast("Select any " + SharedPref.getClusterCap(requireContext()) + "for " + hqName);
+                        showToast(getString(R.string.select_any) + SharedPref.getClusterCap(requireContext()) + "for " + hqName);
                         return;
                     }
                 }
@@ -2368,7 +2368,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
 
         if (FWFlag.equalsIgnoreCase("L")) {
-            showToast("Apply Leave in the Leave Application");
+            showToast(getString(R.string.apply_leave_in_the_leave_application));
             return;
         }
 
@@ -2378,7 +2378,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0")
                     && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
                     && (!stpOfflineDataDao.isNotApproved() && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0))) {
-                showToast("Select Work Day for Session " + sessionId);
+                showToast(getString(R.string.select_work_day_for_session) + sessionId);
                 return;
             }
 
@@ -5239,7 +5239,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
             updateLocalData();
             if (offlineDaySubmitDao.getDaySubmit(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4))) != null) {
-                commonUtilsMethods.showToastMessage(context, "Already submitted Work Plan!");
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_submitted_work_plan));
             } else {
                 offlineDaySubmitDao.insert(new OfflineDaySubmitDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), finalSubmitJSONObject.toString()));
             }
@@ -5381,7 +5381,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onSafeClick(View view) {
                 if (isFromTP) {
-                    commonUtilsMethods.showToastMessage(requireContext(), "Save Work Plan to delete session " + sessionType);
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_work_plan_to_delete_session) + sessionType);
                     dialogOptionSelection.dismiss();
                 } else {
                     dialogEditOrDeleteConfirmation(sessionType, "Delete");

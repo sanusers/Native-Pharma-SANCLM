@@ -481,7 +481,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
 //                        hideLoadingOverlay();
                         progressDialog.dismiss();
                         requireActivity().runOnUiThread(() ->
-                                commonUtilsMethods.showToastMessage(requireContext(), "Failed to load data"));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.failed_to_load_data)));
                     }
                 });
             } catch (JSONException e) {
@@ -602,7 +602,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             progressDialog.dismiss();
                             requireActivity().runOnUiThread(() ->
-                                    commonUtilsMethods.showToastMessage(requireContext(), "Failed to load data"));
+                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.failed_to_load_data)));
                         }
                     });
                 } catch (JSONException e) {

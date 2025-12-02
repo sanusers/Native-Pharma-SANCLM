@@ -224,7 +224,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                                 WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                                 WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + context.getString(R.string.weekly_off_auto_post_is_enabled));
                                 return;
                             }
                         } else if (list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
@@ -233,7 +233,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                                 WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                                 WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) +context.getString(R.string.holiday_auto_post_is_enabled));
                                 return;
                             }
                         }
@@ -347,7 +347,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                                 WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                                 WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + context.getString(R.string.weekly_off_auto_post_is_enabled));
                                 return;
                             }
                         } else if (list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
@@ -356,7 +356,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                                 WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                                 WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) +context.getString(R.string.holiday_auto_post_is_enabled));
                                 return;
                             }
                         }

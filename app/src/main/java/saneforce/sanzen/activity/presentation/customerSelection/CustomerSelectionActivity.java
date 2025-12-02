@@ -209,7 +209,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
 
         binding.btnNext.setOnClickListener(view -> {
             if (selectedCustomerCodes.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, "Please select any " + selectedCustomerCaption);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + selectedCustomerCaption);
             } else {
                 if (binding.btnNext.getText().toString().equals(getString(R.string.next))) {
                     Intent intent = new Intent(this, CreatePresentationActivity.class);
@@ -220,7 +220,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                     finish();
                 } else if (binding.btnNext.getText().toString().equals(getString(R.string.save))) {
                     presentationDataDao.changeSelectedCustomers(presentationName, (Arrays.toString(selectedCustomerCodes.toArray()).replaceAll("\\[", "").replaceAll("\\]", "")));
-                    commonUtilsMethods.showToastMessage(this, selectedCustomerCaption + " updated successfully");
+                    commonUtilsMethods.showToastMessage(this, selectedCustomerCaption + getString(R.string.updated_successfully));
                     finish();
                 }
             }

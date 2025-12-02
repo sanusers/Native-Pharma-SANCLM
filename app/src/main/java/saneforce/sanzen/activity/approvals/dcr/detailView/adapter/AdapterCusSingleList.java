@@ -481,7 +481,8 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             }else {
                                                 layout.setVisibility(View.GONE);
                                                 dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                                                commonUtilsMethods.showToastMessage(context, "No RCPA Values");
+                                               // commonUtilsMethods.showToastMessage(context, "No RCPA Values");
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_rcpa_values));
                                             }
 
                                         }

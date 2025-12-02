@@ -178,10 +178,10 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             dcrViewHolder.checkBox.setOnClickListener(buttonView -> {
                 Log.d("Adapter", "onBindViewHolder: position -> " + position + " binding position -> " + dcrViewHolder.getBindingAdapterPosition() + " absolute position -> " + dcrViewHolder.getAbsoluteAdapterPosition());
                 if (SharedPref.getStpStatus(context).equalsIgnoreCase("Approved")) {
-                    commonUtilsMethods.showToastMessage(context, "Cannot Edit, Already Approved");
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_edit_already_approved));
                     dcrViewHolder.checkBox.setChecked(!dcrViewHolder.checkBox.isChecked());
                 }else if (SharedPref.getStpStatus(context).equalsIgnoreCase("Waiting For Approval")) {
-                    commonUtilsMethods.showToastMessage(context, "Cannot Edit, Waiting For Approval");
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_edit_waiting_for_approval));
                     dcrViewHolder.checkBox.setChecked(!dcrViewHolder.checkBox.isChecked());
                 } else {
                     String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
@@ -191,7 +191,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
 //                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length >= dcrModel.getVisitFrequency()) {
                     } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && docList.length >= dcrModel.getVisitFrequency()) {
-                        commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.visit_frequency_already_met));
                         dcrViewHolder.checkBox.setChecked(false);
                     } else {
                         updateDcrModelAndViews(dcrModel, dcrViewHolder, position);

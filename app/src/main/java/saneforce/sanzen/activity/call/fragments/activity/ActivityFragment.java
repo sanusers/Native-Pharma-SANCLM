@@ -497,7 +497,7 @@ public class ActivityFragment extends Fragment {
                     fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
                     fragmentActivityBinding.btnSubmit.setVisibility(View.GONE);
                     fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(requireContext(), "No " + activityCap + " Details");
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no) + activityCap + getString(R.string.details));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2605,7 +2605,7 @@ public class ActivityFragment extends Fragment {
                     if (!CheckLocPermission()) {
                         RequestLocationPermission();
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Wait For Location");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.wait_for_location));
                         String address;
                         gpsTrack = new GPSTrack(requireActivity());
                         double latitude = gpsTrack.getLatitude();
@@ -3035,10 +3035,10 @@ public class ActivityFragment extends Fragment {
 
                 if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Fill The From " + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the_from) + List.getFieldName());
                         break;
                     } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Fill The To" + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the_to)+ List.getFieldName());
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
@@ -3047,7 +3047,7 @@ public class ActivityFragment extends Fragment {
                     }
                 } else if (List.getControlId().equalsIgnoreCase("17")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Choose The " + List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.choose_the) + List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -3055,7 +3055,7 @@ public class ActivityFragment extends Fragment {
                     }
                 } else {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "Fill The " + List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the) + List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt());
@@ -3169,7 +3169,7 @@ public class ActivityFragment extends Fragment {
                 }
 
             }
-            commonUtilsMethods.showToastMessage(requireContext(), activityCap + " Saved Successfully");
+            commonUtilsMethods.showToastMessage(requireContext(), activityCap + getString(R.string.saved_successfully));
         } catch (Exception a) {
             a.printStackTrace();
         }

@@ -174,8 +174,11 @@ public class CustomerProfile extends AppCompatActivity {
         }
 
         viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
-        viewPagerAdapter.add(new OverviewFragment(), "Overview");
-        viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
+        viewPagerAdapter.add(new OverviewFragment(), getString(R.string.overview));
+        viewPagerAdapter.add(new PreCallAnalysisFragment(), getString(R.string.pre_call_analysis));
+
+//        viewPagerAdapter.add(new OverviewFragment(), "Overview");
+//        viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         if (CallActivityCustDetails != null) {
             cusName.setText(CallActivityCustDetails.get(0).getName());

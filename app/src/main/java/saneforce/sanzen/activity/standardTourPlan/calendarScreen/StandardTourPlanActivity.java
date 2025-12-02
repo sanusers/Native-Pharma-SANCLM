@@ -987,7 +987,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
             activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
         } else {
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Sync " + getString(R.string.standard_tour_plan) + " from Master Sync");
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.sync) + getString(R.string.standard_tour_plan) + getString(R.string. from_master_sync));
         }
     }
 
@@ -1219,7 +1219,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
-                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Swap between " + fromName + " And " + toName + " was successful");
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.swap_between) + fromName + " And " + toName + getString(R.string.was_successful));
                             }
                         } catch (Exception e) {
                             Log.e("STP SWAP", "onResponse: " + e.getMessage());
@@ -1438,7 +1438,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
-                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + " Deleted Successfully");
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + getString(R.string.deleted_successfully));
                             }
                         } catch (Exception e) {
                             Log.e("STP Delete", "onResponse: " + e.getMessage());

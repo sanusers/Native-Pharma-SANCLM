@@ -13,6 +13,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 
 import java.io.File;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -79,7 +80,7 @@ public class AWSBucketsTag {
                         if (ex instanceof com.amazonaws.AmazonClientException &&
                                 ex.getMessage() != null &&
                                 ex.getMessage().contains("SocketTimeoutException")) {
-                            commonUtilsMethods.showToastMessage(context, "Network timeout. Please try again.");
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.network_timeout_please_try_again));
                         }
 //                        commonUtilsMethods.showToastMessage(context,"Error");
                         ex.printStackTrace();
@@ -124,7 +125,7 @@ public class AWSBucketsTag {
                         if (ex instanceof com.amazonaws.AmazonClientException &&
                                 ex.getMessage() != null &&
                                 ex.getMessage().contains("SocketTimeoutException")) {
-                            commonUtilsMethods.showToastMessage(context, "Network timeout. Please try again.");
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.network_timeout_please_try_again));
                         }
                         ex.printStackTrace();
                     }

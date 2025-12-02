@@ -109,7 +109,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                     if (isNowChecked) {
                         selectedHQCount++;
                         if (selectedHQCount > 5) {
-                            commonUtilsMethods.showToastMessage(context, "Cannot select more than 5 " + context.getString(R.string.headquarter));
+                            commonUtilsMethods.showToastMessage(context,context.getString(R.string.cannot_select_more_than_5) + context.getString(R.string.headquarter));
                             selectedHQCount--;
                             clickedItem.setChecked(false);
                             notifyItemChanged(position);

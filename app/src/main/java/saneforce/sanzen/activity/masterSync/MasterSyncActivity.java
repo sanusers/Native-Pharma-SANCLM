@@ -3563,7 +3563,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                   //  commonUtilsMethods.showToastMessage(this, "Slide Updated ");
                     commonUtilsMethods.showToastMessage(this, getString(R.string.slide_updated));
                 } else {
-                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
+//                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.slides_downloading_completed));
                 }
 
                 if (navigateFrom.equalsIgnoreCase("Login")) {
@@ -3670,9 +3671,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, true);
                 if (isSingleWelcomeSlideDownloadingStatus) {
                     isSingleWelcomeSlideDownloadingStatus = false;
-                    commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.slide_updated));
                 } else {
-                    commonUtilsMethods.showToastMessage(this, "   Welcome Slides Downloading Completed ");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.welcome_slides_downloading_completed));
                 }
 
                 if (navigateFrom.equalsIgnoreCase("Login")) {
@@ -4197,7 +4198,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, "Please Try Again !");
+                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.please_try_again));
                     Log.e("tpGetPlan", "error getTp : " + t);
                 }
             });

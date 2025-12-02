@@ -523,7 +523,7 @@ public class DynamicActivity extends AppCompatActivity {
                     binding.rlDetailsMain.setVisibility(View.GONE);
                     binding.btnSubmit.setVisibility(View.GONE);
                     binding.progrlessdetail.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap + getString(R.string.details));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -626,7 +626,7 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
                                     binding.llMainLayout.setVisibility(View.GONE);
 
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap);
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap);
                                 }
                             } catch (Exception a) {
                                 a.printStackTrace();
@@ -767,10 +767,10 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.btnSubmit.setVisibility(View.GONE);
                                     binding.progrlessdetail.setVisibility(View.GONE);
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap + getString(R.string.details));
                                 }
                             } catch (Exception a) {
-                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
+                                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap +  getString(R.string.details));
                                 Log.e("Error", "----- " + a);
                             }
                         }
@@ -778,7 +778,7 @@ public class DynamicActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap +  getString(R.string.details));
                         binding.rlNoData.setVisibility(View.VISIBLE);
                         binding.rlDetailsMain.setVisibility(View.GONE);
                         binding.btnSubmit.setVisibility(View.GONE);
@@ -2301,7 +2301,7 @@ public class DynamicActivity extends AppCompatActivity {
                     if (!CheckLocPermission()) {
                         RequestLocationPermission();
                     } else {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Wait For Location");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.wait_for_location));
                         String address;
                         gpsTrack = new GPSTrack(DynamicActivity.this);
                         double latitude = gpsTrack.getLatitude();
@@ -2803,10 +2803,10 @@ public class DynamicActivity extends AppCompatActivity {
 
                 if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The From " + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this,getString(R.string.fill_the_from) + List.getFieldName());
                         break;
                     } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The To" + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.fill_the_to) + List.getFieldName());
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
@@ -2815,7 +2815,7 @@ public class DynamicActivity extends AppCompatActivity {
                     }
                 } else if (List.getControlId().equalsIgnoreCase("17")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Choose The " + List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.choose_the)+ List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -2823,7 +2823,7 @@ public class DynamicActivity extends AppCompatActivity {
                     }
                 } else {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The " + List.getFieldName() + "");
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.fill_the) + List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt());
@@ -2984,7 +2984,7 @@ public class DynamicActivity extends AppCompatActivity {
                 }
 
             }
-            commonUtilsMethods.showToastMessage(DynamicActivity.this, activityCap + " Saved Successfully");
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, activityCap + getString(R.string.saved_successfully));
         } catch (Exception a) {
             a.printStackTrace();
         }

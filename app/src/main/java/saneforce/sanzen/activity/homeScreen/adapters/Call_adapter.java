@@ -332,7 +332,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             }
                         }
                         SharedPref.setTodayCallList(context, jsonArray.toString());
-                        commonUtilsMethods.showToastMessage(context, "Call Deleted");
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_deleted));
                         if (jsonArray.length() <= 0) {
                             SharedPref.setLastCallDate(context, "");
                         }

@@ -265,7 +265,7 @@ public class ApprovedCallsFragment extends Fragment {
             String selected = monthYearList.get(position);
             monthYearTextView.setText(selected);
             if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")){
-                commonUtilsMethods.showToastMessage(requireContext(),"Please Select HeadQuarters");
+                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.please_select_headquarters));
                 noReport.setVisibility(View.VISIBLE);
             }else {
                 noReport.setVisibility(View.GONE);
@@ -380,13 +380,13 @@ public class ApprovedCallsFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call<JsonElement> call, Throwable throwable) {
-                                commonUtilsMethods.showToastMessage(requireContext(),"Something Went Wrong! Please Try Again");
+                                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.something_went_wrong_please_try_again));
 
                             }
 
                         });
                 }else{
-                    commonUtilsMethods.showToastMessage(requireContext(),"Poor Network Connection");
+                    commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.poor_network_connection));
 
                 }
 

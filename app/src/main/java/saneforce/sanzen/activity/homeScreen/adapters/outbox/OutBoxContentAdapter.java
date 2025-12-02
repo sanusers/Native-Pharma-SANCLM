@@ -279,7 +279,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             public void onSafeClick(View view) {
                 List<String> dates = List.copyOf(outboxUtil.getOutboxDates());
                 if (dates.indexOf(date) > 0) {
-                    CommonUtilsMethods.showToastMessage(context, "Please Sync previous dates!");
+                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.please_sync_previous_dates));
                 } else {
                     if (UtilityClass.isNetworkAvailable(context)) {
                         progressDialog = CommonUtilsMethods.createProgressDialog(context);
@@ -291,7 +291,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                                 if (!outboxUtil.checkSyncAvailable(date, 1)) {
                                     CallAPIWorkPlan(position);
                                 } else {
-                                    commonUtilsMethods.showToastMessage(context, "Sync Check In/Out!");
+                                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.sync_check_in_out));
                                     progressDialog.dismiss();
                                 }
                                 break;
@@ -299,7 +299,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                                 if (!outboxUtil.checkSyncAvailable(date, 2)) {
                                     CallAPIList(position);
                                 } else {
-                                    commonUtilsMethods.showToastMessage(context, "Sync Work Plan!");
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_work_plan));
                                     progressDialog.dismiss();
                                 }
                                 break;
@@ -319,7 +319,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                                 if (!outboxUtil.checkSyncAvailable(date, 7)) {
                                     CallAPIDaySubmit(position);
                                 } else {
-                                    commonUtilsMethods.showToastMessage(context, "Sync Work Plan and Calls!");
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_work_plan_and_calls));
                                     progressDialog.dismiss();
                                 }
                                 break;

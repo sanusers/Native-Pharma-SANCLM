@@ -74,7 +74,7 @@ public class MultiHQAdapter extends RecyclerView.Adapter<MultiHQAdapter.ViewHold
                 multiHQSelectListener.onHQUnSelected(multicheckclassClust);
                 holder.checkBox.setChecked(false);
             } else if(selectedHQCount == 5) {
-                commonUtilsMethods.showToastMessage(context, "Cannot select more than 5 " + context.getString(R.string.headquarter));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_select_more_than_5) + context.getString(R.string.headquarter));
                 multicheckclassClust.setChecked(false);
                 multiHQSelectListener.onHQUnSelected(multicheckclassClust);
                 holder.checkBox.setChecked(false);

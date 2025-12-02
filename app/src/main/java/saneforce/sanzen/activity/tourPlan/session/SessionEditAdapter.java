@@ -3719,7 +3719,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                     if (isClusterNotSelectedForHQ) {
                         holder.selectedClusterCodeMap = selectedClusterCodeMap;
-                        commonUtilsMethods.showToastMessage(context, "Select any " + SharedPref.getClusterCap(context) + " for " + hqName);
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_any) + SharedPref.getClusterCap(context) + " for " + hqName);
                         return;
                     } else {
                         mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);

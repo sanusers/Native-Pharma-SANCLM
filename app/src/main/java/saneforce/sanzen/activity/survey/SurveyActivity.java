@@ -406,7 +406,8 @@ public class SurveyActivity extends AppCompatActivity {
                                 }
                                 clearAll();
                                 answerMap.clear();
-                                commonUtilsMethods.showToastMessage(SurveyActivity.this, "Survey Submitted Successfully");
+                                //commonUtilsMethods.showToastMessage(SurveyActivity.this, "Survey Submitted Successfully");
+                                commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.survey_submitted_successfully));
                             }
                             surveyBinding.progressSubmit.setVisibility(View.GONE);
                         }
@@ -456,9 +457,10 @@ public class SurveyActivity extends AppCompatActivity {
                         String answer = answerMap.get(surveyDetailsModelClass.getQuestionID());
                         if(surveyDetailsModelClass.getMandatory().equalsIgnoreCase("1") && (answer == null || answer.isEmpty())) {
                             if(surveyDetailsModelClass.getQuestionCodeID().equals("3") || surveyDetailsModelClass.getQuestionCodeID().equals("4")) {
-                                commonUtilsMethods.showToastMessage(this, "Select option for " + surveyDetailsModelClass.getQuestion());
+                               // commonUtilsMethods.showToastMessage(this, "Select option for " + surveyDetailsModelClass.getQuestion());
+                                commonUtilsMethods.showToastMessage(this, getString(R.string.select_option_for) + surveyDetailsModelClass.getQuestion());
                             }else {
-                                commonUtilsMethods.showToastMessage(this, "Fill " + surveyDetailsModelClass.getQuestion());
+                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill) + surveyDetailsModelClass.getQuestion());
                             }
                             return false;
                         }else {
@@ -609,14 +611,14 @@ public class SurveyActivity extends AppCompatActivity {
                     surveyBinding.rlNoSurveyFound.setVisibility(View.VISIBLE);
                     surveyBinding.rlSurveyMain.setVisibility(View.GONE);
                     surveyBinding.btnSubmit.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(this, "No Survey Found");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found));
                 }
             }else {
                 surveyBinding.tvNoSurveyFound.setText("No Survey Found");
                 surveyBinding.rlNoSurveyFound.setVisibility(View.VISIBLE);
                 surveyBinding.rlSurveyMain.setVisibility(View.GONE);
                 surveyBinding.btnSubmit.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(this, "No Survey Found");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found));
             }
             surveyBinding.progrlessdetail.setVisibility(View.GONE);
         } catch (Exception e) {
@@ -696,7 +698,7 @@ public class SurveyActivity extends AppCompatActivity {
                 surveyBinding.rlDetailsMain.setVisibility(View.GONE);
                 surveyBinding.rlNoSurvey.setVisibility(View.VISIBLE);
                 surveyBinding.llMainLayout.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(this, "No Survey Found");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found));
             }else {
                 surveyBinding.rlNoSurvey.setVisibility(View.GONE);
                 surveyBinding.llMainLayout.setVisibility(View.VISIBLE);
