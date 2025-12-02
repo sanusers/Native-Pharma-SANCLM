@@ -45,10 +45,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -1463,6 +1465,7 @@ public class TourPlanActivity extends AppCompatActivity {
         try {
             doctorMap = new HashMap<>();
             doctorDataMap = new HashMap<>();
+            doctorVisitMap = new HashMap<>();
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(TourPlanActivity.this)).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
@@ -1485,6 +1488,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
                 doctorMap.put(code, name);
                 doctorDataMap.put(code, new DoctorDataModel(name, code, clusterName, clusterCode, category, categoryCode, classs, classsCode, speciality, specialityCode, "-", qualificationCode, visitCount));
+                doctorVisitMap.put(code, new DoctorVisitModel(code, name, category, new HashSet<>(), visitCount, 0));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1999,6 +2003,9 @@ public class TourPlanActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<ModelClass>>() {
                 }.getType();
                 modelClasses = new Gson().fromJson(savedDataArray.toString(), type);
+                if (visitFrequencyNeed.equalsIgnoreCase("0")) {
+                    prepareDoctorVisitData(modelClasses);
+                }
             } else { //If tour plan table has no data
                 SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
                 ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate1));
@@ -2105,7 +2112,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 }.getType();
                 oneBuildModelClasses = new Gson().fromJson(savedDataArrayOneBuild.toString(), type);
                 if (visitFrequencyNeed.equalsIgnoreCase("0")) {
-                    prepareDoctorVisitData(oneBuildModelClasses);
+                    this.prepareDoctorVisitDataOneBuild(oneBuildModelClasses);
                 }
             } else {//If tour plan table has no data
                 SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
@@ -2198,9 +2205,9 @@ public class TourPlanActivity extends AppCompatActivity {
         return oneBuildModelClasses;
     }
     
-    private void prepareDoctorVisitData(ArrayList<OneBuildModelClass> oneBuildModelClassList) {
+    private void prepareDoctorVisitDataOneBuild(ArrayList<OneBuildModelClass> oneBuildModelClassList) {
         try {
-            doctorVisitMap = new HashMap<>();
+//            doctorVisitMap = new HashMap<>();
             for (OneBuildModelClass day : oneBuildModelClassList) {
                 String dayNo = day.getDayNo();
                 if (day.getSessionList() == null || day.getSessionList().isEmpty()) continue;
@@ -2214,11 +2221,46 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (doctorDataModel == null) continue;
                         DoctorVisitModel doctorVisitModel = doctorVisitMap.get(doctorDataModel.getCode());
                         if (doctorVisitModel == null) {
-                            List<String> dates = new ArrayList<>();
+                            Set<String> dates = new HashSet<>();
                             dates.add(dayNo);
                             doctorVisitModel = new DoctorVisitModel(doctorDataModel.getCode(), doctorDataModel.getName(), doctorDataModel.getCategory(), dates, doctorDataModel.getVisitCount(), 1);
                         } else {
-                            List<String> dates = doctorVisitModel.getPlannedDates();
+                            Set<String> dates = doctorVisitModel.getPlannedDates();
+                            dates.add(dayNo);
+                            doctorVisitModel.setPlannedDates(dates);
+                            doctorVisitModel.setPlannedVisit(doctorVisitModel.getPlannedVisit() + 1);
+                        }
+                        doctorVisitMap.put(doctorDataModel.getCode(), doctorVisitModel);
+                    }
+                }
+            }
+            Log.d("Doc Map", "prepareDoctorVisitData: " + doctorVisitMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void prepareDoctorVisitData(ArrayList<ModelClass> modelClassList) {
+        try {
+//            doctorVisitMap = new HashMap<>();
+            for (ModelClass day : modelClassList) {
+                String dayNo = day.getDayNo();
+                if (day.getSessionList() == null || day.getSessionList().isEmpty()) continue;
+                for (ModelClass.SessionList session : day.getSessionList()) {
+                    if (session == null || session.getWorkType() == null) continue;
+                    if (!"F".equalsIgnoreCase(session.getWorkType().getFWFlg())) continue;
+                    if (session.getListedDr() == null || session.getListedDr().isEmpty()) continue;
+                    for (ModelClass.SessionList.SubClass doctorSub : session.getListedDr()) {
+                        if (doctorSub == null) continue;
+                        DoctorDataModel doctorDataModel = doctorDataMap.get(doctorSub.getCode());
+                        if (doctorDataModel == null) continue;
+                        DoctorVisitModel doctorVisitModel = doctorVisitMap.get(doctorDataModel.getCode());
+                        if (doctorVisitModel == null) {
+                            Set<String> dates = new HashSet<>();
+                            dates.add(dayNo);
+                            doctorVisitModel = new DoctorVisitModel(doctorDataModel.getCode(), doctorDataModel.getName(), doctorDataModel.getCategory(), dates, doctorDataModel.getVisitCount(), 1);
+                        } else {
+                            Set<String> dates = doctorVisitModel.getPlannedDates();
                             dates.add(dayNo);
                             doctorVisitModel.setPlannedDates(dates);
                             doctorVisitModel.setPlannedVisit(doctorVisitModel.getPlannedVisit() + 1);

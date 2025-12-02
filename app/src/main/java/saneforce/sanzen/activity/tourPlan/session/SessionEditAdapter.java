@@ -73,7 +73,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public static ModelClass inputDataArray = new ModelClass();
     public static OneBuildModelClass inputDataArrayOneBuild = new OneBuildModelClass();
     public int itemPosition;
-    static Context context;
+    private Context context;
 
     ApiInterface apiInterface;
     SessionInterface sessionInterface;
@@ -120,7 +120,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holidayEditable = jsonArray.getJSONObject(i).getString("Holiday_Editable");
                 weeklyOffEditable = jsonArray.getJSONObject(i).getString("Weeklyoff_Editable");
                 remarksNeed = jsonArray.getJSONObject(i).optString("tp_objective_mandatory");
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -4046,8 +4045,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout searchClearIcon;
         public TextView workTypeField, hqField, clusterField, jcField, drField, chemistField, stockiestField, unListedDrField, cipField, hospField, workDayField;
         public TextView listedDrCapTV, cheCapTV, stockCapTV, unListedDrCapTV, hospCapTV, cipCapTV;

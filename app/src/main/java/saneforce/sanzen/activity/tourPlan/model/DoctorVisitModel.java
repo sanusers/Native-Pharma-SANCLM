@@ -1,13 +1,13 @@
 package saneforce.sanzen.activity.tourPlan.model;
 
-import java.util.List;
+import java.util.Set;
 
 public class DoctorVisitModel {
     private String code, name, category;
-    private List<String> plannedDates;
+    private Set<String> plannedDates;
     private int totalVisit = 0, plannedVisit = 0;
 
-    public DoctorVisitModel(String code, String name, String category, List<String> plannedDates, int totalVisit, int plannedVisit) {
+    public DoctorVisitModel(String code, String name, String category, Set<String> plannedDates, int totalVisit, int plannedVisit) {
         this.code = code;
         this.name = name;
         this.category = category;
@@ -40,11 +40,11 @@ public class DoctorVisitModel {
         this.category = category;
     }
 
-    public List<String> getPlannedDates() {
+    public Set<String> getPlannedDates() {
         return plannedDates;
     }
 
-    public void setPlannedDates(List<String> plannedDates) {
+    public void setPlannedDates(Set<String> plannedDates) {
         this.plannedDates = plannedDates;
     }
 
