@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -34,8 +35,8 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     ArrayList<EditModelClass> arrayList = new ArrayList<>();
     ArrayList<EditModelClass> arrayForFilter = new ArrayList<>();
     ArrayList<EditModelClass> supportModelArray = new ArrayList<>();
-    private boolean checkBoxVisibility = false, isHQ = false, isDr = false;
-    private int selectedHQCount = 0;
+    private boolean checkBoxVisibility = false, isHQ = false, isDr = false, visitFrequencyNeed = false;
+    private int selectedHQCount = 0, minimumGap = 0;
     private ValueFilter valueFilter;
     SessionItemInterface sessionItemInterface;
     private Context context;
@@ -44,7 +45,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     public SessionItemAdapter() {
     }
 
-    public SessionItemAdapter(Context context, ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, boolean isHQ, boolean isDr, SessionItemInterface sessionItemInterface) {
+    public SessionItemAdapter(Context context, ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, boolean isHQ, boolean isDr, String visitFrequencyNeed, String minimumGap, SessionItemInterface sessionItemInterface) {
         this.context = context;
         this.arrayList = arrayList;
         this.arrayForFilter = arrayList;
@@ -54,6 +55,8 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         this.sessionItemInterface = sessionItemInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
         selectedHQCount = 0;
+        this.visitFrequencyNeed = visitFrequencyNeed.equals("0");
+        this.minimumGap = Integer.parseInt(minimumGap);
         for (EditModelClass hq : arrayList) {
             if (hq.isChecked()) {
                 selectedHQCount++;
@@ -87,8 +90,9 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                     String category = "Category : " + doctorVisitModel.getCategory();
                     String totalVisits = "Total Visits : " + doctorVisitModel.getTotalVisit();
                     String plannedVisits = "Planned Visits : " + doctorVisitModel.getPlannedVisit();
-                    String plannedDatesList = doctorVisitModel.getPlannedDates().toString();
-                    String dates = plannedDatesList.replaceAll("\\[", "").replaceAll("\\]", "");
+                    Set<String> plannedDatesList = doctorVisitModel.getPlannedDates();
+                    List<String> sortedList = plannedDatesList.stream().map(Integer::valueOf).sorted().map(String::valueOf).toList();
+                    String dates = sortedList.toString().replaceAll("\\[", "").replaceAll("\\]", "");
                     if (dates.isEmpty()) dates = "-";
                     String plannedDates = "Planned Dates : " + dates;
                     data.append(category);
@@ -155,36 +159,67 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                     }
                 }
 
-                if (isDr && SharedPref.getSfType(context).equalsIgnoreCase("1")) {
-                    String code = arrayList.get(position).getCode();
-                    DoctorVisitModel doctorVisitModel = TourPlanActivity.doctorVisitMap.get(code);
-                    if (doctorVisitModel != null) {
-                        int totalVisits = doctorVisitModel.getTotalVisit();
-                        int plannedVisits = doctorVisitModel.getPlannedVisit();
-                        Set<String> plannedDatesList = doctorVisitModel.getPlannedDates();
-                        Log.e("SIA", "onSafeClick: " + SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
-                        // TODO: 02-12-2025 need to check conditions 
-                        if (isNowChecked) {
-                            if (plannedVisits >= totalVisits) {
-                                Log.e("SIA", "onSafeClick: " + totalVisits + " -> " + plannedVisits );
-                                CommonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
-                                clickedItem.setChecked(false);
-                                notifyItemChanged(position);
+                try {
+                    if (isDr && SharedPref.getSfType(context).equalsIgnoreCase("1") && (visitFrequencyNeed || minimumGap > 0)) {
+                        String code = arrayList.get(position).getCode();
+                        DoctorVisitModel doctorVisitModel = TourPlanActivity.doctorVisitMap.get(code);
+                        if (doctorVisitModel != null) {
+                            int totalVisits = doctorVisitModel.getTotalVisit();
+                            int plannedVisits = doctorVisitModel.getPlannedVisit();
+                            Set<String> plannedDatesList = doctorVisitModel.getPlannedDates();
+                            Log.e("SIA", "onSafeClick: " + SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
+                            if (isNowChecked) {
+                                if (minimumGap > 0) {
+                                    boolean isValid = true;
+                                    try {
+                                        for (String strDate : plannedDatesList) {
+                                            int afterDate = Integer.parseInt(strDate) + minimumGap, beforeDate = Integer.parseInt(strDate) - minimumGap;
+                                            int chosenDate = Integer.parseInt(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
+                                            if (!(chosenDate > afterDate || chosenDate < beforeDate)) {
+                                                Log.e("SIA", "onSafeClick: " + beforeDate + " <- " + chosenDate + " -> " + afterDate);
+                                                isValid = false;
+                                                break;
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (!isValid) {
+                                        CommonUtilsMethods.showToastMessage(context, "Cannot plan with minimum gap of " + minimumGap);
+                                        clickedItem.setChecked(false);
+                                        notifyItemChanged(position);
+                                    } else {
+                                        plannedDatesList.add(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
+                                        plannedVisits++;
+                                        doctorVisitModel.setPlannedDates(plannedDatesList);
+                                        doctorVisitModel.setPlannedVisit(plannedVisits);
+                                        TourPlanActivity.doctorVisitMap.put(code, doctorVisitModel);
+                                    }
+                                } else {
+                                    if (plannedVisits >= totalVisits) {
+                                        Log.e("SIA", "onSafeClick: " + totalVisits + " -> " + plannedVisits);
+                                        CommonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
+                                        clickedItem.setChecked(false);
+                                        notifyItemChanged(position);
+                                    } else {
+                                        plannedDatesList.add(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
+                                        plannedVisits++;
+                                        doctorVisitModel.setPlannedDates(plannedDatesList);
+                                        doctorVisitModel.setPlannedVisit(plannedVisits);
+                                        TourPlanActivity.doctorVisitMap.put(code, doctorVisitModel);
+                                    }
+                                }
                             } else {
-                                plannedDatesList.add(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
-                                plannedVisits++;
+                                plannedDatesList.remove(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
+                                plannedVisits--;
                                 doctorVisitModel.setPlannedDates(plannedDatesList);
                                 doctorVisitModel.setPlannedVisit(plannedVisits);
                                 TourPlanActivity.doctorVisitMap.put(code, doctorVisitModel);
                             }
-                        } else {
-                            plannedDatesList.remove(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
-                            plannedVisits--;
-                            doctorVisitModel.setPlannedDates(plannedDatesList);
-                            doctorVisitModel.setPlannedVisit(plannedVisits);
-                            TourPlanActivity.doctorVisitMap.put(code, doctorVisitModel);
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 sessionItemInterface.itemClicked(arrayList, clickedItem);
             }

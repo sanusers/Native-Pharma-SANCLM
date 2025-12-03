@@ -106,14 +106,16 @@ public class TourPlanActivity extends AppCompatActivity {
     ArrayList<ModelClass> dayWiseArrayCurrentMonth = new ArrayList<>();
     ArrayList<ModelClass> dayWiseArrayPrevMonth = new ArrayList<>();
     ArrayList<ModelClass> dayWiseArrayNextMonth = new ArrayList<>();
+    ArrayList<ModelClass> modelClassList = new ArrayList<>();
     //OneBuild
     public ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
     public ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
     public ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild = new ArrayList<>();
+    private ArrayList<OneBuildModelClass> oneBuildModelClassList = new ArrayList<>();
 
     private Map<String, String> doctorMap = new HashMap<>();
-    public static Map<String, DoctorDataModel> doctorDataMap  = new HashMap<>();
-    public static Map<String, DoctorVisitModel> doctorVisitMap  = new HashMap<>();
+    public static Map<String, DoctorDataModel> doctorDataMap = new HashMap<>();
+    public static Map<String, DoctorVisitModel> doctorVisitMap = new HashMap<>();
 
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
@@ -1441,14 +1443,15 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && planAllDr.equalsIgnoreCase("0") && drNeed.equalsIgnoreCase("0")) {
                     ArrayList<ModelClass> arrayList = new ArrayList<>();
                     try {
-                         JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                         Type type = new TypeToken<ArrayList<ModelClass>>() {}.getType();
-                         if (jsonArray.length() > 0) {
-                             arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                         }
-                     } catch (Exception e) {
-                         e.printStackTrace();
-                     }
+                        JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                        Type type = new TypeToken<ArrayList<ModelClass>>() {
+                        }.getType();
+                        if (jsonArray.length() > 0) {
+                            arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     if (validatePlanAllDrs(false, new ArrayList<>(), arrayList)) {
                         sendToApproval();
                     } else {
@@ -1555,7 +1558,7 @@ public class TourPlanActivity extends AppCompatActivity {
             for (OneBuildModelClass oneBuildModelClass : oneBuildModelClassList) {
                 for (OneBuildModelClass.SessionList sessionList : oneBuildModelClass.getSessionList()) {
                     if (sessionList.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                        for(OneBuildModelClass.SessionList.SubClass dr : sessionList.getDoctors()) {
+                        for (OneBuildModelClass.SessionList.SubClass dr : sessionList.getDoctors()) {
                             Log.d("TP DR", "validatePlanAllDrs: " + dr.getCode() + " -> " + dr.getName());
                             drMap.remove(dr.getCode());
                         }
@@ -1567,7 +1570,7 @@ public class TourPlanActivity extends AppCompatActivity {
             for (ModelClass modelClass : modelClassList) {
                 for (ModelClass.SessionList sessionList : modelClass.getSessionList()) {
                     if (sessionList.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                        for(ModelClass.SessionList.SubClass dr : sessionList.getListedDr()) {
+                        for (ModelClass.SessionList.SubClass dr : sessionList.getListedDr()) {
                             Log.d("TP DR", "validatePlanAllDrs: " + dr.getCode() + " -> " + dr.getName());
                             drMap.remove(dr.getCode());
                         }
@@ -2099,6 +2102,7 @@ public class TourPlanActivity extends AppCompatActivity {
             Log.e("--Errr--", "" + e);
             e.printStackTrace();
         }
+        modelClassList = modelClasses;
         return modelClasses;
     }
 
@@ -2112,7 +2116,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 }.getType();
                 oneBuildModelClasses = new Gson().fromJson(savedDataArrayOneBuild.toString(), type);
                 if (visitFrequencyNeed.equalsIgnoreCase("0")) {
-                    this.prepareDoctorVisitDataOneBuild(oneBuildModelClasses);
+                    prepareDoctorVisitDataOneBuild(oneBuildModelClasses);
                 }
             } else {//If tour plan table has no data
                 SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
@@ -2202,76 +2206,91 @@ public class TourPlanActivity extends AppCompatActivity {
             Log.e("--Errr--", "" + e);
             e.printStackTrace();
         }
+        oneBuildModelClassList = oneBuildModelClasses;
         return oneBuildModelClasses;
     }
-    
+
     private void prepareDoctorVisitDataOneBuild(ArrayList<OneBuildModelClass> oneBuildModelClassList) {
-        try {
+        if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && (visitFrequencyNeed.equalsIgnoreCase("0") || Integer.parseInt(minimumGap) > 0)) {
+            try {
 //            doctorVisitMap = new HashMap<>();
-            for (OneBuildModelClass day : oneBuildModelClassList) {
-                String dayNo = day.getDayNo();
-                if (day.getSessionList() == null || day.getSessionList().isEmpty()) continue;
-                for (OneBuildModelClass.SessionList session : day.getSessionList()) {
-                    if (session == null || session.getWorkType() == null) continue;
-                    if (!"F".equalsIgnoreCase(session.getWorkType().getFWFlg())) continue;
-                    if (session.getDoctors() == null || session.getDoctors().isEmpty()) continue;
-                    for (OneBuildModelClass.SessionList.SubClass doctorSub : session.getDoctors()) {
-                        if (doctorSub == null) continue;
-                        DoctorDataModel doctorDataModel = doctorDataMap.get(doctorSub.getCode());
-                        if (doctorDataModel == null) continue;
-                        DoctorVisitModel doctorVisitModel = doctorVisitMap.get(doctorDataModel.getCode());
-                        if (doctorVisitModel == null) {
-                            Set<String> dates = new HashSet<>();
-                            dates.add(dayNo);
-                            doctorVisitModel = new DoctorVisitModel(doctorDataModel.getCode(), doctorDataModel.getName(), doctorDataModel.getCategory(), dates, doctorDataModel.getVisitCount(), 1);
-                        } else {
-                            Set<String> dates = doctorVisitModel.getPlannedDates();
-                            dates.add(dayNo);
-                            doctorVisitModel.setPlannedDates(dates);
-                            doctorVisitModel.setPlannedVisit(doctorVisitModel.getPlannedVisit() + 1);
+                for (DoctorVisitModel doctorVisitModel : doctorVisitMap.values()) {
+                    doctorVisitModel.setPlannedVisit(0);
+                    doctorVisitModel.setPlannedDates(new HashSet<>());
+                }
+                for (OneBuildModelClass day : oneBuildModelClassList) {
+                    String dayNo = day.getDayNo();
+                    if (day.getSessionList() == null || day.getSessionList().isEmpty()) continue;
+                    for (OneBuildModelClass.SessionList session : day.getSessionList()) {
+                        if (session == null || session.getWorkType() == null) continue;
+                        if (!"F".equalsIgnoreCase(session.getWorkType().getFWFlg())) continue;
+                        if (session.getDoctors() == null || session.getDoctors().isEmpty())
+                            continue;
+                        for (OneBuildModelClass.SessionList.SubClass doctorSub : session.getDoctors()) {
+                            if (doctorSub == null) continue;
+                            DoctorDataModel doctorDataModel = doctorDataMap.get(doctorSub.getCode());
+                            if (doctorDataModel == null) continue;
+                            DoctorVisitModel doctorVisitModel = doctorVisitMap.get(doctorDataModel.getCode());
+                            if (doctorVisitModel == null) {
+                                Set<String> dates = new HashSet<>();
+                                dates.add(dayNo);
+                                doctorVisitModel = new DoctorVisitModel(doctorDataModel.getCode(), doctorDataModel.getName(), doctorDataModel.getCategory(), dates, doctorDataModel.getVisitCount(), 1);
+                            } else {
+                                Set<String> dates = doctorVisitModel.getPlannedDates();
+                                dates.add(dayNo);
+                                doctorVisitModel.setPlannedDates(dates);
+                                doctorVisitModel.setPlannedVisit(doctorVisitModel.getPlannedDates().size());
+                            }
+                            doctorVisitMap.put(doctorDataModel.getCode(), doctorVisitModel);
                         }
-                        doctorVisitMap.put(doctorDataModel.getCode(), doctorVisitModel);
                     }
                 }
+                Log.d("Doc Map", "prepareDoctorVisitData: " + doctorVisitMap);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Log.d("Doc Map", "prepareDoctorVisitData: " + doctorVisitMap);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     private void prepareDoctorVisitData(ArrayList<ModelClass> modelClassList) {
-        try {
+        if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && (visitFrequencyNeed.equalsIgnoreCase("0") || Integer.parseInt(minimumGap) > 0)) {
+            try {
 //            doctorVisitMap = new HashMap<>();
-            for (ModelClass day : modelClassList) {
-                String dayNo = day.getDayNo();
-                if (day.getSessionList() == null || day.getSessionList().isEmpty()) continue;
-                for (ModelClass.SessionList session : day.getSessionList()) {
-                    if (session == null || session.getWorkType() == null) continue;
-                    if (!"F".equalsIgnoreCase(session.getWorkType().getFWFlg())) continue;
-                    if (session.getListedDr() == null || session.getListedDr().isEmpty()) continue;
-                    for (ModelClass.SessionList.SubClass doctorSub : session.getListedDr()) {
-                        if (doctorSub == null) continue;
-                        DoctorDataModel doctorDataModel = doctorDataMap.get(doctorSub.getCode());
-                        if (doctorDataModel == null) continue;
-                        DoctorVisitModel doctorVisitModel = doctorVisitMap.get(doctorDataModel.getCode());
-                        if (doctorVisitModel == null) {
-                            Set<String> dates = new HashSet<>();
-                            dates.add(dayNo);
-                            doctorVisitModel = new DoctorVisitModel(doctorDataModel.getCode(), doctorDataModel.getName(), doctorDataModel.getCategory(), dates, doctorDataModel.getVisitCount(), 1);
-                        } else {
-                            Set<String> dates = doctorVisitModel.getPlannedDates();
-                            dates.add(dayNo);
-                            doctorVisitModel.setPlannedDates(dates);
-                            doctorVisitModel.setPlannedVisit(doctorVisitModel.getPlannedVisit() + 1);
+                for (DoctorVisitModel doctorVisitModel : doctorVisitMap.values()) {
+                    doctorVisitModel.setPlannedVisit(0);
+                    doctorVisitModel.setPlannedDates(new HashSet<>());
+                }
+                for (ModelClass day : modelClassList) {
+                    String dayNo = day.getDayNo();
+                    if (day.getSessionList() == null || day.getSessionList().isEmpty()) continue;
+                    for (ModelClass.SessionList session : day.getSessionList()) {
+                        if (session == null || session.getWorkType() == null) continue;
+                        if (!"F".equalsIgnoreCase(session.getWorkType().getFWFlg())) continue;
+                        if (session.getListedDr() == null || session.getListedDr().isEmpty())
+                            continue;
+                        for (ModelClass.SessionList.SubClass doctorSub : session.getListedDr()) {
+                            if (doctorSub == null) continue;
+                            DoctorDataModel doctorDataModel = doctorDataMap.get(doctorSub.getCode());
+                            if (doctorDataModel == null) continue;
+                            DoctorVisitModel doctorVisitModel = doctorVisitMap.get(doctorDataModel.getCode());
+                            if (doctorVisitModel == null) {
+                                Set<String> dates = new HashSet<>();
+                                dates.add(dayNo);
+                                doctorVisitModel = new DoctorVisitModel(doctorDataModel.getCode(), doctorDataModel.getName(), doctorDataModel.getCategory(), dates, doctorDataModel.getVisitCount(), 1);
+                            } else {
+                                Set<String> dates = doctorVisitModel.getPlannedDates();
+                                dates.add(dayNo);
+                                doctorVisitModel.setPlannedDates(dates);
+                                doctorVisitModel.setPlannedVisit(doctorVisitModel.getPlannedDates().size());
+                            }
+                            doctorVisitMap.put(doctorDataModel.getCode(), doctorVisitModel);
                         }
-                        doctorVisitMap.put(doctorDataModel.getCode(), doctorVisitModel);
                     }
                 }
+                Log.d("Doc Map", "prepareDoctorVisitData: " + doctorVisitMap);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Log.d("Doc Map", "prepareDoctorVisitData: " + doctorVisitMap);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -2473,6 +2492,9 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateSessionEditAdapter(ModelClass arrayList) {
         binding.tpDrawer.openDrawer(GravityCompat.END);
+        if (modelClassList != null) {
+            prepareDoctorVisitData(modelClassList);
+        }
         sessionEditAdapter = new SessionEditAdapter(arrayList, TourPlanActivity.this, new SessionInterface() {
             @Override
             public void deleteClicked(ModelClass arrayList, int position) {
@@ -2581,6 +2603,9 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateSessionEditAdapterOneBuild(OneBuildModelClass arrayListOneBuild) {
         binding.tpDrawer.openDrawer(GravityCompat.END);
+        if (oneBuildModelClassList != null) {
+            prepareDoctorVisitDataOneBuild(oneBuildModelClassList);
+        }
         sessionEditAdapter = new SessionEditAdapter(TourPlanActivity.this, arrayListOneBuild, new SessionInterfaceOneBuild() {
 
             @Override
