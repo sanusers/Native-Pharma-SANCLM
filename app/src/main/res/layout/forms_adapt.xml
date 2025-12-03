@@ -36,7 +36,7 @@
             android:id="@+id/flview_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Formslist"
+            android:text="@string/forms_list"
             android:gravity="left"
             android:textSize="@dimen/_7sdp"
 android:layout_marginTop="@dimen/_5sdp"

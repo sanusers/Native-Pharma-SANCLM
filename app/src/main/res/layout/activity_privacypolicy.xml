@@ -45,7 +45,7 @@
                 android:textSize="@dimen/_8sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="left"
-                android:text="Please accept the privacy policy"
+                android:text="@string/please_accept_privacy_policy"
                 tools:ignore="RtlHardcoded">
 
             </TextView>
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:backgroundTint="@color/black_45"
-            android:text="Submit "
+            android:text="@string/submit"
             android:layout_margin="@dimen/_4sdp"
             android:padding="@dimen/_4sdp"
             android:background="@drawable/edittext_stroke"

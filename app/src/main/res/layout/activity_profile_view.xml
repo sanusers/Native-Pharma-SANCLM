@@ -32,7 +32,7 @@
             android:layout_marginHorizontal="@dimen/_20sdp"
             android:fontFamily="@font/satoshi_bold"
             android:padding="@dimen/_2sdp"
-            android:text="Profile"
+            android:text="@string/profile"
             android:textColor="@color/white"
             android:textSize="@dimen/_8sdp"
             android:textStyle="bold" />

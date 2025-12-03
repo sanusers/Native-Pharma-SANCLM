@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_bold"
             android:padding="@dimen/_5sdp"
-            android:text="Scribble"
+            android:text="@string/scribble"
             android:textColor="@color/white"
              android:textSize="@dimen/_7ssp" />
 

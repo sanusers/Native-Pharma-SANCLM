@@ -72,7 +72,7 @@
                 android:layout_marginVertical="@dimen/_2sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:padding="@dimen/_2sdp"
-                android:text="No Survey Found"
+                android:text="@string/no_survey_found"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_7ssp"
                 android:textStyle="bold" />
@@ -101,7 +101,7 @@
                     android:fontFamily="@font/satoshi_medium"
                     android:padding="@dimen/_2sdp"
                     android:layout_gravity="center_vertical"
-                    android:text="List of Survey"
+                    android:text="@string/list_of_survey"
                     android:visibility="invisible"
                     android:textColor="@color/black_45"
                     android:textSize="@dimen/_8ssp"
@@ -132,7 +132,7 @@
                         android:textColor="@color/black_45"
                         android:textSize="@dimen/_8ssp"
                         android:textStyle="bold"
-                        tools:text="Survey Name" />
+                        tools:text="@string/survey_name" />
 
                     <TextView
                         android:id="@+id/tv_from_date1"
@@ -193,7 +193,7 @@
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_2sdp"
                         android:layout_gravity="center_vertical"
-                        android:text="List of Survey"
+                        android:text="@string/list_of_survey"
                         android:textColor="@color/black_45"
                         android:textSize="@dimen/_8ssp"
                         android:textStyle="bold" />
@@ -246,7 +246,7 @@
                             android:textColor="@color/black_45"
                             android:textSize="@dimen/_8ssp"
                             android:textStyle="bold"
-                            tools:text="Survey Name" />
+                            tools:text="@string/survey_name" />
 
                         <TextView
                             android:id="@+id/tv_from_date"
@@ -312,7 +312,7 @@
                             android:layout_marginVertical="@dimen/_2sdp"
                             android:fontFamily="@font/satoshi_medium"
                             android:padding="@dimen/_2sdp"
-                            android:text="Select any Survey on list to view content"
+                            android:text="@string/select_any_survey_on_list_to_view_content"
                             android:textColor="@color/dark_purple"
                             android:textSize="@dimen/_7ssp"
                             android:textStyle="bold"
@@ -555,7 +555,7 @@
                             android:fontFamily="@font/satoshi_medium"
                             android:padding="@dimen/_3sdp"
                             android:visibility="gone"
-                            android:text="Choose Survey"
+                            android:text="@string/choose_survey"
                             android:textColor="@color/black_45"
                             android:textSize="@dimen/_7ssp"
                             android:textStyle="bold" />
@@ -679,7 +679,7 @@
                                 android:layout_marginVertical="@dimen/_2sdp"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:padding="@dimen/_2sdp"
-                                android:text="No Survey Found"
+                                android:text="@string/no_survey_found"
                                 android:textColor="@color/dark_purple"
                                 android:textSize="@dimen/_7ssp"
                                 android:textStyle="bold"

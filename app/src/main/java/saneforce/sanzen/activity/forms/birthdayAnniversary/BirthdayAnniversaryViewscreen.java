@@ -47,8 +47,8 @@ public class BirthdayAnniversaryViewscreen extends AppCompatActivity {
         AnniversaryFragment anniversaryFragment = new AnniversaryFragment();
 
         formsviewpager  = new FormsViewpager(getSupportFragmentManager(), 0);
-        formsviewpager.addFragment(birthdaywishesFragment,"Birthday");
-        formsviewpager.addFragment(anniversaryFragment,"Anniversary");
+        formsviewpager.addFragment(birthdaywishesFragment,  getString(R.string.birthday));
+        formsviewpager.addFragment(anniversaryFragment, getString(R.string.anniversary));
         viewPager.setAdapter(formsviewpager);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0);

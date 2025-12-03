@@ -759,7 +759,7 @@
                             android:fontFamily="@font/satoshi_bold"
                             android:gravity="center"
                             android:padding="@dimen/_5sdp"
-                            android:text="Submit"
+                            android:text="@string/submit"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_8sdp"
                             android:textStyle="bold" />

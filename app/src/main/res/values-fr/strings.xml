@@ -639,6 +639,29 @@
     <string name="avg">Moyenne</string>
     <string name="cvg">Couverture</string>
     <string name="draft_save">Données du plan de tournée enregistrées avec succès</string>
+
+
+    <string name="need_remarks"> Saisir des remarques dans la session </string>
+    <string name="reset_password">Réinitialiser le mot de passe</string>
+    <string name="moile_mand"> Numéro de mobile obligatoire </string>
+    <string name="mob_mandt">Mobile <font color='#FF0000'>*</font></string>
+    <string name="division">Division</string>
+    <string name="sub_division">Sous-division</string>
+    <string name="dcr_start_dt">Date de début DCR</string>
+    <string name="tp_start_dt">Date de début du plan de tournée</string>
+    <string name="rpt_mgr"> Responsable hiérarchique </string>
+    <string name="tp_rpt">Responsable du plan de tournée</string>
+    <string name="lev_rpt">Responsable des congés</string>
+    <string name="tp_mand_range">Plage obligatoire du plan de tournée</string>
+    <string name="already_exist"> Existe déjà </string>
+    <string name="state"> État </string>
+    <string name="employe_code"> Code employé </string>
+    <string name="join_dt"> Date d’entrée </string>
+    <string name="con_internet"> Connecté à Internet </string>
+    <string name="option"> Options </string>
+
+
+
     <string name="leavestatus"> Statut de Congé </string>
     <string name="call_summary"> Résumé des Appels </string>
     <string name="stock_balance"> Solde de Stock </string>
@@ -698,6 +721,7 @@
     <string name="select_activity">Sélectionnez une activité dans la liste pour afficher le contenu</string>
     <string name="location_captured">Emplacement capturé</string>
 <!--    <string name="message">Message</string>-->
+
     <string name="update_canceled">Mise à jour annulée</string>
     <string name="please_check_the_internet_connection">Veuillez vérifier la connexion Internet</string>
     <string name="maximum_password_length_reached_please_keep_it_under_30_characters">Longueur maximale du mot de passe atteinte. Veuillez le garder sous 30 caractères</string>
@@ -811,7 +835,64 @@
     <string name="products_promoted">Produits promus</string>
     <string name="overview">Aperçu</string>
     <string name="pre_call_analysis">Analyse pré-appel</string>
-<!--    <string name="inputs">Entrées</string>-->
+    <string name="holiday_weekly_off">Jour férié / Jour de repos hebdomadaire</string>
+    <string name="leave_types">Types de congés</string>
+    <string name="are_you_sure_you_want_to_clear_slides">Êtes-vous sûr de vouloir effacer les diapositives ?</string>
+    <string name="your_score">Votre score</string>
+    <string name="retry">Réessayer</string>
+    <string name="please_accept_privacy_policy">Veuillez accepter la politique de confidentialité</string>
+    <string name="status">Statut</string>
+    <string name="list_of_survey">Liste des enquêtes</string>
+    <string name="select_any_survey_on_list_to_view_content">Sélectionnez une enquête dans la liste pour afficher le contenu</string>
+    <string name="choose_survey">Choisir une enquête</string>
+    <string name="survey_name">Nom de l\’enquête</string>
+    <string name="show_customer">Afficher le client</string>
+    <string name="doctor_list_updating">La liste des médecins est en cours de mise à jour, veuillez patienter...</string>
+    <string name="fake_location_detected">Localisation fictive détectée</string>
+    <string name="please_turn_off_to_proceed">Veuillez éteindre pour continuer</string>
+    <string name="forms_list">Liste des formulaires</string>
+    <string name="list_of_activity">Liste des activités</string>
+    <string name="select_any_activity_on_list_to_view_content">Sélectionnez une activité dans la liste pour afficher le contenu</string>
+    <string name="today">Aujourd\’hui</string>
+    <string name="upcoming">À venir</string>
+    <string name="belated">En retard</string>
+    <string name="no_anniversarys_belated">Aucun anniversaire en retard !! !!</string>
+    <string name="no_anniversarys_upcoming">Aucun anniversaire à venir !!</string>
+    <string name="no_anniversarys_today">Aucun anniversair aujourd\'hui !!</string>
+    <string name="select_headquarters_text">Sélectionner le siège</string>
+    <string name="no_birthdays_today">Aucun anniversaire aujourd\'hui !!</string>
+    <string name="no_birthdays_upcoming">Aucun anniversaire à venir !!</string>
+    <string name="no_birthdays_belated">Aucun anniversaire en retard !!</string>
+    <string name="rejected_reason">Raison du refus</string>
+    <string name="no_doctor_available">Aucun médecin disponible</string>
+    <string name="no_stockist_available">Aucun stockiste disponible</string>
+    <string name="no_unlisted_doctor_available">Aucun médecin non répertorié disponible</string>
+    <string name="month_name">Nom du mois</string>
+    <string name="day">Jour</string>
+    <string name="weekdays">Jours de la semaine</string>
+    <string name="date">Date</string>
+    <string name="doctor_visit">Visite du médecin</string>
+    <string name="missed">Manqué</string>
+    <string name="total_doctor">Nombre total de médecins</string>
+    <string name="category_visit_freq_label">Catégorie (Fréq. Visite)</string>
+    <string name="planned_for">Prévu pour</string>
+    <string name="new_notification">Nouvelle notification</string>
+    <string name="notification_message">Message de notification</string>
+    <string name="brand_name_1">Nom de la marque 1</string>
+    <string name="file_name">Nom du fichier</string>
+    <string name="option_1">Option 1</string>
+    <string name="doctor_name">Nom du médecin</string>
+
+
+
+
+
+
+
+
+
+
+    <!--    <string name="inputs">Entrées</string>-->
 
 
 

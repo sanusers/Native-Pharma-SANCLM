@@ -428,7 +428,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/satoshi_bold"
-            android:text="Status: "
+            android:text="@string/status"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp" />
 
@@ -438,7 +438,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/satoshi_bold"
-            android:text="Planning..."
+            android:text="@string/planning"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp" />
     </LinearLayout>

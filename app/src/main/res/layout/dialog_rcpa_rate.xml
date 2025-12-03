@@ -57,14 +57,15 @@
                 app:layout_constraintEnd_toEndOf="@+id/txtOpRate"
                 app:layout_constraintStart_toStartOf="@+id/txtOpRate"
                 app:layout_constraintTop_toTopOf="@+id/textQty" />
+
             <TextView
                 android:id="@+id/textOpRate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="10dp"
-                android:text="@string/our_product"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
                 android:fontFamily="@font/satoshi_bold"
+                android:text="@string/our_product"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"

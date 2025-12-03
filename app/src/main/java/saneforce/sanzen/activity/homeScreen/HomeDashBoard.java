@@ -1866,9 +1866,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.clear_slides))) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setTitle("Warning!");
+            alertDialogBuilder.setTitle(getString(R.string.warning_label));
             alertDialogBuilder.setIcon(getDrawable(R.drawable.icon_sync_failed));
-            alertDialogBuilder.setMessage("Are you sure, you want to clear slides?");
+            alertDialogBuilder.setMessage(getString(R.string.are_you_sure_you_want_to_clear_slides));
             alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
 
             alertDialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

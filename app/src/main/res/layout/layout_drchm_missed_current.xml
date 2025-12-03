@@ -106,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:singleLine="true"
-                        android:text="Visited"
+                        android:text="@string/visited"
                         android:textColor="@color/dark_purple"
                         android:textSize="@dimen/_6ssp" />
                 </LinearLayout>
@@ -134,7 +134,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:singleLine="true"
-                        android:text="Missed"
+                        android:text="@string/missed"
                         android:textColor="@color/dark_purple"
                         android:textSize="@dimen/_6ssp" />
                 </LinearLayout>
@@ -166,7 +166,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="Total Doctor"
+                        android:text="@string/total_doctor"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView
@@ -197,7 +197,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="Visited"
+                        android:text="@string/visited"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView
@@ -233,7 +233,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="Missed"
+                        android:text="@string/missed"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView
@@ -339,7 +339,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:singleLine="true"
-                        android:text="Visited"
+                        android:text="@string/visited"
                         android:textColor="@color/dark_purple"
                         android:textSize="@dimen/_6ssp" />
                 </LinearLayout>
@@ -364,7 +364,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:singleLine="true"
-                        android:text="Missed"
+                        android:text="@string/missed"
                         android:textColor="@color/dark_purple"
                         android:textSize="@dimen/_6ssp" />
                 </LinearLayout>
@@ -427,7 +427,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="Visited"
+                        android:text="@string/visited"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView
@@ -460,7 +460,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="Missed"
+                        android:text="@string/missed"
                         android:textSize="@dimen/_5ssp" />
 
                     <TextView

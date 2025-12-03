@@ -14,7 +14,7 @@
         android:fontFamily="@font/satoshi_bold"
         android:maxLines="1"
         android:padding="@dimen/_3sdp"
-        android:text="No Data Found"
+        android:text="@string/no_data_found"
         android:textColor="@color/bg_txt_color"
         android:textSize="@dimen/_6ssp" />
 

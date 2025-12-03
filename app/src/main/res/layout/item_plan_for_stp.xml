@@ -21,7 +21,7 @@
         android:layout_marginStart="@dimen/_2sdp"
         android:layout_weight="1"
         android:fontFamily="@font/satoshi_regular"
-        android:text="Listed Doctor"
+        android:text="@string/listed_doctor"
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_6ssp" />
 

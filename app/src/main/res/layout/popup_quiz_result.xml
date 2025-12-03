@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/satoshi_variable"
-            android:text="Your Score"
+            android:text="@string/your_score"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_8ssp"
             android:textStyle="bold" />
@@ -96,6 +96,6 @@
         android:layout_below="@id/ll_score"
         android:layout_marginTop="@dimen/_20sdp"
         android:padding="@dimen/_5sdp"
-        android:text="Retry" />
+        android:text="@string/retry" />
 
 </RelativeLayout>

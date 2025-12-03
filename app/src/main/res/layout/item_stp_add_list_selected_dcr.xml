@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@id/img_delete"
         android:fontFamily="@font/satoshi_bold"
-        android:text="Name"
+        android:text="@string/name"
         android:maxLines="1"
         android:ellipsize="end"
         android:paddingStart="@dimen/_3sdp"

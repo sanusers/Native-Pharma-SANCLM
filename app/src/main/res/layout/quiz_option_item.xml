@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/satoshi_medium"
         android:gravity="left|center"
-        android:text="Option 1"
+        android:text="@string/option_1"
         android:textColor="@color/black"
         android:textSize="@dimen/_8sdp" />
 </LinearLayout>

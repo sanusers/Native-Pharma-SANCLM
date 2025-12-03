@@ -16,7 +16,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:fontFamily="@font/satoshi_medium"
-        android:text="Tour Plan Approvals"
+        android:text="@string/tour_plan_approvals"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/_6sdp"
         app:layout_constraintBottom_toTopOf="@id/tv_approval_count"

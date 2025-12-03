@@ -41,7 +41,7 @@
         android:fontFamily="@font/satoshi_bold"
         android:gravity="center"
         android:padding="@dimen/_2sdp"
-        android:text="Holiday / Weekly Off"
+        android:text="@string/holiday_weekly_off"
         android:textColor="@color/white"
         android:textSize="@dimen/_8sdp"
         android:textStyle="bold"

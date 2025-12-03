@@ -48,7 +48,7 @@
                     android:layout_height="@dimen/_23sdp"
                     android:fontFamily="@font/satoshi_bold"
                     android:padding="@dimen/_4sdp"
-                    android:text="month_name"
+                    android:text="@string/month_name"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_8sdp"
                     tools:ignore="SpUsage" />
@@ -60,7 +60,7 @@
                     android:fontFamily="@font/satoshi_bold"
                     android:padding="@dimen/_4sdp"
 
-                    android:text="day"
+                    android:text="@string/day"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_8sdp"
                     tools:ignore="SpUsage" />
@@ -71,7 +71,7 @@
                     android:layout_height="@dimen/_23sdp"
                     android:fontFamily="@font/satoshi_medium"
                     android:padding="@dimen/_4sdp"
-                    android:text="weekdays"
+                    android:text="@string/weekdays"
                     android:textColor="#5D6D7E "
                     android:textSize="@dimen/_8sdp"
                     tools:ignore="SpUsage" />
@@ -120,7 +120,7 @@
                         android:layout_height="@dimen/_23sdp"
                         android:fontFamily="@font/satoshi_bold"
                         android:padding="@dimen/_4sdp"
-                        android:text="Holiday"
+                        android:text="@string/holiday"
                         android:textColor="#00C689"
                         android:textSize="@dimen/_8sdp"
                         tools:ignore="SpUsage" />

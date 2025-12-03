@@ -834,39 +834,68 @@
     <string name="products_promoted">Products promoted</string>
     <string name="overview">Overview</string>
     <string name="pre_call_analysis">Pre Call Analysis</string>
+    <string name="holiday_weekly_off">Holiday / Weekly Off</string>
+    <string name="leave_types">Leave Types</string>
+    <string name="are_you_sure_you_want_to_clear_slides">Are you sure you want to clear slides?</string>
+    <string name="your_score">Your Score</string>
+    <string name="retry">Retry</string>
+    <string name="please_accept_privacy_policy">Please accept the privacy policy</string>
+    <string name="status">Status</string>
+    <string name="list_of_survey">List of Survey</string>
+    <string name="select_any_survey_on_list_to_view_content">Select any survey on the list to view content</string>
+    <string name="choose_survey">Choose Survey</string>
+    <string name="survey_name">Survey Name</string>
+    <string name="show_customer">Show Customer</string>
+    <string name="doctor_list_updating">Doctor List is updating, please wait...</string>
+    <string name="fake_location_detected">Fake location detected</string>
+    <string name="please_turn_off_to_proceed">Please turn off to proceed</string>
+    <string name="forms_list">Forms List</string>
+    <string name="list_of_activity">List of Activity</string>
+    <string name="select_any_activity_on_list_to_view_content">Select any activity on the list to view content</string>
+    <string name="today">Today</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="belated">Belated</string>
+    <string name="no_anniversarys_belated">No Anniversary\'s Belated !!</string>
+    <string name="no_anniversarys_upcoming">No Anniversary\'s Upcoming !!</string>
+    <string name="no_anniversarys_today">No Anniversary\'s Today !!</string>
+    <string name="select_headquarters">Select Headquarters</string>
+    <string name="no_birthdays_today">No Birthdays Today !!</string>
+    <string name="no_birthdays_upcoming">No Birthdays Upcoming !!</string>
+    <string name="no_birthdays_belated">No Birthdays Belated !!</string>
+    <string name="rejected_reason">Rejected Reason</string>
+    <string name="no_doctor_available">No doctor available</string>
+    <string name="no_stockist_available">No stockist available</string>
+    <string name="no_unlisted_doctor_available">No unlisted doctor available</string>
+    <string name="month_name">Month Name</string>
+    <string name="day">Day</string>
+    <string name="weekdays">Weekdays</string>
+    <string name="date">Date</string>
+    <string name="doctor_visit">Doctor Visit</string>
+    <string name="missed">Missed</string>
+    <string name="total_doctor">Total Doctor</string>
+    <string name="category_visit_freq_label">Category (Visit.Freq)</string>
+    <string name="planned_for">Planned For</string>
+    <string name="new_notification">New Notification</string>
+    <string name="notification_message">Notification Message</string>
+    <string name="brand_name_1">Brand Name 1</string>
+    <string name="file_name">File Name</string>
+    <string name="option_1">Option 1</string>
+    <string name="doctor_name">Doctor Name</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--    <string name="inputs">Inputs</string>-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </resources>

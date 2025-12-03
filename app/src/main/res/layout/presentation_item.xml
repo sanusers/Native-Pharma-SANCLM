@@ -45,7 +45,7 @@
                     android:fontFamily="@font/satoshi_medium"
                     android:paddingStart="@dimen/_6sdp"
                     android:paddingTop="@dimen/_3sdp"
-                    android:text="Presentation Name"
+                    android:text="@string/presentation_name"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_6sdp"
                     android:textStyle="bold"

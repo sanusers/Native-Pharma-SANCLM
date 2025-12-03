@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/satoshi_bold"
-        android:text="Name"
+        android:text="@string/name"
         android:layout_gravity="bottom"
         android:layout_marginStart="@dimen/_3sdp"
         android:layout_marginEnd="@dimen/_1sdp"

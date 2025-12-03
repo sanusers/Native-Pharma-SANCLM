@@ -115,7 +115,7 @@
                         android:id="@+id/doctorqual"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Qualification"
+                        android:text="@string/qualifications"
                         android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 
@@ -143,7 +143,7 @@
                         android:id="@+id/doctorcat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Category"
+                        android:text="@string/category"
                         android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 
@@ -171,7 +171,7 @@
                         android:id="@+id/doctorspec"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Speciality"
+                        android:text="@string/speciality"
                         android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 
@@ -198,7 +198,7 @@
                         android:id="@+id/doctorclass"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Class"
+                        android:text="@string/clases"
                         android:textAppearance="@font/satoshi_bold"
                         android:textSize="@dimen/_5ssp" />
 

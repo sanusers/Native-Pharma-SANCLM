@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_medium"
             android:textStyle="bold"
-            android:text="Fake Location Detected!"
+            android:text="@string/fake_location_detected"
             android:textColor="@color/black_45"
             android:textSize="@dimen/_7sdp"
             android:textAlignment="center"
@@ -36,7 +36,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:textColor="@color/gray_45"
 
-            android:text="Please turn off to proceed"
+            android:text="@string/please_turn_off_to_proceed"
             android:textSize="@dimen/_7sdp"
             android:textAlignment="center"
             android:layout_marginBottom="@dimen/_6sdp"/>
@@ -54,7 +54,7 @@
             android:textAllCaps="false"
             android:fontFamily="@font/satoshi_medium"
             android:layout_marginBottom="@dimen/_4sdp"
-            android:text="Close"
+            android:text="@string/close"
             android:background="@drawable/tp_btn_select_state"
             android:textColor="#FFFFFF"/>
 

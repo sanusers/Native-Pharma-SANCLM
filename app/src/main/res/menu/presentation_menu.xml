@@ -3,19 +3,19 @@
 
     <item
         android:id="@+id/menuPlay"
-        android:title="Play" />
+        android:title="@string/play" />
 
     <item
         android:id="@+id/menuEdit"
-        android:title="Edit" />
+        android:title="@string/edit" />
 
     <item
         android:id="@+id/menuDelete"
-        android:title="Delete" />
+        android:title="@string/delete" />
 
     <item
         android:id="@+id/customer"
         android:visible="false"
-        android:title="Show Customer" />
+        android:title="@string/show_customer" />
 
 </menu>

@@ -165,7 +165,7 @@
                             android:id="@+id/drqual"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Qualification"
+                            android:text="@string/qualifications"
                             android:fontFamily="@font/satoshi_medium"
                             android:textSize="@dimen/_6ssp" />
 
@@ -194,7 +194,7 @@
                             android:id="@+id/drcat"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Category"
+                            android:text="@string/category"
                             android:fontFamily="@font/satoshi_medium"
                             android:textSize="@dimen/_5ssp" />
 
@@ -223,7 +223,7 @@
                             android:id="@+id/drspec"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Speciality"
+                            android:text="@string/speciality"
                             android:fontFamily="@font/satoshi_medium"
                             android:textSize="@dimen/_5ssp" />
 
@@ -251,7 +251,7 @@
                             android:id="@+id/drclass"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Class"
+                            android:text="@string/clases"
                             android:fontFamily="@font/satoshi_medium"
                             android:textSize="@dimen/_5ssp" />
 
@@ -423,7 +423,7 @@
                             android:id="@+id/drqual2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Qualification"
+                            android:text="@string/qualifications"
                             android:fontFamily="@font/satoshi_medium"
                             android:textSize="@dimen/_6ssp" />
 
@@ -452,7 +452,7 @@
                             android:id="@+id/drcat2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Category"
+                            android:text="@string/category"
                             android:fontFamily="@font/satoshi_medium"
                             android:textSize="@dimen/_5ssp" />
 
@@ -481,7 +481,7 @@
                             android:id="@+id/drspec2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Speciality"
+                            android:text="@string/speciality"
                             android:fontFamily="@font/satoshi_medium"
                             android:textSize="@dimen/_5ssp" />
 
@@ -509,7 +509,7 @@
                             android:id="@+id/drclass2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Class"
+                            android:text="@string/clases"
                             android:fontFamily="@font/satoshi_medium"
                             android:textSize="@dimen/_5ssp" />
 

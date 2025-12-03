@@ -28,7 +28,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
-            android:text="Name"
+            android:text="@string/name"
             android:textColor="@color/bg_txt_color"
             android:textSize="@dimen/_6ssp" />
 
@@ -42,7 +42,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
-            android:text="Speciality"
+            android:text="@string/speciality"
             android:textColor="@color/bg_txt_color"
             android:textSize="@dimen/_6ssp" />
 
@@ -56,7 +56,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
-            android:text="Category(Visit.Freq)"
+            android:text="@string/category_visit_freq_label"
             android:textColor="@color/bg_txt_color"
             android:textSize="@dimen/_6ssp" />
 
@@ -70,7 +70,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
-            android:text="Planned for"
+            android:text="@string/planned_for"
             android:textColor="@color/bg_txt_color"
             android:textSize="@dimen/_6ssp" />
 
