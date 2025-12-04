@@ -418,7 +418,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
         chart.setData(data);
         chart.setUsePercentValues(true);
         chart.setDrawHoleEnabled(true);
-        chart.setCenterText(String.format("%.1f %%", missedPercentage));
+        chart.setCenterText(String.format(Locale.US,"%.1f %%", missedPercentage));
         chart.setCenterTextSize(18f);
         chart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
         chart.setCenterTextColor(context.getColor(R.color.black));

@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -142,7 +143,7 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
         missedChart.setHoleRadius(72f);
         missedChart.animateXY(1400, 1400);
         missedChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
-        missedChart.setCenterText(String.format("%.1f %%", missedPercentage));
+        missedChart.setCenterText(String.format(Locale.US,"%.1f %%", missedPercentage));
         Description description2 = missedChart.getDescription();
         description2.setEnabled(false);
         Legend legend2 = missedChart.getLegend();

@@ -147,7 +147,7 @@ public class UnlistedVisitFragment extends Fragment {
                         Integer.parseInt(model.getTotalCustomers()),
                         Integer.parseInt(model.getVisitedCustomers()),
                         Integer.parseInt(model.getMissedCustomers()),
-                        Double.parseDouble(model.getCallAvg())
+                        Double.parseDouble(model.getCallAvg().replace(",","."))
                 );
        /*     setupPieChart(
                     (int) model.getOneVisitCount(),
