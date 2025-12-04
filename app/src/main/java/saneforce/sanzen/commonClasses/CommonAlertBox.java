@@ -194,7 +194,7 @@ public class CommonAlertBox {
         dialog.show();
 
         TextView tvTitle = alertLayout.findViewById(R.id.tvTitle);
-        tvTitle.setText("Today's Wishes");
+        tvTitle.setText(R.string.todays_wishes);
 
         LinearLayout contentRow = alertLayout.findViewById(R.id.contentRow);
         LinearLayout layoutBirthday = alertLayout.findViewById(R.id.layoutBirthday);

@@ -175,7 +175,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:textSize="@dimen/_5ssp"
-                    android:text="Visited" />
+                    android:text="@string/visited" />
 
                 <TextView
                     android:id="@+id/visitedCnt"
@@ -206,7 +206,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:textSize="@dimen/_5ssp"
-                    android:text="Missed" />
+                    android:text="@string/missed" />
 
                 <TextView
                     android:id="@+id/missedCnt"
@@ -238,7 +238,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:textSize="@dimen/_5ssp"
-                    android:text="Field Work Days" />
+                    android:text="@string/field_work_days" />
 
                 <TextView
                     android:id="@+id/FWDaysCnt"
@@ -270,7 +270,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:textSize="@dimen/_5ssp"
-                    android:text="Call Average" />
+                    android:text="@string/call_average" />
 
                 <TextView
                     android:id="@+id/callAvgCnt"
@@ -302,7 +302,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:textSize="@dimen/_5ssp"
-                    android:text="Coverage" />
+                    android:text="@string/coverage" />
 
                 <TextView
                     android:id="@+id/callCvgCnt"

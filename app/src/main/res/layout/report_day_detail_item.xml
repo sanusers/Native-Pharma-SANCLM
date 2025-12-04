@@ -88,7 +88,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Visit Time"
+                        android:text="@string/visit_time"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -124,7 +124,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Modified Time"
+                        android:text="@string/modified_time"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -231,7 +231,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Feedback"
+                        android:text="@string/feedback"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -289,7 +289,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Joint Work"
+                        android:text="@string/joint_work"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -332,7 +332,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Next Visit date"
+                        android:text="@string/next_visit_date"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -900,7 +900,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Overall Remarks"
+                        android:text="@string/overall_remarks"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -951,7 +951,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/satoshi_medium"
-                android:text="View More"
+                android:text="@string/view_more"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_5sdp"
                 tools:ignore="SpUsage" />

@@ -721,7 +721,7 @@
     <string name="add_activity">Add</string>
     <string name="no_activity_details">No</string>
     <string name="select_activity">Select any activity on the list to view content</string>
-    <string name="location_captured">Location Captured</string>
+    <string name="location_captured">Location Captured : </string>
 <!--    <string name="message">Message</string>-->
     <string name="update_canceled">Update canceled</string>
     <string name="please_check_the_internet_connection">Please check the Internet connection</string>
@@ -881,7 +881,36 @@
     <string name="file_name">File Name</string>
     <string name="option_1">Option 1</string>
     <string name="doctor_name">Doctor Name</string>
-
+    <string name="next_visit_date">Next Visit Date</string>
+    <string name="slide_details">Slide Details</string>
+    <string name="event_capture">Event Capture</string>
+    <string name="competitor_name">Competitor Name</string>
+    <string name="competitor_Productname">Competitor Product Name</string>
+    <string name="no_data_available">No Data Available</string>
+    <string name="add_session">Add Session</string>
+    <string name="type_here">Type here..</string>
+    <string name="todays_wishes">Today\'s Wishes !!!</string>
+    <string name="sort_by_name">Sort by Name</string>
+    <string name="sort_by_visit_time">Sort by Visit Time</string>
+    <string name="as_on_calls">As on Calls</string>
+    <string name="approved_calls">Approved Calls</string>
+    <string name="sync_to_get_live_data">Sync to get live data</string>
+    <string name="you_are_live_select_month_to_get_data">You Are Live! Select Month to get Data</string>
+    <string name="no_report_found">No Report Found!</string>
+    <string name="please_select_month">Please select month</string>
+    <string name="field_work_days">Field Work Days</string>
+    <string name="call_average">Call Average</string>
+    <string name="coverage">Coverage</string>
+    <string name="visits">Visits</string>
+    <string name="one_visit">1 Visit</string>
+    <string name="two_visits">2 Visits</string>
+    <string name="three_visits">3 Visits</string>
+    <string name="three_plus_visits">3+ Visits</string>
+    <string name="no_visits_found">No visits found</string>
+    <string name="list_of">List of </string>
+    <string name="choose">Choose</string>
+    <string name="on_list_to_view_content">on the list to view content</string>
+    <string name="town_name">Town Name</string>
 
 
 

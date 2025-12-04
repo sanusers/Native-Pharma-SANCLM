@@ -132,7 +132,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Category"
+                        android:text="@string/category"
                         android:textColor="#808B96"
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold" />
@@ -145,7 +145,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Specialty"
+                        android:text="@string/speciality"
                         android:textColor="#808B96"
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold" />
@@ -158,7 +158,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Specialty"
+                        android:text="@string/speciality"
                         android:textColor="#808B96"
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold" />
@@ -171,7 +171,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Rx"
+                        android:text="@string/rx"
                         android:textColor="#808B96"
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold" />
@@ -219,7 +219,7 @@
                             android:layout_width="@dimen/_20sdp"
                             android:layout_height="@dimen/_10sdp"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="View"
+                            android:text="@string/view"
                             android:textColor="#F1536E"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold" />

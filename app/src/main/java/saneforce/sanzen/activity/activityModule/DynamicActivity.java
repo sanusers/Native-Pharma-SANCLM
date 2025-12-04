@@ -170,9 +170,12 @@ public class DynamicActivity extends AppCompatActivity {
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
         binding.title.setText(SharedPref.getActivityCap(this));
-        binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
-        binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
-        binding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(DynamicActivity.this)));
+       // binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
+        binding.listTitle.setText(getString(R.string.list_of)+ " " + SharedPref.getActivityCap(this));
+        binding.namechooseActivity.setText(getString(R.string.choose)+ " " + SharedPref.getActivityCap(this));
+        binding.tvContent.setText(getString(R.string.select_any)+ " " + activityCap + " " + getString(R.string.on_list_to_view_content));
+       // binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
+     //   binding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(DynamicActivity.this)));
 //        binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
         binding.btnSubmit.setEnabled(false);
 

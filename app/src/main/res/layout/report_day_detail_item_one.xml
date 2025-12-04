@@ -310,7 +310,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Joint Work"
+                        android:text="@string/joint_work"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -917,7 +917,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="Slide Details"
+                            android:text="@string/slide_details"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -1228,7 +1228,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="Signature"
+                            android:text="@string/signature"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -1279,7 +1279,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="Event Capture"
+                            android:text="@string/event_capture"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -1330,7 +1330,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Overall Remarks"
+                        android:text="@string/overall_remarks"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -1384,7 +1384,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="View More"
+                    android:text="@string/view_more"
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_5sdp"
                     tools:ignore="SpUsage" />

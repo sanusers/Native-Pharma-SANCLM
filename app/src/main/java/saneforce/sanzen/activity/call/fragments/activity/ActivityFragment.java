@@ -181,9 +181,12 @@ public class ActivityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         fontmedium = ResourcesCompat.getFont(requireContext(), R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(requireContext(), R.font.satoshi_regular);
-        fragmentActivityBinding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(requireContext())));
-        fragmentActivityBinding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(requireContext())));
-        fragmentActivityBinding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(requireContext())));
+       fragmentActivityBinding.listTitle.setText(getString(R.string.list_of)+ " " + SharedPref.getActivityCap(requireContext()));
+        //fragmentActivityBinding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(requireContext())));
+        fragmentActivityBinding.tvContent.setText(getString(R.string.select_any)+ " " + activityCap + " " + getString(R.string.on_list_to_view_content));
+        //fragmentActivityBinding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(requireContext())));
+        fragmentActivityBinding.namechooseActivity.setText(getString(R.string.choose)+ " " + SharedPref.getActivityCap(requireContext()));
+        //fragmentActivityBinding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(requireContext())));
         fragmentActivityBinding.txthqName.setText(SharedPref.getHqName(requireContext()));
         fragmentActivityBinding.btnSubmit.setEnabled(false);
         if (activityAnswerData == null) {

@@ -29,7 +29,7 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date"
+                android:text="@string/date"
                 android:textSize="@dimen/_5sdp"
                 android:textColor="@color/text_dark"
                 android:fontFamily="@font/satoshi_variable"

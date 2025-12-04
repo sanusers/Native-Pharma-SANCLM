@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6sdp"
-                    android:text="ProductName" />
+                    android:text="@string/product_name" />
 
                 <TextView
                     android:layout_weight="1"
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6sdp"
-                    android:text="Qty" />
+                    android:text="@string/qty" />
                 <TextView
                     android:layout_weight="2"
                     android:id="@+id/competitorname"
@@ -60,7 +60,7 @@
                     android:textSize="@dimen/_6sdp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Competitor Name" />
+                    android:text="@string/competitor_name" />
 
                 <TextView
                     android:gravity="left"
@@ -71,7 +71,7 @@
                     android:textColor="@color/dark_purple"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/_6sdp"
-                    android:text="Competitor Productname" />
+                    android:text="@string/competitor_Productname" />
 
                 <TextView
                     android:gravity="left"
@@ -82,7 +82,7 @@
                     android:textSize="@dimen/_6sdp"
                     android:fontFamily="@font/satoshi_medium"
                     android:textColor="@color/dark_purple"
-                    android:text="Qty" />
+                    android:text="@string/qty" />
 
             <LinearLayout
                 android:layout_width="0dp"

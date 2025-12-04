@@ -144,15 +144,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_1sdp"
             android:fontFamily="@font/satoshi_medium"
             android:text="@string/stop"
             android:textColor="@color/white"
-            android:textSize="@dimen/_7ssp" />
+            android:textSize="@dimen/_6ssp" />
 
         <ImageView
             android:layout_width="@dimen/_10sdp"
-            android:layout_height="@dimen/_10sdp"
+            android:layout_height="@dimen/_8sdp"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/_3sdp"

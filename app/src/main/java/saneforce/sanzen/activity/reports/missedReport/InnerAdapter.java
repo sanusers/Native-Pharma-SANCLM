@@ -87,7 +87,15 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_drchm_missed_current, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+
+        // Set static text here (works fine)
+        holder.totalDr.setText(context.getString(R.string.total) + " " + SharedPref.getDrCap(context));
+       holder.totalchm.setText(context.getString(R.string.total) + " " + SharedPref.getChmCap(context));
+        holder.totalstk.setText(context.getString(R.string.total) + " " + SharedPref.getStkCap(context));
+        holder.totalunlst.setText(context.getString(R.string.total) + " " + SharedPref.getUNLcap(context));
         return new ViewHolder(view);
+
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -376,6 +384,9 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
         missed.setText(String.valueOf(missedCount));
 
         float missedPercentage = (((float) missedCount / (float) totalCount) * 100.0f);
+        if(missedCount == 0 && totalCount == 0){
+            missedPercentage = 0.0F;
+        }
 
         int colorVisited;
         switch (model.getType()) {
@@ -434,6 +445,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
         LinearLayout card1Layout, card2Layout; // root layouts for swipe cards
 
         PieChart missedChart, missedChartChem, missedChartStk, missedChartUnlst, missedChartStk1, missedChartUnlst1;
+        TextView totalDr,totalchm,totalunlst,totalstk;
         TextView totalDrCnt, visitedCnt, missedCnt;
         TextView totalchmCnt, chmvisitedCnt, chmmissedCnt;
         TextView totalstkCnt, stkvisitedCnt, stkmissedCnt, totalstkCnt1, stkvisitedCnt1, stkmissedCnt1;
@@ -461,18 +473,21 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             card2Layout = itemView.findViewById(R.id.missedcard2);
 
             missedChart = itemView.findViewById(R.id.pBar);
+            totalDr=itemView.findViewById(R.id.totalDr);
             totalDrCnt = itemView.findViewById(R.id.missedtotalDrCnt);
             visitedCnt = itemView.findViewById(R.id.missedvisitedCnt);
             missedCnt = itemView.findViewById(R.id.missedmissedCnt);
             missedBox = itemView.findViewById(R.id.grid3);
 
             missedChartChem = itemView.findViewById(R.id.pBar2);
+            totalchm=itemView.findViewById(R.id.totalchm);
             totalchmCnt = itemView.findViewById(R.id.missedtotalchmCnt);
             chmvisitedCnt = itemView.findViewById(R.id.missedchmvisitedCnt);
             chmmissedCnt = itemView.findViewById(R.id.missedchmmissedCnt);
             chemistBox = itemView.findViewById(R.id.chmgrid3);
 
             missedChartStk = itemView.findViewById(R.id.pBar3);
+            totalstk=itemView.findViewById(R.id.totalstk);
             totalstkCnt = itemView.findViewById(R.id.missedtotalstkCnt);
             stkvisitedCnt = itemView.findViewById(R.id.missedstkvisitedCnt);
             stkmissedCnt = itemView.findViewById(R.id.missedstkmissedCnt);
@@ -485,6 +500,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder> 
             stockiestBox1 = itemView.findViewById(R.id.stkgrid31);
 
             missedChartUnlst = itemView.findViewById(R.id.pBar4);
+            totalunlst=itemView.findViewById(R.id.totalunlst);
             totalunlstCnt = itemView.findViewById(R.id.missedtotalunlstCnt);
             unlstvisitedCnt = itemView.findViewById(R.id.missedunlstvisitedCnt);
             unlstmissedCnt = itemView.findViewById(R.id.missedunlstmissedCnt);

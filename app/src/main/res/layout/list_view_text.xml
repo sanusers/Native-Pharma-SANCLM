@@ -28,7 +28,7 @@
             android:layout_toRightOf="@id/ch_mutiple"
             android:fontFamily="@font/satoshi_medium"
             android:padding="@dimen/_5sdp"
-            android:text="Work Type"
+            android:text="@string/work_type"
             android:textColor="@color/cl_text_color"
             android:textSize="@dimen/_6sdp"
             />

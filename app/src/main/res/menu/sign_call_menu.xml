@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menuSync"
-        android:title="Sync" />
+        android:title="@string/sync" />
     <item
         android:id="@+id/menuDelete"
-        android:title="Delete" />
+        android:title="@string/delete" />
 </menu>

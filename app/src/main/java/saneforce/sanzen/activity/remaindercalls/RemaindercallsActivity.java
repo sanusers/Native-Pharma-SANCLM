@@ -79,7 +79,6 @@ public class RemaindercallsActivity extends AppCompatActivity {
 
         app_recycler_view.setVisibility(View.VISIBLE);
         remcallbinding.title.setText(SharedPref.getRemainderCallCap(this));
-
         remcallbinding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 //        remcallbinding.backArrow.setOnClickListener(view -> {
 //            startActivity(new Intent(this, HomeDashBoard.class));

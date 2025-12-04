@@ -126,7 +126,7 @@ public class DoctorVisitActivity extends AppCompatActivity {
             typeCaption = SharedPref.getDrCap(this);
         }
 
-        binding.toolbarTitle.setText("Missed " + typeCaption /*+ " - " + selectedMonth*/);
+        binding.toolbarTitle.setText(getString(R.string.missed) + " " + typeCaption /*+ " - " + selectedMonth*/);
         String source = getIntent().getStringExtra("source");
 
 //        String drCaption = SharedPref.getDrCap(this);
@@ -197,8 +197,8 @@ public class DoctorVisitActivity extends AppCompatActivity {
             JSONArray missedArray = new JSONArray(missedArrayString);
             JSONArray visitArray = new JSONArray(visitArrayString);
 
-            binding.missedtittle.setText("Missed: " + missedArray.length());
-            binding.visitedtittle.setText("Visited: " + visitArray.length());
+            binding.missedtittle.setText(getString(R.string.missed) + " : " + missedArray.length());
+            binding.visitedtittle.setText(getString(R.string.visited) + " : " + visitArray.length());
         } catch (Exception e) {
             e.printStackTrace();
         }

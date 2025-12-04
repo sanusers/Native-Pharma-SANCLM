@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/satoshi_variable"
-                android:text="Visit Monitor"
+                android:text="@string/visit_monitor"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
                 tools:ignore="SpUsage" />
@@ -76,7 +76,7 @@
             android:background="@drawable/bg_dark_purple"
             android:gravity="center"
             android:singleLine="true"
-            android:text="As on Calls"
+            android:text="@string/as_on_calls"
             android:textSize="@dimen/_5ssp"
             android:textColor="@color/white">
 
@@ -89,7 +89,7 @@
             android:layout_margin="@dimen/_2sdp"
             android:gravity="center"
             android:singleLine="true"
-            android:text="Approved Calls"
+            android:text="@string/approved_calls"
             android:textSize="@dimen/_5ssp"
             android:textColor="@color/dark_purple">
 
@@ -184,7 +184,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:gravity="start|center"
             android:paddingStart="@dimen/_10sdp"
-            android:text="Sync to get Live Data!"
+            android:text="@string/sync_to_get_live_data"
             android:textColor="@color/pink"
             android:textSize="@dimen/_6ssp"
             app:layout_constraintBottom_toBottomOf="parent"

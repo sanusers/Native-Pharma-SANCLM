@@ -68,7 +68,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
 
         if(SharedPref.getSfType(VisitMonitorActivity.this).equalsIgnoreCase("2")){
             binding.self.setVisibility(View.GONE);
-            binding.tvNote.setText("You Are Live! Select Month to get Data");
+            binding.tvNote.setText(getString(R.string.you_are_live_select_month_to_get_data));
             binding.live.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_dark_purple));
             binding.live.setTextColor(getColor(R.color.white));
             loadFragment(new ApprovedCallsFragment());
@@ -81,7 +81,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
         binding.self.setOnClickListener(view -> {
             selectedTab = "As on Calls";
             binding.note.setVisibility(View.VISIBLE);
-            binding.tvNote.setText("Sync to get Live Data!");
+            binding.tvNote.setText(getString(R.string.sync_to_get_live_data));
             updateReportUi();
             loadFragment(new AsOnCallsFragment());
         });
@@ -89,7 +89,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
         binding.live.setOnClickListener(view -> {
             selectedTab = "Approved Calls";
             binding.note.setVisibility(View.VISIBLE);
-            binding.tvNote.setText("You Are Live! Select Month to get Data");
+            binding.tvNote.setText((R.string.you_are_live_select_month_to_get_data));
             updateReportUi();
             loadFragment(new ApprovedCallsFragment());
         });

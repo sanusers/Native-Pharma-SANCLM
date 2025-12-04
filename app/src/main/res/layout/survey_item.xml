@@ -19,7 +19,7 @@
         android:fontFamily="@font/satoshi_bold"
         android:paddingHorizontal="@dimen/_4sdp"
         android:singleLine="true"
-        android:text="Name"
+        android:text="@string/name"
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="parent"

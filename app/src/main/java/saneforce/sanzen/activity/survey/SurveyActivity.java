@@ -607,14 +607,14 @@ public class SurveyActivity extends AppCompatActivity {
                     }
                 }
                 if(!isSurveyAvailable) {
-                    surveyBinding.tvNoSurveyFound.setText("No Survey Found");
+                    surveyBinding.tvNoSurveyFound.setText(getString(R.string.no_survey_found));
                     surveyBinding.rlNoSurveyFound.setVisibility(View.VISIBLE);
                     surveyBinding.rlSurveyMain.setVisibility(View.GONE);
                     surveyBinding.btnSubmit.setVisibility(View.GONE);
                     commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found));
                 }
             }else {
-                surveyBinding.tvNoSurveyFound.setText("No Survey Found");
+                surveyBinding.tvNoSurveyFound.setText(getString(R.string.no_survey_found));
                 surveyBinding.rlNoSurveyFound.setVisibility(View.VISIBLE);
                 surveyBinding.rlSurveyMain.setVisibility(View.GONE);
                 surveyBinding.btnSubmit.setVisibility(View.GONE);

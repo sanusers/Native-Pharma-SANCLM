@@ -140,7 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/satoshi_medium"
-                android:text="List of Activity"
+                android:text="@string/list_of_activity"
                 android:padding="@dimen/_2sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:id="@+id/list_title"

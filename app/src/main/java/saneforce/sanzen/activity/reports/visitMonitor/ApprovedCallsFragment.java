@@ -94,6 +94,7 @@ public class ApprovedCallsFragment extends Fragment {
         TextView headquarters = view.findViewById(R.id.headquarters_visit);
         EditText searchCust = view.findViewById(R.id.search_cust);
         noReport = view.findViewById(R.id.noReportFoundTxt);
+       // noReport.setText(getString(R.string.no_report_found));
         noReport.setVisibility(View.VISIBLE);
         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")){
             headquarters.setVisibility(View.VISIBLE);

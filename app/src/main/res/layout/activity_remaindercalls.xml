@@ -53,7 +53,7 @@
                     android:fontFamily="@font/satoshi_bold"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:id="@+id/title"
-                    android:text="Remainder Call for Doctor"
+                    android:text="@string/remainder_call"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp"
                     tools:ignore="SpUsage" />
@@ -91,7 +91,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
-                        android:hint="town name"
+                        android:hint="@string/town_name"
                         android:textSize="@dimen/_7sdp" />
 
                     <ImageView

@@ -148,7 +148,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
             binding.headquarters.setVisibility(View.VISIBLE);
             binding.headquarters.setOnClickListener(v -> {
                 if (selectedDate == null || selectedDate.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please select month", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.please_select_month), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 showHeadquartersPicker();

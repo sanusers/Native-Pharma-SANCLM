@@ -63,11 +63,13 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MissedReportItem item = reportList.get(position);
         holder.nameTextView.setText(item.getName() + " -     " + item.getCluster());
+        holder.box1Textview.setText(context.getString(R.string.total) + " " + SharedPref.getDrCap(context));
         //        holder.captionTextView.setText(item.getCluster());
-        //holder.totalDoctorsTextView.setText(item.getTotalDoctors());
-        holder.totalDoctorsTextView.setText(
-                context.getString(R.string.total_doctor) + ": " + item.getTotalDoctors()
-        );
+       // holder.totalDoctorsTextView.setText(item.getTotalDoctors());
+//        holder.totalDoctorsTextView.setText(
+//                context.getString(R.string.total_doctor) + ": " + item.getTotalDoctors()
+//        );
+
         holder.visitedTextView.setText(item.getVisited());
         holder.missedTextView.setText(item.getMissed());
 

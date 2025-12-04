@@ -204,10 +204,67 @@ public class DoctorFragment extends Fragment {
 
     private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
         if (oneVisit == 0 && twoVisit == 0 && threeVisit == 0 && threePlusVisit == 0) {
-            pieChart.setCenterText("No Visits Found");
+            pieChart.setCenterText(getString(R.string.no_visits_found));
+            pieChart.setCenterTextSize(15f);
+            pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
+            pieChart.setHoleRadius(63f);
+            pieChart.setTransparentCircleRadius(100f);
+            pieChart.setTransparentCircleColor(requireContext().getColor(R.color.black));
+            pieChart.setUsePercentValues(false);
+            pieChart.getDescription().setEnabled(false);
+            pieChart.setExtraOffsets(5f, 10f, 5f, 5f);
+            pieChart.setDragDecelerationFrictionCoef(0.95f);
+            pieChart.setDrawHoleEnabled(true);
+            pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
+// pieChart.setHoleRadius(63f);
+// pieChart.setTransparentCircleRadius(10f);
+            pieChart.setRotationAngle(0);
+            pieChart.setRotationEnabled(true);
+            pieChart.setHighlightPerTapEnabled(true);
+            pieChart.setDrawEntryLabels(false);
+
+            ArrayList<PieEntry> entries = new ArrayList<>();
+            entries.add(new PieEntry(oneVisit,getString(R.string.one_visit)));
+            entries.add(new PieEntry(twoVisit,  getString(R.string.two_visits)));
+            entries.add(new PieEntry(threeVisit,  getString(R.string.three_visits)));
+            entries.add(new PieEntry(threePlusVisit, getString(R.string. three_plus_visits)));
+
+            PieDataSet dataSet = new PieDataSet(entries, "");
+            dataSet.setSliceSpace(3f);
+            dataSet.setSelectionShift(5f);
+
+            ArrayList<Integer> colors = new ArrayList<>();
+            colors.add(requireContext().getResources().getColor(R.color.blue_60));
+            colors.add(requireContext().getResources().getColor(R.color.yellow_45));
+            colors.add(requireContext().getResources().getColor(R.color.red_60));
+            colors.add(requireContext().getResources().getColor(R.color.green_2));
+            dataSet.setColors(colors);
+
+            PieData data = new PieData(dataSet);
+            data.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return value == 0 ? "" : String.valueOf((int) value);
+                }
+            });
+            data.setValueTextSize(20f);
+            data.setValueTextColor(requireContext().getResources().getColor(R.color.bg_lit_white));
+
+            pieChart.setData(data);
+
+            Legend legend = pieChart.getLegend();
+            legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            legend.setDrawInside(false);
+            legend.setXEntrySpace(7f);
+            legend.setYEntrySpace(0f);
+            legend.setYOffset(0f);
+            legend.setWordWrapEnabled(true);
+            legend.setForm(Legend.LegendForm.CIRCLE);
         } else {
 
-            pieChart.setCenterText("Visits");
+            pieChart.setCenterText(getString(R.string.visits));
             pieChart.setCenterTextSize(15f);
             pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
             pieChart.setUsePercentValues(false);
@@ -224,10 +281,10 @@ public class DoctorFragment extends Fragment {
             pieChart.setDrawEntryLabels(false);
 
             ArrayList<PieEntry> entries = new ArrayList<>();
-            entries.add(new PieEntry(oneVisit, "1 Visit"));
-            entries.add(new PieEntry(twoVisit, "2 Visits"));
-            entries.add(new PieEntry(threeVisit, "3 Visits"));
-            entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
+            entries.add(new PieEntry(oneVisit, getString(R.string.one_visit)));
+            entries.add(new PieEntry(twoVisit,  getString(R.string.two_visits)));
+            entries.add(new PieEntry(threeVisit, getString(R.string.three_visits)));
+            entries.add(new PieEntry(threePlusVisit, getString(R.string. three_plus_visits)));
 
             PieDataSet dataSet = new PieDataSet(entries, "");
             dataSet.setSliceSpace(3f);

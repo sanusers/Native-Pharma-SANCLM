@@ -41,7 +41,7 @@
                 android:fontFamily="@font/satoshi_bold"
                 android:textColor="@color/text_dark_65"
                 android:textSize="@dimen/_6ssp"
-                tools:text="Name" />
+                tools:text="@string/name" />
 
             <TextView
                 android:id="@+id/tp_item_text2"

@@ -85,7 +85,7 @@
     <string name="hello_blank_fragment">Bonjour fragment vide</string>
     <string name="skip_submit"><![CDATA[Ignorer & Soumettre]]></string>
     <!--<string name="skip_submit">Ignorer &amp; Soumettre</string>-->
-    <string name="start_detaling">Commencer le détail</string>
+    <string name="start_detaling">Démarrer le détail</string>
     <string name="filter_by">Filtrer par</string>
     <string name="loc_not_detect">Emplacement non détecté</string>
     <string name="loc_setting">Veuillez activer la localisation</string>
@@ -719,7 +719,7 @@
     <string name="add_activity">Ajouter </string>
     <string name="no_activity_details">Aucune %1$s</string>
     <string name="select_activity">Sélectionnez une activité dans la liste pour afficher le contenu</string>
-    <string name="location_captured">Emplacement capturé</string>
+    <string name="location_captured">Emplacement capturé : </string>
 <!--    <string name="message">Message</string>-->
 
     <string name="update_canceled">Mise à jour annulée</string>
@@ -774,7 +774,7 @@
     <string name="slides_cleared_successfully">Diapositives effacées avec succès</string>
     <string name="no_submenu_data_available">Aucune donnée de sous-menu disponible</string>
     <string name="upload_failed_please_try_again">Échec du téléchargement. Veuillez réessayer</string>
-    <string name="no_survey_found">Aucune enquête trouvée</string>
+    <string name="no_survey_found">Aucun sondage trouvé</string>
     <string name="slides_downloading_completed">Téléchargement des diapositives terminé</string>
     <string name="welcome_slides_downloading_completed">Téléchargement des diapositives d\’accueil terminé</string>
     <string name="invalid_submenu_data_format">Format de données du sous-menu invalide</string>
@@ -882,6 +882,36 @@
     <string name="file_name">Nom du fichier</string>
     <string name="option_1">Option 1</string>
     <string name="doctor_name">Nom du médecin</string>
+    <string name="next_visit_date">Date de la prochaine visite</string>
+    <string name="slide_details">Détails de la diapositive</string>
+    <string name="event_capture">Capture d\’événement</string>
+    <string name="competitor_name">Nom du concurrent</string>
+    <string name="competitor_Productname">Nom du produit du concurrent</string>
+    <string name="no_data_available">Aucune donnée disponible</string>
+    <string name="add_session">Ajouter une session</string>
+    <string name="type_here">Tapez ici..</string>
+    <string name="todays_wishes">Vœux du jour !!!</string>
+    <string name="sort_by_name">Trier par nom</string>
+    <string name="sort_by_visit_time">Trier par heure de visite</string>
+    <string name="as_on_calls">Selon les appels</string>
+    <string name="approved_calls">Appels validés</string>
+    <string name="sync_to_get_live_data">Sync pour obtenir les données en direct</string>
+    <string name="you_are_live_select_month_to_get_data">Vous êtes en direct! sélectionnez le mois pour obtenir les données</string>
+    <string name="no_report_found">Aucun rapport trouvé!</string>
+    <string name="please_select_month">Veuillez sélectionner le mois</string>
+    <string name="field_work_days">Jours de terrain</string>
+    <string name="call_average">Moyenne d\’appels</string>
+    <string name="coverage">Couverture</string>
+    <string name="visits">Visites</string>
+    <string name="one_visit">1 Visite</string>
+    <string name="two_visits">2 Visites</string>
+    <string name="three_visits">3 Visites</string>
+    <string name="three_plus_visits">3+ Visites</string>
+    <string name="no_visits_found">Aucune visite trouvée</string>
+    <string name="list_of">Liste de </string>
+    <string name="choose">Choisir</string>
+    <string name="on_list_to_view_content">dans la liste pour voir le contenu</string>
+    <string name="town_name">Nom de la ville</string>
 
 
 
