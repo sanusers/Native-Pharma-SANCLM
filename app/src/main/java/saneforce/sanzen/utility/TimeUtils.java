@@ -65,6 +65,12 @@ public class TimeUtils {
         return simpleDateFormat.format(new Date(timestampMilliseconds));
     }
 
+    public static String getCurrentDateTimeTp(String format) {
+        long timestampMilliseconds = System.currentTimeMillis();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
+        return simpleDateFormat.format(new Date(timestampMilliseconds));
+    }
+
     public static String GetCurrentTimeStamp(String mFormat) {
         String stringDate;
         long timestampMilliseconds = System.currentTimeMillis();
@@ -102,11 +108,11 @@ public class TimeUtils {
         return Str_Date;
     }
 
-    /*  public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+      public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
 
-          Locale [] locales = {Locale.ENGLISH,Locale.FRENCH};
-          SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, locales);
-          SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat,locales);
+
+          SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.getDefault());
+          SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat,Locale.getDefault());
           String outputDate = null;
           try {
               Date ConvertedDate = currentDateFormat.parse(mDate);
@@ -116,52 +122,26 @@ public class TimeUtils {
           }
 
           return outputDate;
-      }*/
-   /* public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
-        Locale[] supportedLocales = {Locale.ENGLISH, Locale.FRENCH};
-        Date parsedDate = null;
-        for (Locale locale : supportedLocales) {
-            try {
-                SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, locale);
-                currentDateFormat.setLenient(false);
-                parsedDate = currentDateFormat.parse(mDate);
+      }
 
-                if (parsedDate != null) {
-                    break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public static String GetConvertedDateTP(String currentFormat, String requiredFormat, String mDate) {
+
+
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.ENGLISH);
+        SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat,Locale.ENGLISH);
+        String outputDate = null;
+        try {
+            Date ConvertedDate = currentDateFormat.parse(mDate);
+            outputDate = requiredDateFormat.format(Objects.requireNonNull(ConvertedDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        if (parsedDate != null) {
-       *//*     for (Locale locale : supportedLocales) {
-                try {
-                    SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, locale);
-                    currentDateFormat.setLenient(false);
-                    parsedDate = currentDateFormat.parse(mDate);
 
-                    if (parsedDate != null) {
-                        break;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }*//*
-            for(Locale locale1 : supportedLocales){
-                SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat,locale1);
-                return requiredDateFormat.format(parsedDate);
-            }
-            return requiredFormat.toString();
-
-        } else {
-            System.err.println("Error: Could not parse date '" + mDate +
-                    "' with format '" + currentFormat +
-                    "' using any supported locale.");
-            return null;
-        }
+        return outputDate;
     }
-*/
-    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+
+
+/*    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
         Locale[] supportedLocales = {Locale.ENGLISH, Locale.FRENCH};
         Date parsedDate = null;
         Locale successfulLocale = null;
@@ -191,7 +171,7 @@ public class TimeUtils {
         // Format using the *same locale that parsed successfully*
         SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat, successfulLocale);
         return requiredDateFormat.format(parsedDate);
-    }
+    }*/
 
     public static boolean GetIsBetweenDate(String mGivenDate, String mStartDate, String mEndDate) {
         Date D_GivenDate = null;

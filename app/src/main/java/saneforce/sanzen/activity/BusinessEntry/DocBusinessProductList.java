@@ -108,7 +108,7 @@ public class DocBusinessProductList  extends AppCompatActivity {
             docbusinessProductListBinding.btnCancel.setVisibility(View.VISIBLE);
         }
             String dateStr = Month;
-            SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
             try {
                 Date date = sdf.parse(dateStr);
                 Calendar calendar = Calendar.getInstance();

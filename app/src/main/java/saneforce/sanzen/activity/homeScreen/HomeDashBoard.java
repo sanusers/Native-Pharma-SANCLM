@@ -1310,7 +1310,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             ArrayList<String> days = new ArrayList<>(daysInMonth(date));
             String monthYear = monthYearFromDate(date);
 
-            Locale[] locales = {Locale.ENGLISH, Locale.FRENCH, Locale.GERMAN};
             String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
             String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
 
@@ -2852,7 +2851,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     !SharedPref.getTpEndDate(HomeDashBoard.this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(HomeDashBoard.this).equalsIgnoreCase("-1")) {
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-                SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
+                SimpleDateFormat date = new SimpleDateFormat("dd", Locale.getDefault());
                 String mCurrDate = date.format(calendar.getTime());
                 String currentDate = sdf.format(calendar.getTime());
                 calendar.add(Calendar.MONTH, 1);

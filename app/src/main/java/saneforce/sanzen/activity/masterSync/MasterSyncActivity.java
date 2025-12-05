@@ -765,7 +765,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
         doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
-        specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
+        specialityStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.speciality));
         qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
         categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
         departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
@@ -908,7 +908,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
                 doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
                 doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
-                specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
+                specialityStatus = masterDataDao.getMasterSyncStatusByKey(/*Constants.SPECIALITY*/getString(R.string.speciality));
                 qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
                 categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
                 departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
@@ -1230,7 +1230,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 //                MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
             MasterSyncItemModel dr_mas = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
             MasterSyncItemModel geo = new MasterSyncItemModel(SharedPref.getDrCap(this) + " Geo", Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
-            MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR_MAS, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
+            MasterSyncItemModel spl = new MasterSyncItemModel(getString(R.string.speciality)/*Constants.SPECIALITY*/, Constants.DOCTOR_MAS, "getspeciality", getString(R.string.speciality)/*Constants.SPECIALITY*/, specialityStatus, false);
             MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR_MAS, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
             MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getcategorys", Constants.CATEGORY, categoryStatus, false);
 //                    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);

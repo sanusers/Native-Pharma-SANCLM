@@ -857,7 +857,7 @@ public class Leave_Application extends AppCompatActivity {
     public void Leavedetails(JSONObject data) {
         listdate.clear();
         List_LeaveDates.clear();
-        DateFormat mFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        DateFormat mFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
         try {
             String F_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_19, leavebinding.etFromDate.getText().toString()));
             String T_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_19, leavebinding.etToDate.getText().toString()));

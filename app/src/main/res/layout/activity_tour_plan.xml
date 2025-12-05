@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_16sdp"
                     android:fontFamily="@font/satoshi_variable"
-                    android:text="Tour Plan"
+                    android:text="@string/tour_plan"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_7sdp"
                     tools:ignore="SpUsage" />
@@ -185,7 +185,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center|end"
                             android:fontFamily="@font/satoshi_variable"
-                            android:text="Planning..."
+                            android:text="@string/planning"
                             android:textColor="@color/green_2"
                             android:textSize="@dimen/_6ssp"
                             tools:ignore="SpUsage" />

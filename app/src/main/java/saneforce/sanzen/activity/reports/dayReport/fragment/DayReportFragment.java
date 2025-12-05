@@ -419,14 +419,19 @@ public class DayReportFragment extends Fragment {
         }
     }
     public static LocalDate parseMultiLocale(String date, String pattern) {
-        Locale[] locales = {Locale.ENGLISH, Locale.FRENCH, Locale.GERMAN, Locale.ITALIAN};
 
-        for (Locale locale : locales) {
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, locale);
+        try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault());
                 return LocalDate.parse(date, formatter);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+            e.printStackTrace();
         }
+//        for (Locale locale : locales) {
+//            try {
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault());
+//                return LocalDate.parse(date, formatter);
+//            } catch (Exception ignored) {}
+//        }
 
 
         return null;

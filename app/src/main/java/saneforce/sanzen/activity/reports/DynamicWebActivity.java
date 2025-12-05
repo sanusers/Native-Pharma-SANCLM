@@ -235,7 +235,7 @@ public class DynamicWebActivity extends AppCompatActivity {
     }
 
     private Uri saveBitmap(Bitmap bitmap) {
-        String timeStamp = new SimpleDateFormat("HHmmss", Locale.ENGLISH).format(new Date());
+        String timeStamp = new SimpleDateFormat("HHmmss", Locale.getDefault()).format(new Date());
         String imageName = "Screenshot_" + timeStamp + ".jpeg";
         File folder = new File(getExternalFilesDir(null), "EventCaptureImage");
         if (!folder.exists() && !folder.mkdirs()) return null;

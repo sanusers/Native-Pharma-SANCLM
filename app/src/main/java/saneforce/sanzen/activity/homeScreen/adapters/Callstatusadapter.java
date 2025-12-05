@@ -108,8 +108,8 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             holder.relativeLayout.setEnabled(true);
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", Locale.ENGLISH);
-        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyy", Locale.ENGLISH);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", Locale.getDefault());
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyy", Locale.getDefault());
         String fullMonthName = selectedMonth.format(formatter);
         String year = selectedMonth.format(formatter1);
 

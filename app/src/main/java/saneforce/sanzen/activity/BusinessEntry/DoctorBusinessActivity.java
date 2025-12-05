@@ -263,7 +263,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                         Rsf = sfcode;
                     }
                     String dateStr = doctorbusinessEntryBinding.edtMonth.getText().toString();
-                    SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
                     try {
                         Date date = sdf.parse(dateStr);
                         Calendar calendar = Calendar.getInstance();

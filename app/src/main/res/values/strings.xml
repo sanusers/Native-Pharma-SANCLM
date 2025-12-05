@@ -940,6 +940,13 @@
 
 
 
+    <string name = "sunday"> Sunday</string>
+    <string name="monday"> Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday"> Friday</string>
+    <string name="sat">Saturday</string>
 
 
 <!--    <string name="inputs">Inputs</string>-->
