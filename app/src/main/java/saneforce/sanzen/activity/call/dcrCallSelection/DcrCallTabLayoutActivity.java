@@ -484,7 +484,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
                 .setMessage("Location permission required. Please allow it.")
                 .setCancelable(false)
                 .setPositiveButton("Allow", (dialog, which) -> RequestLocationPermission())
-                .setNegativeButton("Exit", (dialog, which) -> finish())
+//                .setNegativeButton("Back", (dialog, which) -> finish())
                 .show();
     }
 
@@ -498,7 +498,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
                     intent.setData(Uri.fromParts("package", getPackageName(), null));
                     startActivity(intent);
                 })
-                .setNegativeButton("Exit", (dialog, which) -> finish())
+//                .setNegativeButton("Back", (dialog, which) -> finish())
                 .show();
     }
 
