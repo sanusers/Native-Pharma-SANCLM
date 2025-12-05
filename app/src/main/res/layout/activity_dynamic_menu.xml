@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="No Reports Found!"
+            android:text="@string/no_report_found"
             android:textSize="@dimen/_10sdp"
             android:textColor="@color/text_dark"
             android:fontFamily="@font/satoshi_medium"

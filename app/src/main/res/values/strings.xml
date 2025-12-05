@@ -911,11 +911,28 @@
     <string name="choose">Choose</string>
     <string name="on_list_to_view_content">on the list to view content</string>
     <string name="town_name">Town Name</string>
-
-
-
-
-
+    <string name="enter_remark">Enter remark</string>
+    <string name="select_work_day">Select work day</string>
+    <string name="deviation_approval_pending">Deviation approval pending</string>
+    <string name="rejection_reason">Rejection reason</string>
+    <string name="select_work_type">Select work type</string>
+    <string name="waiting_for_deviation_approval">Waiting for deviation approval</string>
+    <string name="deviate_plan">Deviate plan</string>
+    <string name="update_sample_given">Update sample given</string>
+    <string name="add_new">+ Add New</string>
+    <string name="you_have_been_idle_for_2_minutes_kindly_re_check_out">You have been idle for 2 minutes, kindly re-check out.</string>
+    <string name="you_have_been_idle_for_2_minutes_kindly_re">You have been idle for 2 minutes, please re-check.</string>
+    <string name="idle_time">Idle Time</string>
+    <string name="minutes">minutes</string>
+    <string name="for_detailing_has_been_exceeded">for detailing has been exceeded</string>
+    <string name="please_select_month_headquarters">Please select month &amp; headquarters</string>
+    <string name="location_to_be_shown">Location to be shown</string>
+    <string name="latitude_label">Latitude :</string>
+    <string name="time_label">Time :</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="address_label">Address:</string>
+    <string name="date_label">Date:</string>
+    <string name="add_condition">Add Condition</string>
 
 
 

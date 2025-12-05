@@ -299,9 +299,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         boolean toSync = false;
         if (SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)) {
-            binding.txtCluster1.setHint("Select Cluster");
+            binding.txtCluster1.setHint(getString(R.string.select)+ " " + SharedPref.getClusterCap(requireContext()));
         } else {
-            binding.txtCluster1.setHint("Select " + SharedPref.getWrkAreaName(requireContext()));
+            binding.txtCluster1.setHint(getString(R.string.select)+ " "  + SharedPref.getWrkAreaName(requireContext()));
 
         }
         if (HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
@@ -1416,9 +1416,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtSave.setEnabled(true);
                             binding.cardPlan2.setVisibility(View.VISIBLE);
                             if (SharedPref.getWrkAreaName(requireContext()).isEmpty()) {
-                                binding.txtCluster2.setHint("Select Cluster");
+                                binding.txtCluster2.setHint(getString(R.string.select)+ " " + SharedPref.getClusterCap(requireContext()));
                             } else {
-                                binding.txtCluster2.setHint("Select" + SharedPref.getWrkAreaName(requireContext()));
+                                binding.txtCluster2.setHint(getString(R.string.select)+ " " + SharedPref.getWrkAreaName(requireContext()));
                             }
                             getLocalData();
                             binding.txtworkday2.setText("");
@@ -3271,7 +3271,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         btn_no.setVisibility(View.GONE);
         btn_yes.setText(content.getResources().getString(R.string.ok));
-        content.setText("You have been idle for 2 minutes. Kindly Re-" + text);
+        content.setText(content.getResources().getString(R.string.you_have_been_idle_for_2_minutes_kindly_re)+ " " + text);
 
         btn_yes.setOnClickListener(new SafeClickListener() {
             @Override

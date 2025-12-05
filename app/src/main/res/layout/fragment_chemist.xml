@@ -106,7 +106,7 @@
                 android:layout_marginHorizontal="@dimen/_6sdp"
                 android:layout_marginVertical="@dimen/_3sdp"
                 android:background="@drawable/rounded_button"
-                android:text="+ Add New"
+                android:text="@string/add_new"
                 android:textColor="@color/white"
                 android:fontFamily="@font/satoshi_medium"
                 android:textAllCaps="false"

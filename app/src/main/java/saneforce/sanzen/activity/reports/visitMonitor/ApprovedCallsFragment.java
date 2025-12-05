@@ -94,13 +94,13 @@ public class ApprovedCallsFragment extends Fragment {
         TextView headquarters = view.findViewById(R.id.headquarters_visit);
         EditText searchCust = view.findViewById(R.id.search_cust);
         noReport = view.findViewById(R.id.noReportFoundTxt);
-       // noReport.setText(getString(R.string.no_report_found));
+        noReport.setText(requireContext().getString(R.string.no_report_found));
         noReport.setVisibility(View.VISIBLE);
         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")){
             headquarters.setVisibility(View.VISIBLE);
             headquarters.setOnClickListener(v -> {
                 if (selectedDate == null || selectedDate.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please select month", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.please_select_month), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 showHeadquartersPicker();

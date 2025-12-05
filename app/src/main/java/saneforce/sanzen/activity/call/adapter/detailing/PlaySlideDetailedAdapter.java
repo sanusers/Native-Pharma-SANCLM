@@ -611,7 +611,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-        final EditText edt_feed = dialog.findViewById(R.id.ed_remark);
+        final EditText edt_feed = dialog.findViewById(R.id.ed_feedback);
         ImageView img_close = dialog.findViewById(R.id.img_close);
         Button btnClear = dialog.findViewById(R.id.btn_clear);
         Button btnSave = dialog.findViewById(R.id.btn_save);

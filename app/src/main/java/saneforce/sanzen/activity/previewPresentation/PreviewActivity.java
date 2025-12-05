@@ -109,7 +109,7 @@ public class PreviewActivity extends AppCompatActivity {
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         TextView titte = dialog.findViewById(R.id.ed_alert_msg);
-        titte.setText("Idle Time (" + SharedPref.getDetailingIdleDuration(this) + " minutes) for detailing has been exceeded.");
+        titte.setText(getString(R.string.idle_time)+ " " + SharedPref.getDetailingIdleDuration(this) + " " +getString(R.string.minutes)+ " " +getString(R.string.for_detailing_has_been_exceeded));
         btn_no.setVisibility(View.GONE);
         btn_yes.setText(getString(R.string.ok));
         btn_yes.setOnClickListener(new SafeClickListener() {

@@ -94,7 +94,7 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                 dialogFeedback.setCancelable(false);
 
                 ImageView iv_close = dialogFeedback.findViewById(R.id.img_close);
-                EditText ed_remark = dialogFeedback.findViewById(R.id.ed_remark);
+                EditText ed_remark = dialogFeedback.findViewById(R.id.ed_feedback);
                 Button btn_clear = dialogFeedback.findViewById(R.id.btn_clear);
                 Button btn_save = dialogFeedback.findViewById(R.id.btn_save);
                 ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark, 250)});

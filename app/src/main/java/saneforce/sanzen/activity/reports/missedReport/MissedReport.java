@@ -107,7 +107,7 @@ public class MissedReport extends AppCompatActivity {
             binding.headquarters.setVisibility(View.VISIBLE);
             binding.headquarters.setOnClickListener(view -> {
                 if (selectedDate == null || selectedDate.isEmpty()) {
-                    Toast.makeText(MissedReport.this, "Please select month", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MissedReport.this, getString(R.string.please_select_month), Toast.LENGTH_SHORT).show();
                     return;
                 }
 //                showHeadquartersPicker();
@@ -131,10 +131,10 @@ public class MissedReport extends AppCompatActivity {
 
 
         if (SharedPref.getSfType(this).equals("1")) {
-            binding.emptyMessage.setText("Please Select Month");
+            binding.emptyMessage.setText(getString(R.string.please_select_month));
 
         } else if (SharedPref.getSfType(this).equals("2")) {
-            binding.emptyMessage.setText("Please Select Month & Headquarters");
+            binding.emptyMessage.setText(getString(R.string.please_select_month_headquarters));
         } else {
             binding.emptyMessage.setText("");
         }

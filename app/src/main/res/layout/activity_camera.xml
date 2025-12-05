@@ -133,7 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Address : "
+                        android:text="@string/address_label"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textStyle="bold" />
@@ -179,7 +179,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/satoshi_medium"
-                                android:text="Latitude    : "
+                                android:text="@string/latitude_label"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
@@ -204,7 +204,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/satoshi_medium"
-                                android:text="Longitude : "
+                                android:text="@string/longitude_label"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
@@ -245,7 +245,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/satoshi_medium"
-                                android:text="Date : "
+                                android:text="@string/date_label"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
@@ -270,7 +270,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/satoshi_medium"
-                                android:text="Time : "
+                                android:text="@string/time_label"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />

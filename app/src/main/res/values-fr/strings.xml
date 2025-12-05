@@ -178,7 +178,7 @@
     <string name="toast_enter_feedback">Entrer le feedback</string>
     <string name="enter_phone">Entrer le téléphone</string>
     <string name="enter_mobile">Entrer le mobile</string>
-    <string name="apply">Appliquer</string>
+    <string name="apply">Valider</string>
     <string name="headquarter">Siège</string>
     <string name="my_resource">Mes ressources</string>
     <string name="description">Description</string>
@@ -912,10 +912,28 @@
     <string name="choose">Choisir</string>
     <string name="on_list_to_view_content">dans la liste pour voir le contenu</string>
     <string name="town_name">Nom de la ville</string>
-
-
-
-
+    <string name="enter_remark">Entrez la remarque</string>
+    <string name="select_work_day">Sélectionnez le jour de travail</string>
+    <string name="deviation_approval_pending">Approbation de déviation en attente</string>
+    <string name="rejection_reason">Raison du rejet</string>
+    <string name="select_work_type">Sélectionner le type de travail</string>
+    <string name="waiting_for_deviation_approval">En attente de l\’approbation de la déviation</string>
+    <string name="deviate_plan">Dévier le plan</string>
+    <string name="update_sample_given">Mettre à jour l\’échantillon donné</string>
+    <string name="add_new">+ Ajouter @nouveau</string>
+    <string name="you_have_been_idle_for_2_minutes_kindly_re_check_out">Inactif depuis 2 minutes, veuillez vérifier.</string>
+    <string name="you_have_been_idle_for_2_minutes_kindly_re">Inactif depuis 2 minutes, veuillez revérifier.</string>
+    <string name="idle_time">Temps d\'inactivité</string>
+    <string name="minutes">minutes</string>
+    <string name="for_detailing_has_been_exceeded">pour le detailing a été dépassée</string>
+    <string name="please_select_month_headquarters">Veuillez sélectionner le mois et le siège</string>
+    <string name="location_to_be_shown">Emplacement à afficher</string>
+    <string name="latitude">Latitude</string>
+    <string name="time">Heure</string>
+    <string name="longitude">Longitude</string>
+    <string name="address_label">Adresse :</string>
+    <string name="date_label">Date :</string>
+    <string name="add_condition">Ajouter une condition</string>
 
 
 

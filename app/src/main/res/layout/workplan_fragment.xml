@@ -46,7 +46,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Deviate Plan"
+                        android:text="@string/deviate_plan"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_8sdp" />
 
@@ -82,7 +82,7 @@
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_toRightOf="@+id/card11"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Rejection Reason"
+                        android:text="@string/rejection_reason"
                         android:textColor="@color/dark_pink"
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
@@ -100,7 +100,7 @@
                         android:textColor="@color/black_45"
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage"
-                        tools:text="Update Sample Given" />
+                        tools:text="@string/update_sample_given" />
 
                     <ImageView
                         android:id="@+id/close_rejected_reason"
@@ -144,7 +144,7 @@
                         android:layout_toRightOf="@+id/card_dev_pending"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_4sdp"
-                        android:text="Deviation Approval pending"
+                        android:text="@string/deviation_approval_pending"
                         android:textColor="@color/dark_pink"
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
@@ -200,7 +200,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:fontFamily="@font/satoshi_medium"
-                                    android:text="Delete"
+                                    android:text="@string/delete"
                                     android:textColor="@color/red_60"
                                     android:textSize="@dimen/_7sdp" />
 
@@ -228,7 +228,7 @@
                                     android:layout_marginBottom="@dimen/_2sdp"
                                     android:layout_toStartOf="@id/arrow_workplan_2"
                                     android:fontFamily="@font/satoshi_medium"
-                                    android:hint="Select Work Type"
+                                    android:hint="@string/select_work_type"
                                     android:padding="@dimen/_4sdp"
                                     android:textColor="@color/text_dark"
                                     android:textColorHint="@color/text_dark"
@@ -275,7 +275,7 @@
                                     android:layout_marginBottom="@dimen/_2sdp"
                                     android:layout_toStartOf="@id/arrow_hq_2"
                                     android:fontFamily="@font/satoshi_medium"
-                                    android:hint="Select Headquarters"
+                                    android:hint="@string/select_headquarters"
                                     android:padding="@dimen/_4sdp"
                                     android:textColor="@color/text_dark"
                                     android:textColorHint="@color/text_dark"
@@ -322,7 +322,7 @@
                                     android:layout_marginBottom="@dimen/_2sdp"
                                     android:layout_toStartOf="@id/img_arrow_wd_2"
                                     android:fontFamily="@font/satoshi_medium"
-                                    android:hint="Select Work Day"
+                                    android:hint="@string/select_work_day"
                                     android:padding="@dimen/_4sdp"
                                     android:textColor="@color/text_dark"
                                     android:textColorHint="@color/text_dark"
@@ -393,7 +393,7 @@
                                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
                                     android:fontFamily="@font/satoshi_medium"
                                     android:gravity="top|left"
-                                    android:hint="Enter Remark"
+                                    android:hint="@string/enter_remark"
                                     android:inputType="text"
                                     android:lines="8"
                                     android:maxLines="10"
@@ -579,7 +579,7 @@
                                         android:layout_marginBottom="@dimen/_2sdp"
                                         android:layout_toStartOf="@id/img_arrow_wd_1"
                                         android:fontFamily="@font/satoshi_medium"
-                                        android:hint="Select Work Day"
+                                        android:hint="@string/select_work_day"
                                         android:padding="@dimen/_4sdp"
                                         android:textColor="@color/text_dark"
                                         android:textColorHint="@color/text_dark"
@@ -650,7 +650,7 @@
                                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
                                         android:fontFamily="@font/satoshi_medium"
                                         android:gravity="top|left"
-                                        android:hint="Enter Remark"
+                                        android:hint="@string/enter_remark"
                                         android:inputType="text"
                                         android:lines="8"
                                         android:maxLines="10"
@@ -817,7 +817,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Waiting For Deviation Approval"
+            android:text="@string/waiting_for_deviation_approval"
             android:textAlignment="center"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp"

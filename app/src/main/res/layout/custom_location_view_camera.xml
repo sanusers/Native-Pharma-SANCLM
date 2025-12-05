@@ -14,5 +14,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:textColor="@color/black"
-        android:text="location to be shown..."/>
+        android:text="@string/location_to_be_shown"/>
 </RelativeLayout>

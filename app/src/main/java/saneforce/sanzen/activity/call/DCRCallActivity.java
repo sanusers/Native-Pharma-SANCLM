@@ -943,7 +943,7 @@ public class DCRCallActivity extends AppCompatActivity {
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         btn_no.setVisibility(View.GONE);
         btn_yes.setText(getResources().getString(R.string.ok));
-        content.setText("You have been idle for 2 minutes. Kindly Re-Check-Out");
+        content.setText(getString(R.string.you_have_been_idle_for_2_minutes_kindly_re_check_out));
 
         btn_yes.setOnClickListener(new SafeClickListener() {
             @Override
