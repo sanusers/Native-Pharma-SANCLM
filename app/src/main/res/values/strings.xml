@@ -667,4 +667,13 @@
     <string name="please_plan_all_the">"Please plan all the "</string>
     <string name="at_least_one_time">" at least one time"</string>
     <string name="not_planned">Not planned</string>
+    <string name="plan_overview">Plan Overview</string>
+    <string name="tour_plan_overview">Tour Plan Overview</string>
+    <string name="total_planned_days">"Total Planned Days : "</string>
+    <string name="os">OS</string>
+    <string name="ex">EX</string>
+    <string name="os_ex">OS-EX</string>
+    <string name="planned_">Planned: </string>
+    <string name="total_">Total: </string>
+    <string name="planned_days">"Planned Days: "</string>
 </resources>

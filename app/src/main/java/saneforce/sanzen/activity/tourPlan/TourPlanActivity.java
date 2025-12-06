@@ -66,6 +66,7 @@ import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
+import saneforce.sanzen.activity.tourPlan.overview.TourPlanOverviewActivity;
 import saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.sanzen.activity.tourPlan.session.SessionInterface;
 import saneforce.sanzen.activity.tourPlan.session.SessionInterfaceOneBuild;
@@ -106,7 +107,7 @@ public class TourPlanActivity extends AppCompatActivity {
     ArrayList<ModelClass> dayWiseArrayCurrentMonth = new ArrayList<>();
     ArrayList<ModelClass> dayWiseArrayPrevMonth = new ArrayList<>();
     ArrayList<ModelClass> dayWiseArrayNextMonth = new ArrayList<>();
-    ArrayList<ModelClass> modelClassList = new ArrayList<>();
+    private ArrayList<ModelClass> modelClassList = new ArrayList<>();
     //OneBuild
     public ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild = new ArrayList<>();
     public ArrayList<OneBuildModelClass> dayWiseArrayPreviousMonthOneBuild = new ArrayList<>();
@@ -1462,6 +1463,21 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
             });
         }
+
+        binding.planOverview.setOnClickListener(view -> {
+            Intent intent = new Intent(TourPlanActivity.this, TourPlanOverviewActivity.class);
+            try {
+                intent.putExtra("month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()));
+                intent.putExtra("is_one_build", SharedPref.getOneBuild(TourPlanActivity.this).equals("0"));
+                intent.putExtra("dr_need", drNeed.equals("0"));
+                intent.putExtra("chm_need", chemistNeed.equals("0"));
+                intent.putExtra("one_build_data", oneBuildModelClassList);
+                intent.putExtra("data", modelClassList);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            startActivity(intent);
+        });
     }
 
     private void getDoctorData() {

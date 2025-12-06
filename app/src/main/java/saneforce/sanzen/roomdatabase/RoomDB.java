@@ -476,10 +476,6 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
-    public static RoomDB getInstance(Context context) {
-        return null;
-    }
-
     public abstract SlidesDao slidesDao();
 
     public abstract MasterDataDao masterDataDao();
