@@ -840,7 +840,7 @@
     <string name="your_score">Your Score</string>
     <string name="retry">Retry</string>
     <string name="please_accept_privacy_policy">Please accept the privacy policy</string>
-    <string name="status">Status</string>
+    <string name="status">Status: </string>
     <string name="list_of_survey">List of Survey</string>
     <string name="select_any_survey_on_list_to_view_content">Select any survey on the list to view content</string>
     <string name="choose_survey">Choose Survey</string>
@@ -933,13 +933,6 @@
     <string name="address_label">Address:</string>
     <string name="date_label">Date:</string>
     <string name="add_condition">Add Condition</string>
-
-
-
-
-
-
-
     <string name = "sunday"> Sunday</string>
     <string name="monday"> Monday</string>
     <string name="tuesday">Tuesday</string>
@@ -947,6 +940,23 @@
     <string name="thursday">Thursday</string>
     <string name="friday"> Friday</string>
     <string name="sat">Saturday</string>
+    <string name="summary"> Summary </string>
+    <string name="session">Session </string>
+    <string name="tp_waiting_for_approval"> Planning completed/Waiting for approval</string>
+    <string name="tp_rejected"> TP rejected</string>
+    <string name="tp_approved"> TP approved</string>
+    <string name="tp_pending"> TP planned/Submission pending</string>
+    <string name="view_plan"> View Plan</string>
+    <string name="session_save"> Save </string>
+    <string name="dcr_status"> DCR Status</string>
+    <string name="Su"> Su </string>
+    <string name="Mo"> Mo</string>
+    <string name="Tu"> Tu</string>
+    <string name="We"> We</string>
+    <string name="Th"> Th</string>
+    <string name="Fr"> Fr</string>
+    <string name="Sa"> Sa</string>
+
 
 
 <!--    <string name="inputs">Inputs</string>-->

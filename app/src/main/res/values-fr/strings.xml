@@ -841,7 +841,7 @@
     <string name="your_score">Votre score</string>
     <string name="retry">Réessayer</string>
     <string name="please_accept_privacy_policy">Veuillez accepter la politique de confidentialité</string>
-    <string name="status">Statut</string>
+    <string name="status">Statut: </string>
     <string name="list_of_survey">Liste des enquêtes</string>
     <string name="select_any_survey_on_list_to_view_content">Sélectionnez une enquête dans la liste pour afficher le contenu</string>
     <string name="choose_survey">Choisir une enquête</string>
@@ -935,6 +935,31 @@
     <string name="date_label">Date :</string>
     <string name="add_condition">Ajouter une condition</string>
 
+    <string name="summary">Résumé</string>
+    <string name="session">Session de travail </string>
+    <string name="tp_waiting_for_approval">Planification terminée / En attente d\'approbation</string>
+    <string name="tp_rejected">TP rejeté</string>
+    <string name="tp_approved">TP approuvé</string>
+    <string name="tp_pending">TP planifié / Soumission en attente</string>
+    <string name="session_save"> Sauver </string>
+
+    <string name="Su"> Dim </string>
+    <string name="Mo"> Lun</string>
+    <string name="Tu"> Mar</string>
+    <string name="We"> Mer</string>
+    <string name="Th"> Jeu</string>
+    <string name="Fr"> Ven</string>
+    <string name="Sa"> Sam</string>
+
+
+
+<!--    <string name="sunday">Dimanche</string>
+    <string name="monday">Lundi</string>
+    <string name="tuesday">Mardi</string>
+    <string name="wednesday">Mercredi</string>
+    <string name="thursday">Jeudi</string>
+    <string name="friday">Vendredi</string>
+    <string name="sat">Samedi</string>-->
 
 
 

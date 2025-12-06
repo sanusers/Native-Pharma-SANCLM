@@ -379,14 +379,15 @@ public class TourPlanActivity extends AppCompatActivity {
                                 binding.tvSync.setEnabled(true);
                                 binding.progressBar.setVisibility(View.VISIBLE);
                                 LocalDate localDate1 = LocalDate.now();
-                                if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
+                                if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.minusMonths(1)))) {
                                     getDraftSaveOneBuild("previous", dayWiseArrayPreviousMonthOneBuild, isFrom, status);
-                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
+                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1))) {
                                     getDraftSaveOneBuild("current", dayWiseArrayCurrentMonthOneBuild, isFrom, status);
-                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
+                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.plusMonths(1)))) {
                                     getDraftSaveOneBuild("next", dayWiseArrayNextMonthOneBuild, isFrom, status);
                                 }
                             } else {
+                                binding.progressBar.setVisibility(View.GONE);
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
                             }
 
@@ -957,7 +958,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 } else {
                     scrollToPosition(position, true);
                 }
-                binding.tpStatusTxt.setText(Constants.STATUS_0);
+                binding.tpStatusTxt.setText(R.string.planning);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 binding.rejectionReasonLayout.setVisibility(View.GONE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
@@ -983,11 +984,11 @@ public class TourPlanActivity extends AppCompatActivity {
                             binding.tpSendToApproval.setEnabled(false);
                             binding.progressBar.setVisibility(View.VISIBLE);
                             LocalDate localDate1 = LocalDate.now();
-                            if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
+                            if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.minusMonths(1)))) {
                                 getDraftSaveOneBuild("previous", dayWiseArrayPreviousMonthOneBuild, isFrom, status);
-                            } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
+                            } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1))) {
                                 getDraftSaveOneBuild("current", dayWiseArrayCurrentMonthOneBuild, isFrom, status);
-                            } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
+                            } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.plusMonths(1)))) {
                                 getDraftSaveOneBuild("next", dayWiseArrayNextMonthOneBuild, isFrom, status);
                             }
 
@@ -1902,7 +1903,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 }.getType();
                 modelClasses = new Gson().fromJson(savedDataArray.toString(), type);
             } else { //If tour plan table has no data
-                SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.getDefault());
+                SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
                 ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate1));
                 String monthYear = monthYearFromDate(localDate1);
                 String month = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
@@ -1934,7 +1935,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             String dayOfWeek = "";
                             if (isSTPBasedTP) {
                                 try {
-                                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_38, Locale.getDefault());
+                                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_38, Locale.ENGLISH);
                                     LocalDate localDate = LocalDate.parse(date, dateFormatter);
                                     dayOfWeek = getDayOfWeekOccurrence(localDate);
                                     Log.i("STP date", "populateCalendarAdapter: " + dayOfWeek + " date : " + date);
@@ -1998,7 +1999,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public ArrayList<OneBuildModelClass> prepareModelClassForMonthOneBuild(LocalDate localDate2) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
 
         ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
         try {
@@ -2010,7 +2010,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 oneBuildModelClasses = new Gson().fromJson(savedDataArrayOneBuild.toString(), type);
 
             } else {//If tour plan table has no data
-                SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.getDefault());
+                SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
                 ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate2));
                 String monthYear = monthYearFromDate(localDate2);
                 String month = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
@@ -2031,7 +2031,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                             String date = day + " " + monthYear;
 
-                            SimpleDateFormat parser = new SimpleDateFormat("d MMMM yyyy", Locale.getDefault());
+                            SimpleDateFormat parser = new SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH);
                             Date parsedDate = parser.parse(date);
                             String dayName = formatter.format(parsedDate);
 
@@ -2048,7 +2048,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             String dayOfWeek = "";
                             if (isSTPBasedTP) {
                                 try {
-                                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_38, Locale.getDefault());
+                                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_38, Locale.ENGLISH);
                                     LocalDate localDate = LocalDate.parse(date, dateFormatter);
                                     dayOfWeek = getDayOfWeekOccurrence(localDate);
                                     Log.i("STP date", "populateCalendarAdapter: " + dayOfWeek + " date : " + date);
@@ -2236,10 +2236,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.tpNavigation.planDate.setText(modelClass.getDate());
                 ModelClass modelClass1 = new ModelClass(modelClass);
                 if (!modelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("")) {
-                    binding.tpNavigation.addEditViewTxt.setText("View Plan");
+                    binding.tpNavigation.addEditViewTxt.setText(R.string.view_plan);
                     populateSessionViewAdapter(modelClass1);
                 } else {
-                    binding.tpNavigation.addEditViewTxt.setText("Add Plan");
+                    binding.tpNavigation.addEditViewTxt.setText(getString(R.string.add_plan));
                     populateSessionEditAdapter(modelClass1);
                 }
             }
@@ -2260,10 +2260,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.tpNavigation.planDate.setText(oneBuildmodelClass.getDate());
                 OneBuildModelClass oneBuildModelClass1 = new OneBuildModelClass(oneBuildmodelClass);
                 if (!oneBuildmodelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("")) {
-                    binding.tpNavigation.addEditViewTxt.setText("View Plan");
+                    binding.tpNavigation.addEditViewTxt.setText(R.string.view_plan);
                     populateSessionViewAdapterOneBuild(oneBuildModelClass1);
                 } else {
-                    binding.tpNavigation.addEditViewTxt.setText("Add Plan");
+                    binding.tpNavigation.addEditViewTxt.setText(R.string.add_plan);
                     populateSessionEditAdapterOneBuild(oneBuildModelClass1);
                 }
             }
@@ -2635,28 +2635,28 @@ public class TourPlanActivity extends AppCompatActivity {
         switch (status) {
             case "":
             case "0": {
-                binding.tpStatusTxt.setText(Constants.STATUS_0);
+                binding.tpStatusTxt.setText(R.string.planning);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 break;
             }
             case "-1": {
-                binding.tpStatusTxt.setText(Constants.STATUS_4);
+                binding.tpStatusTxt.setText(R.string.tp_pending);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 break;
             }
             case "1": {
-                binding.tpStatusTxt.setText(Constants.STATUS_1);
+                binding.tpStatusTxt.setText(R.string.tp_waiting_for_approval);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 break;
             }
             case "2": {
                 binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
-                binding.tpStatusTxt.setText(Constants.STATUS_2);
+                binding.tpStatusTxt.setText(R.string.tp_rejected);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                 break;
             }
             case "3": {
-                binding.tpStatusTxt.setText(Constants.STATUS_3);
+                binding.tpStatusTxt.setText(R.string.tp_approved);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 SetTpRangeStatus();
                 break;
@@ -2666,7 +2666,7 @@ public class TourPlanActivity extends AppCompatActivity {
         if (!isDataAvailable) {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
             binding.rejectedReasonTxt.setText("");
-            binding.tpStatusTxt.setText(Constants.STATUS_0);
+            binding.tpStatusTxt.setText(R.string.planning);
         }
 
     }
@@ -2732,33 +2732,33 @@ public class TourPlanActivity extends AppCompatActivity {
         switch (status) {
             case "":
             case "0": {
-                binding.tpStatusTxt.setText(Constants.STATUS_0);
+                binding.tpStatusTxt.setText(R.string.planning);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 calendarAdapter.notifyDataSetChanged();
                 break;
             }
             case "-1": {
-                binding.tpStatusTxt.setText(Constants.STATUS_4);
+                binding.tpStatusTxt.setText(R.string.tp_pending);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 calendarAdapter.notifyDataSetChanged();
                 break;
             }
             case "1": {
-                binding.tpStatusTxt.setText(Constants.STATUS_1);
+                binding.tpStatusTxt.setText(R.string.tp_waiting_for_approval);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 calendarAdapter.notifyDataSetChanged();
                 break;
             }
             case "2": {
                 binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
-                binding.tpStatusTxt.setText(Constants.STATUS_2);
+                binding.tpStatusTxt.setText(R.string.tp_rejected);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                 calendarAdapter.notifyDataSetChanged();
 //                SetTpRangeStatus();
                 break;
             }
             case "3": {
-                binding.tpStatusTxt.setText(Constants.STATUS_3);
+                binding.tpStatusTxt.setText(R.string.tp_approved);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 calendarAdapter.notifyDataSetChanged();
                 SetTpRangeStatus();
@@ -2768,7 +2768,7 @@ public class TourPlanActivity extends AppCompatActivity {
         if (!isDataAvailable) {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
             binding.rejectedReasonTxt.setText("");
-            binding.tpStatusTxt.setText(Constants.STATUS_0);
+            binding.tpStatusTxt.setText(R.string.planning);
             calendarAdapter.notifyDataSetChanged();
         }
     }
@@ -3677,7 +3677,7 @@ public class TourPlanActivity extends AppCompatActivity {
             listArray, ArrayList<ModelClass> dayWiseSaveTp) {
         try { // check this method
             dayWiseSaveTp = new ArrayList<>();
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.getDefault());
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
             String monthYear = monthYearFromDate(localDate);
@@ -3857,7 +3857,7 @@ public class TourPlanActivity extends AppCompatActivity {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         try { // check this method
             dayWiseSaveTp = new ArrayList<>();
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.getDefault());
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
             String monthYear = monthYearFromDate(localDate);
@@ -4468,19 +4468,19 @@ public class TourPlanActivity extends AppCompatActivity {
 
                                     switch (status) {
                                         case "0": {
-                                            binding.tpStatusTxt.setText(Constants.STATUS_0);
+                                            binding.tpStatusTxt.setText(R.string.planning);
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             break;
                                         }
                                         case "1": {
-                                            binding.tpStatusTxt.setText(Constants.STATUS_1);
+                                            binding.tpStatusTxt.setText(R.string.tp_waiting_for_approval);
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             break;
                                         }
                                         case "2": {
-                                            binding.tpStatusTxt.setText(Constants.STATUS_2);
+                                            binding.tpStatusTxt.setText(R.string.tp_rejected);
                                             binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             break;
@@ -4488,12 +4488,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                         case "3": {
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
-                                            binding.tpStatusTxt.setText(Constants.STATUS_3);
+                                            binding.tpStatusTxt.setText(R.string.tp_approved);
                                             break;
                                         }
                                         default: {
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
-                                            binding.tpStatusTxt.setText(Constants.STATUS_0);
+                                            binding.tpStatusTxt.setText(R.string.planning);
                                             break;
                                         }
                                     }
@@ -4559,14 +4559,14 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                     switch (status) {
                                         case "0": {
-                                            binding.tpStatusTxt.setText(Constants.STATUS_0);
+                                            binding.tpStatusTxt.setText(R.string.planning);
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             System.out.println("status 0");
                                             break;
                                         }
                                         case "1": {
-                                            binding.tpStatusTxt.setText(Constants.STATUS_1);
+                                            binding.tpStatusTxt.setText(R.string.tp_waiting_for_approval);
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             binding.tpSendToApproval.setEnabled(false);
@@ -4575,7 +4575,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             break;
                                         }
                                         case "2": {
-                                            binding.tpStatusTxt.setText(Constants.STATUS_2);
+                                            binding.tpStatusTxt.setText(R.string.tp_rejected);
                                             binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                                             binding.rejectedReasonTxt.setText(reason);
@@ -4585,7 +4585,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             break;
                                         }
                                         case "3": {
-                                            binding.tpStatusTxt.setText(Constants.STATUS_3);
+                                            binding.tpStatusTxt.setText(R.string.tp_approved);
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             binding.tpSendToApproval.setEnabled(false);
@@ -4595,7 +4595,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         }
                                         default: {
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
-                                            binding.tpStatusTxt.setText(Constants.STATUS_0);
+                                            binding.tpStatusTxt.setText(R.string.planning);
                                             break;
                                         }
                                     }
@@ -5321,8 +5321,8 @@ public class TourPlanActivity extends AppCompatActivity {
     public void SetTpRangeStatus() {
 
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-        SimpleDateFormat date = new SimpleDateFormat("dd", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
         String mCurrDate = date.format(calendar.getTime());
         String currentDate = sdf.format(calendar.getTime());
         calendar.add(Calendar.MONTH, 1);

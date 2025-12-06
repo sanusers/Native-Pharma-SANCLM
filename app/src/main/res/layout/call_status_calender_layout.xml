@@ -15,7 +15,7 @@
         android:layout_marginLeft="@dimen/_3sdp"
         android:layout_marginTop="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_medium"
-        android:text="DCR Status"
+        android:text="@string/dcr_status"
         android:textColor="@color/black_45"
         android:textSize="@dimen/_7sdp"
         android:textStyle="bold" />
@@ -146,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Su"
+                    android:text="@string/Su"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
                     android:textSize="@dimen/_6sdp" />
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Mo"
+                    android:text="@string/Mo"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
                     android:textSize="@dimen/_6sdp" />
@@ -166,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Tu"
+                    android:text="@string/Tu"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
                     android:textSize="@dimen/_6sdp" />
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="We"
+                    android:text="@string/We"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
                     android:textSize="@dimen/_6sdp" />
@@ -186,7 +186,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Th"
+                    android:text="@string/Th"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
                     android:textSize="@dimen/_6sdp" />
@@ -196,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Fr"
+                    android:text="@string/Fr"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
                     android:textSize="@dimen/_6sdp" />
@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Sa"
+                    android:text="@string/Sa"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
                     android:textSize="@dimen/_6sdp" />

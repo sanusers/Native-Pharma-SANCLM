@@ -64,7 +64,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.cipModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getCip());
             holder.hospitalModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getHospitals());
 
-            holder.sessionNoTxt.setText("Session " + (position + 1));
+            holder.sessionNoTxt.setText(context.getString(R.string.session) + (position + 1));
             holder.workTypeTV.setText(holder.dataOneBuild.getWorkType().getName());
 
             if (!holder.dataOneBuild.getRemarks().isEmpty()) {
@@ -81,7 +81,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 }
                 holder.hqLayout.setVisibility(View.GONE);
                 if (inputDataModelOneBuild.getSTP_Code().isEmpty()) {
-                    holder.workDayTV.setText("Select");
+                    holder.workDayTV.setText(context.getString(R.string.select));
                 } else {
                     holder.workDayTV.setText(inputDataModelOneBuild.getSTP_Name());
                 }
@@ -256,7 +256,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.cipsModelArray = new ArrayList<>(holder.data.getCips());
             holder.hospitalsModelArray = new ArrayList<>(holder.data.getHospitals());
 
-            holder.sessionNoTxt.setText("Session " + (position + 1));
+            holder.sessionNoTxt.setText(context.getString(R.string.session) + (position + 1));
             holder.workTypeTV.setText(holder.data.getWorkType().getName());
 
             if (!holder.data.getRemarks().isEmpty()) {
@@ -273,7 +273,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 }
                 holder.hqLayout.setVisibility(View.GONE);
                 if (inputDataModel.getSTP_Code().isEmpty()) {
-                    holder.workDayTV.setText("Select");
+                    holder.workDayTV.setText(context.getString(R.string.select));
                 } else {
                     holder.workDayTV.setText(inputDataModel.getSTP_Name());
                 }
