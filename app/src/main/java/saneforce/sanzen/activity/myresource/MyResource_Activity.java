@@ -134,6 +134,7 @@ public class MyResource_Activity extends AppCompatActivity {
         Log.d("div_name", SharedPref.getDesigCode(this) + "--" + SharedPref.getDesig(this));
         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             binding.hqView.setVisibility(View.VISIBLE);
+            binding.hqHead.setText(getText(R.string.select_head_quarter));
             binding.hqHead.setText(SharedPref.getHqName(MyResource_Activity.this));
         }
 

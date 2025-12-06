@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
             binding.loginBtn.setEnabled(false);
             binding.clearData.setEnabled(false);
             binding.rlRejReason.setVisibility(View.VISIBLE);
-            binding.rejectedReason.setText("Please try again after 5 minutes!");
+            binding.rejectedReason.setText(getString(R.string.please_try_again_after_5_minutes));
             remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
             startTimer();
         }
@@ -228,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 if (outboxUtil.isOutBoxDataAvailable()) {
-                    new AlertDialog.Builder(LoginActivity.this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
+                    new AlertDialog.Builder(LoginActivity.this).setTitle(getString(R.string.warning_label)).setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage(getString(R.string.outbox_data_calls_will_be_deleted_do_you_want_to_continue)).setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
                 } else {
                     DeleteAllFiles();
                 }
@@ -253,7 +253,7 @@ public class LoginActivity extends AppCompatActivity {
             heading.setText(this.getString(R.string.alert));
             btn_save.setText(this.getString(R.string.ok));
             btn_clear.setText(this.getString(R.string.no));
-            content.setText("Check-In/Out is enabled and Date has been changed. So logged out. Kindly start over after login");
+            content.setText(getString(R.string.check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login));
             content.setVisibility(View.VISIBLE);
             btn_clear.setVisibility(View.INVISIBLE);
             ed_remarks.setVisibility(View.INVISIBLE);
@@ -277,7 +277,7 @@ public class LoginActivity extends AppCompatActivity {
             binding.loginBtn.setEnabled(false);
             binding.clearData.setEnabled(false);
             binding.rlRejReason.setVisibility(View.VISIBLE);
-            binding.rejectedReason.setText("Please try again after 5 minutes!");
+            binding.rejectedReason.setText(getString(R.string.please_try_again_after_5_minutes));
             isTimerStarted = true;
             String time = "00:05:00", loginTimer = SharedPref.getLoginTimer(LoginActivity.this);
             if (!loginTimer.isEmpty()) {
@@ -301,7 +301,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     String timeLeftFormatted = TimeUtils.getMillisToFormattedTime(millisUntilFinished, TimeUtils.FORMAT_40);
-                    binding.rejectedReason.setText("Please try again after " + timeLeftFormatted + " minutes!");
+                    binding.rejectedReason.setText(getString(R.string.please_try_again_after)  + timeLeftFormatted + getString(R.string.minutes));
                     remainingTime = millisUntilFinished;
                 }
 
@@ -644,7 +644,7 @@ public class LoginActivity extends AppCompatActivity {
             binding.loginBtn.setEnabled(false);
             binding.clearData.setEnabled(false);
             binding.rlRejReason.setVisibility(View.VISIBLE);
-            binding.rejectedReason.setText("Please try again after 5 minutes!");
+            binding.rejectedReason.setText(getString(R.string.please_try_again_after_5_minutes));
             remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
 
             String time = "00:05:00", loginTimer = SharedPref.getLoginTimer(LoginActivity.this);

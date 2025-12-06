@@ -750,12 +750,12 @@ public class ChemistAddition extends AppCompatActivity {
         ChemistModelArray.clear();
 //        chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + hqCode);
         chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + hqCode);
-        categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+        categoryStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.category));
 //        MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
         MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
         MasterSyncItemModel cheModel_geo = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistStatus, false);
 
-        MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
+        MasterSyncItemModel chemistCategory = new MasterSyncItemModel(getString(R.string.category), Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
         ChemistModelArray.add(cheModel);
         ChemistModelArray.add(cheModel_geo);
         ChemistModelArray.add(chemistCategory);

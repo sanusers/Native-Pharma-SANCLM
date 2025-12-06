@@ -87,7 +87,7 @@
                             android:layout_width="@dimen/_20sdp"
                             android:layout_height="@dimen/_10sdp"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="Edit"
+                            android:text="@string/edit"
                             android:textColor="#3DA5F4"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold" />
@@ -107,7 +107,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_medium"
                             android:gravity="right"
-
                             android:text="2"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6sdp"

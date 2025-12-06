@@ -694,7 +694,7 @@
     <string name="slide_wise"> Par diapositive </string>
     <string name="play"> Lire </string>
     <string name="slide_downloader">Téléchargeur de diapositives</string>
-    <string name="welcome_slide_downloader">Bienvenue Téléchargeur de diapositives</string>
+    <string name="welcome_slide_downloader">Bienvenue dans le téléchargeur</string>
     <string name="brand">Marque</string>
     <string name="mapped_competitor_prod">Produit concurrent mappé</string>
     <string name="call_sync">Sync des appels</string>
@@ -920,7 +920,7 @@
     <string name="waiting_for_deviation_approval">En attente de l\’approbation de la déviation</string>
     <string name="deviate_plan">Dévier le plan</string>
     <string name="update_sample_given">Mettre à jour l\’échantillon donné</string>
-    <string name="add_new">+ Ajouter @nouveau</string>
+    <string name="add_new">+ Ajouter nouveau</string>
     <string name="you_have_been_idle_for_2_minutes_kindly_re_check_out">Inactif depuis 2 minutes, veuillez vérifier.</string>
     <string name="you_have_been_idle_for_2_minutes_kindly_re">Inactif depuis 2 minutes, veuillez revérifier.</string>
     <string name="idle_time">Temps d\'inactivité</string>
@@ -934,6 +934,17 @@
     <string name="address_label">Adresse :</string>
     <string name="date_label">Date :</string>
     <string name="add_condition">Ajouter une condition</string>
+    <string name="qualification">Qualification</string>
+    <string name="event_captured">Événement Capturé</string>
+
+    <string name="checking_in_out">Enregistrement/Sortie</string>
+    <string name="day_submit">Soumission du jour</string>
+    <string name="outbox_data_calls_will_be_deleted_do_you_want_to_continue">Les appels des données de la boîte d\’envoi seront supprimés. Voulez-vous continuer ?</string>
+    <string name="please_try_again_after_5_minutes">Veuillez réessayer après 5 minutes!</string>
+    <string name="please_try_again_after">Veuillez réessayer après</string>
+    <string name="check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login">
+La fonctionnalité d’enregistrement/Sortie est activée et la date a été modifiée, vous avez donc été déconnecté. Veuillez recommencer après la connexion.</string>
+
 
     <string name="summary">Résumé</string>
     <string name="session">Session de travail </string>

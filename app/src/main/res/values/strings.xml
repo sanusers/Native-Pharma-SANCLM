@@ -676,6 +676,7 @@
     <string name="day_report"> Day Report </string>
     <string name="visit_monitor"> Visit Monitor </string>
     <string name="missed_report"> Missed Report </string>
+
     <string name="leave_available"> Leave Available </string>
     <string name="leave_dt_to"> Leave Date To </string>
     <string name="leave_dt_from"> Leave Date From </string>
@@ -704,6 +705,7 @@
     <string name="work_plan">Work Plan</string>
     <string name="visit_control">Visit Control</string>
     <string name="work_type">Work Type</string>
+
     <string name="tp_setup">TP Setup</string>
     <string name="stp_setup">STP Setup</string>
     <string name="product_slide">Product Slide</string>
@@ -723,6 +725,7 @@
     <string name="select_activity">Select any activity on the list to view content</string>
     <string name="location_captured">Location Captured : </string>
 <!--    <string name="message">Message</string>-->
+
     <string name="update_canceled">Update canceled</string>
     <string name="please_check_the_internet_connection">Please check the Internet connection</string>
     <string name="maximum_password_length_reached_please_keep_it_under_30_characters">Maximum password length reached. Please keep it under 30 characters</string>
@@ -734,6 +737,7 @@
     <string name="please_select_any">Please select any</string>
     <string name="cannot_save_already_approved">Cannot Save, Already Approved</string>
     <string name="cannot_save_waiting_for_approval">Cannot Save, Waiting For Approval</string>
+
     <string name="cannot_clear_already_approved">Cannot clear, already approved</string>
     <string name="cannot_clear_waiting_for_approval">Cannot clear, waiting for approval</string>
     <string name="nothing_selected_to_clear">Nothing selected to clear</string>
@@ -749,6 +753,7 @@
     <string name="get_deviation_approval">Get deviation approval</string>
     <string name="image_not_found">Image not found</string>
     <string name="no_network_available">No network available</string>
+
     <string name="network_timeout_please_try_again">Network timeout, please try again</string>
     <string name="no_event_capture">No event captured</string>
     <string name="signature_not_available">Signature not available</string>
@@ -768,6 +773,7 @@
     <string name="file_does_not_exist">File does not exist</string>
     <string name="please_fill_atleast_any_one_question">Please fill at least any one question</string>
     <string name="slide_updated">Slide updated</string>
+
     <string name="survey_submitted_successfully">Survey submitted successfully</string>
     <string name="select_option_for">Select option for</string>
     <string name="slides_cleared_successfully">Slides cleared successfully</string>
@@ -789,6 +795,7 @@
     <string name="please_try_after_sometime">Please try after sometime</string>
     <string name="from_master_sync">From Master Sync</string>
     <string name="complete">Complete</string>
+
     <string name="prepare_your_tourplan">Prepare your Tour Plan</string>
     <string name="sync_completed">Sync completed</string>
     <string name="details">Details</string>
@@ -807,6 +814,7 @@
     <string name="weekly_off_auto_post_is_enabled">Weekly off auto post is enabled</string>
     <string name="holiday_auto_post_is_enabled">Holiday auto post is enabled</string>
     <string name="already">Already</string>
+
     <string name="has_been_submitted">has been submitted</string>
     <string name="has_been_rejected_kindly_select_other_work_type_and_save_work_plan">Has been rejected, kindly select other work type and save Work Plan</string>
     <string name="apply_leave_in_the_leave_application">Apply leave in the Leave Application</string>
@@ -824,6 +832,7 @@
     <string name="cannot_deselect_no_input">Cannot deselect, no input selected</string>
     <string name="please_sync_previous_dates">Please sync previous dates</string>
     <string name="sync_work_plan">Sync work plan</string>
+
     <string name="sync_check_in_out">Sync check-in/out</string>
     <string name="sync_work_plan_and_calls">Sync work plan and calls</string>
     <string name="deviation_not_approved">Deviation not approved</string>
@@ -852,6 +861,7 @@
     <string name="forms_list">Forms List</string>
     <string name="list_of_activity">List of Activity</string>
     <string name="select_any_activity_on_list_to_view_content">Select any activity on the list to view content</string>
+
     <string name="today">Today</string>
     <string name="upcoming">Upcoming</string>
     <string name="belated">Belated</string>
@@ -888,6 +898,7 @@
     <string name="competitor_Productname">Competitor Product Name</string>
     <string name="no_data_available">No Data Available</string>
     <string name="add_session">Add Session</string>
+
     <string name="type_here">Type here..</string>
     <string name="todays_wishes">Today\'s Wishes !!!</string>
     <string name="sort_by_name">Sort by Name</string>
@@ -923,6 +934,7 @@
     <string name="you_have_been_idle_for_2_minutes_kindly_re_check_out">You have been idle for 2 minutes, kindly re-check out.</string>
     <string name="you_have_been_idle_for_2_minutes_kindly_re">You have been idle for 2 minutes, please re-check.</string>
     <string name="idle_time">Idle Time</string>
+
     <string name="minutes">minutes</string>
     <string name="for_detailing_has_been_exceeded">for detailing has been exceeded</string>
     <string name="please_select_month_headquarters">Please select month &amp; headquarters</string>
@@ -933,6 +945,23 @@
     <string name="address_label">Address:</string>
     <string name="date_label">Date:</string>
     <string name="add_condition">Add Condition</string>
+    <string name="qualification">Qualification</string>
+    <string name="event_captured">Event Captured</string>
+
+    <string name="checking_in_out">Checking In/Out</string>
+    <string name="day_submit">Day Submit</string>
+    <string name="outbox_data_calls_will_be_deleted_do_you_want_to_continue">Outbox data calls will be deleted. Do you want to continue?</string>
+    <string name="please_try_again_after_5_minutes">Please try again after 5 minutes!</string>
+    <string name="please_try_again_after">Please try again after</string>
+    <string name="check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login">
+Check-in/Out is enabled and the date has been changed, so you have been logged out. Kindly start over after login.</string>
+
+
+
+
+
+
+
     <string name = "sunday"> Sunday</string>
     <string name="monday"> Monday</string>
     <string name="tuesday">Tuesday</string>

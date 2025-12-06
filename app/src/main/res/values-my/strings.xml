@@ -639,6 +639,41 @@
     <string name="avg">ပျမ်းမျှ</string>
     <string name="cvg">ဖုံးလွှမ်းမှု</string>
     <string name="draft_save">ခရီးအစီအစဉ် အချက်အလက်များ အောင်မြင်စွာ သိမ်းပြီးပါပြီ</string>
+
+    <string name="need_remarks">အစည်းအဝေးတွင် မှတ်ချက်များ ထည့်ပါ</string>
+    <string name="reset_password">စကားဝှက်ပြန်လည် သတ်မှတ်ရန်</string>
+    <string name="moile_mand">မိုဘိုင်းနံပါတ် လိုအပ်ပါသည်</string>
+    <string name="mob_mandt">မိုဘိုင်း <font color='#FF0000'>*</font></string>
+    <string name="division">ဌာန</string>
+    <string name="sub_division">သုတေသန ဌာန</string>
+    <string name="dcr_start_dt">DCR စတင်သည့်ရက်</string>
+    <string name="tp_start_dt">TourPlan စတင်သည့်ရက်</string>
+    <string name="rpt_mgr">အစီရင်ခံ မန်နေဂျာ</string>
+    <string name="tp_rpt">TourPlan အစီရင်ခံ မန်နေဂျာ</string>
+    <string name="lev_rpt">အားလပ်ရက် အစီရင်ခံ မန်နေဂျာ</string>
+    <string name="tp_mand_range">TourPlan မဖြစ်မနေရမည့် ကန့်သတ်အကွာအဝေး</string>
+    <string name="already_exist">ပြီးသား ရှိပြီးသား</string>
+    <string name="state">ပြည်နယ်</string>
+    <string name="employe_code">ဝန်ထမ်းကုဒ်</string>
+    <string name="join_dt">ပါဝင်သည့်ရက်</string>
+    <string name="con_internet">အင်တာနက်နှင့် ချိတ်ဆက်ပြီး</string>
+    <string name="option">ရွေးချယ်မှုများ</string>
+
+    <string name="leavestatus">အားလပ်ရက် အခြေအနေ</string>
+    <string name="call_summary">ခေါ်ဆိုမှု အကျဉ်းချုပ်</string>
+    <string name="stock_balance">ကုန်ပစ္စည်း ငွေလက်ကျန်</string>
+    <string name="profile">ပရိုဖိုင်</string>
+    <string name="birthday">မွေးနေ့</string>
+    <string name="anniversary">ပြည့်နေ့</string>
+    <string name="select_headquaters">ဌာနချုပ် ရွေးချယ်ပါ</string>
+    <string name="quick_links">လျှင်မြန်သော လင့်ခ်များ</string>
+    <string name="call_analysis">ခေါ်ဆိုမှု ချုပ်ခြင်း</string>
+    <string name="day_report">နေ့စဉ်အစီရင်ခံစာ</string>
+    <string name="visit_monitor">သွားရောက်မှု စောင့်ကြည့်မှု</string>
+    <string name="missed_report">လွတ်သွားသော အစီရင်ခံစာ</string>
+
+
+
     <!--<string name="txt_tagging">တဂ်ခြင်း။</string>
     <string name="txt_doctor">ဆရာဝန်</string>
     <string name="txt_chemist">ဓာတုဗေဒပညာရှင်</string>

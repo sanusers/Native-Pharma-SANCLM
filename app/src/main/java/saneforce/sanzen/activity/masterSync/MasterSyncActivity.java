@@ -766,10 +766,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
         doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
         specialityStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.speciality));
-        qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
-        categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+        qualificationStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.qualification));
+        categoryStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.category));
         departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
-        classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
+        classStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.clases));
         feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
         unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
         unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
@@ -909,10 +909,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                 doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
                 doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
                 specialityStatus = masterDataDao.getMasterSyncStatusByKey(/*Constants.SPECIALITY*/getString(R.string.speciality));
-                qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
-                categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+                qualificationStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.qualification));
+                categoryStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.category));
                 departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
-                classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
+                classStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.clases));
                 if (doctorStatus == 1 || doctorGeoStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
                     binding.syncFailedImageDr.setVisibility(View.VISIBLE);
                 } else {
@@ -1231,10 +1231,10 @@ public class MasterSyncActivity extends AppCompatActivity {
             MasterSyncItemModel dr_mas = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
             MasterSyncItemModel geo = new MasterSyncItemModel(SharedPref.getDrCap(this) + " Geo", Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
             MasterSyncItemModel spl = new MasterSyncItemModel(getString(R.string.speciality)/*Constants.SPECIALITY*/, Constants.DOCTOR_MAS, "getspeciality", getString(R.string.speciality)/*Constants.SPECIALITY*/, specialityStatus, false);
-            MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR_MAS, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
-            MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getcategorys", Constants.CATEGORY, categoryStatus, false);
+            MasterSyncItemModel ql = new MasterSyncItemModel(getString(R.string.qualification), Constants.DOCTOR_MAS, "getquali",getString(R.string.qualification) /*Constants.QUALIFICATION*/, qualificationStatus, false);
+            MasterSyncItemModel cat = new MasterSyncItemModel(getString(R.string.category), Constants.DOCTOR_MAS, "getcategorys",getString(R.string.category) /*Constants.CATEGORY*/, categoryStatus, false);
 //                    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
-            MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR_MAS, "getclass", Constants.CLASS, classStatus, false);
+            MasterSyncItemModel clas = new MasterSyncItemModel(getString(R.string.clases), Constants.DOCTOR_MAS, "getclass", getString(R.string.clases)/*Constants.CLASS*/, classStatus, false);
 //                doctorModelArray.add(doctorModel);
             doctorModelArray.add(dr_mas);
             doctorModelArray.add(geo);
@@ -1270,7 +1270,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 //            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
             MasterSyncItemModel cheMas = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
             MasterSyncItemModel cheGeo = new MasterSyncItemModel(SharedPref.getChmCap(this) + " Geo", Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);
-            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
+            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(getString(R.string.category), Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
 //            chemistModelArray.add(cheModel);
             chemistModelArray.add(cheMas);
             chemistModelArray.add(cheGeo);
@@ -1389,12 +1389,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
 
         if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1") || SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
-            MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(stockBalanceLabel, "AdditionalDcr", "getstockbalance", stockBalanceLabel, stockBalanceStatus, false);
+            MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(stockBalanceLabel, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
             dcrModelArray.add(stockBalanceModel);
         }
         if (SharedPref.getVstNd(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel visitControlModel = new MasterSyncItemModel(visitControlLabel, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL
-                    , visitControlStatus, false);
+            MasterSyncItemModel visitControlModel = new MasterSyncItemModel(visitControlLabel, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
             dcrModelArray.add(visitControlModel);
         }
 
@@ -1440,7 +1439,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 MasterSyncItemModel tpSetup = new MasterSyncItemModel(tpSetupLabel, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
                 MasterSyncItemModel tPlan = new MasterSyncItemModel(tourPlanLabel, Constants.TOUR_PLAN, "getall_tp", Constants.TOUR_PLAN, tourPLanStatus, false);
                 if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2")) {
-                    tPlan = new MasterSyncItemModel(tourPlanLabel, Constants.TOUR_PLAN, "getall_multitpnew", tourPlanLabel, tourPLanStatus, false);
+                    tPlan = new MasterSyncItemModel(tourPlanLabel, Constants.TOUR_PLAN, "getall_multitpnew", Constants.TOUR_PLAN, tourPLanStatus, false);
                 }
                 tpModelArray.add(tpSetup);
                 tpModelArray.add(tPlan);
@@ -1453,8 +1452,10 @@ public class MasterSyncActivity extends AppCompatActivity {
             } else {
                 stpCaption = standardTourPlanLabel;
             }
-            MasterSyncItemModel STPSetup = new MasterSyncItemModel(stpSetupCaption,stpSetupLabel, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
-            MasterSyncItemModel STPPlan = new MasterSyncItemModel(stpCaption,standardTourPlanLabel, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
+            MasterSyncItemModel STPSetup = new MasterSyncItemModel(stpSetupCaption,Constants.STANDARD_TOUR_PLAN
+
+                    , "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
+            MasterSyncItemModel STPPlan = new MasterSyncItemModel(stpCaption,Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
             tpModelArray.add(STPSetup);
             tpModelArray.add(STPPlan);
         }

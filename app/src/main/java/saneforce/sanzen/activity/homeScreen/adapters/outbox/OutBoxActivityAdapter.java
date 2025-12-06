@@ -223,7 +223,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
         activityModelClassList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, activityModelClassList.size());
-        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData();
+        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData(context);
         try {
             for (int i = 0; i < listDates.size(); i++) {
                 GroupModelClass groupModelClass = listDates.get(i);

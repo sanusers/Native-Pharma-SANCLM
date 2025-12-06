@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.ChildListModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
@@ -230,21 +231,21 @@ public class OutboxUtil {
         return dates;
     }
 
-    public ArrayList<GroupModelClass> getOutBoxDatesWithData() {
+    public ArrayList<GroupModelClass> getOutBoxDatesWithData(Context context) {
         Set<String> dates = getOutboxDates();
         ArrayList<GroupModelClass> listData = new ArrayList<>();
         ArrayList<ChildListModelClass> groupNamesList;
         if (!dates.isEmpty()) {
             for (String date : dates) {
                 groupNamesList = new ArrayList<>();
-                groupNamesList.add(new ChildListModelClass("Checking In/Out", 0, false, true, offlineCheckInOutDataDao.getCheckInOutTime(date), "", ""));
+                groupNamesList.add(new ChildListModelClass(context.getString(R.string.checking_in_out), 0, false, true, offlineCheckInOutDataDao.getCheckInOutTime(date), "", ""));
                 groupNamesList.add(new ChildListModelClass("Work Plan - " + Arrays.toString(callOfflineWorkTypeDataDao.getListOfflineWTNames(date).toArray()).replace("[", "").replace("]", ""), 1, false, callOfflineWorkTypeDataDao.getWorkPlanModelClass(date)));
-                groupNamesList.add(new ChildListModelClass("Calls", 2, false, true, getOutBoxCallsList(date), ""));
-                groupNamesList.add(new ChildListModelClass("Event Captured", 3, false, true, callOfflineECDataDao.getEcList(date)));
-                groupNamesList.add(new ChildListModelClass("Signature",4,false,true,callOfflineSignDataDao.getSign(date),"","",""));
+                groupNamesList.add(new ChildListModelClass(context.getString(R.string.calls), 2, false, true, getOutBoxCallsList(date), ""));
+                groupNamesList.add(new ChildListModelClass(context.getString(R.string.event_captured), 3, false, true, callOfflineECDataDao.getEcList(date)));
+                groupNamesList.add(new ChildListModelClass(context.getString(R.string.signature),4,false,true,callOfflineSignDataDao.getSign(date),"","",""));
                 groupNamesList.add(new ChildListModelClass("Activity", 5, false, true, activityOfflineDataDao.getActivityList(date), null));
                 groupNamesList.add(new ChildListModelClass("Activity Upload", 6, false, true, activityUploadDataDao.getActivityUploadList(date), null));
-                groupNamesList.add(new ChildListModelClass("Day Submit", 7, false, offlineDaySubmitDao.getDaySubmitModelClass(date)));
+                groupNamesList.add(new ChildListModelClass(context.getString(R.string.day_submit), 7, false, offlineDaySubmitDao.getDaySubmitModelClass(date)));
                 listData.add(new GroupModelClass(date, groupNamesList, false, 0));
             }
         }

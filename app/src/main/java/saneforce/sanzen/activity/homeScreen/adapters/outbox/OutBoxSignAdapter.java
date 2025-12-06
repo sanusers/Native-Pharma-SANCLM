@@ -283,7 +283,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         }
         callOfflineSignDataDao.deleteOfflineSignImage(filePath);
         signModelClasses.remove(signModelClass);
-        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData();
+        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData(context);
         try {
             for (int i = 0; i < listDates.size(); i++) {
                 GroupModelClass groupModelClass = listDates.get(i);

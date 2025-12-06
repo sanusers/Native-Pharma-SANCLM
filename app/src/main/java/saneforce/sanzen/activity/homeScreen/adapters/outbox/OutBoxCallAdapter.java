@@ -556,7 +556,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         outBoxCallLists.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, outBoxCallLists.size());
-        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData();
+        ArrayList<GroupModelClass> listDatesDup = outboxUtil.getOutBoxDatesWithData(context);
         try {
             for (int i = 0; i < listDates.size(); i++) {
                 GroupModelClass groupModelClass = listDates.get(i);

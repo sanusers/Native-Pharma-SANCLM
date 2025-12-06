@@ -140,7 +140,7 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public static void SetupOutBoxAdapter(Activity activity, Context context) {
-        listDates = outboxUtil.getOutBoxDatesWithData();
+        listDates = outboxUtil.getOutBoxDatesWithData(context);
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         OutboxFragment.context = context;

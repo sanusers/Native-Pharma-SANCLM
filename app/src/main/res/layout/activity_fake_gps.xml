@@ -52,7 +52,7 @@
                 android:visibility="visible"
                 android:background="@drawable/background_button_border_black"
                 android:layout_below="@+id/texxt"
-                android:text="Close"
+                android:text="@string/close"
                 android:layout_gravity="center"
                 android:padding="@dimen/_4sdp"
                 android:textSize="@dimen/_7sdp"
