@@ -359,7 +359,7 @@
     <string name="enter_new_password">Ingrese la nueva contraseña</string>
     <string name="repeat_password">Repetir contraseña</string>
     <string name="enter_repeat_password">Ingrese la contraseña repetida</string>
-    <string name="version">"Versión "</string>
+    <string name="version">Versión </string>
     <string name="select_a_language">Seleccione un idioma</string>
     <string name="user_id">ID de usuario</string>
     <string name="enter_user_id">Ingrese el ID de usuario</string>
@@ -974,11 +974,22 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="eligible">Disponible :</string>
     <string name="taken">Tomado :</string>
     <string name="no_missed">Sin omitidos</string>
-
-
-
-
-
+    <string name="exit">Salir</string>
+    <string name="hide">Ocultar</string>
+    <string name="no_data_to_view">No hay datos para mostrar</string>
+    <string name="to_view_list">No hay datos para ver</string>
+    <string name="clear_selected">Borrar seleccionados</string>
+    <string name="syncing_offline_data">Sincronizando datos sin conexión</string>
+    <string name="planned">Planifié</string>
+    <string name="select_cluster_to_view_list">Seleccione un clúster para ver la lista</string>
+    <string name="you_have_tagged">Has etiquetado</string>
+    <string name="kindly_sync">"\n¡Por favor, sincronice!"</string>
+    <string name="downloading_completed">Descarga completada</string>
+    <string name="downloading_failed">Descarga fallida</string>
+    <string name="downloading">Descargando</string>
+    <string name="unplanned_visit_count">Cantidad de visitas no planificadas</string>
+    <string name="planned_everything">Todo planificado</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">El plan de visita no se sincronizó correctamente, por favor sincronice de nuevo...</string>
 
 
     <!--<string name="str_save_settings">Guardar ajustes</string>

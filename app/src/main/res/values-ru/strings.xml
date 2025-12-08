@@ -362,7 +362,7 @@
     <string name="enter_new_password">Введите новый пароль</string>
     <string name="repeat_password">Повторите пароль</string>
     <string name="enter_repeat_password">Введите повторный пароль</string>
-    <string name="version">"Версия "</string>
+    <string name="version">Версия</string>
     <string name="select_a_language">Выберите язык</string>
     <string name="user_id">ID пользователя</string>
     <string name="enter_user_id">Введите ID пользователя</string>
@@ -981,6 +981,22 @@
     <string name="eligible">Доступно :</string>
     <string name="taken">Использовано :</string>
     <string name="no_missed">Нет пропущенных</string>
+    <string name="exit">Выход</string>
+    <string name="hide">Скрыть</string>
+    <string name="no_data_to_view">Нет данных для просмотра</string>
+    <string name="to_view_list">Нет данных для просмотра</string>
+    <string name="clear_selected">Очистить выбранное</string>
+    <string name="syncing_offline_data">Синхронизация автономных данных</string>
+    <string name="planned">Запланировано</string>
+    <string name="select_cluster_to_view_list">Выберите кластер, чтобы просмотреть список</string>
+    <string name="you_have_tagged">Вы отметили</string>
+    <string name="kindly_sync">"\nПожалуйста, выполните синхронизацию!"</string>
+    <string name="downloading_completed">Загрузка завершена</string>
+    <string name="downloading_failed">Загрузка не удалась</string>
+    <string name="downloading">Загрузка</string>
+    <string name="unplanned_visit_count">Количество незапланированных визитов</string>
+    <string name="planned_everything">Всё запланировано</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">План тура не синхронизирован должным образом, повторите синхронизацию...</string>
 
     <!-- <string name="search">Russia</string>
      <string name="str_save_settings">Сохранить настройки</string>

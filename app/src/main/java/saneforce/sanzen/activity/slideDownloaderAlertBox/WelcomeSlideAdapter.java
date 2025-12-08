@@ -57,7 +57,7 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
         holder.txt_image_name.setText(list.get(position).getName().substring(list.get(position).getName().indexOf('/') + 1));
         if(list.get(position).getDownloadingStatus().equalsIgnoreCase("3")){
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
-            holder.text_download_size.setText("Downloading Completed");
+            holder.text_download_size.setText(holder.itemView.getContext().getString(R.string.downloading_completed));
         }
         else if(list.get(position).getDownloadingStatus().equalsIgnoreCase("2")){
             holder.text_download_size.setText(list.get(position).getSlideSize());
@@ -68,7 +68,7 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
             holder.progressBar.setProgress(0);
         }else {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
-            holder.text_download_size.setText("Downloading Failed");
+            holder.text_download_size.setText(holder.itemView.getContext().getString(R.string.downloading_failed));
             holder.progressBar.setProgress(0);
         }
 
@@ -132,7 +132,7 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
                     int position = getAdapterPosition();
                     if (UtilityClass.isNetworkAvailable(activity)) {
                         MasterSyncActivity.isSingleWelcomeSlideDownloadingStatus = true;
-                        text_download_size.setText("Downloading");
+                        text_download_size.setText(itemView.getContext().getString(R.string.downloading));
                         String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getWelcomeSlideUrl(activity) + list.get(position).getName();
                         Log.e("DownloadingAPI", url);
                         Data inputData = new Data.Builder()

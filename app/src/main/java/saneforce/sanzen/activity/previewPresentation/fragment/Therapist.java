@@ -68,7 +68,7 @@ public class Therapist extends Fragment {
             if (CusType.equalsIgnoreCase("1")) {
                 getSelectedTherapist(requireContext(), SpecialityCode, SpecialityName, masterDataDao);
             } else {
-                getRequiredData(requireContext(), "All", masterDataDao);
+                getRequiredData(requireContext(), getString(R.string.all), masterDataDao);
             }
         } else {
             fragmentTherapistBinding.constraintNoData.setVisibility(View.VISIBLE);
@@ -77,7 +77,7 @@ public class Therapist extends Fragment {
             fragmentTherapistBinding.viewDummy2.setVisibility(View.GONE);
         }
 
-        getRequiredData(requireContext(), "All", masterDataDao);
+        getRequiredData(requireContext(), getString(R.string.all), masterDataDao);
 
         fragmentTherapistBinding.tvSelectTheraptic.setOnClickListener(v1 -> {
             previewBinding.fragmentSelectTherapistSide.setVisibility(View.VISIBLE);

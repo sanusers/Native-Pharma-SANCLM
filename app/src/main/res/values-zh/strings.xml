@@ -978,6 +978,25 @@
     <string name="eligible">可用：</string>
     <string name="taken">已用：</string>
     <string name="no_missed">无遗漏</string>
+    <string name="exit">退出</string>
+    <string name="hide">隐藏</string>
+    <string name="no_data_to_view">没有可查看的数据</string>
+    <string name="to_view_list">没有可查看的数据</string>
+    <string name="clear_selected">清除所选</string>
+    <string name="syncing_offline_data">正在同步离线数据</string>
+    <string name="planned">已计划</string>
+    <string name="select_cluster_to_view_list">选择集群以查看列表</string>
+    <string name="you_have_tagged">您已标记</string>
+    <string name="kindly_sync">"\n请同步！"</string>
+    <string name="downloading_completed">下载完成</string>
+    <string name="downloading_failed">下载失败</string>
+    <string name="downloading">正在下载</string>
+    <string name="unplanned_visit_count">未计划的访问次数</string>
+    <string name="planned_everything">已计划所有内容</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">行程计划未正确同步，请重新同步...</string>
+
+
+
 
     <!-- <string name="txt_tagging">标记</string>
      <string name="txt_doctor">医生</string>

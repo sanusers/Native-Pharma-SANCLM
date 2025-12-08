@@ -361,7 +361,7 @@
     <string name="enter_new_password">Insira a Nova Senha</string>
     <string name="repeat_password">Repetir Senha</string>
     <string name="enter_repeat_password">Insira a Senha Novamente</string>
-    <string name="version">"Versão "</string>
+    <string name="version">Versão</string>
     <string name="select_a_language">Selecione um idioma</string>
     <string name="user_id">ID do Usuário</string>
     <string name="enter_user_id">Insira o ID do Usuário</string>
@@ -984,7 +984,22 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="eligible">Elegível :</string>
     <string name="taken">Tomado :</string>
     <string name="no_missed">Sem perdidos</string>
-
+    <string name="exit">Sair</string>
+    <string name="hide">Ocultar</string>
+    <string name="no_data_to_view">Não há dados para visualizar</string>
+    <string name="to_view_list">Sem dados para exibir</string>
+    <string name="clear_selected">Limpar selecionados</string>
+    <string name="syncing_offline_data">Sincronizando dados offline</string>
+    <string name="planned">Planejado</string>
+    <string name="select_cluster_to_view_list">Selecione um cluster para ver a lista</string>
+    <string name="you_have_tagged">Você marcou</string>
+    <string name="kindly_sync">"\nPor favor, sincronize!"</string>
+    <string name="downloading_completed">Download Concluído</string>
+    <string name="downloading_failed">Falha no Download</string>
+    <string name="downloading">Baixando</string>
+    <string name="unplanned_visit_count">Contagem de visitas não planejadas</string>
+    <string name="planned_everything">Tudo planejado</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">O plano de viagem não foi sincronizado corretamente, por favor sincronize novamente...</string>
 
 
     <!--  <string name="txt_tagging">Marcação</string>-->

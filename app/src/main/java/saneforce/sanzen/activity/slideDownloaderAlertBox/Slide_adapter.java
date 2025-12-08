@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.slideDownloaderAlertBox;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
@@ -59,7 +60,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
         if(list.get(position).getDownloadingStaus().equalsIgnoreCase("3")) {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
             String size = list.get(position).getSlideSize().substring(list.get(position).getSlideSize().indexOf("of") + 3);
-            holder.text_download_size.setText("(" + size + ") Downloading Completed");
+            holder.text_download_size.setText(holder.itemView.getContext().getString(R.string.downloading_completed, size));
         }else if(list.get(position).getDownloadingStaus().equalsIgnoreCase("2")) {
             holder.text_download_size.setText(list.get(position).getSlideSize());
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
@@ -68,7 +69,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             holder.progressBar.setProgress(0);
         }else {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
-            holder.text_download_size.setText("Downloading Failed");
+            holder.text_download_size.setText(holder.itemView.getContext().getString(R.string.downloading_failed));
             holder.progressBar.setProgress(0);
         }
 
@@ -130,7 +131,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
                     int position = getAdapterPosition();
                     if (UtilityClass.isNetworkAvailable(activity)) {
                         MasterSyncActivity.isSingleSlideDowloaingStaus = true;
-                        text_download_size.setText("Downloading");
+                        text_download_size.setText(itemView.getContext().getString(R.string.downloading));
                         String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
                         Log.e("DownloadingAPI", "" + url);
                         Data inputData = new Data.Builder()

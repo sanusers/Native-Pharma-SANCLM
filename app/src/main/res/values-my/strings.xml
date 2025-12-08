@@ -975,6 +975,24 @@
     <string name="eligible">လိုအပ်ချက် ဖြည့်ဆည်းထားသော :</string>
     <string name="taken">ယူပြီးသော :</string>
     <string name="no_missed">မပျက်သွားသော</string>
+    <string name="exit">ထွက်ပါ</string>
+    <string name="hide">ဖျောက်ပါ</string>
+    <string name="no_data_to_view">ကြည့်ရှုရန် အချက်အလက် မရှိပါ</string>
+    <string name="to_view_list">ကြည့်ရန်ဒေတာမရှိပါ</string>
+    <string name="clear_selected">ရွေးချယ်ထားသည်ကို ဖယ်ရှားမည်</string>
+    <string name="syncing_offline_data">အော့ဖ်လိုင်းဒေတာကို သزامညှိနေပါသည်</string>
+    <string name="planned">စီစဉ်ပြီး</string>
+    <string name="select_cluster_to_view_list">အဖွဲ့ခွဲကို ရွေးပြီး စာရင်းကို ကြည့်ပါ</string>
+    <string name="you_have_tagged">သင် ট্যাগလုပ်ပြီးပါပြီ</string>
+    <string name="kindly_sync">"\nကျေးဇူးပြု၍ sync လုပ်ပါ!"</string>
+    <string name="downloading_completed">ဒေါင်းလုဒ်ပြီးပါပြီ</string>
+    <string name="downloading_failed">ဒေါင်းလုဒ်မအောင်မြင်ပါ</string>
+    <string name="downloading">ဒေါင်းလုဒ်လုပ်နေသည်</string>
+    <string name="unplanned_visit_count">အစီအစဉ်မထားသည့် အလည်အပတ် အရေအတွက်</string>
+    <string name="planned_everything">အစီအစဉ်အားလုံးပြုလုပ်ပြီး</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">ခရီးစဉ်အစီအစဉ်သည်မှန်ကန်စွာဆက်သွယ်မရပါ၊ ကျေးဇူးပြုပြီး ထပ်မံဆက်သွယ်ပါ...</string>
+
+
 
 
     <!--<string name="txt_tagging">တဂ်ခြင်း။</string>

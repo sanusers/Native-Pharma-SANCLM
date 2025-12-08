@@ -375,7 +375,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         public void isNetworkAvailable(Boolean status) {
                             if (status) {
 
-                                isFrom = "sync";
+                                isFrom = getString(R.string.sync);
                                 binding.tvSync.setEnabled(true);
                                 binding.progressBar.setVisibility(View.VISIBLE);
                                 LocalDate localDate1 = LocalDate.now();
@@ -5296,7 +5296,7 @@ public class TourPlanActivity extends AppCompatActivity {
     public void checkTpApiStaus() {
         if (!SharedPref.getTpSyncStaus(TourPlanActivity.this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Warning!").setMessage("Tour plan Not sync properly. once sync again...").setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("Sync", (dialog, which) -> {
+            builder.setTitle(getString(R.string.warning_label)).setMessage(getString(R.string.tour_plan_not_sync_properly_once_sync_again)).setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(getString(R.string.sync), (dialog, which) -> {
                 syncTPSetup();
                 get3MonthRemoteTPData("current");
             }).setNegativeButton(android.R.string.no, (dialog, which) -> getOnBackPressedDispatcher().onBackPressed());
@@ -5308,7 +5308,7 @@ public class TourPlanActivity extends AppCompatActivity {
     public void checkTpApiStatusOneBuild() {
         if (!SharedPref.getTpSyncStaus(TourPlanActivity.this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Warning!").setMessage("Tour plan Not sync properly. once sync again...").setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("Sync", (dialog, which) -> {
+            builder.setTitle(getString(R.string.warning_label)).setMessage(getString(R.string.tour_plan_not_sync_properly_once_sync_again)).setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(getString(R.string.sync), (dialog, which) -> {
                         syncTPSetup();
                         get3MonthRemoteTPDataOneBuild("current");
                     })

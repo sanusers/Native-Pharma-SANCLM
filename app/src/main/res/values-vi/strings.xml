@@ -363,7 +363,7 @@
     <string name="enter_new_password">Nhập Mật khẩu mới</string>
     <string name="repeat_password">Nhập lại Mật khẩu</string>
     <string name="enter_repeat_password">Nhập lại Mật khẩu</string>
-    <string name="version">"Phiên bản "</string>
+    <string name="version">Phiên bản </string>
     <string name="select_a_language">Chọn ngôn ngữ</string>
     <string name="user_id">ID Người dùng</string>
     <string name="enter_user_id">Nhập ID Người dùng</string>
@@ -983,7 +983,22 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="eligible">Đủ điều kiện :</string>
     <string name="taken">Đã dùng :</string>
     <string name="no_missed">Không bỏ lỡ</string>
-
+    <string name="exit">Thoát</string>
+    <string name="hide">Ẩn</string>
+    <string name="no_data_to_view">Không có dữ liệu để xem</string>
+    <string name="to_view_list">Không có dữ liệu để xem</string>
+    <string name="clear_selected">Xóa mục đã chọn</string>
+    <string name="syncing_offline_data">Đang đồng bộ dữ liệu ngoại tuyến</string>
+    <string name="planned">Đã lập kế hoạch</string>
+    <string name="select_cluster_to_view_list">Chọn cụm để xem danh sách</string>
+    <string name="you_have_tagged">Bạn đã gắn thẻ</string>
+    <string name="kindly_sync">"\nVui lòng đồng bộ!"</string>
+    <string name="downloading_completed">Tải xuống hoàn tất</string>
+    <string name="downloading_failed">Tải xuống thất bại</string>
+    <string name="downloading">Đang tải xuống</string>
+    <string name="unplanned_visit_count">Số lượt thăm không lên kế hoạch</string>
+    <string name="planned_everything">Đã lên kế hoạch mọi thứ</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">Kế hoạch chuyến đi chưa được đồng bộ đúng, vui lòng đồng bộ lại...</string>
 
     <!-- <string name="txt_tagging">Gắn thẻ</string>
      <string name="txt_doctor">Bác sĩ</string>

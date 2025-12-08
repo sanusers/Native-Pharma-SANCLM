@@ -289,7 +289,7 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         }
 
         if(dataList.isEmpty()) {
-            activityUnplannedVisitBinding.tvNoData.setText("No Data To View");
+            activityUnplannedVisitBinding.tvNoData.setText(getString(R.string.no_data_to_view));
             activityUnplannedVisitBinding.noData.setVisibility(View.VISIBLE);
             activityUnplannedVisitBinding.llDcrSelection.setVisibility(View.GONE);
         }else {

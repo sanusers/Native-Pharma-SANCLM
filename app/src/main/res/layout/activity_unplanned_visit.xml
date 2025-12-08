@@ -256,7 +256,7 @@
                             android:maxLines="1"
                             android:layout_marginLeft="20dp"
                             android:padding="@dimen/_3sdp"
-                            android:text="Name"
+                            android:text="@string/name"
                             android:textColor="@color/dark_purple"
                             android:textSize="@dimen/_6ssp" />
 
@@ -270,7 +270,7 @@
                             android:fontFamily="@font/satoshi_bold"
                             android:maxLines="1"
                             android:padding="@dimen/_3sdp"
-                            android:text="Speciality"
+                            android:text="@string/speciality"
                             android:textColor="@color/dark_purple"
                             android:textSize="@dimen/_6ssp" />
 
@@ -284,7 +284,7 @@
                             android:fontFamily="@font/satoshi_bold"
                             android:maxLines="1"
                             android:padding="@dimen/_3sdp"
-                            android:text="Category(Visit.Freq)"
+                            android:text="@string/category_visit_freq_label"
                             android:textColor="@color/dark_purple"
                             android:textSize="@dimen/_6ssp" />
 
@@ -298,7 +298,7 @@
                             android:fontFamily="@font/satoshi_bold"
                             android:maxLines="1"
                             android:padding="@dimen/_3sdp"
-                            android:text="Unplanned Visit Count"
+                            android:text="@string/unplanned_visit_count"
                             android:textColor="@color/dark_purple"
                             android:textSize="@dimen/_6ssp" />
 
@@ -337,7 +337,7 @@
                         android:layout_below="@id/img_no_data"
                         android:layout_centerHorizontal="true"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Planned everything"
+                        android:text="@string/planned_everything"
                         android:textColor="@color/dark_purple"
                         android:textSize="@dimen/_8ssp" />
                 </RelativeLayout>

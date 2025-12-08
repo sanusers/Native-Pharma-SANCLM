@@ -358,7 +358,7 @@
     <string name="enter_new_password">Entrer le nouveau mot de passe</string>
     <string name="repeat_password">Répéter le mot de passe</string>
     <string name="enter_repeat_password">Entrer le mot de passe répété</string>
-    <string name="version">"Version "</string>
+    <string name="version">Version </string>
     <string name="select_a_language">Sélectionnez une langue</string>
     <string name="user_id">ID Utilisateur</string>
     <string name="enter_user_id">Entrer l\'ID utilisateur</string>
@@ -874,7 +874,7 @@
     <string name="doctor_visit">Visite du médecin</string>
     <string name="missed">Manqué</string>
     <string name="total_doctor">Nombre total de médecins</string>
-    <string name="category_visit_freq_label">Catégorie (Fréq. Visite)</string>
+    <string name="category_visit_freq_label">Cat.(Fréq. Visite)</string>
     <string name="planned_for">Prévu pour</string>
     <string name="new_notification">Nouvelle notification</string>
     <string name="notification_message">Message de notification</string>
@@ -968,7 +968,22 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="eligible">Admissible : </string>
     <string name="taken">Utilisé : </string>
     <string name="no_missed">Aucun manqué</string>
-
+    <string name="exit">Quitter</string>
+    <string name="hide">Masquer</string>
+    <string name="no_data_to_view">Aucune donnée à afficher</string>
+    <string name="to_view_list">Aucune donnée à afficher</string>
+    <string name="clear_selected">Effacer la sélection</string>
+    <string name="syncing_offline_data">Sync des données hors ligne</string>
+    <string name="planned">Planifié</string>
+    <string name="select_cluster_to_view_list">Sélectionnez un cluster pour voir la liste</string>
+    <string name="you_have_tagged">Vous avez tagué</string>
+    <string name="kindly_sync">"\nVeuillez synchroniser !"</string>
+    <string name="downloading_completed">Téléchargement terminé</string>
+    <string name="downloading_failed">Échec du téléchargement</string>
+    <string name="downloading">Téléchargement</string>
+    <string name="unplanned_visit_count">Nombre de visites non prévues</string>
+    <string name="planned_everything">Tout planifié</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">Le plan de tournée n\'a pas été synchronisé correctement, veuillez synchroniser à nouveau...</string>
 
 
 </resources>

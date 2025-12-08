@@ -983,6 +983,22 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="eligible">Eligible : </string>
     <string name="taken"> Taken : </string>
     <string name="no_missed">No Missed</string>
+    <string name="exit">Exit</string>
+    <string name="hide">Hide</string>
+    <string name="no_data_to_view">No data to view</string>
+    <string name="to_view_list">No data to view</string>
+    <string name="clear_selected">Clear Selected</string>
+    <string name="syncing_offline_data">Syncing Offline Data</string>
+    <string name="planned">Planned</string>
+    <string name="select_cluster_to_view_list">Select cluster to view list</string>
+    <string name="you_have_tagged">You have tagged</string>
+    <string name="kindly_sync">"\nKindly sync!"</string>
+    <string name="downloading_completed">Downloading Completed</string>
+    <string name="downloading_failed">Downloading Failed</string>
+    <string name="downloading">Downloading</string>
+    <string name="unplanned_visit_count">Unplanned Visit Count</string>
+    <string name="planned_everything">Planned Everything</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">Tour plan did not sync properly, please sync again...</string>
 
 
 </resources>

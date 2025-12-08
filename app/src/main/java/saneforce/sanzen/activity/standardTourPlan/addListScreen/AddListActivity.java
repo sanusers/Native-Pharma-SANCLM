@@ -144,10 +144,10 @@ public class AddListActivity extends AppCompatActivity {
 //                commonUtilsMethods.showToastMessage(this, message);
 
 
-            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
+            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
                // commonUtilsMethods.showToastMessage(this, "Cannot Save, Already Approved");
                 commonUtilsMethods.showToastMessage(this,getString(R.string.cannot_save_already_approved));
-            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
+            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.waiting_for_approval))) {
 //                commonUtilsMethods.showToastMessage(this, "Cannot Save, Waiting For Approval");
                 commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_save_waiting_for_approval));
             } else {
@@ -157,10 +157,10 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.selectedClusters.setOnClickListener(view -> {
             isRouteSelected = true;
-            if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
+            if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
 //                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
                 commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_already_approved));
-            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
+            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.waiting_for_approval))) {
 //                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
                 commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_waiting_for_approval));
             } else {
@@ -242,10 +242,10 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.btnClear.setOnClickListener(view -> {
-            if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
+            if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
               //  commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
                 commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_already_approved));
-            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
+            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.waiting_for_approval))) {
                 //commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
                 commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_waiting_for_approval));
             } else {
@@ -585,15 +585,15 @@ public class AddListActivity extends AppCompatActivity {
                 dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
                 dataList.addAll(dcrModels);
             }else {
-                dataList.add(new NoDataModel("No " + selectedDCRCap + " found"));
+                dataList.add(new NoDataModel(getString(R.string.no)+" " + selectedDCRCap + " " + getString(R.string.found)));
             }
         }
 
         if(dataList.isEmpty()) {
             if(activityAddListBinding.selectedClusters.getText().toString().isEmpty() || activityAddListBinding.selectedClusters.getText().toString().trim().equalsIgnoreCase("Select Cluster")) {
-                activityAddListBinding.tvNoData.setText("Select " + clusterCap + " to view list");
+                activityAddListBinding.tvNoData.setText(getString(R.string.select) + clusterCap + getString(R.string.to_view_list));
             }else {
-                activityAddListBinding.tvNoData.setText("No Data To View");
+                activityAddListBinding.tvNoData.setText(getString(R.string.no_data_to_view));
             }
             activityAddListBinding.noData.setVisibility(View.VISIBLE);
             activityAddListBinding.llDcrSelection.setVisibility(View.GONE);
@@ -658,23 +658,23 @@ public class AddListActivity extends AppCompatActivity {
         switch (selectedDCR){
 //            case Constants.DOCTOR:
             case Constants.DOCTOR_MAS:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + drCap);
+                activityAddListBinding.tvSelectedDcr.setText(getString(R.string.selected) + drCap);
                 break;
 //            case Constants.CHEMIST:
             case Constants.CHEMIST_MAS:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + chmCap);
+                activityAddListBinding.tvSelectedDcr.setText(getString(R.string.selected) + chmCap);
                 break;
             case Constants.STOCKIEST_MAS:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + stkCap);
+                activityAddListBinding.tvSelectedDcr.setText(getString(R.string.selected) + stkCap);
                 break;
             case Constants.UNLISTED_DOCTOR_MAS:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + unDrCap);
+                activityAddListBinding.tvSelectedDcr.setText(getString(R.string.selected) + unDrCap);
                 break;
             case Constants.CIP:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + cipCap);
+                activityAddListBinding.tvSelectedDcr.setText(getString(R.string.selected) + cipCap);
                 break;
             case Constants.HOSPITAL:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + hosCap);
+                activityAddListBinding.tvSelectedDcr.setText(getString(R.string.selected) + hosCap);
                 break;
 
         }
@@ -696,7 +696,7 @@ public class AddListActivity extends AppCompatActivity {
             List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
             if(selectedDCRModels != null) {
                 if(!selectedDCRModels.isEmpty()) {
-                    activityAddListBinding.btnClear.setText("Clear selected " + selectedDCRCap);
+                    activityAddListBinding.btnClear.setText(getString(R.string.clear_selected) + selectedDCRCap);
                     activityAddListBinding.btnClear.setVisibility(View.VISIBLE);
                     for (DCRModel dcrModel : selectedDCRModels) {
                         if(!selectedDCRClusterMap.containsKey(dcrModel.getTownCode())) {
@@ -735,10 +735,10 @@ public class AddListActivity extends AppCompatActivity {
 
     private final SelectedDCRAdapter.DeleteClickListener deleteClickListener = (dcrModel, selectedDCR) -> {
 
-        if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
+        if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
           //  commonUtilsMethods.showToastMessage(this, "Cannot Delete, Already Approved");
             commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_already_approved));
-        }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
+        }else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.waiting_for_approval))) {
             //commonUtilsMethods.showToastMessage(this, "Cannot Delete, Waiting For Approval");
             commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_waiting_for_approval));
         } else {

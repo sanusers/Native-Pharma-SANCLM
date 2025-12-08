@@ -104,7 +104,7 @@
                 android:fontFamily="@font/satoshi_light"
                 android:paddingStart="@dimen/_5sdp"
                 android:paddingEnd="0dp"
-                android:text="Rejected Reason"
+                android:text="@string/rejected_reason"
                 android:textColor="@color/pink"
                 android:textSize="@dimen/_6ssp"
                 android:textStyle="bold" />
@@ -117,7 +117,7 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:paddingStart="@dimen/_5sdp"
                 android:paddingEnd="0dp"
-                android:text="Reason"
+                android:text="@string/reason"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6ssp"
                 android:textStyle="bold" />
@@ -494,7 +494,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
                 android:fontFamily="@font/satoshi_bold"
-                android:text="Syncing Offline Data..."
+                android:text="@string/syncing_offline_data"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_6ssp" />
         </LinearLayout>

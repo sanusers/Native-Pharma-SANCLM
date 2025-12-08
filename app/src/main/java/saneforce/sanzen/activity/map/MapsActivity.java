@@ -518,7 +518,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         btn_yes.setText(getString(R.string.ok));
         String taggedCustomers = SharedPref.getTaggedDcrCustomers(MapsActivity.this);
         taggedCustomers = taggedCustomers.replaceAll("\\^\\^", ", ");
-        alertText.setText("You have tagged  " + taggedCustomers + "\nKindly sync!");
+        alertText.setText(getString(R.string.you_have_tagged) + taggedCustomers + getString(R.string.kindly_sync));
         btn_yes.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {

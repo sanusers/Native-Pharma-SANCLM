@@ -983,8 +983,22 @@
     <string name="eligible">มีสิทธิ์ :</string>
     <string name="taken">ใช้ไปแล้ว :</string>
     <string name="no_missed">ไม่พลาด</string>
-
-
+    <string name="exit">ออก</string>
+    <string name="hide">ซ่อน</string>
+    <string name="no_data_to_view">ไม่มีข้อมูลให้ดู</string>
+    <string name="to_view_list">ไม่มีข้อมูลให้ดู</string>
+    <string name="clear_selected">ล้างที่เลือก</string>
+    <string name="syncing_offline_data">กำลังซิงค์ข้อมูลออฟไลน์</string>
+    <string name="planned">วางแผนแล้ว</string>
+    <string name="select_cluster_to_view_list">เลือกกลุ่มเพื่อดูรายการ</string>
+    <string name="you_have_tagged">คุณได้แท็กแล้ว</string>
+    <string name="kindly_sync">"\nกรุณาซิงค์!"</string>
+    <string name="downloading_completed">ดาวน์โหลดเสร็จสิ้น</string>
+    <string name="downloading_failed">ดาวน์โหลดล้มเหลว</string>
+    <string name="downloading">กำลังดาวน์โหลด</string>
+    <string name="unplanned_visit_count">จำนวนการเยี่ยมชมที่ไม่ได้วางแผน</string>
+    <string name="planned_everything">วางแผนทุกอย่างแล้ว</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">แผนการทัวร์ไม่ได้ซิงค์อย่างถูกต้อง โปรดซิงค์อีกครั้ง...</string>
 
     <!--<string name="google_maps_key">AIzaSyBQe14kV-8aZneHfyAMYDT5PKeG5eNKCEE</string>-->
     <!--<string name="str_save_settings">บันทึกการตั้งค่า</string>-->

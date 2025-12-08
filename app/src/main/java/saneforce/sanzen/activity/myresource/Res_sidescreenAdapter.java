@@ -428,7 +428,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                         }
                     }
 
-                    holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-Visit");
+                    holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-"+ context.getString(R.string.visit));
 
                 } catch (Exception a) {
                     a.printStackTrace();

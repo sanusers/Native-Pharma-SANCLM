@@ -571,7 +571,7 @@ public class MyResource_Activity extends AppCompatActivity {
             //add
 
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-            headtext_id.setText("Headquarters");
+            headtext_id.setText(getString(R.string.headquarter));
 
             ArrayList<String> list = new ArrayList<>();
             if (jsonArray.length() > 0) {

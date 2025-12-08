@@ -704,8 +704,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void populateDocDataAdapter() {
         activityStandardTourPlanBinding.tvDdDocCategory.setText(drCap + " Category");
-        activityStandardTourPlanBinding.tvDdTotalDoctors.setText("Total " + drCap);
-        activityStandardTourPlanBinding.tvDdPlannedDoctors.setText("Planned " + drCap);
+        activityStandardTourPlanBinding.tvDdTotalDoctors.setText(getString(R.string.total)+ " " + drCap);
+        activityStandardTourPlanBinding.tvDdPlannedDoctors.setText(getString(R.string.planned)+ " " + drCap);
         docDataModelList = new ArrayList<>();
         for (String key : docCategoryModelMap.keySet()) {
             DocCategoryModel docCategoryModel = docCategoryModelMap.get(key);
@@ -1581,7 +1581,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 if (jsonObject1.optString("success", "false").equals("true")) {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.send_approved_successfully));
                                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
                                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
                                     activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
