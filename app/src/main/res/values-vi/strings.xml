@@ -956,6 +956,34 @@ Khuyến nghị đồng bộ các cuộc gọi Outbox</string>
     <string name="check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login">
 Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay đổi, bạn đã bị đăng xuất. Vui lòng bắt đầu lại sau khi đăng nhập.</string>
 
+    <string name="sunday">Chủ Nhật</string>
+    <string name="monday">Thứ Hai</string>
+    <string name="tuesday">Thứ Ba</string>
+    <string name="wednesday">Thứ Tư</string>
+    <string name="thursday">Thứ Năm</string>
+    <string name="friday">Thứ Sáu</string>
+    <string name="sat">Thứ Bảy</string>
+    <string name="summary">Tóm tắt</string>
+    <string name="session">Phiên</string>
+    <string name="tp_waiting_for_approval">Lập kế hoạch hoàn tất / Chờ phê duyệt</string>
+    <string name="tp_rejected">Kế hoạch bị từ chối</string>
+    <string name="tp_approved">Kế hoạch đã được phê duyệt</string>
+    <string name="tp_pending">Kế hoạch đã lập / Chờ gửi</string>
+    <string name="view_plan">Xem kế hoạch</string>
+    <string name="session_save">Lưu</string>
+    <string name="dcr_status">Trạng thái DCR</string>
+    <string name="Su">CN</string>
+    <string name="Mo">H</string>
+    <string name="Tu">B</string>
+    <string name="We">T</string>
+    <string name="Th">N</string>
+    <string name="Fr">S</string>
+    <string name="Sa">B</string>
+    <string name="working">Đang làm việc</string>
+    <string name="eligible">Đủ điều kiện :</string>
+    <string name="taken">Đã dùng :</string>
+    <string name="no_missed">Không bỏ lỡ</string>
+
 
     <!-- <string name="txt_tagging">Gắn thẻ</string>
      <string name="txt_doctor">Bác sĩ</string>

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.product.CheckProductListAdapter;
 import saneforce.sanzen.activity.call.adapter.product.FinalProductCallAdapter;
@@ -100,7 +101,7 @@ public class ProductFragment extends Fragment {
                     }
 
                 }else {
-                    productsBinding.tagRxQty.setText("Qty");
+                    productsBinding.tagRxQty.setText(getString(R.string.qty));
                     productsBinding.tagSamples.setText(" ");
                     productsBinding.tagRcpa.setText(" ");
 
@@ -132,7 +133,7 @@ public class ProductFragment extends Fragment {
                         productsBinding.tagRcpa.setVisibility(View.VISIBLE);
                     }
                 }else {
-                    productsBinding.tagRxQty.setText("Qty");
+                    productsBinding.tagRxQty.setText(getString(R.string.qty));
                     productsBinding.tagSamples.setText(" ");
                     productsBinding.tagRcpa.setText(" ");
 

@@ -143,36 +143,36 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             if (stpFlag.equalsIgnoreCase("1")) {
                 activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
                 activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
-                SharedPref.setStpStatus(StandardTourPlanActivity.this, "Rejected");
+                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
                 activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.rejected));
             } else {
                 activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
                 if (stpFlag.equalsIgnoreCase("0")) {
-                    SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
+                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.approved));
                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                 } else if (stpFlag.equalsIgnoreCase("2")) {
-                    SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
+                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                 } else if (stpFlag.equalsIgnoreCase("3")) {
-                    SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
                 }
             }
         } else {
             stpFlag = "3";
-            SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+            SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
             activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
             activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
         }
 
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
-        activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
+        activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? getString(R.string.planning) : stpStatus);
         LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
     }
 
@@ -210,7 +210,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         });
 
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
-        activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
+        activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? getString(R.string.planning) : stpStatus);
 
         activityStandardTourPlanBinding.tvSync.setOnClickListener(view -> {
             syncSTP();
@@ -344,20 +344,20 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         if (stpFlag.equalsIgnoreCase("1")) {
                             activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
                             activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
-                            SharedPref.setStpStatus(StandardTourPlanActivity.this, "Rejected");
+                            SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
                             activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
                         } else {
                             activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
                             if (stpFlag.equalsIgnoreCase("0")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
                                 activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                             } else if (stpFlag.equalsIgnoreCase("2")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                                 activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                             } else if (stpFlag.equalsIgnoreCase("3")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
                             }
                         }

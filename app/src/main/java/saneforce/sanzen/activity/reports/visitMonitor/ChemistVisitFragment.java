@@ -134,7 +134,7 @@ public class ChemistVisitFragment extends Fragment {
         }
 
         chemistVst.setText(SharedPref.getChmCap(requireContext()));
-        totalChmTxt.setText("Total"+" "+SharedPref.getChmCap(requireContext()));
+        totalChmTxt.setText(getString(R.string.total)+" "+SharedPref.getChmCap(requireContext()));
 
         ChemistImage.setImageDrawable(getResources().getDrawable(R.drawable.chemist_img));
 

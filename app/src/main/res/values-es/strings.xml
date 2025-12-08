@@ -947,6 +947,34 @@
     <string name="check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login">
 La función de entrada/salida está habilitada y la fecha ha sido cambiada, por lo que ha sido desconectado. Por favor, comience de nuevo después de iniciar sesión.</string>
 
+    <string name="sunday">Domingo</string>
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="sat">Sábado</string>
+    <string name="summary">Resumen</string>
+    <string name="session">Sesión</string>
+    <string name="tp_waiting_for_approval">Planificación completada / Esperando aprobación</string>
+    <string name="tp_rejected">Plan rechazado</string>
+    <string name="tp_approved">Plan aprobado</string>
+    <string name="tp_pending">Plan planificado / En espera de envío</string>
+    <string name="view_plan">Ver plan</string>
+    <string name="session_save">Guardar</string>
+    <string name="dcr_status">Estado DCR</string>
+    <string name="Su">Do</string>
+    <string name="Mo">Lu</string>
+    <string name="Tu">Ma</string>
+    <string name="We">Mi</string>
+    <string name="Th">Ju</string>
+    <string name="Fr">Vi</string>
+    <string name="Sa">Sá</string>
+    <string name="working">Trabajando</string>
+    <string name="eligible">Disponible :</string>
+    <string name="taken">Tomado :</string>
+    <string name="no_missed">Sin omitidos</string>
+
 
 
 

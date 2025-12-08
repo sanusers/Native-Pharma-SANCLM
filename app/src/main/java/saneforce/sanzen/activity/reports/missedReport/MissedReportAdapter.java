@@ -83,11 +83,11 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
 
         String DrCap = SharedPref.getDrCap(context);
         holder.captionTextView.setText(SharedPref.getDrCap(context));
-        holder.box1Textview.setText("Total " + SharedPref.getDrCap(context));
+        holder.box1Textview.setText(context.getString(R.string.total) + SharedPref.getDrCap(context));
 
         holder.missedBox.setOnClickListener(view ->  {
                 if (missed == 0) {
-                    Toast.makeText(context, "No missed" + DrCap, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.no_missed) + DrCap, Toast.LENGTH_SHORT).show();
                     holder.itemView.setClickable(false);
                     return;
                 }

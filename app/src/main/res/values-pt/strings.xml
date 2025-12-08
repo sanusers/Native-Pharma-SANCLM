@@ -956,6 +956,37 @@
     <string name="check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login">
 Entrada/Saída está habilitada e a data foi alterada, portanto você foi desconectado. Por favor, reinicie após login.</string>
 
+
+    <string name="sunday">Domingo</string>
+    <string name="monday">Segunda-feira</string>
+    <string name="tuesday">Terça-feira</string>
+    <string name="wednesday">Quarta-feira</string>
+    <string name="thursday">Quinta-feira</string>
+    <string name="friday">Sexta-feira</string>
+    <string name="sat">Sábado</string>
+    <string name="summary">Resumo</string>
+    <string name="session">Sessão</string>
+    <string name="tp_waiting_for_approval">Planejamento concluído / Aguardando aprovação</string>
+    <string name="tp_rejected">Plano rejeitado</string>
+    <string name="tp_approved">Plano aprovado</string>
+    <string name="tp_pending">Plano planejado / Aguardando envio</string>
+    <string name="view_plan">Ver plano</string>
+    <string name="session_save">Salvar</string>
+    <string name="dcr_status">Status DCR</string>
+    <string name="Su">Do</string>
+    <string name="Mo">Se</string>
+    <string name="Tu">Te</string>
+    <string name="We">Qa</string>
+    <string name="Th">Qi</string>
+    <string name="Fr">Se</string>
+    <string name="Sa">Sá</string>
+    <string name="working">Trabalhando</string>
+    <string name="eligible">Elegível :</string>
+    <string name="taken">Tomado :</string>
+    <string name="no_missed">Sem perdidos</string>
+
+
+
     <!--  <string name="txt_tagging">Marcação</string>-->
   <!--  <string name="txt_doctor">Doutor</string>-->
   <!--  <string name="txt_chemist">Químico</string>-->

@@ -242,7 +242,7 @@ private void SetUpLanguage() {
     commonUtilsMethods.setUpLanguage(getApplicationContext());
     language = SharedPref.getSelectedLanguage(this);
 
-    String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE","ARABIC"};
+    String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE","ARABIC","RUSSIAN"};
     languageAdapter = new ArrayAdapter<>(SettingsActivity.this, R.layout.listview_items, languages);
     binding.languageListView.setAdapter(languageAdapter);
     languageAdapter.notifyDataSetChanged();

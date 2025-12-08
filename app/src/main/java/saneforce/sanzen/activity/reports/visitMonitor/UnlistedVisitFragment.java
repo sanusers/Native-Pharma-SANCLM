@@ -129,7 +129,7 @@ public class UnlistedVisitFragment extends Fragment {
         }
 
         unListVst.setText(SharedPref.getUNLcap(requireContext()));
-        totalUnlistTxt.setText("Total"+" "+SharedPref.getUNLcap(requireContext()));
+        totalUnlistTxt.setText(getString(R.string.total)+" "+SharedPref.getUNLcap(requireContext()));
         unlistedImage.setImageDrawable(getResources().getDrawable(R.drawable.map_unlistdr_img));
 
         if (dataListUnlist != null && !dataListUnlist.isEmpty()) {

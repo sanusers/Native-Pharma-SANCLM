@@ -69,7 +69,7 @@ public class ApprovedCallsAdapter extends RecyclerView.Adapter<ApprovedCallsAdap
         holder.view1.setVisibility(View.VISIBLE);
         holder.view2.setVisibility(View.VISIBLE);
         holder.drTxt.setText(SharedPref.getDrCap(context));
-        holder.totCus.setText("Total" + " " + SharedPref.getDrCap(context));
+        holder.totCus.setText(context.getString(R.string.total) + " " + SharedPref.getDrCap(context));
         holder.totCusCnt.setText(model.getTotalCustomers());
         holder.vstCusCnt.setText(model.getVisitedCustomers());
         holder.misCusCnt.setText(model.getMissedCustomers());

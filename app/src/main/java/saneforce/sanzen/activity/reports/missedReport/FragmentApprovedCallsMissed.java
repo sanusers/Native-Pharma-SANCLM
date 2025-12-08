@@ -322,7 +322,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                 reportList.clear();
                 adapter.notifyDataSetChanged();
                 binding.recyclerMissedReports.setVisibility(View.GONE);
-                binding.headquarters.setText("Select HeadQuarters");
+                binding.headquarters.setText(getString(R.string.select_headquarters));
 
                 SimpleDateFormat inputFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
                 SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());

@@ -127,7 +127,7 @@ public class StockiestVisitFragment extends Fragment {
         }
 
         stkVst.setText(SharedPref.getStkCap(requireContext()));
-        totalStkTxt.setText("Total"+" "+SharedPref.getStkCap(requireContext()));
+        totalStkTxt.setText(getString(R.string.total)+" "+SharedPref.getStkCap(requireContext()));
         stockiestImage.setImageDrawable(getResources().getDrawable(R.drawable.map_stockist_img));
 
         if (dataListStk != null && !dataListStk.isEmpty()) {

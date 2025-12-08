@@ -132,7 +132,7 @@ public class DoctorFragment extends Fragment {
 
 
         doctorVst.setText(SharedPref.getDrCap(requireContext()));
-        totalDrTxt.setText("Total" + " " + SharedPref.getDrCap(requireContext()));
+        totalDrTxt.setText(getString(R.string.total) + " " + SharedPref.getDrCap(requireContext()));
         if (dataListDoc != null && !dataListDoc.isEmpty()) {
             if (position < dataListDoc.size()) {
                 VisitStatsModel model = dataListDoc.get(position);
