@@ -936,7 +936,6 @@
     <string name="add_condition">Ajouter une condition</string>
     <string name="qualification">Qualification</string>
     <string name="event_captured">Événement Capturé</string>
-
     <string name="checking_in_out">Enregistrement/Sortie</string>
     <string name="day_submit">Soumission du jour</string>
     <string name="outbox_data_calls_will_be_deleted_do_you_want_to_continue">Les appels des données de la boîte d\’envoi seront supprimés. Voulez-vous continuer ?</string>
@@ -944,8 +943,6 @@
     <string name="please_try_again_after">Veuillez réessayer après</string>
     <string name="check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login">
 La fonctionnalité d’enregistrement/Sortie est activée et la date a été modifiée, vous avez donc été déconnecté. Veuillez recommencer après la connexion.</string>
-
-
     <string name="summary">Résumé</string>
     <string name="session">Session de travail </string>
     <string name="tp_waiting_for_approval">Planification terminée / En attente d\'approbation</string>
@@ -953,7 +950,6 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="tp_approved">TP approuvé</string>
     <string name="tp_pending">TP planifié / Soumission en attente</string>
     <string name="session_save"> Sauver </string>
-
     <string name="Su"> Dim </string>
     <string name="Mo"> Lun</string>
     <string name="Tu"> Mar</string>
@@ -961,52 +957,18 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="Th"> Jeu</string>
     <string name="Fr"> Ven</string>
     <string name="Sa"> Sam</string>
-
-
-
-<!--    <string name="sunday">Dimanche</string>
+    <string name="sunday">Dimanche</string>
     <string name="monday">Lundi</string>
     <string name="tuesday">Mardi</string>
     <string name="wednesday">Mercredi</string>
     <string name="thursday">Jeudi</string>
     <string name="friday">Vendredi</string>
-    <string name="sat">Samedi</string>-->
+    <string name="sat">Samedi</string>
+    <string name="working">Travail</string>
+    <string name="eligible">Admissible : </string>
+    <string name="taken">Utilisé : </string>
 
 
 
 
-
-    <!--    <string name="inputs">Entrées</string>-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!--<string name="txt_tagging">Marquage</string>
-    <string name="txt_doctor">Médecin</string>
-    <string name="txt_chemist">Chimiste</string>
-    <string name="txt_stockist">Le plus trapu</string>
-    <string name="txt_undr">Médecin non répertorié</string>
-    <string name="txt_add_tag">Ajouter une étiquette</string>
-    <string name="search">French</string>
-    <string name="str_save_settings">Enregistrer les paramètres</string>
-    <string name="user_id">ID de l\'utilisateur</string>-->
 </resources>

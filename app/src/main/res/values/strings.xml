@@ -127,8 +127,8 @@
     <string name="emp_code">Emp Code</string>
     <string name="designation">Designation</string>
     <string name="leave_type">Leave Type</string>
-    <string name="from">From</string>
-    <string name="to">To</string>
+    <string name="from"> From </string>
+    <string name="to"> To </string>
     <string name="no_of_days">No of days</string>
     <string name="add_on_leave">Address on Leave</string>
     <string name="reason">Reason</string>
@@ -629,7 +629,7 @@
     <string name="Business">Business Qty</string>
     <string name="Business_value">Business Value</string>
     <string name="no_of_product">No of Products:</string>
-    <string name="Available">Available:</string>
+    <string name="available">Available:</string>
     <string name="enter_crct_email">Please Enter the correct email before saving</string>
     <string name="work_plan_updated_successfully">Work Plan updated successfully</string>
     <string name="work_day">Work Day</string>
@@ -956,13 +956,7 @@
     <string name="check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login">
 Check-in/Out is enabled and the date has been changed, so you have been logged out. Kindly start over after login.</string>
 
-
-
-
-
-
-
-    <string name = "sunday"> Sunday</string>
+    <string name ="sunday"> Sunday</string>
     <string name="monday"> Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
@@ -985,9 +979,8 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="Th"> Th</string>
     <string name="Fr"> Fr</string>
     <string name="Sa"> Sa</string>
-
-
-
-<!--    <string name="inputs">Inputs</string>-->
+    <string name="working"> Working</string>
+    <string name="eligible">Eligible : </string>
+    <string name="taken"> Taken : </string>
 
 </resources>

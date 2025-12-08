@@ -210,8 +210,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_category.setVisibility(View.VISIBLE);
 
-                holder.Res_category.setText("From: " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
-                holder.Res_rx.setText("To: " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                holder.Res_category.setText(context.getString(R.string.from)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                holder.Res_rx.setText(context.getString(R.string.to)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
             }
 
             //        input filter_add
@@ -220,8 +220,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     holder.Res_Table1.setVisibility(View.VISIBLE);
                     holder.Res_category.setVisibility(View.VISIBLE);
 
-                    holder.Res_category.setText("From: " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
-                    holder.Res_rx.setText("To: " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                    holder.Res_category.setText(context.getString(R.string.from)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                    holder.Res_rx.setText(context.getString(R.string.to)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
                 }
             }
             //workType
@@ -236,10 +236,10 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_Table2.setVisibility(View.VISIBLE);
                 holder.available.setVisibility(View.VISIBLE);
-                holder.Res_Name.setText("LeaveType :" + " " + app_adapt.getLeaveTypes());
-                holder.Res_category.setText("Eligible :" + " " + app_adapt.getEligible());
-                holder.available.setText("Available :" + " " + app_adapt.getAvailable());
-                holder.Res_rx.setText("Taken :" + " " + app_adapt.getTaken());
+                holder.Res_Name.setText(context.getString(R.string.leave_type) + " " + app_adapt.getLeaveTypes());
+                holder.Res_category.setText(context.getString(R.string.eligible) + " " + app_adapt.getEligible());
+                holder.available.setText(context.getString(R.string.available) + " " + app_adapt.getAvailable());
+                holder.Res_rx.setText(context.getString(R.string.taken)+ " " + app_adapt.getTaken());
             }
 
             holder.listcount.setText(count + " )");

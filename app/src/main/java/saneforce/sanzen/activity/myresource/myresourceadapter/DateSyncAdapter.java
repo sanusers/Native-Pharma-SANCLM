@@ -40,20 +40,20 @@ public class DateSyncAdapter extends RecyclerView.Adapter<DateSyncAdapter.ViewHo
          holder.textDate.setText(CommonUtilsMethods.convertDate(itemModel.getDate()));
          String statusName = "";
          int statusColor = R.color.black;
-         if (itemModel.getTbname().equals("leave")){
-             statusName = "Leave";
+         if (itemModel.getTbname().equals(R.string.leave)){
+             statusName = mContext.getString(R.string.leave);
              statusColor = R.color.red_60;
-         } else if (itemModel.getTbname().equals("missed")) {
-             statusName = "Missed Released";
+         } else if (itemModel.getTbname().equals(R.string.missed)) {
+             statusName = mContext.getString(R.string.missed_released);
              statusColor = R.color.Hilo_bay_60;
          } else if (itemModel.getTbname().equalsIgnoreCase("dcr") && itemModel.getFlg().equals("2")) {
-             statusName = "Re Entry";
+             statusName =  mContext.getString(R.string.re_entry);
              statusColor = R.color.pink_60;
          } else if (itemModel.getTbname().equalsIgnoreCase("dcr") && itemModel.getFlg().equals("3")) {
-             statusName = "Rejected";
+             statusName =  mContext.getString(R.string.rejected);
              statusColor = R.color.brown_60;
          } else if (itemModel.getTbname().equalsIgnoreCase("dcr") && itemModel.getFlg().equals("0")){
-             statusName = "Working";
+             statusName = mContext.getString(R.string.working);
              statusColor = R.color.yellow_45;
          }
          holder.textStatus.setText(statusName);

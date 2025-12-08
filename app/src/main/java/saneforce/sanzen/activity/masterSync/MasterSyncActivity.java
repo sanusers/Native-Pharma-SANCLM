@@ -536,15 +536,17 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         });
 
+        binding.activity.setText(SharedPref.getActivityCap(this));
+
         binding.activity.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.activity);
-                   // binding.childSync.setText("Sync " + SharedPref.getActivityCap(MasterSyncActivity.this));
-//                    String activityLabel = SharedPref.getActivityCap(MasterSyncActivity.this);
+                    binding.childSync.setText("Sync " + SharedPref.getActivityCap(MasterSyncActivity.this));
+                    String activityLabel = SharedPref.getActivityCap(MasterSyncActivity.this);
 //                    binding.childSync.setText(getString(R.string.sync_activity, activityLabel));
-                    String activityLabel = getString(R.string.activity);
+//                    String activityLabel = getString(R.string.activity);
                     binding.childSync.setText(getString(R.string.sync) + " " + activityLabel);
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(activityModelArray);
@@ -1399,9 +1401,9 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Activity
         activityModelArray.clear();
-        String activityLabel = context.getString(R.string.activity);
-        MasterSyncItemModel activity = new MasterSyncItemModel(activityLabel, Constants.ACTIVITY, "getdynactivity",  Constants.ACTIVITY, activityStatus, false);
-       // MasterSyncItemModel activity = new MasterSyncItemModel(Constants.ACTIVITY, Constants.ACTIVITY, "getdynactivity", Constants.ACTIVITY, activityStatus, false);
+//        String activityLabel = context.getString(R.string.activity);
+//        MasterSyncItemModel activity = new MasterSyncItemModel(activityLabel, Constants.ACTIVITY, "getdynactivity",  Constants.ACTIVITY, activityStatus, false);
+        MasterSyncItemModel activity = new MasterSyncItemModel(Constants.ACTIVITY, Constants.ACTIVITY, "getdynactivity", Constants.ACTIVITY, activityStatus, false);
         activityModelArray.add(activity);
 
         //Work Type

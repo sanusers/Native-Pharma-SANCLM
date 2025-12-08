@@ -269,6 +269,9 @@ private void SetUpLanguage() {
             case "es":
                 binding.languageBtn.setText("SPANISH");
                 break;
+            case "ru":
+                binding.languageBtn.setText("RUSSIAN");
+                break;
             case "th":
                 binding.languageBtn.setText("THAILAND");
                 break;
@@ -315,6 +318,10 @@ private void SetUpLanguage() {
                 selectedLanguage = "es";
                 break;
             }
+            case "RUSSIAN": {
+                selectedLanguage = "ru";
+                break;
+            }
             case "THAILAND": {
                 selectedLanguage = "th";
                 break;
@@ -339,7 +346,7 @@ private void SetUpLanguage() {
 }
 
     public void selectLanguage() {
-        final String[] Language = {"ENGLISH", "FRENCH", "PORTUGUESE", "BURMESE", "VIETNAMESE", "MANDARIN", "SPANISH"};
+        final String[] Language = {"ENGLISH", "FRENCH", "PORTUGUESE", "BURMESE", "VIETNAMESE", "MANDARIN", "SPANISH","RUSSIAN"};
         ArrayList<String> langList = new ArrayList<>();
         Collections.addAll(langList, Language);
 

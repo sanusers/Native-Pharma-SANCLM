@@ -22,11 +22,12 @@ public class WeekoffAdapter extends RecyclerView.Adapter<WeekoffAdapter.ViewHold
     ArrayList<FormsModelClass> resList;
     Context context;
 
-    String[] val={"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+    String[] val;
 
     public WeekoffAdapter(ArrayList<FormsModelClass> resList, Context context) {
         this.resList = resList;
         this.context = context;
+        val = new String[]{context.getString(R.string.sunday), context.getString(R.string.monday), context.getString(R.string.tuesday), context.getString(R.string.wednesday), context.getString(R.string.thursday), context.getString(R.string.friday), context.getString(R.string.sat)/*"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"*/};
     }
 
     @NonNull
