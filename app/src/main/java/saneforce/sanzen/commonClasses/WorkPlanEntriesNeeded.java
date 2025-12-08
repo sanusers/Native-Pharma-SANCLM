@@ -158,6 +158,45 @@ public class WorkPlanEntriesNeeded {
         }else Log.e("MyDayPlanEntry", "Date is not available to delete!");
     }
 
+    private static String normalizeArabicDigits(String input) {
+        if (input == null) return null;
+
+        StringBuilder sb = new StringBuilder(input.length());
+
+        for (int i = 0; i < input.length(); i++) {
+            char ch = input.charAt(i);
+
+            // Arabic-Indic digits (٠..٩)
+            if (ch >= '\u0660' && ch <= '\u0669') {
+                sb.append((char) ('0' + (ch - '\u0660')));
+            }
+
+            // Extended Arabic-Indic / Persian digits (۰..۹)
+            else if (ch >= '\u06F0' && ch <= '\u06F9') {
+                sb.append((char) ('0' + (ch - '\u06F0')));
+            }
+
+            // Burmese / Myanmar digits (၀..၉)
+            else if (ch >= '\u1040' && ch <= '\u1049') {
+                sb.append((char) ('0' + (ch - '\u1040')));
+            }
+
+            else {
+                sb.append(ch);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private static LocalDate parseLocalDate(String dateStr, DateTimeFormatter formatter) {
+        if (dateStr == null) return null;
+        String normalized = normalizeArabicDigits(dateStr).trim();
+        return LocalDate.parse(normalized, formatter);
+    }
+
+
+
     private static void setupMyDayPlanEntriesNeeded(Context context) {
         datesNeeded.clear();
         lockDays = 0;
@@ -572,8 +611,8 @@ public class WorkPlanEntriesNeeded {
 
             datesNeededDup = new TreeSet<>(datesNeeded);
             for (String dt : datesNeededDup) {
-                LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                LocalDate joiningDate = LocalDate.parse(SFDCR_Date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                LocalDate date = parseLocalDate(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                LocalDate joiningDate = parseLocalDate(SFDCR_Date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                 if(date.isBefore(joiningDate)) {
                     datesNeeded.remove(dt);
                 }else if(date.isEqual(joiningDate)) {

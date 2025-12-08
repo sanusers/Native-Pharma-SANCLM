@@ -877,7 +877,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 jsonObject.put("status", "0");
             }
-        } catch (JSONException ignored) {
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         btn_confirm.setOnClickListener(new SafeClickListener() {

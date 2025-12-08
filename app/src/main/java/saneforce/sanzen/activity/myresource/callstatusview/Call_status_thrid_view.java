@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingModelList;
@@ -62,7 +63,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
         masterDataDao=roomDB.masterDataDao();
         Calendar c = Calendar.getInstance();
 
-        SimpleDateFormat df = new SimpleDateFormat("M");
+        SimpleDateFormat df = new SimpleDateFormat("M", Locale.ENGLISH);
          previousMonth = df.format(c.getTime());
 
 //        System.out.println("Previous month in third MM format: " + previousMonth);

@@ -5,9 +5,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -48,6 +50,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -210,11 +213,59 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JoningDate = Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFTP_Date));
-        JoiningMonth = Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFTP_Date));
-        JoinYear = Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFTP_Date));
+        JoningDate = Integer.valueOf(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFTP_Date));
+        JoiningMonth = Integer.valueOf(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFTP_Date));
+        JoinYear = Integer.valueOf(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFTP_Date));
 
         //Initializing all the data array
+
+        try {
+            boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
+            if (isArabic) {
+                binding.listedDr.setGravity(Gravity.CENTER | Gravity.END);
+                binding.chemist.setGravity(Gravity.CENTER | Gravity.END);
+                binding.stockiest.setGravity(Gravity.CENTER | Gravity.END);
+                binding.unlistedDoctor.setGravity(Gravity.CENTER | Gravity.END);
+                binding.hospital.setGravity(Gravity.CENTER | Gravity.END);
+                binding.cip.setGravity(Gravity.CENTER | Gravity.END);
+                binding.cluster.setGravity(Gravity.CENTER | Gravity.END);
+                binding.input.setGravity(Gravity.CENTER | Gravity.END);
+                binding.product.setGravity(Gravity.CENTER | Gravity.END);
+                binding.leave.setGravity(Gravity.CENTER | Gravity.END);
+                binding.activity.setGravity(Gravity.CENTER | Gravity.END);
+                binding.tourPlan.setGravity(Gravity.CENTER | Gravity.END);
+                binding.workType.setGravity(Gravity.CENTER | Gravity.END);
+                binding.slide.setGravity(Gravity.CENTER | Gravity.END);
+                binding.subordinate.setGravity(Gravity.CENTER | Gravity.END);
+                binding.Other.setGravity(Gravity.CENTER | Gravity.END);
+                binding.Profile.setGravity(Gravity.CENTER | Gravity.END);
+                binding.setup.setGravity(Gravity.CENTER | Gravity.END);
+            } else {
+                binding.listedDr.setGravity(Gravity.CENTER | Gravity.START);
+                binding.chemist.setGravity(Gravity.CENTER | Gravity.START);
+                binding.stockiest.setGravity(Gravity.CENTER | Gravity.START);
+                binding.unlistedDoctor.setGravity(Gravity.CENTER | Gravity.START);
+                binding.hospital.setGravity(Gravity.CENTER | Gravity.START);
+                binding.cip.setGravity(Gravity.CENTER | Gravity.START);
+                binding.cluster.setGravity(Gravity.CENTER | Gravity.START);
+                binding.input.setGravity(Gravity.CENTER | Gravity.START);
+                binding.product.setGravity(Gravity.CENTER | Gravity.START);
+                binding.leave.setGravity(Gravity.CENTER | Gravity.START);
+                binding.dcr.setGravity(Gravity.CENTER | Gravity.START);
+                binding.activity.setGravity(Gravity.CENTER | Gravity.START);
+                binding.tourPlan.setGravity(Gravity.CENTER | Gravity.START);
+                binding.workType.setGravity(Gravity.CENTER | Gravity.START);
+                binding.slide.setGravity(Gravity.CENTER | Gravity.START);
+                binding.subordinate.setGravity(Gravity.CENTER | Gravity.START);
+                binding.Other.setGravity(Gravity.CENTER | Gravity.START);
+                binding.Profile.setGravity(Gravity.CENTER | Gravity.START);
+                binding.setup.setGravity(Gravity.CENTER | Gravity.START);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         uiInitialization();
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
@@ -380,9 +431,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             UtilityClass.hideKeyboard(MasterSyncActivity.this);
         });
 
-        binding.listedDr.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.listedDr.setOnClickListener(view -> {
+
                 if (!view.isSelected()) {
                     listItemClicked(binding.listedDr);
                     binding.childSync.setText("Sync " + SharedPref.getDrCap(MasterSyncActivity.this));
@@ -390,12 +440,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(doctorModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
+
         });
 
-        binding.chemist.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.chemist.setOnClickListener(view ->{
+
                 if (!view.isSelected()) {
                     listItemClicked(binding.chemist);
                     binding.childSync.setText("Sync " + SharedPref.getChmCap(MasterSyncActivity.this));
@@ -404,12 +453,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(chemistModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
+
         });
 
-        binding.stockiest.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.stockiest.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.stockiest);
                     binding.childSync.setText("Sync " + SharedPref.getStkCap(MasterSyncActivity.this));
@@ -418,12 +465,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(stockiestModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
-        binding.unlistedDoctor.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.unlistedDoctor.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.unlistedDoctor);
                     binding.childSync.setText("Sync " + SharedPref.getUNLcap(MasterSyncActivity.this));
@@ -432,12 +476,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(unlistedDrModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
-        binding.hospital.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.hospital.setOnClickListener(view ->{
                 if (!view.isSelected()) {
                     listItemClicked(binding.hospital);
                     binding.childSync.setText("Sync " + SharedPref.getHospCaption(MasterSyncActivity.this));
@@ -447,7 +488,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(hospitalModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
         binding.cip.setOnClickListener(new SafeClickListener() {
@@ -464,9 +504,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         });
 
-        binding.input.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.input.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.input);
                     //binding.childSync.setText("Sync Input");
@@ -476,12 +514,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(inputModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
-        binding.product.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.product.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.product);
                    // binding.childSync.setText("Sync Product");
@@ -491,12 +526,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(productModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
-        binding.cluster.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.cluster.setOnClickListener(view ->{
                 if (!view.isSelected()) {
                     listItemClicked(binding.cluster);
                     binding.childSync.setText("Sync " + SharedPref.getClusterCap(MasterSyncActivity.this));
@@ -505,12 +537,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(clusterModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
+
         });
 
-        binding.leave.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.leave.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.leave);
                    // binding.childSync.setText("Sync Leave");
@@ -520,12 +550,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(leaveModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
+
         });
 
-        binding.dcr.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.dcr.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.dcr);
                     binding.childSync.setText("Sync DCR");
@@ -533,14 +561,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(dcrModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
+
         });
 
         binding.activity.setText(SharedPref.getActivityCap(this));
 
-        binding.activity.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.activity.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.activity);
                     binding.childSync.setText("Sync " + SharedPref.getActivityCap(MasterSyncActivity.this));
@@ -552,12 +578,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(activityModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
+
         });
 
-        binding.workType.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.workType.setOnClickListener(view-> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.workType);
                    // binding.childSync.setText("Sync Work Type");
@@ -568,12 +592,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(workTypeModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
-        binding.tourPlan.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.tourPlan.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.tourPlan);
                     //binding.childSync.setText("Sync Tour Plan");
@@ -584,12 +605,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(tpModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
+
         });
 
-        binding.slide.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.slide.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.slide);
                     //binding.childSync.setText("Sync Slide");
@@ -600,12 +619,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(slideModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
-        binding.subordinate.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.subordinate.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.subordinate);
                    // binding.childSync.setText("Sync Subordinate");
@@ -616,11 +632,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(subordinateModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
-        binding.Other.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.Other.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.Other);
                     //binding.childSync.setText("Sync Other");
@@ -630,11 +643,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(otherModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
-        binding.Profile.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.Profile.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.Profile);
                    // binding.childSync.setText("Sync Profile");
@@ -644,12 +654,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(profileModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
-        binding.setup.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        binding.setup.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.setup);
                     //binding.childSync.setText("Sync Setup");
@@ -659,7 +666,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.addAll(setupModelArray);
                     populateAdapter(arrayForAdapter);
                 }
-            }
         });
 
         binding.childSync.setOnClickListener(new SafeClickListener() {
@@ -1858,15 +1864,15 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
                 case "gettp_onebuild": {
                     if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                        jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
-                        jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                        jsonObject.put("tp_month", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                        jsonObject.put("tp_year", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                         break;
                     }
                 }
                 case "getall_tp":
                 case "getall_multitpnew": {
-                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
-                    jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                    jsonObject.put("tp_month", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                    jsonObject.put("tp_year", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     break;
                 }
                 case "getquiz":
@@ -1874,13 +1880,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                 case "gettodaydcrmultihq":
                 case "gettodaydcr": {
                     if (HomeDashBoard.selectedDate != null) {
-                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
                     } else {
                         WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
                             @Override
                             public void datesFound() {
                                 try {
-                                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
+                                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -2510,7 +2516,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     private String monthYearFromDate(LocalDate date) {
         DateTimeFormatter formatter = null;
-        formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+        formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.ENGLISH);
 
         return date.format(formatter);
     }
@@ -2711,13 +2717,13 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     private void SaveLocalOnlineTable(LocalDate localDate, JSONArray listArray) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
             String monthYear = monthYearFromDate(localDate);
-            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
-            String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-            String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
+            String monthNo = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
+            String year = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
+            String monthName = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
             ArrayList<ModelClass> modelClasses = new ArrayList<>();
 
             ArrayList<String> holidayDateArray = new ArrayList<>();
@@ -2729,7 +2735,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             }
 
-            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
                 Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
@@ -2822,7 +2828,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                 }
 
-                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
 
@@ -2881,13 +2887,13 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     private void SaveLocalOnlineTableOne(LocalDate localDate, JSONArray listArray) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
             String monthYear = monthYearFromDate(localDate);
-            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
-            String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-            String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
+            String monthNo = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
+            String year = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
+            String monthName = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
             ArrayList<OneBuildModelClass> modelClasses = new ArrayList<>();
 
             ArrayList<String> holidayDateArray = new ArrayList<>();
@@ -2899,7 +2905,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             }
 
-            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<OneBuildModelClass> modelClassLocal = new ArrayList<>();
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
                 Type typeLocal = new TypeToken<ArrayList<OneBuildModelClass>>() {
@@ -2992,7 +2998,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                 }
 
-                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
 

@@ -292,6 +292,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        }
 
 //        mediaController = new MediaController(this);
 //        binding.videoView.setMediaController(mediaController);

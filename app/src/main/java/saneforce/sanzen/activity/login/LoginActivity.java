@@ -1,5 +1,10 @@
 package saneforce.sanzen.activity.login;
 
+import static android.view.View.TEXT_ALIGNMENT_TEXT_END;
+import static android.view.View.TEXT_ALIGNMENT_TEXT_START;
+import static android.view.View.TEXT_ALIGNMENT_VIEW_END;
+import static android.view.View.TEXT_ALIGNMENT_VIEW_START;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -19,6 +24,7 @@ import android.provider.Settings;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -118,6 +124,19 @@ public class LoginActivity extends AppCompatActivity {
         notificationDataDao = roomDB.notificationDataDao();
 
         uiInitialisation();
+        try {
+            boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
+
+            if (isArabic) {
+                binding.userId.setGravity(Gravity.CENTER | Gravity.END);
+                binding.userId.setTextDirection(View.TEXT_DIRECTION_LTR);
+                binding.userId.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            } else {
+                binding.userId.setGravity(Gravity.CENTER | Gravity.START);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
 
         int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
@@ -384,6 +403,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void uiInitialisation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        }
         String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
         String[] splitLogoUrl = logoUrl.split("/");
         getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);

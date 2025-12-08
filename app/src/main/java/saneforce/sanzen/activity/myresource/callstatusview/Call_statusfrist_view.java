@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Locale;
 
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityCallStatusfristViewBinding;
@@ -48,7 +49,7 @@ public class Call_statusfrist_view extends Fragment {
         // Go back one month
         c.add(Calendar.MONTH, -2);
         // Format the previous month in "MM" format
-        SimpleDateFormat df = new SimpleDateFormat("M");
+        SimpleDateFormat df = new SimpleDateFormat("M", Locale.ENGLISH);
          previousMonth = df.format(c.getTime());
 //         System.out.println("Previous month in MM format: " + previousMonth);
         callsview();

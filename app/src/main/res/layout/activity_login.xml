@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
+    android:layoutDirection="ltr"
     tools:context=".activity.login.LoginActivity">
 
     <LinearLayout
@@ -185,6 +186,24 @@
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
 
+                  <!--  <EditText
+                        android:id="@+id/userId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/edittext_stroke"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:gravity="start|center_vertical"
+                        android:hint="@string/enter_user_id"
+                        android:maxLines="1"
+                        android:padding="@dimen/_7sdp"
+                        android:singleLine="true"
+                        android:layoutDirection="ltr"
+                        android:textDirection="ltr"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/text_dark_65"
+                        android:textSize="@dimen/_6sdp"
+                        tools:ignore="RtlSymmetry,VisualLintBounds,VisualLintTextFieldSize"/>-->
                     <EditText
                         android:id="@+id/userId"
                         android:layout_width="match_parent"
@@ -192,15 +211,17 @@
                         android:layout_marginTop="@dimen/_4sdp"
                         android:background="@drawable/edittext_stroke"
                         android:fontFamily="@font/satoshi_medium"
-                        android:gravity="center|start"
                         android:hint="@string/enter_user_id"
                         android:maxLines="1"
                         android:padding="@dimen/_7sdp"
-                        android:singleLine="true"
+                        android:inputType="text"
                         android:textColor="@color/text_dark"
                         android:textColorHint="@color/text_dark_65"
                         android:textSize="@dimen/_6sdp"
-                        tools:ignore="SpUsage" />
+                        android:gravity="start|center_vertical"
+                        android:textAlignment="viewStart"
+                        android:layoutDirection="ltr"
+                        android:textDirection="ltr" />
 
                     <TextView
                         android:id="@+id/tagPassword"

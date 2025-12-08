@@ -59,11 +59,24 @@ public class TimeUtils {
     public static final String FORMAT_40 = "mm:ss";
     public static final String FORMAT_41 = "hh:mm a";
 
-    public static String getCurrentDateTime(String format) {
+   /* public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
         return simpleDateFormat.format(new Date(timestampMilliseconds));
-    }
+    }*/
+   public static String getCurrentDateTime(String format) {
+       long ts = System.currentTimeMillis();
+
+       Locale deviceLocale = Locale.getDefault();
+       boolean isArabic  = deviceLocale.getLanguage().equals("ar");
+       boolean isBurmese = deviceLocale.getLanguage().equals("my");
+
+       Locale outputLocale = (isArabic || isBurmese) ? Locale.ENGLISH : deviceLocale;
+
+       SimpleDateFormat sdf = new SimpleDateFormat(format, outputLocale);
+       return sdf.format(new Date(ts));
+   }
+
 
     public static String getCurrentDateTimeTp(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
@@ -71,13 +84,28 @@ public class TimeUtils {
         return simpleDateFormat.format(new Date(timestampMilliseconds));
     }
 
-    public static String GetCurrentTimeStamp(String mFormat) {
+   /* public static String GetCurrentTimeStamp(String mFormat) {
         String stringDate;
         long timestampMilliseconds = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mFormat, Locale.getDefault());
         stringDate = simpleDateFormat.format(new Date(timestampMilliseconds));
         return stringDate;
-    }
+    }*/
+   public static String GetCurrentTimeStamp(String mFormat) {
+
+       long ts = System.currentTimeMillis();
+
+       Locale deviceLocale = Locale.getDefault();
+       boolean isArabic  = deviceLocale.getLanguage().equals("ar");
+       boolean isBurmese = deviceLocale.getLanguage().equals("my");
+
+       // If Arabic OR Burmese → force English digits
+       Locale outputLocale = (isArabic || isBurmese) ? Locale.ENGLISH : deviceLocale;
+
+       SimpleDateFormat sdf = new SimpleDateFormat(mFormat, outputLocale);
+
+       return sdf.format(new Date(ts));
+   }
 
     public static long GetTimeStamp(String mDate, String mFormat) {
         Date date = null;
@@ -90,13 +118,32 @@ public class TimeUtils {
         return Objects.requireNonNull(date).getTime();
     }
 
-    public static String GetCurrentDateTime(String format) {
+/*    public static String GetCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
         String Str_Date = simpleDateFormat.format(new Date(timestampMilliseconds));
         Log.d(TAG, "GetCurrentDateTime: => " + Str_Date);
         return Str_Date;
+    }*/
+
+    public static String GetCurrentDateTime(String format) {
+        long timestampMilliseconds = System.currentTimeMillis();
+
+        Locale deviceLocale = Locale.getDefault();
+        boolean isArabic  = deviceLocale.getLanguage().equals("ar");
+        boolean isBurmese = deviceLocale.getLanguage().equals("my");
+
+        // If Arabic OR Burmese → force English digits
+        Locale outputLocale = (isArabic || isBurmese) ? Locale.ENGLISH : deviceLocale;
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, outputLocale);
+
+        String Str_Date = simpleDateFormat.format(new Date(timestampMilliseconds));
+        Log.d("TAG", "GetCurrentDateTime: => " + Str_Date);
+
+        return Str_Date;
     }
+
 
     public static String GetNextDateTime() {
         Calendar c = Calendar.getInstance();
@@ -108,7 +155,7 @@ public class TimeUtils {
         return Str_Date;
     }
 
-      public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+     /* public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
 
 
           SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.getDefault());
@@ -122,7 +169,61 @@ public class TimeUtils {
           }
 
           return outputDate;
-      }
+      }*/
+
+    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+
+        if (mDate == null) return null;
+
+        mDate = normalizeDigits(mDate);
+
+        Locale deviceLocale = Locale.getDefault();
+        boolean isArabic = deviceLocale.getLanguage().equals("ar");
+        boolean isBurmese = deviceLocale.getLanguage().equals("my");
+
+        // If Arabic OR Burmese → force English digits
+        Locale formatLocale = (isArabic || isBurmese) ? Locale.ENGLISH : deviceLocale;
+
+        try {
+            SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, formatLocale);
+            SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat, formatLocale);
+
+            Date convertedDate = currentDateFormat.parse(mDate);
+            return requiredDateFormat.format(convertedDate);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    private static String normalizeDigits(String input) {
+        if (input == null) return null;
+
+        StringBuilder sb = new StringBuilder(input.length());
+
+        for (int i = 0; i < input.length(); i++) {
+            char ch = input.charAt(i);
+
+            // Arabic-Indic (٠-٩)
+            if (ch >= '\u0660' && ch <= '\u0669') {
+                sb.append((char) ('0' + (ch - '\u0660')));
+            }
+            // Persian/Urdu (۰-۹)
+            else if (ch >= '\u06F0' && ch <= '\u06F9') {
+                sb.append((char) ('0' + (ch - '\u06F0')));
+            }
+            // Burmese/Myanmar (၀-၉)
+            else if (ch >= '\u1040' && ch <= '\u1049') {
+                sb.append((char) ('0' + (ch - '\u1040')));
+            }
+            else {
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
+    }
+
+
 
     public static String GetConvertedDateTP(String currentFormat, String requiredFormat, String mDate) {
 

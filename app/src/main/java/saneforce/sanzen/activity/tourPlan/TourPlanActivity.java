@@ -408,11 +408,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                 binding.progressBar.setVisibility(View.VISIBLE);
 
                                 LocalDate localDate1 = LocalDate.now();
-                                if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
+                                if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.minusMonths(1)))) {
                                     get3MonthRemoteTPData("previous");
-                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
+                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1))) {
                                     get3MonthRemoteTPData("current");
-                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
+                                } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.plusMonths(1)))) {
                                     get3MonthRemoteTPData("next");
                                 }
                             } else {
@@ -1681,31 +1681,31 @@ public class TourPlanActivity extends AppCompatActivity {
                 for (String str : holidayModeArray) {
                     switch (str) {
                         case "0": {
-                            weeklyOffDays.add(getString(R.string.sunday));
+                            weeklyOffDays.add("Sunday");
                             break;
                         }
                         case "1": {
-                            weeklyOffDays.add(getString(R.string.monday));
+                            weeklyOffDays.add("Monday");
                             break;
                         }
                         case "2": {
-                            weeklyOffDays.add(getString(R.string.tuesday));
+                            weeklyOffDays.add("Tuesday");
                             break;
                         }
                         case "3": {
-                            weeklyOffDays.add(getString(R.string.wednesday));
+                            weeklyOffDays.add("Wednesday");
                             break;
                         }
                         case "4": {
-                            weeklyOffDays.add(getString(R.string.thursday));
+                            weeklyOffDays.add("Thursday");
                             break;
                         }
                         case "5": {
-                            weeklyOffDays.add(getString(R.string.friday));
+                            weeklyOffDays.add("Friday");
                             break;
                         }
                         case "6": {
-                            weeklyOffDays.add(getString(R.string.sat));
+                            weeklyOffDays.add("Saturday");
                             break;
                         }
                     }
@@ -1803,31 +1803,31 @@ public class TourPlanActivity extends AppCompatActivity {
             for (String str : holidayModeArray) {
                 switch (str) {
                     case "0": {
-                        weeklyOffDays.add(getString(R.string.sunday));
+                        weeklyOffDays.add("Sunday");
                         break;
                     }
                     case "1": {
-                        weeklyOffDays.add(getString(R.string.monday));
+                        weeklyOffDays.add("Monday");
                         break;
                     }
                     case "2": {
-                        weeklyOffDays.add(getString(R.string.tuesday));
+                        weeklyOffDays.add("Tuesday");
                         break;
                     }
                     case "3": {
-                        weeklyOffDays.add(getString(R.string.wednesday));
+                        weeklyOffDays.add("Wednesday");
                         break;
                     }
                     case "4": {
-                        weeklyOffDays.add(getString(R.string.thursday));
+                        weeklyOffDays.add("Thursday");
                         break;
                     }
                     case "5": {
-                        weeklyOffDays.add(getString(R.string.friday));
+                        weeklyOffDays.add("Friday");
                         break;
                     }
                     case "6": {
-                        weeklyOffDays.add(getString(R.string.sat));
+                        weeklyOffDays.add("Saturday");
                         break;
                     }
                 }
@@ -3575,7 +3575,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                                     }.getType();
                                                     if (jsonArray.length() >= 0) {
                                                         arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                                                        sendTpForApprovalOneBuild(jbonj, arrayList, localDate.toString(), monthYearFromDate(localDate), statusOffline, isClickedName);
+                                                        sendTpForApprovalOneBuild(jbonj, arrayList, localDate.toString(), monthYearFromDateUI(localDate), statusOffline, isClickedName);
                                                     }
                                                 }
 
@@ -3854,7 +3854,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
     private void SaveLocalOnlineTableOneBuild(LocalDate localDate, JSONArray
             listArray, ArrayList<OneBuildModelClass> dayWiseSaveTp) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         try { // check this method
             dayWiseSaveTp = new ArrayList<>();
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);

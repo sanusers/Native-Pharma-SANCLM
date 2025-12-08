@@ -66,7 +66,7 @@
         android:preserveLegacyExternalStorage="true"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/zen_logo"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
@@ -278,6 +278,7 @@
             android:name=".activity.login.LoginActivity"
             android:exported="false"
             android:screenOrientation="landscape"
+            android:supportsRtl="false"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.setting.SettingsActivity"

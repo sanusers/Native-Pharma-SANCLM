@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.masterSync;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -48,6 +50,21 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         String count = String.valueOf(data.getCount());
         Log.v("masterCheck", "---" + data.getName());
         holder.name.setText(name);
+
+        try {
+            boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
+
+            if (isArabic) {
+                holder.name.setGravity(Gravity.CENTER | Gravity.END);
+            } else {
+                holder.name.setGravity(Gravity.CENTER | Gravity.START);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*holder.name.setTextDirection(View.TEXT_DIRECTION_LTR);*/
+        /*holder.name.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);*/
         holder.count.setText(count);
 
         if (count.equals("-1")) {
