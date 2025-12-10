@@ -516,8 +516,11 @@ public class SharedPref {
 
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
+
     public static final String STATUS_CHECKED_DATE = "Status_checked_date";
     public static final String LOGOUT_REASON = "Logout_reason";
+
+    public static final String LEAVE_ATTACHMENT_NEED = "Leave_attachment_need";
 
     public static SharedPreferences.Editor editor;
 
@@ -886,6 +889,7 @@ public class SharedPref {
             editor.putString(TP_MGR_NAME,jsonObject.optString("ReportingTPMgrName"));
             editor.putString(LEV_MGR_CODE,jsonObject.optString("ReportingLeaveMgrCode"));
             editor.putString(LEV_MGR_NAME,jsonObject.optString("ReportingLeaveMgrName"));
+            editor.putString(LEAVE_ATTACHMENT_NEED,jsonObject.optString("leave_attachment_need"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3274,6 +3278,10 @@ public class SharedPref {
 
     public static String getLogoutReason(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGOUT_REASON, "");
+    }
+
+    public static String getLeaveAttachmentNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LEAVE_ATTACHMENT_NEED, "1");
     }
 
 }
