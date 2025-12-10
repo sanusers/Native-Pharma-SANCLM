@@ -12,7 +12,8 @@
         android:layout_marginStart="@dimen/_4sdp"
         android:layout_gravity="right"
         android:layout_marginEnd="@dimen/_4sdp"
-        android:paddingBottom="@dimen/_4sdp">
+        android:paddingBottom="@dimen/_4sdp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="@dimen/_50sdp"

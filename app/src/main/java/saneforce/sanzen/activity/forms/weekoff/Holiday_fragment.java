@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -57,62 +59,138 @@ public class Holiday_fragment extends Fragment {
         return view;
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void holiday_avalabledetails() {
-        try {
+//    @SuppressLint("NotifyDataSetChanged")
+//    public void holiday_avalabledetails() {
+//        try {
+//
+//            String dub_colrline = "", month_name1 = "", monthname = "", colorline = "", backgrd_clr = "", holiy = "";
+//            int datapos = 0, datapos1 = 0;
+//            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
+//
+//            if (jsonstock.length() > 0) {
+//                weeklist.setVisibility(View.VISIBLE);
+//                constraintNoData.setVisibility(View.GONE);
+//                for (int i = 0; i < jsonstock.length(); i++) {
+//
+//                    JSONObject jsonObject = jsonstock.getJSONObject(i);
+//                    String Holiday_Date = (jsonObject.getString("Holiday_Date"));
+//
+//                    if (!month_name1.equals(jsonObject.getString("month_name"))) {
+//
+//                        monthname = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_25, jsonObject.getString("Holiday_Date")));
+//                        current_year = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_26, jsonObject.getString("Holiday_Date")));
+//                        month_name1 = (jsonObject.getString("month_name"));
+//                        datapos++;
+//                        dub_colrline = colr[datapos];
+//
+//                        colorline = colr[datapos];
+//                        backgrd_clr = backcolr[datapos];
+//                    } else {
+//                        colorline = colr[datapos];
+//                        backgrd_clr = backcolr[datapos];
+//                        dub_colrline = "#FFFFFF";
+//                        monthname = "";
+//                    }
+//                    if (holiy.equals("")) {
+//                        holiy = current_year;
+//                        holy_year.setText(current_year);
+//                    }
+//
+//                    String Hday = (jsonObject.getString("Hday"));
+//                    String Holiday_Name = (jsonObject.getString("Holiday_Name"));
+//                    String day_name = (jsonObject.getString("day_name"));
+//
+//                    FormsModelClass list = new FormsModelClass(monthname, Hday, Holiday_Name, day_name, Holiday_Date, colorline, dub_colrline, backgrd_clr);
+//                    listvalue.add(list);
+//
+//                    holidayadapter = new HolidayAdapter(listvalue, getActivity());
+//                    weeklist.setAdapter(holidayadapter);
+//                    weeklist.setLayoutManager(new LinearLayoutManager(getActivity()));
+//                    holidayadapter.notifyDataSetChanged();
+//                }
+//            } else {
+//                weeklist.setVisibility(View.GONE);
+//                constraintNoData.setVisibility(View.VISIBLE);
+//                holy_year.setText(CommonUtilsMethods.getCurrentInstance("yyyy"));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-            String dub_colrline = "", month_name1 = "", monthname = "", colorline = "", backgrd_clr = "", holiy = "";
-            int datapos = 0, datapos1 = 0;
-            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
 
-            if (jsonstock.length() > 0) {
-                weeklist.setVisibility(View.VISIBLE);
-                constraintNoData.setVisibility(View.GONE);
-                for (int i = 0; i < jsonstock.length(); i++) {
+@SuppressLint("NotifyDataSetChanged")
+public void holiday_avalabledetails() {
+    try {
+        listvalue.clear();
 
-                    JSONObject jsonObject = jsonstock.getJSONObject(i);
-                    String Holiday_Date = (jsonObject.getString("Holiday_Date"));
+        JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
 
-                    if (!month_name1.equals(jsonObject.getString("month_name"))) {
+        if (jsonstock.length() > 0) {
+            weeklist.setVisibility(View.VISIBLE);
+            constraintNoData.setVisibility(View.GONE);
+            Map<String, ArrayList<JSONObject>> yearWiseMap = new LinkedHashMap<>();
+            for (int i = 0; i < jsonstock.length(); i++) {
+                JSONObject jsonObject = jsonstock.getJSONObject(i);
+                String holidayDate = jsonObject.getString("Holiday_Date");
+                String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_26, holidayDate);
 
-                        monthname = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_25, jsonObject.getString("Holiday_Date")));
-                        current_year = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_26, jsonObject.getString("Holiday_Date")));
-                        month_name1 = (jsonObject.getString("month_name"));
-                        datapos++;
-                        dub_colrline = colr[datapos];
-
-                        colorline = colr[datapos];
-                        backgrd_clr = backcolr[datapos];
-                    } else {
-                        colorline = colr[datapos];
-                        backgrd_clr = backcolr[datapos];
-                        dub_colrline = "#FFFFFF";
-                        monthname = "";
-                    }
-                    if (holiy.equals("")) {
-                        holiy = current_year;
-                        holy_year.setText(current_year);
-                    }
-
-                    String Hday = (jsonObject.getString("Hday"));
-                    String Holiday_Name = (jsonObject.getString("Holiday_Name"));
-                    String day_name = (jsonObject.getString("day_name"));
-
-                    FormsModelClass list = new FormsModelClass(monthname, Hday, Holiday_Name, day_name, Holiday_Date, colorline, dub_colrline, backgrd_clr);
-                    listvalue.add(list);
-
-                    holidayadapter = new HolidayAdapter(listvalue, getActivity());
-                    weeklist.setAdapter(holidayadapter);
-                    weeklist.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    holidayadapter.notifyDataSetChanged();
+                if (!yearWiseMap.containsKey(year)) {
+                    yearWiseMap.put(year, new ArrayList<>());
                 }
-            } else {
-                weeklist.setVisibility(View.GONE);
-                constraintNoData.setVisibility(View.VISIBLE);
-                holy_year.setText(CommonUtilsMethods.getCurrentInstance("yyyy"));
+                yearWiseMap.get(year).add(jsonObject);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            // Set the top year text to the first year
+            if (!yearWiseMap.isEmpty()) {
+                String firstYear = yearWiseMap.keySet().iterator().next();
+                holy_year.setText(firstYear);
+            }
+            int globalColorIndex = 0;
+            for (Map.Entry<String, ArrayList<JSONObject>> yearEntry : yearWiseMap.entrySet()) {
+                String year = yearEntry.getKey();
+                ArrayList<JSONObject> yearHolidays = yearEntry.getValue();
+                listvalue.add(new FormsModelClass("YEAR_HEADER:" + year, "", "", "", "", "#000000", "#000000", "#FFFFFF"));
+                String previousMonth = "";
+                int monthColorIndex = globalColorIndex;
+
+
+                for (int i = 0; i < yearHolidays.size(); i++) {
+                    JSONObject jsonObject = yearHolidays.get(i);
+                    String holidayDate = jsonObject.getString("Holiday_Date");
+                    String monthName = jsonObject.getString("month_name");
+                    String hday = jsonObject.getString("Hday");
+                    String holidayName = jsonObject.getString("Holiday_Name");
+                    String dayName = jsonObject.getString("day_name");
+
+                    if (!previousMonth.equals(monthName)) {
+                        previousMonth = monthName;
+                        monthColorIndex = (monthColorIndex + 1) % colr.length;
+                        globalColorIndex = monthColorIndex;
+                        FormsModelClass holidayItem = new FormsModelClass(monthName, hday, holidayName, dayName, holidayDate, colr[monthColorIndex], colr[monthColorIndex], backcolr[monthColorIndex]);
+                        listvalue.add(holidayItem);
+                    } else {
+                        FormsModelClass holidayItem = new FormsModelClass("", hday, holidayName, dayName, holidayDate, colr[monthColorIndex], "#FFFFFF", backcolr[monthColorIndex]);
+                        listvalue.add(holidayItem);
+                    }
+                }
+
+
+                globalColorIndex = 0;
+            }
+
+            // Setup adapter
+            holidayadapter = new HolidayAdapter(listvalue, getActivity());
+            weeklist.setAdapter(holidayadapter);
+            weeklist.setLayoutManager(new LinearLayoutManager(getActivity()));
+            holidayadapter.notifyDataSetChanged();
+
+        } else {
+            weeklist.setVisibility(View.GONE);
+            constraintNoData.setVisibility(View.VISIBLE);
+            holy_year.setText(CommonUtilsMethods.getCurrentInstance("yyyy"));
         }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 }
+    }
