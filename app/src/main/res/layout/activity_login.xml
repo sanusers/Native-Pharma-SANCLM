@@ -135,7 +135,6 @@
                         </ImageView>
                     </LinearLayout>
 
-
                     <ImageView
                         android:id="@+id/logoImg"
                         android:layout_width="wrap_content"
@@ -144,6 +143,36 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:background="@color/white"
                         android:src="@drawable/zen_logo" />
+
+                    <LinearLayout
+                        android:id="@+id/logout_reason_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@color/red_10"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5sdp"
+                        android:visibility="gone">
+
+                        <View
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="match_parent"
+                            android:background="@color/pink" />
+
+                        <TextView
+                            android:id="@+id/logout_reason_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_marginTop="@dimen/_1sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="@string/reason"
+                            android:textColor="@color/red_60"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tagUserId"

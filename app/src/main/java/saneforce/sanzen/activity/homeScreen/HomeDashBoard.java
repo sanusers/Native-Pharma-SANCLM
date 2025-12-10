@@ -7,6 +7,7 @@ import static saneforce.sanzen.commonClasses.Constants.CONNECTIVITY_ACTION;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
@@ -1012,6 +1013,137 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
+
+        checkUserStatus();
+    }
+
+    private void checkUserStatus() {
+        String lastCheckedDate = SharedPref.getStatusCheckedDate(HomeDashBoard.this);
+        if (lastCheckedDate.isEmpty() || !LocalDate.now().toString().equals(lastCheckedDate)) {
+            JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
+            try {
+                @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+                jj.put("tableName", "getuserstatus");
+                jj.put("sfcode", SharedPref.getSfCode(this));
+                jj.put("division_code", SharedPref.getDivisionCode(this));
+                jj.put("Rsf", SharedPref.getHqCode(this));
+                jj.put("Username", SharedPref.getLoginId(this));
+                jj.put("Password", SharedPref.getLoginUserPwd(this));
+                jj.put("DeviceID", deviceId);
+
+                Log.d("user status", String.valueOf(jj));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "table/dcrmasterdata");
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(HomeDashBoard.this), mapString, jj.toString());
+
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if (response.isSuccessful()) {
+                        Log.i("User status", "onResponse: " + response.body().toString());
+                        SharedPref.setStatusCheckedDate(HomeDashBoard.this, LocalDate.now().toString());
+                        try {
+                            JSONArray jsonArray = new JSONArray();
+                            JSONObject jsonObject = new JSONObject();
+                            if (response.body().isJsonObject()) {
+                                jsonObject = new JSONObject(response.body().toString());
+                                jsonArray.put(jsonObject);
+                            } else if (response.body().isJsonArray()) {
+                                jsonArray = new JSONArray(response.body().toString());
+                            }
+                            jsonObject = jsonArray.optJSONObject(0);
+                            String success = jsonObject.optString("success", "true"), key = jsonObject.optString("key", "");
+                            if (success.equalsIgnoreCase("false") || !key.isEmpty()) {
+                                String reason = "";
+                                switch (key) {
+                                    case "PC": {
+                                        reason = getString(R.string.str_password_changed);
+                                        break;
+                                    }
+                                    case "DC": {
+                                        reason = getString(R.string.str_device_id_updated);
+                                        break;
+                                    }
+                                    case "AD": {
+                                        reason = getString(R.string.str_access_denied);
+                                        break;
+                                    }
+                                    case "V": {
+                                        reason = getString(R.string.str_user_status_vacant);
+                                        break;
+                                    }
+                                    case "H": {
+                                        reason = getString(R.string.str_user_status_hold);
+                                        break;
+                                    }
+                                    case "B": {
+                                        reason = getString(R.string.str_user_status_blocked);
+                                        break;
+                                    }
+                                    case "D": {
+                                        reason = getString(R.string.str_device_not_valid);
+                                        break;
+                                    }
+//                                    default: {
+//                                        reason = "Kindly logout and login!";
+//                                        break;
+//                                    }
+                                }
+                                if (!reason.isEmpty()) {
+                                    showStatusDialog(reason);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+    }
+
+    private void showStatusDialog(String reason) {
+        Dialog dialog = new Dialog(HomeDashBoard.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setType(WindowManager.LayoutParams.TYPE_APPLICATION_PANEL);
+            window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+            window.setGravity(Gravity.CENTER);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        dialog.show();
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        TextView content = dialog.findViewById(R.id.ed_alert_msg);
+        content.setText(reason);
+        content.setHint("");
+        btn_yes.setText(getString(R.string.logout));
+        btn_no.setVisibility(View.GONE);
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+                SharedPref.setLogoutReason(HomeDashBoard.this, reason);
+                SharedPref.saveLoginState(HomeDashBoard.this, false);
+                SharedPref.saveLoginPwd(HomeDashBoard.this, "");
+                Intent intent = new Intent(HomeDashBoard.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void showNotificationPopup() {
@@ -1257,7 +1389,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             a.printStackTrace();
         }
 
-
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
             ArrayList<String> days = new ArrayList<>(daysInMonth(date));
@@ -1456,10 +1587,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-
     @SuppressLint({"MissingInflatedId", "WrongConstant", "UseCompatLoadingForDrawables"})
     public void changePassword(String title) {
-
         //  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.FullScreencall();
@@ -1740,16 +1869,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
     }
 
-
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.refresh_location))) {
             setGpsTrack();
         }
@@ -2783,7 +2908,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
     }
 
-
     public void CheckingManatoryApprovals() {
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
             try {
@@ -2792,10 +2916,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
                 jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
                 jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
+                jsonGetCount.put("dcr_approval_need", SharedPref.getDcrApprovalNeed(this));
                 jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
                 jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
                 jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
                 jsonGetCount.put("STP_Need", SharedPref.getStpNeed(this));
+                jsonGetCount.put("OneBuild_Need", SharedPref.getOneBuild(this));
 
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "get/approvals");

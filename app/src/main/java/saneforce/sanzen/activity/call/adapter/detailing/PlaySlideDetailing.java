@@ -84,7 +84,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
     boolean playBtnClicked = false;
     MediaController mediaController;
     double progress = 0;
-    int SelectedPos;
+    int SelectedPos = 0;
     int scribblePos;
     int val = 0;
     CommonSharedPreference mCommonSharedPreference;
@@ -538,7 +538,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         binding.recViewHead.setLayoutManager(layoutManager11);
         binding.recViewHead.setAdapter(bottomPreviewDetailedHeadAdapter);
 
-        if (arrayList.size() > 0) {
+        if (arrayList != null && !arrayList.isEmpty()) {
             switch (SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName())) {
                 case "pdf":
                 case "mp4":
@@ -559,16 +559,33 @@ public class PlaySlideDetailing extends AppCompatActivity {
     }
 
     public void populateViewPagerAdapter() {
+        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
+            binding.playBtn.setVisibility(View.GONE);
+        } else {
+            if (arrayList != null && !arrayList.isEmpty()) {
+                switch (SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName())) {
+                    case "pdf":
+                    case "mp4":
+                    case "avi":
+                    case "zip":
+                    case "htm":
+                    case "html": {
+                        binding.playBtn.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                    default: {
+                        binding.playBtn.setVisibility(View.GONE);
+                    }
+                }
+            } else {
+                binding.playBtn.setVisibility(View.VISIBLE);
+            }
+        }
         itemsPagerAdapter = new PlaySlideDetailedAdapter(this, arrayList);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         binding.viewPager.setCurrentItem(SelectedPos);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
-        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
-            binding.playBtn.setVisibility(View.GONE);
-        } else {
-            binding.playBtn.setVisibility(View.VISIBLE);
-        }
-        itemsPagerAdapter.autoPlaySlide(0, 1);
+        itemsPagerAdapter.autoPlaySlide(SelectedPos, 1);
     }
 
     public void populateBottomViewAdapter() {
