@@ -432,16 +432,20 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         if (SharedPref.getGeoChk(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
             CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
-            locationCheck();
+//            locationCheck();
         }
     }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        if (SharedPref.getGeoChk(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+//            CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
+//            locationCheck();
+//        }
+//    }
 
     private void locationCheck() {
         if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {

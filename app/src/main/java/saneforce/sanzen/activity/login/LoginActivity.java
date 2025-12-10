@@ -601,8 +601,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void
-    process(JSONObject jsonObject) {
+    public void process(JSONObject jsonObject) {
         try {
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             notificationDataDao.getNotificationBySyncStatus(5).forEach(data -> {
