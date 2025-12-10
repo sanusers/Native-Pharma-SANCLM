@@ -516,6 +516,8 @@ public class SharedPref {
 
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
+    public static final String STATUS_CHECKED_DATE = "Status_checked_date";
+    public static final String LOGOUT_REASON = "Logout_reason";
 
     public static SharedPreferences.Editor editor;
 
@@ -3252,6 +3254,26 @@ public class SharedPref {
 
     public static String getSlideWiseDetailingNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
+    }
+
+    public static void setStatusCheckedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STATUS_CHECKED_DATE, date).apply();
+    }
+
+    public static String getStatusCheckedDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STATUS_CHECKED_DATE, "");
+    }
+
+    public static void setLogoutReason(Context context, String reason) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGOUT_REASON, reason).apply();
+    }
+
+    public static String getLogoutReason(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGOUT_REASON, "");
     }
 
 }

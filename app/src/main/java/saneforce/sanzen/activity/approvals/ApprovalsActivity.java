@@ -144,17 +144,16 @@ public class ApprovalsActivity extends AppCompatActivity {
             jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
             jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
             jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
+            jsonGetCount.put("dcr_approval_need", SharedPref.getDcrApprovalNeed(this));
             jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
             jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
             jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
             jsonGetCount.put("STP_Need", SharedPref.getStpNeed(this));
             jsonGetCount.put("OneBuild_Need", SharedPref.getOneBuild(this));
 
-
             Log.v("json_get_full_dcr_list", jsonGetCount.toString());
-
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         Map<String, String> mapString = new HashMap<>();

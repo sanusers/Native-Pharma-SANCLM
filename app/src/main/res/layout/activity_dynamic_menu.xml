@@ -11,8 +11,8 @@
         android:id="@+id/appBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
@@ -48,13 +48,15 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
                 tools:ignore="SpUsage" />
+
             <ImageView
                 android:id="@+id/reportSync"
                 android:layout_width="@dimen/_15sdp"
                 android:layout_height="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_gravity="end|center_vertical"
                 android:background="@drawable/sync_img"
-                android:layout_marginStart="@dimen/_400sdp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -64,14 +66,15 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBar"
-        app:layout_constraintBottom_toBottomOf="parent" >
-     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/menu_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/menu_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <GridView
             android:id="@+id/gridView"
@@ -83,27 +86,27 @@
             android:padding="10dp"
             android:stretchMode="columnWidth"
             android:verticalSpacing="10dp" />
+
         <TextView
             android:id="@+id/noReportFoundTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="No Reports Found!"
-            android:textSize="@dimen/_10sdp"
-            android:textColor="@color/text_dark"
-            android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_3sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="No Reports Found!"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/_10sdp"
             android:visibility="gone"
-            tools:ignore="SpUsage"/>
+            tools:ignore="SpUsage" />
 
         <ProgressBar
             android:id="@+id/dynamic_prog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </FrameLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
