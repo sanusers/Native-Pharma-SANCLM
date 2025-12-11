@@ -1,6 +1,6 @@
 package saneforce.sanzen.activity.tourPlan.overview.model;
 
-public abstract class MasterModel {
+public class MasterModel {
     private final String name, code;
 
     public MasterModel(String code, String name) {

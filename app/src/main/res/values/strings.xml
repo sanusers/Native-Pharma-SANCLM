@@ -669,11 +669,13 @@
     <string name="not_planned">Not planned</string>
     <string name="plan_overview">Plan Overview</string>
     <string name="tour_plan_overview">Tour Plan Overview</string>
-    <string name="total_planned_days">"Total Planned Days : "</string>
+    <string name="total_planned_days">"Total Planned Days: "</string>
     <string name="os">OS</string>
     <string name="ex">EX</string>
     <string name="os_ex">OS-EX</string>
     <string name="planned_">Planned: </string>
     <string name="total_">Total: </string>
     <string name="planned_days">"Planned Days: "</string>
+    <string name="work_category_in_days">Work Category (In days)</string>
+    <string name="work_type_in_days">Work Type (In days)</string>
 </resources>

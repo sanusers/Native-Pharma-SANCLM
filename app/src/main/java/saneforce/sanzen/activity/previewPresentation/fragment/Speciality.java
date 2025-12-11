@@ -208,6 +208,7 @@ public class Speciality extends Fragment {
             SlideSpecialityList.clear();
             brandCodeList.clear();
             JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+            JSONArray specSlide = masterDataDao.getMasterDataTableOrNew(Constants.SPL_SLIDE).getMasterSyncDataJsonArray();
             JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
             LinkedHashMap<String, LinkedHashMap<String, String>> brandToProductWithPriority = new LinkedHashMap<>();
             HashMap<String, LinkedHashMap<String, JSONObject>> brandToProducts = new HashMap<>();
@@ -339,7 +340,7 @@ public class Speciality extends Fragment {
                 previewAdapter = new PreviewAdapter(context, SlideSpecialityList);
                 specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
                 specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
+//                Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
             } else {
                 specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.constraintSortFilter.setVisibility(View.GONE);
