@@ -1238,11 +1238,11 @@ public class MasterSyncActivity extends AppCompatActivity {
 //                MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
             MasterSyncItemModel dr_mas = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
             MasterSyncItemModel geo = new MasterSyncItemModel(SharedPref.getDrCap(this) + " Geo", Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
-            MasterSyncItemModel spl = new MasterSyncItemModel(getString(R.string.speciality)/*Constants.SPECIALITY*/, Constants.DOCTOR_MAS, "getspeciality", getString(R.string.speciality)/*Constants.SPECIALITY*/, specialityStatus, false);
-            MasterSyncItemModel ql = new MasterSyncItemModel(getString(R.string.qualification), Constants.DOCTOR_MAS, "getquali",getString(R.string.qualification) /*Constants.QUALIFICATION*/, qualificationStatus, false);
-            MasterSyncItemModel cat = new MasterSyncItemModel(getString(R.string.category), Constants.DOCTOR_MAS, "getcategorys",getString(R.string.category) /*Constants.CATEGORY*/, categoryStatus, false);
+            MasterSyncItemModel spl = new MasterSyncItemModel(getString(R.string.speciality)/*Constants.SPECIALITY*/, Constants.DOCTOR_MAS, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
+            MasterSyncItemModel ql = new MasterSyncItemModel(getString(R.string.qualification), Constants.DOCTOR_MAS, "getquali",Constants.QUALIFICATION, qualificationStatus, false);
+            MasterSyncItemModel cat = new MasterSyncItemModel(getString(R.string.category), Constants.DOCTOR_MAS, "getcategorys", Constants.CATEGORY, categoryStatus, false);
 //                    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
-            MasterSyncItemModel clas = new MasterSyncItemModel(getString(R.string.clases), Constants.DOCTOR_MAS, "getclass", getString(R.string.clases)/*Constants.CLASS*/, classStatus, false);
+            MasterSyncItemModel clas = new MasterSyncItemModel(getString(R.string.clases), Constants.DOCTOR_MAS, "getclass", Constants.CLASS, classStatus, false);
 //                doctorModelArray.add(doctorModel);
             doctorModelArray.add(dr_mas);
             doctorModelArray.add(geo);

@@ -2146,7 +2146,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     Log.e("MergeError", "Error merging key " + key + " for code " + code + ": " + e.getMessage());
                                 }
                             }
-                        } //10114520@Rv#02
+                        }
                     }
 
                     JSONArray jsonArray = new JSONArray(docObj.values());
@@ -2168,6 +2168,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
                             }
                         } else {
+                            Log.d(TAG, "AddTaggedDetails: "+"No Addrs Found");
                         }
                     }
                 } catch (Exception e) {
@@ -2183,7 +2184,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (!jsonObject.getString("lat").trim().isEmpty() || !jsonObject.getString("long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
                                 list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "2", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("img_name")*//*, jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")*//*));
-                            } else {
+                            }
+                             else {
                                 if (jsonObject.getString("lat").equalsIgnoreCase("0.0") || jsonObject.getString("long").equalsIgnoreCase("0.0")) {
                                     cust_address = "No Address Found";
                                 } else {
@@ -2418,9 +2420,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             for (int i = 0; i < list.size(); i++) {
                 mm = list.get(i);
-                LatLng latLng = new LatLng(parseDouble(mm.getLat()), parseDouble(mm.getLng()));
+                LatLng latLng = new LatLng(parseDouble(mm.getLat().replace(",",".")), parseDouble(mm.getLng().replace(",",".")));
                 float[] distance = new float[2];
-                Location.distanceBetween(parseDouble(mm.getLat()), parseDouble(mm.getLng()), lat, lng, distance);
+                Location.distanceBetween(parseDouble(mm.getLat().replace(",",".")), parseDouble(mm.getLng().replace(",",".")), lat, lng, distance);
 
                 if (distance[0] < limitKm * 1000.0) {
                     taggedMapListArrayList.add(new TaggedMapList(mm.getName(), mm.getType(), mm.getAddress(), mm.getCode(), false, mm.getLat(), mm.getLng(), mm.getImageName(), getDistanceMeters(lat, lng, parseDouble(mm.getLat()), parseDouble(mm.getLng()))));
