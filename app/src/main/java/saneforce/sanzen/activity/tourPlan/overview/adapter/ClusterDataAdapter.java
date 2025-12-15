@@ -18,14 +18,20 @@ public class ClusterDataAdapter extends RecyclerView.Adapter<ClusterDataAdapter.
     private Context context;
     private List<ClusterWiseModel> clusterWiseModelList;
     private boolean isDr = false;
+    private ClusterClickListener clusterClickListener;
+
+    public interface ClusterClickListener {
+        void onClusterClick(boolean isDr, ClusterWiseModel clusterWiseModel);
+    }
 
     public ClusterDataAdapter() {
     }
 
-    public ClusterDataAdapter(Context context, List<ClusterWiseModel> clusterWiseModelList, boolean isDr) {
+    public ClusterDataAdapter(Context context, List<ClusterWiseModel> clusterWiseModelList, boolean isDr, ClusterClickListener clusterClickListener) {
         this.context = context;
         this.clusterWiseModelList = clusterWiseModelList;
         this.isDr = isDr;
+        this.clusterClickListener = clusterClickListener;
     }
 
     @NonNull
@@ -48,6 +54,9 @@ public class ClusterDataAdapter extends RecyclerView.Adapter<ClusterDataAdapter.
         } else {
             holder.planned.setTextColor(context.getColor(R.color.blue_60));
         }
+        holder.itemView.setOnClickListener(view -> {
+            clusterClickListener.onClusterClick(isDr, clusterWiseModel);
+        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.tourPlan.overview.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +12,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.tourPlan.overview.TourPlanOverviewActivity;
 import saneforce.sanzen.activity.tourPlan.overview.model.ContentModel;
 import saneforce.sanzen.activity.tourPlan.overview.model.HeaderModel;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_CONTENT = 1;
-    List<Object> data;
+    private Context context;
+    private List<Object> data;
+    private TourPlanOverviewActivity.NavType navType;
 
-    public SideAdapter(List<Object> data) {
+    public SideAdapter(Context context, List<Object> data, TourPlanOverviewActivity.NavType navType) {
+        this.context = context;
         this.data = data;
+        this.navType = navType;
     }
 
     @Override
@@ -47,10 +54,14 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Object obj = data.get(position);
-
         if (holder instanceof HeaderVH) {
             HeaderModel header = (HeaderModel) obj;
             ((HeaderVH) holder).title.setText(header.getTitle());
+            if (position == 0) {
+                ((HeaderVH) holder).title.setTextColor(context.getColor(R.color.red_60));
+            } else {
+                ((HeaderVH) holder).title.setTextColor(context.getColor(R.color.black));
+            }
         } else if (holder instanceof ContentVH) {
             ContentModel content = (ContentModel) obj;
             if (content.getContent() != null && !content.getContent().isEmpty()) {
@@ -61,13 +72,24 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             if (content.getSubContent() != null && !content.getSubContent().isEmpty()) {
                 ((ContentVH) holder).subContent.setVisibility(View.VISIBLE);
-                ((ContentVH) holder).subContent.setText(content.getSubContent());
+                if (navType == TourPlanOverviewActivity.NavType.CLUSTER) {
+                    ((ContentVH) holder).subContent.setText(CommonUtilsMethods.applyOrdinalSuperscript(content.getSubContent()));
+                    ((ContentVH) holder).subContent.setTextColor(context.getColor(R.color.green_60));
+                } else {
+                    ((ContentVH) holder).subContent.setText(content.getSubContent());
+                    ((ContentVH) holder).subContent.setTextColor(context.getColor(R.color.text_grey));
+                }
             } else {
                 ((ContentVH) holder).subContent.setVisibility(View.GONE);
             }
             if (content.getSideContent() != null && !content.getSideContent().isEmpty()) {
                 ((ContentVH) holder).sideContent.setVisibility(View.VISIBLE);
                 ((ContentVH) holder).sideContent.setText(content.getSideContent());
+                if (navType == TourPlanOverviewActivity.NavType.WORK_CATEGORY) {
+                    ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                } else {
+                    ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                }
             } else {
                 ((ContentVH) holder).sideContent.setVisibility(View.GONE);
             }

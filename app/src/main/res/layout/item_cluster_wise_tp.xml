@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:fontFamily="@font/satoshi_regular"
         android:padding="@dimen/_2sdp"
-        android:textAlignment="center"
+        android:textAlignment="textStart"
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_6ssp"
         tools:text="A" />

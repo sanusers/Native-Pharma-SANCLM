@@ -20,13 +20,25 @@ import saneforce.sanzen.activity.tourPlan.overview.model.VisitModel;
 public class CategoryDataAdapter  extends RecyclerView.Adapter<CategoryDataAdapter.ViewHolder> {
     private Context context;
     private List<CategoryWiseModel> categoryWiseModelList;
+    private CategoryClickListener categoryClickListener;
+
+    public enum CategoryClickType{
+        PLANNED_DOCTORS,
+        PLANNED_VISITS,
+        UNPLANNED_VISITS
+    }
+
+    public interface CategoryClickListener {
+        void onCategoryClick(CategoryClickType categoryClickType, CategoryWiseModel categoryWiseModel);
+    }
 
     public CategoryDataAdapter() {
     }
 
-    public CategoryDataAdapter(Context context, List<CategoryWiseModel> categoryWiseModelList) {
+    public CategoryDataAdapter(Context context, List<CategoryWiseModel> categoryWiseModelList, CategoryClickListener categoryClickListener) {
         this.context = context;
         this.categoryWiseModelList = categoryWiseModelList;
+        this.categoryClickListener = categoryClickListener;
     }
 
     @NonNull
@@ -71,6 +83,10 @@ public class CategoryDataAdapter  extends RecyclerView.Adapter<CategoryDataAdapt
             }
 
             holder.unplannedVisits.setText(String.valueOf(unplannedVisitCount));
+
+            holder.plannedDoctors.setOnClickListener(view -> categoryClickListener.onCategoryClick(CategoryClickType.PLANNED_DOCTORS, categoryWiseModel));
+            holder.plannedVisits.setOnClickListener(view -> categoryClickListener.onCategoryClick(CategoryClickType.PLANNED_VISITS, categoryWiseModel));
+            holder.unplannedVisits.setOnClickListener(view -> categoryClickListener.onCategoryClick(CategoryClickType.UNPLANNED_VISITS, categoryWiseModel));
         }
     }
 

@@ -678,4 +678,10 @@
     <string name="planned_days">"Planned Days: "</string>
     <string name="work_category_in_days">Work Category (In days)</string>
     <string name="work_type_in_days">Work Type (In days)</string>
+    <string name="planned">Planned</string>
+    <string name="unplanned">Unplanned</string>
+    <string name="planned_visits">Planned Visits</string>
+    <string name="total_visits">Total Visits</string>
+    <string name="cluster_wise">Cluster Wise</string>
+    <string name="category_wise">Category Wise</string>
 </resources>

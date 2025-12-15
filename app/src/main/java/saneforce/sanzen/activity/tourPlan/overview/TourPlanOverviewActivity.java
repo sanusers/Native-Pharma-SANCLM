@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -24,14 +23,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.overview.adapter.CategoryDataAdapter;
+import saneforce.sanzen.activity.tourPlan.overview.adapter.CategoryDataAdapter.CategoryClickListener;
 import saneforce.sanzen.activity.tourPlan.overview.adapter.ClusterDataAdapter;
+import saneforce.sanzen.activity.tourPlan.overview.adapter.ClusterDataAdapter.ClusterClickListener;
 import saneforce.sanzen.activity.tourPlan.overview.adapter.SideAdapter;
 import saneforce.sanzen.activity.tourPlan.overview.model.CategoryWiseModel;
 import saneforce.sanzen.activity.tourPlan.overview.model.ClusterModel;
@@ -42,13 +42,16 @@ import saneforce.sanzen.activity.tourPlan.overview.model.DoctorCategoryModel;
 import saneforce.sanzen.activity.tourPlan.overview.model.DoctorModel;
 import saneforce.sanzen.activity.tourPlan.overview.model.HeaderModel;
 import saneforce.sanzen.activity.tourPlan.overview.model.MasterModel;
+import saneforce.sanzen.activity.tourPlan.overview.model.VisitModel;
 import saneforce.sanzen.activity.tourPlan.overview.model.WorkTypeModel;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityTourPlanOverviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class TourPlanOverviewActivity extends AppCompatActivity {
     private ActivityTourPlanOverviewBinding binding;
@@ -83,6 +86,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
     private CategoryDataAdapter drCategoryDataAdapter = new CategoryDataAdapter();
     private ClusterDataAdapter drClusterDataAdapter = new ClusterDataAdapter();
     private ClusterDataAdapter chmClusterDataAdapter = new ClusterDataAdapter();
+    private SideAdapter sideAdapter;
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -109,7 +113,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
         clusterCap = SharedPref.getClusterCap(TourPlanOverviewActivity.this);
         drCap = SharedPref.getDrCap(TourPlanOverviewActivity.this);
         chmCap = SharedPref.getChmCap(TourPlanOverviewActivity.this);
-        binding.tpOverviewDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
+        binding.tpOverviewDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
         binding.tpOverviewDrawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -180,7 +184,9 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
         CLUSTER,
         JOINT_WORK,
         DOCTOR,
-        CHEMIST
+        CHEMIST,
+        DOCTOR_CATEGORY,
+        CUSTOMER_CLUSTER
     }
 
     private void setClickListeners() {
@@ -189,55 +195,62 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
         });
 
         binding.tvHq.setOnClickListener(view -> {
-            List<Object> headerModelList = getClusterCategoryList("HQ");
-            openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, headerModelList);
+            List<Object> dataList = getClusterCategoryList("HQ");
+            openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, dataList);
         });
 
         binding.tvEx.setOnClickListener(view -> {
-            List<Object> headerModelList = getClusterCategoryList("EX");
-            openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, headerModelList);
+            List<Object> dataList = getClusterCategoryList("EX");
+            openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, dataList);
         });
 
         binding.tvOs.setOnClickListener(view -> {
-            List<Object> headerModelList = getClusterCategoryList("OS");
-            openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, headerModelList);
+            List<Object> dataList = getClusterCategoryList("OS");
+            openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, dataList);
         });
 
         binding.tvOsEx.setOnClickListener(view -> {
-            List<Object> headerModelList = getClusterCategoryList("OS-EX");
-            openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, headerModelList);
+            List<Object> dataList = getClusterCategoryList("OS-EX");
+            openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, dataList);
         });
 
         binding.tvFieldWork.setOnClickListener(view -> {
-            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, new ArrayList<>());
+            List<Object> dataList = getWorkTypeList("F");
+            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, dataList);
         });
 
         binding.tvNonFieldWork.setOnClickListener(view -> {
-            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, new ArrayList<>());
+            List<Object> dataList = getWorkTypeList("N");
+            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, dataList);
         });
 
         binding.tvHoliday.setOnClickListener(view -> {
-            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, new ArrayList<>());
+            List<Object> dataList = getWorkTypeList("H");
+            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, dataList);
         });
 
         binding.tvWeeklyOff.setOnClickListener(view -> {
-            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, new ArrayList<>());
+            List<Object> dataList = getWorkTypeList("W");
+            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, dataList);
         });
 
         binding.tvLeave.setOnClickListener(view -> {
-            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, new ArrayList<>());
+            List<Object> dataList = getWorkTypeList("L");
+            openDrawer(getString(R.string.work_type_in_days), NavType.WORK_TYPE, dataList);
         });
 
         binding.clusterDetails.setOnClickListener(view -> {
-            openDrawer(clusterCap, NavType.CLUSTER, new ArrayList<>());
+            List<Object> dataList = getClusterList();
+            openDrawer(clusterCap, NavType.CLUSTER, dataList);
         });
 
         binding.jointWorkDetails.setOnClickListener(view -> {
-            openDrawer(getString(R.string.joint_work), NavType.JOINT_WORK, new ArrayList<>());
+            List<Object> dataList = getJointWorkList();
+            openDrawer(getString(R.string.joint_work), NavType.JOINT_WORK, dataList);
         });
 
         binding.rlDrHead.setOnClickListener(view -> {
-            if (binding.rlDrData.getVisibility() == View.VISIBLE){
+            if (binding.rlDrData.getVisibility() == View.VISIBLE) {
                 binding.rlDrData.setVisibility(View.GONE);
                 binding.ivDoctorArrow.setImageResource(R.drawable.down_arrow);
                 if (binding.rlChmData.getVisibility() == View.VISIBLE) {
@@ -254,7 +267,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
         });
 
         binding.rlChmHead.setOnClickListener(view -> {
-            if (binding.rlChmData.getVisibility() == View.VISIBLE){
+            if (binding.rlChmData.getVisibility() == View.VISIBLE) {
                 binding.rlChmData.setVisibility(View.GONE);
                 binding.ivChemistArrow.setImageResource(R.drawable.down_arrow);
                 if (binding.rlDrData.getVisibility() == View.VISIBLE) {
@@ -292,30 +305,188 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
     @NonNull
     private List<Object> getClusterCategoryList(String flag) {
         List<Object> dataList = new ArrayList<>();
-        HeaderModel headerModel = new HeaderModel(getString(R.string.hq));
-        dataList.add(headerModel);
-        if (clusterCategoryPlanned.get(flag) != null) {
-            for (String date : clusterCategoryPlanned.get(flag)) {
-                ContentModel contentModel = new ContentModel(date + ", " + monthYear, "", "");
-                if (clusterDatexCategoryPlanned.get(date) != null && clusterDatexCategoryPlanned.get(date).contains(flag)) {
-                    contentModel.setSideContent("*");
+        try {
+            HeaderModel headerModel = new HeaderModel(flag);
+            dataList.add(headerModel);
+            if (clusterCategoryPlanned.get(flag) != null) {
+                int count = 0;
+                for (String date : clusterCategoryPlanned.get(flag)) {
+                    count++;
+                    ContentModel contentModel = new ContentModel(TimeUtils.formatFullDate(date, monthYear), "", "");
+                    if (clusterDatexCategoryPlanned.get(date) != null && clusterDatexCategoryPlanned.get(date).contains(flag)) {
+                        contentModel.setSideContent("*");
+                    }
+                    dataList.add(contentModel);
                 }
-                dataList.add(contentModel);
+                headerModel.setTitle(flag + " (" + count + " days)");
+                if (dataList.size() == 1) {
+                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + flag + " " + getString(R.string.planned), "", "");
+                    dataList.add(contentModel);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return dataList;
     }
 
-    private void openDrawer(String title, NavType navType, List<Object> headerModelList) {
+    @NonNull
+    private List<Object> getWorkTypeList(String flag) {
+        List<Object> dataList = new ArrayList<>();
+        try {
+            String title = "";
+            switch (flag) {
+                case "F":
+                    title = getString(R.string.field_work);
+                    break;
+                case "N":
+                    title = getString(R.string.non_field_work);
+                    break;
+                case "H":
+                    title = getString(R.string.holiday);
+                    break;
+                case "W":
+                    title = getString(R.string.weekly_off);
+                    break;
+                case "L":
+                    title = getString(R.string.leave);
+                    break;
+            }
+            HeaderModel headerModel = new HeaderModel(title);
+            dataList.add(headerModel);
+            if (workTypePlanned.get(flag) != null) {
+                int count = 0;
+                for (String date : workTypePlanned.get(flag)) {
+                    count++;
+                    ContentModel contentModel = new ContentModel(TimeUtils.formatFullDate(date, monthYear), "", "");
+//                if (clusterDatexCategoryPlanned.get(date) != null && clusterDatexCategoryPlanned.get(date).contains(flag)) {
+//                    contentModel.setSideContent("*");
+//                }
+                    dataList.add(contentModel);
+                }
+                headerModel.setTitle(title + " (" + count + " days)");
+                if (dataList.size() == 1) {
+                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + title + " " + getString(R.string.planned), "", "");
+                    dataList.add(contentModel);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dataList;
+    }
+
+    @NonNull
+    private List<Object> getClusterList() {
+        List<Object> dataList = new ArrayList<>();
+        try {
+            HeaderModel plannedHeaderModel = new HeaderModel(getString(R.string.planned));
+            HeaderModel unplannedHeaderModel = new HeaderModel(getString(R.string.unplanned));
+            List<Object> plannedDataList = new ArrayList<>();
+            List<Object> unplannedDataList = new ArrayList<>();
+            if (clusterMaster != null && !clusterMaster.isEmpty()) {
+                int plannedCount = 0, unplannedCount = 0;
+                for (String clusterCode : clusterMaster.keySet()) {
+                    ClusterModel clusterModel = clusterMaster.get(clusterCode);
+                    if (clusterModel != null) {
+                        if (clusterPlanned.containsKey(clusterCode)) {
+                            List<String> dateList = clusterPlanned.get(clusterCode);
+                            StringBuilder datesBuilder = new StringBuilder();
+                            if (dateList != null && !dateList.isEmpty()) {
+                                for (String date : dateList) {
+                                    String formattedDate = TimeUtils.getOrdinal(Integer.parseInt(date));
+                                    datesBuilder.append(formattedDate);
+                                    datesBuilder.append(", ");
+                                }
+                                String dates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
+                                ContentModel contentModel = new ContentModel(clusterModel.getName(), dates, "");
+                                plannedCount++;
+                                plannedDataList.add(contentModel);
+                            }
+                        } else {
+                            ContentModel contentModel = new ContentModel(clusterModel.getName(), "", "");
+                            unplannedCount++;
+                            unplannedDataList.add(contentModel);
+                        }
+                    }
+                }
+                if (plannedDataList.isEmpty()) {
+                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.planned), "", "");
+                    plannedDataList.add(contentModel);
+                }
+                if (unplannedDataList.isEmpty()) {
+                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.unplanned), "", "");
+                    unplannedDataList.add(contentModel);
+                }
+                plannedHeaderModel.setTitle(getString(R.string.planned) + " (" + plannedCount + ")");
+                dataList.add(plannedHeaderModel);
+                dataList.addAll(plannedDataList);
+                unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " (" + unplannedCount + ")");
+                dataList.add(unplannedHeaderModel);
+                dataList.addAll(unplannedDataList);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dataList;
+    }
+
+    @NonNull
+    private String getShortMonth() {
+        String[] parts = monthYear.split(" ");
+        String shortMonth = parts[0].substring(0, 3).toLowerCase();
+        return " " + shortMonth;
+    }
+
+    @NonNull
+    private List<Object> getJointWorkList() {
+        List<Object> dataList = new ArrayList<>();
+        try {
+            HeaderModel headerModel = new HeaderModel(getString(R.string.planned));
+            dataList.add(headerModel);
+            if (jointWorkPlanned != null && !jointWorkPlanned.isEmpty()) {
+                int count = 0;
+                for (String date : jointWorkPlanned.keySet()) {
+                    count++;
+                    List<String> plannedCodes = jointWorkPlanned.get(date);
+                    if (plannedCodes != null && !plannedCodes.isEmpty()) {
+                        StringBuilder names = new StringBuilder();
+                        for (String code : plannedCodes) {
+                            MasterModel jointWorkModel = jointWorkMaster.get(code);
+                            if (jointWorkModel != null) {
+                                names.append(jointWorkModel.getName());
+                                names.append(", ");
+                            }
+                        }
+                        ContentModel contentModel = new ContentModel(TimeUtils.formatFullDate(date, monthYear), CommonUtilsMethods.removeLastComma(names.toString().trim()), "");
+                        dataList.add(contentModel);
+                    }
+                }
+                headerModel.setTitle(getString(R.string.planned) + " (" + count + " days)");
+                if (dataList.size() == 1) {
+                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + getString(R.string.joint_work) + " " + getString(R.string.planned), "", "");
+                    dataList.add(contentModel);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dataList;
+    }
+
+    private void openDrawer(String title, NavType navType, List<Object> dataList) {
         binding.tpOverviewDrawer.openDrawer(GravityCompat.END);
         binding.tpDataNavigation.tvTitle.setText(title);
+        binding.tpDataNavigation.tvSubTitle.setVisibility(View.GONE);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(TourPlanOverviewActivity.this);
+        binding.tpDataNavigation.rvData.setLayoutManager(mLayoutManager);
+        if (dataList != null) {
+            sideAdapter = new SideAdapter(TourPlanOverviewActivity.this, dataList, navType);
+            binding.tpDataNavigation.rvData.setAdapter(sideAdapter);
+        }
         switch (navType) {
             case WORK_CATEGORY:
                 binding.tpDataNavigation.rlNote.setVisibility(View.VISIBLE);
-                SideAdapter sideAdapter = new SideAdapter(headerModelList);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(TourPlanOverviewActivity.this);
-                binding.tpDataNavigation.rvData.setLayoutManager(mLayoutManager);
-                binding.tpDataNavigation.rvData.setAdapter(sideAdapter);
                 break;
             case WORK_TYPE:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
@@ -330,6 +501,9 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
                 break;
             case CHEMIST:
+                binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
+                break;
+            case CUSTOMER_CLUSTER:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
                 break;
         }
@@ -376,7 +550,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 try {
                     List<ClusterWiseModel> clusterWiseModelList = new ArrayList<>(drClusterWisePlan.values());
                     Collections.sort(clusterWiseModelList, Comparator.comparing(ClusterWiseModel::getName));
-                    drClusterDataAdapter = new ClusterDataAdapter(this, clusterWiseModelList, true);
+                    drClusterDataAdapter = new ClusterDataAdapter(this, clusterWiseModelList, true, clusterClickListener);
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
                     binding.rvDrClusterData.setLayoutManager(layoutManager);
                     binding.rvDrClusterData.setAdapter(drClusterDataAdapter);
@@ -386,7 +560,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 try {
                     List<CategoryWiseModel> categoryWiseModelList = new ArrayList<>(drCategoryWisePlan.values());
                     Collections.sort(categoryWiseModelList, Comparator.comparing(CategoryWiseModel::getName));
-                    drCategoryDataAdapter = new CategoryDataAdapter(this, categoryWiseModelList);
+                    drCategoryDataAdapter = new CategoryDataAdapter(this, categoryWiseModelList, categoryClickListener);
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
                     binding.rvDrCategoryData.setLayoutManager(layoutManager);
                     binding.rvDrCategoryData.setAdapter(drCategoryDataAdapter);
@@ -404,7 +578,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 try {
                     List<ClusterWiseModel> clusterWiseModelList = new ArrayList<>(chmClusterWisePlan.values());
                     Collections.sort(clusterWiseModelList, Comparator.comparing(ClusterWiseModel::getName));
-                    chmClusterDataAdapter = new ClusterDataAdapter(this, clusterWiseModelList, false);
+                    chmClusterDataAdapter = new ClusterDataAdapter(this, clusterWiseModelList, false, clusterClickListener);
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
                     binding.rvChmClusterData.setLayoutManager(layoutManager);
                     binding.rvChmClusterData.setAdapter(chmClusterDataAdapter);
@@ -416,6 +590,208 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
             }
         }
     }
+
+    private final ClusterClickListener clusterClickListener = new ClusterClickListener() {
+        @Override
+        public void onClusterClick(boolean isDr, ClusterWiseModel clusterWiseModel) {
+            binding.tpDataNavigation.tvSubTitle.setText(clusterWiseModel.getName());
+            try {
+                if (clusterPlanned.containsKey(clusterWiseModel.getCode())) {
+                    List<String> dateList = clusterPlanned.get(clusterWiseModel.getCode());
+                    StringBuilder datesBuilder = new StringBuilder();
+                    if (dateList != null && !dateList.isEmpty()) {
+                        for (String date : dateList) {
+                            String formattedDate = TimeUtils.getOrdinal(Integer.parseInt(date));
+                            datesBuilder.append(formattedDate);
+                            datesBuilder.append(", ");
+                        }
+                        String dates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
+                        binding.tpDataNavigation.tvSubTitle.setText(CommonUtilsMethods.applyOrdinalSuperscript(clusterWiseModel.getName() + " - " + dates));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            List<Object> dataList = new ArrayList<>();
+            if (isDr) {
+                try {
+                    HeaderModel plannedHeaderModel = new HeaderModel(getString(R.string.planned));
+                    HeaderModel unplannedHeaderModel = new HeaderModel(getString(R.string.unplanned));
+                    List<Object> plannedDataList = new ArrayList<>();
+                    List<Object> unplannedDataList = new ArrayList<>();
+                    if (doctorClusterMaster.containsKey(clusterWiseModel.getCode()) && doctorClusterMaster.get(clusterWiseModel.getCode()) != null && !doctorClusterMaster.get(clusterWiseModel.getCode()).isEmpty()) {
+                        int plannedCount = 0, unplannedCount = 0;
+                        for (String drCode : doctorClusterMaster.get(clusterWiseModel.getCode())) {
+                            DoctorModel doctorModel = doctorMaster.get(drCode);
+                            if (doctorModel != null) {
+                                ContentModel contentModel = new ContentModel(doctorModel.getName(), doctorModel.getSpecialityName(), "");
+                                if (clusterWiseModel.getPlanned().containsKey(drCode)) {
+                                    plannedCount++;
+                                    plannedDataList.add(contentModel);
+                                } else {
+                                    unplannedCount++;
+                                    unplannedDataList.add(contentModel);
+                                }
+                            }
+                        }
+                        if (plannedDataList.isEmpty()) {
+                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned), "", "");
+                            plannedDataList.add(contentModel);
+                        }
+                        if (unplannedDataList.isEmpty()) {
+                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
+                            unplannedDataList.add(contentModel);
+                        }
+                        plannedHeaderModel.setTitle(getString(R.string.planned) + " " + drCap + " (" + plannedCount + ")");
+                        dataList.add(plannedHeaderModel);
+                        dataList.addAll(plannedDataList);
+                        unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + drCap + " (" + unplannedCount + ")");
+                        dataList.add(unplannedHeaderModel);
+                        dataList.addAll(unplannedDataList);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                openDrawer(drCap, NavType.CUSTOMER_CLUSTER, dataList);
+            } else {
+                try {
+                    HeaderModel plannedHeaderModel = new HeaderModel(getString(R.string.planned));
+                    HeaderModel unplannedHeaderModel = new HeaderModel(getString(R.string.unplanned));
+                    List<Object> plannedDataList = new ArrayList<>();
+                    List<Object> unplannedDataList = new ArrayList<>();
+                    if (chemistClusterMaster.containsKey(clusterWiseModel.getCode()) && chemistClusterMaster.get(clusterWiseModel.getCode()) != null && !chemistClusterMaster.get(clusterWiseModel.getCode()).isEmpty()) {
+                        int plannedCount = 0, unplannedCount = 0;
+                        for (String chmCode : chemistClusterMaster.get(clusterWiseModel.getCode())) {
+                            DCRModel dcrModel = chemistMaster.get(chmCode);
+                            if (dcrModel != null) {
+                                ContentModel contentModel = new ContentModel(dcrModel.getName(), "", "");
+                                if (clusterWiseModel.getPlanned().containsKey(chmCode)) {
+                                    plannedCount++;
+                                    plannedDataList.add(contentModel);
+                                } else {
+                                    unplannedCount++;
+                                    unplannedDataList.add(contentModel);
+                                }
+                            }
+                        }
+                        if (plannedDataList.isEmpty()) {
+                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.planned), "", "");
+                            plannedDataList.add(contentModel);
+                        }
+                        if (unplannedDataList.isEmpty()) {
+                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.unplanned), "", "");
+                            unplannedDataList.add(contentModel);
+                        }
+                        plannedHeaderModel.setTitle(getString(R.string.planned) + " " + chmCap + " (" + plannedCount + ")");
+                        dataList.add(plannedHeaderModel);
+                        dataList.addAll(plannedDataList);
+                        unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + chmCap + " (" + unplannedCount + ")");
+                        dataList.add(unplannedHeaderModel);
+                        dataList.addAll(unplannedDataList);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                openDrawer(chmCap, NavType.CUSTOMER_CLUSTER, dataList);
+            }
+            binding.tpDataNavigation.tvSubTitle.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private final CategoryClickListener categoryClickListener = new CategoryClickListener() {
+        @Override
+        public void onCategoryClick(CategoryDataAdapter.CategoryClickType categoryClickType, CategoryWiseModel categoryWiseModel) {
+            binding.tpDataNavigation.tvSubTitle.setText(categoryWiseModel.getName() + " (" + categoryWiseModel.getFrequency() + ")");
+            List<Object> dataList = new ArrayList<>();
+            try {
+                HeaderModel plannedHeaderModel = new HeaderModel(getString(R.string.planned));
+                HeaderModel unplannedHeaderModel = new HeaderModel(getString(R.string.unplanned));
+                List<Object> plannedDataList = new ArrayList<>();
+                List<Object> unplannedDataList = new ArrayList<>();
+                if (doctorCategoryMaster.containsKey(categoryWiseModel.getCode()) && doctorCategoryMaster.get(categoryWiseModel.getCode()) != null && !doctorCategoryMaster.get(categoryWiseModel.getCode()).isEmpty()) {
+                    int plannedCount = 0, unplannedCount = 0;
+                    for (String drCode : doctorCategoryMaster.get(categoryWiseModel.getCode())) {
+                        DoctorModel doctorModel = doctorMaster.get(drCode);
+                        if (doctorModel != null) {
+                            ContentModel contentModel = new ContentModel(doctorModel.getName(), doctorModel.getClusterName() + " | " + doctorModel.getSpecialityName(), "");
+                            if (categoryWiseModel.getPlannedDoctors().containsKey(drCode)) {
+                                plannedCount++;
+                                if (categoryClickType != CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
+                                    VisitModel visitModel = categoryWiseModel.getPlannedVisit().get(drCode);
+                                    if (visitModel != null) {
+                                        Set<String> plannedDates = visitModel.getDates();
+                                        StringBuilder datesBuilder = new StringBuilder();
+                                        for (String date : plannedDates) {
+                                            datesBuilder.append(TimeUtils.getOrdinal(Integer.parseInt(date)));
+                                            datesBuilder.append(", ");
+                                        }
+                                        String dates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
+                                        contentModel.setSideContent(dates);
+                                    }
+                                }
+                                plannedDataList.add(contentModel);
+                            } else {
+                                unplannedCount++;
+                                unplannedDataList.add(contentModel);
+                            }
+                        }
+                    }
+                    if (categoryClickType == CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
+                        if (plannedDataList.isEmpty()) {
+                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned), "", "");
+                            plannedDataList.add(contentModel);
+                        }
+                        if (unplannedDataList.isEmpty()) {
+                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
+                            unplannedDataList.add(contentModel);
+                        }
+                        plannedHeaderModel.setTitle(getString(R.string.planned) + " " + drCap + " (" + plannedCount + ")");
+                        dataList.add(plannedHeaderModel);
+                        dataList.addAll(plannedDataList);
+                        unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + drCap + " (" + unplannedCount + ")");
+                        dataList.add(unplannedHeaderModel);
+                        dataList.addAll(unplannedDataList);
+                    }
+                    if (categoryClickType == CategoryDataAdapter.CategoryClickType.PLANNED_VISITS) {
+                        if (plannedDataList.isEmpty()) {
+                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned_visits), "", "");
+                            plannedDataList.add(contentModel);
+                        }
+//                        if (unplannedDataList.isEmpty()) {
+//                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
+//                            unplannedDataList.add(contentModel);
+//                        }
+                        plannedHeaderModel.setTitle(getString(R.string.planned_visits) + " (" + plannedCount + ")");
+                        dataList.add(plannedHeaderModel);
+                        dataList.addAll(plannedDataList);
+//                        unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + drCap + " (" + unplannedCount + ")");
+//                        dataList.add(unplannedHeaderModel);
+//                        dataList.addAll(unplannedDataList);
+                    }
+                    if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
+//                        if (plannedDataList.isEmpty()) {
+//                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits), "", "");
+//                            plannedDataList.add(contentModel);
+//                        }
+                        if (unplannedDataList.isEmpty()) {
+                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits), "", "");
+                            unplannedDataList.add(contentModel);
+                        }
+//                        plannedHeaderModel.setTitle(getString(R.string.unplanned_visits) + " (" + plannedCount + ")");
+//                        dataList.add(plannedHeaderModel);
+//                        dataList.addAll(plannedDataList);
+                        unplannedHeaderModel.setTitle(getString(R.string.unplanned_visits) + " (" + unplannedCount + ")");
+                        dataList.add(unplannedHeaderModel);
+                        dataList.addAll(unplannedDataList);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            openDrawer(drCap, NavType.CUSTOMER_CLUSTER, dataList);
+            binding.tpDataNavigation.tvSubTitle.setVisibility(View.VISIBLE);
+        }
+    };
 
     private void getMasterData() {
         hqCode = SharedPref.getHqCode(TourPlanOverviewActivity.this);
@@ -475,7 +851,8 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
-                    doctorMaster.put(jsonObject.optString("Code"), new DoctorModel(jsonObject.optString("Code"), jsonObject.optString("Name"), jsonObject.optString("Town_Code"), jsonObject.optString("Town_Name"), jsonObject.optString("CategoryCode"), jsonObject.optString("Category"), jsonObject.optString("Tlvst")));
+                    DoctorModel doctorModel = new DoctorModel(jsonObject.optString("Code"), jsonObject.optString("Name"), jsonObject.optString("Town_Code"), jsonObject.optString("Town_Name"), jsonObject.optString("CategoryCode"), jsonObject.optString("Category"), jsonObject.optString("SpecialtyCode"), jsonObject.optString("Specialty"), jsonObject.optString("Tlvst"));
+                    doctorMaster.put(jsonObject.optString("Code"), doctorModel);
                     try {
                         addData(doctorCategoryMaster, jsonObject.optString("CategoryCode"), jsonObject.optString("Code"));
                         addData(doctorClusterMaster, jsonObject.optString("Town_Code"), jsonObject.optString("Code"));
@@ -517,7 +894,8 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + hqCode).getMasterSyncDataJsonArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
-                    chemistMaster.put(jsonObject.optString("Code"), new DCRModel(jsonObject.optString("Code"), jsonObject.optString("Name"), jsonObject.optString("Town_Code"), jsonObject.optString("Town_Name")));
+                    DCRModel dcrModel = new DCRModel(jsonObject.optString("Code"), jsonObject.optString("Name"), jsonObject.optString("Town_Code"), jsonObject.optString("Town_Name"));
+                    chemistMaster.put(jsonObject.optString("Code"), dcrModel);
                     try {
                         addData(chemistClusterMaster, jsonObject.optString("Town_Code"), jsonObject.optString("Code"));
                         ClusterWiseModel clusterWiseModel = chmClusterWisePlan.get(jsonObject.optString("Town_Code"));
@@ -701,6 +1079,36 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 datas.add(data);
             }
             dataMap.put(code, datas);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addData(Map<String, List<DoctorModel>> dataMap, String flag, DoctorModel data) {
+        try {
+            List<DoctorModel> datas = dataMap.get(flag);
+            if (datas == null || datas.isEmpty()) {
+                datas = new ArrayList<>();
+            }
+            if (!datas.contains(data)) {
+                datas.add(data);
+            }
+            dataMap.put(flag, datas);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addData(Map<String, List<DCRModel>> dataMap, String flag, DCRModel data) {
+        try {
+            List<DCRModel> datas = dataMap.get(flag);
+            if (datas == null || datas.isEmpty()) {
+                datas = new ArrayList<>();
+            }
+            if (!datas.contains(data)) {
+                datas.add(data);
+            }
+            dataMap.put(flag, datas);
         } catch (Exception e) {
             e.printStackTrace();
         }

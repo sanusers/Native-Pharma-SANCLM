@@ -732,7 +732,7 @@
                                 android:background="@drawable/bg_green"
                                 android:fontFamily="@font/satoshi_regular"
                                 android:padding="@dimen/_5sdp"
-                                android:text="Category Wise"
+                                android:text="@string/category_wise"
                                 android:textAllCaps="false"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_7ssp"
@@ -745,7 +745,7 @@
                                 android:background="@color/white"
                                 android:fontFamily="@font/satoshi_regular"
                                 android:padding="@dimen/_5sdp"
-                                android:text="Cluster Wise"
+                                android:text="@string/cluster_wise"
                                 android:textAllCaps="false"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_7ssp"
@@ -781,7 +781,7 @@
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
                                         android:text="Doctor Category"
-                                        android:textAlignment="center"
+                                        android:textAlignment="textStart"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
 
@@ -802,7 +802,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Total Visits"
+                                        android:text="@string/total_visits"
                                         android:textAlignment="center"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
@@ -824,7 +824,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Planned Visits"
+                                        android:text="@string/planned_visits"
                                         android:textAlignment="center"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
@@ -835,7 +835,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Unplanned Visits"
+                                        android:text="@string/unplanned_visits"
                                         android:textAlignment="center"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
@@ -888,8 +888,8 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Cluster"
-                                        android:textAlignment="center"
+                                        android:text="@string/cluster"
+                                        android:textAlignment="textStart"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
 
@@ -899,7 +899,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Total"
+                                        android:text="@string/total"
                                         android:textAlignment="center"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
@@ -910,7 +910,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Planned"
+                                        android:text="@string/planned"
                                         android:textAlignment="center"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
@@ -1092,7 +1092,7 @@
                                 android:background="@drawable/bg_green"
                                 android:fontFamily="@font/satoshi_regular"
                                 android:padding="@dimen/_5sdp"
-                                android:text="Cluster Wise"
+                                android:text="@string/cluster_wise"
                                 android:textAllCaps="false"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_7ssp"
@@ -1129,8 +1129,8 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Cluster"
-                                        android:textAlignment="center"
+                                        android:text="@string/cluster"
+                                        android:textAlignment="textStart"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
 
@@ -1140,7 +1140,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Total"
+                                        android:text="@string/total"
                                         android:textAlignment="center"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />
@@ -1151,7 +1151,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_bold"
-                                        android:text="Planned"
+                                        android:text="@string/planned"
                                         android:textAlignment="center"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6ssp" />

@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HeaderModel {
-    private final String title;
+    private String title;
     private List<ContentModel> contentModelList;
+
+    public HeaderModel() {
+        this.title = "";
+        this.contentModelList = new ArrayList<>();
+    }
 
     public HeaderModel(String title) {
         this.title = title;
@@ -23,6 +28,10 @@ public class HeaderModel {
 
     public void setContentModelList(List<ContentModel> contentModelList) {
         this.contentModelList = contentModelList;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getTitle() {
