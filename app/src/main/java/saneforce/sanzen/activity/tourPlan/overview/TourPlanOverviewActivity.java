@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -194,6 +195,11 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
             binding.tpOverviewDrawer.closeDrawer(GravityCompat.END);
         });
 
+        binding.tpDataNavigation.goToTp.setOnClickListener(view -> {
+            binding.tpOverviewDrawer.closeDrawer(GravityCompat.END);
+            finish();
+        });
+
         binding.tvHq.setOnClickListener(view -> {
             List<Object> dataList = getClusterCategoryList("HQ");
             openDrawer(getString(R.string.work_category_in_days), NavType.WORK_CATEGORY, dataList);
@@ -280,6 +286,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 binding.ivChemistArrow.setImageResource(R.drawable.up_arrow);
                 binding.ivDoctorArrow.setImageResource(R.drawable.down_arrow);
                 binding.rlDrData.setVisibility(View.GONE);
+                binding.rvChmClusterData.post(() -> adjustRecyclerViewHeight(binding.rvChmClusterData, binding.rvChmClusterData.getAdapter().getItemCount()));
             }
         });
 
@@ -290,6 +297,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
             binding.tvDrClusterWise.setTextColor(getResources().getColor(R.color.dark_purple));
             binding.drCategoryData.setVisibility(View.VISIBLE);
             binding.drClusterData.setVisibility(View.GONE);
+            binding.rvDrCategoryData.post(() -> adjustRecyclerViewHeight(binding.rvDrCategoryData, binding.rvDrCategoryData.getAdapter().getItemCount()));
         });
 
         binding.tvDrClusterWise.setOnClickListener(view -> {
@@ -299,6 +307,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
             binding.tvDrCategoryWise.setTextColor(getResources().getColor(R.color.dark_purple));
             binding.drClusterData.setVisibility(View.VISIBLE);
             binding.drCategoryData.setVisibility(View.GONE);
+            binding.rvDrClusterData.post(() -> adjustRecyclerViewHeight(binding.rvDrClusterData, binding.rvDrClusterData.getAdapter().getItemCount()));
         });
     }
 
@@ -487,24 +496,31 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
         switch (navType) {
             case WORK_CATEGORY:
                 binding.tpDataNavigation.rlNote.setVisibility(View.VISIBLE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.GONE);
                 break;
             case WORK_TYPE:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
                 break;
             case CLUSTER:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
                 break;
             case JOINT_WORK:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
                 break;
             case DOCTOR:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
                 break;
             case CHEMIST:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
                 break;
             case CUSTOMER_CLUSTER:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -554,6 +570,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
                     binding.rvDrClusterData.setLayoutManager(layoutManager);
                     binding.rvDrClusterData.setAdapter(drClusterDataAdapter);
+                    binding.rvDrClusterData.post(() -> adjustRecyclerViewHeight(binding.rvDrClusterData, clusterWiseModelList.size()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -564,6 +581,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
                     binding.rvDrCategoryData.setLayoutManager(layoutManager);
                     binding.rvDrCategoryData.setAdapter(drCategoryDataAdapter);
+                    binding.rvDrCategoryData.post(() -> adjustRecyclerViewHeight(binding.rvDrCategoryData, categoryWiseModelList.size()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -582,6 +600,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
                     binding.rvChmClusterData.setLayoutManager(layoutManager);
                     binding.rvChmClusterData.setAdapter(chmClusterDataAdapter);
+                    binding.rvChmClusterData.post(() -> adjustRecyclerViewHeight(binding.rvChmClusterData, clusterWiseModelList.size()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -589,6 +608,22 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void adjustRecyclerViewHeight(RecyclerView recyclerView, int itemCount) {
+        if (itemCount <= 5) {
+            ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            recyclerView.setLayoutParams(params);
+            return;
+        }
+        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(0);
+        if (holder == null) return;
+        int itemHeight = holder.itemView.getHeight();
+        int maxHeight = itemHeight * 5;
+        ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
+        params.height = maxHeight;
+        recyclerView.setLayoutParams(params);
     }
 
     private final ClusterClickListener clusterClickListener = new ClusterClickListener() {
@@ -708,6 +743,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 HeaderModel unplannedHeaderModel = new HeaderModel(getString(R.string.unplanned));
                 List<Object> plannedDataList = new ArrayList<>();
                 List<Object> unplannedDataList = new ArrayList<>();
+                List<Object> unplannedVisitsDataList = new ArrayList<>();
                 if (doctorCategoryMaster.containsKey(categoryWiseModel.getCode()) && doctorCategoryMaster.get(categoryWiseModel.getCode()) != null && !doctorCategoryMaster.get(categoryWiseModel.getCode()).isEmpty()) {
                     int plannedCount = 0, unplannedCount = 0;
                     for (String drCode : doctorCategoryMaster.get(categoryWiseModel.getCode())) {
@@ -727,12 +763,23 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                                         }
                                         String dates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
                                         contentModel.setSideContent(dates);
+                                        if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
+                                            int plannedDatesSize = (datesBuilder.toString().trim().split(", ").length);
+                                            if (categoryWiseModel.getFrequency() > plannedDatesSize) {
+                                                contentModel.setSideContent(plannedDatesSize + "/" + categoryWiseModel.getFrequency());
+                                                unplannedVisitsDataList.add(contentModel);
+                                            }
+                                        }
                                     }
                                 }
                                 plannedDataList.add(contentModel);
                             } else {
                                 unplannedCount++;
                                 unplannedDataList.add(contentModel);
+                                if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
+                                    contentModel.setSideContent("0/" + categoryWiseModel.getFrequency());
+                                    unplannedVisitsDataList.add(contentModel);
+                                }
                             }
                         }
                     }
@@ -773,16 +820,16 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
 //                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits), "", "");
 //                            plannedDataList.add(contentModel);
 //                        }
-                        if (unplannedDataList.isEmpty()) {
+                        if (unplannedVisitsDataList.isEmpty()) {
                             ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits), "", "");
-                            unplannedDataList.add(contentModel);
+                            unplannedVisitsDataList.add(contentModel);
                         }
 //                        plannedHeaderModel.setTitle(getString(R.string.unplanned_visits) + " (" + plannedCount + ")");
 //                        dataList.add(plannedHeaderModel);
 //                        dataList.addAll(plannedDataList);
                         unplannedHeaderModel.setTitle(getString(R.string.unplanned_visits) + " (" + unplannedCount + ")");
                         dataList.add(unplannedHeaderModel);
-                        dataList.addAll(unplannedDataList);
+                        dataList.addAll(unplannedVisitsDataList);
                     }
                 }
             } catch (Exception e) {
