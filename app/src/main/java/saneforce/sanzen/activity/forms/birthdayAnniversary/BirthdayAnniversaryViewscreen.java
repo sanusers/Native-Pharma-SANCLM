@@ -14,14 +14,14 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.forms.weekoff.forms_viewpager;
+import saneforce.sanzen.activity.forms.weekoff.FormsViewpager;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 
-public class birthdayAnniversary_viewscreen extends AppCompatActivity {
+public class BirthdayAnniversaryViewscreen extends AppCompatActivity {
     ImageView back_btn;
     TabLayout tabLayout;
     ViewPager viewPager;
-    forms_viewpager formsviewpager;
+    FormsViewpager formsviewpager;
     int tab_pos = 0;
 
     @SuppressLint("MissingInflatedId")
@@ -33,7 +33,6 @@ public class birthdayAnniversary_viewscreen extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager);
         back_btn = findViewById(R.id.iv_back);
 
-
         back_btn.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -41,28 +40,18 @@ public class birthdayAnniversary_viewscreen extends AppCompatActivity {
             }
         });
 
-//        birthdaywishes_fragment birthdaywishesFragment = new birthdaywishes_fragment();
-//        AnniversaryFragment anniversaryFragment = new AnniversaryFragment();
+        BirthdayWishesFragment birthdaywishesFragment = new BirthdayWishesFragment();
+        AnniversaryFragment anniversaryFragment = new AnniversaryFragment();
 
-
-
-
-        //create viewpager adapter
-        //here we will create inner class for adapter
-        formsviewpager  = new forms_viewpager(getSupportFragmentManager(), 0);        //add fragments and set the adapter
-//        formsviewpager.addFragment(birthdaywishesFragment,"Birthday");
-//        formsviewpager.addFragment(anniversaryFragment,"Anniversary");
+        formsviewpager  = new FormsViewpager(getSupportFragmentManager(), 0);
+        formsviewpager.addFragment(birthdaywishesFragment,"Birthday");
+        formsviewpager.addFragment(anniversaryFragment,"Anniversary");
         viewPager.setAdapter(formsviewpager);
         tabLayout.setupWithViewPager(viewPager);
-        //set the icons
         tabLayout.getTabAt(0);
         tabLayout.getTabAt(1);
         BadgeDrawable badgeDrawable = Objects.requireNonNull(tabLayout.getTabAt(0)).getOrCreateBadge();
         badgeDrawable.setVisible(false);
-
-
-
-
     }
 
 }

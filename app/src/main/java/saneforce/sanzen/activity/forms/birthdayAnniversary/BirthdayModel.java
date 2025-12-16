@@ -2,7 +2,7 @@ package saneforce.sanzen.activity.forms.birthdayAnniversary;
 
 import java.io.Serializable;
 
-public class birthdayModel implements Serializable {
+public class BirthdayModel implements Serializable {
 //public class birthdayModel {
 
     String doctorName;
@@ -17,7 +17,7 @@ public class birthdayModel implements Serializable {
     private String className;
     // String color;
 
-    public birthdayModel(String doctorName, String birthDate,
+    public BirthdayModel(String doctorName, String birthDate,
                          String code, String territory, String qualification,
                          String category, String speciality, String className) {
         this.doctorName = doctorName;

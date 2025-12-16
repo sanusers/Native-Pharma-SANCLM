@@ -2,8 +2,6 @@ package saneforce.sanzen.activity.forms.birthdayAnniversary;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +17,13 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 
-public class anniversaryAdapter extends BaseAdapter {
+public class AnniversaryAdapter extends BaseAdapter {
 
-    ArrayList<anniversaryModel> anniversaryList;
+    ArrayList<AnniversaryModel> anniversaryList;
     Context context;
     LayoutInflater inflater;
 
-    public anniversaryAdapter(ArrayList<anniversaryModel> anniversaryList, Context context) {
+    public AnniversaryAdapter(ArrayList<AnniversaryModel> anniversaryList, Context context) {
         this.anniversaryList = anniversaryList;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -53,14 +51,14 @@ public class anniversaryAdapter extends BaseAdapter {
     @SuppressLint("ViewHolder")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        anniversaryAdapter.ViewHolder holder;
+        AnniversaryAdapter.ViewHolder holder;
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.fragment_anniversary_adapter, parent, false);
-            holder = new anniversaryAdapter.ViewHolder(convertView);
+            holder = new AnniversaryAdapter.ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
-            holder = (anniversaryAdapter.ViewHolder) convertView.getTag();
+            holder = (AnniversaryAdapter.ViewHolder) convertView.getTag();
         }
 
         // Each row represents TWO doctors
@@ -69,7 +67,7 @@ public class anniversaryAdapter extends BaseAdapter {
 
         // ✅ LEFT card setup
         if (leftIndex < anniversaryList.size()) {
-            anniversaryModel leftModel = anniversaryList.get(leftIndex);
+            AnniversaryModel leftModel = anniversaryList.get(leftIndex);
             holder.card_left.setVisibility(View.VISIBLE);
             holder.drImgWeds.setImageResource(R.drawable.tp_dr_icon);
             holder.textDoctorWeds.setText(leftModel.getDoctorName());
@@ -86,7 +84,7 @@ public class anniversaryAdapter extends BaseAdapter {
 
         // ✅ RIGHT card setup
         if (rightIndex < anniversaryList.size()) {
-            anniversaryModel rightModel = anniversaryList.get(rightIndex);
+            AnniversaryModel rightModel = anniversaryList.get(rightIndex);
             holder.card_Right.setVisibility(View.VISIBLE);
             holder.drImgWeds2.setImageResource(R.drawable.tp_dr_icon);
             holder.textDoctorWeds2.setText(rightModel.getDoctorName());

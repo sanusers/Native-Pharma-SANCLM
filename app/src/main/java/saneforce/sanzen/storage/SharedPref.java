@@ -505,12 +505,23 @@ public class SharedPref {
     public static final String UNLST_DOC_APP_NEED = "Unlst_Doc_App_need";
     public static final String SUBDIVISION_NAMES = "SubdivisionNames";
     public static final String SETUP_SYNCED = "setup_synced";
+    public static final String RPT_MGR_CODE = "ReportingMgrCode";
+    public static final String RPT_MGR_NAME = "ReportingMgrName";
+    public static final String TP_MGR_CODE  = "ReportingTPMgrCode";
+    public static final String TP_MGR_NAME  = "ReportingTPMgrName";
+    public static final String LEV_MGR_CODE = "ReportingLeaveMgrCode";
+    public static final String LEV_MGR_NAME = "ReportingLeaveMgrName";
     public static final String RESET_PASSWORD_NEED = "reset_password_need";
     public static final String RESET_PASSWORD_DAYS = "reset_password_days";
 
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
     public static final String JW_AUTO_SELECTION_NEED = "jw_auto_selection_need";
+
+    public static final String STATUS_CHECKED_DATE = "Status_checked_date";
+    public static final String LOGOUT_REASON = "Logout_reason";
+
+    public static final String LEAVE_ATTACHMENT_NEED = "Leave_attachment_need";
 
     public static SharedPreferences.Editor editor;
 
@@ -872,6 +883,14 @@ public class SharedPref {
             editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
+            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
+            editor.putString(RPT_MGR_CODE,jsonObject.optString("ReportingMgrCode"));
+            editor.putString(RPT_MGR_NAME,jsonObject.optString("ReportingMgrName"));
+            editor.putString(TP_MGR_CODE,jsonObject.optString("ReportingTPMgrCode"));
+            editor.putString(TP_MGR_NAME,jsonObject.optString("ReportingTPMgrName"));
+            editor.putString(LEV_MGR_CODE,jsonObject.optString("ReportingLeaveMgrCode"));
+            editor.putString(LEV_MGR_NAME,jsonObject.optString("ReportingLeaveMgrName"));
+            editor.putString(LEAVE_ATTACHMENT_NEED,jsonObject.optString("leave_attachment_need"));
             editor.putString(JW_AUTO_SELECTION_NEED, jsonObject.optString("jw_auto_selection_need"));
             editor.apply();
         } catch (Exception ignore) {
@@ -3208,6 +3227,24 @@ public class SharedPref {
     public static boolean getIsSetupSynced(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETUP_SYNCED, false);
     }
+    public static String getReportingMgrCode(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RPT_MGR_CODE,"");
+    }
+    public static String getReportingMgrName(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RPT_MGR_NAME,"");
+    }
+    public static String getTpMgrCode(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_MGR_CODE,"");
+    }
+    public static String getTpMgrName(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_MGR_NAME,"");
+    }
+    public static String getLeaveMgrCode(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(LEV_MGR_CODE,"");
+    }
+    public static String getLeaveMgrName(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(LEV_MGR_NAME,"");
+    }
 
     public static String getResetPasswordNeed(Context context) {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RESET_PASSWORD_NEED,"1");
@@ -3223,6 +3260,30 @@ public class SharedPref {
 
     public static String getSlideWiseDetailingNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
+    }
+
+    public static void setStatusCheckedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STATUS_CHECKED_DATE, date).apply();
+    }
+
+    public static String getStatusCheckedDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STATUS_CHECKED_DATE, "");
+    }
+
+    public static void setLogoutReason(Context context, String reason) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGOUT_REASON, reason).apply();
+    }
+
+    public static String getLogoutReason(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGOUT_REASON, "");
+    }
+
+    public static String getLeaveAttachmentNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LEAVE_ATTACHMENT_NEED, "1");
     }
 
     public static String getJwAutoSelectionNeed(Context context) {

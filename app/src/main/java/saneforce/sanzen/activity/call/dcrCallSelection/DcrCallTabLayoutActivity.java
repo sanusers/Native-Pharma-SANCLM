@@ -1,15 +1,31 @@
 package saneforce.sanzen.activity.call.dcrCallSelection;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 import android.Manifest;
-import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -36,7 +52,6 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.CallDcrSelectionBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -48,7 +63,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
     public static double lat, lng, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
-
+    private static boolean isLocationPermissionRequested = false;
     TabLayoutAdapter viewPagerAdapter;
     GPSTrack gpsTrack;
     CommonUtilsMethods commonUtilsMethods;
@@ -397,7 +412,124 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
 
     @Override
     protected void onResume() {
+        timeZoneVerification();
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
     }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|PR|GIF|TM|OTR|FSD|AMS")) {
+                startActivity(new Intent(DcrCallTabLayoutActivity.this, DcrCallTabLayoutActivity.class));
+                finish();
+            }
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+        if (SharedPref.getGeoChk(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+            CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
+//            locationCheck();
+        }
+    }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        if (SharedPref.getGeoChk(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+//            CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
+//            locationCheck();
+//        }
+//    }
+
+    private void locationCheck() {
+        if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
+            if (CheckLocPermission()) {
+                return; // already granted
+            }
+
+            if (!isLocationPermissionRequested) {
+                isLocationPermissionRequested = true;
+                RequestLocationPermission();
+                return;
+            }
+            showPermissionMandatoryDialog();
+//            if (!CheckLocPermission()) {
+//                RequestLocationPermission();
+//            }
+        } else {
+            CommonUtilsMethods.RequestGPSPermission(DcrCallTabLayoutActivity.this);
+        }
+    }
+
+    private void timeZoneVerification() {
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(DcrCallTabLayoutActivity.this) && commonUtilsMethods.isTimeZoneAutomatic(DcrCallTabLayoutActivity.this);
+        if (!isAutoTimeZoneEnabled) {
+            CommonUtilsMethods.showCustomDialog(this);
+        }
+    }
+
+    private void RequestLocationPermission() {
+        isLocationPermissionRequested = true;
+        if (ContextCompat.checkSelfPermission(DcrCallTabLayoutActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(DcrCallTabLayoutActivity.this, ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(DcrCallTabLayoutActivity.this, new String[]{ACCESS_FINE_LOCATION}, 101);
+            } else {
+                ActivityCompat.requestPermissions(DcrCallTabLayoutActivity.this, new String[]{ACCESS_FINE_LOCATION}, 101);
+            }
+        }
+    }
+
+    public boolean CheckLocPermission() {
+        int FineLocation = ContextCompat.checkSelfPermission(DcrCallTabLayoutActivity.this, ACCESS_FINE_LOCATION);
+        int CoarseLocation = ContextCompat.checkSelfPermission(DcrCallTabLayoutActivity.this, ACCESS_COARSE_LOCATION);
+        return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Permanently denied
+                showGoToSettingsDialog();
+            } else {
+                // Denied normally
+                showPermissionMandatoryDialog();
+            }
+        }
+    }
+
+    private void showPermissionMandatoryDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Location Required")
+                .setMessage("Location permission required. Please allow it.")
+                .setCancelable(false)
+                .setPositiveButton("Allow", (dialog, which) -> RequestLocationPermission())
+//                .setNegativeButton("Back", (dialog, which) -> finish())
+                .show();
+    }
+
+    private void showGoToSettingsDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Permission Needed")
+                .setMessage("Location permission is permanently denied. Please enable it in App Settings.")
+                .setCancelable(false)
+                .setPositiveButton("Open Settings", (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.fromParts("package", getPackageName(), null));
+                    startActivity(intent);
+                })
+//                .setNegativeButton("Back", (dialog, which) -> finish())
+                .show();
+    }
+
 }

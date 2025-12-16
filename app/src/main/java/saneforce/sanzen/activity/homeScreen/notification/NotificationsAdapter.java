@@ -56,9 +56,13 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         NotificationDataTable notificationDataTable = notificationDataTableList.get(position);
+        String message = notificationDataTable.getMessage();
+        if(message.contains("$")) {
+            message = message.substring(0, notificationDataTable.getMessage().lastIndexOf("$"));
+        }
+        String dateTime = TimeUtils.getFriendlyDate(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_2, TimeUtils.FORMAT_39, notificationDataTable.getDateTime()));
         holder.binding.tvTitle.setText(notificationDataTable.getTitle());
-        holder.binding.tvMessage.setText(notificationDataTable.getMessage());
-        String dateTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_2, TimeUtils.FORMAT_39, notificationDataTable.getDateTime());
+        holder.binding.tvMessage.setText(message);
         holder.binding.tvDateTime.setText(dateTime);
 
         if(notificationDataTable.getIsRead() == 1) {

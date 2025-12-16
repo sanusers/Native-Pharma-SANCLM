@@ -14,16 +14,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.commonClasses.AutoHeightListViewHelper;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -41,9 +42,9 @@ public class AnniversaryFragment extends Fragment {
 
 
     //private ArrayList<anniversaryModel> anniversaryList = new ArrayList<>();
-    private ArrayList<anniversaryModel> todayList = new ArrayList<>();
-    private ArrayList<anniversaryModel> upcomingList = new ArrayList<>();
-    private ArrayList<anniversaryModel> belatedList = new ArrayList<>();
+    private ArrayList<AnniversaryModel> todayList = new ArrayList<>();
+    private ArrayList<AnniversaryModel> upcomingList = new ArrayList<>();
+    private ArrayList<AnniversaryModel> belatedList = new ArrayList<>();
 
     //private anniversaryAdapter anniversaryAdapter;
 //    private anniversaryAdapter adapterToday;
@@ -84,9 +85,6 @@ public class AnniversaryFragment extends Fragment {
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         loadAnniversaryData();
-        setListViewHeightBasedOnChildren(listToday);
-        setListViewHeightBasedOnChildren(listUpcoming);
-        setListViewHeightBasedOnChildren(listBelated);
         return view;
     }
     private void loadAnniversaryData() {
@@ -99,19 +97,22 @@ public class AnniversaryFragment extends Fragment {
             upcomingList.clear();
             belatedList.clear();
 
-            java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMM d", java.util.Locale.US);
-
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("MMM d", Locale.US);
             // ✅ Current day reference (normalized year = 2000)
-            java.util.Calendar today = java.util.Calendar.getInstance();
-            today.set(java.util.Calendar.YEAR, 2000);
+            // Current day (normalized)
+            Calendar today = Calendar.getInstance();
+            today.set(Calendar.YEAR, 2000);
+            normalize(today);
 
-            // ✅ ±3 day range
-            java.util.Calendar start = (java.util.Calendar) today.clone();
-            java.util.Calendar end = (java.util.Calendar) today.clone();
-            start.add(java.util.Calendar.DATE, -3);
-            end.add(java.util.Calendar.DATE, 3);
+            // ±3 day window
+            Calendar start = (Calendar) today.clone();
+            Calendar end = (Calendar) today.clone();
+            start.add(Calendar.DATE, -3);
+            end.add(Calendar.DATE, +3);
 
+            normalize(start);
+            normalize(end);
             for (int i = 0; i < doctorJsonArray.length(); i++) {
                 JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
                 String doctorName = doctorObj.optString("Name");
@@ -137,7 +138,7 @@ public class AnniversaryFragment extends Fragment {
                     ann.set(java.util.Calendar.YEAR, 2000);
 
                     String displayDate = outputFormat.format(parsedDate);
-                    anniversaryModel model = new anniversaryModel(
+                    AnniversaryModel model = new AnniversaryModel(
                             doctorName, displayDate, Code, territory,
                             qualification, category, speciality, className
                     );
@@ -169,20 +170,29 @@ public class AnniversaryFragment extends Fragment {
                     " | Upcoming: " + upcomingList.size() +
                     " | Belated: " + belatedList.size());
 
-            anniversaryAdapter todayAdapter = new anniversaryAdapter(todayList, getActivity());
-            anniversaryAdapter upcomingAdapter = new anniversaryAdapter(upcomingList, getActivity());
-            anniversaryAdapter belatedAdapter = new anniversaryAdapter(belatedList, getActivity());
+            AnniversaryAdapter todayAdapter = new AnniversaryAdapter(todayList, getActivity());
+            AnniversaryAdapter upcomingAdapter = new AnniversaryAdapter(upcomingList, getActivity());
+            AnniversaryAdapter belatedAdapter = new AnniversaryAdapter(belatedList, getActivity());
 
             listToday.setAdapter(todayAdapter);
             listUpcoming.setAdapter(upcomingAdapter);
             listBelated.setAdapter(belatedAdapter);
 
+            AutoHeightListViewHelper.setListViewHeight(listToday);
+            AutoHeightListViewHelper.setListViewHeight(listUpcoming);
+            AutoHeightListViewHelper.setListViewHeight(listBelated);
+//            setListViewHeightBasedOnChildren(listToday);
+//            setListViewHeightBasedOnChildren(listUpcoming);
+//            setListViewHeightBasedOnChildren(listBelated);
+
             todayAdapter.notifyDataSetChanged();
             upcomingAdapter.notifyDataSetChanged();
             belatedAdapter.notifyDataSetChanged();
+            txtTodayNoData.setVisibility(todayList.isEmpty() ? View.VISIBLE : View.GONE);
+            txtUpcomingNoData.setVisibility(upcomingList.isEmpty() ? View.VISIBLE : View.GONE);
+            txtBelatedNoData.setVisibility(belatedList.isEmpty() ? View.VISIBLE : View.GONE);
 
-
-            if (todayList.isEmpty()) {
+        /*    if (todayList.isEmpty()) {
                 txtTodayNoData.setVisibility(View.VISIBLE);
             } else {
                 txtTodayNoData.setVisibility(View.GONE);
@@ -199,7 +209,7 @@ public class AnniversaryFragment extends Fragment {
             } else {
                 txtBelatedNoData.setVisibility(View.GONE);
             }
-
+*/
 
             // ✅ Visibility handling
             if (todayList.isEmpty() && upcomingList.isEmpty() && belatedList.isEmpty()) {
@@ -221,6 +231,13 @@ public class AnniversaryFragment extends Fragment {
             listUpcoming.setVisibility(View.GONE);
             listBelated.setVisibility(View.GONE);
         }
+    }
+
+    private void normalize(Calendar c) {
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
     }
 
     private void setListViewHeightBasedOnChildren(ListView listView) {
@@ -251,7 +268,7 @@ public class AnniversaryFragment extends Fragment {
                     View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.UNSPECIFIED
             );
-            totalHeight += listItem.getMeasuredHeight()-requireContext().getResources().getDimension(R.dimen._10sdp);
+            totalHeight += listItem.getMeasuredHeight()-requireContext().getResources().getDimension(R.dimen._12sdp);
         }
 
        // int dividerTotal = listView.getDividerHeight() * Math.max(0, listAdapter.getCount() - 1);

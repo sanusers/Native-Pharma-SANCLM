@@ -15,17 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 
 
-public class weekoff_adapter extends RecyclerView.Adapter<weekoff_adapter.ViewHolder> {
+public class WeekoffAdapter extends RecyclerView.Adapter<WeekoffAdapter.ViewHolder> {
 
-    ArrayList<fromsmodelclass> resList;
+    ArrayList<FormsModelClass> resList;
     Context context;
 
     String[] val={"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 
-    public weekoff_adapter(ArrayList<fromsmodelclass> resList, Context context) {
+    public WeekoffAdapter(ArrayList<FormsModelClass> resList, Context context) {
         this.resList = resList;
         this.context = context;
     }
@@ -39,7 +38,7 @@ public class weekoff_adapter extends RecyclerView.Adapter<weekoff_adapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final fromsmodelclass app_adapt = resList.get(position);
+        final FormsModelClass app_adapt = resList.get(position);
         holder.weekoffl.setBackgroundColor(Color.parseColor(app_adapt.getPos()));
 
             int count= Integer.parseInt(app_adapt.getValus());

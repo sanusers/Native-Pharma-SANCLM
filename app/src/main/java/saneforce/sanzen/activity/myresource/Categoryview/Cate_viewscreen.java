@@ -15,7 +15,7 @@ import java.util.Objects;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.forms.weekoff.forms_viewpager;
+import saneforce.sanzen.activity.forms.weekoff.FormsViewpager;
 import saneforce.sanzen.storage.SharedPref;
 
 
@@ -24,7 +24,7 @@ public class Cate_viewscreen extends AppCompatActivity {
     ImageView back_btn;
     TabLayout tabLayout;
     ViewPager viewPager;
-    forms_viewpager formsviewpager;
+    FormsViewpager formsviewpager;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -48,7 +48,7 @@ public class Cate_viewscreen extends AppCompatActivity {
         Cate_Chemistview cate_chemistview = new Cate_Chemistview();
 
         tabLayout.setupWithViewPager(viewPager);
-        formsviewpager = new forms_viewpager(getSupportFragmentManager(), 0);
+        formsviewpager = new FormsViewpager(getSupportFragmentManager(), 0);
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
             formsviewpager.addFragment(cate_Docview,"Doctor");
         }

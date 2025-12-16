@@ -661,6 +661,16 @@
     <string name="join_dt"> Joining Date </string>
     <string name="con_internet"> Connected to Internet </string>
     <string name="option"> Options </string>
+    <string name="str_password_changed_login_with_online">Your password has been changed. Please
+        login with online</string>
+    <string name="str_password_changed">Your password has been changed. Please log out and log in again.</string>
+    <string name="str_device_id_updated">Your device ID has been updated. Please log out and log in again.</string>
+    <string name="str_device_not_valid">Device is not valid</string>
+    <string name="str_access_denied">Access Denied! Contact Admin.</string>
+    <string name="str_user_status_vacant">User Status Vacant! Contact Admin.</string>
+    <string name="str_user_status_hold">User Status Hold! Contact Admin.</string>
+    <string name="str_user_status_blocked">User Status Blocked! Contact Admin.</string>
+    <string name="str_user_status_deactivated">User Status Deactivated! Contact Admin.</string>
     <string name="pause">Pause</string>
     <string name="play">Play</string>
     <string name="please_select_at_least">"Please select at least "</string>

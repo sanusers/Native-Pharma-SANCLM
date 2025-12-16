@@ -1,6 +1,6 @@
 package saneforce.sanzen.activity.forms.birthdayAnniversary;
 
-public class anniversaryModel {
+public class AnniversaryModel {
 
     String doctorName;
     String anniversaryDate;
@@ -12,8 +12,8 @@ public class anniversaryModel {
     private String className;
     //String color;
 
-    public anniversaryModel(String doctorName, String anniversaryDate,String code,String territory,String qualification,
-                            String category,String speciality ,String className) {
+    public AnniversaryModel(String doctorName, String anniversaryDate, String code, String territory, String qualification,
+                            String category, String speciality , String className) {
         this.doctorName = doctorName;
         this.anniversaryDate = anniversaryDate;
         this.code = code;

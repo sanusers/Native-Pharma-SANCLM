@@ -27,6 +27,9 @@ public class NotificationDataTable {
     @ColumnInfo(name = "sync_status", defaultValue = "0")
     private int syncStatus;
 
+    @ColumnInfo(name = "is_dialog_shown", defaultValue = "0")
+    private int isDialogShown;
+
     @Ignore
     public NotificationDataTable() {
     }
@@ -46,12 +49,13 @@ public class NotificationDataTable {
     }
 
     @Ignore
-    public NotificationDataTable(String title, String message, String dateTime, int isRead, int syncStatus) {
+    public NotificationDataTable(String title, String message, String dateTime, int isRead, int syncStatus, int isDialogShown) {
         this.title = title;
         this.message = message;
         this.dateTime = dateTime;
         this.isRead = isRead;
         this.syncStatus = syncStatus;
+        this.isDialogShown = isDialogShown;
     }
 
     public int getId() {
@@ -100,5 +104,13 @@ public class NotificationDataTable {
 
     public void setSyncStatus(int syncStatus) {
         this.syncStatus = syncStatus;
+    }
+
+    public int getIsDialogShown() {
+        return isDialogShown;
+    }
+
+    public void setIsDialogShown(int isDialogShown) {
+        this.isDialogShown = isDialogShown;
     }
 }

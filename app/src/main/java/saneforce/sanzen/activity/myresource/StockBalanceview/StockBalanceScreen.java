@@ -11,7 +11,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import saneforce.sanzen.activity.forms.weekoff.forms_viewpager;
+import saneforce.sanzen.activity.forms.weekoff.FormsViewpager;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.ActivityStockbalanceviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -25,7 +25,7 @@ public ActivityStockbalanceviewBinding activityStockbalanceviewBinding;
     ArrayList<StockModelClass> stockcount=new ArrayList<>();
     ArrayList<StockInputModel> inputcount=new ArrayList<>();
     private RoomDB roomDB;
-    forms_viewpager formsviewpager;
+    FormsViewpager formsviewpager;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +43,7 @@ public ActivityStockbalanceviewBinding activityStockbalanceviewBinding;
         StockInputBalance inputstock = new StockInputBalance();
 
         activityStockbalanceviewBinding.tabLayout.setupWithViewPager(activityStockbalanceviewBinding.viewPager);
-         formsviewpager = new forms_viewpager(getSupportFragmentManager(), 0);
+         formsviewpager = new FormsViewpager(getSupportFragmentManager(), 0);
         if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1")){
             formsviewpager.addFragment(productstock,"Product");
         }

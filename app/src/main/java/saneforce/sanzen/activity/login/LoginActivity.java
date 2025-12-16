@@ -31,6 +31,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -46,6 +47,7 @@ import java.util.Objects;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.notification.NotificationViewModel;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -59,6 +61,8 @@ import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
+import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
 import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -81,11 +85,12 @@ public class LoginActivity extends AppCompatActivity {
     Resources resources;
     String language;
     private int passwordNotVisible = 1;
-    RoomDB roomDB;
-    MasterDataDao masterDataDao;
-    CallTableDao callTableDao;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
+    private CallTableDao callTableDao;
     private LoginDataDao loginDataDao;
     private OutboxUtil outboxUtil;
+    private NotificationDataDao notificationDataDao;
     String appAccess = "";
     private CountDownTimer countDownTimer;
     private boolean isTimerStarted = false;
@@ -110,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         masterDataDao = roomDB.masterDataDao();
         callTableDao = roomDB.callTableDao();
         loginDataDao = roomDB.loginDataDao();
+        notificationDataDao = roomDB.notificationDataDao();
 
         uiInitialisation();
         binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
@@ -126,6 +132,12 @@ public class LoginActivity extends AppCompatActivity {
             remainingTime = TimeUtils.timeDifferenceInMillis(SharedPref.getLoginFailedDateTime(LoginActivity.this), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
             startTimer();
         }
+
+        notificationDataDao.getNotificationBySyncStatus(5).forEach(data -> {
+            binding.logoutReasonLayout.setVisibility(View.VISIBLE);
+            String reason = data.getMessage().substring(0, data.getMessage().lastIndexOf("$"));
+            binding.logoutReasonTxt.setText(reason);
+        });
 
         if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, s -> {
@@ -183,6 +195,10 @@ public class LoginActivity extends AppCompatActivity {
                         CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.no_network));
                     } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                         SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
+                        notificationDataDao.getNotificationBySyncStatus(5).forEach(data -> {
+                            notificationDataDao.changeNotificationSyncStatus(data.getId(), 0);
+                            notificationDataDao.changeNotificationReadStatus(data.getId(), 1);
+                        });
                         startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
 //                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                         Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
@@ -388,6 +404,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+        String reason = SharedPref.getLogoutReason(LoginActivity.this);
+        if (!reason.isEmpty()) {
+            if (reason.contains(".")) {
+                reason = reason.substring(0, reason.indexOf("."));
+            }
+            binding.logoutReasonLayout.setVisibility(View.VISIBLE);
+            binding.logoutReasonTxt.setText(reason);
+        }
         SetUpLanguage();
     }
 
@@ -585,14 +609,18 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void
-    process(JSONObject jsonObject) {
+    public void process(JSONObject jsonObject) {
         try {
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
+            notificationDataDao.getNotificationBySyncStatus(5).forEach(data -> {
+                notificationDataDao.changeNotificationSyncStatus(data.getId(), 0);
+                notificationDataDao.changeNotificationReadStatus(data.getId(), 1);
+            });
             SharedPref.InsertLogInData(LoginActivity.this, jsonObject);
             SharedPref.saveKeys(LoginActivity.this, jsonObject.optString("zakey"), jsonObject.optString("zskey"));
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
+            SharedPref.setLogoutReason(LoginActivity.this, "");
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             //   SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
             SharedPref.saveHqMain(LoginActivity.this, jsonObject.getString("HQName"));

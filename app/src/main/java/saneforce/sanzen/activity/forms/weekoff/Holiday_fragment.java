@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -28,14 +27,12 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class Holiday_fragment extends Fragment {
-
     RecyclerView weeklist;
     TextView holy_year;
     ConstraintLayout constraintNoData;
 
-
-    ArrayList<fromsmodelclass> listvalue = new ArrayList<>();
-    holiday_adapter holidayadapter;
+    ArrayList<FormsModelClass> listvalue = new ArrayList<>();
+    HolidayAdapter holidayadapter;
     String current_year;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
@@ -101,10 +98,10 @@ public class Holiday_fragment extends Fragment {
                     String Holiday_Name = (jsonObject.getString("Holiday_Name"));
                     String day_name = (jsonObject.getString("day_name"));
 
-                    fromsmodelclass list = new fromsmodelclass(monthname, Hday, Holiday_Name, day_name, Holiday_Date, colorline, dub_colrline, backgrd_clr);
+                    FormsModelClass list = new FormsModelClass(monthname, Hday, Holiday_Name, day_name, Holiday_Date, colorline, dub_colrline, backgrd_clr);
                     listvalue.add(list);
 
-                    holidayadapter = new holiday_adapter(listvalue, getActivity());
+                    holidayadapter = new HolidayAdapter(listvalue, getActivity());
                     weeklist.setAdapter(holidayadapter);
                     weeklist.setLayoutManager(new LinearLayoutManager(getActivity()));
                     holidayadapter.notifyDataSetChanged();

@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.forms.birthdayAnniversary;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +16,13 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 
-public class birthdayAdapter extends BaseAdapter {
+public class BirthdayAdapter extends BaseAdapter {
 
-    ArrayList<birthdayModel> birthdayList;
+    ArrayList<BirthdayModel> birthdayList;
      Context context;
     LayoutInflater inflater;
 
-    public birthdayAdapter(ArrayList<birthdayModel> birthdayList, Context context) {
+    public BirthdayAdapter(ArrayList<BirthdayModel> birthdayList, Context context) {
         this.birthdayList = birthdayList;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -51,14 +50,14 @@ public class birthdayAdapter extends BaseAdapter {
     @Override
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        birthdayAdapter.ViewHolder holder;
+        BirthdayAdapter.ViewHolder holder;
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.fragment_birthday_adapter, parent, false);
-            holder = new birthdayAdapter.ViewHolder(convertView);
+            holder = new BirthdayAdapter.ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
-            holder = (birthdayAdapter.ViewHolder) convertView.getTag();
+            holder = (BirthdayAdapter.ViewHolder) convertView.getTag();
         }
 
         // Each row represents TWO doctors
@@ -67,7 +66,7 @@ public class birthdayAdapter extends BaseAdapter {
 
         // ✅ LEFT card setup
         if (leftIndex < birthdayList.size()) {
-          birthdayModel leftModel = birthdayList.get(leftIndex);
+          BirthdayModel leftModel = birthdayList.get(leftIndex);
             holder.card_left.setVisibility(View.VISIBLE);
             holder.drImg.setImageResource(R.drawable.tp_dr_icon);
             holder.textDoctor.setText(leftModel.getDoctorName());
@@ -84,7 +83,7 @@ public class birthdayAdapter extends BaseAdapter {
 
         // ✅ RIGHT card setup
         if (rightIndex < birthdayList.size()) {
-            birthdayModel rightModel = birthdayList.get(rightIndex);
+            BirthdayModel rightModel = birthdayList.get(rightIndex);
             holder.card_Right.setVisibility(View.VISIBLE);
             holder.drImg2.setImageResource(R.drawable.tp_dr_icon);
             holder.textDoctor2.setText(rightModel.getDoctorName());

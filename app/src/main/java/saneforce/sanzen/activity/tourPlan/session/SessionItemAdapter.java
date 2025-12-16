@@ -315,5 +315,4 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
             notifyDataSetChanged();
         }
     }
-
 }

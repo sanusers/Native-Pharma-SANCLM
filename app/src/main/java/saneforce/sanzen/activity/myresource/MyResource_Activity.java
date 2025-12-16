@@ -5,7 +5,10 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static saneforce.sanzen.commonClasses.UtilityClass.hideKeyboard;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,6 +27,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,6 +43,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.myresource.myresourcemodel.MyResourceInterface;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -87,6 +95,12 @@ public class MyResource_Activity extends AppCompatActivity {
 
     Res_sidescreenAdapter appAdapter;
     public static boolean shouldRefresh = false;
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+    }
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -461,7 +475,9 @@ public class MyResource_Activity extends AppCompatActivity {
             listed_data.add(new Resourcemodel_class("Profile", "", "18"));
 
                 Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count + "---" + DocMas_count);
-//            listed_data.add(new Resourcemodel_class("Birthday / Anniversary", "", "19"));
+             if(SharedPref.getSfType(MyResource_Activity.this).equalsIgnoreCase("1")) {
+                 listed_data.add(new Resourcemodel_class("Birthday / Anniversary", "", "19"));
+             }
                 resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1, new MyResourceInterface() {
                     @Override
                     public void onclickItem(ArrayList<Resourcemodel_class> resourcelis, String split_val, String Hqcode) {
@@ -635,5 +651,24 @@ public class MyResource_Activity extends AppCompatActivity {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
             binding.drawerLayout.closeDrawer(GravityCompat.END);
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+    }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|PR|GIF|TM|MI|WT|OTR|FSD|AMS")) {
+                startActivity(new Intent(MyResource_Activity.this, MyResource_Activity.class));
+                finishAffinity();
+            }
+        }
+    };
+
 }

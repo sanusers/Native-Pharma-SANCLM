@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.forms.weekoff.weekoff_fragment">
+    tools:context=".activity.forms.weekoff.WeekoffFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/weekooflist"

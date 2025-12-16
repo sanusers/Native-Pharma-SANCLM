@@ -2,7 +2,10 @@ package saneforce.sanzen.activity.presentation.customerSelection;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -50,7 +54,9 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
+import saneforce.sanzen.activity.forms.weekoff.WeekOffViewScreen;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
+import saneforce.sanzen.activity.myresource.MyResource_Activity;
 import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanzen.activity.presentation.customerSelection.adapter.CustomerListSelectionAdapter;
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
@@ -89,6 +95,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     private PresentationDataTable presentationDataTable = new PresentationDataTable();
     private List<String> SynqList = new ArrayList<>();
     private ApiInterface apiInterface;
+    private Bundle bundle;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -133,7 +140,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                 binding.imgArrow.setVisibility(View.GONE);
             }
 
-            Bundle bundle = getIntent().getExtras();
+            bundle = getIntent().getExtras();
             if (bundle != null) {
                 customerType = bundle.getString(CUSTOMER_TYPE);
                 if (bundle.containsKey(IS_FROM)) {
@@ -984,4 +991,30 @@ public class CustomerSelectionActivity extends AppCompatActivity {
     public void commonFun() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+    }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|FSD|AMS")) {
+                Intent intent1 = new Intent(CustomerSelectionActivity.this, CustomerSelectionActivity.class);
+                intent1.putExtras(bundle);
+                startActivity(intent1);
+                finish();
+            }
+        }
+    };
+
 }
