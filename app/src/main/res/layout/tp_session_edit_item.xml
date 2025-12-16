@@ -2,12 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_3sdp"
         app:cardCornerRadius="@dimen/_2sdp"
@@ -17,7 +17,7 @@
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/tp_session_highlight"
             android:paddingStart="@dimen/_6sdp"
@@ -26,15 +26,15 @@
 
             <RelativeLayout
                 android:id="@+id/rlLayout"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/session"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
@@ -43,7 +43,7 @@
 
                     <TextView
                         android:id="@+id/sessionNo"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/satoshi_medium"
@@ -54,12 +54,14 @@
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/sessionDelete"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                      android:layout_margin="@dimen/_3sdp"
                         android:gravity="center"
+                        android:layout_alignParentEnd="true"
                         android:paddingStart="@dimen/_8sdp"
                         android:paddingEnd="@dimen/_2sdp">
 
@@ -68,13 +70,13 @@
                             android:layout_height="@dimen/_10sdp"
                             android:src="@drawable/trash_icon" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/workTypeLayout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/session"
                     android:layout_alignParentStart="true"
@@ -82,21 +84,23 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/workTypeTxt"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
-                        android:gravity="start"
                         android:text="@string/work_type"
+                        android:layout_alignParentStart="true"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/workTypeSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@id/workTypeTxt"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -106,7 +110,7 @@
 
                         <TextView
                             android:id="@+id/workTypeField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -122,13 +126,14 @@
                             android:layout_height="@dimen/_6sdp"
                             android:layout_gravity="center"
                             android:layout_marginStart="@dimen/_3sdp"
+                            android:layout_alignParentEnd="true"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/hqLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -139,7 +144,8 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/hqTxt"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -153,9 +159,10 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_2sdp">
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/hqTxt">
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:id="@+id/hqSelect"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -169,7 +176,7 @@
 
                             <TextView
                                 android:id="@+id/hqField"
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/satoshi_medium"
@@ -185,6 +192,7 @@
                                 android:layout_height="@dimen/_12sdp"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="@dimen/_4sdp"
+                                android:layout_alignParentEnd="true"
                                 android:background="@drawable/edittext_stroke"
                                 android:backgroundTint="@color/bg_priority"
                                 android:fontFamily="@font/satoshi_regular"
@@ -201,10 +209,11 @@
                                 android:layout_width="@dimen/_6sdp"
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
+                                android:layout_alignParentEnd="true"
                                 android:layout_marginStart="@dimen/_3sdp"
                                 android:src="@drawable/arrow_down" />
 
-                        </LinearLayout>
+                        </RelativeLayout>
 
                         <ProgressBar
                             android:id="@+id/progress_hq"
@@ -218,9 +227,9 @@
 
                     </FrameLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/work_day_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -231,7 +240,8 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/work_day_txt"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -241,11 +251,12 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/work_day_select"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/work_day_txt"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -255,7 +266,7 @@
 
                         <TextView
                             android:id="@+id/work_day_field"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -270,14 +281,15 @@
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
                             android:layout_gravity="center"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/clusterLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -289,7 +301,7 @@
 
                     <TextView
                         android:id="@+id/textCluster"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -300,11 +312,12 @@
                         android:visibility="visible"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/clusterSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/textCluster"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -315,7 +328,7 @@
 
                         <TextView
                             android:id="@+id/clusterField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
@@ -332,6 +345,7 @@
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
                             android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_alignParentEnd="true"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
@@ -348,14 +362,15 @@
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
                             android:layout_gravity="center"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/jcLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -366,7 +381,8 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/jcTxt"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -376,11 +392,12 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/jcSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/jcTxt"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -390,7 +407,7 @@
 
                         <TextView
                             android:id="@+id/jcField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -406,6 +423,7 @@
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
                             android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_alignParentEnd="true"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
@@ -421,15 +439,16 @@
                             android:id="@+id/jcArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
+                            android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/listedDrLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -451,11 +470,12 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/listedDrSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/listedDrCap"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -465,7 +485,7 @@
 
                         <TextView
                             android:id="@+id/listedDrField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -480,6 +500,7 @@
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginEnd="@dimen/_4sdp"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
@@ -497,14 +518,15 @@
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
                             android:layout_gravity="center"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/chemistLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -516,7 +538,7 @@
 
                     <TextView
                         android:id="@+id/chemistCap"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -526,11 +548,12 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/chemistSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/chemistCap"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -540,7 +563,7 @@
 
                         <TextView
                             android:id="@+id/chemistField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -555,6 +578,7 @@
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginEnd="@dimen/_4sdp"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
@@ -571,15 +595,16 @@
                             android:id="@+id/chemistArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
+                            android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/stockiestLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -591,7 +616,7 @@
 
                     <TextView
                         android:id="@+id/stockiestCap"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -601,11 +626,12 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/stockiestSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/stockiestCap"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -615,7 +641,7 @@
 
                         <TextView
                             android:id="@+id/stockiestField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -631,6 +657,7 @@
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
                             android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_alignParentEnd="true"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
@@ -646,15 +673,16 @@
                             android:id="@+id/stockiestArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
+                            android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/unListedDrLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -667,7 +695,7 @@
 
                     <TextView
                         android:id="@+id/unListedDrCap"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -677,11 +705,12 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/unListedDrSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/unListedDrCap"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -691,7 +720,7 @@
 
                         <TextView
                             android:id="@+id/unListedDrField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -710,6 +739,7 @@
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
+                            android:layout_alignParentEnd="true"
                             android:gravity="center"
                             android:text="0"
                             android:textColor="#00C689"
@@ -722,15 +752,16 @@
                             android:id="@+id/unListedDrArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
+                            android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/cipLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -742,7 +773,7 @@
 
                     <TextView
                         android:id="@+id/cipCap"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -752,11 +783,12 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/cipSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/cipCap"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -766,7 +798,7 @@
 
                         <TextView
                             android:id="@+id/cipField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -785,6 +817,7 @@
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
+                            android:layout_alignParentEnd="true"
                             android:gravity="center"
                             android:text="0"
                             android:textColor="#00C689"
@@ -798,14 +831,15 @@
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
                             android:layout_gravity="center"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/hospLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -817,7 +851,7 @@
 
                     <TextView
                         android:id="@+id/hospCap"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
@@ -827,11 +861,12 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/hospSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/hospCap"
                         android:background="@drawable/edittext_stroke"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/_5sdp"
@@ -841,7 +876,7 @@
 
                         <TextView
                             android:id="@+id/hospField"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -860,6 +895,7 @@
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
+                            android:layout_alignParentEnd="true"
                             android:gravity="center"
                             android:text="0"
                             android:textColor="#00C689"
@@ -873,14 +909,15 @@
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
                             android:layout_gravity="center"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginStart="@dimen/_3sdp"
                             android:src="@drawable/arrow_down" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/remarkLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -922,7 +959,7 @@
                         android:textSize="@dimen/_6sdp"
                         tools:ignore="SpUsage" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -937,12 +974,12 @@
                 app:cardCornerRadius="@dimen/_2sdp"
                 app:contentPadding="@dimen/_6sdp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/edittext_stroke"
@@ -973,7 +1010,7 @@
                             android:textSize="@dimen/_6sdp"
                             tools:ignore="SpUsage" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:id="@+id/searchClearIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -988,16 +1025,16 @@
                                 android:scaleType="centerInside"
                                 android:src="@drawable/img_close" />
 
-                        </LinearLayout>
+                        </RelativeLayout>
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/sessionItemRecView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 

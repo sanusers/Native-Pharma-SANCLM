@@ -368,31 +368,40 @@
                         <HorizontalScrollView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layoutDirection="ltr"
+                            android:textDirection="ltr"
+                            android:fillViewport="true"
                             android:layout_below="@+id/txt_quik_link">
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginTop="@dimen/_4sdp"
                                 android:layout_marginEnd="@dimen/_2sdp"
                                 android:orientation="horizontal"
+                                android:layoutDirection="ltr"
                                 android:radius="@dimen/_6sdp">
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:id="@+id/ll_presentation"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
+                                    android:layout_weight="1"
                                     android:layout_marginTop="@dimen/_2sdp"
                                     android:layout_marginEnd="@dimen/_2sdp"
                                     android:layout_marginBottom="@dimen/_2sdp"
                                     android:background="@drawable/backround_text"
                                     android:backgroundTint="#c6eae1"
                                     android:orientation="horizontal"
+                                    android:layoutDirection="ltr"
                                     android:padding="@dimen/_2sdp">
 
                                     <ImageView
+                                        android:id="@+id/iv_presentation"
                                         android:layout_width="@dimen/_9sdp"
                                         android:layout_height="@dimen/_9sdp"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentStart="true"
                                         android:layout_gravity="center|start"
                                         android:layout_marginStart="@dimen/_5sdp"
                                         android:contentDescription="TODO"
@@ -401,41 +410,51 @@
 
 
                                     <TextView
-                                        android:layout_width="0dp"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="start|center"
                                         android:layout_marginStart="@dimen/_5sdp"
-                                        android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_medium"
-                                        android:gravity="start"
                                         android:text="@string/presentation"
+                                        android:layout_centerVertical="true"
+                                        android:layout_toEndOf="@id/iv_presentation"
                                         android:textColor="@color/black_45"
                                         android:textSize="@dimen/_7sdp"
+                                        android:textDirection="ltr"
+                                        android:textAlignment="viewStart"
+                                        android:gravity="start|center_vertical"
                                         tools:ignore="SpUsage,TextSizeCheck" />
 
                                     <ImageView
                                         android:layout_width="@dimen/_8sdp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center|end"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentEnd="true"
                                         android:layout_marginEnd="@dimen/_5sdp"
                                         android:src="@drawable/arrow_right_"
                                         tools:ignore="ContentDescription" />
 
-                                </LinearLayout>
+                                </RelativeLayout>
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:id="@+id/ll_slide"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_margin="@dimen/_2sdp"
+                                    android:layout_weight="1"
                                     android:background="@drawable/backround_text"
                                     android:backgroundTint="#d3e4ef"
                                     android:orientation="horizontal"
+                                    android:layoutDirection="ltr"
                                     android:padding="@dimen/_2sdp">
 
                                     <ImageView
+                                        android:id="@+id/iv_slide"
                                         android:layout_width="@dimen/_9sdp"
                                         android:layout_height="@dimen/_9sdp"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentStart="true"
                                         android:layout_gravity="center|start"
                                         android:layout_marginStart="@dimen/_5sdp"
                                         android:src="@drawable/eye_img"
@@ -443,16 +462,20 @@
 
 
                                     <TextView
-                                        android:layout_width="0dp"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="start|center"
                                         android:layout_marginStart="@dimen/_5sdp"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_medium"
-                                        android:gravity="start"
+                                        android:layout_centerVertical="true"
+                                        android:layout_toEndOf="@id/iv_slide"
                                         android:text="@string/preview"
                                         android:textColor="@color/black_45"
                                         android:textSize="@dimen/_7sdp"
+                                        android:textDirection="ltr"
+                                        android:textAlignment="viewStart"
+                                        android:gravity="start|center_vertical"
                                         tools:ignore="SpUsage,TextSizeCheck">
 
                                     </TextView>
@@ -461,39 +484,48 @@
                                         android:layout_width="@dimen/_8sdp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center|end"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentEnd="true"
                                         android:layout_marginEnd="@dimen/_5sdp"
                                         android:src="@drawable/arrow_right_"
                                         tools:ignore="ContentDescription">
 
                                     </ImageView>
-                                </LinearLayout>
+                                </RelativeLayout>
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:id="@+id/ll_report"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_margin="@dimen/_2sdp"
+                                    android:layout_weight="1"
                                     android:background="@drawable/backround_text"
                                     android:backgroundTint="#f2d7db"
                                     android:orientation="horizontal"
+                                    android:layoutDirection="ltr"
                                     android:padding="@dimen/_2sdp">
 
                                     <ImageView
+                                        android:id="@+id/iv_report"
                                         android:layout_width="@dimen/_9sdp"
                                         android:layout_height="@dimen/_9sdp"
                                         android:layout_gravity="center|start"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentStart="true"
                                         android:layout_marginStart="@dimen/_5sdp"
                                         android:src="@drawable/file_chart_img"
                                         tools:ignore="ContentDescription,ImageContrastCheck" />
 
                                     <TextView
-                                        android:layout_width="0dp"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="center|start"
-                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:gravity="start|center_vertical"                                        android:layout_marginStart="@dimen/_5sdp"
                                         android:layout_weight="1"
                                         android:fontFamily="@font/satoshi_medium"
-                                        android:gravity="start"
+                                        android:layout_centerVertical="true"
+                                        android:layout_toEndOf="@id/iv_report"
+                                        android:textDirection="ltr"
+                                        android:textAlignment="viewStart"
                                         android:text="@string/report"
                                         android:textColor="@color/black_45"
                                         android:textSize="@dimen/_7sdp"
@@ -505,13 +537,15 @@
                                         android:layout_width="@dimen/_8sdp"
                                         android:layout_height="@dimen/_8sdp"
                                         android:layout_gravity="center|end"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentEnd="true"
                                         android:layout_marginEnd="@dimen/_5sdp"
                                         android:src="@drawable/arrow_right_"
                                         tools:ignore="ContentDescription">
 
                                     </ImageView>
 
-                                </LinearLayout>
+                                </RelativeLayout>
 
                                 <LinearLayout
                                     android:id="@+id/ll_analys"
@@ -615,6 +649,8 @@
                 app:itemBackground="@drawable/drawer_item_bg"
                 app:itemIconSize="@dimen/_10sdp"
                 app:menu="@menu/navicationdrawermenuitem"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
                 app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"
                 app:itemTextColor="@color/black_45">
 

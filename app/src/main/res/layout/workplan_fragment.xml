@@ -465,7 +465,7 @@
 
                                 <RelativeLayout
                                     android:id="@+id/rlworktype1"
-                                    android:layout_width="match_parent"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_6sdp"
                                     android:layout_marginTop="@dimen/_6sdp"
@@ -479,6 +479,9 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_centerInParent="true"
+                                        android:textDirection="ltr"
+                                        android:gravity="start"
+                                        android:layout_alignParentStart="true"
                                         android:layout_marginStart="@dimen/_2sdp"
                                         android:layout_marginTop="@dimen/_2sdp"
                                         android:layout_marginEnd="@dimen/_2sdp"
@@ -495,7 +498,7 @@
                                         android:id="@+id/img_arrow_1"
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_6sdp"
-                                        android:layout_alignParentRight="true"
+                                        android:layout_alignParentEnd="true"
                                         android:layout_centerInParent="true"
                                         android:layout_marginRight="@dimen/_5sdp"
                                         android:src="@drawable/right_arrow" />

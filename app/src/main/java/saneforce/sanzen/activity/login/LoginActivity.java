@@ -131,8 +131,11 @@ public class LoginActivity extends AppCompatActivity {
                 binding.userId.setGravity(Gravity.CENTER | Gravity.END);
                 binding.userId.setTextDirection(View.TEXT_DIRECTION_LTR);
                 binding.userId.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                binding.password.setGravity(Gravity.CENTER | Gravity.END);
+
             } else {
                 binding.userId.setGravity(Gravity.CENTER | Gravity.START);
+                binding.password.setGravity(Gravity.CENTER | Gravity.START);
             }
         } catch (Exception e) {
             e.printStackTrace();

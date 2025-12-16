@@ -23,7 +23,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layoutDirection="ltr">
 
             <TextView
                 android:id="@+id/date"
@@ -33,7 +34,6 @@
                 android:textSize="@dimen/_5sdp"
                 android:textColor="@color/text_dark"
                 android:fontFamily="@font/satoshi_variable"
-                android:layout_alignParentStart="true"
                 android:gravity="center"
                 tools:ignore="SpUsage"/>
 

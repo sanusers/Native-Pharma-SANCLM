@@ -204,6 +204,23 @@
                         android:textColorHint="@color/text_dark_65"
                         android:textSize="@dimen/_6sdp"
                         tools:ignore="RtlSymmetry,VisualLintBounds,VisualLintTextFieldSize"/>-->
+                  <!--  <EditText
+                        android:id="@+id/userId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/edittext_stroke"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:hint="@string/enter_user_id"
+                        android:maxLines="1"
+                        android:padding="@dimen/_7sdp"
+                        android:cursorVisible="true"
+                        android:inputType="text"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/text_dark_65"
+                        android:textSize="@dimen/_6sdp"
+                        android:gravity="start|center_vertical"
+                        android:textAlignment="viewStart" />-->
                     <EditText
                         android:id="@+id/userId"
                         android:layout_width="match_parent"
@@ -214,14 +231,13 @@
                         android:hint="@string/enter_user_id"
                         android:maxLines="1"
                         android:padding="@dimen/_7sdp"
-                        android:inputType="text"
+                        android:cursorVisible="true"
                         android:textColor="@color/text_dark"
                         android:textColorHint="@color/text_dark_65"
                         android:textSize="@dimen/_6sdp"
-                        android:gravity="start|center_vertical"
-                        android:textAlignment="viewStart"
-                        android:layoutDirection="ltr"
-                        android:textDirection="ltr" />
+                        android:gravity="left|center_vertical"
+                        android:textAlignment="viewEnd"
+                        android:textDirection="ltr"/>
 
                     <TextView
                         android:id="@+id/tagPassword"
@@ -260,6 +276,7 @@
                             android:textColor="@color/text_dark"
                             android:textColorHint="@color/text_dark_65"
                             android:textSize="@dimen/_6sdp"
+                            android:textDirection="ltr"
                             tools:ignore="SpUsage" />
 
                         <ImageView

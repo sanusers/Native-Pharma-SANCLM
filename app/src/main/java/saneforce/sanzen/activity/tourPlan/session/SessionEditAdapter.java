@@ -3432,7 +3432,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         sessionMultiHQItemAdapter.notifyDataSetChanged();
     }
 
-    public void changeUIState(MyViewHolder holder, LinearLayout linearLayout, ImageView imageView, boolean allLayoutVisible) {
+    public void changeUIState(MyViewHolder holder, RelativeLayout linearLayout, ImageView imageView, boolean allLayoutVisible) {
 
         if (allLayoutVisible) {
             holder.workTypeLayout.setVisibility(View.VISIBLE);
@@ -4048,11 +4048,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public LinearLayout searchClearIcon;
+        public RelativeLayout searchClearIcon;
         public TextView workTypeField, hqField, clusterField, jcField, drField, chemistField, stockiestField, unListedDrField, cipField, hospField, workDayField;
         public TextView listedDrCapTV, cheCapTV, stockCapTV, unListedDrCapTV, hospCapTV, cipCapTV;
         public TextView hqCount, clusterCount, jcCount, drCount, chemistCount, stockiestCount, unListedDrCount, cipCount, hospCount, textCluster;
-        public LinearLayout sessionDelete, workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout, workDayLayout;
+        public RelativeLayout sessionDelete, workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout, workDayLayout;
         public ImageView workTypeArrow, hqArrow, clusterArrow, jcArrow, drArrow, chemistArrow, stockiestArrow, unListedDrArrow, cipArrow, hospArrow, workDayArrow;
         public ModelClass.SessionList sessionData = new ModelClass.SessionList();
         public OneBuildModelClass.SessionList sessionDataOneBuild = new OneBuildModelClass.SessionList();

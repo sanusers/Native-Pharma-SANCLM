@@ -2,11 +2,13 @@ package saneforce.sanzen.activity.forms.weekoff;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -54,7 +56,7 @@ public class WeekoffAdapter extends RecyclerView.Adapter<WeekoffAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView days_name;
         ImageView imgscr;
-        LinearLayout weekoffl,weekoff_backgrd;
+        RelativeLayout weekoffl,weekoff_backgrd;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             days_name=itemView.findViewById(R.id.days_name);

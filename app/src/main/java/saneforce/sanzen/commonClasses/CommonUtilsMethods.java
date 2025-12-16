@@ -305,14 +305,14 @@ public class CommonUtilsMethods {
 
     public static String getCurrentInstance(String requiredFormat) {
         Calendar c = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(requiredFormat);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(requiredFormat,Locale.ENGLISH);
         return sdf.format(c.getTimeInMillis());
     }
 
     @SuppressLint("SimpleDateFormat")
     public static String setConvertDate(String currentFormat, String requiredFormat, String date) {
         try {
-            SimpleDateFormat spf = new SimpleDateFormat(currentFormat);
+            SimpleDateFormat spf = new SimpleDateFormat(currentFormat,Locale.ENGLISH);
             Date newDate = null;
             try {
                 newDate = spf.parse(date);
@@ -587,15 +587,16 @@ public class CommonUtilsMethods {
     }
 
     public static String convertDate(String originalDateString) {
-        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        SimpleDateFormat targetFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat targetFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
+        SimpleDateFormat targetFormat1 = new SimpleDateFormat("dd, yyyy", Locale.ENGLISH);
         Date date = null;
         try {
             date = originalFormat.parse(originalDateString);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return targetFormat.format(date);
+        return targetFormat.format(date)+ " " + targetFormat1.format(date);
     }
 
     public static class DoubleClickListener implements View.OnClickListener {

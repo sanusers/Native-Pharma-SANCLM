@@ -221,7 +221,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         try {
             boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
-            if (isArabic) {
+            boolean isBurmese = Locale.getDefault().getLanguage().equals("my");
+            if (isArabic || isBurmese) {
                 binding.listedDr.setGravity(Gravity.CENTER | Gravity.END);
                 binding.chemist.setGravity(Gravity.CENTER | Gravity.END);
                 binding.stockiest.setGravity(Gravity.CENTER | Gravity.END);
