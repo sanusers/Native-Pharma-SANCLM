@@ -189,11 +189,18 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                                         clickedItem.setChecked(false);
                                         notifyItemChanged(position);
                                     } else {
-                                        plannedDatesList.add(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
-                                        plannedVisits++;
-                                        doctorVisitModel.setPlannedDates(plannedDatesList);
-                                        doctorVisitModel.setPlannedVisit(plannedVisits);
-                                        TourPlanActivity.doctorVisitMap.put(code, doctorVisitModel);
+                                        if (visitFrequencyNeed && plannedVisits >= totalVisits) {
+                                            Log.e("SIA", "onSafeClick: " + totalVisits + " -> " + plannedVisits);
+                                            CommonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
+                                            clickedItem.setChecked(false);
+                                            notifyItemChanged(position);
+                                        } else {
+                                            plannedDatesList.add(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
+                                            plannedVisits++;
+                                            doctorVisitModel.setPlannedDates(plannedDatesList);
+                                            doctorVisitModel.setPlannedVisit(plannedVisits);
+                                            TourPlanActivity.doctorVisitMap.put(code, doctorVisitModel);
+                                        }
                                     }
                                 } else {
                                     if (plannedVisits >= totalVisits) {

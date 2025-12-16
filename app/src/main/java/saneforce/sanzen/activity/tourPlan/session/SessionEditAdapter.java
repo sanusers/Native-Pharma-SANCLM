@@ -121,7 +121,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 weeklyOffEditable = jsonArray.getJSONObject(i).getString("Weeklyoff_Editable");
                 remarksNeed = jsonArray.getJSONObject(i).optString("tp_objective_mandatory");
                 planAllDr = jsonArray.getJSONObject(i).optString("Plan_All_Drs", "1");
-                visitFrequencyNeed = jsonArray.getJSONObject(i).optString("visit_freq_need", "0");
+                visitFrequencyNeed = jsonArray.getJSONObject(i).optString("visit_freq_need", "1");
                 minimumGap = jsonArray.getJSONObject(i).optString("min_gap_need", "0");
             }
         } catch (JSONException e) {
@@ -155,7 +155,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 weeklyOffEditable = jsonArray.getJSONObject(i).getString("Weeklyoff_Editable");
                 remarksNeed = jsonArray.getJSONObject(i).optString("tp_objective_mandatory");
                 planAllDr = jsonArray.getJSONObject(i).optString("Plan_All_Drs", "1");
-                visitFrequencyNeed = jsonArray.getJSONObject(i).optString("visit_freq_need", "0");
+                visitFrequencyNeed = jsonArray.getJSONObject(i).optString("visit_freq_need", "1");
                 minimumGap = jsonArray.getJSONObject(i).optString("min_gap_need", "0");
             }
         } catch (JSONException e) {

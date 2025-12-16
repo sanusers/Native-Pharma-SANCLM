@@ -448,6 +448,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     if (dayWiseArrayCurrentMonthOneBuild.size() == 0) {
                         dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                     }
+                    oneBuildModelClassList = dayWiseArrayCurrentMonthOneBuild;
                     populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
                 } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().plusMonths(1).getMonth().toString())) {
                     monthInAdapterFlag = 1;
@@ -456,6 +457,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                     dayWiseArrayNextMonthOneBuild.clear();
                     dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
+                    oneBuildModelClassList = dayWiseArrayNextMonthOneBuild;
                     populateCalenderAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
                 }
             });
@@ -474,12 +476,14 @@ public class TourPlanActivity extends AppCompatActivity {
                     if (dayWiseArrayCurrentMonth.size() == 0) {
                         dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
                     }
+                    modelClassList = dayWiseArrayCurrentMonth;
                     populateCalendarAdapter(dayWiseArrayCurrentMonth);
                 } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().plusMonths(1).getMonth().toString())) {
                     monthInAdapterFlag = 1;
                     if (dayWiseArrayNextMonth.size() == 0) {
                         dayWiseArrayNextMonth = prepareModelClassForMonth(localDate);
                     }
+                    modelClassList = dayWiseArrayNextMonth;
                     populateCalendarAdapter(dayWiseArrayNextMonth);
                 }
             });
@@ -503,6 +507,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     if (dayWiseArrayCurrentMonthOneBuild.size() == 0) {
                         dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
                     }
+                    oneBuildModelClassList = dayWiseArrayCurrentMonthOneBuild;
                     populateCalenderAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
                 } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().minusMonths(1).getMonth().toString())) {
                     monthInAdapterFlag = -1;
@@ -511,6 +516,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                     dayWiseArrayPreviousMonthOneBuild.clear();
                     dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(localDate);
+                    oneBuildModelClassList = dayWiseArrayPreviousMonthOneBuild;
                     populateCalenderAdapterOneBuild(dayWiseArrayPreviousMonthOneBuild);
                 }
             });
@@ -533,12 +539,14 @@ public class TourPlanActivity extends AppCompatActivity {
                     if (dayWiseArrayCurrentMonth.size() == 0) {
                         dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
                     }
+                    modelClassList = dayWiseArrayCurrentMonth;
                     populateCalendarAdapter(dayWiseArrayCurrentMonth);
                 } else if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().minusMonths(1).getMonth().toString())) {
                     monthInAdapterFlag = -1;
                     if (dayWiseArrayPrevMonth.size() == 0) {
                         dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate);
                     }
+                    modelClassList = dayWiseArrayPrevMonth;
                     populateCalendarAdapter(dayWiseArrayPrevMonth);
                 }
             });
@@ -998,9 +1006,23 @@ public class TourPlanActivity extends AppCompatActivity {
                             oneBuildModelClassList = dayWiseArrayNextMonthOneBuild;
                         }
                         if (validatePlanAllDrs(true, oneBuildModelClassList, new ArrayList<>())) {
-                            sendToApprovalOneBuild();
+                            if (visitFrequencyNeed.equalsIgnoreCase("0")) {
+                                if (validateVisitFrequency()) {
+                                    sendToApprovalOneBuild();
+                                } else {
+                                    CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_plan_all_the) + drCap + " " + getString(R.string.visit));
+                                }
+                            } else {
+                                sendToApprovalOneBuild();
+                            }
                         } else {
                             CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_plan_all_the) + drCap + getString(R.string.at_least_one_time));
+                        }
+                    } else if (visitFrequencyNeed.equalsIgnoreCase("0")) {
+                        if (validateVisitFrequency()) {
+                            sendToApprovalOneBuild();
+                        } else {
+                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_plan_all_the) + drCap + " " + getString(R.string.visit));
                         }
                     } else {
                         sendToApprovalOneBuild();
@@ -1489,6 +1511,17 @@ public class TourPlanActivity extends AppCompatActivity {
         });
     }
 
+    private boolean validateVisitFrequency() {
+        boolean isValid = true;
+        for (DoctorVisitModel doctorVisitModel : doctorVisitMap.values()) {
+            if (doctorVisitModel.getPlannedVisit() < doctorVisitModel.getTotalVisit()) {
+                isValid = false;
+                break;
+            }
+        }
+        return isValid;
+    }
+
     private void getDoctorData() {
         try {
             doctorMap = new HashMap<>();
@@ -1764,7 +1797,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 hospNeed = jsonObject.optString("HospNeed");
                 remarksNeed = jsonObject.optString("tp_objective_mandatory");
                 planAllDr = jsonObject.optString("Plan_All_Drs", "1");
-                visitFrequencyNeed = jsonObject.optString("visit_freq_need", "0");
+                visitFrequencyNeed = jsonObject.optString("visit_freq_need", "1");
                 minimumGap = jsonObject.optString("min_gap_need", "0");
             }
 
@@ -1888,7 +1921,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 hospNeed = jsonObject.optString("HospNeed");
                 remarksNeed = jsonObject.optString("tp_objective_mandatory");
                 planAllDr = jsonObject.optString("Plan_All_Drs", "1");
-                visitFrequencyNeed = jsonObject.optString("visit_freq_need", "0");
+                visitFrequencyNeed = jsonObject.optString("visit_freq_need", "1");
                 minimumGap = jsonObject.optString("min_gap_need", "0");
             }
 
@@ -2805,11 +2838,11 @@ public class TourPlanActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            binding.txtFieldWork.setText(getString(R.string.field_work) + " - " + fw);
-            binding.txtNonFieldWork.setText(getString(R.string.non_field_work) + " - " + nfw);
-            binding.txtLeave.setText(getString(R.string.leave) + " - " + l);
-            binding.txtWeekOff.setText(getString(R.string.weekly_off) + " - " + wo);
-            binding.txtHoliday.setText(getString(R.string.holiday) + " - " + ho);
+            binding.fwCount.setText(String.valueOf(fw));
+            binding.nfwCount.setText(String.valueOf(nfw));
+            binding.leaveCount.setText(String.valueOf(l));
+            binding.weekOffCount.setText(String.valueOf(wo));
+            binding.holidayCount.setText(String.valueOf(ho));
 
             summaryAdapter = new SummaryAdapter(modelClasses, TourPlanActivity.this, (modelClass, position) -> {
                 populateSessionViewAdapter(modelClass);
@@ -2864,11 +2897,11 @@ public class TourPlanActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            binding.txtFieldWork.setText(getString(R.string.field_work) + " - " + fw);
-            binding.txtNonFieldWork.setText(getString(R.string.non_field_work) + " - " + nfw);
-            binding.txtLeave.setText(getString(R.string.leave) + " - " + l);
-            binding.txtWeekOff.setText(getString(R.string.weekly_off) + " - " + wo);
-            binding.txtHoliday.setText(getString(R.string.holiday) + " - " + ho);
+            binding.fwCount.setText(String.valueOf(fw));
+            binding.nfwCount.setText(String.valueOf(nfw));
+            binding.leaveCount.setText(String.valueOf(l));
+            binding.weekOffCount.setText(String.valueOf(wo));
+            binding.holidayCount.setText(String.valueOf(ho));
 
             summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
                 populateSessionViewAdapterOneBuild(oneBuildmodelClass);

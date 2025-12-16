@@ -328,10 +328,10 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                     dataList.add(contentModel);
                 }
                 headerModel.setTitle(flag + " (" + count + " days)");
-                if (dataList.size() == 1) {
-                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + flag + " " + getString(R.string.planned), "", "");
-                    dataList.add(contentModel);
-                }
+            }
+            if (dataList.size() == 1) {
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + flag + " " + getString(R.string.planned), "", "");
+                dataList.add(contentModel);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -374,10 +374,10 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                     dataList.add(contentModel);
                 }
                 headerModel.setTitle(title + " (" + count + " days)");
-                if (dataList.size() == 1) {
-                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + title + " " + getString(R.string.planned), "", "");
-                    dataList.add(contentModel);
-                }
+            }
+            if (dataList.size() == 1) {
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + title + " " + getString(R.string.planned), "", "");
+                dataList.add(contentModel);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -393,8 +393,8 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
             HeaderModel unplannedHeaderModel = new HeaderModel(getString(R.string.unplanned));
             List<Object> plannedDataList = new ArrayList<>();
             List<Object> unplannedDataList = new ArrayList<>();
+            int plannedCount = 0, unplannedCount = 0;
             if (clusterMaster != null && !clusterMaster.isEmpty()) {
-                int plannedCount = 0, unplannedCount = 0;
                 for (String clusterCode : clusterMaster.keySet()) {
                     ClusterModel clusterModel = clusterMaster.get(clusterCode);
                     if (clusterModel != null) {
@@ -419,21 +419,21 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                         }
                     }
                 }
-                if (plannedDataList.isEmpty()) {
-                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.planned), "", "");
-                    plannedDataList.add(contentModel);
-                }
-                if (unplannedDataList.isEmpty()) {
-                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.unplanned), "", "");
-                    unplannedDataList.add(contentModel);
-                }
-                plannedHeaderModel.setTitle(getString(R.string.planned) + " (" + plannedCount + ")");
-                dataList.add(plannedHeaderModel);
-                dataList.addAll(plannedDataList);
-                unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " (" + unplannedCount + ")");
-                dataList.add(unplannedHeaderModel);
-                dataList.addAll(unplannedDataList);
             }
+            if (plannedDataList.isEmpty()) {
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.planned), "", "");
+                plannedDataList.add(contentModel);
+            }
+            if (unplannedDataList.isEmpty()) {
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.unplanned), "", "");
+                unplannedDataList.add(contentModel);
+            }
+            plannedHeaderModel.setTitle(getString(R.string.planned) + " (" + plannedCount + ")");
+            dataList.add(plannedHeaderModel);
+            dataList.addAll(plannedDataList);
+            unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " (" + unplannedCount + ")");
+            dataList.add(unplannedHeaderModel);
+            dataList.addAll(unplannedDataList);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -472,10 +472,10 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                     }
                 }
                 headerModel.setTitle(getString(R.string.planned) + " (" + count + " days)");
-                if (dataList.size() == 1) {
-                    ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + getString(R.string.joint_work) + " " + getString(R.string.planned), "", "");
-                    dataList.add(contentModel);
-                }
+            }
+            if (dataList.size() == 1) {
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + getString(R.string.joint_work) + " " + getString(R.string.planned), "", "");
+                dataList.add(contentModel);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -654,8 +654,8 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                     HeaderModel unplannedHeaderModel = new HeaderModel(getString(R.string.unplanned));
                     List<Object> plannedDataList = new ArrayList<>();
                     List<Object> unplannedDataList = new ArrayList<>();
+                    int plannedCount = 0, unplannedCount = 0;
                     if (doctorClusterMaster.containsKey(clusterWiseModel.getCode()) && doctorClusterMaster.get(clusterWiseModel.getCode()) != null && !doctorClusterMaster.get(clusterWiseModel.getCode()).isEmpty()) {
-                        int plannedCount = 0, unplannedCount = 0;
                         for (String drCode : doctorClusterMaster.get(clusterWiseModel.getCode())) {
                             DoctorModel doctorModel = doctorMaster.get(drCode);
                             if (doctorModel != null) {
@@ -669,21 +669,21 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        if (plannedDataList.isEmpty()) {
-                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned), "", "");
-                            plannedDataList.add(contentModel);
-                        }
-                        if (unplannedDataList.isEmpty()) {
-                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
-                            unplannedDataList.add(contentModel);
-                        }
-                        plannedHeaderModel.setTitle(getString(R.string.planned) + " " + drCap + " (" + plannedCount + ")");
-                        dataList.add(plannedHeaderModel);
-                        dataList.addAll(plannedDataList);
-                        unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + drCap + " (" + unplannedCount + ")");
-                        dataList.add(unplannedHeaderModel);
-                        dataList.addAll(unplannedDataList);
                     }
+                    if (plannedDataList.isEmpty()) {
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned), "", "");
+                        plannedDataList.add(contentModel);
+                    }
+                    if (unplannedDataList.isEmpty()) {
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
+                        unplannedDataList.add(contentModel);
+                    }
+                    plannedHeaderModel.setTitle(getString(R.string.planned) + " " + drCap + " (" + plannedCount + ")");
+                    dataList.add(plannedHeaderModel);
+                    dataList.addAll(plannedDataList);
+                    unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + drCap + " (" + unplannedCount + ")");
+                    dataList.add(unplannedHeaderModel);
+                    dataList.addAll(unplannedDataList);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -694,8 +694,8 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                     HeaderModel unplannedHeaderModel = new HeaderModel(getString(R.string.unplanned));
                     List<Object> plannedDataList = new ArrayList<>();
                     List<Object> unplannedDataList = new ArrayList<>();
+                    int plannedCount = 0, unplannedCount = 0;
                     if (chemistClusterMaster.containsKey(clusterWiseModel.getCode()) && chemistClusterMaster.get(clusterWiseModel.getCode()) != null && !chemistClusterMaster.get(clusterWiseModel.getCode()).isEmpty()) {
-                        int plannedCount = 0, unplannedCount = 0;
                         for (String chmCode : chemistClusterMaster.get(clusterWiseModel.getCode())) {
                             DCRModel dcrModel = chemistMaster.get(chmCode);
                             if (dcrModel != null) {
@@ -709,21 +709,21 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        if (plannedDataList.isEmpty()) {
-                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.planned), "", "");
-                            plannedDataList.add(contentModel);
-                        }
-                        if (unplannedDataList.isEmpty()) {
-                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.unplanned), "", "");
-                            unplannedDataList.add(contentModel);
-                        }
-                        plannedHeaderModel.setTitle(getString(R.string.planned) + " " + chmCap + " (" + plannedCount + ")");
-                        dataList.add(plannedHeaderModel);
-                        dataList.addAll(plannedDataList);
-                        unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + chmCap + " (" + unplannedCount + ")");
-                        dataList.add(unplannedHeaderModel);
-                        dataList.addAll(unplannedDataList);
                     }
+                    if (plannedDataList.isEmpty()) {
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.planned), "", "");
+                        plannedDataList.add(contentModel);
+                    }
+                    if (unplannedDataList.isEmpty()) {
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.unplanned), "", "");
+                        unplannedDataList.add(contentModel);
+                    }
+                    plannedHeaderModel.setTitle(getString(R.string.planned) + " " + chmCap + " (" + plannedCount + ")");
+                    dataList.add(plannedHeaderModel);
+                    dataList.addAll(plannedDataList);
+                    unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + chmCap + " (" + unplannedCount + ")");
+                    dataList.add(unplannedHeaderModel);
+                    dataList.addAll(unplannedDataList);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -744,8 +744,8 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 List<Object> plannedDataList = new ArrayList<>();
                 List<Object> unplannedDataList = new ArrayList<>();
                 List<Object> unplannedVisitsDataList = new ArrayList<>();
+                int plannedCount = 0, unplannedCount = 0;
                 if (doctorCategoryMaster.containsKey(categoryWiseModel.getCode()) && doctorCategoryMaster.get(categoryWiseModel.getCode()) != null && !doctorCategoryMaster.get(categoryWiseModel.getCode()).isEmpty()) {
-                    int plannedCount = 0, unplannedCount = 0;
                     for (String drCode : doctorCategoryMaster.get(categoryWiseModel.getCode())) {
                         DoctorModel doctorModel = doctorMaster.get(drCode);
                         if (doctorModel != null) {
@@ -783,54 +783,40 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    if (categoryClickType == CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
-                        if (plannedDataList.isEmpty()) {
-                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned), "", "");
-                            plannedDataList.add(contentModel);
-                        }
-                        if (unplannedDataList.isEmpty()) {
-                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
-                            unplannedDataList.add(contentModel);
-                        }
-                        plannedHeaderModel.setTitle(getString(R.string.planned) + " " + drCap + " (" + plannedCount + ")");
-                        dataList.add(plannedHeaderModel);
-                        dataList.addAll(plannedDataList);
-                        unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + drCap + " (" + unplannedCount + ")");
-                        dataList.add(unplannedHeaderModel);
-                        dataList.addAll(unplannedDataList);
+                }
+                if (categoryClickType == CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
+                    if (plannedDataList.isEmpty()) {
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned), "", "");
+                        plannedDataList.add(contentModel);
                     }
-                    if (categoryClickType == CategoryDataAdapter.CategoryClickType.PLANNED_VISITS) {
-                        if (plannedDataList.isEmpty()) {
-                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned_visits), "", "");
-                            plannedDataList.add(contentModel);
-                        }
-//                        if (unplannedDataList.isEmpty()) {
-//                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
-//                            unplannedDataList.add(contentModel);
-//                        }
-                        plannedHeaderModel.setTitle(getString(R.string.planned_visits) + " (" + plannedCount + ")");
-                        dataList.add(plannedHeaderModel);
-                        dataList.addAll(plannedDataList);
-//                        unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + drCap + " (" + unplannedCount + ")");
-//                        dataList.add(unplannedHeaderModel);
-//                        dataList.addAll(unplannedDataList);
+                    if (unplannedDataList.isEmpty()) {
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
+                        unplannedDataList.add(contentModel);
                     }
-                    if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
-//                        if (plannedDataList.isEmpty()) {
-//                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits), "", "");
-//                            plannedDataList.add(contentModel);
-//                        }
-                        if (unplannedVisitsDataList.isEmpty()) {
-                            ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits), "", "");
-                            unplannedVisitsDataList.add(contentModel);
-                        }
-//                        plannedHeaderModel.setTitle(getString(R.string.unplanned_visits) + " (" + plannedCount + ")");
-//                        dataList.add(plannedHeaderModel);
-//                        dataList.addAll(plannedDataList);
-                        unplannedHeaderModel.setTitle(getString(R.string.unplanned_visits) + " (" + unplannedCount + ")");
-                        dataList.add(unplannedHeaderModel);
-                        dataList.addAll(unplannedVisitsDataList);
+                    plannedHeaderModel.setTitle(getString(R.string.planned) + " " + drCap + " (" + plannedCount + ")");
+                    dataList.add(plannedHeaderModel);
+                    dataList.addAll(plannedDataList);
+                    unplannedHeaderModel.setTitle(getString(R.string.unplanned) + " " + drCap + " (" + unplannedCount + ")");
+                    dataList.add(unplannedHeaderModel);
+                    dataList.addAll(unplannedDataList);
+                }
+                if (categoryClickType == CategoryDataAdapter.CategoryClickType.PLANNED_VISITS) {
+                    if (plannedDataList.isEmpty()) {
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned_visits), "", "");
+                        plannedDataList.add(contentModel);
                     }
+                    plannedHeaderModel.setTitle(getString(R.string.planned_visits) + " (" + plannedCount + ")");
+                    dataList.add(plannedHeaderModel);
+                    dataList.addAll(plannedDataList);
+                }
+                if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
+                    if (unplannedVisitsDataList.isEmpty()) {
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits), "", "");
+                        unplannedVisitsDataList.add(contentModel);
+                    }
+                    unplannedHeaderModel.setTitle(getString(R.string.unplanned_visits) + " (" + unplannedCount + ")");
+                    dataList.add(unplannedHeaderModel);
+                    dataList.addAll(unplannedVisitsDataList);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
