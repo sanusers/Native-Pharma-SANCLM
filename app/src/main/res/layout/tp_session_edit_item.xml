@@ -191,7 +191,7 @@
                                 android:layout_width="@dimen/_12sdp"
                                 android:layout_height="@dimen/_12sdp"
                                 android:layout_gravity="center"
-                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:layout_marginEnd="@dimen/_7sdp"
                                 android:layout_alignParentEnd="true"
                                 android:background="@drawable/edittext_stroke"
                                 android:backgroundTint="@color/bg_priority"
@@ -344,7 +344,7 @@
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
-                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_7sdp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
@@ -422,7 +422,7 @@
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
-                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_7sdp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
@@ -501,7 +501,7 @@
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_7sdp"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
@@ -579,7 +579,7 @@
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_7sdp"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
@@ -656,7 +656,7 @@
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
-                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_7sdp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
@@ -813,7 +813,7 @@
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
-                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_7sdp"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
@@ -891,7 +891,7 @@
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
-                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_7sdp"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/bg_priority"
                             android:fontFamily="@font/satoshi_regular"
@@ -928,11 +928,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/remarksTxt"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start"
                         android:text="@string/remarks"
+                        android:layout_alignParentStart="true"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
@@ -943,10 +945,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_below="@+id/remarksTxt"
                         android:background="@drawable/edittext_stroke"
                         android:fontFamily="@font/satoshi_medium"
-                        android:gravity="start|top"
                         android:hint="@string/type_here"
+                        android:gravity="left"
+                        android:textDirection="ltr"
+                        android:layout_alignParentStart="true"
                         android:imeOptions="actionDone"
                         android:inputType="textMultiLine"
                         android:isScrollContainer="true"
@@ -976,10 +981,10 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
                     <RelativeLayout
+                        android:id="@+id/relative1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/edittext_stroke"
@@ -988,8 +993,8 @@
                         <ImageView
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:layout_gravity="center"
                             android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_marginTop="@dimen/_5sdp"
                             android:scaleType="centerInside"
                             android:src="@drawable/search_icon_gray" />
 
@@ -1032,7 +1037,8 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/sessionItemRecView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relative1"/>
 
                 </RelativeLayout>
 

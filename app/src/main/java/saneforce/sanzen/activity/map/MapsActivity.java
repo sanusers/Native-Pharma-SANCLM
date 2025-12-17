@@ -2420,9 +2420,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             for (int i = 0; i < list.size(); i++) {
                 mm = list.get(i);
-                LatLng latLng = new LatLng(parseDouble(mm.getLat().replace(",",".")), parseDouble(mm.getLng().replace(",",".")));
+                LatLng latLng = new LatLng(parseDouble(mm.getLat()), parseDouble(mm.getLng()));
                 float[] distance = new float[2];
-                Location.distanceBetween(parseDouble(mm.getLat().replace(",",".")), parseDouble(mm.getLng().replace(",",".")), lat, lng, distance);
+                Location.distanceBetween(parseDouble(mm.getLat()), parseDouble(mm.getLng()), lat, lng, distance);
 
                 if (distance[0] < limitKm * 1000.0) {
                     taggedMapListArrayList.add(new TaggedMapList(mm.getName(), mm.getType(), mm.getAddress(), mm.getCode(), false, mm.getLat(), mm.getLng(), mm.getImageName(), getDistanceMeters(lat, lng, parseDouble(mm.getLat()), parseDouble(mm.getLng()))));
@@ -2583,7 +2583,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         distanceTag = distance(CurLat, CurLng, CustLat, CustLng);
         distanceTag = milesToMeters(distanceTag);
         DecimalFormat decFor = new DecimalFormat("0.00");
-        distanceTag = valueOf(decFor.format(distanceTag));
+        distanceTag = valueOf(decFor.format(distanceTag).replace(",","."));
         return distanceTag;
     }
 

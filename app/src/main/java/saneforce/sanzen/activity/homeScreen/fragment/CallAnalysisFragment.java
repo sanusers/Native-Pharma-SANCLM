@@ -79,8 +79,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     }
 
     private final Handler handler = new Handler();
-    private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.getDefault());
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.ENGLISH);
     private final Runnable updateClock = new Runnable() {
         @Override
         public void run() {
@@ -339,8 +339,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         //   B  -  PastMonth     B1  is = 1-15 ,B2  is = 1-31
         //  C -  PastMonth      C1  is = 1-15 ,C2  is = 1-31
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd");
-        SimpleDateFormat sdfs = new SimpleDateFormat("MMMM");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd",Locale.getDefault());
+        SimpleDateFormat sdfs = new SimpleDateFormat("MMMM",Locale.getDefault());
 
         Calendar MonthC = Calendar.getInstance();
         MonthC.add(Calendar.MONTH, -2);

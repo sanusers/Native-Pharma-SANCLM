@@ -50,19 +50,6 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         String count = String.valueOf(data.getCount());
         Log.v("masterCheck", "---" + data.getName());
         holder.name.setText(name);
-
-        try {
-            boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
-
-            if (isArabic) {
-                holder.name.setGravity(Gravity.CENTER | Gravity.END);
-            } else {
-                holder.name.setGravity(Gravity.CENTER | Gravity.START);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         /*holder.name.setTextDirection(View.TEXT_DIRECTION_LTR);*/
         /*holder.name.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);*/
         holder.count.setText(count);

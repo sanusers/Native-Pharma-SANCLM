@@ -68,7 +68,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         holder.dateNo.setText(dateString);
         if (!TextUtils.isEmpty(dateString)) {
              myDate =  String.format("%s-%02d", monthYearFromDate(localDate, TimeUtils.FORMAT_24), Integer.parseInt(dateString));
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd",Locale.ENGLISH);
             try {
                 LocalDate parsedMyDate = LocalDate.parse(myDate, formatter);
                 LocalDate currentDate = LocalDate.now();
@@ -145,7 +145,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         }
     }
     private String monthYearFromDate(LocalDate date, String requiredFormat) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(requiredFormat, Locale.ENGLISH);
+        if (date == null){
+            return "--";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(requiredFormat);
         return date.format(formatter);
     }
 }

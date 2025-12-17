@@ -659,7 +659,7 @@
                             android:orientation="vertical"
                             android:weightSum="100">
                             <!--                       headline-->
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/_1sdp"
@@ -667,14 +667,15 @@
                                 android:orientation="vertical">
 
                                 <TextView
-                                    android:layout_width="match_parent"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:padding="@dimen/_1sdp"
                                     android:text="@string/your_lv_req_inc"
+                                    android:layout_alignParentStart="true"
                                     android:textSize="@dimen/_7sdp"
                                     android:textStyle="bold" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
                             <!--leave details-->
                             <LinearLayout

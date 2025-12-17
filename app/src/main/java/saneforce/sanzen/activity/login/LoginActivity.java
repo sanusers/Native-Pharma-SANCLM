@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         UtilityClass.setLanguage(LoginActivity.this);
         setContentView(binding.getRoot());
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.LAYOUT_DIRECTION_LTR);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
@@ -122,24 +122,10 @@ public class LoginActivity extends AppCompatActivity {
         callTableDao = roomDB.callTableDao();
         loginDataDao = roomDB.loginDataDao();
         notificationDataDao = roomDB.notificationDataDao();
-
-        uiInitialisation();
-        try {
-            boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
-
-            if (isArabic) {
-                binding.userId.setGravity(Gravity.CENTER | Gravity.END);
-                binding.userId.setTextDirection(View.TEXT_DIRECTION_LTR);
-                binding.userId.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-                binding.password.setGravity(Gravity.CENTER | Gravity.END);
-
-            } else {
-                binding.userId.setGravity(Gravity.CENTER | Gravity.START);
-                binding.password.setGravity(Gravity.CENTER | Gravity.START);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
+        uiInitialisation();
         binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
 
         int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);

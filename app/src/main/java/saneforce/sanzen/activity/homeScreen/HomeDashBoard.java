@@ -51,6 +51,7 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1872,7 +1873,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             alertDialogBuilder.setIcon(getDrawable(R.drawable.icon_sync_failed));
             alertDialogBuilder.setMessage(getString(R.string.are_you_sure_you_want_to_clear_slides));
             alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
-
             alertDialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -1909,6 +1909,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
+            alertDialog.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
             return true;
         }
 

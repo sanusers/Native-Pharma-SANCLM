@@ -26,6 +26,8 @@
             android:textStyle="bold"
             android:text="@string/fake_location_detected"
             android:textColor="@color/black_45"
+            android:gravity="left"
+            android:textDirection="ltr"
             android:textSize="@dimen/_7sdp"
             android:textAlignment="center"
             android:layout_marginBottom="20dp"/>
@@ -35,7 +37,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_medium"
             android:textColor="@color/gray_45"
-
+            android:gravity="left"
+            android:textDirection="ltr"
             android:text="@string/please_turn_off_to_proceed"
             android:textSize="@dimen/_7sdp"
             android:textAlignment="center"

@@ -219,54 +219,6 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Initializing all the data array
 
-        try {
-            boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
-            boolean isBurmese = Locale.getDefault().getLanguage().equals("my");
-            if (isArabic || isBurmese) {
-                binding.listedDr.setGravity(Gravity.CENTER | Gravity.END);
-                binding.chemist.setGravity(Gravity.CENTER | Gravity.END);
-                binding.stockiest.setGravity(Gravity.CENTER | Gravity.END);
-                binding.unlistedDoctor.setGravity(Gravity.CENTER | Gravity.END);
-                binding.hospital.setGravity(Gravity.CENTER | Gravity.END);
-                binding.cip.setGravity(Gravity.CENTER | Gravity.END);
-                binding.cluster.setGravity(Gravity.CENTER | Gravity.END);
-                binding.input.setGravity(Gravity.CENTER | Gravity.END);
-                binding.product.setGravity(Gravity.CENTER | Gravity.END);
-                binding.leave.setGravity(Gravity.CENTER | Gravity.END);
-                binding.activity.setGravity(Gravity.CENTER | Gravity.END);
-                binding.tourPlan.setGravity(Gravity.CENTER | Gravity.END);
-                binding.workType.setGravity(Gravity.CENTER | Gravity.END);
-                binding.slide.setGravity(Gravity.CENTER | Gravity.END);
-                binding.subordinate.setGravity(Gravity.CENTER | Gravity.END);
-                binding.Other.setGravity(Gravity.CENTER | Gravity.END);
-                binding.Profile.setGravity(Gravity.CENTER | Gravity.END);
-                binding.setup.setGravity(Gravity.CENTER | Gravity.END);
-            } else {
-                binding.listedDr.setGravity(Gravity.CENTER | Gravity.START);
-                binding.chemist.setGravity(Gravity.CENTER | Gravity.START);
-                binding.stockiest.setGravity(Gravity.CENTER | Gravity.START);
-                binding.unlistedDoctor.setGravity(Gravity.CENTER | Gravity.START);
-                binding.hospital.setGravity(Gravity.CENTER | Gravity.START);
-                binding.cip.setGravity(Gravity.CENTER | Gravity.START);
-                binding.cluster.setGravity(Gravity.CENTER | Gravity.START);
-                binding.input.setGravity(Gravity.CENTER | Gravity.START);
-                binding.product.setGravity(Gravity.CENTER | Gravity.START);
-                binding.leave.setGravity(Gravity.CENTER | Gravity.START);
-                binding.dcr.setGravity(Gravity.CENTER | Gravity.START);
-                binding.activity.setGravity(Gravity.CENTER | Gravity.START);
-                binding.tourPlan.setGravity(Gravity.CENTER | Gravity.START);
-                binding.workType.setGravity(Gravity.CENTER | Gravity.START);
-                binding.slide.setGravity(Gravity.CENTER | Gravity.START);
-                binding.subordinate.setGravity(Gravity.CENTER | Gravity.START);
-                binding.Other.setGravity(Gravity.CENTER | Gravity.START);
-                binding.Profile.setGravity(Gravity.CENTER | Gravity.START);
-                binding.setup.setGravity(Gravity.CENTER | Gravity.START);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         uiInitialization();
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {

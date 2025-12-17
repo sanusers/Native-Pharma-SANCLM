@@ -37,6 +37,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="left"
+                    android:textDirection="ltr"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/session_1"
                     android:textColor="@color/text_dark"
@@ -57,7 +59,8 @@
                 android:layout_below="@id/session">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/workTypeLayoutTxt"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -69,10 +72,12 @@
 
                 <TextView
                     android:id="@+id/workTypeField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/select"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/workTypeLayoutTxt"
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_6sdp"
                     android:layout_marginTop="@dimen/_3sdp"
@@ -97,7 +102,8 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/workDayLayoutTxt"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -110,9 +116,10 @@
 
                 <TextView
                     android:id="@+id/workDayField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
+                    android:layout_below="@+id/workDayLayoutTxt"
                     android:text="@string/select"
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_6sdp"
@@ -137,7 +144,8 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/hqLayoutTxt"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -150,9 +158,10 @@
 
                 <TextView
                     android:id="@+id/hqField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_below="@+id/hqLayoutTxt"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/select"
                     android:textColor="@color/text_dark"
@@ -177,7 +186,8 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/clusterLayoutTxt"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -190,13 +200,13 @@
 
                 <TextView
                     android:id="@+id/clusterField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/select"
+                    android:layout_below="@+id/clusterLayoutTxt"
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_6sdp"
-                    android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_3sdp"
                     tools:ignore="SpUsage" />
 
@@ -218,7 +228,7 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -231,7 +241,7 @@
 
                 <TextView
                     android:id="@+id/jcField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/select"
@@ -258,7 +268,7 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -271,7 +281,7 @@
 
                 <TextView
                     android:id="@+id/listedDrField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/select"
@@ -298,7 +308,7 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -311,7 +321,7 @@
 
                 <TextView
                     android:id="@+id/chemistField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/select"
@@ -338,7 +348,7 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -351,7 +361,7 @@
 
                 <TextView
                     android:id="@+id/stockiestField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/select"
@@ -378,7 +388,7 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -391,11 +401,11 @@
 
                 <TextView
                     android:id="@+id/unListedDrField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text=""
+                    android:text="Select"
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_6sdp"
                     android:layout_marginTop="@dimen/_3sdp"
@@ -419,7 +429,7 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -432,7 +442,7 @@
 
                 <TextView
                     android:id="@+id/cipField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:text=""
@@ -459,7 +469,7 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -472,7 +482,7 @@
 
                 <TextView
                     android:id="@+id/hospField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
@@ -500,7 +510,7 @@
                     android:background="@color/text_dark_25" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
@@ -513,7 +523,7 @@
 
                 <TextView
                     android:id="@+id/remarksField"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"

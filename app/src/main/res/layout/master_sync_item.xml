@@ -32,9 +32,8 @@
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
-                android:layout_gravity="center"
+                android:gravity="left"
                 android:layoutDirection="ltr"
-                android:textDirection="ltr"
                 tools:ignore="SpUsage"/>
 
             <ProgressBar

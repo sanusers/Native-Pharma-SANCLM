@@ -970,7 +970,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 @Override
                 public void onSafeClick(View view) {
                     isEdited = true;
-                    binding.tpNavigation.addEditViewTxt.setText("Edit Plan");
+                    binding.tpNavigation.addEditViewTxt.setText(R.string.edit_plan);
                     populateSessionEditAdapterOneBuild(sessionViewAdapter.inputDataModelOneBuild);
                 }
             });
@@ -1428,7 +1428,7 @@ public class TourPlanActivity extends AppCompatActivity {
 //                @Override
 //                public void onSafeClick(View view) {
                 isEdited = true;
-                binding.tpNavigation.addEditViewTxt.setText("Edit Plan");
+                binding.tpNavigation.addEditViewTxt.setText(R.string.edit_plan);
                 populateSessionEditAdapter(sessionViewAdapter.inputDataModel);
 //                }
             });
@@ -2538,7 +2538,7 @@ public class TourPlanActivity extends AppCompatActivity {
             summaryAdapter = new SummaryAdapter(modelClasses, TourPlanActivity.this, (modelClass, position) -> {
 
                 populateSessionViewAdapter(modelClass);
-                binding.tpNavigation.addEditViewTxt.setText("View Plan");
+                binding.tpNavigation.addEditViewTxt.setText(R.string.view_plan);
                 binding.tpNavigation.planDate.setText(modelClass.getDate());
             });
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(TourPlanActivity.this);
@@ -2564,7 +2564,7 @@ public class TourPlanActivity extends AppCompatActivity {
             summaryAdapter = new SummaryAdapter(TourPlanActivity.this, oneBuildModelClasses, (oneBuildmodelClass, position) -> {
 
                 populateSessionViewAdapterOneBuild(oneBuildmodelClass);
-                binding.tpNavigation.addEditViewTxt.setText("View Plan");
+                binding.tpNavigation.addEditViewTxt.setText(R.string.view_plan);
                 binding.tpNavigation.planDate.setText(oneBuildmodelClass.getDate());
             });
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(TourPlanActivity.this);

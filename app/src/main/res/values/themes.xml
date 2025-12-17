@@ -135,6 +135,9 @@
 
     <style name="CustomNavDrawerItemTextStyle">
         <item name="android:textSize">@dimen/_8sdp</item>
+        <item name="android:textDirection">ltr</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:gravity">left|center_vertical</item>
         <!-- Add other text attributes here if needed -->
     </style>
 

@@ -114,6 +114,7 @@
                     android:layout_weight="3"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="Feb 2021"
+                    android:gravity="center"
                     android:textAlignment="center"
                     android:textColor="#282A3C"
                     android:textSize="@dimen/_7sdp" />

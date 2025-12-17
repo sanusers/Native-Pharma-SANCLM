@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
