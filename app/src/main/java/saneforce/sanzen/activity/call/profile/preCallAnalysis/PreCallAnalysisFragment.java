@@ -28,7 +28,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.profile.CustomerProfile;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -343,7 +342,7 @@ public class PreCallAnalysisFragment extends Fragment {
                 break;
             case "2":
                 PrdSamNeed = SharedPref.getChmsamqtyNeed(requireContext());
-                PrdRxNeed = SharedPref.getChmRxQty(requireContext());;//1
+                PrdRxNeed = SharedPref.getChmRxNd(requireContext());;//1
                 PrdRCPANeed = SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getCfNeed(requireContext());
                 if (SharedPref.getChmProductCaption(requireContext()).isEmpty() || SharedPref.getChmProductCaption(requireContext()).equalsIgnoreCase(null)){

@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +66,7 @@ public class SharedPref {
     public static final String UNL_NEED = "UNLNeed";
     public static final String DP_NEED = "DPNeed";
     public static final String DI_NEED = "DINeed";
-    public static final String CHM_RX_QTY = "ChmRxQty";
+    public static final String CHM_RX_ND = "ChmRxNd";
     public static final String HOS_POB_MD = "HosPOBMd";
     public static final String HOS_POB_ND = "HosPOBNd";
     public static final String SAMPLE_VALIDATION = "sample_validation";
@@ -552,7 +551,7 @@ public class SharedPref {
             editor.putString(UNL_NEED, jsonObject.optString("UNLNeed"));
             editor.putString(DP_NEED, jsonObject.optString("DPNeed"));
             editor.putString(DI_NEED, jsonObject.optString("DINeed"));
-            editor.putString(CHM_RX_QTY, jsonObject.optString("ChmRxQty"));
+            editor.putString(CHM_RX_ND, jsonObject.optString("ChmRxNd"));
             editor.putString(HOS_POB_MD, jsonObject.optString("HosPOBMd"));
             editor.putString(HOS_POB_ND, jsonObject.optString("HosPOBNd"));
             editor.putString(SAMPLE_VALIDATION, jsonObject.optString("sample_validation"));
@@ -956,8 +955,8 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(DI_NEED, "");
     }
 
-    public static String getChmRxQty(Context context) {
-        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(CHM_RX_QTY, "");
+    public static String getChmRxNd(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(CHM_RX_ND, "");
     }
 
     public static String getHosPobMd(Context context) {

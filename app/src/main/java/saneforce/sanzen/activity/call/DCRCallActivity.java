@@ -38,8 +38,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -3180,7 +3178,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     OverallFeedbackNeed = SharedPref.getCfNeed(this);
                     JwNeed = SharedPref.getChmJointworkNeed(this);
                     PrdSamNeed = SharedPref.getChmsamqtyNeed(this);
-                    PrdRxNeed = SharedPref.getChmRxQty(this); //1
+                    PrdRxNeed = SharedPref.getChmRxNd(this); //1
                     PrdRcpaQtyNeed = "0"; //0
                     CusCheckInOutNeed = SharedPref.getChmSrtNd(this);
 

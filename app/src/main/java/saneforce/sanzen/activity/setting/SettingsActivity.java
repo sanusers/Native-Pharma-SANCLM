@@ -106,12 +106,13 @@ public class SettingsActivity extends AppCompatActivity {
 
                     SharedPref.Loginsite(getApplicationContext(), url);
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                        if (!url.startsWith("http")) {
-                            url = "https://" + url;
+                        String validateURL = url;
+                        if (!validateURL.startsWith("http")) {
+                            validateURL = "https://" + validateURL;
                         }
-                        if (URLUtil.isValidUrl(url)) {
-                            Log.i("settings", "onCreate: " + url + "\nLink: " + "https://" + url);
-                            configuration(url);
+                        if (URLUtil.isValidUrl(validateURL)) {
+                            Log.i("settings", "onCreate: " + validateURL + "\nLink: " + "https://" + url);
+                            configuration(validateURL);
                         } else {
                             commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
                         }
