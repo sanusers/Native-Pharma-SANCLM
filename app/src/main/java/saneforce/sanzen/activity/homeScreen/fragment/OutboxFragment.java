@@ -125,7 +125,6 @@ public class OutboxFragment extends Fragment {
     private Bitmap Bitmap;
 
     public static void NetworkConnectCallHomeDashBoard(String log) {
-
         Log.e("NOT_CONNECT", "" + log);
         if (!TextUtils.isEmpty(log)) {
             if (!log.equalsIgnoreCase("NOT_CONNECT")) {

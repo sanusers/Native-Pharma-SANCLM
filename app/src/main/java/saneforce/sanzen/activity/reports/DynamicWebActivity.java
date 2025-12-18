@@ -190,11 +190,18 @@ public class DynamicWebActivity extends AppCompatActivity {
                 mUploadMessage.onReceiveValue(null);
             }
             mUploadMessage = filePathCallback;
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            intent.setType("*/*");
-            filePickerLauncher.launch(Intent.createChooser(intent, "Choose a file"));
+//            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//            intent.addCategory(Intent.CATEGORY_OPENABLE);
+//            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+//            intent.setType("*/*");
+
+            Intent chooseFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+            chooseFile.setType("*/*");
+            chooseFile.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+
+            filePickerLauncher.launch(Intent.createChooser(chooseFile, "Choose a file"));
             return true;
         }
     }
