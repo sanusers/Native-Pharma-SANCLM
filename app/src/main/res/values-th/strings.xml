@@ -999,7 +999,11 @@
     <string name="unplanned_visit_count">จำนวนการเยี่ยมชมที่ไม่ได้วางแผน</string>
     <string name="planned_everything">วางแผนทุกอย่างแล้ว</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">แผนการทัวร์ไม่ได้ซิงค์อย่างถูกต้อง โปรดซิงค์อีกครั้ง...</string>
-
+    <string name="activity_mandatory">กิจกรรมเป็นสิ่งจำเป็น</string>
+    <string name="location_permission_needed">จำเป็นต้องมีสิทธิ์เข้าถึงตำแหน่งที่ตั้ง!</string>
+    <string name="signature">ลายเซ็น</string>
+    <string name="available">พร้อมใช้งาน:</string>
+    <string name="edit_plan">แก้ไขแผน</string>
     <!--<string name="google_maps_key">AIzaSyBQe14kV-8aZneHfyAMYDT5PKeG5eNKCEE</string>-->
     <!--<string name="str_save_settings">บันทึกการตั้งค่า</string>-->
 </resources>

@@ -1000,6 +1000,12 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="unplanned_visit_count">Contagem de visitas não planejadas</string>
     <string name="planned_everything">Tudo planejado</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">O plano de viagem não foi sincronizado corretamente, por favor sincronize novamente...</string>
+    <string name="filter_by">Filtrar por</string>
+    <string name="activity_mandatory">Atividade obrigatória</string>
+    <string name="location_permission_needed">Permissão de localização necessária!</string>
+    <string name="signature">Assinatura</string>
+    <string name="available">Disponível:</string>
+    <string name="edit_plan">Editar plano</string>
 
 
     <!--  <string name="txt_tagging">Marcação</string>-->

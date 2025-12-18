@@ -497,7 +497,6 @@
     <string name="deleting_field_work_with_calls">删除外勤工作也将删除所有呼叫</string>
     <string name="select_workday">选择工作日</string>
     <string name="refresh">刷新</string>
-    <string name="Signature">签名</string>
     <string name="fill">请填写 </string>
     <string name="select_headquater">选择总部</string>
     <string name="location_add">标记成功</string>
@@ -627,7 +626,6 @@
     <string name="Business">业务数量</string>
     <string name="Business_value">业务金额</string>
     <string name="no_of_product">产品数量 :</string>
-    <string name="Available">可用 :</string>
     <string name="enter_crct_email">保存前请输入正确邮箱</string>
     <string name="work_plan_updated_successfully">工作计划更新成功</string>
     <string name="work_day">工作日</string>
@@ -994,7 +992,11 @@
     <string name="unplanned_visit_count">未计划的访问次数</string>
     <string name="planned_everything">已计划所有内容</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">行程计划未正确同步，请重新同步...</string>
-
+    <string name="activity_mandatory">活动是必填的</string>
+    <string name="location_permission_needed">需要位置权限！</string>
+    <string name="signature">签名</string>
+    <string name="available">可用：</string>
+    <string name="edit_plan">编辑计划</string>
 
 
 

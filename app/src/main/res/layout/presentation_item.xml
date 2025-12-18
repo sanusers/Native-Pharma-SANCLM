@@ -116,7 +116,7 @@
                 android:layout_alignParentEnd="true"
                 android:padding="@dimen/_2sdp"
                 android:src="@drawable/info_icon_purple"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
         </RelativeLayout>
 

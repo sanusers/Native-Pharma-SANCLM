@@ -999,7 +999,11 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="unplanned_visit_count">Số lượt thăm không lên kế hoạch</string>
     <string name="planned_everything">Đã lên kế hoạch mọi thứ</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">Kế hoạch chuyến đi chưa được đồng bộ đúng, vui lòng đồng bộ lại...</string>
-
+    <string name="activity_mandatory">Hoạt động là bắt buộc</string>
+    <string name="location_permission_needed">Cần quyền truy cập vị trí!</string>
+    <string name="signature">Chữ ký</string>
+    <string name="available">Có sẵn:</string>
+    <string name="edit_plan">Chỉnh sửa kế hoạch</string>
     <!-- <string name="txt_tagging">Gắn thẻ</string>
      <string name="txt_doctor">Bác sĩ</string>
      <string name="txt_chemist">nhà hóa học</string>

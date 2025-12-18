@@ -514,6 +514,7 @@ public class SharedPref {
     public static final String RESET_PASSWORD_NEED = "reset_password_need";
     public static final String RESET_PASSWORD_DAYS = "reset_password_days";
 
+    public static final String ZOOM_FLAG = "Zoomflag";
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
 
@@ -884,6 +885,7 @@ public class SharedPref {
             editor.putString(TP_MGR_NAME,jsonObject.optString("ReportingTPMgrName"));
             editor.putString(LEV_MGR_CODE,jsonObject.optString("ReportingLeaveMgrCode"));
             editor.putString(LEV_MGR_NAME,jsonObject.optString("ReportingLeaveMgrName"));
+            editor.putString(ZOOM_FLAG,jsonObject.optString("Zoomflag"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3252,6 +3254,9 @@ public class SharedPref {
 
     public static String getSlideWiseDetailingNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
+    }
+    public static String getZoomEnabled(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(ZOOM_FLAG,"1");
     }
 
 }

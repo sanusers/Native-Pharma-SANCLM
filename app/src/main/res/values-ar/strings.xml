@@ -971,6 +971,29 @@
     <string name="tour_plan_not_sync_properly_once_sync_again">
     لم تتم مزامنة خطة الجولة بشكل صحيح، يرجى المزامنة مرة أخرى...
 </string>
+    <string name="activity_mandatory">النشاط إلزامي</string>
+    <string name="location_permission_needed">مطلوب إذن الموقع!</string>
+    <string name="signature">التوقيع</string>
+    <string name="available">متاح:</string>
+    <string name="need_remarks">يرجى إدخال الملاحظات في الجلسة</string>
+    <string name="reset_password">إعادة تعيين كلمة المرور</string>
+    <string name="moile_mand">رقم الجوال إلزامي</string>
+    <string name="mob_mandt">الجوال <font color='#FF0000'>*</font></string>
+    <string name="division">القسم</string>
+    <string name="sub_division">القسم الفرعي</string>
+    <string name="dcr_start_dt">تاريخ بدء DCR</string>
+    <string name="tp_start_dt">تاريخ بدء خطة الجولة</string>
+    <string name="rpt_mgr">مدير التقارير</string>
+    <string name="tp_rpt">مدير تقارير خطة الجولة</string>
+    <string name="lev_rpt">مدير تقارير الإجازة</string>
+    <string name="tp_mand_range">النطاق الإلزامي لخطة الجولة</string>
+    <string name="already_exist">موجود بالفعل</string>
+    <string name="state">الولاية</string>
+    <string name="employe_code">رمز الموظف</string>
+    <string name="join_dt">تاريخ الانضمام</string>
+    <string name="con_internet">متصل بالإنترنت</string>
+    <string name="option">الخيارات</string>
+    <string name="edit_plan">تعديل الخطة</string>
 
 
 

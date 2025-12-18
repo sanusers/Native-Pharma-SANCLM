@@ -625,7 +625,6 @@
     <string name="Business">Quantité affaires</string>
     <string name="Business_value">Valeur affaires</string>
     <string name="no_of_product">Nombre de produits :</string>
-    <string name="Available">Disponible :</string>
     <string name="enter_crct_email"><![CDATA[Veuillez entrer l\'e-mail correct avant d\'enregistrer]]></string>
     <string name="work_plan_updated_successfully">Plan de travail mis à jour avec succès</string>
     <string name="work_day">Jour de travail</string>
@@ -984,6 +983,15 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="unplanned_visit_count">Nombre de visites non prévues</string>
     <string name="planned_everything">Tout planifié</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">Le plan de tournée n\'a pas été synchronisé correctement, veuillez synchroniser à nouveau...</string>
-
+    <string name="activity_mandatory">Activité obligatoire</string>
+    <string name="location_permission_needed">Autorisation de localisation requise !</string>
+    <string name="available">Disponible :</string>
+    <string name="select_headquarters">Sélectionner le siège</string>
+    <string name="latitude_label">Latitude :</string>
+    <string name="time_label">Heure :</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="view_plan">Voir le plan</string>
+    <string name="dcr_status">Statut DCR</string>
+    <string name="edit_plan">Modifier le plan</string>
 
 </resources>

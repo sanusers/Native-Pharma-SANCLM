@@ -496,7 +496,6 @@
     <string name="deleting_field_work_with_calls">Field Work ကို ဖျက်လျှင် ခေါ်ဆိုမှုအားလုံး ဖျက်သွားမည်</string>
     <string name="select_workday">အလုပ်နေ့ ရွေးပါ</string>
     <string name="refresh">ပြန်စတင်ရန်</string>
-    <string name="Signature">လက်မှတ်</string>
     <string name="fill">ကျေးဇူးပြုပြီး ဖြည့်ပါ</string>
     <string name="select_headquater">ဌာနချုပ် ရွေးချယ်ပါ</string>
     <string name="location_add">အောင်မြင်စွာ တိကျစွာ တပ်ဆင်ပြီးပါပြီ</string>
@@ -625,7 +624,6 @@
     <string name="Business">စီးပွားရေး အရေအတွက်</string>
     <string name="Business_value">စီးပွားရေး တန်ဖိုး</string>
     <string name="no_of_product">ထုတ်ကုန် အရေအတွက် :</string>
-    <string name="Available">ရနိုင်သည် :</string>
     <string name="enter_crct_email">သိမ်းရန် မီ အမှန်တကယ် email ထည့်ပါ</string>
     <string name="work_plan_updated_successfully">အလုပ်အစီအစဉ် အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ</string>
     <string name="work_day">အလုပ်နေ့</string>
@@ -991,7 +989,11 @@
     <string name="unplanned_visit_count">အစီအစဉ်မထားသည့် အလည်အပတ် အရေအတွက်</string>
     <string name="planned_everything">အစီအစဉ်အားလုံးပြုလုပ်ပြီး</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">ခရီးစဉ်အစီအစဉ်သည်မှန်ကန်စွာဆက်သွယ်မရပါ၊ ကျေးဇူးပြုပြီး ထပ်မံဆက်သွယ်ပါ...</string>
-
+    <string name="activity_mandatory">လုပ်ဆောင်မှုသည် မဖြစ်မနေလိုအပ်ပါသည်</string>
+    <string name="location_permission_needed">တည်နေရာ ခွင့်ပြုချက် လိုအပ်ပါသည်!</string>
+    <string name="signature">လက်မှတ်</string>
+    <string name="available">ရရှိနိုင်သည်:</string>
+    <string name="edit_plan">အစီအစဉ်ကို ပြင်ဆင်ရန်</string>
 
 
 

@@ -997,7 +997,11 @@
     <string name="unplanned_visit_count">Количество незапланированных визитов</string>
     <string name="planned_everything">Всё запланировано</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">План тура не синхронизирован должным образом, повторите синхронизацию...</string>
-
+    <string name="activity_mandatory">Активность обязательна</string>
+    <string name="location_permission_needed">Требуется разрешение на доступ к местоположению!</string>
+    <string name="signature">Подпись</string>
+    <string name="available">Доступно:</string>
+    <string name="edit_plan">Редактировать план</string>
     <!-- <string name="search">Russia</string>
      <string name="str_save_settings">Сохранить настройки</string>
      <string name="user_id">ID пользователя</string>-->

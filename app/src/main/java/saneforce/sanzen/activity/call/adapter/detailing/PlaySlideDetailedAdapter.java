@@ -68,6 +68,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.detailing.LoadBitmap;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
+import saneforce.sanzen.activity.presentation.ZoomableImageView;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
@@ -147,8 +148,73 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
 
-        ImageView imageView = sliderLayout.findViewById(R.id.imageView);
-        WebView webView = sliderLayout.findViewById(R.id.webView);
+        if(SharedPref.getZoomEnabled(context).equalsIgnoreCase("1")){
+            ZoomableImageView imageViewZoom =
+                    sliderLayout.findViewById(R.id.imageViewZoom);
+            ImageView imageView = sliderLayout.findViewById(R.id.imageView);
+
+            imageViewZoom.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+
+            WebView webView = sliderLayout.findViewById(R.id.webView);
+            PDFView pdfView = sliderLayout.findViewById(R.id.pdfView);
+            VideoView videoView = sliderLayout.findViewById(R.id.videoView);
+            LottieAnimationView progressAnim = sliderLayout.findViewById(R.id.progress_anim);
+            imageViewList.put(position, imageViewZoom);
+            pdfViewList.put(position, pdfView);
+            videoViewList.put(position, videoView);
+            webViewList.put(position, webView);
+            progressAnimationViewList.put(position, progressAnim);
+            RelativeLayout rl_rightView = sliderLayout.findViewById(R.id.rightArrow);
+            rl_rightView.setVisibility(View.VISIBLE);
+
+            SupportClass.setThumbnail(context, productArrayList.get(position).getSlideName(), imageViewZoom);
+            container.addView(sliderLayout);
+
+            rl_rightView.setOnClickListener(view -> {
+                File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(position).getSlideName());
+                String fileFormat = SupportClass.getFileExtension(productArrayList.get(position).getSlideName());
+                popupScribbling(productArrayList.get(position).getSlideName(), productArrayList.get(position).getSlideId(), file.toString(), fileFormat);
+            });
+            resetTimer();
+            sliderLayout.setOnTouchListener((view, event) -> {
+                resetTimer();
+                return false;
+            });
+        }else{
+            ZoomableImageView imageViewZoom =
+                    sliderLayout.findViewById(R.id.imageViewZoom);
+            ImageView imageView = sliderLayout.findViewById(R.id.imageView);
+            imageViewZoom.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
+            WebView webView = sliderLayout.findViewById(R.id.webView);
+            PDFView pdfView = sliderLayout.findViewById(R.id.pdfView);
+            VideoView videoView = sliderLayout.findViewById(R.id.videoView);
+            LottieAnimationView progressAnim = sliderLayout.findViewById(R.id.progress_anim);
+            imageViewList.put(position, imageView);
+            pdfViewList.put(position, pdfView);
+            videoViewList.put(position, videoView);
+            webViewList.put(position, webView);
+            progressAnimationViewList.put(position, progressAnim);
+            RelativeLayout rl_rightView = sliderLayout.findViewById(R.id.rightArrow);
+            rl_rightView.setVisibility(View.VISIBLE);
+
+            SupportClass.setThumbnail(context, productArrayList.get(position).getSlideName(), imageView);
+            container.addView(sliderLayout);
+
+            rl_rightView.setOnClickListener(view -> {
+                File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(position).getSlideName());
+                String fileFormat = SupportClass.getFileExtension(productArrayList.get(position).getSlideName());
+                popupScribbling(productArrayList.get(position).getSlideName(), productArrayList.get(position).getSlideId(), file.toString(), fileFormat);
+            });
+            resetTimer();
+            sliderLayout.setOnTouchListener((view, event) -> {
+                resetTimer();
+                return false;
+            });
+        }
+
+   /*     WebView webView = sliderLayout.findViewById(R.id.webView);
         PDFView pdfView = sliderLayout.findViewById(R.id.pdfView);
         VideoView videoView = sliderLayout.findViewById(R.id.videoView);
         LottieAnimationView progressAnim = sliderLayout.findViewById(R.id.progress_anim);
@@ -172,7 +238,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         sliderLayout.setOnTouchListener((view, event) -> {
             resetTimer();
             return false;
-        });
+        });*/
         return sliderLayout;
     }
 
