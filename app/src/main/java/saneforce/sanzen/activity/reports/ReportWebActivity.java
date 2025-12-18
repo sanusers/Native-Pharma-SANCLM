@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.reports;
 
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -19,11 +20,14 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -136,10 +140,6 @@ public class ReportWebActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
 
-//            @Override
-//            public void onReceivedSslError(WebView view, android.webkit.SslErrorHandler handler, android.net.http.SslError error) {
-//                handler.proceed();
-//            }
         });
 
         binding.webView.setDownloadListener(
@@ -288,37 +288,44 @@ public class ReportWebActivity extends AppCompatActivity {
             chooseFile.setType("*/*");
             chooseFile.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-//            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-//            i.addCategory(Intent.CATEGORY_OPENABLE);
-//            i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-//            i.setType("*/*");
-
             ReportWebActivity.this.startActivityForResult(Intent.createChooser(chooseFile, "File Chooser"), ReportWebActivity.FILECHOOSER_RESULTCODE);
             return true;
         }
-    }
 
-//    public void trustAllCert(){
-//        try {
-//            TrustManager[] trustAllCerts = new TrustManager[]{
-//                    new javax.net.ssl.X509TrustManager() {
-//                        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[]{}; }
-//                        public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
-//                        public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
-//                    }
-//            };
-//
-//            javax.net.ssl.SSLContext sslContext = javax.net.ssl.SSLContext.getInstance("TLS");
-//            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-//            javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-//
-//            // Disable hostname verification (accept all hostnames)
-//            javax.net.ssl.HostnameVerifier allHostsValid = (hostname, session) -> true;
-//            javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            new AlertDialog.Builder(view.getContext())
+                    .setMessage(message)
+                    .setPositiveButton(ReportWebActivity.this.getString(R.string.ok), (dialog, which) -> {
+                        result.confirm();
+                    })
+                    .setCancelable(false)
+                    .show();
+            return true;
+        }
+
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+            new AlertDialog.Builder(view.getContext())
+                    .setMessage(message)
+                    .setPositiveButton(ReportWebActivity.this.getString(R.string.ok), (d, w) -> result.confirm())
+                    .setNegativeButton(ReportWebActivity.this.getString(R.string.cancel), (d, w) -> result.cancel())
+                    .show();
+            return true;
+        }
+
+        @Override
+        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            final EditText input = new EditText(view.getContext());
+            input.setText(defaultValue);
+            new AlertDialog.Builder(view.getContext())
+                    .setMessage(message)
+                    .setView(input)
+                    .setPositiveButton(ReportWebActivity.this.getString(R.string.ok), (d, w) -> result.confirm(input.getText().toString()))
+                    .setNegativeButton(ReportWebActivity.this.getString(R.string.cancel), (d, w) -> result.cancel())
+                    .show();
+            return true;
+        }
+    }
 
 }
