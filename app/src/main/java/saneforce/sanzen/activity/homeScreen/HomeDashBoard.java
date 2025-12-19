@@ -1178,11 +1178,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dcr_cancel_alert);
         dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setType(WindowManager.LayoutParams.TYPE_APPLICATION_PANEL);
             window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
             window.setGravity(Gravity.CENTER);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
