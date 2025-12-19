@@ -857,13 +857,13 @@ public class Leave_Application extends AppCompatActivity {
     public void Leavedetails(JSONObject data) {
         listdate.clear();
         List_LeaveDates.clear();
-        DateFormat mFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+        DateFormat mFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
         try {
             String F_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_19, leavebinding.etFromDate.getText().toString()));
             String T_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_19, leavebinding.etToDate.getText().toString()));
 
-            Date fromDate = mFormat.parse(F_date);
-            Date toDate = mFormat.parse(T_date);
+            Date fromDate = mFormat.parse(F_date.replace(".",""));
+            Date toDate = mFormat.parse(T_date.replace(".",""));
             List<Date> datesInRange = getDatesInRange(fromDate, toDate);
             for (Date date : datesInRange) {
                 listdate.add((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_20, TimeUtils.FORMAT_12, String.valueOf(date))));

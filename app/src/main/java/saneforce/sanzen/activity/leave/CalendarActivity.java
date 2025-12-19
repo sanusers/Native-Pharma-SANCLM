@@ -162,7 +162,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
     @SuppressLint("NewApi")
     private String monthYearFromDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.ENGLISH);
         return date.format(formatter);
     }
 

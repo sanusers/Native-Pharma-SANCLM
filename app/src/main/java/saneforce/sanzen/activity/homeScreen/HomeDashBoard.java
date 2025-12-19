@@ -2484,6 +2484,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void AppIdentify() {
 
         Menu menu = binding.navView.getMenu();
+        binding.navView.getLayoutDirection();
         menu.findItem(R.id.remaindercall).setTitle(SharedPref.getRemainderCallCap(this));
 
         if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {

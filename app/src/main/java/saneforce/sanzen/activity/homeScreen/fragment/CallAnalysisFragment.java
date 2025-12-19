@@ -339,9 +339,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         //   B  -  PastMonth     B1  is = 1-15 ,B2  is = 1-31
         //  C -  PastMonth      C1  is = 1-15 ,C2  is = 1-31
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd",Locale.getDefault());
-        SimpleDateFormat sdfs = new SimpleDateFormat("MMMM",Locale.getDefault());
-
+        SimpleDateFormat sdf = new SimpleDateFormat("dd",Locale.ENGLISH);
+        SimpleDateFormat sdfs = new SimpleDateFormat("MMMM",Locale.ENGLISH);
         Calendar MonthC = Calendar.getInstance();
         MonthC.add(Calendar.MONTH, -2);
         MonthC.set(Calendar.DAY_OF_MONTH, 1);
