@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import saneforce.sanzen.activity.tourPlan.overview.TourPlanOverviewActivity;
 import saneforce.sanzen.activity.tourPlan.overview.model.ContentModel;
 import saneforce.sanzen.activity.tourPlan.overview.model.HeaderModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.storage.SharedPref;
 
 public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
@@ -67,7 +69,17 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (content.getContent() != null && !content.getContent().isEmpty()) {
                 ((ContentVH) holder).content.setVisibility(View.VISIBLE);
                 ((ContentVH) holder).content.setText(content.getContent());
-            } else {
+
+                if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER){
+                    ((ContentVH) holder).addImg.setVisibility(View.VISIBLE);
+                    ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.custom_background_blue));
+                    ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+
+                }else{
+                    ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                }
+            }
+            else {
                 ((ContentVH) holder).content.setVisibility(View.GONE);
             }
             if (content.getSubContent() != null && !content.getSubContent().isEmpty()) {
@@ -78,6 +90,13 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 } else {
                     ((ContentVH) holder).subContent.setText(content.getSubContent());
                     ((ContentVH) holder).subContent.setTextColor(context.getColor(R.color.text_grey));
+                }
+                if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER ){
+                    ((ContentVH) holder).addImg.setVisibility(View.VISIBLE);
+                    ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.green_full));
+                    ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                }else{
+                    ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
                 }
             } else {
                 ((ContentVH) holder).subContent.setVisibility(View.GONE);
@@ -112,12 +131,17 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static class ContentVH extends RecyclerView.ViewHolder {
         TextView content, subContent, sideContent;
+        RelativeLayout addImg;
+        View divider;
 
         public ContentVH(View itemView) {
             super(itemView);
             content = itemView.findViewById(R.id.tv_content);
             subContent = itemView.findViewById(R.id.tv_sub_content);
             sideContent = itemView.findViewById(R.id.tv_content_side);
+            addImg = itemView.findViewById(R.id.btn_add_doc);
+            divider = itemView.findViewById(R.id.divider);
+
         }
     }
 }

@@ -520,7 +520,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 break;
             case CUSTOMER_CLUSTER:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
-                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.GONE);
                 break;
         }
     }
