@@ -86,6 +86,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     public static boolean preVal = false;
     private final Context context;
     private final ArrayList<BrandModelClass.Product> productArrayList;
+
+    public static ArrayList<String> playedMandatorySlideIds = new ArrayList<>();
+
+    // 🔹 NEW LIST (mandatory slides only)
+    public static ArrayList<BrandModelClass.Product> mandatoryProductList = new ArrayList<>();
+
     ArrayList<StoreImageTypeUrl> slideDescribe = new ArrayList<>();
     public static ArrayList<StoreImageTypeUrl> slideScribble = new ArrayList<>();
     Object objsd;
@@ -110,9 +116,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
     private MediaController mediaController;
 
-    public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
+    public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList,ArrayList<BrandModelClass.Product>mandatoryProductList) {
         this.context = context;
         this.productArrayList = productArrayList;
+        this.mandatoryProductList = mandatoryProductList;
         slideDescribe.clear();
         act = context;
         mCommonSharedPreference = new CommonSharedPreference(context);
@@ -131,6 +138,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), "", "", "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode()));
             }
         }
+
+       // mandatoryProductList.clear();
+        for (BrandModelClass.Product product : productArrayList) {
+            if ("0".equals(product.getMandatorySlide())) {   // mandatory slide
+                mandatoryProductList.add(product);
+            }
+        }
     }
 
     public String getSlideNameAt(int position) {
@@ -145,7 +159,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
+            View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
 
         ImageView imageView = sliderLayout.findViewById(R.id.imageView);
         WebView webView = sliderLayout.findViewById(R.id.webView);
@@ -959,6 +973,16 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         presentBrandCode = mm.getBrdCode();
         objsd = object;
         preVal = true;
+        for (BrandModelClass.Product product : mandatoryProductList) {
+            if (product.getSlideName().equals(mm.getSlideNam())) {
+                if (!playedMandatorySlideIds.contains(product.getSlideId())) {
+                    playedMandatorySlideIds.add(product.getSlideId());
+                    Log.d("MANDATORY_PLAYED", "Played : " + product.getSlideName());
+                }
+                break;
+            }
+        }
+
       /*  Log.v("Slides", "----" + mm.getSlideTyp() + "---- " + mm.getSlideNam() + " --- " + mm.getSlideUrl());
         if (mm.getSlideTyp().equalsIgnoreCase("zip")) {
             String fileName = mm.getSlideNam();
@@ -971,6 +995,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         if (!mm.getBrdName().equalsIgnoreCase("Welcome")) {
             Log.i("TAG slide", "setPrimaryItem: " + mm.getSlideNam() + " --> " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
             storingSlide.add(new LoadBitmap(mm.getScribble(), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), position, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mm.getSlideNam(), mm.getSlideTyp(), mm.getSlideUrl(), mm.getBrdName(), mm.getBrdCode()));
+
+
         }
     }
 

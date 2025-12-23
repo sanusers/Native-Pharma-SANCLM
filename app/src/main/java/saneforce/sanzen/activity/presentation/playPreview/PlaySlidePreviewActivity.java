@@ -228,7 +228,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                         binding.progressAnim.cancelAnimation();
                                     }
                                 });
-                                break;
+                              break;
                         }
                     }
                 } else {

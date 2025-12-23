@@ -61,6 +61,7 @@ public class SlideWiseAdapter extends RecyclerView.Adapter<SlideWiseAdapter.MyVi
         BrandModelClass.Product product = products.get(position);
         holder.name.setText(product.getBrandName());
         holder.count.setText(product.getSlideName());
+        holder.info.setVisibility(View.GONE);
 
         if (!products.isEmpty()) {
             SupportClass.setThumbnail(context, product.getSlideName(), holder.imageView);
@@ -101,7 +102,8 @@ public class SlideWiseAdapter extends RecyclerView.Adapter<SlideWiseAdapter.MyVi
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, count;
-        ImageView imageView, playButton;
+        
+        ImageView imageView, playButton,info;
         CardView cardView;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -111,6 +113,7 @@ public class SlideWiseAdapter extends RecyclerView.Adapter<SlideWiseAdapter.MyVi
             imageView = itemView.findViewById(R.id.imageView);
             playButton = itemView.findViewById(R.id.play_button);
             cardView = itemView.findViewById(R.id.card_view_top);
+            info=itemView.findViewById(R.id.info);
         }
     }
 }

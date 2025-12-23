@@ -516,6 +516,7 @@ public class SharedPref {
 
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
+    public static final String MANDATORY_SLIDE = "mandatory_slide";
 
     public static SharedPreferences.Editor editor;
 
@@ -877,6 +878,7 @@ public class SharedPref {
             editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
+            editor.putString(MANDATORY_SLIDE,jsonObject.optString("MandatorySlide"));
             editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
             editor.putString(RPT_MGR_CODE,jsonObject.optString("ReportingMgrCode"));
             editor.putString(RPT_MGR_NAME,jsonObject.optString("ReportingMgrName"));
@@ -3252,6 +3254,10 @@ public class SharedPref {
 
     public static String getSlideWiseDetailingNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
+    }
+
+    public static String getMandatorySlide(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(MANDATORY_SLIDE,"0");
     }
 
 }

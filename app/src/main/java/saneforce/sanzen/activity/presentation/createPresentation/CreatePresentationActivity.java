@@ -425,8 +425,9 @@ public class CreatePresentationActivity extends AppCompatActivity {
             String slideId = productObject.getString("SlideId");
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
+            String mandatorySlide = productObject.getString("Mandatory_slide");
             if(priority.isEmpty()) priority = "500" + slidePriority;
-            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,mandatorySlide);
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());
             e.printStackTrace();

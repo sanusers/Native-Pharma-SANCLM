@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.adapter.detailing;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.mandatoryProductList;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.slideScribble;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SelectedPosPlay;
 import static saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix.SlideBrandMatrixList;
@@ -92,7 +93,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
     String defaultTime = "00:00:00";
 
     public static void populateViewPagerAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
-        itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList);
+        itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList,mandatoryProductList);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
         if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
@@ -329,7 +330,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                     binding.progressAnim.cancelAnimation();
                                 }
                             });
-                            break;
+                            //break;
                     }
                 }
             } else {
@@ -559,7 +560,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
     }
 
     public void populateViewPagerAdapter() {
-        itemsPagerAdapter = new PlaySlideDetailedAdapter(this, arrayList);
+        itemsPagerAdapter = new PlaySlideDetailedAdapter(this, arrayList,mandatoryProductList);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         binding.viewPager.setCurrentItem(SelectedPos);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
@@ -703,7 +704,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
             ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
             for (int i = 0; i < brandProductArrayList.size(); i++) {
                 for (int j = 0; j < brandProductArrayList.get(i).getProductArrayList().size(); j++) {
-                    productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected()));
+                    productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected(),brandProductArrayList.get(i).getProductArrayList().get(j).getMandatorySlide()));
                 }
             }
 
@@ -724,7 +725,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                 for (int i = 0; i < savedPresentation.size(); i++) {
                     for (int j = 0; j < savedPresentation.get(i).getProducts().size(); j++) {
-                        productsList.add(new BrandModelClass.Product(savedPresentation.get(i).getPresentationName(), savedPresentation.get(i).getProducts().get(j).getBrandName(), savedPresentation.get(i).getProducts().get(j).getBrandCode(), savedPresentation.get(i).getProducts().get(j).getSlideId(), savedPresentation.get(i).getProducts().get(j).getSlideName(), savedPresentation.get(i).getProducts().get(j).getPriority(), savedPresentation.get(i).getProducts().get(j).isImageSelected()));
+                        productsList.add(new BrandModelClass.Product(savedPresentation.get(i).getPresentationName(), savedPresentation.get(i).getProducts().get(j).getBrandName(), savedPresentation.get(i).getProducts().get(j).getBrandCode(), savedPresentation.get(i).getProducts().get(j).getSlideId(), savedPresentation.get(i).getProducts().get(j).getSlideName(), savedPresentation.get(i).getProducts().get(j).getPriority(), savedPresentation.get(i).getProducts().get(j).isImageSelected(),savedPresentation.get(i).getProducts().get(j).getMandatorySlide()));
                     }
                 }
 
@@ -750,7 +751,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
                 for (int i = 0; i < brandSlide.length(); i++) {
                     JSONObject brandObject = brandSlide.getJSONObject(i);
-                    String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
+                    String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "",mandatorySlide="";
                     String brandCode = brandObject.getString("Product_Brd_Code");
                     String priority = brandObject.getString("Priority");
 
@@ -766,7 +767,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                     slideId = productObject.getString("SlideId");
                                     fileName = productObject.getString("FilePath");
                                     slidePriority = productObject.getString("Priority");
-                                    product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                    mandatorySlide=productObject.getString("Mandatory_slide");
+                                    product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false,mandatorySlide);
                                     productArrayList.add(product);
                                     break;
                                 case "B":
@@ -776,7 +778,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                         slideId = productObject.getString("SlideId");
                                         fileName = productObject.getString("FilePath");
                                         slidePriority = productObject.getString("Priority");
-                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                        mandatorySlide=productObject.getString("Mandatory_slide");
+                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false,mandatorySlide);
                                         productArrayList.add(product);
                                     }
                                     break;
@@ -787,7 +790,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                         slideId = productObject.getString("SlideId");
                                         fileName = productObject.getString("FilePath");
                                         slidePriority = productObject.getString("Priority");
-                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                        mandatorySlide=productObject.getString("Mandatory_slide");
+                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false,mandatorySlide);
                                         productArrayList.add(product);
                                     }
                                     break;
@@ -816,7 +820,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                 for (int i = 0; i < brandProductArrayList.size(); i++) {
                     for (int j = 0; j < brandProductArrayList.get(i).getProductArrayList().size(); j++) {
-                        productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected()));
+                        productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected(),brandProductArrayList.get(i).getProductArrayList().get(j).getMandatorySlide()));
                     }
                 }
 

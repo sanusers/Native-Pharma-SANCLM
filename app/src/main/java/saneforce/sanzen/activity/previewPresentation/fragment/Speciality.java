@@ -113,7 +113,7 @@ public class Speciality extends Fragment {
                                 fileName = productObject.getString("FilePath");
                                 slidePriority = productObject.getString("Priority");
                                 if (priority.isEmpty()) priority = "500" + slidePriority;
-                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
                                 productArrayList.add(product);
                             }
                         }
@@ -134,7 +134,7 @@ public class Speciality extends Fragment {
                             fileName = productObject.getString("FilePath");
                             slidePriority = productObject.getString("Priority");
                             if (priority.isEmpty()) priority = "500" + slidePriority;
-                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
                             productArrayList.add(product);
                         }
                     }
@@ -253,7 +253,7 @@ public class Speciality extends Fragment {
                                 fileName = productObject.getString("FilePath");
                                 slidePriority = productObject.getString("Priority");
                                 if (priority.isEmpty()) priority = "500" + slidePriority;
-                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
                                 productArrayList.add(product);
                             }
                         }
@@ -274,7 +274,7 @@ public class Speciality extends Fragment {
                             fileName = productObject.getString("FilePath");
                             slidePriority = productObject.getString("Priority");
                             if (priority.isEmpty()) priority = "500" + slidePriority;
-                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
                             productArrayList.add(product);
                         }
                     }
@@ -499,7 +499,7 @@ public class Speciality extends Fragment {
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
             if (priority.isEmpty()) priority = "500" + slidePriority;
-            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());
             e.printStackTrace();
