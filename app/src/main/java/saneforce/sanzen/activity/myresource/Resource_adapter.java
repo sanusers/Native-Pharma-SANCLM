@@ -36,6 +36,7 @@ import saneforce.sanzen.activity.myresource.Categoryview.Cate_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.DateSyncActivity;
 import saneforce.sanzen.activity.myresource.StockBalanceview.StockBalanceScreen;
 import saneforce.sanzen.activity.myresource.callstatusview.Callsstatus_screenview;
+import saneforce.sanzen.activity.myresource.leave.LeaveHistoryActivity;
 import saneforce.sanzen.activity.myresource.myresourcemodel.MyResourceInterface;
 import saneforce.sanzen.activity.myresource.profile.ProfileViewScreen;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -937,6 +938,12 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         case ("19"):
                             Intent birthdayWishes = new Intent(context, BirthdayAnniversaryViewscreen.class);
                             context.startActivity(birthdayWishes);
+                            MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                            MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                            break;
+                        case ("20"):
+                            Intent leaveDetails = new Intent(context, LeaveHistoryActivity.class);
+                            context.startActivity(leaveDetails);
                             MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                             MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                             break;

@@ -459,6 +459,8 @@ public class MyResource_Activity extends AppCompatActivity {
             if (isLeaveEntitlementRequested) {
                 listed_data.add(new Resourcemodel_class(getString(R.string.leavestatus), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()), "13"));
             }
+            listed_data.add(new Resourcemodel_class(getString(R.string.leave_history), "", "20"));
+
             if (SharedPref.getDrNeed(this).equals("0") && SharedPref.getVstNd(this).equalsIgnoreCase("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
                 listed_data.add(new Resourcemodel_class(dcrCaption + " " + getString(R.string.txt_visit), "", "14"));
@@ -479,6 +481,7 @@ public class MyResource_Activity extends AppCompatActivity {
              if(SharedPref.getSfType(MyResource_Activity.this).equalsIgnoreCase("1")) {
                  listed_data.add(new Resourcemodel_class(getString(R.string.birthday)+ "/" +getString(R.string.anniversary), "", "19"));
              }
+
                 resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1, new MyResourceInterface() {
                     @Override
                     public void onclickItem(ArrayList<Resourcemodel_class> resourcelis, String split_val, String Hqcode) {

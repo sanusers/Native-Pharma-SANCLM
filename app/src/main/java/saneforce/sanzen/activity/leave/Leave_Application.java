@@ -733,9 +733,9 @@ public class Leave_Application extends AppCompatActivity {
 //
 //                                Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
 //                                LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
-//                                Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
-//                                Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
-//                                Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
+//                                Leave_Application.leavebinding.LeaveHistoryActivity.setLayoutManager(LayoutManagerpoc);
+//                                Leave_Application.leavebinding.LeaveHistoryActivity.setItemAnimator(new DefaultItemAnimator());
+//                                Leave_Application.leavebinding.LeaveHistoryActivity.setAdapter(l_details);
 //                                l_details.notifyDataSetChanged();
 //                            } else {
                             leave_avalabledetails();
