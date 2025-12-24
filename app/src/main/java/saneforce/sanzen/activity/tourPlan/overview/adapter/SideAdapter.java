@@ -25,11 +25,18 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private List<Object> data;
     private TourPlanOverviewActivity.NavType navType;
+    private OnAddClickListener addClickListener;
 
-    public SideAdapter(Context context, List<Object> data, TourPlanOverviewActivity.NavType navType) {
+    public interface OnAddClickListener {
+        void onAddClick(ContentModel model, int position);
+    }
+
+
+    public SideAdapter(Context context, List<Object> data, TourPlanOverviewActivity.NavType navType, OnAddClickListener listener) {
         this.context = context;
         this.data = data;
         this.navType = navType;
+        this.addClickListener = listener;
     }
 
     @Override
@@ -69,7 +76,11 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (content.getContent() != null && !content.getContent().isEmpty()) {
                 ((ContentVH) holder).content.setVisibility(View.VISIBLE);
                 ((ContentVH) holder).content.setText(content.getContent());
-
+                ((ContentVH) holder).addBtn.setOnClickListener(v -> {
+                    if (addClickListener != null) {
+                        addClickListener.onAddClick(content, holder.getAdapterPosition());
+                    }
+                });
                 if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER){
                     ((ContentVH) holder).addImg.setVisibility(View.VISIBLE);
                     ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.custom_background_blue));
@@ -93,7 +104,8 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
                 if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER ){
                     ((ContentVH) holder).addImg.setVisibility(View.VISIBLE);
-                    ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.green_full));
+//                    ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.green_full));
+                    ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.custom_background_green));
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                 }else{
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
@@ -130,9 +142,8 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     static class ContentVH extends RecyclerView.ViewHolder {
-        TextView content, subContent, sideContent;
+        TextView content, subContent, sideContent,addBtn;
         RelativeLayout addImg;
-        View divider;
 
         public ContentVH(View itemView) {
             super(itemView);
@@ -140,7 +151,7 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             subContent = itemView.findViewById(R.id.tv_sub_content);
             sideContent = itemView.findViewById(R.id.tv_content_side);
             addImg = itemView.findViewById(R.id.btn_add_doc);
-            divider = itemView.findViewById(R.id.divider);
+            addBtn = itemView.findViewById(R.id.btn_add_tp);
 
         }
     }

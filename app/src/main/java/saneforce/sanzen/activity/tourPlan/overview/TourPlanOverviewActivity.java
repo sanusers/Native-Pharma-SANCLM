@@ -88,6 +88,9 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
     private ClusterDataAdapter drClusterDataAdapter = new ClusterDataAdapter();
     private ClusterDataAdapter chmClusterDataAdapter = new ClusterDataAdapter();
     private SideAdapter sideAdapter;
+    int position;
+
+    ContentModel model;
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -490,7 +493,10 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(TourPlanOverviewActivity.this);
         binding.tpDataNavigation.rvData.setLayoutManager(mLayoutManager);
         if (dataList != null) {
-            sideAdapter = new SideAdapter(TourPlanOverviewActivity.this, dataList, navType);
+            sideAdapter = new SideAdapter(TourPlanOverviewActivity.this, dataList, navType,(model,position) -> {
+                binding.tpOverviewDrawer.closeDrawer(GravityCompat.END);
+                finish();
+            });
             binding.tpDataNavigation.rvData.setAdapter(sideAdapter);
         }
         switch (navType) {
