@@ -4194,12 +4194,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             itemRecView = itemView.findViewById(R.id.sessionItemRecView);
             textCluster = itemView.findViewById(R.id.textCluster);
 
-            listedDrCapTV.setText(SharedPref.getDrCap(context));
+        /*    listedDrCapTV.setText(SharedPref.getDrCap(context));
             cheCapTV.setText(SharedPref.getChmCap(context));
             stockCapTV.setText(SharedPref.getStkCap(context));
             unListedDrCapTV.setText(SharedPref.getUNLcap(context));
             hospCapTV.setText(SharedPref.getHospCaption(context));
-            cipCapTV.setText(SharedPref.getCipCaption(context));
+            cipCapTV.setText(SharedPref.getCipCaption(context));*/
 
         }
     }

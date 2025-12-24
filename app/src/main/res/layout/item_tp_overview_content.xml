@@ -51,6 +51,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/satoshi_regular"
             android:textAlignment="textStart"
+            android:gravity="left"
             android:textColor="@color/black"
             android:textSize="@dimen/_7ssp"
             tools:text="Content" />
@@ -62,6 +63,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/satoshi_regular"
             android:textAlignment="textEnd"
+            android:gravity="right"
             android:textColor="@color/red_60"
             android:textSize="@dimen/_7ssp"
             tools:text="Content" />
@@ -89,6 +91,7 @@
         android:layout_toEndOf="@id/btn_add_doc"
         android:fontFamily="@font/satoshi_regular"
         android:textAlignment="textStart"
+        android:gravity="left"
         android:textColor="@color/text_grey"
         android:textSize="@dimen/_7ssp"
         tools:text="Sub Content" />

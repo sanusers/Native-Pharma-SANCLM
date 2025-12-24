@@ -888,7 +888,7 @@
     <string name="competitor_name">ပြိုင်ဘက် အမည်</string>
     <string name="competitor_Productname">ပြိုင်ဘက် ထုတ်ကုန်အမည်</string>
     <string name="no_data_available">ဒေတာမရှိပါ</string>
-    <string name="add_session">ဆက်စပ်အစည်းအဝေး ထည့်ရန်</string>
+    <string name="add_session">အစည်းအဝေး+</string>
 
     <string name="type_here">ဒီမှာ ရိုက်ထည့်ပါ..</string>
     <string name="todays_wishes">ယနေ့ဆုတောင်းများ !!!</string>
@@ -994,18 +994,33 @@
     <string name="signature">လက်မှတ်</string>
     <string name="available">ရရှိနိုင်သည်:</string>
     <string name="edit_plan">အစီအစဉ်ကို ပြင်ဆင်ရန်</string>
-
-
-
-    <!--<string name="txt_tagging">တဂ်ခြင်း။</string>
-    <string name="txt_doctor">ဆရာဝန်</string>
-    <string name="txt_chemist">ဓာတုဗေဒပညာရှင်</string>
-    <string name="txt_stockist">စတော့</string>
-    <string name="txt_undr">စာရင်းမဝင်သော ဆရာဝန်</string>
-    <string name="txt_add_tag">Tag ထည့်ပါ။</string>
-    <string name="txt_visit">သွားလည်ပါ။</string>
-    <string name="search">Burmese</string>
-    <string name="str_save_settings">ဆက်တင်များကို သိမ်းဆည်းပါ။</string>
-    <string name="user_id">သုံးစွဲသူအိုင်ဒီ</string>-->
+    <string name="str_password_changed_login_with_online">သင့်စကားဝှက်ကို ပြောင်းလဲပြီးပါပြီ။ အွန်လိုင်းဖြင့် ဝင်ရောက်ပါ။</string>
+    <string name="str_password_changed">သင့်စကားဝှက်ကို ပြောင်းလဲပြီးပါပြီ။ ထွက်ပြီး ပြန်လည်ဝင်ရောက်ပါ။</string>
+    <string name="str_device_id_updated">သင့်စက်ပစ္စည်း ID ကို အပ်ဒိတ်လုပ်ပြီးပါပြီ။ ထွက်ပြီး ပြန်လည်ဝင်ရောက်ပါ။</string>
+    <string name="str_device_not_valid">စက်ပစ္စည်း မမှန်ပါ</string>
+    <string name="str_access_denied">ဝင်ရောက်ခွင့် မရှိပါ! အုပ်ချုပ်ရေးမှူးကို ဆက်သွယ်ပါ။</string>
+    <string name="str_user_status_vacant">အသုံးပြုသူအခြေအနေ မရှိပါ! အုပ်ချုပ်ရေးမှူးကို ဆက်သွယ်ပါ။</string>
+    <string name="str_user_status_hold">အသုံးပြုသူအခြေအနေ ရပ်ထားသည်! အုပ်ချုပ်ရေးမှူးကို ဆက်သွယ်ပါ။</string>
+    <string name="str_user_status_blocked">အသုံးပြုသူအခြေအနေ ပိတ်ထားသည်! အုပ်ချုပ်ရေးမှူးကို ဆက်သွယ်ပါ။</string>
+    <string name="str_user_status_deactivated">အသုံးပြုသူအခြေအနေ ပိတ်ထားပြီးပါပြီ! အုပ်ချုပ်ရေးမှူးကို ဆက်သွယ်ပါ။</string>
+    <string name="pause">ခဏရပ်ပါ</string>
+    <string name="please_select_at_least">အနည်းဆုံး ရွေးချယ်ပါ </string>
+    <string name="please_plan_all_the">အားလုံးကို စီစဉ်ပါ </string>
+    <string name="at_least_one_time"> အနည်းဆုံး တစ်ကြိမ်</string>
+    <string name="not_planned">မစီစဉ်ထားပါ</string>
+    <string name="plan_overview">စီမံချက်အကျဉ်းချုပ်</string>
+    <string name="tour_plan_overview">ခရီးစဉ် စီမံချက်အကျဉ်းချုပ်</string>
+    <string name="total_planned_days">စီစဉ်ထားသောနေ့စုစုပေါင်း: </string>
+    <string name="planned_">စီစဉ်ထားသည် : </string>
+    <string name="total_">စုစုပေါင်း : </string>
+    <string name="planned_days">စီစဉ်ထားသောနေ့များ : </string>
+    <string name="work_category_in_days">အလုပ်အမျိုးအစား (နေ့အလိုက်)</string>
+    <string name="work_type_in_days">အလုပ်အမျိုးအစား (နေ့အလိုက်)</string>
+    <string name="unplanned">မစီစဉ်ထားပါ</string>
+    <string name="planned_visits">စီစဉ်ထားသော လည်ပတ်မှုများ</string>
+    <string name="total_visits">လည်ပတ်မှု စုစုပေါင်း</string>
+    <string name="cluster_wise">အုပ်စုအလိုက်</string>
+    <string name="category_wise">အမျိုးအစားအလိုက်</string>
+    <string name="plan_more">ထပ်မံ စီစဉ်ပါ</string>
 
 </resources>

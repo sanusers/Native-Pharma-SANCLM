@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:fontFamily="@font/satoshi_bold"
-            android:gravity="start"
+            android:gravity="left"
             android:textColor="@color/text_dark"
             android:textSize="@dimen/_8ssp"
             android:textStyle="bold"

@@ -26,6 +26,7 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Object> data;
     private TourPlanOverviewActivity.NavType navType;
     private OnAddClickListener addClickListener;
+    Boolean isDoc = false;
 
     public interface OnAddClickListener {
         void onAddClick(ContentModel model, int position);
@@ -104,7 +105,6 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
                 if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER ){
                     ((ContentVH) holder).addImg.setVisibility(View.VISIBLE);
-//                    ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.green_full));
                     ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.custom_background_green));
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                 }else{

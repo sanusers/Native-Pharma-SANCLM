@@ -1007,15 +1007,34 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="available">Disponível:</string>
     <string name="edit_plan">Editar plano</string>
 
+    <string name="str_password_changed_login_with_online">Sua senha foi alterada. Faça login online.</string>
+    <string name="str_password_changed">Sua senha foi alterada. Faça logout e login novamente.</string>
+    <string name="str_device_id_updated">O ID do dispositivo foi atualizado. Faça logout e login novamente.</string>
+    <string name="str_device_not_valid">Dispositivo inválido</string>
+    <string name="str_access_denied">Acesso negado! Contate o administrador.</string>
+    <string name="str_user_status_vacant">Status do usuário vazio! Contate o administrador.</string>
+    <string name="str_user_status_hold">Status do usuário em espera! Contate o administrador.</string>
+    <string name="str_user_status_blocked">Status do usuário bloqueado! Contate o administrador.</string>
+    <string name="str_user_status_deactivated">Status do usuário desativado! Contate o administrador.</string>
+    <string name="pause">Pausa</string>
+    <string name="please_select_at_least">Selecione pelo menos </string>
+    <string name="please_plan_all_the">Planeje todos os </string>
+    <string name="at_least_one_time"> pelo menos uma vez</string>
+    <string name="not_planned">Não planejado</string>
+    <string name="plan_overview">Visão geral do plano</string>
+    <string name="tour_plan_overview">Visão geral do plano de viagem</string>
+    <string name="total_planned_days">Total de dias planejados: </string>
+    <string name="planned_">Planejado: </string>
+    <string name="total_">Total: </string>
+    <string name="planned_days">Dias planejados: </string>
+    <string name="work_category_in_days">Categoria de trabalho (em dias)</string>
+    <string name="work_type_in_days">Tipo de trabalho (em dias)</string>
+    <string name="unplanned">Não planejado</string>
+    <string name="planned_visits">Visitas planejadas</string>
+    <string name="total_visits">Total de visitas</string>
+    <string name="cluster_wise">Por grupo</string>
+    <string name="category_wise">Por categoria</string>
+    <string name="plan_more">Planejar mais</string>
 
-    <!--  <string name="txt_tagging">Marcação</string>-->
-  <!--  <string name="txt_doctor">Doutor</string>-->
-  <!--  <string name="txt_chemist">Químico</string>-->
-  <!--  <string name="txt_stockist">Mais atarracado</string>-->
-  <!--  <string name="txt_undr">Médico não listado</string>-->
-  <!--  <string name="txt_add_tag">Adicionar etiqueta</string>-->
-  <!--  <string name="search">Portugal</string>-->
-  <!--  <string name="str_save_settings">Salvar configurações</string>-->
-  <!--  <string name="user_id">ID do usuário</string>-->
 
 </resources>

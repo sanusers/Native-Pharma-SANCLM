@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">T.4.0.0</string>
+    <string name="app_version" translatable="false">T.3.5.0</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -989,7 +989,7 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="to_view_list">No data to view</string>
     <string name="clear_selected">Clear Selected</string>
     <string name="syncing_offline_data">Syncing Offline Data</string>
-    <string name="planned">Planned</string>
+
     <string name="select_cluster_to_view_list">Select cluster to view list</string>
     <string name="you_have_tagged">You have tagged</string>
     <string name="kindly_sync">"\nKindly sync!"</string>
@@ -1013,7 +1013,6 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="str_user_status_blocked">User Status Blocked! Contact Admin.</string>
     <string name="str_user_status_deactivated">User Status Deactivated! Contact Admin.</string>
     <string name="pause">Pause</string>
-    <string name="play">Play</string>
     <string name="please_select_at_least">"Please select at least "</string>
     <string name="please_plan_all_the">"Please plan all the "</string>
     <string name="at_least_one_time">" at least one time"</string>
@@ -1021,6 +1020,7 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="plan_overview">Plan Overview</string>
     <string name="tour_plan_overview">Tour Plan Overview</string>
     <string name="total_planned_days">"Total Planned Days: "</string>
+    <string name="planned">Planned</string>
     <string name="os">OS</string>
     <string name="ex">EX</string>
     <string name="os_ex">OS-EX</string>
@@ -1029,7 +1029,6 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="planned_days">"Planned Days: "</string>
     <string name="work_category_in_days">Work Category (In days)</string>
     <string name="work_type_in_days">Work Type (In days)</string>
-    <string name="planned">Planned</string>
     <string name="unplanned">Unplanned</string>
     <string name="planned_visits">Planned Visits</string>
     <string name="total_visits">Total Visits</string>

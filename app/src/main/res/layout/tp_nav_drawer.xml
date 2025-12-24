@@ -150,7 +150,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Clear"
+                    android:text="@string/clear"
                     android:textSize="@dimen/_6sdp"
                     android:textColor="@color/text_dark"
                     android:fontFamily="@font/satoshi_variable"
@@ -171,7 +171,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Save"
+                    android:text="@string/save"
                     android:textSize="@dimen/_6sdp"
                     android:textColor="@color/white"
                     android:fontFamily="@font/satoshi_variable"

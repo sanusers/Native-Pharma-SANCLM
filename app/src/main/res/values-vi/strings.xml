@@ -1004,14 +1004,34 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="signature">Chữ ký</string>
     <string name="available">Có sẵn:</string>
     <string name="edit_plan">Chỉnh sửa kế hoạch</string>
-    <!-- <string name="txt_tagging">Gắn thẻ</string>
-     <string name="txt_doctor">Bác sĩ</string>
-     <string name="txt_chemist">nhà hóa học</string>
-     <string name="txt_stockist">Chắc chắn nhất</string>
-     <string name="txt_undr">Bác sĩ chưa niêm yết</string>
-     <string name="txt_add_tag">Thêm thẻ</string>
-     <string name="search">Vietnam</string>
-     <string name="str_save_settings">Lưu các thiết lập</string>
-     <string name="user_id">Tên người dùng</string>-->
+    <string name="str_password_changed_login_with_online">Mật khẩu của bạn đã được thay đổi. Vui lòng đăng nhập trực tuyến.</string>
+    <string name="str_password_changed">Mật khẩu của bạn đã được thay đổi. Vui lòng đăng xuất và đăng nhập lại.</string>
+    <string name="str_device_id_updated">ID thiết bị của bạn đã được cập nhật. Vui lòng đăng xuất và đăng nhập lại.</string>
+    <string name="str_device_not_valid">Thiết bị không hợp lệ</string>
+    <string name="str_access_denied">Truy cập bị từ chối! Liên hệ quản trị viên.</string>
+    <string name="str_user_status_vacant">Trạng thái người dùng trống! Liên hệ quản trị viên.</string>
+    <string name="str_user_status_hold">Trạng thái người dùng bị tạm dừng! Liên hệ quản trị viên.</string>
+    <string name="str_user_status_blocked">Trạng thái người dùng bị chặn! Liên hệ quản trị viên.</string>
+    <string name="str_user_status_deactivated">Trạng thái người dùng đã bị vô hiệu hóa! Liên hệ quản trị viên.</string>
+    <string name="pause">Tạm dừng</string>
+    <string name="please_select_at_least">Vui lòng chọn ít nhất </string>
+    <string name="please_plan_all_the">Vui lòng lập kế hoạch cho tất cả </string>
+    <string name="at_least_one_time"> ít nhất một lần</string>
+    <string name="not_planned">Chưa lập kế hoạch</string>
+    <string name="plan_overview">Tổng quan kế hoạch</string>
+    <string name="tour_plan_overview">Tổng quan kế hoạch chuyến đi</string>
+    <string name="total_planned_days">Tổng số ngày đã lên kế hoạch: </string>
+    <string name="planned_">Đã lên kế hoạch: </string>
+    <string name="total_">Tổng cộng: </string>
+    <string name="planned_days">Ngày đã lên kế hoạch: </string>
+    <string name="work_category_in_days">Danh mục công việc (theo ngày)</string>
+    <string name="work_type_in_days">Loại công việc (theo ngày)</string>
+    <string name="unplanned">Chưa lên kế hoạch</string>
+    <string name="planned_visits">Lượt thăm đã lên kế hoạch</string>
+    <string name="total_visits">Tổng số lượt thăm</string>
+    <string name="cluster_wise">Theo nhóm</string>
+    <string name="category_wise">Theo danh mục</string>
+    <string name="plan_more">Lập kế hoạch thêm</string>
+
 
 </resources>
