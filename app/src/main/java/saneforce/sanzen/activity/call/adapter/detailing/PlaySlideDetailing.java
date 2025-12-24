@@ -84,7 +84,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
     boolean playBtnClicked = false;
     MediaController mediaController;
     double progress = 0;
-    int SelectedPos;
+    int SelectedPos = 0;
     int scribblePos;
     int val = 0;
     CommonSharedPreference mCommonSharedPreference;
@@ -404,8 +404,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
                             mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName());
                             mCommonSharedPreference.setValueToPreferenceFeed("brd_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandCode());
                             mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName());
+                            mCommonSharedPreference.setValueToPreferenceFeed("slide_id" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideID());
                             mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideType());
                             mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideUrl());
+                            mCommonSharedPreference.setValueToPreferenceFeed("product_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getProductCode());
                             mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++timecount);
                         }
                     }
@@ -417,8 +419,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
                         String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
                         String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
                         String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
+                        String slideID = mCommonSharedPreference.getValueFromPreferenceFeed("slide_id" + i);
                         String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
                         String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
+                        String productCode = mCommonSharedPreference.getValueFromPreferenceFeed("product_code" + i);
 
                         String eTime;
                         if (arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
@@ -463,9 +467,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                 }
                             }
                             if (isAvailableScrib) {
-                                arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
+                                arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), slideID, SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, productCode, false));
                             } else {
-                                arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
+                                arrayStore.add(new StoreImageTypeUrl("", slideID, SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, productCode, false));
                             }
                         }
                     }
@@ -538,7 +542,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         binding.recViewHead.setLayoutManager(layoutManager11);
         binding.recViewHead.setAdapter(bottomPreviewDetailedHeadAdapter);
 
-        if (arrayList.size() > 0) {
+        if (arrayList != null && !arrayList.isEmpty()) {
             switch (SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName())) {
                 case "pdf":
                 case "mp4":
@@ -559,16 +563,33 @@ public class PlaySlideDetailing extends AppCompatActivity {
     }
 
     public void populateViewPagerAdapter() {
+        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
+            binding.playBtn.setVisibility(View.GONE);
+        } else {
+            if (arrayList != null && !arrayList.isEmpty()) {
+                switch (SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName())) {
+                    case "pdf":
+                    case "mp4":
+                    case "avi":
+                    case "zip":
+                    case "htm":
+                    case "html": {
+                        binding.playBtn.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                    default: {
+                        binding.playBtn.setVisibility(View.GONE);
+                    }
+                }
+            } else {
+                binding.playBtn.setVisibility(View.VISIBLE);
+            }
+        }
         itemsPagerAdapter = new PlaySlideDetailedAdapter(this, arrayList);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         binding.viewPager.setCurrentItem(SelectedPos);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
-        if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
-            binding.playBtn.setVisibility(View.GONE);
-        } else {
-            binding.playBtn.setVisibility(View.VISIBLE);
-        }
-        itemsPagerAdapter.autoPlaySlide(0, 1);
+        itemsPagerAdapter.autoPlaySlide(SelectedPos, 1);
     }
 
     public void populateBottomViewAdapter() {
@@ -703,7 +724,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
             ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
             for (int i = 0; i < brandProductArrayList.size(); i++) {
                 for (int j = 0; j < brandProductArrayList.get(i).getProductArrayList().size(); j++) {
-                    productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected()));
+                    productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected(), brandProductArrayList.get(i).getProductArrayList().get(j).getProductCode()));
                 }
             }
 
@@ -750,7 +771,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
                 for (int i = 0; i < brandSlide.length(); i++) {
                     JSONObject brandObject = brandSlide.getJSONObject(i);
-                    String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
+                    String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", productDetailCode = "";
                     String brandCode = brandObject.getString("Product_Brd_Code");
                     String priority = brandObject.getString("Priority");
 
@@ -766,7 +787,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                     slideId = productObject.getString("SlideId");
                                     fileName = productObject.getString("FilePath");
                                     slidePriority = productObject.getString("Priority");
-                                    product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                    productDetailCode = productObject.getString("Product_Detail_Code");
+                                    product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode);
                                     productArrayList.add(product);
                                     break;
                                 case "B":
@@ -776,7 +798,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                         slideId = productObject.getString("SlideId");
                                         fileName = productObject.getString("FilePath");
                                         slidePriority = productObject.getString("Priority");
-                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                        productDetailCode = productObject.getString("Product_Detail_Code");
+                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode);
                                         productArrayList.add(product);
                                     }
                                     break;
@@ -787,7 +810,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                         slideId = productObject.getString("SlideId");
                                         fileName = productObject.getString("FilePath");
                                         slidePriority = productObject.getString("Priority");
-                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                        productDetailCode = productObject.getString("Product_Detail_Code");
+                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode);
                                         productArrayList.add(product);
                                     }
                                     break;
@@ -816,7 +840,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                 for (int i = 0; i < brandProductArrayList.size(); i++) {
                     for (int j = 0; j < brandProductArrayList.get(i).getProductArrayList().size(); j++) {
-                        productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected()));
+                        productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected(), brandProductArrayList.get(i).getProductArrayList().get(j).getProductCode()));
                     }
                 }
 

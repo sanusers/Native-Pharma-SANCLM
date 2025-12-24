@@ -242,7 +242,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/txt_feild_work"
+                        android:id="@+id/txt_field_work"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_2sdp"
@@ -260,14 +260,14 @@
 
 
                     <TextView
-                        android:id="@+id/txt_non_feild_work"
+                        android:id="@+id/txt_non_field_work"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
                         android:layout_marginBottom="@dimen/_2sdp"
-                        android:layout_toRightOf="@id/txt_feild_work"
+                        android:layout_toRightOf="@id/txt_field_work"
                         android:background="@drawable/custom_backround_layout"
                         android:backgroundTint="@color/blue_10"
                         android:fontFamily="@font/satoshi_medium"
@@ -304,7 +304,7 @@
                         android:id="@+id/txt_miss_rele"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_feild_work"
+                        android:layout_below="@id/txt_field_work"
                         android:layout_marginStart="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
@@ -322,7 +322,7 @@
                         android:id="@+id/txt_re_entry"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_feild_work"
+                        android:layout_below="@id/txt_field_work"
                         android:layout_margin="@dimen/_2sdp"
                         android:layout_toRightOf="@id/txt_miss_rele"
                         android:background="@drawable/custom_backround_layout"

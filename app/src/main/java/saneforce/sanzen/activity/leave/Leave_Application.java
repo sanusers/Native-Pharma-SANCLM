@@ -938,7 +938,7 @@ public class Leave_Application extends AppCompatActivity {
         try {
             String attachmentStr = data.optString("attchment");
             int attachment = attachmentStr.isEmpty() ? 0 : Integer.parseInt(attachmentStr);
-            if (attachment == 0) {
+            if (attachment == 0 && SharedPref.getLeaveAttachmentNeed(Leave_Application.this).equalsIgnoreCase("0")) {
                 leavebinding.tlAttachment.setVisibility(View.VISIBLE);
             } else {
                 leavebinding.tlAttachment.setVisibility(View.INVISIBLE);

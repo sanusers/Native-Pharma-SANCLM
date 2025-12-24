@@ -55,6 +55,16 @@
                 tools:text="cluster" />
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/info"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_gravity="center"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:src="@drawable/info_icon_purple"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <View

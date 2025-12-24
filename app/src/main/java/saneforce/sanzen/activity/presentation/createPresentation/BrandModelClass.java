@@ -109,18 +109,20 @@ public class BrandModelClass {
         String slideId = "";
         String slideName = "";
         String priority = "";
+        String productCode = "";
         boolean imageSelected = false;
         int draggedPosition = -1;
 
         public Product () {
         }
 
-        public Product(String brandCode, String brandName, String slideId, String slideName, String priority, boolean imageSelected) {
+        public Product(String brandCode, String brandName, String slideId, String slideName, String priority, boolean imageSelected, String productCode) {
             this.brandCode = brandCode;
             this.brandName = brandName;
             this.slideId = slideId;
             this.slideName = slideName;
             this.priority = priority;
+            this.productCode = productCode;
             this.imageSelected = imageSelected;
         }
 
@@ -201,6 +203,14 @@ public class BrandModelClass {
 
         public int getDraggedPosition () {
             return draggedPosition;
+        }
+
+        public String getProductCode() {
+            return productCode;
+        }
+
+        public void setProductCode(String productCode) {
+            this.productCode = productCode;
         }
 
         public void setDraggedPosition (int draggedPosition) {

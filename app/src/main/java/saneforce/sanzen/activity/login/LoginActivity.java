@@ -415,6 +415,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+        String reason = SharedPref.getLogoutReason(LoginActivity.this);
+        if (!reason.isEmpty()) {
+            if (reason.contains(".")) {
+                reason = reason.substring(0, reason.indexOf("."));
+            }
+            binding.logoutReasonLayout.setVisibility(View.VISIBLE);
+            binding.logoutReasonTxt.setText(reason);
+        }
         SetUpLanguage();
     }
 
@@ -612,8 +620,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void
-    process(JSONObject jsonObject) {
+    public void process(JSONObject jsonObject) {
         try {
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             notificationDataDao.getNotificationBySyncStatus(5).forEach(data -> {
@@ -624,6 +631,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveKeys(LoginActivity.this, jsonObject.optString("zakey"), jsonObject.optString("zskey"));
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
+            SharedPref.setLogoutReason(LoginActivity.this, "");
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             //   SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
             SharedPref.saveHqMain(LoginActivity.this, jsonObject.getString("HQName"));

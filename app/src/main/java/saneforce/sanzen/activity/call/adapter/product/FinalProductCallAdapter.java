@@ -62,20 +62,20 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         return new ViewHolder(view);
     }
 
-
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
         holder.tv_prd_name.setText(productListArrayList.get(position).getName());
         holder.ed_samplesQty.setText(productListArrayList.get(position).getSample_qty());
         holder.ed_rxQty.setText(productListArrayList.get(position).getRx_qty());
         holder.ed_rcpaQty.setText(productListArrayList.get(position).getRcpa_qty());
-        holder.switch_prompt.setChecked(productListArrayList.get(position).getPromoted().equalsIgnoreCase("0"));
+        holder.switch_promoted.setChecked(productListArrayList.get(position).getPromoted().equalsIgnoreCase("0"));
         if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2") || DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
-            holder.switch_prompt.setVisibility(View.GONE);
+            holder.switch_promoted.setVisibility(View.GONE);
         } else {
-            holder.switch_prompt.setVisibility(View.VISIBLE);
+            holder.switch_promoted.setVisibility(View.VISIBLE);
+            holder.switch_promoted.setScaleX(0.8f);
+            holder.switch_promoted.setScaleY(0.8f);
         }
 
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
@@ -149,7 +149,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                         holder.ed_rcpaQty.setVisibility(View.VISIBLE);
                     }
 //                    holder.ed_rcpaQty.setVisibility(View.GONE);
-                    holder.switch_prompt.setVisibility(View.GONE);
+                    holder.switch_promoted.setVisibility(View.GONE);
                 }
 
                 break;
@@ -236,12 +236,12 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             holder.tv_stocks.setVisibility(View.GONE);
         }
 
-        holder.switch_prompt.setOnTouchListener((view, motionEvent) -> {
+        holder.switch_promoted.setOnTouchListener((view, motionEvent) -> {
             isTouched = true;
             return false;
         });
 
-        holder.switch_prompt.setOnCheckedChangeListener((compoundButton, b) -> {
+        holder.switch_promoted.setOnCheckedChangeListener((compoundButton, b) -> {
             try {
                 if (isTouched) {
                     isTouched = false;
@@ -550,7 +550,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         TextView tv_prd_name, tv_stocks;
         EditText ed_samplesQty, ed_rxQty, ed_rcpaQty;
         ImageView img_del_prd;
-        SwitchCompat switch_prompt;
+        SwitchCompat switch_promoted;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -560,7 +560,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             ed_rxQty = itemView.findViewById(R.id.ed_rx_qty);
             ed_rcpaQty = itemView.findViewById(R.id.tv_rcpa);
             img_del_prd = itemView.findViewById(R.id.img_del_prd);
-            switch_prompt = itemView.findViewById(R.id.img_promoted);
+            switch_promoted = itemView.findViewById(R.id.img_promoted);
         }
     }
 }

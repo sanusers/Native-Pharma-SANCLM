@@ -21,12 +21,14 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -224,7 +226,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static OutboxUtil outboxUtil;
     private static HomeDashBoard activity;
     public static boolean isFakeLocationDetected = false;
-    private static final int NOTIFICATION_PERMISSION_CODE = 101;
+    private static final int NOTIFICATION_PERMISSION_CODE = 102;
     private NotificationViewModel notificationViewModel;
     private PopupWindow notificationPopupWindow;
     private final Set<Integer> syncingIds = new HashSet<>();
@@ -242,6 +244,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private final Handler handler = new Handler();
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
     private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.getDefault());
+    private boolean isLocationPermissionRequested = false;
+    private android.app.AlertDialog locationDialog;
+
     private final Runnable updateClock = new Runnable() {
         @Override
         public void run() {
@@ -637,7 +642,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             AppIdentify();
             Log.d("ACTIVITY_STATUS", "OnResume");
             commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
-            requestNotificationPermission();
             if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
                 binding.myDrawerLayout.closeDrawer(GravityCompat.START);
@@ -709,7 +713,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     CheckingManatoryApprovals();
                 }
                 CheckedTpRange();
-              //  showBirthdayPopup();
+                //  showBirthdayPopup();
                 String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
                 if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this)) || !today.equals(SharedPref.getAnniversaryShownDate(HomeDashBoard.this))) {
@@ -879,11 +883,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.subDivision.setText(SharedPref.getSubDivisionNames(this));
         isDateSelectionClicked = false;
 
-        if (SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")) {
-            if (!CheckLocPermission()) {
-                RequestLocationPermission();
-            }
-        }
+//        if (SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")) {
+//            if (!CheckLocPermission()) {
+//                RequestLocationPermission();
+//            }
+//        }
 
         notificationViewModel.getUnreadNotificationCount().observe(this, count -> {
             if (count != null && count > 0) {
@@ -1049,6 +1053,137 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else {
                 binding.myDrawerLayout.openDrawer(GravityCompat.START);
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
+            }
+        });
+
+        checkUserStatus();
+    }
+
+    private void checkUserStatus() {
+        String lastCheckedDate = SharedPref.getStatusCheckedDate(HomeDashBoard.this);
+        if (lastCheckedDate.isEmpty() || !LocalDate.now().toString().equals(lastCheckedDate)) {
+            JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
+            try {
+                @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+                jj.put("tableName", "getuserstatus");
+                jj.put("sfcode", SharedPref.getSfCode(this));
+                jj.put("division_code", SharedPref.getDivisionCode(this));
+                jj.put("Rsf", SharedPref.getHqCode(this));
+                jj.put("Username", SharedPref.getLoginId(this));
+                jj.put("Password", SharedPref.getLoginUserPwd(this));
+                jj.put("DeviceID", deviceId);
+
+                Log.d("user status", String.valueOf(jj));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "table/dcrmasterdata");
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(HomeDashBoard.this), mapString, jj.toString());
+
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if (response.isSuccessful()) {
+                        Log.i("User status", "onResponse: " + response.body().toString());
+                        SharedPref.setStatusCheckedDate(HomeDashBoard.this, LocalDate.now().toString());
+                        try {
+                            JSONArray jsonArray = new JSONArray();
+                            JSONObject jsonObject = new JSONObject();
+                            if (response.body().isJsonObject()) {
+                                jsonObject = new JSONObject(response.body().toString());
+                                jsonArray.put(jsonObject);
+                            } else if (response.body().isJsonArray()) {
+                                jsonArray = new JSONArray(response.body().toString());
+                            }
+                            jsonObject = jsonArray.optJSONObject(0);
+                            String success = jsonObject.optString("success", "true"), key = jsonObject.optString("key", "");
+                            if (success.equalsIgnoreCase("false") || !key.isEmpty()) {
+                                String reason = "";
+                                switch (key) {
+                                    case "PC": {
+                                        reason = getString(R.string.str_password_changed);
+                                        break;
+                                    }
+                                    case "DC": {
+                                        reason = getString(R.string.str_device_id_updated);
+                                        break;
+                                    }
+                                    case "AD": {
+                                        reason = getString(R.string.str_access_denied);
+                                        break;
+                                    }
+                                    case "V": {
+                                        reason = getString(R.string.str_user_status_vacant);
+                                        break;
+                                    }
+                                    case "H": {
+                                        reason = getString(R.string.str_user_status_hold);
+                                        break;
+                                    }
+                                    case "B": {
+                                        reason = getString(R.string.str_user_status_blocked);
+                                        break;
+                                    }
+                                    case "D": {
+                                        reason = getString(R.string.str_device_not_valid);
+                                        break;
+                                    }
+//                                    default: {
+//                                        reason = "Kindly logout and login!";
+//                                        break;
+//                                    }
+                                }
+                                if (!reason.isEmpty()) {
+                                    showStatusDialog(reason);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+    }
+
+    private void showStatusDialog(String reason) {
+        Dialog dialog = new Dialog(HomeDashBoard.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setType(WindowManager.LayoutParams.TYPE_APPLICATION_PANEL);
+            window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+            window.setGravity(Gravity.CENTER);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        dialog.show();
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        TextView content = dialog.findViewById(R.id.ed_alert_msg);
+        content.setText(reason);
+        content.setHint("");
+        btn_yes.setText(getString(R.string.logout));
+        btn_no.setVisibility(View.GONE);
+        btn_yes.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+                SharedPref.setLogoutReason(HomeDashBoard.this, reason);
+                SharedPref.saveLoginState(HomeDashBoard.this, false);
+                SharedPref.saveLoginPwd(HomeDashBoard.this, "");
+                Intent intent = new Intent(HomeDashBoard.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -1308,7 +1443,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             a.printStackTrace();
         }
 
-
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
             ArrayList<String> days = new ArrayList<>(daysInMonth(date));
@@ -1509,10 +1643,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-
     @SuppressLint({"MissingInflatedId", "WrongConstant", "UseCompatLoadingForDrawables"})
     public void changePassword(String title) {
-
         //  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.FullScreencall();
@@ -1797,16 +1929,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
     }
 
-
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.refresh_location))) {
             setGpsTrack();
         }
@@ -1924,19 +2052,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
         String dynamicOptionCaps = SharedPref.getDynamicOptionCaps(HomeDashBoard.this);
         String optionCaps;
-        if(dynamicOptionCaps == null || dynamicOptionCaps.isEmpty()){
+        if (dynamicOptionCaps == null || dynamicOptionCaps.isEmpty()) {
             optionCaps = getString(R.string.option);
-        }else{
+        } else {
             optionCaps = dynamicOptionCaps;
         }
-            if (item.getTitle().toString().equalsIgnoreCase(optionCaps)) {
-                if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
-                    startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
-                } else {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
-                }
-                return true;
+        if (item.getTitle().toString().equalsIgnoreCase(optionCaps)) {
+            if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                startActivity(new Intent(HomeDashBoard.this, DynamicMenuHome.class));
+            } else {
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
             }
+            return true;
+        }
 
     /*    if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.reports))) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
@@ -2383,7 +2511,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-
     private ArrayList<String> daysInMonth(LocalDate date) {
         ArrayList<String> daysInMonthArray = new ArrayList<>();
         YearMonth yearMonth = YearMonth.from(date);
@@ -2455,7 +2582,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         return date.format(formatter);
     }
 
-
     private void getCallsDataToCalender() {
         callStatusList.clear();
         JSONArray dcrData = masterDataDao.getMasterDataTableOrNew(Constants.DCR).getMasterSyncDataJsonArray();
@@ -2480,9 +2606,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-
     public void AppIdentify() {
-
         Menu menu = binding.navView.getMenu();
         binding.navView.getLayoutDirection();
         menu.findItem(R.id.remaindercall).setTitle(SharedPref.getRemainderCallCap(this));
@@ -2550,10 +2674,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            menu.findItem(R.id.docbusinessentry).setVisible(true);
 //        } else {
         if (SharedPref.getDynamicOptionNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
-            if(!SharedPref.getDynamicOptionCaps(HomeDashBoard.this).equalsIgnoreCase("")) {
+            if (!SharedPref.getDynamicOptionCaps(HomeDashBoard.this).equalsIgnoreCase("")) {
                 menu.findItem(R.id.dyn_link).setTitle(SharedPref.getDynamicOptionCaps(HomeDashBoard.this));
                 menu.findItem(R.id.dyn_link).setVisible(true);
-            }else{
+            } else {
                 menu.findItem(R.id.dyn_link).setTitle(R.string.option);
                 menu.findItem(R.id.dyn_link).setVisible(true);
             }
@@ -2626,16 +2750,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void commonFun() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
+
     private void showCombinedWishesPopup() {
         Log.d("CombinedWishes", "Checking both Birthday and Anniversary...");
-
         try {
             RoomDB roomDB = RoomDB.getDatabase(this);
             MasterDataDao masterDataDao = roomDB.masterDataDao();
 
-            JSONArray doctorJsonArray = masterDataDao
-                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
-                    .getMasterSyncDataJsonArray();
+            JSONArray doctorJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
 
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM d", Locale.US);
@@ -2691,7 +2813,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                            anniversaryMsg += (anniversaryMsg.isEmpty() ? "1" : String.valueOf(anniversaryMsg.split("\n\n").length + 1))
 //                                    + ". " + doctorName + "\n " + territory + "\n\n";
 
-                           // break; // stop once found
+                            // break; // stop once found
                         }
                     }
                 }
@@ -2708,146 +2830,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             e.printStackTrace();
         }
     }
-
-//    private void showBirthdayPopup() {
-//        Log.d("BirthdayPopup", "Called showBirthdayPopup()");
-//
-//        try {
-////            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-////
-////            // ✅ Skip if popup already shown today
-////            if (today.equals(SharedPref.getBirthdayShownDate(this))) {
-////                Log.d("BirthdayPopup", "Already shown today. Skipping popup.");
-////                return;
-////            }
-//
-//            RoomDB roomDB = RoomDB.getDatabase(this);
-//            MasterDataDao masterDataDao = roomDB.masterDataDao();
-//
-//            JSONArray doctorJsonArray = masterDataDao
-//                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
-//                    .getMasterSyncDataJsonArray();
-//
-//            java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-//            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMMM d", java.util.Locale.US);
-//            String todayStr = outputFormat.format(new java.util.Date());
-//            Log.d("BirthdayPopup", "Today: " + todayStr);
-//            for (int i = 0; i < doctorJsonArray.length(); i++) {
-//                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
-//                String doctorName = doctorObj.getString("Name");
-//                String territory = doctorObj.getString("Town_Name");
-//                JSONObject dobObject = doctorObj.optJSONObject("DctrDOB");
-//
-//                if (dobObject != null) {
-//                    String dobDateStr = dobObject.optString("date", "").trim();
-//                    Log.d("BirthdayPopup", "Doctor: " + doctorName + ", DOB raw: " + dobDateStr);
-//
-//                    if (!dobDateStr.isEmpty() && !dobDateStr.startsWith("1900")) {
-//                        java.util.Date date = inputFormat.parse(dobDateStr.split(" ")[0]);
-//                        String birthDate = outputFormat.format(date);
-//
-//                        // 🎂 If today is birthday
-//                        if (birthDate.equalsIgnoreCase(todayStr)) {
-//                            CommonAlertBox.BirthdayWishAlert(
-//                                    this,
-//                                    "🎉 Wish Dr. " + doctorName + " - " + territory + " for their Birthday today!"
-//                            );
-//                           SharedPref.setBirthdayShownDate(this ,
-//                                   new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
-//                           );
-//                            break; // only show once
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//    private void showAnniversaryPopup() {
-//
-//        try {
-//            RoomDB roomDB = RoomDB.getDatabase(this);
-//            MasterDataDao masterDataDao = roomDB.masterDataDao();
-//
-//            JSONArray doctorJsonArray = masterDataDao
-//                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
-//                    .getMasterSyncDataJsonArray();
-//
-//            java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-//            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMMM d", java.util.Locale.US);
-//            String todayStr = outputFormat.format(new java.util.Date());
-//
-//            for (int i = 0; i < doctorJsonArray.length(); i++) {
-//                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
-//                String doctorName = doctorObj.getString("Name");
-//                String territory = doctorObj.getString("Town_Name");
-//                JSONObject dowObject = doctorObj.optJSONObject("DctrDOW");
-//
-//                if (dowObject != null) {
-//                    String dowDateStr = dowObject.optString("date", "").trim();
-//
-//                    if (!dowDateStr.isEmpty() && !dowDateStr.startsWith("1900")) {
-//                        java.util.Date date = inputFormat.parse(dowDateStr.split(" ")[0]);
-//                        String anniversaryDate = outputFormat.format(date);
-//
-//                        // 🎂 If today is birthday
-//                        if (anniversaryDate.equalsIgnoreCase(todayStr)) {
-//                            CommonAlertBox.AnniversaryWishAlert(
-//                                    this,
-//                                    "🎉 Congratulate Dr. " + doctorName + " - " + territory + " on their Anniversary today!"
-//                            );
-//                            SharedPref.setAnniversaryShownDate(this ,
-//                                    new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
-//                            );
-//                            break; // only show once
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private void showAnniversaryPopup() {
-//        try {
-//            RoomDB roomDB = RoomDB.getDatabase(this);
-//            MasterDataDao masterDataDao = roomDB.masterDataDao();
-//
-//            JSONArray doctorJsonArray = masterDataDao
-//                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
-//                    .getMasterSyncDataJsonArray();
-//
-//            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-//            SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM d", Locale.US);
-//            String todayStr = outputFormat.format(new Date());
-//
-//            for (int i = 0; i < doctorJsonArray.length(); i++) {
-//                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
-//                String doctorName = doctorObj.optString("Name");
-//                String territory = doctorObj.optString("Town_Name");
-//                String anniversaryDate = doctorObj.optString("DctrDOW"); // ✅ check your JSON key (maybe DctrDOA)
-//
-//                if (anniversaryDate != null && !anniversaryDate.isEmpty() && !anniversaryDate.startsWith("1900")) {
-//                    Date date = inputFormat.parse(anniversaryDate.split(" ")[0]);
-//                    String formattedDate = outputFormat.format(date);
-//
-//                    if (formattedDate.equalsIgnoreCase(todayStr)) {
-//                        CommonAlertBox.AnniversaryWishAlert(
-//                                this,
-//                                "💐 Congratulate Dr. " + doctorName + " - " + territory + " on their Anniversary today!"
-//                        );
-//
-//                        break;
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
 
     public void CheckedTpRange() {
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
@@ -2986,7 +2968,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
     }
 
-
     public void CheckingManatoryApprovals() {
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
             try {
@@ -2995,10 +2976,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
                 jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
                 jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
+                jsonGetCount.put("dcr_approval_need", SharedPref.getDcrApprovalNeed(this));
                 jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
                 jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
                 jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
                 jsonGetCount.put("STP_Need", SharedPref.getStpNeed(this));
+                jsonGetCount.put("OneBuild_Need", SharedPref.getOneBuild(this));
 
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "get/approvals");
@@ -3058,20 +3041,103 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")) {
+            locationCheck();
+            CommonAlertBox.CheckLocationStatus(HomeDashBoard.this, gpsTrack);
+        }
+        requestNotificationPermission();
+    }
+
+    private void locationCheck() {
+        if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
+            if (CheckLocPermission()) {
+                return; // already granted
+            }
+
+            if (!isLocationPermissionRequested) {
+                isLocationPermissionRequested = true;
+                RequestLocationPermission();
+                return;
+            }
+            showPermissionMandatoryDialog();
+//            if (!CheckLocPermission()) {
+//                RequestLocationPermission();
+//            }
+        } else {
+            CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
+        }
+    }
+
+    private void RequestLocationPermission() {
+        isLocationPermissionRequested = true;
+        if (ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeDashBoard.this, ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{ACCESS_FINE_LOCATION}, 101);
+            } else {
+                ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{ACCESS_FINE_LOCATION}, 101);
+            }
+        }
+    }
+
     public boolean CheckLocPermission() {
         int FineLocation = ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_FINE_LOCATION);
         int CoarseLocation = ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_COARSE_LOCATION);
         return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void RequestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeDashBoard.this, ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{ACCESS_FINE_LOCATION}, 1);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (locationDialog != null) {
+                    locationDialog.dismiss();
+                }
+                requestNotificationPermission();
+                return;
+            }
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Permanently denied
+                showGoToSettingsDialog();
             } else {
-                ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{ACCESS_FINE_LOCATION}, 1);
+                // Denied normally
+                showPermissionMandatoryDialog();
             }
         }
+    }
+
+    private void showPermissionMandatoryDialog() {
+        if (locationDialog != null) {
+            locationDialog.dismiss();
+        }
+        locationDialog = new android.app.AlertDialog.Builder(this)
+                .setTitle("Location Required")
+                .setMessage("Location permission required. Please allow it.")
+                .setCancelable(false)
+                .setPositiveButton("Allow", (dialog, which) -> RequestLocationPermission()).create();
+
+//                .setNegativeButton("Back", (dialog, which) -> finish())
+        locationDialog.show();
+    }
+
+    private void showGoToSettingsDialog() {
+        if (locationDialog != null) {
+            locationDialog.dismiss();
+        }
+        locationDialog = new android.app.AlertDialog.Builder(this)
+                .setTitle("Permission Needed")
+                .setMessage("Location permission is permanently denied. Please enable it in App Settings.")
+                .setCancelable(false)
+                .setPositiveButton("Open Settings", (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.fromParts("package", getPackageName(), null));
+                    startActivity(intent);
+                }).create();
+//                .setNegativeButton("Back", (dialog, which) -> finish())
+        locationDialog.show();
     }
 
     public boolean CheckCameraPermission() {

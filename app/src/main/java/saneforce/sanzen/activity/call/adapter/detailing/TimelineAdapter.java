@@ -15,7 +15,6 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
-
     private final Context context;
     private final List<String> timelineList;
 

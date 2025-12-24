@@ -432,16 +432,20 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         if (SharedPref.getGeoChk(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
             CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
-            locationCheck();
+//            locationCheck();
         }
     }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        if (SharedPref.getGeoChk(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+//            CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
+//            locationCheck();
+//        }
+//    }
 
     private void locationCheck() {
         if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
@@ -510,7 +514,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
                 .setMessage("Location permission required. Please allow it.")
                 .setCancelable(false)
                 .setPositiveButton("Allow", (dialog, which) -> RequestLocationPermission())
-                .setNegativeButton("Exit", (dialog, which) -> finish())
+//                .setNegativeButton("Back", (dialog, which) -> finish())
                 .show();
     }
 
@@ -524,7 +528,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
                     intent.setData(Uri.fromParts("package", getPackageName(), null));
                     startActivity(intent);
                 })
-                .setNegativeButton("Exit", (dialog, which) -> finish())
+//                .setNegativeButton("Back", (dialog, which) -> finish())
                 .show();
     }
 

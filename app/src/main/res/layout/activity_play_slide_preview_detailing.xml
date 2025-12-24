@@ -445,4 +445,11 @@
         app:lottie_loop="false"
         app:lottie_rawRes="@raw/file_transfer" />
 
+    <View
+        android:id="@+id/touchBlocker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"
+        android:visibility="gone" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

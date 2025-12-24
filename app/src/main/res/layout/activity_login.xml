@@ -134,7 +134,6 @@
                         </ImageView>
                     </LinearLayout>
 
-
                     <ImageView
                         android:id="@+id/logoImg"
                         android:layout_width="wrap_content"

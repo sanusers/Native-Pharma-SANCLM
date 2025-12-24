@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/_5sdp" >
+
+    <RelativeLayout
+        android:id="@+id/btn_add_doc"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_18sdp"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:visibility="gone"
+        android:background="@drawable/bg_green">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/bg_txt_color">
+
+            <TextView
+                android:id="@+id/btn_add_tp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+"
+                android:textAppearance="@font/satoshi_bold"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/bg_lit_white"/>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/btn_add_doc"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/satoshi_regular"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_7ssp"
+            tools:text="Content" />
+
+        <TextView
+            android:id="@+id/tv_content_side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/satoshi_regular"
+            android:textAlignment="textEnd"
+            android:textColor="@color/red_60"
+            android:textSize="@dimen/_7ssp"
+            tools:text="Content" />
+
+    </LinearLayout>
+  <!--  <TextView
+        android:id="@+id/tv_sub_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_below="@id/ll_content"
+        android:layout_toEndOf="@id/btn_add_doc"
+        android:fontFamily="@font/satoshi_regular"
+        android:textAlignment="textStart"
+        android:textColor="@color/text_grey"
+        android:textSize="@dimen/_7ssp"
+        tools:text="Sub Content"
+        android:visibility="gone"/>-->
+    <TextView
+        android:id="@+id/tv_sub_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_below="@id/ll_content"
+        android:layout_toEndOf="@id/btn_add_doc"
+        android:fontFamily="@font/satoshi_regular"
+        android:textAlignment="textStart"
+        android:textColor="@color/text_grey"
+        android:textSize="@dimen/_7ssp"
+        tools:text="Sub Content" />
+
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_sub_content"
+        android:layout_marginTop="@dimen/_9sdp"
+        android:background="@color/light_cement" />
+
+</RelativeLayout>

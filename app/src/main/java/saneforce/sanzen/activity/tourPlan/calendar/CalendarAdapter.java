@@ -39,14 +39,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         this.inputData = inputData;
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;
-
     }
 
     public CalendarAdapter(Context context, ArrayList<OneBuildModelClass> inputDataOneBuild, OnDayClickOneBuildInterface onDayClickOneBuildInterface) {
         this.context = context;
         this.OneBuildInputData = inputDataOneBuild;
         this.onDayClickOneBuildInterface = onDayClickOneBuildInterface;
-
     }
 
     @NonNull
@@ -161,10 +159,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-
         TextView dateNo;
         ImageView cornerImage;
-
         ConstraintLayout mainLayout;
 
         public MyViewHolder(@NonNull View itemView) {

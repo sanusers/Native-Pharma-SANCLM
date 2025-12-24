@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -127,9 +128,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(i).getSlideName());
             if (file.exists()) {
                 String fileFormat = SupportClass.getFileExtension(productArrayList.get(i).getSlideName());
-                slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), fileFormat, file.toString(), "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode()));
+                slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), fileFormat, file.toString(), "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode(), productArrayList.get(i).getProductCode()));
             } else {
-                slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), "", "", "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode()));
+                slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), "", "", "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode(), productArrayList.get(i).getProductCode()));
             }
         }
     }
@@ -725,6 +726,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         RelativeLayout rl_share = dialogPopUp.findViewById(R.id.rl_share);
         RelativeLayout rl_paint = dialogPopUp.findViewById(R.id.rl_paint);
         RelativeLayout rl_stop = dialogPopUp.findViewById(R.id.rl_stop);
+        RelativeLayout rl_play_pause = dialogPopUp.findViewById(R.id.rl_play_pause);
+        TextView tv_play_pause = dialogPopUp.findViewById(R.id.tv_play_pause);
+        ImageView iv_play_pause = dialogPopUp.findViewById(R.id.iv_play_pause);
 
         boolean isAvailable = false;
         if (!slideScribble.isEmpty()) {
@@ -849,6 +853,30 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             }
         });
 
+        rl_play_pause.setOnClickListener(view -> {
+            String playPauseCap = tv_play_pause.getText().toString().trim();
+            boolean isPaused= false;
+            if (playPauseCap.equalsIgnoreCase(context.getString(R.string.pause))) {
+                tv_play_pause.setText(context.getString(R.string.play));
+                iv_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
+                CommonUtilsMethods.showToastMessage(context, "Detailing Paused");
+                isPaused = true;
+            } else {
+                tv_play_pause.setText(context.getString(R.string.pause));
+                iv_play_pause.setImageResource(R.drawable.baseline_pause_24);
+                CommonUtilsMethods.showToastMessage(context, "Detailing Resumed");
+                isPaused = false;
+            }
+            rl_like.setEnabled(!isPaused);
+            rl_dislike.setEnabled(!isPaused);
+            rl_comments.setEnabled(!isPaused);
+            rl_share.setEnabled(!isPaused);
+            rl_paint.setEnabled(!isPaused);
+            rl_stop.setEnabled(!isPaused);
+            dialogPopUp.setCanceledOnTouchOutside(!isPaused);
+            handlePausePlayDetailing(isPaused);
+        });
+
         rl_stop.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -856,13 +884,34 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             }
         });
 
-
         params.setMargins(0, 0, 0, 0);
         wlp.gravity = Gravity.CENTER | Gravity.END;
         wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
         dialogPopUp.show();
         act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    private void handlePausePlayDetailing(boolean isPaused) {
+        if (isPaused) {
+            removeTimer();
+            if (currentPage != -1 && !pageStartTime.isEmpty()) {
+                String now = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
+                String slideName = getSlideNameAt(currentPage);
+                ArrayList<String> list = new ArrayList<>();
+                if (timer.containsKey(slideName)) {
+                    list = timer.get(slideName);
+                }
+                list.add(pageStartTime + " $ " + now);
+                timer.put(slideName, list);
+                Log.d("SlideTiming", "Pause slide " + slideName + "started at " + pageStartTime + " ended after " + now);
+//            currentPage = -1;
+//            pageStartTime = now;
+            }
+        } else {
+            pageStartTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
+            resetTimer();
+        }
     }
 
     private void handleStopDetailing() {
@@ -898,9 +947,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getDateVal());
                         mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName());
                         mCommonSharedPreference.setValueToPreferenceFeed("brd_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandCode());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_id" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideID());
                         mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName());
                         mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideType());
                         mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideUrl());
+                        mCommonSharedPreference.setValueToPreferenceFeed("product_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getProductCode());
                         mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++timecount);
                     }
                 }
@@ -913,8 +964,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
                 String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
                 String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
+                String slideID = mCommonSharedPreference.getValueFromPreferenceFeed("slide_id" + i);
                 String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
                 String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
+                String productCode = mCommonSharedPreference.getValueFromPreferenceFeed("product_code" + i);
 
                 if (!BrandName.equalsIgnoreCase("Welcome")) {
                     String eTime;
@@ -980,10 +1033,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         if (arrayStore == null) {
                             arrayStore = new ArrayList<>();
                         }
-                        if(isAvailableScrib) {
-                            arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
+                        if (isAvailableScrib) {
+                            arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), slideID, SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, productCode, false));
                         } else {
-                            arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
+                            arrayStore.add(new StoreImageTypeUrl("", slideID, SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, productCode, false));
                         }
                     }
                 }
@@ -1036,7 +1089,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         }*/
         if (!mm.getBrdName().equalsIgnoreCase("Welcome")) {
             Log.i("TAG slide", "setPrimaryItem: " + mm.getSlideNam() + " --> " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
-            storingSlide.add(new LoadBitmap(mm.getScribble(), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), position, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mm.getSlideNam(), mm.getSlideTyp(), mm.getSlideUrl(), mm.getBrdName(), mm.getBrdCode()));
+            storingSlide.add(new LoadBitmap(mm.getScribble(), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), position, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mm.getSlideid(), mm.getSlideNam(), mm.getSlideTyp(), mm.getSlideUrl(), mm.getBrdName(), mm.getBrdCode(), mm.getProductCode()));
         }
     }
 
