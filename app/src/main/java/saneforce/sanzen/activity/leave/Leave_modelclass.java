@@ -5,6 +5,7 @@ public class Leave_modelclass {
     String Dates, Leaveplan;
 
     String Ltype,Eligable,Takenleave,Avaolable,l_type;
+    String TotalApplied = "0";
 //      "Leave_Type_Code": "CL",
 //		"Elig": "0",
 //		"Taken": "0",
@@ -49,6 +50,14 @@ public class Leave_modelclass {
     public void setL_type(String l_type) {
         this.l_type = l_type;
     }
+
+    public String getTotalApplied() {
+
+        return TotalApplied;
+    }
+    public void setTotalApplied(String totalApplied) {
+        this.TotalApplied = totalApplied;
+    }
 //		"Leave_code": "6108"
 
 
@@ -59,6 +68,15 @@ public class Leave_modelclass {
         Takenleave = takenleave;
         Avaolable = avaolable;
         this.l_type = l_type;
+    }
+    // NEW constructor (6 args) — USE ONLY WHEN ENTITLEMENT DISABLED
+    public Leave_modelclass(String Ltype, String eligable, String takenleave, String avaolable, String l_type, String totalApplied) {
+        this.Ltype = Ltype;
+        Eligable = eligable;
+        Takenleave = takenleave;
+        Avaolable = avaolable;
+        this.l_type = l_type;
+        this.TotalApplied = totalApplied;
     }
 
     public Leave_modelclass(String dates, String leaveplan) {

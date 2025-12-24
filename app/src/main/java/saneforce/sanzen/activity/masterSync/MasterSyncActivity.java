@@ -1364,7 +1364,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (SharedPref.getLeaveEntitlementNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel leaveStatusModel = new MasterSyncItemModel(leavestatusLabel, "Leave", "getleavestatus", Constants.LEAVE_STATUS, leaveStatusStatus, false);
             leaveModelArray.add(leaveStatusModel);
-        }
+       // }
 
         //DCR
         dcrModelArray.clear();

@@ -248,6 +248,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            binding.clock.setText(currentTime);
             handler.postDelayed(this, 1000);
             try {
+
 //                String checkInData = SharedPref.getDayCheckInData(HomeDashBoard.this);
 //                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !checkInData.isEmpty() && HomeDashBoard.selectedDate != null) {
 //                    JSONObject checkInObj = new JSONObject(checkInData);

@@ -146,8 +146,10 @@ public class Leave_Application extends AppCompatActivity {
         leaveViewModel = new LeaveViewModel(this);
         if (isLeaveEntitlementRequested) {
             leaveViewModel.updateLeaveStatusMasterSync();
+        }else{
+            leaveViewModel.syncLeaveStatus();
         }
-        setVisibility();
+        //setVisibility();
         setMaxLength();
         onClickListener();
 
@@ -884,15 +886,21 @@ public class Leave_Application extends AppCompatActivity {
                 } else {
 //                    if(bal == 0) {
 //
-//                }else {
-//                    if(leavety.equals("LOP")) {
-//                        leavebinding.balanceDays.setText("");
-//                    }else {
-                    String balval = String.valueOf(bal);
-                    leavebinding.balanceDays.setText(balval + " " + "days remaining");
-//                    }
-                }
-            }
+//                if (bal < 0) {
+//                    commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
+//                    leavebinding.submitLeave.setEnabled(false);
+//                } else {
+////                    if(bal == 0) {
+////
+////                }else {
+////                    if(leavety.equals("LOP")) {
+////                        leavebinding.balanceDays.setText("");
+////                    }else {
+//                    String balval = String.valueOf(bal);
+//                    leavebinding.balanceDays.setText(balval + " " + "days remaining");
+////                    }
+//                }
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -979,17 +987,43 @@ public class Leave_Application extends AppCompatActivity {
                 HashMap<String, LeaveStatusModelClass> leaveStatusMap = new HashMap<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
-                    LeaveStatusModelClass leaveStatusModelClass = new LeaveStatusModelClass(jsonObject.optString("Leave_Type_Code"), jsonObject.optString("Elig"), jsonObject.optString("Taken"), jsonObject.optString("Avail"), jsonObject.optString("Leave_code"));
-                    leaveStatusMap.put(leaveStatusModelClass.getLeaveCode(), leaveStatusModelClass);
-                }
 
+                    if (SharedPref.getLeaveEntitlementNeed(context).equals("0")) {
+
+                        LeaveStatusModelClass leaveStatusModelClass = new LeaveStatusModelClass(jsonObject.optString("Leave_Type_Code"), jsonObject.optString("Elig"), jsonObject.optString("Taken"), jsonObject.optString("Avail"), jsonObject.optString("Leave_code"));
+                        leaveStatusMap.put(leaveStatusModelClass.getLeaveCode(), leaveStatusModelClass);
+                    }else{
+                        String totalApplied = jsonObject.optString("Total_Applied_Days");
+
+                        if (totalApplied == null || totalApplied.trim().equals("")) {
+                            totalApplied = "0";  // avoid crash
+                        }
+                        LeaveStatusModelClass leaveStatusModelClass = new LeaveStatusModelClass(jsonObject.optString("Leave_Type_Code"), jsonObject.optString("Elig"), jsonObject.optString("Taken"), jsonObject.optString("Avail"), jsonObject.optString("Leave_code"),totalApplied);
+                        leaveStatusMap.put(leaveStatusModelClass.getLeaveCode(), leaveStatusModelClass);
+                    }
+                }
                 for (int i = 0; i < jsonArray1.length(); i++) {
                     JSONObject jsonObject = jsonArray1.optJSONObject(i);
                     if (leaveStatusMap.containsKey(jsonObject.optString("Leave_code"))) {
                         LeaveStatusModelClass leaveStatusModelClass = leaveStatusMap.get(jsonObject.optString("Leave_code"));
                         if (leaveStatusModelClass != null) {
-                            Leave_modelclass leave = new Leave_modelclass(jsonObject.optString("Leave_Name"), leaveStatusModelClass.getEligible(), leaveStatusModelClass.getTaken(), leaveStatusModelClass.getAvailable(), leaveStatusModelClass.getLeaveTypeCode());
-                            Chart_list.add(leave);
+                            if (SharedPref.getLeaveEntitlementNeed(context).equals("0")) {
+                                Leave_modelclass leave = new Leave_modelclass(jsonObject.optString("Leave_Name"), leaveStatusModelClass.getEligible(), leaveStatusModelClass.getTaken(), leaveStatusModelClass.getAvailable(), leaveStatusModelClass.getLeaveTypeCode());
+                                Chart_list.add(leave);
+                            }else{
+                                // CASE 2 → Entitlement disabled (1) → use new constructor (6 args)
+                                Leave_modelclass leave = new Leave_modelclass(
+                                        jsonObject.optString("Leave_Name"),
+                                        leaveStatusModelClass.getEligible(),
+                                        leaveStatusModelClass.getTaken(),
+                                        leaveStatusModelClass.getAvailable(),
+                                        leaveStatusModelClass.getLeaveTypeCode(),
+                                        leaveStatusModelClass.getTotalApplied()     // NEW value
+                                );
+
+                                Chart_list.add(leave);
+                            }
+
                         }
                     } else {
                         Leave_modelclass leave = new Leave_modelclass(jsonObject.optString("Leave_Name"), "0", "0", "0", jsonObject.optString("Leave_SName"));
@@ -1178,6 +1212,52 @@ public class Leave_Application extends AppCompatActivity {
                                         jsonArray.put(jsonObject);
                                     }
                                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
+
+                                    JSONArray leaveArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
+
+                                    for (int i = 0; i < leaveArray.length(); i++) {
+                                        JSONObject obj = leaveArray.getJSONObject(i);
+
+                                        String entitlement = SharedPref.getLeaveEntitlementNeed(Leave_Application.this);
+                                        if (entitlement.equals("0")) {
+                                            if (obj.optString("Leave_Type_Code").equalsIgnoreCase(Lshortname)) {
+                                                int days = Integer.parseInt(L_count);
+                                                int taken = obj.optInt("Taken", 0);
+                                                int avail = obj.optInt("Avail", 0);
+                                                obj.put("Taken", taken + days);
+                                                obj.put("Avail", Math.max(avail - days, 0));
+                                            }
+//                                            else {
+//                                                int totalApplied = obj.optInt("Total_Applied_Days", 0);
+//                                                obj.put("Total_Applied_Days", totalApplied);
+//                                            }
+                                          //  else if (entitlement.equals("1")){
+                                        } else {
+                                            //if (entitlement.equals("1")) {
+                                            if (obj.optString("Leave_SName").trim().equalsIgnoreCase(Lshortname.trim())) {
+                                                    int days = Integer.parseInt(L_count);
+                                                    int totalApplied = obj.optInt("Total_Applied_Days", 0);
+                                                  //  obj.put("Total_Applied_Days", Math.max(totalApplied + days,0));
+                                                    //obj.put("Total_Applied_Days", totalApplied + days);
+                                                totalApplied += days;
+
+                                                // Save as string
+                                                obj.put("Total_Applied_Days", String.valueOf(totalApplied));
+
+                                                }
+                                            }
+                                        }
+
+                                    masterDataDao.saveMasterSyncData(
+                                            new MasterDataTable(Constants.LEAVE_STATUS, leaveArray.toString(), 2)
+                                    );
+
+// 🔹 Reload chart with updated values
+                                    if (leavebinding != null) {
+                                        Chart_list.clear(); // clear old data
+                                        Leave_Application.AvailableLeave(Leave_Application.this);
+                                    }
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -1228,13 +1308,13 @@ public class Leave_Application extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null;
     }
 
-    private void setVisibility() {
-        if (isLeaveEntitlementRequested) {
-            leavebinding.chartLayout.setVisibility(View.VISIBLE);
-        } else {
-            leavebinding.chartLayout.setVisibility(View.GONE);
-        }
-    }
+//    private void setVisibility() {
+//        if (isLeaveEntitlementRequested) {
+//            leavebinding.chartLayout.setVisibility(View.VISIBLE);
+//        } else {
+//            leavebinding.chartLayout.setVisibility(View.GONE);
+//        }
+//    }
 
     @Override
     protected void onResume() {
@@ -1327,7 +1407,13 @@ public class Leave_Application extends AppCompatActivity {
             Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
             l_details.notifyDataSetChanged();
             leavebinding.progressBar.setVisibility(View.VISIBLE);
-            leaveViewModel.updateLeaveStatusMasterSync();
+           //leaveViewModel.updateLeaveStatusMasterSync();
+            if (isLeaveEntitlementRequested) {
+                leaveViewModel.updateLeaveStatusMasterSync();
+            }else{
+                leaveViewModel.syncLeaveStatus();
+            }
+//            leaveViewModel.syncLeaveStatus(Leave_Application.this);
 //            Runnable runnable = new Runnable() {
 //                @Override
 //                public void run() {

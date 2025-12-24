@@ -1958,6 +1958,27 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(LEAVE_ENTITLEMENT_NEED, "");
     }
 
+
+//    public static void setLeaveTaken(Context context, String leaveCode, int value) {
+//        SharedPreferences pref = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+//        pref.edit().putInt("TAKEN_" + leaveCode, value).apply();
+//    }
+//
+//    public static int getLeaveTaken(Context context, String leaveCode) {
+//        SharedPreferences pref = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+//        return pref.getInt("TAKEN_" + leaveCode, -1); // -1 = not saved yet
+//    }
+public static void setLeaveTaken(Context context, String leaveCode, int value) {
+    SharedPreferences pref = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+    pref.edit().putInt("TAKEN_" + leaveCode, value).apply();
+}
+
+    public static int getLeaveTaken(Context context, String leaveCode) {
+        SharedPreferences pref = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        return pref.getInt("TAKEN_" + leaveCode, -1); // -1 = not saved yet
+    }
+
+
     public static String getPrimarysecNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(PRIMARYSEC_NEED, "");
     }

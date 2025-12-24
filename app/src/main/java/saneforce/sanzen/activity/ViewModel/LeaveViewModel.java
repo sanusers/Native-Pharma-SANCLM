@@ -23,9 +23,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
@@ -40,6 +42,7 @@ import saneforce.sanzen.utility.TimeUtils;
 @SuppressLint("StaticFieldLeak")
 public class LeaveViewModel extends ViewModel {
     Call<JsonElement> leaveStatus;
+    Call<JsonElement> leaveBalance;
     private final Context context;
     MasterDataDao masterDataDao;
     public LeaveViewModel(Context context) {
@@ -104,6 +107,70 @@ public class LeaveViewModel extends ViewModel {
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                t.printStackTrace();
+                leavebinding.progressBar.setVisibility(View.GONE);
+                AvailableLeave(context);
+            }
+        });
+    }
+
+    public void syncLeaveStatus() {
+
+      //  ApiInterface apiInterface = RetrofitClient.getRetrofit(context, "http://edetailing.sanffa.info/iOSServer/");
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+        JSONObject requestObject = CommonUtilsMethods.CommonObjectParameter(context);
+
+        try {
+            requestObject.put("tableName", "getleavebalance");
+            requestObject.put("sfcode", SharedPref.getSfCode(context));
+            requestObject.put("division_code", SharedPref.getDivisionCode(context));
+            requestObject.put("Rsf", SharedPref.getHqCode(context));
+            requestObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+            Log.e("LeaveAPI_Request", requestObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            leavebinding.progressBar.setVisibility(View.GONE);
+            AvailableLeave(context);
+        }
+
+//        Map<String, String> mapString = new HashMap<>();
+//        mapString.put("axn", "get/leave");
+//
+//        Call<JsonElement> call = apiInterface.getJSONElement(
+//                "http://edetailing.sanffa.info/iOSServer/db_api.php/",
+//                mapString,
+//                requestObject.toString()
+//        );
+
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/leave");
+        leaveBalance = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, requestObject.toString());
+        leaveBalance.enqueue(new Callback<JsonElement>() {
+       // call.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
+
+                        JsonElement jsonElement = response.body();
+                        JSONArray jsonArray = new JSONArray(jsonElement.toString());
+
+                        masterDataDao.saveMasterSyncData(
+                                new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 2)
+                        );
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                leavebinding.progressBar.setVisibility(View.GONE);
+                AvailableLeave(context);
+            }
+
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
                 t.printStackTrace();
                 leavebinding.progressBar.setVisibility(View.GONE);
                 AvailableLeave(context);

@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.leave;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.storage.SharedPref;
 
 public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.ViewHolder> {
 
@@ -109,7 +111,7 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
 
         Log.d("chart", pie_value + "---" + L_Taken + "--" + L_Elgable + "--" + L_Avalable);
 
-        Chartview(holder.pieChart, pie_value.getL_type(), pie_value.getEligable(), pie_value.getAvaolable(), pie_value.getTakenleave(), holder.c_val, holder.c_val_tol, holder.ltype_name, pie_value.getLtype(),
+        Chartview(holder.pieChart, pie_value.getL_type(), pie_value.getEligable(), pie_value.getAvaolable(), pie_value.getTakenleave(), pie_value.getTotalApplied(), holder.c_val, holder.c_val_tol, holder.ltype_name, pie_value.getLtype(),
                   holder.LOP, holder.chartview_value, colors.get(position % 9));
 //pie_value.getEligable(),pie_value.getTakenleave()
 
@@ -138,7 +140,7 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
     }
 
     @SuppressLint("SetTextI18n")
-    public void Chartview(PieChart chart, String L_Available, String L_Elgable, String L_taken, String taken, TextView c_val, TextView c_val_tol, TextView ltype_name, String pie_value,
+    public void Chartview(PieChart chart, String L_Available, String L_Elgable, String L_taken, String taken,String TotalApplied, TextView c_val, TextView c_val_tol, TextView ltype_name, String pie_value,
                           TextView Ltype, RelativeLayout chartview_value, ArrayList<Integer> colors) {
         int countdata1 = 0, countdata2 = 0;
 //        if(L_Available.equals("LOP")){
@@ -150,6 +152,48 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
 //            colors.clear();
 //            colors.add(Color.rgb(217, 217, 217));
 //            colors.add(Color.rgb(0, 198, 137));
+
+        boolean entitlementDisabled = SharedPref.getLeaveEntitlementNeed(context).equals("1");
+        if (entitlementDisabled) {
+           int Apply_dates = (TotalApplied == null || TotalApplied.isEmpty()) ? 0 : Integer.parseInt(TotalApplied);
+           // int Apply_dates = entitlementDisabled ? Integer.parseInt(TotalApplied) : Integer.parseInt(taken);
+            ArrayList<PieEntry> list = new ArrayList<>();
+           // float chartValue = Apply_dates == 0 ? 0.0001f : Apply_dates;
+            //int chartValue = Apply_dates == 0 ? 1 : Apply_dates;
+
+            int chartValue = Math.max(Apply_dates, 1);
+            list.add(new PieEntry(chartValue, ""));
+            //list.add(new PieEntry(Apply_dates, ""));
+
+            PieDataSet dataSet = new PieDataSet(list, "");
+            // use the second color from the color list you passed
+            dataSet.setColors(colors.get(1));
+
+            PieData data = new PieData(dataSet);
+            data.setValueTextSize(0f);
+            data.setValueTextColor(Color.WHITE);
+
+            chart.setData(data);
+            chart.setUsePercentValues(false);
+            chart.setDrawHoleEnabled(true);
+            chart.setCenterTextSize(18f);
+            chart.setCenterTextColor(Color.BLACK);
+            chart.setTransparentCircleRadius(40f);
+            chart.setHoleRadius(89f);
+            chart.animateXY(1400, 1400);
+            chart.setCenterText(String.valueOf(Apply_dates));
+            chart.setCenterTextTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            chart.getDescription().setEnabled(false);
+            chart.getLegend().setEnabled(false);
+
+            chart.invalidate();
+
+           // c_val.setText(String.valueOf(Apply_dates));
+            c_val_tol.setText("");
+            ltype_name.setText(pie_value);
+            return;
+
+        }else{
 
         int Total_dates = Integer.parseInt(L_Elgable);
         int Apply_dates = Integer.parseInt(taken);
@@ -301,5 +345,5 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
         legend.setEnabled(false);
 
     }
-
+    }
 }
