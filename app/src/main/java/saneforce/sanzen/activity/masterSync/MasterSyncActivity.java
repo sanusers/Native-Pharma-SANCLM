@@ -1358,13 +1358,17 @@ public class MasterSyncActivity extends AppCompatActivity {
        // String leaveLabel = context.getString(R.string.leave);
         String leavetypeLabel = context.getString(R.string.leave_type);
         MasterSyncItemModel leaveModel = new MasterSyncItemModel(leavetypeLabel, "Leave", "getleavetype", Constants.LEAVE, leaveStatus, false);
-       // MasterSyncItemModel leaveModel = new MasterSyncItemModel(Constants.LEAVE, "Leave", "getleavetype", Constants.LEAVE, leaveStatus, false);
+        // MasterSyncItemModel leaveModel = new MasterSyncItemModel(Constants.LEAVE, "Leave", "getleavetype", Constants.LEAVE, leaveStatus, false);
         leaveModelArray.add(leaveModel);
+        String leaveHistoryLabel = context.getString(R.string.leave_history);
+        MasterSyncItemModel leaveHistoryModel=new MasterSyncItemModel(leaveHistoryLabel,"Leave","getleavehistory",Constants.LEAVE_HISTORY,leaveStatus,false);
+        leaveModelArray.add(leaveHistoryModel);
+
         String leavestatusLabel = context.getString(R.string.leavestatus);
         if (SharedPref.getLeaveEntitlementNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel leaveStatusModel = new MasterSyncItemModel(leavestatusLabel, "Leave", "getleavestatus", Constants.LEAVE_STATUS, leaveStatusStatus, false);
             leaveModelArray.add(leaveStatusModel);
-       // }
+     }
 
         //DCR
         dcrModelArray.clear();

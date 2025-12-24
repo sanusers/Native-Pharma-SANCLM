@@ -86,6 +86,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -113,23 +114,40 @@ LeaveHistoryAdapter extends RecyclerView.Adapter<LeaveHistoryAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LeaveHistoryModel leave = leaveList.get(position);
-        holder.tvDate.setText(leave.getFromDate() + " To " + leave.getToDate());
+        holder.tvDate.setText(" From : " + leave.getFromDate()  +  "    "  + " To : " + leave.getToDate());
         holder.tvType.setText(leave.getLeaveType());
-        holder.tvApplied.setText("Applied : " + leave.getCreatedDate());
-        holder.tvReason.setText(leave.getReason());
-        holder.tvRejectedReason.setText(leave.getRejectedReason());
+        //holder.tvApplied.setText("Applied : " + leave.getCreatedDate());
+        holder.tvApplied2.setText(leave.getCreatedDate());
+        holder.tvReason2.setText(leave.getReason());
+        holder.tvRejectedReason.setText("Rejected Reason: " + leave.getRejectedReason());
         holder.tvStatus.setText(leave.getStatus());
-        holder.tvDays.setText(leave.getDays());
+      holder.tvDays.setText(leave.getDays());
 
-
-        if ("Rejected".equalsIgnoreCase(leave.status)) {
-            holder.tvStatus.setTextColor(Color.RED);
+        if ("Rejected".equalsIgnoreCase(leave.getStatus())) {
+            holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.red_60));
             holder.tvRejectedReason.setVisibility(View.VISIBLE);
-            holder.tvRejectedReason.setText("Rejected Reason : " + leave.rejectedReason);
+            holder.tvRejectedReason.setText("Rejected Reason: " + leave.getRejectedReason());
+        } else if ("Approved".equalsIgnoreCase(leave.getStatus())) {
+            holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green_60));
+            holder.tvRejectedReason.setVisibility(View.GONE);
+        } else if ("Pending".equalsIgnoreCase(leave.getStatus())) {
+            holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.blue_60));
+            holder.tvRejectedReason.setVisibility(View.GONE);
         } else {
-            holder.tvStatus.setTextColor(Color.BLUE);
+            holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.gray_45));
             holder.tvRejectedReason.setVisibility(View.GONE);
         }
+
+
+//        if ("Rejected".equalsIgnoreCase(leave.status)) {
+//            holder.tvStatus.setTextColor(Color.RED);
+//            holder.tvRejectedReason.setVisibility(View.VISIBLE);
+//            holder.tvRejectedReason.setText("Rejected Reason : " + leave.rejectedReason);
+//        } else {
+//            holder.tvStatus.setTextColor((context.getResources().getColor(R.color.blue_60)));
+//            holder.tvRejectedReason.setVisibility(View.GONE);
+//        }
+
         //holder.tvStatus.setText(leave.status);
 //        LeaveHistoryModel leave = leaveList.get(position);
 //        holder.tvLeaveName.setText(leave.getLeaveName());
@@ -153,15 +171,15 @@ LeaveHistoryAdapter extends RecyclerView.Adapter<LeaveHistoryAdapter.ViewHolder>
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // TextView tvLeaveName, tvLeaveSName, tvLeaveCode, tvCreatedDate;
-        TextView tvType, tvApplied, tvDate, tvStatus, tvReason, tvRejectedReason, tvDays;
+        TextView tvType, tvApplied2, tvDate, tvStatus, tvReason2, tvRejectedReason, tvDays;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvType = itemView.findViewById(R.id.tvType);
-            tvApplied = itemView.findViewById(R.id.tvApplied);
+            tvApplied2 = itemView.findViewById(R.id.tvApplied2);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvStatus = itemView.findViewById(R.id.tvStatus);
-            tvReason = itemView.findViewById(R.id.tvReason);
+            tvReason2 = itemView.findViewById(R.id.tvReason2);
             tvRejectedReason = itemView.findViewById(R.id.tvRejectedReason);
             tvDays = itemView.findViewById(R.id.tvDays);
             // tvDate=itemView.findViewById(R.id.tvDate);

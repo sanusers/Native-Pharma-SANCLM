@@ -883,7 +883,7 @@ public class Leave_Application extends AppCompatActivity {
                   //  commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
                     commonUtilsMethods.showToastMessage(this, getString(R.string.kindly_sync_leave_available));
                     leavebinding.submitLeave.setEnabled(false);
-                } else {
+                }
 //                    if(bal == 0) {
 //
 //                if (bal < 0) {
@@ -900,7 +900,7 @@ public class Leave_Application extends AppCompatActivity {
 //                    leavebinding.balanceDays.setText(balval + " " + "days remaining");
 ////                    }
 //                }
-//            }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

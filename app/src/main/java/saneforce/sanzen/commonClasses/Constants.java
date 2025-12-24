@@ -38,6 +38,7 @@ public class Constants {
 
     //Leave
     public static final String LEAVE = "Leave Type";
+    public static final String LEAVE_HISTORY = "Leave History";
     public static final String LEAVE_STATUS = "Leave Status";
 
     //DCR

@@ -43,8 +43,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.Constants;
@@ -70,24 +72,74 @@ public class LeaveHistoryActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
-        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/leave");
+        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_HISTORY).getMasterSyncDataJsonArray();
         List<LeaveHistoryModel> leaveList = new ArrayList<>();
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject obj = jsonArray.getJSONObject(i);
-
                     String leaveSName = obj.optString("Leave_SName", "");
                     String leaveName = obj.optString("Leave_Name", "");
                     String leaveType = leaveSName + " - " + leaveName;
-                   // String status= obj.optString("Status","");
+                    String days = String.valueOf(obj.optInt("Total_Applied_Days", 0));
+                    String reason = obj.optString("Reason", "");
+                   // String status = obj.optString("Leave_Active_Flag", "");
+                    String flag = String.valueOf(obj.opt("Leave_Active_Flag")).trim(); // handles numbers or strings
+                    String status;
+                    switch (flag) {
+                        case "0": status = "Approved"; break;
+                        case "1": status = "Rejected"; break;
+                        case "2": status = "Pending"; break;
+                        default: status = "Unknown"; break;
+                    }
+                    String rejectedReason = obj.optString("Rejected_Reason", "");
+                   // String fromDate = obj.optString("From_Date", "");
+                    String fromDate = "";
+                    JSONObject fromObj = obj.optJSONObject("From_Date");
+                    if (fromObj != null) {
+                        String dateStr = fromObj.optString("date", "");
 
-//                    String createdDate = "";
-//                    JSONObject createdObj = obj.optJSONObject("Created_Date");
-//                    if (createdObj != null) {
-//                        createdDate = createdObj.optString("date", "");
-//                    }
+                        SimpleDateFormat apiFormat =
+                                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
+                        SimpleDateFormat displayFormat =
+                                new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+
+                        try {
+                            Date date = apiFormat.parse(dateStr);
+                            if (date != null) {
+                                fromDate = displayFormat.format(date);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            fromDate = dateStr; // fallback
+                        }
+                    }
+
+                   // String toDate = obj.optString("To_Date", "");
+                    String toDate = "";
+                    JSONObject toObj = obj.optJSONObject("To_Date");
+                    if (toObj != null) {
+                        String dateStr = toObj.optString("date", "");
+
+                        SimpleDateFormat apiFormat =
+                                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+                        SimpleDateFormat displayFormat =
+                                new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+
+                        try {
+                            Date date = apiFormat.parse(dateStr);
+                            if (date != null) {
+                                toDate = displayFormat.format(date);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            toDate = dateStr; // fallback
+                        }
+                    }
 
                     String createdDate = "";
                     JSONObject createdObj = obj.optJSONObject("Created_Date");
@@ -111,8 +163,8 @@ public class LeaveHistoryActivity extends AppCompatActivity {
                     }
 
 
-                    leaveList.add(new LeaveHistoryModel(leaveType, createdDate));
-
+                   // leaveList.add(new LeaveHistoryModel(leaveType, createdDate,days,fromDate,toDate,status,reason,rejectedReason));
+                    leaveList.add(new LeaveHistoryModel(fromDate,toDate,leaveType,createdDate,days,status,reason,rejectedReason));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

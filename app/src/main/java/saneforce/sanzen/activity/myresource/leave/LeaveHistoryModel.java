@@ -33,10 +33,10 @@ public class LeaveHistoryModel {
     public String status;
     public String reason;
     public String rejectedReason;
-    private int days;
+    private String days;
 
 
-    public LeaveHistoryModel(String fromDate, String toDate,String leaveType, String createdDate, int days,String status,String reason,String rejectedReason) {
+    public LeaveHistoryModel(String fromDate, String toDate, String leaveType, String createdDate, String days, String status, String reason, String rejectedReason) {
         this.leaveType = leaveType;
         this.createdDate = createdDate;
         this.days = days;
@@ -65,7 +65,7 @@ public class LeaveHistoryModel {
     public String getStatus(){
         return status;
     }
-    public int getDays(){
+    public String getDays(){
         return days;
     }
     public String getReason(){
