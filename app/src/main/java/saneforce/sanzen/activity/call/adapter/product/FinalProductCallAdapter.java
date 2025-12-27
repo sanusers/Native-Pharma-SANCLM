@@ -62,11 +62,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         return new ViewHolder(view);
     }
 
-
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
         holder.tv_prd_name.setText(productListArrayList.get(position).getName());
         holder.ed_samplesQty.setText(productListArrayList.get(position).getSample_qty());
         holder.ed_rxQty.setText(productListArrayList.get(position).getRx_qty());
@@ -217,7 +215,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             holder.tv_stocks.setText(stockBalance);
             if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
                 holder.ed_samplesQty.setEnabled(true);
-                holder.ed_samplesQty.setText("");
+                if (productListArrayList.get(position).getSample_qty().isEmpty()) {
+                    holder.ed_samplesQty.setText("");
+                }
             } else if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
                 if (Integer.parseInt(productListArrayList.get(position).getLast_stock()) > 0) {
                     holder.ed_samplesQty.setEnabled(true);
@@ -229,7 +229,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
 //                    holder.ed_samplesQty.setCursorVisible(false);
 //                    holder.ed_samplesQty.setFocusableInTouchMode(false);
 //                    holder.ed_samplesQty.setFocusable(false);
-                    holder.ed_samplesQty.setText("");
+                    if (productListArrayList.get(position).getSample_qty().isEmpty()) {
+                        holder.ed_samplesQty.setText("");
+                    }
                 }
             }
         } else {
