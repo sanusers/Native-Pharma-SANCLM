@@ -768,9 +768,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     gpsTrack.setLocation(location);
                     LatLng latLng = new LatLng(lat, lng);
                     Log.d("TAG", "addCircle: " + lat + " , " + lng);
-                    if (circle != null) {
+                   /* if (circle != null) {
                         circle.remove();
-                    }
+                    }*/
                     int transparent = 0x12FD0B0B;
                     CircleOptions circleOptions = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
                     circle = mMap.addCircle(circleOptions);
