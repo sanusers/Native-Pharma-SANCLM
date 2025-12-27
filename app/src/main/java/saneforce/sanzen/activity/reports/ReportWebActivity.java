@@ -2,6 +2,10 @@ package saneforce.sanzen.activity.reports;
 
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ContentValues;
@@ -15,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -28,14 +33,21 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.Executors;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -70,6 +82,7 @@ public class ReportWebActivity extends AppCompatActivity {
 //        trustAllCert();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
+        createNotificationChannel();
 
         binding.backArrow.setOnClickListener(new SafeClickListener() {
             @Override
@@ -198,6 +211,80 @@ public class ReportWebActivity extends AppCompatActivity {
     }
 
     private void handleBase64Image(String dataUrl, boolean isShare) {
+        ProgressBar progressBar = binding.downloadProgress;
+        progressBar.setProgress(0);
+        progressBar.setVisibility(View.VISIBLE);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                String base64Data = dataUrl.substring(dataUrl.indexOf(",") + 1);
+                byte[] decoded = Base64.decode(base64Data, Base64.DEFAULT);
+                int total = decoded.length;
+                int chunkSize = 8 * 1024; // 8 KB
+                int written = 0;
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                for (int i = 0; i < total; i += chunkSize) {
+                    int end = Math.min(total, i + chunkSize);
+                    output.write(decoded, i, end - i);
+                    written += (end - i);
+                    int progress = (int) ((written * 100f) / total);
+                    runOnUiThread(() -> progressBar.setProgress(progress));
+                }
+                Bitmap bitmap = BitmapFactory.decodeByteArray(output.toByteArray(), 0, output.size());
+                Uri savedUri;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    savedUri = saveImageToGallery(bitmap);
+                } else {
+                    savedUri = saveImageToGalleryLegacy(bitmap);
+                }
+                runOnUiThread(() -> {
+                    new Handler().postDelayed(() -> progressBar.setVisibility(View.GONE), 100);
+//                    showDownloadSnackBar(savedUri);
+                    showDownloadNotification(savedUri);
+                    if (isShare) {
+                        shareImage(savedUri);
+                    }
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    CommonUtilsMethods.showToastMessage(this, getString(R.string.failed_to_save_image));
+                });
+            }
+        });
+    }
+
+    private void showDownloadSnackBar(Uri uri) {
+        Snackbar.make(binding.getRoot(), "E-Card downloaded", Snackbar.LENGTH_LONG).setAction("OPEN", v -> openImage(uri)).show();
+    }
+
+    private static final String CHANNEL_ID = "image_download_channel";
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Downloads", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("Image download notifications");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+
+    private void showDownloadNotification(Uri uri) {
+        Intent openIntent = new Intent(Intent.ACTION_VIEW);
+        openIntent.setDataAndType(uri, "image/*");
+        openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, openIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.stat_sys_download_done)
+                .setContentTitle("E-Card downloaded")
+                .setContentText("Tap to view E-Card")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build();
+        NotificationManagerCompat.from(this).notify((int) System.currentTimeMillis(), notification);
+    }
+
+    private void handleBase64Image1(String dataUrl, boolean isShare) {
         try {
             String base64Data = dataUrl.substring(dataUrl.indexOf(",") + 1);
             byte[] imageBytes = Base64.decode(base64Data, Base64.DEFAULT);
