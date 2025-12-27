@@ -237,7 +237,8 @@ public class ReportWebActivity extends AppCompatActivity {
                     savedUri = saveImageToGalleryLegacy(bitmap);
                 }
                 runOnUiThread(() -> {
-                    new Handler().postDelayed(() -> progressBar.setVisibility(View.GONE), 100);
+                    CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.image_saved));
+                    progressBar.setVisibility(View.GONE);
 //                    showDownloadSnackBar(savedUri);
                     showDownloadNotification(savedUri);
                     if (isShare) {
@@ -245,6 +246,7 @@ public class ReportWebActivity extends AppCompatActivity {
                     }
                 });
             } catch (Exception e) {
+                e.printStackTrace();
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.GONE);
                     CommonUtilsMethods.showToastMessage(this, getString(R.string.failed_to_save_image));
