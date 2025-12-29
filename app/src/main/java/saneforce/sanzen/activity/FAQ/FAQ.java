@@ -39,11 +39,11 @@ public class FAQ extends ApprovalsActivity {
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         binding.privacyWebview.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                handler.proceed();
-                // handler.cancel();  <-- use this in production if you want to stop loading on SSL errors
-            }
+//            @Override
+//            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//                handler.proceed();
+//                // handler.cancel();  <-- use this in production if you want to stop loading on SSL errors
+//            }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {

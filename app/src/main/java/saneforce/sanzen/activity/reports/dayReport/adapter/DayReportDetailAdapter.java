@@ -35,7 +35,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -60,7 +59,6 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkStatusTask;
-import saneforce.sanzen.utility.TimeUtils;
 
 public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetailAdapter.MyViewHolder> implements Filterable {
 
@@ -255,7 +253,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
                 }
-                if(SharedPref.getChmRxQty(context).equalsIgnoreCase("1")) {
+                if(SharedPref.getChmRxNd(context).equalsIgnoreCase("1")) {
                     holder.textRxQty.setVisibility(View.INVISIBLE);
                 }else {
                     holder.textRxQty.setVisibility(View.VISIBLE);

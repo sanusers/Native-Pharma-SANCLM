@@ -238,7 +238,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
                     dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
                 }
-                if (SharedPref.getChmRxQty(this).equalsIgnoreCase("1")) {
+                if (SharedPref.getChmRxNd(this).equalsIgnoreCase("1")) {
                     dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
                 } else {
                     dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
@@ -550,7 +550,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
                     dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
                 }
-                if (SharedPref.getChmRxQty(this).equalsIgnoreCase("1")) {
+                if (SharedPref.getChmRxNd(this).equalsIgnoreCase("1")) {
                     dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
                 } else {
                     dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);

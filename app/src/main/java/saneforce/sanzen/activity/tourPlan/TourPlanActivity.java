@@ -4806,6 +4806,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpStatusTxt.setText(R.string.tp_rejected);
                                             binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                                            SetTpRangeStatus();
                                             break;
                                         }
                                         case "3": {
@@ -4912,6 +4913,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             binding.tpSendToApproval.setEnabled(false);
                                             binding.tpNavigation.sessionEdit.setEnabled(false);
+                                            SetTpRangeStatus();
                                             System.out.println("status 3");
                                             break;
                                         }

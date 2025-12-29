@@ -13,7 +13,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.webkit.URLUtil;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,7 +21,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -39,11 +38,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.login.LoginActivity;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivitySettingsBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -54,7 +52,6 @@ import saneforce.sanzen.utility.ImageStorage;
 import saneforce.sanzen.utility.LocaleHelper;
 
 public class SettingsActivity extends AppCompatActivity {
-
     ActivitySettingsBinding binding;
     ApiInterface apiInterface;
     DownloaderClass downloaderClass = new DownloaderClass();
@@ -90,7 +87,6 @@ public class SettingsActivity extends AppCompatActivity {
         binding.btnSaveSettings.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-
                 UtilityClass.hideKeyboard(SettingsActivity.this);
                 url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
                 licenseKey = binding.etLicenseKey.getText().toString().trim();
@@ -110,12 +106,22 @@ public class SettingsActivity extends AppCompatActivity {
 
                     SharedPref.Loginsite(getApplicationContext(), url);
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                        if (checkURL(url)) {
-                            Log.i("settings", "onCreate: " + url + "\nLink: " + "https://" + url);
-                            configuration("https://" + url);
+                        String validateURL = url;
+                        if (!validateURL.startsWith("http")) {
+                            validateURL = "https://" + validateURL;
+                        }
+                        if (URLUtil.isValidUrl(validateURL)) {
+                            Log.i("settings", "onCreate: " + validateURL + "\nLink: " + "https://" + url);
+                            configuration(validateURL);
                         } else {
                             commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
                         }
+//                        if (checkURL("https://" + url)) {
+//                            Log.i("settings", "onCreate: " + url + "\nLink: " + "https://" + url);
+//                            configuration("https://" + url);
+//                        } else {
+//                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+//                        }
                     } else {
                         commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.no_network));
                     }
@@ -136,7 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-//    private void SetUpLanguage() {
+    //    private void SetUpLanguage() {
 //        String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE","ARABIC"};
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drop_down_spinner_layout, languages);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -238,9 +244,9 @@ public class SettingsActivity extends AppCompatActivity {
 //            }
 //        });
 //    }
-private void SetUpLanguage() {
-    commonUtilsMethods.setUpLanguage(getApplicationContext());
-    language = SharedPref.getSelectedLanguage(this);
+    private void SetUpLanguage() {
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
+        language = SharedPref.getSelectedLanguage(this);
 
     String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE","ARABIC","RUSSIAN"};
     languageAdapter = new ArrayAdapter<>(SettingsActivity.this, R.layout.listview_items, languages);
@@ -338,12 +344,12 @@ private void SetUpLanguage() {
 //        SelectedLanguage(selectedLanguage);
 //        binding.languageListView.setVisibility(View.GONE);
 //        binding.dropDown.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.up_arrow_light_grey));
-        SelectedLanguage(selectedLanguage);
-        SharedPref.saveSelectedLanguage(SettingsActivity.this, selectedLanguage);
-        binding.languageListView.setVisibility(View.GONE);
+            SelectedLanguage(selectedLanguage);
+            SharedPref.saveSelectedLanguage(SettingsActivity.this, selectedLanguage);
+            binding.languageListView.setVisibility(View.GONE);
 
-    });
-}
+        });
+    }
 
     public void selectLanguage() {
         final String[] Language = {"ENGLISH", "FRENCH", "PORTUGUESE", "BURMESE", "VIETNAMESE", "MANDARIN", "SPANISH","RUSSIAN"};
@@ -371,10 +377,9 @@ private void SetUpLanguage() {
 
         alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
         dialog.show();
-
     }
 
-//    private void SelectedLanguage(String lang) {
+    //    private void SelectedLanguage(String lang) {
 //        Locale myLocale = new Locale(lang);
 //        Resources res = getResources();
 //        DisplayMetrics dm = res.getDisplayMetrics();
@@ -385,23 +390,23 @@ private void SetUpLanguage() {
 //        resources = getApplicationContext().getResources();
 //        binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
 //    }
-private void SelectedLanguage(String lang) {
-    SharedPref.saveSelectedLanguage(this, lang);
-    LocaleHelper.setLocale(getApplicationContext(), lang);
+    private void SelectedLanguage(String lang) {
+        SharedPref.saveSelectedLanguage(this, lang);
+        LocaleHelper.setLocale(getApplicationContext(), lang);
 
-    Locale myLocale = new Locale(lang);
-    Resources res = getResources();
-    DisplayMetrics dm = res.getDisplayMetrics();
-    Configuration conf = res.getConfiguration();
-    conf.setLocale(myLocale);
-    res.updateConfiguration(conf, dm);
+        Locale myLocale = new Locale(lang);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.setLocale(myLocale);
+        res.updateConfiguration(conf, dm);
 
-    binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
-    binding.tvAppConfiguration.setText(getString(R.string.str_app_configuration));
-    binding.langTxt.setText(getString(R.string.str_language));
-    binding.deviceIdTxt.setText(getString(R.string.str_your_device_id));
-    binding.licKeyTxt.setText(getString(R.string.str_license_key));
-}
+        binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
+        binding.tvAppConfiguration.setText(getString(R.string.str_app_configuration));
+        binding.langTxt.setText(getString(R.string.str_language));
+        binding.deviceIdTxt.setText(getString(R.string.str_your_device_id));
+        binding.licKeyTxt.setText(getString(R.string.str_license_key));
+    }
 
     private static boolean checkURL(CharSequence input) {
         boolean validUrl = false;
@@ -444,8 +449,8 @@ private void SelectedLanguage(String lang) {
                                         optionFiles = config.getString("optionFiles");
 
                                         String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
-                                        if( binding.etWebUrl.getText().toString().contains("saneforce.com")){
-                                            web_url_getText = web_url_getText.replace("http","https");
+                                        if (binding.etWebUrl.getText().toString().contains("saneforce.com")) {
+                                            web_url_getText = web_url_getText.replace("http", "https");
                                         }
                                         String urlData = web_url_getText + phpPathUrl;
                                         String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
@@ -609,8 +614,11 @@ private void SelectedLanguage(String lang) {
 
     public void navigate() {
 
-        runOnUiThread(() -> {binding.configurationPB.setVisibility(View.GONE);binding.btnSaveSettings.setEnabled(false);
-            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.configure_success));});
+        runOnUiThread(() -> {
+            binding.configurationPB.setVisibility(View.GONE);
+            binding.btnSaveSettings.setEnabled(false);
+            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.configure_success));
+        });
         Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
         intent.putExtra(Constants.NAVIGATE_FROM, "Setting");
         startActivity(intent);

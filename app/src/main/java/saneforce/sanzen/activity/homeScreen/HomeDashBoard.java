@@ -21,6 +21,10 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -164,6 +168,7 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.services.NotificationDialog;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkChangeReceiver;
+import saneforce.sanzen.utility.NetworkUtil;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -246,6 +251,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.getDefault());
     private boolean isLocationPermissionRequested = false;
     private android.app.AlertDialog locationDialog;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     private final Runnable updateClock = new Runnable() {
         @Override
@@ -748,7 +754,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             super.onResume();
         }
-
+        if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+            checkUserStatus();
+        }
     }
 
     @Override
@@ -789,6 +797,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (inAppUpdate != null) {
             inAppUpdate.stopUpdate();
         }
+        unregisterNetworkCallback();
     }
 
     @SuppressLint("MissingInflatedId")
@@ -1055,8 +1064,25 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
+    }
 
-        checkUserStatus();
+    private void registerNetworkCallback() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest request = new NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build();
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                runOnUiThread(() -> checkUserStatus());
+            }
+        };
+        cm.registerNetworkCallback(request, networkCallback);
+    }
+
+    private void unregisterNetworkCallback() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (networkCallback != null) {
+            cm.unregisterNetworkCallback(networkCallback);
+        }
     }
 
     private void checkUserStatus() {
@@ -1157,15 +1183,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dcr_cancel_alert);
         dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setType(WindowManager.LayoutParams.TYPE_APPLICATION_PANEL);
             window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
             window.setGravity(Gravity.CENTER);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-        dialog.show();
+        if (!isFinishing()) {
+            dialog.show();
+        }
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         TextView content = dialog.findViewById(R.id.ed_alert_msg);
@@ -3049,6 +3077,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CommonAlertBox.CheckLocationStatus(HomeDashBoard.this, gpsTrack);
         }
         requestNotificationPermission();
+        registerNetworkCallback();
     }
 
     private void locationCheck() {

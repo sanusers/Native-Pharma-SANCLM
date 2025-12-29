@@ -74,4 +74,12 @@
         android:indeterminateTint="@color/text_dark"
         android:visibility="gone" />
 
+    <ProgressBar
+        android:id="@+id/downloadProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:max="100"
+        android:visibility="gone"/>
+
 </RelativeLayout>

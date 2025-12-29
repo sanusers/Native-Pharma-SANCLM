@@ -552,6 +552,7 @@ public class CommonUtilsMethods {
         try {
             BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
             int mBatteryPercent = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
             jsonObject.put("AppName", context.getString(R.string.str_app_name));
             jsonObject.put("Appver", context.getResources().getString(R.string.app_version));
@@ -560,6 +561,7 @@ public class CommonUtilsMethods {
             jsonObject.put("sfname", SharedPref.getSfName(context));
             jsonObject.put("Device_version", Build.VERSION.RELEASE);
             jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("Device_id", deviceId);
             jsonObject.put("language", SharedPref.getSelectedLanguage(context));
             jsonObject.put("sf_type", SharedPref.getSfType(context));
             jsonObject.put("Designation", SharedPref.getDsName(context));
