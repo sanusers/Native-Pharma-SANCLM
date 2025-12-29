@@ -1392,6 +1392,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         CommonAlertBox.TpAlert(requireActivity());
                     } else {
                         onSaveClicked();
+                       // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor);
+                        
                     }
                     break;
 
@@ -2900,12 +2902,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TP_worktype", tpWorkType);
             jsonObject.put("TP_Doctor", tpDoctor);
             jsonObject.put("day_flag", "0");
+
+            SharedPref.setTodayTPDoctor(requireContext(), tpDoctor);
+            Log.e("TPDoctorSave", "Saved TP Doctor => " + tpDoctor);
+
+            ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP);
+
             jsonObject.put("Others_Code", workDayCode);
             jsonObject.put("Others_Name", workDayName);
             isFromTP = false;
 
             Log.e("SAVE JSON", "CreateJson: " + jsonObject.toString());
             insMode = "0";
+
+            String doc = jsonObject.getString("TP_Doctor");
+            SharedPref.setTodayTPDoctor(requireContext(), doc);
+            Log.d("TAG", doc);
 
         } catch (Exception e) {
             e.printStackTrace();

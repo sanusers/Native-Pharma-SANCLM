@@ -12,8 +12,10 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SharedPref {
 
@@ -522,6 +524,25 @@ public class SharedPref {
     public static final String LOGOUT_REASON = "Logout_reason";
 
     public static final String LEAVE_ATTACHMENT_NEED = "Leave_attachment_need";
+
+    public static final String TodayTPDoctor = "TodayTPDoctor";
+    public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
+    public static final String DataClearedFlag = "DataClearedFlag";
+    private static final String TodayPopupShown = "TodayPopupShown";
+
+    // Get last popup shown date
+    public static String getTodayPopupShown(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+                .getString(TodayPopupShown, "");
+    }
+
+    // Set last popup shown date
+    public static void setTodayPopupShown(Context context, String date) {
+        context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(TodayPopupShown, date)
+                .apply();
+    }
 
     public static SharedPreferences.Editor editor;
 
@@ -3294,4 +3315,89 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(JW_AUTO_SELECTION_NEED, "1");
     }
 
+    public static void setTodayTPDoctor(Context context, String doctorCodes) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(TodayTPDoctor, doctorCodes);
+        editor.apply();
+    }
+
+    public static String getTodayTPDoctor(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+                .getString(TodayTPDoctor, "");
+    }
+    // Save last date popup was shown
+    public static void setDoctorRemainingShownDate(Context context, String date) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(DoctorRemainingShownDate, date);
+        editor.apply();
+    }
+
+    public static String getDoctorRemainingShownDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+                .getString(DoctorRemainingShownDate, "");
+    }
+
+//    public static void addVisitedDoctor(Context context, String custCode) {
+//        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+//        Set<String> visited = sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>());
+//        visited.add(custCode.toUpperCase());
+//        sp.edit().putStringSet("CumulativeVisitedDoctors", visited).apply();
+//    }
+public static void addVisitedDoctor(Context context, String custCode) {
+    SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+
+    // Create mutable copy
+    Set<String> visited = new HashSet<>(sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>()));
+
+    visited.add(custCode.trim().toUpperCase());
+
+    sp.edit().putStringSet("CumulativeVisitedDoctors", visited).apply();
+}
+    public static Set<String> getVisitedDoctors(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        return new HashSet<>(sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>()));
+    }
+
+
+    public static Set<String> getCumulativeVisitedDoctors(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+                .getStringSet("CumulativeVisitedDoctors", new HashSet<>());
+    }
+
+    public static void clearCumulativeVisitedDoctors(Context context) {
+        context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+                .edit().remove("CumulativeVisitedDoctors")
+                .apply();
+    }
+    public static void setDataCleared(Context context, boolean isCleared) {
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        sp.edit().putBoolean(DataClearedFlag, isCleared).apply();
+    }
+
+    // Get flag
+    public static boolean isDataCleared(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        return sp.getBoolean(DataClearedFlag, false);
+    }
+    // SharedPref.java additions
+    // SharedPref.java
+    public static boolean getPopupShownAfterClear(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE);
+        return sp.getBoolean("popup_shown_after_clear", false);
+    }
+
+
+    public static void setPopupShownAfterClear(Context context, boolean value) {
+        SharedPreferences sp = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE);
+        sp.edit().putBoolean("popup_shown_after_clear", value).apply();
+    }
+
+    public static void clearTodayTPDoctor(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("TodayTPDoctor"); // same key used in setTodayTPDoctor()
+        editor.apply();
+    }
 }

@@ -352,6 +352,7 @@ public class CallsFragment extends Fragment {
             }
         });
 
+
         binding.TvAddActivty.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -403,6 +404,7 @@ public class CallsFragment extends Fragment {
 //            }
             }
         });
+
 
         binding.tvAddCall.setOnClickListener(new SafeClickListener() {
             @Override
@@ -492,6 +494,8 @@ public class CallsFragment extends Fragment {
         });
 
         return view;
+
+
     }
 
     @Override

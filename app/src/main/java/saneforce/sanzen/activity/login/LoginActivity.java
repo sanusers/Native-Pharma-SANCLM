@@ -386,6 +386,9 @@ public class LoginActivity extends AppCompatActivity {
         SharedPref.clearSP(LoginActivity.this);
         SharedPref.saveLoginState(getApplicationContext(), false);
         SharedPref.saveSettingState(getApplicationContext(), false);
+
+      SharedPref.setDataCleared(this, true);
+
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
         commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.data_cleared_successfully));
 

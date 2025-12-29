@@ -995,7 +995,6 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="kindly_sync">"\nKindly sync!"</string>
     <string name="downloading_completed">Downloading Completed</string>
     <string name="downloading_failed">Downloading Failed</string>
-    <string name="downloading">Downloading</string>
     <string name="unplanned_visit_count">Unplanned Visit Count</string>
     <string name="planned_everything">Planned Everything</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">Tour plan did not sync properly, please sync again...</string>
