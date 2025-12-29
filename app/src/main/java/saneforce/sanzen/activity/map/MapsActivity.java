@@ -102,6 +102,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -110,6 +111,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -2582,7 +2584,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double getDistanceMeters(double CurLat, double CurLng, double CustLat, double CustLng) {
         distanceTag = distance(CurLat, CurLng, CustLat, CustLng);
         distanceTag = milesToMeters(distanceTag);
-        DecimalFormat decFor = new DecimalFormat("0.00");
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
+        DecimalFormat decFor = new DecimalFormat("0.00",symbols);
         distanceTag = valueOf(decFor.format(distanceTag).replace(",","."));
         return distanceTag;
     }

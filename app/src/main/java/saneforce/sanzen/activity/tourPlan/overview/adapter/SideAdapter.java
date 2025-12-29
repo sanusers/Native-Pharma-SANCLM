@@ -83,8 +83,8 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 });
                 if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER){
-                    ((ContentVH) holder).addImg.setVisibility(View.VISIBLE);
-                    ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.custom_background_blue));
+                    ((ContentVH) holder).addBtnImg.setVisibility(View.VISIBLE);
+                    ((ContentVH) holder).addBtnImg.setBackground(context.getDrawable(R.drawable.custom_background_blue));
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
                 }else{
@@ -104,8 +104,8 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ((ContentVH) holder).subContent.setTextColor(context.getColor(R.color.text_grey));
                 }
                 if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER ){
-                    ((ContentVH) holder).addImg.setVisibility(View.VISIBLE);
-                    ((ContentVH) holder).addImg.setBackground(context.getDrawable(R.drawable.custom_background_green));
+                    ((ContentVH) holder).addBtnImg.setVisibility(View.VISIBLE);
+                    ((ContentVH) holder).addBtnImg.setBackground(context.getDrawable(R.drawable.custom_background_green));
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                 }else{
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
@@ -143,14 +143,14 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static class ContentVH extends RecyclerView.ViewHolder {
         TextView content, subContent, sideContent,addBtn;
-        RelativeLayout addImg;
+        RelativeLayout addBtnImg;
 
         public ContentVH(View itemView) {
             super(itemView);
             content = itemView.findViewById(R.id.tv_content);
             subContent = itemView.findViewById(R.id.tv_sub_content);
             sideContent = itemView.findViewById(R.id.tv_content_side);
-            addImg = itemView.findViewById(R.id.btn_add_doc);
+            addBtnImg = itemView.findViewById(R.id.btn_add_doc);
             addBtn = itemView.findViewById(R.id.btn_add_tp);
 
         }
