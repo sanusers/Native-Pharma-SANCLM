@@ -3734,7 +3734,6 @@ public class DCRCallActivity extends AppCompatActivity {
                         if (detailedProductsSet.contains(PrdList.getCode())) {
                             CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(PrdList.getName(), PrdList.getCode(), PrdList.getCategory(), PrdList.getStock_balance(), PrdList.getStock_balance(), "", "", "", "0", true));
                             PrdList.setCheckedItem(true);
-                            break;
                         }
                     }
                 }
