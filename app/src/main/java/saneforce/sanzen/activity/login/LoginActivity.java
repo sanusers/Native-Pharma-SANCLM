@@ -45,6 +45,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
 
+import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.notification.NotificationViewModel;
@@ -617,6 +618,7 @@ public class LoginActivity extends AppCompatActivity {
                 notificationDataDao.changeNotificationReadStatus(data.getId(), 1);
             });
             SharedPref.InsertLogInData(LoginActivity.this, jsonObject);
+            SharedPref.setLastKnownVersion(LoginActivity.this, BuildConfig.VERSION_CODE);
             SharedPref.saveKeys(LoginActivity.this, jsonObject.optString("zakey"), jsonObject.optString("zskey"));
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);

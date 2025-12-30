@@ -521,12 +521,24 @@ public class SharedPref {
 
     public static final String LEAVE_ATTACHMENT_NEED = "Leave_attachment_need";
 
+    public static final String LAST_KNOWN_VERSION = "last_known_version";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.clear().apply();
+    }
+
+    public static void setLastKnownVersion(Context context, int versionCode) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(LAST_KNOWN_VERSION, versionCode).apply();
+    }
+
+    public static int getLastKnownVersion(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(LAST_KNOWN_VERSION, -1);
     }
 
     public static void InsertLogInData(Context context, JSONObject jsonObject) {
@@ -878,10 +890,8 @@ public class SharedPref {
             editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
             editor.putString(RESET_PASSWORD_NEED,jsonObject.optString("reset_password_need"));
             editor.putString(RESET_PASSWORD_DAYS,jsonObject.optString("reset_password_days"));
-            editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
-            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
             editor.putString(RPT_MGR_CODE,jsonObject.optString("ReportingMgrCode"));
             editor.putString(RPT_MGR_NAME,jsonObject.optString("ReportingMgrName"));
             editor.putString(TP_MGR_CODE,jsonObject.optString("ReportingTPMgrCode"));
