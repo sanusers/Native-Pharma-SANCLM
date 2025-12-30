@@ -26,13 +26,27 @@ import saneforce.sanzen.storage.SharedPref;
 
 
 public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
+
+    public interface OnNameClickListener {
+        void onNameClick(String name);
+    }
+
+
     ArrayList<CallCommonCheckedList> jwLists;
     Context context;
     private int independentPosition;
+    private OnNameClickListener nameClickListener;
+    private boolean isMgrUser;
+
 
     public JwAdapter(Context context, ArrayList<CallCommonCheckedList> jwLists) {
         this.context = context;
         this.jwLists = jwLists;
+    }
+    public JwAdapter(Context context, ArrayList<CallCommonCheckedList> jwLists,  OnNameClickListener listener) {
+        this.context = context;
+        this.jwLists = jwLists;
+        this.nameClickListener = listener;
     }
 
     @NonNull
@@ -72,9 +86,39 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
             holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
         }
 
+
+        // 🔥 NAME CLICK → POPUP
+        holder.tv_name.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getJwAutoSelectionNeed(context)
+                        .equalsIgnoreCase("0")) {
+
+                    if (nameClickListener != null) {
+                        nameClickListener.onNameClick(
+                                jwLists.get(holder.getAdapterPosition()).getName()
+                        );
+                    }
+
+                }
+            }
+        });
+
+
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
+//            if (holder.checkBox.isPressed()) {
+//                if (holder.checkBox.isChecked()) {
             if (holder.checkBox.isPressed()) {
+                int pos = holder.getBindingAdapterPosition();
+                if (pos == RecyclerView.NO_POSITION) return;
                 if (holder.checkBox.isChecked()) {
+                    if ("0".equalsIgnoreCase(
+                            SharedPref.getJwAutoSelectionNeed(context)) && nameClickListener != null) {
+                        nameClickListener.onNameClick(
+                                jwLists.get(pos).getName()
+                        );
+                    }
+
                     holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                     holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                     jwLists.get(position).setCheckedItem(true);

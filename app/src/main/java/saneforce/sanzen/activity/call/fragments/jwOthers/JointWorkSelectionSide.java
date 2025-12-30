@@ -6,6 +6,8 @@ import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,32 +16,54 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonElement;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.jwOthers.AdapterCallJointWorkList;
 import saneforce.sanzen.activity.call.adapter.jwOthers.JwAdapter;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSelectJwSideBinding;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.NetworkStatusTask;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class JointWorkSelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -51,10 +75,18 @@ public class JointWorkSelectionSide extends Fragment {
     JSONObject jsonObject;
     AdapterCallJointWorkList adapterCallJointWorkList;
     CommonUtilsMethods commonUtilsMethods;
+    public static ArrayList<CallsModalClass> TodayCallList = new ArrayList<>();
+    public static Context Mcontext;
+    private static ApiInterface apiInterface;
+    public static ProgressDialog progressDialog;
+    public static boolean isNeedtoAdd;
+   boolean isProgressNeed=false;
 
+    public static String FwFlag;
+    private boolean isMgrUser;
     private RoomDB roomDB;
     private DCRDocDataDao dcrDocDataDao;
-    private MasterDataDao masterDataDao;
+    private static MasterDataDao masterDataDao;
 
     @Nullable
     @Override
@@ -66,7 +98,7 @@ public class JointWorkSelectionSide extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-
+        checkUserRole();
         SetupAdapter();
 
         selectJwSideBinding.tvDummy.setOnClickListener(new SafeClickListener() {
@@ -134,6 +166,13 @@ public class JointWorkSelectionSide extends Fragment {
     }
 
 
+    private void checkUserRole() {
+        String sfType = SharedPref.getSfType(requireContext()); // or this if in Activity
+        //  isMgrUser = "MGR".equalsIgnoreCase(sfType); // adjust based on your value
+        isMgrUser = "2".equals(sfType);
+    }
+
+
     private void filter(String text) {
         ArrayList<CallCommonCheckedList> filterdNames = new ArrayList<>();
         for (CallCommonCheckedList s : JwList) {
@@ -177,13 +216,354 @@ public class JointWorkSelectionSide extends Fragment {
         } catch (Exception ignored) {
         }
 
-        jwAdapter = new JwAdapter(getContext(), JwList);
+        jwAdapter = new JwAdapter(getContext(), JwList, name -> {
+            //if (!isMgrUser) {
+            if (isMgrUser) {
+                showNamePopup(name); // Only managers see popup
+            } else {
+                // MR or other roles, do nothing
+                Log.d("JointWork", "MR user clicked, no popup shown for: " + name);
+            }
+            // showNamePopup(name);
+            // }
+        });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         selectJwSideBinding.rvJwList.setLayoutManager(mLayoutManager);
         selectJwSideBinding.rvJwList.setItemAnimator(new DefaultItemAnimator());
         selectJwSideBinding.rvJwList.addItemDecoration(new DividerItemDecoration(requireActivity(), LinearLayoutManager.VERTICAL));
         selectJwSideBinding.rvJwList.setAdapter(jwAdapter);
     }
+
+    //    public static void showNamePopup(String name) {
+//        if (selectJwSideBinding == null) return;
+//        Context context = selectJwSideBinding.getRoot().getContext();
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        View dialogView = inflater.inflate(R.layout.popup_jointwork, null);
+//        TextView tvName = dialogView.findViewById(R.id.tv_popup_name);
+//        CheckBox checkBox = dialogView.findViewById(R.id.chk_box);
+//        ImageView imgClose = dialogView.findViewById(R.id.img_close);
+//        AppCompatButton btnOk = dialogView.findViewById(R.id.btn_ok);
+//        tvName.setText(name);
+//        AlertDialog dialog = new AlertDialog.Builder(context).setView(dialogView).setCancelable(true).create();
+//        dialog.setCanceledOnTouchOutside(false);
+//        imgClose.setOnClickListener(v -> dialog.dismiss());
+//        btnOk.setOnClickListener(v -> {
+//            boolean isChecked = checkBox.isChecked();
+//            if (isChecked) {
+//                for (int i = 0; i < JwList.size(); i++) {
+//                    CallCommonCheckedList item = JwList.get(i);
+//
+//                    if (item.getName().equalsIgnoreCase(name)) {
+//                        item.setCheckedItem(true);
+//                        JwList.set(i, item);
+//                        break;
+//                    }
+//                }
+//
+//                if (jwAdapter != null) {
+//                    jwAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            dialog.dismiss();
+//        });
+//
+//        dialog.show();
+//    }
+//    public static void showNamePopup(String name) {
+//
+//        if (selectJwSideBinding == null) return;
+//        Context context = selectJwSideBinding.getRoot().getContext();
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        View dialogView = inflater.inflate(R.layout.popup_jointwork, null);
+//        TextView tvName = dialogView.findViewById(R.id.tv_popup_name);
+//        CheckBox checkBox = dialogView.findViewById(R.id.chk_box);
+//        ImageView imgClose = dialogView.findViewById(R.id.img_close);
+//        AppCompatButton btnOk = dialogView.findViewById(R.id.btn_ok);
+//        tvName.setText(name);
+//
+//        int clickedIndex = -1;
+//        for (int i = 0; i < JwList.size(); i++) {
+//            if (JwList.get(i).getName().equalsIgnoreCase(name)) {
+//                clickedIndex = i;
+//                break;
+//            }
+//        }
+//        if (clickedIndex == -1) return;
+//        int finalIndex = clickedIndex;
+//        AlertDialog dialog = new AlertDialog.Builder(context).setView(dialogView).setCancelable(false).create();
+//        dialog.setCanceledOnTouchOutside(false);
+//
+//        imgClose.setOnClickListener(v -> {
+//            JwList.get(finalIndex).setCheckedItem(false);
+//
+//            if (jwAdapter != null) {
+//                jwAdapter.notifyItemChanged(finalIndex);
+//            }
+//
+//            dialog.dismiss();
+//        });
+//
+//
+//        btnOk.setOnClickListener(v -> {
+//            JwList.get(finalIndex).setCheckedItem(true);
+//
+//            if (jwAdapter != null) {
+//                jwAdapter.notifyItemChanged(finalIndex);
+//            }
+//
+//            dialog.dismiss();
+//        });
+//
+//        dialog.show();
+//    }
+    public void showNamePopup(String name) {
+        CallTodayCallsAPI(requireContext(),apiInterface,isProgressNeed);
+        if (selectJwSideBinding == null) return;
+
+        Context context = selectJwSideBinding.getRoot().getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.popup_jointwork, null);
+
+        TextView tvName = dialogView.findViewById(R.id.tv_popup_name);
+        CheckBox checkBox = dialogView.findViewById(R.id.chk_box);
+        ImageView imgClose = dialogView.findViewById(R.id.img_close);
+        AppCompatButton btnOk = dialogView.findViewById(R.id.btn_ok);
+
+        tvName.setText(name);
+        //  checkBox.setText((CharSequence) checkBox);
+
+        int clickedIndex = -1;
+        for (int i = 0; i < JwList.size(); i++) {
+            if (JwList.get(i).getName().equalsIgnoreCase(name)) {
+                clickedIndex = i;
+                break;
+            }
+        }
+        if (clickedIndex == -1) return;
+
+        int finalIndex = clickedIndex;
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+        dialog.setCanceledOnTouchOutside(false);
+
+        imgClose.setOnClickListener(v -> {
+            JwList.get(finalIndex).setCheckedItem(false);
+            if (jwAdapter != null) jwAdapter.notifyItemChanged(finalIndex);
+            dialog.dismiss();
+        });
+
+        btnOk.setOnClickListener(v -> {
+            JwList.get(finalIndex).setCheckedItem(true);
+            if (jwAdapter != null) jwAdapter.notifyItemChanged(finalIndex);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+//    public static void syncCalls(Context context) {
+//        if (Mcontext != null && apiInterface != null) {
+//            CallTodayCallsAPI(Mcontext, apiInterface, false);
+//            Log.e("API_TEST", "syncCalls called");
+//        }
+//    }
+
+    public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
+        Log.e("API_TEST", "CallTodayCallsAPI entered");
+
+        if (HomeDashBoard.selectedDate != null) {
+            if (UtilityClass.isNetworkAvailable(context)) {
+                CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
+                apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+                ApiInterface finalApiInterface1 = apiInterface;
+                if (isProgressNeed)
+                    progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                    if (status) {
+                        SharedPref.setTodayCallList(context, "");
+                        try {
+                            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+                            jsonObject.put("tableName", "gettodycalls");
+                            jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                            jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
+                            jsonObject.put("day_flag", "0");
+                            jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                            jsonObject.put("Rsf", SharedPref.getHqCode(context));
+                            Log.v("TodayCalls", "--json--" + jsonObject);
+
+                            Map<String, String> mapString = new HashMap<>();
+                            mapString.put("axn", "table/additionaldcrmasterdata");
+                            Call<JsonElement> getTodayCalls = finalApiInterface1.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                            Log.e("API_TEST", "API request fired");
+
+                            ApiInterface finalApiInterface = finalApiInterface1;
+                            getTodayCalls.enqueue(new Callback<JsonElement>() {
+                                @SuppressLint("NotifyDataSetChanged")
+                                @Override
+                                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                    Log.e("API_TEST", "API success: " + response.body());
+
+                                    if (response.isSuccessful()) {
+                                        try {
+                                            assert response.body() != null;
+                                            SharedPref.setTodayCallList(context, response.body().toString());
+                                            JSONArray jsonArray = new JSONArray(response.body().toString());
+                                            SharedPref.setLastCallDate(context, "");
+                                            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+                                            JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+                                            ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();
+                                            ArrayList<CallsModalClass> TodayCallListTwo = new ArrayList<>();
+                                            TodayCallList.clear();
+                                            for (int i = 0; i < jsonArray.length(); i++) {
+                                                JSONObject json = jsonArray.getJSONObject(i);
+                                                SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.toString());
+                                                TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                TodayCallListTwo.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+
+                                                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                                                    for (int j = 0; j < jsonArray1.length(); j++) {
+                                                        JSONObject jsonObject = jsonArray1.getJSONObject(j);
+                                                        if (json.optString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))) {
+                                                            TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                            jsonArray1.remove(j);
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    for (int j = 0; j < jsonArray1.length(); j++) {
+                                                        JSONObject jsonObject = jsonArray1.getJSONObject(j);
+                                                        if (json.optString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))) {
+                                                            TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                            jsonArray1.remove(j);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            if (jsonArray.length() > 0) {
+
+                                                JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+                                                for (int i = 0; i < jsonArrayWt.length(); i++) {
+                                                    JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
+                                                    if (workTypeData.optString("FWFlg").equalsIgnoreCase("F")) {
+                                                        FwFlag = workTypeData.optString("FWFlg");
+                                                    }
+                                                }
+
+                                                if (TodayCallListTwo.size() != TodayCallListOne.size()) {
+                                                    for (int i = 0; i < TodayCallListTwo.size(); i++) {
+                                                        if (TodayCallListOne.size() > 0) {
+                                                            isNeedtoAdd = true;
+                                                            for (int j = 0; j < TodayCallListOne.size(); j++) {
+                                                                if (TodayCallListTwo.get(i).getDocCode().equalsIgnoreCase(TodayCallListOne.get(j).getDocCode())) {
+                                                                    TodayCallListTwo.remove(i);
+                                                                }
+                                                            }
+                                                        } else {
+                                                            isNeedtoAdd = false;
+                                                            //  SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
+                                                        }
+                                                    }
+                                                    if (isNeedtoAdd && TodayCallListTwo.size() > 0) {
+                                                        for (int i = 0; i < TodayCallListTwo.size(); i++) {
+                                                            //  SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
+                                                        }
+                                                    }
+                                                }
+
+                                                MasterDataTable data = new MasterDataTable();
+                                                data.setMasterKey(Constants.CALL_SYNC);
+                                                data.setMasterValues(jsonArray2.toString());
+                                                data.setSyncStatus(0);
+                                                MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                                if (mNChecked != null) {
+                                                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray2.toString());
+                                                } else {
+                                                    masterDataDao.insert(data);
+
+                                                }
+                                                CallDataRestClass.resetcallValues(context);
+                                            }
+
+                                            jwAdapter.notifyDataSetChanged();
+                                            if (isProgressNeed) progressDialog.dismiss();
+                                            SharedPref.setLastCallSyncDate(context, HomeDashBoard.selectedDate.toString());
+                                        } catch (Exception e) {
+                                            if (isProgressNeed) progressDialog.dismiss();
+                                            Log.v("TodayCalls", "--error--" + e);
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        if (isProgressNeed) progressDialog.dismiss();
+                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+                                    if (isProgressNeed) progressDialog.dismiss();
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                }
+                            });
+                        } catch (Exception e) {
+                            if (isProgressNeed) progressDialog.dismiss();
+                            Log.v("TodayCalls", "--error--2--" + e);
+                        }
+                    } else {
+                        if (isProgressNeed) {
+
+                            progressDialog.dismiss();
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                        }
+                    }
+                });
+                networkStatusTask.execute();
+            } else {
+
+                getFromLocal(context, apiInterface);
+            }
+        }
+    }
+
+    private static void getFromLocal(Context context, ApiInterface apiInterface) {
+        try {
+            TodayCallList.clear();
+            String CheckDate = "";
+            boolean isDataAvailable = false;
+            if (!SharedPref.getTodayCallList(context).isEmpty()) {
+                JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
+                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                    CheckDate = jsonArray.getJSONObject(0).optString("DCRdt").substring(0, 10);
+                } else {
+                    CheckDate = jsonArray.getJSONObject(0).optString("vstTime").substring(0, 10);
+                }
+
+                if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
+                    isDataAvailable = true;
+                }
+
+                if (isDataAvailable) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject json = jsonArray.getJSONObject(i);
+                        SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
+                        TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                    }
+                }
+            }
+            //binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+
+
+            jwAdapter.notifyDataSetChanged();
+        } catch (Exception ignored) {
+        }
+    }
+
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<CallCommonCheckedList> selectedJwList, ArrayList<CallCommonCheckedList> Jwlist) {
         adapterCallJointWorkList = new AdapterCallJointWorkList(context, activity, selectedJwList, Jwlist);
