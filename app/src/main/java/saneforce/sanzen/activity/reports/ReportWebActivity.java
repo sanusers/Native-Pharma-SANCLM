@@ -53,7 +53,7 @@ public class ReportWebActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityWebReportsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        trustAllCert();
+//        trustAllCert();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
@@ -152,28 +152,7 @@ public class ReportWebActivity extends AppCompatActivity {
             return true;
         }
     }
-    public void trustAllCert(){
-        try {
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                    new javax.net.ssl.X509TrustManager() {
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[]{}; }
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
-                    }
-            };
 
-            javax.net.ssl.SSLContext sslContext = javax.net.ssl.SSLContext.getInstance("TLS");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-
-            // Disable hostname verification (accept all hostnames)
-            javax.net.ssl.HostnameVerifier allHostsValid = (hostname, session) -> true;
-            javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }
