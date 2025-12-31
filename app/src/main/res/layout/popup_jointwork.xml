@@ -45,8 +45,9 @@
 
         <CheckBox
             android:id="@+id/chk_box"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:buttonTint="@color/bg_txt_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -54,17 +55,20 @@
 
         <TextView
             android:id="@+id/tv_data_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
             android:fontFamily="@font/satoshi_bold"
-            android:singleLine="true"
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_3sdp"
             android:text="@string/brand_name"
+            android:singleLine="true"
             android:textColor="@color/bg_txt_color"
-            android:textSize="@dimen/_5ssp"
+            android:textSize="@dimen/_6ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/chk_box"
-            app:layout_constraintTop_toTopOf="@id/chk_box"
-            app:layout_constraintBottom_toBottomOf="@id/chk_box"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
