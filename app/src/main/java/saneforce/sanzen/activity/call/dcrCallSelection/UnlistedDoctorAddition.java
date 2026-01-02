@@ -485,9 +485,9 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand));
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
-                    } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.moile_mand));
-                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+//                    } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
+//                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.moile_mand));
+//                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else {
                         Log.v("qualification_txt", "arent_empty");
                         unlistedadditionbinding.btnUnlstsave.setEnabled(false);
