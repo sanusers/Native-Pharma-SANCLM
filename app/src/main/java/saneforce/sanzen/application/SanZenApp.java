@@ -87,12 +87,12 @@ public class SanZenApp extends Application {
             public void onActivityPostCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
 //                ActivityLifecycleCallbacks.super.onActivityPostCreated(activity, savedInstanceState);
                 if (activity.getWindow() != null) {
-                    if ((activity instanceof PreviewActivity) || (activity instanceof PresentationActivity) || (activity instanceof CreatePresentationActivity) || (activity instanceof PlaySlideDetailing) || (activity instanceof PlaySlidePreviewActivity) || (activity instanceof CameraActivity)) {
-                        activity.getWindow().setFlags(
-                                WindowManager.LayoutParams.FLAG_SECURE,
-                                WindowManager.LayoutParams.FLAG_SECURE
-                        );
-                    }
+//                    if ((activity instanceof PreviewActivity) || (activity instanceof PresentationActivity) || (activity instanceof CreatePresentationActivity) || (activity instanceof PlaySlideDetailing) || (activity instanceof PlaySlidePreviewActivity) || (activity instanceof CameraActivity)) {
+//                        activity.getWindow().setFlags(
+//                                WindowManager.LayoutParams.FLAG_SECURE,
+//                                WindowManager.LayoutParams.FLAG_SECURE
+//                        );
+//                    }
 //                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
                         final WindowInsetsController insetsController = activity.getWindow().getInsetsController();
