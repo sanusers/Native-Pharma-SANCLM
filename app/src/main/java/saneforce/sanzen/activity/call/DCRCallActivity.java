@@ -450,11 +450,8 @@ public class DCRCallActivity extends AppCompatActivity {
             }
         });
 
-        dcrCallBinding.btnFinalSubmit.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
                 onSubmitClicked();
-            }
         });
 
         assert isFromActivity != null;
