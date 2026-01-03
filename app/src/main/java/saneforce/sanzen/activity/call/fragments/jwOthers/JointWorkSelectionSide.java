@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ import org.json.JSONObject;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -76,7 +79,7 @@ public class JointWorkSelectionSide extends Fragment {
     JSONObject jsonObject;
     AdapterCallJointWorkList adapterCallJointWorkList;
     CommonUtilsMethods commonUtilsMethods;
-  //  public static ArrayList<CallsModalClass> TodayCallList = new ArrayList<>();
+    //  public static ArrayList<CallsModalClass> TodayCallList = new ArrayList<>();
     public static ArrayList<modelClass> TodayCallList = new ArrayList<>();
     public static Context Mcontext;
     private static ApiInterface apiInterface;
@@ -233,8 +236,24 @@ public class JointWorkSelectionSide extends Fragment {
         selectJwSideBinding.rvJwList.setAdapter(jwAdapter);
     }
 
-//    public void showNamePopup(String name) {
-//        CallTodayCallsAPI(requireContext(),apiInterface,isProgressNeed);
+    // Method to get doc names for a specific brand
+    private ArrayList<String> getAllDocNames() {
+        ArrayList<String> docNames = new ArrayList<>();
+
+        for (modelClass call : TodayCallList) {
+
+            String rawName = call.getDocName();
+            if (rawName != null && !rawName.trim().isEmpty()) {
+                String cleanName = rawName.split("---")[0].trim();
+                docNames.add(cleanName);
+            }
+        }
+        return docNames;
+    }
+
+
+    //    public void showNamePopup(String name) {
+//        CallTodayCallsAPI(requireContext(), apiInterface, isProgressNeed);
 //        if (selectJwSideBinding == null) return;
 //
 //        Context context = selectJwSideBinding.getRoot().getContext();
@@ -243,12 +262,13 @@ public class JointWorkSelectionSide extends Fragment {
 //
 //        TextView tvName = dialogView.findViewById(R.id.tv_popup_name);
 //        CheckBox checkBox = dialogView.findViewById(R.id.chk_box);
-//        TextView tittleName= dialogView.findViewById(R.id.tv_data_name);
+//        TextView tittleName = dialogView.findViewById(R.id.tv_data_name);
 //        ImageView imgClose = dialogView.findViewById(R.id.img_close);
 //        AppCompatButton btnOk = dialogView.findViewById(R.id.btn_ok);
 //
 //        tvName.setText(name);
-//        //  checkBox.setText((CharSequence) checkBox);
+//        ArrayList<String> docNames = getAllDocNames();
+//        tittleName.setText(docNames.isEmpty() ? "No Customers" : TextUtils.join(", ", docNames));
 //
 //        int clickedIndex = -1;
 //        for (int i = 0; i < JwList.size(); i++) {
@@ -260,7 +280,6 @@ public class JointWorkSelectionSide extends Fragment {
 //        if (clickedIndex == -1) return;
 //
 //        int finalIndex = clickedIndex;
-//
 //
 //        AlertDialog dialog = new AlertDialog.Builder(context)
 //                .setView(dialogView)
@@ -283,41 +302,26 @@ public class JointWorkSelectionSide extends Fragment {
 //        dialog.show();
 //    }
 
-
-    // Method to get doc names for a specific brand
-    private ArrayList<String> getAllDocNames() {
-        ArrayList<String> docNames = new ArrayList<>();
-
-        for (modelClass call : TodayCallList) {
-
-            String rawName = call.getDocName();
-            if (rawName != null && !rawName.trim().isEmpty()) {
-                String cleanName = rawName.split("---")[0].trim();
-                docNames.add(cleanName);
-            }
-        }
-        return docNames;
-    }
-
-
     public void showNamePopup(String name) {
         CallTodayCallsAPI(requireContext(), apiInterface, isProgressNeed);
-        if (selectJwSideBinding == null) return;
-
         Context context = selectJwSideBinding.getRoot().getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.popup_jointwork, null);
 
         TextView tvName = dialogView.findViewById(R.id.tv_popup_name);
-        CheckBox checkBox = dialogView.findViewById(R.id.chk_box);
-        TextView tittleName = dialogView.findViewById(R.id.tv_data_name);
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recyclerView);
         ImageView imgClose = dialogView.findViewById(R.id.img_close);
-        AppCompatButton btnOk = dialogView.findViewById(R.id.btn_ok);
+        Button btnOk = dialogView.findViewById(R.id.btn_ok);
 
         tvName.setText(name);
-        ArrayList<String> docNames = getAllDocNames();
-        tittleName.setText(docNames.isEmpty() ? "No Customers" : TextUtils.join(", ", docNames));
 
+        ArrayList<String> docNames = getAllDocNames(); // your list of names
+        if(docNames.isEmpty()) {
+            docNames.add("No Customers");
+        }
+        PopupNameAdapter adapter = new PopupNameAdapter(context, docNames);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(adapter);
         int clickedIndex = -1;
         for (int i = 0; i < JwList.size(); i++) {
             if (JwList.get(i).getName().equalsIgnoreCase(name)) {
@@ -326,9 +330,7 @@ public class JointWorkSelectionSide extends Fragment {
             }
         }
         if (clickedIndex == -1) return;
-
         int finalIndex = clickedIndex;
-
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setView(dialogView)
                 .setCancelable(false)
@@ -444,12 +446,12 @@ public class JointWorkSelectionSide extends Fragment {
                                                             }
                                                         } else {
                                                             isNeedtoAdd = false;
-                                                            //  SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
+                                                            SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
                                                         }
                                                     }
                                                     if (isNeedtoAdd && TodayCallListTwo.size() > 0) {
                                                         for (int i = 0; i < TodayCallListTwo.size(); i++) {
-                                                            //  SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
+                                                            SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
                                                         }
                                                     }
                                                 }
@@ -542,6 +544,36 @@ public class JointWorkSelectionSide extends Fragment {
         }
     }
 
+    public static void SaveDCRData(Context context, ArrayList<modelClass> todayCallListTwo, int i, JSONArray jsonArray2) {
+        try {
+            SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("CustCode", todayCallListTwo.get(i).getDocCode());
+            jsonObject.put("CustType", todayCallListTwo.get(i).getDocNameID());
+            jsonObject.put("Dcr_dt", todayCallListTwo.get(i).getCallsDateTime().substring(0, 10));
+            jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
+            jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
+            jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
+            jsonObject.put("CustName", todayCallListTwo.get(i).getDocName());
+            jsonObject.put("town_code", "");
+            jsonObject.put("town_name", "");
+            jsonObject.put("Dcr_flag", "");
+            jsonObject.put("SF_Code", SharedPref.getSfCode(context));
+            jsonObject.put("Trans_SlNo", todayCallListTwo.get(i).getTrans_Slno());
+            jsonObject.put("FW_Indicator", FwFlag);
+            jsonObject.put("WorkType_Name", "");
+            jsonObject.put("AMSLNo", todayCallListTwo.get(i).getADetSLNo());
+            jsonObject.put("versionNo", context.getString(R.string.app_version));
+            jsonObject.put("mod", Constants.APP_MODE);
+            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("AppName", context.getString(R.string.str_app_name));
+            jsonObject.put("language", SharedPref.getSelectedLanguage(context));
+            jsonArray2.put(jsonObject);
+        } catch (Exception ignored) {
+
+        }
+    }
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<CallCommonCheckedList> selectedJwList, ArrayList<CallCommonCheckedList> Jwlist) {
         adapterCallJointWorkList = new AdapterCallJointWorkList(context, activity, selectedJwList, Jwlist);
