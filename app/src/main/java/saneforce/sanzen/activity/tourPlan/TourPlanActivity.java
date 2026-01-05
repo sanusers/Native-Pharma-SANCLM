@@ -3143,7 +3143,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject_MHq.addProperty("Division_Code", SharedPref.getDivisionCode(TourPlanActivity.this).replace(",", ""));
                         jsonObject_MHq.addProperty("TP_Month", oneBuildModelClassTp.getMonth());
                         jsonObject_MHq.addProperty("TP_Year", oneBuildModelClassTp.getYear());
-                        jsonObject_MHq.addProperty("Status",id);
+                        jsonObject_MHq.addProperty("Status",String.valueOf(id));
                         jsonObject_MHq.addProperty("App_Mode",APP_MODE);
                         jsonObject_MHq.addProperty("App_Version", this.getResources().getString(R.string.app_version));
                         jsonObject_MHq.addProperty("App_Language",SharedPref.getSelectedLanguage(TourPlanActivity.this));
@@ -3209,7 +3209,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                                                 SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
                                                 SessionsObj.addProperty("WorkTypeName", WorkTypeName);
-                                                SessionsObj.addProperty("Sessions_Id", i + 1);
+                                                SessionsObj.addProperty("Sessions_Id", String.valueOf(i + 1));
                                                 SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
                                                 SessionsObj.addProperty("Remark", Remarks);
                                                 SessionsObj.addProperty("SF_HQ_Code", HeadquartersCode);
@@ -5682,7 +5682,7 @@ public class TourPlanActivity extends AppCompatActivity {
         Log.v("tpApproval", "--json--" + jsonObject.toString());
         System.out.println(jsonObject);
         Map<String, String> mapString = new HashMap<>();
-        if (SharedPref.getMultiHqNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+        if (/*SharedPref.getMultiHqNeed(TourPlanActivity.this).equalsIgnoreCase("0")*/multiHqNeed.equalsIgnoreCase("0") && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
             mapString.put("axn", "multihqsave/tp");
             Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(TourPlanActivity.this), mapString, jsonObject.toString());
 
