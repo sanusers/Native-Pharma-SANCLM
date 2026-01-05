@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableString;
@@ -167,11 +168,62 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private Runnable runnable;
     private int limit = 1;
     private OutboxUtil outboxUtil;
+    private Handler dateHandler;
+
+    private void checkDateChange() {
+        if (!isAdded()) return;
+        if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
+                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("0")
+                && SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0"))) {
+            return;
+        }
+        String savedDate = SharedPref.getLastKnownDate(requireContext());
+        String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
+        if (!savedDate.equals(today)) {
+            SharedPref.setLastKnownDate(requireContext(), today);
+            onDateChanged();
+        }
+    }
+
+    private void onDateChanged() {
+        if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
+                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("0")
+                && SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0"))) {
+            return;
+        }
+        JSONArray callSync = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+        for (int i = callSync.length() - 1; i >= 0; i--) {
+            JSONObject jsonObject = callSync.optJSONObject(i);
+            if (jsonObject.optString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
+                    && jsonObject.optString("CustCode").equalsIgnoreCase("0")
+                    && jsonObject.optString("day_status").equalsIgnoreCase("0")) {
+                finalSubmit("Auto Submitted");
+                break;
+            }
+        }
+    }
+
+    private void startDateWatcher() {
+        if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
+                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("0")
+                && SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0"))) {
+            return;
+        }
+        dateHandler = new Handler(Looper.getMainLooper());
+        dateHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkDateChange();
+                dateHandler.postDelayed(this, 60 * 1000);
+            }
+        }, 60 * 1000);
+    }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d("ACTIVITY_STATUS", "OnResume");
+        checkDateChange();
 //        if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
 //            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
 //        if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
@@ -185,6 +237,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //        } else {
 //            setUpMyDayplan();
 //        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        startDateWatcher();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (dateHandler != null) {
+            dateHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     @Override
@@ -299,10 +365,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         boolean toSync = false;
         if (SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)) {
-            binding.txtCluster1.setHint(getString(R.string.select)+ " " + SharedPref.getClusterCap(requireContext()));
+            binding.txtCluster1.setHint(getString(R.string.select) + " " + SharedPref.getClusterCap(requireContext()));
         } else {
-            binding.txtCluster1.setHint(getString(R.string.select)+ " "  + SharedPref.getWrkAreaName(requireContext()));
-
+            binding.txtCluster1.setHint(getString(R.string.select) + " " + SharedPref.getWrkAreaName(requireContext()));
         }
         if (HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
             try {
@@ -1238,7 +1303,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             } else {
-                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.kindly_sync_subordinate));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_sync_subordinate));
             }
         } catch (Exception e) {
             Log.e("Work plan", "Find HQ : " + e.getMessage());
@@ -1392,8 +1457,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         CommonAlertBox.TpAlert(requireActivity());
                     } else {
                         onSaveClicked();
-                       // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor);
-                        
+                        // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor);
+
                     }
                     break;
 
@@ -1403,7 +1468,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     } else if (!EditSession.equalsIgnoreCase("1") && DayPlanCount.equals("1")) {
                         if (mFwFlg1 != null && mFwFlg1.equalsIgnoreCase("W")) {
                             String weekOffName = findWTName("W");
-                            commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.already) + weekOffName + getString(R.string.has_been_submitted));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.already) + weekOffName + getString(R.string.has_been_submitted));
                         } else if (mFwFlg1 != null && mFwFlg1.equalsIgnoreCase("H")) {
                             String holidayName = findWTName("H");
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.already) + holidayName + getString(R.string.has_been_submitted));
@@ -1418,9 +1483,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtSave.setEnabled(true);
                             binding.cardPlan2.setVisibility(View.VISIBLE);
                             if (SharedPref.getWrkAreaName(requireContext()).isEmpty()) {
-                                binding.txtCluster2.setHint(getString(R.string.select)+ " " + SharedPref.getClusterCap(requireContext()));
+                                binding.txtCluster2.setHint(getString(R.string.select) + " " + SharedPref.getClusterCap(requireContext()));
                             } else {
-                                binding.txtCluster2.setHint(getString(R.string.select)+ " " + SharedPref.getWrkAreaName(requireContext()));
+                                binding.txtCluster2.setHint(getString(R.string.select) + " " + SharedPref.getWrkAreaName(requireContext()));
                             }
                             getLocalData();
                             binding.txtworkday2.setText("");
@@ -1531,7 +1596,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             dialogEditOrDelete("1");
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
-                                commonUtilsMethods.showToastMessage(requireContext(),  getString(R.string.deviate_to_edit_work_plan));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
                             } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("1", mWTName1);
                             } else {
@@ -1546,7 +1611,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 case R.id.fl_session2:
                     Log.d("Plan Edit", "onClick: Plan 2");
                     if (TPDCRDeviation.equalsIgnoreCase("0") && !binding.switchButton.isChecked() && binding.llDeviation.getVisibility() == View.VISIBLE && !deviation.equalsIgnoreCase("1")) {
-                        commonUtilsMethods.showToastMessage(requireContext(),  getString(R.string.deviate_to_edit_work_plan));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
                         break;
                     }
 //                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1")) {
@@ -3283,7 +3348,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         btn_no.setVisibility(View.GONE);
         btn_yes.setText(content.getResources().getString(R.string.ok));
-        content.setText(content.getResources().getString(R.string.you_have_been_idle_for_2_minutes_kindly_re)+ " " + text);
+        content.setText(content.getResources().getString(R.string.you_have_been_idle_for_2_minutes_kindly_re) + " " + text);
 
         btn_yes.setOnClickListener(new SafeClickListener() {
             @Override

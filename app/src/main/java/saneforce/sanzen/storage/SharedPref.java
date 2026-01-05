@@ -525,6 +525,8 @@ public class SharedPref {
 
     public static final String LEAVE_ATTACHMENT_NEED = "Leave_attachment_need";
 
+    public static final String LAST_KNOWN_DATE = "last_known_date";
+
     public static final String TodayTPDoctor = "TodayTPDoctor";
     public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
     public static final String DataClearedFlag = "DataClearedFlag";
@@ -3399,5 +3401,15 @@ public static void addVisitedDoctor(Context context, String custCode) {
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove("TodayTPDoctor"); // same key used in setTodayTPDoctor()
         editor.apply();
+    }
+
+    public static void setLastKnownDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LAST_KNOWN_DATE, date).apply();
+    }
+
+    public static String getLastKnownDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(LAST_KNOWN_DATE, "");
     }
 }
