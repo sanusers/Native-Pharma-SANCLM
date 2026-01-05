@@ -360,11 +360,7 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+
 
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -416,8 +412,8 @@ public class FileDownloadWorker extends Worker {
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());*/
 
 //  Disable hostname verification
-            HostnameVerifier allHostsValid = (hostname, session) -> true;
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+//            HostnameVerifier allHostsValid = (hostname, session) -> true;
+//            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
             URL url = new URL(url1);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
