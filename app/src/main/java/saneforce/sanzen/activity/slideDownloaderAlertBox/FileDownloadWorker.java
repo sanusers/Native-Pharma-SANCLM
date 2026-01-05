@@ -403,17 +403,17 @@ public class FileDownloadWorker extends Worker {
 
      try {
 
-            TrustManager[] trustAllCerts = new TrustManager[]{
+         /*   TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         public void checkClientTrusted(X509Certificate[] chain, String authType) {}
                         public void checkServerTrusted(X509Certificate[] chain, String authType) {}
                         public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
                     }
-            };
+            };*/
 
-            SSLContext sslContext = SSLContext.getInstance("TLS");
+       /*     SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());*/
 
 //  Disable hostname verification
             HostnameVerifier allHostsValid = (hostname, session) -> true;
