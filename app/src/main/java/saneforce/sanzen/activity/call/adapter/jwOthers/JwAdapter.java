@@ -5,6 +5,7 @@ import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,22 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
 
 
         // 🔥 NAME CLICK → POPUP
+//        holder.tv_name.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                if (SharedPref.getJwAutoSelectionNeed(context)
+//                        .equalsIgnoreCase("0")) {
+//
+//                    if (nameClickListener != null) {
+//                        nameClickListener.onNameClick(
+//                                jwLists.get(holder.getAdapterPosition()).getName()
+//                        );
+//                    }
+//
+//                }
+//            }
+//        });
+
         holder.tv_name.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -103,7 +120,6 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
                 }
             }
         });
-
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
 //            if (holder.checkBox.isPressed()) {

@@ -173,7 +173,6 @@ public class JointWorkSelectionSide extends Fragment {
 
     private void checkUserRole() {
         String sfType = SharedPref.getSfType(requireContext()); // or this if in Activity
-        //  isMgrUser = "MGR".equalsIgnoreCase(sfType); // adjust based on your value
         isMgrUser = "2".equals(sfType);
     }
 
@@ -223,11 +222,39 @@ public class JointWorkSelectionSide extends Fragment {
 
         jwAdapter = new JwAdapter(getContext(), JwList, name -> {
             if (isMgrUser) {
-                showNamePopup(name);
+                for (int i = 0; i < JwList.size(); i++) {
+                    CallCommonCheckedList item = JwList.get(i);
+                    if (item.getName().equalsIgnoreCase(name)) {
+                        // Get sf_type from the original JSON array
+                        try {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String sfType = jsonObject.optString("sf_type", "0"); // default 0
+                            // Show popup only if sf_type == "1" and not independent
+                            if ("1".equalsIgnoreCase(sfType)
+                                    && !item.getCode().equalsIgnoreCase(SharedPref.getSfCode(getContext()))) {
+                                showNamePopup(name);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break; // found the item, stop looping
+                    }
+                }
             } else {
                 Log.d("JointWork", "MR user clicked, no popup shown for: " + name);
             }
         });
+
+               // if( SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
+
+//                JSONArray sftype = jsonArray.put("sf_type");
+//                if (sftype.equals("1")) {
+//                    showNamePopup(name);
+//                }
+//            } else {
+//                Log.d("JointWork", "MR user clicked, no popup shown for: " + name);
+//            }
+//        });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         selectJwSideBinding.rvJwList.setLayoutManager(mLayoutManager);
         selectJwSideBinding.rvJwList.setItemAnimator(new DefaultItemAnimator());
@@ -252,24 +279,27 @@ public class JointWorkSelectionSide extends Fragment {
     }
 
 
-    //    public void showNamePopup(String name) {
+//    public void showNamePopup(String name) {
 //        CallTodayCallsAPI(requireContext(), apiInterface, isProgressNeed);
-//        if (selectJwSideBinding == null) return;
-//
 //        Context context = selectJwSideBinding.getRoot().getContext();
 //        LayoutInflater inflater = LayoutInflater.from(context);
 //        View dialogView = inflater.inflate(R.layout.popup_jointwork, null);
 //
 //        TextView tvName = dialogView.findViewById(R.id.tv_popup_name);
-//        CheckBox checkBox = dialogView.findViewById(R.id.chk_box);
-//        TextView tittleName = dialogView.findViewById(R.id.tv_data_name);
+//        RecyclerView recyclerView = dialogView.findViewById(R.id.recyclerView);
 //        ImageView imgClose = dialogView.findViewById(R.id.img_close);
-//        AppCompatButton btnOk = dialogView.findViewById(R.id.btn_ok);
+//        Button btnOk = dialogView.findViewById(R.id.btn_ok);
 //
 //        tvName.setText(name);
-//        ArrayList<String> docNames = getAllDocNames();
-//        tittleName.setText(docNames.isEmpty() ? "No Customers" : TextUtils.join(", ", docNames));
 //
+//        ArrayList<String> docNames = getAllDocNames(); // your list of names
+//        if (docNames.isEmpty()) {
+//            docNames.add("No Customers");
+//        }
+//        PopupNameAdapter adapter = new PopupNameAdapter(context, docNames);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//        adapter.selectedNames.clear();
+//        recyclerView.setAdapter(adapter);
 //        int clickedIndex = -1;
 //        for (int i = 0; i < JwList.size(); i++) {
 //            if (JwList.get(i).getName().equalsIgnoreCase(name)) {
@@ -278,9 +308,7 @@ public class JointWorkSelectionSide extends Fragment {
 //            }
 //        }
 //        if (clickedIndex == -1) return;
-//
 //        int finalIndex = clickedIndex;
-//
 //        AlertDialog dialog = new AlertDialog.Builder(context)
 //                .setView(dialogView)
 //                .setCancelable(false)
@@ -301,58 +329,240 @@ public class JointWorkSelectionSide extends Fragment {
 //
 //        dialog.show();
 //    }
+//
+//    public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
+//        Log.e("API_TEST", "CallTodayCallsAPI entered");
+//
+//        if (HomeDashBoard.selectedDate != null) {
+//            if (UtilityClass.isNetworkAvailable(context)) {
+//                CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
+//                apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+//                ApiInterface finalApiInterface1 = apiInterface;
 
+    /// /                if (isProgressNeed)
+    /// /                    progressDialog = CommonUtilsMethods.createProgressDialog(context);
+//                NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+//                    if (status) {
+//                        SharedPref.setTodayCallList(context, "");
+//                        try {
+//                            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+//                            jsonObject.put("tableName", "gettodycalls");
+//                            jsonObject.put("sfcode", SharedPref.getHqCode(context));
+//                            jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
+//                            jsonObject.put("day_flag", "0");
+//                            jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+//                            jsonObject.put("Rsf", SharedPref.getHqCode(context));
+//                            Log.v("TodayCalls", "--json--" + jsonObject);
+//
+//                            Map<String, String> mapString = new HashMap<>();
+//                            mapString.put("axn", "table/additionaldcrmasterdata");
+//                            Call<JsonElement> getTodayCalls = finalApiInterface1.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+//                            Log.e("API_TEST", "API request fired");
+//
+//                            ApiInterface finalApiInterface = finalApiInterface1;
+//                            getTodayCalls.enqueue(new Callback<JsonElement>() {
+//                                @SuppressLint("NotifyDataSetChanged")
+//                                @Override
+//                                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+//                                    Log.e("API_TEST", "API success: " + response.body());
+//
+//                                    if (response.isSuccessful()) {
+//                                        try {
+//                                            assert response.body() != null;
+//                                            SharedPref.setTodayCallList(context, response.body().toString());
+//                                            JSONArray jsonArray = new JSONArray(response.body().toString());
+//                                            SharedPref.setLastCallDate(context, "");
+//                                            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+//                                            JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+//                                            ArrayList<modelClass> TodayCallListOne = new ArrayList<>();
+//                                            ArrayList<modelClass> TodayCallListTwo = new ArrayList<>();
+//                                            TodayCallList.clear();
+//                                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                                JSONObject json = jsonArray.getJSONObject(i);
+//                                                SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.toString());
+//                                                TodayCallList.add(new modelClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+//                                                TodayCallListTwo.add(new modelClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+//
+//                                                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+//                                                    for (int j = 0; j < jsonArray1.length(); j++) {
+//                                                        JSONObject jsonObject = jsonArray1.getJSONObject(j);
+//                                                        if (json.optString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))) {
+//                                                            TodayCallListOne.add(new modelClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+//                                                            jsonArray1.remove(j);
+//                                                            break;
+//                                                        }
+//                                                    }
+//                                                } else {
+//                                                    for (int j = 0; j < jsonArray1.length(); j++) {
+//                                                        JSONObject jsonObject = jsonArray1.getJSONObject(j);
+//                                                        if (json.optString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))) {
+//                                                            TodayCallListOne.add(new modelClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+//                                                            jsonArray1.remove(j);
+//                                                            break;
+//                                                        }
+//                                                    }
+//                                                }
+//                                            }
+//
+//                                            if (jsonArray.length() > 0) {
+//
+//                                                JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+//                                                for (int i = 0; i < jsonArrayWt.length(); i++) {
+//                                                    JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
+//                                                    if (workTypeData.optString("FWFlg").equalsIgnoreCase("F")) {
+//                                                        FwFlag = workTypeData.optString("FWFlg");
+//                                                    }
+//                                                }
+//
+//                                                if (TodayCallListTwo.size() != TodayCallListOne.size()) {
+//                                                    for (int i = 0; i < TodayCallListTwo.size(); i++) {
+//                                                        if (TodayCallListOne.size() > 0) {
+//                                                            isNeedtoAdd = true;
+//                                                            for (int j = 0; j < TodayCallListOne.size(); j++) {
+//                                                                if (TodayCallListTwo.get(i).getDocCode().equalsIgnoreCase(TodayCallListOne.get(j).getDocCode())) {
+//                                                                    TodayCallListTwo.remove(i);
+//                                                                }
+//                                                            }
+//                                                        } else {
+//                                                            isNeedtoAdd = false;
+//                                                            SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
+//                                                        }
+//                                                    }
+//                                                    if (isNeedtoAdd && TodayCallListTwo.size() > 0) {
+//                                                        for (int i = 0; i < TodayCallListTwo.size(); i++) {
+//                                                            SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
+//                                                        }
+//                                                    }
+//                                                }
+//
+//                                                MasterDataTable data = new MasterDataTable();
+//                                                data.setMasterKey(Constants.CALL_SYNC);
+//                                                data.setMasterValues(jsonArray2.toString());
+//                                                data.setSyncStatus(0);
+//                                                MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+//                                                if (mNChecked != null) {
+//                                                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray2.toString());
+//                                                } else {
+//                                                    masterDataDao.insert(data);
+//
+//                                                }
+//                                                CallDataRestClass.resetcallValues(context);
+//                                            }
+//
+//                                            jwAdapter.notifyDataSetChanged();
+//                                            if (isProgressNeed) progressDialog.dismiss();
+//                                            SharedPref.setLastCallSyncDate(context, HomeDashBoard.selectedDate.toString());
+//                                        } catch (Exception e) {
+//                                            if (isProgressNeed) progressDialog.dismiss();
+//                                            Log.v("TodayCalls", "--error--" + e);
+//                                            e.printStackTrace();
+//                                        }
+//                                    } else {
+//                                        if (isProgressNeed) progressDialog.dismiss();
+//                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+//
+//                                    if (isProgressNeed) progressDialog.dismiss();
+//                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//                            if (isProgressNeed) progressDialog.dismiss();
+//                            Log.v("TodayCalls", "--error--2--" + e);
+//                        }
+//                    } else {
+//                        if (isProgressNeed) {
+//
+//                            progressDialog.dismiss();
+//                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+//                        }
+//                    }
+//                });
+//                networkStatusTask.execute();
+//            } else {
+//
+//                getFromLocal(context, apiInterface);
+//            }
+//        }
+//    }
     public void showNamePopup(String name) {
-        CallTodayCallsAPI(requireContext(), apiInterface, isProgressNeed);
-        Context context = selectJwSideBinding.getRoot().getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View dialogView = inflater.inflate(R.layout.popup_jointwork, null);
+        CallTodayCallsAPI(requireContext(), apiInterface, isProgressNeed, new TodayCallsCallback() {
 
-        TextView tvName = dialogView.findViewById(R.id.tv_popup_name);
-        RecyclerView recyclerView = dialogView.findViewById(R.id.recyclerView);
-        ImageView imgClose = dialogView.findViewById(R.id.img_close);
-        Button btnOk = dialogView.findViewById(R.id.btn_ok);
+            @Override
+            public void onDataReady() {
+                Context context = selectJwSideBinding.getRoot().getContext();
+                LayoutInflater inflater = LayoutInflater.from(context);
+                View dialogView = inflater.inflate(R.layout.popup_jointwork, null);
 
-        tvName.setText(name);
+                TextView tvName = dialogView.findViewById(R.id.tv_popup_name);
+                RecyclerView recyclerView = dialogView.findViewById(R.id.recyclerView);
+                ImageView imgClose = dialogView.findViewById(R.id.img_close);
+                Button btnOk = dialogView.findViewById(R.id.btn_ok);
 
-        ArrayList<String> docNames = getAllDocNames(); // your list of names
-        if(docNames.isEmpty()) {
-            docNames.add("No Customers");
-        }
-        PopupNameAdapter adapter = new PopupNameAdapter(context, docNames);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(adapter);
-        int clickedIndex = -1;
-        for (int i = 0; i < JwList.size(); i++) {
-            if (JwList.get(i).getName().equalsIgnoreCase(name)) {
-                clickedIndex = i;
-                break;
+                tvName.setText(name);
+
+                ArrayList<String> docNames = getAllDocNames(); // now list is populated
+                if (docNames.isEmpty()) {
+                    docNames.add("No Customers");
+                }
+
+
+                PopupNameAdapter adapter = new PopupNameAdapter(context, docNames);
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                adapter.selectedNames.clear();
+                recyclerView.setAdapter(adapter);
+                recyclerView.post(() -> {
+                    if (recyclerView.getChildCount() > 0) {
+                        View firstItem = recyclerView.getChildAt(0);
+                        int itemHeight = firstItem.getHeight();
+                        int maxVisible = 3; // 👈 limit to 3 items
+                        recyclerView.getLayoutParams().height = itemHeight * maxVisible;
+                        recyclerView.requestLayout();
+                    }
+                });
+
+                int clickedIndex = -1;
+                for (int i = 0; i < JwList.size(); i++) {
+                    if (JwList.get(i).getName().equalsIgnoreCase(name)) {
+                        clickedIndex = i;
+                        break;
+                    }
+                }
+                if (clickedIndex == -1) return;
+                int finalIndex = clickedIndex;
+
+                AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setView(dialogView)
+                        .setCancelable(false)
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);
+
+                imgClose.setOnClickListener(v -> {
+                    JwList.get(finalIndex).setCheckedItem(false);
+                    if (jwAdapter != null) jwAdapter.notifyItemChanged(finalIndex);
+                    dialog.dismiss();
+                });
+
+                btnOk.setOnClickListener(v -> {
+                    JwList.get(finalIndex).setCheckedItem(true);
+                    if (jwAdapter != null) jwAdapter.notifyItemChanged(finalIndex);
+                    dialog.dismiss();
+                });
+
+                dialog.show();
             }
-        }
-        if (clickedIndex == -1) return;
-        int finalIndex = clickedIndex;
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setView(dialogView)
-                .setCancelable(false)
-                .create();
-        dialog.setCanceledOnTouchOutside(false);
-
-        imgClose.setOnClickListener(v -> {
-            JwList.get(finalIndex).setCheckedItem(false);
-            if (jwAdapter != null) jwAdapter.notifyItemChanged(finalIndex);
-            dialog.dismiss();
         });
-
-        btnOk.setOnClickListener(v -> {
-            JwList.get(finalIndex).setCheckedItem(true);
-            if (jwAdapter != null) jwAdapter.notifyItemChanged(finalIndex);
-            dialog.dismiss();
-        });
-
-        dialog.show();
     }
 
-    public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
+    public interface TodayCallsCallback {
+        void onDataReady();
+    }
+
+    public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed, TodayCallsCallback callback) {
         Log.e("API_TEST", "CallTodayCallsAPI entered");
 
         if (HomeDashBoard.selectedDate != null) {
@@ -473,6 +683,7 @@ public class JointWorkSelectionSide extends Fragment {
                                             jwAdapter.notifyDataSetChanged();
                                             if (isProgressNeed) progressDialog.dismiss();
                                             SharedPref.setLastCallSyncDate(context, HomeDashBoard.selectedDate.toString());
+                                            if (callback != null) callback.onDataReady();
                                         } catch (Exception e) {
                                             if (isProgressNeed) progressDialog.dismiss();
                                             Log.v("TodayCalls", "--error--" + e);

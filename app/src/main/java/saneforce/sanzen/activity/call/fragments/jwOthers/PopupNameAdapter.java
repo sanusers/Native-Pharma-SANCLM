@@ -33,6 +33,24 @@ public class PopupNameAdapter extends RecyclerView.Adapter<PopupNameAdapter.View
         return new ViewHolder(view);
     }
 
+    //    @Override
+//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//        String name = names.get(position);
+//
+//        holder.tvName.setText(name);
+//        holder.tvName.setSingleLine(false);
+//
+//        holder.checkBox.setOnCheckedChangeListener(null);
+//        holder.checkBox.setChecked(selectedNames.contains(name));
+//
+//        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            if (isChecked) selectedNames.add(name);
+//            else selectedNames.remove(name);
+//        });
+//
+//        // clicking name toggles checkbox
+//        holder.tvName.setOnClickListener(v -> holder.checkBox.performClick());
+//    }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String name = names.get(position);
@@ -40,16 +58,39 @@ public class PopupNameAdapter extends RecyclerView.Adapter<PopupNameAdapter.View
         holder.tvName.setText(name);
         holder.tvName.setSingleLine(false);
 
+        // detach listener
         holder.checkBox.setOnCheckedChangeListener(null);
-        holder.checkBox.setChecked(selectedNames.contains(name));
 
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) selectedNames.add(name);
+        // set checked state
+        boolean isChecked = selectedNames.contains(name);
+        holder.checkBox.setChecked(isChecked);
+
+        // set checkbox color immediately
+        holder.checkBox.setButtonTintList(
+                android.content.res.ColorStateList.valueOf(
+                        isChecked ?
+                                androidx.core.content.ContextCompat.getColor(context, R.color.green_2) :
+                                androidx.core.content.ContextCompat.getColor(context, R.color.bg_txt_color)
+                )
+        );
+
+        // attach listener
+        holder.checkBox.setOnCheckedChangeListener((buttonView, checked) -> {
+            if (checked) selectedNames.add(name);
             else selectedNames.remove(name);
+
+            // update checkbox tint immediately
+            holder.checkBox.setButtonTintList(
+                    android.content.res.ColorStateList.valueOf(
+                            checked ?
+                                    androidx.core.content.ContextCompat.getColor(context, R.color.green_2) :
+                                    androidx.core.content.ContextCompat.getColor(context, R.color.bg_txt_color)
+                    )
+            );
         });
 
         // clicking name toggles checkbox
-        holder.tvName.setOnClickListener(v -> holder.checkBox.performClick());
+       // holder.tvName.setOnClickListener(v -> holder.checkBox.performClick());
     }
 
     @Override

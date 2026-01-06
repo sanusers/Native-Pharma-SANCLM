@@ -543,17 +543,17 @@ public class DCRCallActivity extends AppCompatActivity {
 //                                    finish();
 //                                }
 
-            if (!JWOthersFragment.callCaptureImageLists.isEmpty()) {
-                for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
+            if (!callCaptureImageLists.isEmpty()) {
+                for (int i = 0; i < callCaptureImageLists.size(); i++) {
                     if (!callCaptureImageLists.get(i).getFilePath().isEmpty() && !callCaptureImageLists.get(i).getSystemImgName().isEmpty()) {
-                        callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
+                        callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), callCaptureImageLists.get(i).getSystemImgName(), callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                     }
                 }
             }
-            if (SignatureFragment1.callSignCaptureImage != null) {
-                for (int i = 0; i < SignatureFragment1.callSignCaptureImage.size(); i++) {
+            if (callSignCaptureImage != null) {
+                for (int i = 0; i < callSignCaptureImage.size(); i++) {
                     if (!callSignCaptureImage.get(i).getFilepath().isEmpty() && !callSignCaptureImage.get(i).getImg_Name().isEmpty()) {
-                        callOfflineSignDataDao.saveOfflineSign(SignatureFragment1.callSignCaptureImage.get(i).getImg_Name(), SignatureFragment1.callSignCaptureImage.get(i).getFilepath(), jsonSign.toString(), Constants.WAITING_FOR_SYNC, 0, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(i).getCode(), CallActivityCustDetails.get(i).getName());
+                        callOfflineSignDataDao.saveOfflineSign(callSignCaptureImage.get(i).getImg_Name(), callSignCaptureImage.get(i).getFilepath(), jsonSign.toString(), Constants.WAITING_FOR_SYNC, 0, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(i).getCode(), CallActivityCustDetails.get(i).getName());
                     }
                 }
             }
@@ -2241,7 +2241,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //Additional Call
             JSONArray jsonAdditional = json.getJSONArray("AdCuss");
-            String code = "", townCode = "", townName = "";
+            String code = "", townCode = "", townName = "",sfType = "";
             for (int aw = 0; aw < jsonAdditional.length(); aw++) {
                 JSONObject jsAw = jsonAdditional.getJSONObject(aw);
                 if (funStringValidation(jsAw.getString("Name"))) nam = jsAw.getString("Name");
