@@ -1023,4 +1023,11 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="category_wise">Por categoría</string>
     <string name="plan_more">Planificar más</string>
 
+
+    <string name="device_not_valid">Dispositivo no válido</string>
+    <string name="home_address">Dirección de casa</string>
+    <string name="hospital_address">Dirección del hospital</string>
+    <string name="choose_from_map">Elegir del mapa</string>
+
+
 </resources>

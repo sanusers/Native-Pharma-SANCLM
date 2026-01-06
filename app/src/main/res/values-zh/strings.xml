@@ -1028,4 +1028,14 @@
     <string name="plan_more">计划更多</string>
 
 
+
+
+    <string name="device_not_valid">设备无效</string>
+    <string name="home_address">家庭地址</string>
+    <string name="hospital_address">医院地址</string>
+    <string name="choose_from_map">从地图选择</string>
+
+
+
+
 </resources>

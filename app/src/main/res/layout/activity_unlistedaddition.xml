@@ -553,7 +553,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
-                                android:text="Home Address"
+                                android:text="@string/home_address"
                                 android:textColor="#000000" />
 
                             <androidx.appcompat.widget.AppCompatEditText
@@ -586,7 +586,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
-                                android:text="Hospital Address"
+                                android:text="@string/hospital_address"
                                 android:textColor="#000000" />
 
                             <EditText
@@ -684,7 +684,7 @@
                                     android:background="@drawable/bg_purple"
                                     android:paddingLeft="5dp"
                                     android:paddingRight="5dp"
-                                    android:text="Choose from Map"
+                                    android:text="@string/choose_from_map"
                                     android:textColor="#ffffff"
                                     android:textSize="12dp" />
                             </RelativeLayout>
