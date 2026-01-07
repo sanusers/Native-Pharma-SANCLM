@@ -32,7 +32,7 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.ThumbnailTask;
 public class SupportClass {
 
     public static String getFileExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+        return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
     }
 
     private static Bitmap pdfToBitmap(File pdfFile) {

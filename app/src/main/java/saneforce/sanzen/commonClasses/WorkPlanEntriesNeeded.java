@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -574,7 +575,10 @@ public class WorkPlanEntriesNeeded {
                             }
                         }
                         dateBefore = LocalDate.parse(date);
-                        if(dateBefore != null && dateBefore.isBefore(currentDate) && (dateBefore.getMonthValue() >= limitDate.minusMonths(2).getMonthValue())) {
+                        YearMonth currentMonth = YearMonth.from(currentDate);
+                        YearMonth earliestMonth = currentMonth.minusMonths(2);
+                        YearMonth givenMonth = YearMonth.from(dateBefore);
+                        if(dateBefore != null && dateBefore.isBefore(currentDate) && !givenMonth.isBefore(earliestMonth)) {
                             datesNeeded.add(date);
                         }
                     }

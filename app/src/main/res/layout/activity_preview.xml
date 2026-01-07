@@ -169,11 +169,13 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout="@layout/fragment_dr_selection_side" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:id="@+id/rl_thank_you"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -184,10 +186,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:src="@drawable/thank_you_blue"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_centerInParent="true"/>
 
             <TextView
                 android:id="@+id/doc_name"
@@ -195,16 +194,20 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/satoshi_bold"
                 android:textAlignment="textStart"
-                tools:text="Thank\nYou\nDoctor"
+                tools:text="Thank You\nDoctor Name more than 20 characters"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_20ssp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="@dimen/_300sdp"
+                android:layout_marginStart="@dimen/_50sdp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
+                <!--app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.6" />
+                app:layout_constraintVertical_bias="0.6" />-->
 
             <Button
                 android:id="@+id/proceed"
@@ -212,14 +215,17 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_5sdp"
                 android:text="@string/proceed"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/_10sdp"/>
+                <!--app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.95"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.95" />
+                app:layout_constraintVertical_bias="0.95" />-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
