@@ -1232,7 +1232,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             }
 
 //            String fileKey = SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
-            String fileKey = "uploads/" + SharedPref.getDivisionSname(getApplicationContext()) + SharedPref.getDivisionCode(getApplicationContext()).replace(",", "/") + "Tagging" + "/" + fileToUpload.getName();
+            String fileKey = "uploads/" + SharedPref.getDivisionSname(getApplicationContext()) + SharedPref.getDivisionCode(getApplicationContext()).replace(",", "/") + "tagging" + "/" + fileToUpload.getName();
             /*String upload_url = "https://" + "s3." + "eu-north-1." + "amazonaws.com/" + bucketName + "/" + fileKey;
             Log.i("s3url", "Uploading to S3: " + upload_url);*/
 

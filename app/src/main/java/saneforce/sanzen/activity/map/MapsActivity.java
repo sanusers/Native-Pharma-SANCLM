@@ -1879,7 +1879,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
 //                String fileKey = SharedPref.getDivisionCode(MapsActivity.this).replace(",", "/") + "Tagging" + "/" + fileToUpload.getName();
-                String fileKey = "uploads/" + SharedPref.getDivisionSname(getApplicationContext()) + SharedPref.getDivisionCode(getApplicationContext()).replace(",", "/") + "Tagging" + "/" + fileToUpload.getName();
+                String fileKey = "uploads/" + SharedPref.getDivisionSname(getApplicationContext()) + SharedPref.getDivisionCode(getApplicationContext()).replace(",", "/") + "tagging" + "/" + fileToUpload.getName();
 
                 TransferUtility transferUtility = TransferUtility.builder()
                         .context(getApplicationContext())

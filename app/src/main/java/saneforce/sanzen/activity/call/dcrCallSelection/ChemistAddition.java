@@ -1197,7 +1197,7 @@ public class ChemistAddition extends AppCompatActivity {
                 return;
             }
 
-            String fileKey = "uploads/"+SharedPref.getDivisionSname(getApplicationContext())+SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
+            String fileKey = "uploads/"+SharedPref.getDivisionSname(getApplicationContext())+SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"tagging"+"/"+ fileToUpload.getName();
 
             TransferUtility transferUtility = TransferUtility.builder()
                     .context(getApplicationContext())

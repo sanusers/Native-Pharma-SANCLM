@@ -55,7 +55,7 @@ public class AWSBucketsTag {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                TransferObserver image_upload = transferUtility.upload("san-one", "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Tagging" + "/" + filestored_name + filename, file);
+                TransferObserver image_upload = transferUtility.upload("san-one", "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "tagging" + "/" + filestored_name + filename, file);
 
                 image_upload.setTransferListener(new TransferListener() {
                     @Override
@@ -100,7 +100,7 @@ public class AWSBucketsTag {
         protected Boolean doInBackground(Void... arg0) {
             try {
 
-                TransferObserver downloadObserver = transferUtility.download("san-one", "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Tagging" + "/" + filestored_name + filename, file);
+                TransferObserver downloadObserver = transferUtility.download("san-one", "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "tagging" + "/" + filestored_name + filename, file);
                 downloadObserver.setTransferListener(new TransferListener() {
 
                     @Override
