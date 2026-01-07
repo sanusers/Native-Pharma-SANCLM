@@ -535,7 +535,7 @@ public class WorkPlanEntriesNeeded {
                             }
                         }
                         dateBefore = LocalDate.parse(date);
-                        if(dateBefore != null && dateBefore.isBefore(currentDate) && (dateBefore.getMonthValue() >= limitDate.minusMonths(2).getMonthValue())) {
+                        if(dateBefore != null && dateBefore.isBefore(currentDate) && dateBefore.isAfter(limitDate)) {
                             datesNeeded.add(date);
                         }
                     }
