@@ -1036,4 +1036,12 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="cluster_wise">Cluster Wise</string>
     <string name="category_wise">Category Wise</string>
     <string name="plan_more">Plan More</string>
+
+
+    <string name="device_not_valid">Device Not Valid..</string>
+    <string name="home_address">Home Address</string>
+    <string name="hospital_address">Hospital Address</string>
+    <string name="choose_from_map">Choose from Map</string>
+
+
 </resources>

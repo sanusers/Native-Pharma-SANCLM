@@ -1023,4 +1023,11 @@
     <string name="category_wise">အမျိုးအစားအလိုက်</string>
     <string name="plan_more">ထပ်မံ စီစဉ်ပါ</string>
 
+
+    <string name="device_not_valid">စက်ကိရိယာ မမှန်ပါ</string>
+    <string name="home_address">အိမ်လိပ်စာ</string>
+    <string name="hospital_address">ဆေးရုံလိပ်စာ</string>
+    <string name="choose_from_map">မြေပုံမှ ရွေးချယ်ပါ</string>
+
+
 </resources>

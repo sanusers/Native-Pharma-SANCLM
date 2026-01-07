@@ -607,9 +607,25 @@ public class LoginActivity extends AppCompatActivity {
 //                            }
                         } else {
                             loginFailed();
-                            if (responseObject.has("msg")) {
-                                commonUtilsMethods.showToastMessage(LoginActivity.this, responseObject.getString("msg"));
+                            String lang = SharedPref.getSelectedLanguage(LoginActivity.this); // "fr", "ta", etc.
+                            Context ctx = LocaleHelper.setLocale(LoginActivity.this, lang);
+
+                            String msg = responseObject.optString("msg", "");
+                            if ("Invalid User ID and Password".equalsIgnoreCase(msg)) {
+                                msg = ctx.getString(R.string.mismatch);
+                            } else if ("SAN ZEN Access Denied. Contact Admin.".equalsIgnoreCase(msg)) {
+                                msg = ctx.getString(R.string.access_denied);
+                            } else if ("Device Not Valid..".equalsIgnoreCase(msg)) {
+                                msg = ctx.getString(R.string.device_not_valid);
+                            } else {
+                                msg = ctx.getString(R.string.mismatch);
                             }
+
+                            commonUtilsMethods.showToastMessage(LoginActivity.this, msg);
+//                            loginFailed();
+//                            if (responseObject.has("msg")) {
+//                                commonUtilsMethods.showToastMessage(LoginActivity.this, responseObject.getString("msg"));
+//                            }
                         }
                     } catch (JSONException e) {
                         loginFailed();

@@ -1032,4 +1032,13 @@
     <string name="category_wise">По категориям</string>
     <string name="plan_more">Запланировать ещё</string>
 
+
+    <string name="device_not_valid">Устройство недействительно</string>
+    <string name="home_address">Домашний адрес</string>
+    <string name="hospital_address">Адрес больницы</string>
+    <string name="choose_from_map">Выбрать на карте</string>
+
+
+
+
 </resources>

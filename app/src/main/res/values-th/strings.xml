@@ -1033,4 +1033,12 @@
     <string name="category_wise">ตามหมวดหมู่</string>
     <string name="plan_more">วางแผนเพิ่มเติม</string>
 
+
+    <string name="device_not_valid">อุปกรณ์ไม่ถูกต้อง</string>
+    <string name="home_address">ที่อยู่บ้าน</string>
+    <string name="hospital_address">ที่อยู่โรงพยาบาล</string>
+    <string name="choose_from_map">เลือกจากแผนที่</string>
+
+
+
 </resources>

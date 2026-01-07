@@ -1037,4 +1037,11 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="plan_more">Planejar mais</string>
 
 
+    <string name="device_not_valid">Dispositivo inválido</string>
+    <string name="home_address">Endereço residencial</string>
+    <string name="hospital_address">Endereço do hospital</string>
+    <string name="choose_from_map">Escolher do mapa</string>
+
+
+
 </resources>

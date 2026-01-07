@@ -1034,4 +1034,14 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="plan_more">Lập kế hoạch thêm</string>
 
 
+    <string name="device_not_valid">Thiết bị không hợp lệ</string>
+    <string name="home_address">Địa chỉ nhà</string>
+    <string name="hospital_address">Địa chỉ bệnh viện</string>
+    <string name="choose_from_map">Chọn từ bản đồ</string>
+
+
+
+
+
+
 </resources>
