@@ -726,11 +726,15 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
         doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
-        specialityStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.speciality));
-        qualificationStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.qualification));
-        categoryStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.category));
+        specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
+        qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
+        categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+        //specialityStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.speciality));
+        //qualificationStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.qualification));
+        //categoryStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.category));
         departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
-        classStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.clases));
+        classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
+//        classStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.clases));
         feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
         unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
         unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
@@ -869,11 +873,15 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
                 doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
                 doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
-                specialityStatus = masterDataDao.getMasterSyncStatusByKey(/*Constants.SPECIALITY*/getString(R.string.speciality));
-                qualificationStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.qualification));
-                categoryStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.category));
+                specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
+                qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
+                categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+                //specialityStatus = masterDataDao.getMasterSyncStatusByKey(/*Constants.SPECIALITY*/getString(R.string.speciality));
+               // qualificationStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.qualification));
+              //  categoryStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.category));
                 departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
-                classStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.clases));
+                classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
+//                classStatus = masterDataDao.getMasterSyncStatusByKey(getString(R.string.clases));
                 if (doctorStatus == 1 || doctorGeoStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
                     binding.syncFailedImageDr.setVisibility(View.VISIBLE);
                 } else {

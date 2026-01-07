@@ -1040,5 +1040,8 @@
     <string name="choose_from_map">เลือกจากแผนที่</string>
 
 
+    <string name="draft">ร่าง</string>
+    <string name="completed">เสร็จสมบูรณ์</string>
+
 
 </resources>

@@ -1038,6 +1038,8 @@
     <string name="hospital_address">Адрес больницы</string>
     <string name="choose_from_map">Выбрать на карте</string>
 
+    <string name="draft">Черновик</string>
+    <string name="completed">Завершено</string>
 
 
 

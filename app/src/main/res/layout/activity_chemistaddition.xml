@@ -147,6 +147,7 @@
                                 android:singleLine="true"
                                 android:imeOptions="actionDone"
                                 android:maxLines="1"
+                                android:gravity="left"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/light_grey"
@@ -185,6 +186,7 @@
                                 android:background="@drawable/border_shape_spinner"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:textColor="@color/black"
+                                android:gravity="left"
                                 android:textColorHint="@color/light_grey"
                                 android:textSize="@dimen/_6ssp"/>
                         </LinearLayout>
@@ -217,6 +219,7 @@
                                 android:textColorHint="@color/light_grey"
                                 android:textSize="@dimen/_6ssp"
                                 android:hint="@string/select_cluster"
+                                android:gravity="left"
                                 android:layout_marginTop="5dp"
                                 android:clickable="true"
                                 android:focusable="false"
@@ -300,6 +303,7 @@
                                     android:clickable="true"
                                     android:padding="5dp"
                                     android:hint="@string/choose_dob"
+                                    android:gravity="left"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/light_grey"
                                     android:textSize="@dimen/_6ssp"
@@ -351,6 +355,7 @@
                                     android:padding="5dp"
                                     android:focusable="false"
                                     android:hint="@string/choose_dow"
+                                    android:gravity="left"
                                     android:paddingHorizontal="@dimen/_5sdp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/light_grey"
@@ -438,6 +443,7 @@
                                 android:inputType="none"
                                 android:drawableEnd="@drawable/down_arrow"
                                 android:padding="5dp"
+                                android:gravity="left"
                                 android:hint="@string/select_category"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:textColor="@color/black"
@@ -482,6 +488,7 @@
                                 android:singleLine="true"
                                 android:imeOptions="actionDone"
                                 android:maxLines="1"
+                                android:gravity="left"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/light_grey"
@@ -518,6 +525,7 @@
                                 android:maxLength="10"
                                 android:padding="5dp"
                                 android:hint="@string/enter_mobile"
+                                android:gravity="left"
                                 android:singleLine="true"
                                 android:imeOptions="actionDone"
                                 android:maxLines="1"
@@ -547,7 +555,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
-                                android:text="Home Address"
+                                android:text="@string/home_address"
                                 android:textColor="#000000" />
 
                             <androidx.appcompat.widget.AppCompatEditText
@@ -563,6 +571,7 @@
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/light_grey"
                                 android:textSize="@dimen/_6ssp"
+                                android:gravity="left"
                                 android:background="@drawable/border_shape_spinner"
                                 android:padding="5dp" />
                         </LinearLayout>
@@ -580,7 +589,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
-                                android:text="Hospital Address"
+                                android:text="@string/hospital_address"
                                 android:textColor="#000000" />
 
                             <EditText
@@ -597,6 +606,7 @@
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/light_grey"
                                 android:textSize="@dimen/_6ssp"
+                                android:gravity="left"
                                 android:imeOptions="actionDone"
                                 android:singleLine="true"
                                 />
@@ -648,6 +658,7 @@
                                         android:padding="5dp"
                                         android:maxLines="1"
                                         android:hint="@string/tag_add"
+                                        android:gravity="left"
                                         android:textSize="@dimen/_6ssp"
                                         android:layout_alignParentTop="true"
                                         android:layout_alignParentBottom="true"
@@ -678,7 +689,7 @@
                                     android:layout_alignParentEnd="true"
                                     android:background="@drawable/bg_purple"
                                     android:paddingRight="5dp"
-                                    android:text="Choose from Map"
+                                    android:text="@string/choose_from_map"
                                     android:textColor="#ffffff"
                                     android:textSize="12dp" />
                             </RelativeLayout>

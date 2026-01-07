@@ -15,7 +15,7 @@
     <string name="tag_add">العنوان المعلّم</string>
     <string name="brand_name">اسم العلامة التجارية</string>
     <string name="rating">تقييم</string>
-    <string name="feedback">ملاحظات</string>
+    <string name="feedback">التغذية الراجعة</string>
     <string name="timeline">الجدول الزمني</string>
     <string name="product_name">اسم المنتج</string>
     <string name="stock">المخزون</string>
@@ -119,7 +119,7 @@
     <string name="toast_do_master_sync">يرجى إجراء مزامنة البيانات الرئيسية</string>
 
     <string name="leave_approvals">موافقات الإجازة</string>
-    <string name="tp_approvals">موافقات خطة الرحلة</string>
+    <string name="tp_approvals">موافقات خطة الجولة</string>
     <string name="emp_code">رمز الموظف</string>
     <string name="designation">الوظيفة</string>
     <string name="leave_type">نوع الإجازة</string>
@@ -660,7 +660,7 @@
     <string name="master_sync">المزامنة الرئيسية</string>
     <string name="master_note">المس كل عنصر للمزامنة بشكل فردي</string>
     <string name="slide">شريحة</string>
-    <string name="subordinate">تابع</string>
+    <string name="subordinate">مرؤوس</string>
     <string name="other">أخرى</string>
     <string name="setup">الإعداد</string>
     <string name="sync_all">مزامنة الكل</string>
@@ -673,7 +673,7 @@
     <string name="slide_downloader">مُنزّل الشرائح</string>
     <string name="welcome_slide_downloader">مرحبًا بك في مُنزّل الشرائح</string>
     <string name="brand">علامة تجارية</string>
-    <string name="mapped_competitor_prod">المنتج المنافس المُطابق</string>
+    <string name="mapped_competitor_prod">منتج المنافس المحدد على الخريطة</string>
     <string name="call_sync">مزامنة المكالمات</string>
     <string name="date_sync">مزامنة التاريخ</string>
     <string name="work_plan">خطة العمل</string>
@@ -1024,6 +1024,15 @@
     <string name="category_wise">حسب الفئة</string>
     <string name="plan_more">التخطيط للمزيد</string>
 
+
+    <string name="device_not_valid">الجهاز غير صالح</string>
+    <string name="home_address">عنوان المنزل</string>
+    <string name="hospital_address">عنوان المستشفى</string>
+    <string name="choose_from_map">اختر من الخريطة</string>
+
+    <string name="draft">مسودة</string>
+    <string name="completed">مكتمل</string>
+    <string name="captured">تم الالتقاط</string>
 
 
 

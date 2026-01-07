@@ -1029,5 +1029,8 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="hospital_address">Dirección del hospital</string>
     <string name="choose_from_map">Elegir del mapa</string>
 
+    <string name="draft">Borrador</string>
+    <string name="completed">Completado</string>
+
 
 </resources>

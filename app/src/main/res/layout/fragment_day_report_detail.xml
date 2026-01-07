@@ -43,7 +43,7 @@
                 android:textColor="@color/text_dark_65"
                 android:singleLine="true"
                 android:background="@null"
-                android:gravity="start|center"
+                android:gravity="left"
                 android:padding="@dimen/_5sdp"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
@@ -176,6 +176,7 @@
                                 android:textSize="@dimen/_5sdp"
                                 android:textColor="@color/pink"
                                 android:textStyle="bold"
+                                android:gravity="left"
                                 android:fontFamily="@font/satoshi_light"
                                 tools:ignore="SpUsage" />
 
@@ -231,6 +232,7 @@
                                     android:layout_alignParentEnd="true"
                                     android:layout_alignParentTop="true"
                                     android:text="@string/work_type"
+                                    android:gravity="left"
                                     android:textSize="@dimen/_5sdp"
                                     android:textColor="@color/text_dark_65"
                                     android:fontFamily="@font/satoshi_medium"
@@ -267,6 +269,7 @@
                                     android:layout_alignParentEnd="true"
                                     android:layout_alignParentTop="true"
                                     android:text="@string/cluster"
+                                    android:gravity="left"
                                     android:textSize="@dimen/_5sdp"
                                     android:textColor="@color/text_dark_65"
                                     android:fontFamily="@font/satoshi_medium"
@@ -492,7 +495,7 @@
                                 android:textSize="@dimen/_5sdp"
                                 android:textColor="@color/text_dark_65"
                                 android:fontFamily="@font/satoshi_medium"
-                                android:layout_gravity="start"
+                                android:gravity="left"
                                 tools:ignore="SpUsage" />
 
                             <TextView

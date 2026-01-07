@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -50,7 +51,8 @@ public class AdapterDcrApprovalList extends RecyclerView.Adapter<AdapterDcrAppro
     public void onBindViewHolder(@NonNull AdapterDcrApprovalList.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(dcrApprovalLists.get(position).getSf_name());
-        holder.tv_date.setText(CommonUtilsMethods.setConvertDate("dd/MM/yyyy", "dd MMM yyyy", dcrApprovalLists.get(position).getActivity_date()));
+        holder.tv_date.setText(CommonUtilsMethods.formatDateLowercase(dcrApprovalLists.get(position).getActivity_date()));
+        //holder.tv_date.setText(CommonUtilsMethods.setConvertDate("dd/MM/yyyy", "dd MMM yyyy", dcrApprovalLists.get(position).getActivity_date()));
        //  holder.tv_date.setText(dcrApprovalLists.get(position).getActivity_date());
 
         if (dcrApprovalLists.get(position).getSfCode().equalsIgnoreCase(DcrApprovalActivity.SelectedSfCode) && dcrApprovalLists.get(position).getActivity_date().equalsIgnoreCase(DcrApprovalActivity.SelectedActivityDate)) {

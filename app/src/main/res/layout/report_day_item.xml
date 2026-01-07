@@ -70,6 +70,7 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/work_type"
+                        android:gravity="left"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -176,6 +177,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:gravity="left"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/remarks"
                         android:textColor="@color/text_dark_65"
@@ -216,6 +218,7 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/submitted_date"
+                        android:gravity="left"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -556,6 +559,7 @@
                             android:layout_gravity="start"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="@string/status"
+                            android:gravity="left"
                             android:textColor="@color/text_dark_65"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />

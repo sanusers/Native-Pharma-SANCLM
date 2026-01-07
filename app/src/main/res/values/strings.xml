@@ -1044,4 +1044,10 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="choose_from_map">Choose from Map</string>
 
 
+    <string name="draft">Draft</string>
+    <string name="completed">Completed</string>
+    <string name="captured">Captured</string>
+
+
+
 </resources>

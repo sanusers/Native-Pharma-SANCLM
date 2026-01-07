@@ -208,23 +208,23 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 
 
         if ((status==0 && confirmStatus==0)||(status==1 && confirmStatus==0)) {
-            holder.status.setText("Draft");
+            holder.status.setText(R.string.draft);
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
         } else if (status==0 && confirmStatus==1) {
-            holder.status.setText("Completed"); // blue
+            holder.status.setText(R.string.completed); // blue
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_lite_blue)));
             if(dayReportModel.getFWFlg().equalsIgnoreCase("L")) {
-                holder.status.setText("Pending"); // blue
+                holder.status.setText(R.string.pending); // blue
                 holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.Evening_Blue_10)));
             }
         } else if (status==0 && confirmStatus==2) {
-            holder.status.setText("Rejected"); // red
+            holder.status.setText(R.string.rejected); // red
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.brown_10)));
         } else if (status==0  && confirmStatus==3) {
-            holder.status.setText("ReEntry");
+            holder.status.setText(R.string.re_entry);
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_10)));
         }else if (status==1  && confirmStatus==1) {
-            holder.status.setText("Approved");
+            holder.status.setText(R.string.approved);
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.green_10)));
         }
 

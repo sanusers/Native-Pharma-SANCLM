@@ -99,6 +99,7 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/visit_time"
+                        android:gravity="left"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -135,6 +136,7 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/modified_time"
+                        android:gravity="left"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -210,6 +212,7 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/pob"
+                        android:gravity="left"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -311,6 +314,7 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/joint_work"
+                        android:gravity="left"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -918,6 +922,7 @@
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="@string/slide_details"
+                            android:gravity="left"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -1229,6 +1234,7 @@
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="@string/signature"
+                            android:gravity="left"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -1280,6 +1286,7 @@
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="@string/event_capture"
+                            android:gravity="left"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -1331,6 +1338,7 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/overall_remarks"
+                        android:gravity="left"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />

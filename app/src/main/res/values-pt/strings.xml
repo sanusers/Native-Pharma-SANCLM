@@ -1043,5 +1043,8 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="choose_from_map">Escolher do mapa</string>
 
 
+    <string name="draft">Rascunho</string>
+    <string name="completed">Concluído</string>
+
 
 </resources>

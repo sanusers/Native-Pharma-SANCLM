@@ -331,6 +331,27 @@ public class CommonUtilsMethods {
         }
         return "";
     }
+    public static String formatDateLowercase(String date) {
+        try {
+            SimpleDateFormat input =
+                    new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+
+            SimpleDateFormat output =
+                    new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+
+            Date parsedDate = input.parse(date);
+            if (parsedDate != null) {
+                return output.format(parsedDate); // Month will be capitalized by default
+            }
+            // Convert month to lowercase
+//            return output.format(parsedDate)
+//                    .toLowerCase(Locale.ENGLISH);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
 
 
     public static ProgressDialog createProgressDialog(Context context) {
