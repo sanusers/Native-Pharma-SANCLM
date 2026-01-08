@@ -134,8 +134,8 @@ public class MyResource_Activity extends AppCompatActivity {
         Log.d("div_name", SharedPref.getDesigCode(this) + "--" + SharedPref.getDesig(this));
         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             binding.hqView.setVisibility(View.VISIBLE);
-            binding.hqHead.setText(getText(R.string.select_head_quarter));
-            binding.hqHead.setText(SharedPref.getHqName(MyResource_Activity.this));
+            binding.hqHead.setText(getString(R.string.select_head_quarter));
+//            binding.hqHead.setText(SharedPref.getHqName(MyResource_Activity.this));
         }
 
         binding.hqView.setOnClickListener(new SafeClickListener() {
@@ -516,7 +516,7 @@ public class MyResource_Activity extends AppCompatActivity {
         try {
             idCounts.clear();
             count_list.clear();
-            visitcount_list.clear();
+             visitcount_list.clear();
 
             JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
             JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();

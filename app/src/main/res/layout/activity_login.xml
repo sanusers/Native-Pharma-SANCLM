@@ -385,7 +385,7 @@
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="@color/pink_15"
                             android:gravity="center"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:orientation="horizontal"
                             android:paddingStart="@dimen/_10sdp"
                             android:paddingTop="@dimen/_5sdp"
