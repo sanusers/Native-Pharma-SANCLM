@@ -2160,7 +2160,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
-            alertDialog.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            if (alertDialog.getWindow() != null) {
+                alertDialog.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            }
+
+// LEFT align message safely
+            TextView message = alertDialog.findViewById(android.R.id.message);
+            if (message != null) {
+                message.setGravity(Gravity.LEFT); // START instead of LEFT is safer for RTL/LTR
+                message.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
+
+// LEFT align title safely
+            int titleId = getResources().getIdentifier("alertTitle", "id", "android");
+            TextView title = alertDialog.findViewById(titleId);
+            if (title != null) {
+                title.setGravity(Gravity.START); // START instead of LEFT
+                title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
+//            TextView msg = alertDialog.findViewById(android.R.id.message);
+//            if (msg != null) {
+//                msg.setGravity(Gravity.LEFT); // LEFT for English
+//                msg.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+//            }
+//            alertDialog.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
             return true;
         }
 

@@ -199,7 +199,7 @@
     <string name="wt_already_selected">Le type de travail a déjà été sélectionné pour la session</string>
     <string name="hq_already_selected">Le HQ a déjà été sélectionné pour la session</string>
     <string name="complete_session">Compléter la session</string>
-    <string name="select_hq_in_session">Sélectionnez les sièges dans la session</string>
+    <string name="select_hq_in_session">Sélectionnez les HQ  la session</string>
     <string name="select_clusters_in_session">Sélectionnez les clusters dans la session</string>
     <string name="select_cluster">Sélectionnez le cluster</string>
     <string name="select_prd_name">Sélectionnez le nom du produit</string>
@@ -234,7 +234,7 @@
     <string name="date_time"><![CDATA[Date & Heure]]></string>
     <!--<string name="date_time">Date &amp; Heure</string>-->
     <string name="sync">Sync</string>
-    <string name="select_hq">Sélectionnez le siège</string>
+    <string name="select_hq">Sélectionnez  HQ</string>
     <string name="no_input_available">Aucune entrée disponible</string>
     <string name="finish_detailing">Terminer le détail</string>
     <string name="add_feedback">Sélectionnez un feedback</string>
@@ -503,7 +503,7 @@
     <string name="Photocapture">Capture photo</string>
     <string name="mobile">Mobile</string>
     <string name="DOB">Date de naissance</string>
-    <string name="DOW">Jour de la semaine</string>
+    <string name="DOW">Date du mariage</string>
     <string name="catogy">Catégorie</string>
     <string name="phone">Téléphone</string>
     <string name="qualifications">Qualification</string>

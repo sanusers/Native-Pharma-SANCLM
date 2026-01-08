@@ -39,7 +39,7 @@
             android:padding="@dimen/_2sdp"
             android:layout_alignParentStart="true"
             android:fontFamily="@font/satoshi_medium"
-            android:gravity="start"
+            android:gravity="left"
             android:hint="@string/cancel_confirmation"
             android:paddingVertical="@dimen/_3sdp"
             android:textSize="@dimen/_7sdp"
