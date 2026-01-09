@@ -177,7 +177,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString()) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
+                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString()) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode()) && jsonObject.getString("CustType").equalsIgnoreCase(cusListArrayList.get(position).getType())) {
                             isVisitedToday = true;
                             break;
                         }
