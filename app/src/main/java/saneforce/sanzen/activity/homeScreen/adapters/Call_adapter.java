@@ -97,7 +97,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     public void onBindViewHolder(@NonNull listDataViewholider holder, int position) {
 
         CallsModalClass callslist = list.get(position);
-        holder.DocName.setText(callslist.getDocName());
+        holder.DocName.setText(callslist.getCustName());
         String dateTime = callslist.getCallsDateTime();
         dateTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_36, dateTime);
         holder.datetime.setText(dateTime);
@@ -148,7 +148,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     popupMenu.show();
                     popupMenu.setOnMenuItemClickListener(menuItem -> {
                         if (menuItem.getItemId() == R.id.menuEdit) {
-                            CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID(), checkInOutNeed);
+                            CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getCustName(), callslist.getCustCode(), callslist.getDocNameID(), checkInOutNeed);
                         } else if (menuItem.getItemId() == R.id.menuDelete) {
                             Dialog dialog = new Dialog(context);
                             dialog.setContentView(R.layout.dcr_cancel_alert);
@@ -166,7 +166,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                     dialogTransparent.show();
                                     Log.d("Validation", "onBindViewHolder: " + callslist.getProduct() + " --> " + callslist.getInput());
                                     UpdateInputSample(callslist.getProduct(), callslist.getInput());
-                                    CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode(), checkInOutNeed);
+                                    CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getCustCode(), checkInOutNeed);
                                     String mMdata = masterDataDao.getDataByKey(Constants.CALL_SYNC);
                                     JSONArray jsonArray = new JSONArray(mMdata);
                                     try {
@@ -176,7 +176,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                             if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
                                                 date = callslist.getDcrDate().substring(0, 10);
                                             }
-                                            if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
+                                            if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getCustCode()) && jsonObject.getString("CustType").equalsIgnoreCase(callslist.getCustType())) {
                                                 jsonArray.remove(i);
                                                 break;
                                             }
