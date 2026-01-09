@@ -234,10 +234,12 @@
                     android:textSize="@dimen/_6sdp"
                     android:textColor="@color/text_dark"
                     android:fontFamily="@font/satoshi_variable"
-                    android:padding="@dimen/_5sdp"
                     android:gravity="center"
-                    android:layout_gravity="center"
-                    tools:ignore="SpUsage"/>
+                    android:padding="@dimen/_5sdp"
+                    android:text="Clear"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
             </LinearLayout>
 

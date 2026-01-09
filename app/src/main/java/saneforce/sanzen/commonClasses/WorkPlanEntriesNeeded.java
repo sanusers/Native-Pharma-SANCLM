@@ -579,7 +579,7 @@ public class WorkPlanEntriesNeeded {
                         YearMonth earliestMonth = currentMonth.minusMonths(2);
                         YearMonth givenMonth = YearMonth.from(dateBefore);
                         if(dateBefore != null && dateBefore.isBefore(currentDate) && !givenMonth.isBefore(earliestMonth)) {
-                            datesNeeded.add(date);
+                                datesNeeded.add(date);
                         }
                     }
                 }

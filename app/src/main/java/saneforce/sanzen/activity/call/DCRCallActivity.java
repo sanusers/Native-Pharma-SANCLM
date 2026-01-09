@@ -452,11 +452,8 @@ public class DCRCallActivity extends AppCompatActivity {
             }
         });
 
-        dcrCallBinding.btnFinalSubmit.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
                 onSubmitClicked();
-            }
         });
 
         assert isFromActivity != null;
@@ -2598,6 +2595,9 @@ public class DCRCallActivity extends AppCompatActivity {
                 JSONObject json_joint = new JSONObject();
                 json_joint.put("Code", JWOthersFragment.callAddedJointList.get(i).getCode());
                 json_joint.put("Name", JWOthersFragment.callAddedJointList.get(i).getName());
+                if (JWOthersFragment.callAddedJointList.get(i).getCode().equalsIgnoreCase(SharedPref.getSfCode(DCRCallActivity.this))) {
+                    json_joint.put("Name", SharedPref.getSfName(DCRCallActivity.this));
+                }
                 JWKCodeList.add(JWOthersFragment.callAddedJointList.get(i).getCode());
                 jsonArray.put(json_joint);
             }

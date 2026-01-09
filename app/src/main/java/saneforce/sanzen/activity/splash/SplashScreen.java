@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -57,12 +59,24 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             if (SharedPref.getSettingState(getApplicationContext())) {
                 if (SharedPref.getLoginState(getApplicationContext())) {
+                    int savedVersion = SharedPref.getLastKnownVersion(SplashScreen.this);
+                    int currentVersion = BuildConfig.VERSION_CODE;
+                    Log.d("Versions", "onCreate: " + savedVersion + " -> " + currentVersion);
+                    if (savedVersion != currentVersion) {
+                        SharedPref.setLogoutReason(SplashScreen.this, "App has been updated, Kindly Re-Login when online.");
+                        SharedPref.saveLoginState(SplashScreen.this, false);
+                        SharedPref.saveLoginPwd(SplashScreen.this, "");
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                        return;
+                    }
                     Intent intent = new Intent(SplashScreen.this, HomeDashBoard.class);
                     overridePendingTransition(0, 0);
                     startActivity(intent);
                     finish();
                 } else {
-
                     if (SharedPref.getPolicy(getApplicationContext())) {
                         startActivity(new Intent(SplashScreen.this, LoginActivity.class));
                         finish();
@@ -70,13 +84,11 @@ public class SplashScreen extends AppCompatActivity {
                         startActivity(new Intent(SplashScreen.this, PrivacyPolicyActivity.class));
                         finish();
                     }
-
                 }
             } else {
                 startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
                 finish();
             }
-
         }, 3000);
     }
 

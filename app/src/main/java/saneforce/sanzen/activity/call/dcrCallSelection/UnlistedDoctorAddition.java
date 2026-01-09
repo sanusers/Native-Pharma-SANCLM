@@ -485,9 +485,9 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand));
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
-                    } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.moile_mand));
-                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+//                    } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
+//                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.moile_mand));
+//                        unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else {
                         Log.v("qualification_txt", "arent_empty");
                         unlistedadditionbinding.btnUnlstsave.setEnabled(false);
@@ -1232,7 +1232,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             }
 
 //            String fileKey = SharedPref.getDivisionCode(getApplicationContext()).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
-            String fileKey = "uploads/" + SharedPref.getDivisionSname(getApplicationContext()) + SharedPref.getDivisionCode(getApplicationContext()).replace(",", "/") + "Tagging" + "/" + fileToUpload.getName();
+            String fileKey = "uploads/" + SharedPref.getDivisionSname(getApplicationContext()) + SharedPref.getDivisionCode(getApplicationContext()).replace(",", "/") + "tagging" + "/" + fileToUpload.getName();
             /*String upload_url = "https://" + "s3." + "eu-north-1." + "amazonaws.com/" + bucketName + "/" + fileKey;
             Log.i("s3url", "Uploading to S3: " + upload_url);*/
 

@@ -710,7 +710,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 Log.d("fileToUpload", "not exists: " + filePath);
             } else {
 
-                String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "event_capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
             /*String UploadUrl = "https://" + "s3." +"eu-north-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
@@ -832,7 +832,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 if (fileToUpload.toString().isEmpty()) {
                     Log.d("fileToUploadSignContent", "not exists: " + filePath);
                 } else {
-                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "signature" + "/" + fileToUpload.getName();
                     if (s3Key.contains(null)) {
                         Log.d("s3Key", "CallSendSignImage: " + "s3key is null");
                     }
