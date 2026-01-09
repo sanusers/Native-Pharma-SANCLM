@@ -531,6 +531,7 @@ public class SharedPref {
     public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
     public static final String DataClearedFlag = "DataClearedFlag";
     private static final String TodayPopupShown = "TodayPopupShown";
+    public static final String LAST_KNOWN_VERSION = "last_known_version";
 
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {

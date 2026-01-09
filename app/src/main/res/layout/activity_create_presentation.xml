@@ -236,9 +236,6 @@
                     android:fontFamily="@font/satoshi_variable"
                     android:gravity="center"
                     android:padding="@dimen/_5sdp"
-                    android:text="Clear"
-                    android:textColor="@color/text_dark"
-                    android:textSize="@dimen/_6sdp"
                     tools:ignore="SpUsage" />
 
             </LinearLayout>
