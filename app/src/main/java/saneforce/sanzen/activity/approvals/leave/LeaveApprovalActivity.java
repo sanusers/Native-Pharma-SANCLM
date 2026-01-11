@@ -152,13 +152,17 @@ public class LeaveApprovalActivity extends AppCompatActivity {
     }
 
 
-    private void filter(String text) {
-        ArrayList<LeaveModelList> filteredNames = new ArrayList<>();
-        for (LeaveModelList s : leaveModelLists) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getLeave_type().contains(text.toLowerCase()) || s.getReason().contains(text.toLowerCase()) || s.getLeave_id().contains(text.toLowerCase()) || s.getAddr().contains(text.toLowerCase()) || s.getNo_of_days().contains(text.toLowerCase())) {
-                filteredNames.add(s);
+    /*    private void filter(String text) {
+            ArrayList<LeaveModelList> filteredNames = new ArrayList<>();
+            for (LeaveModelList s : leaveModelLists) {
+                if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getLeave_type().contains(text.toLowerCase()) || s.getReason().contains(text.toLowerCase()) || s.getLeave_id().contains(text.toLowerCase()) || s.getAddr().contains(text.toLowerCase()) || s.getNo_of_days().contains(text.toLowerCase())) {
+                    filteredNames.add(s);
+                }
             }
-        }
-        leaveApprovalAdapter.filterList(filteredNames);
+            leaveApprovalAdapter.filterList(filteredNames);
+        }*/
+    private void filter(String text) {
+        leaveApprovalAdapter.filterList(text);
     }
+
 }
