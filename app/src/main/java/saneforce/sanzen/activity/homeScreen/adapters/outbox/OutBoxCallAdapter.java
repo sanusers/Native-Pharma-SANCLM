@@ -303,7 +303,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                             JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                             for (int i = 0; i < jsonArray.length(); i++) {
                                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
+                                                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode()) && jsonObject.getString("CustType").equalsIgnoreCase(outBoxCallLists.get(position).getCusType())) {
                                                     jsonArray.remove(i);
                                                     break;
                                                 }
@@ -326,7 +326,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                                     JSONObject jsAw = jsonAdditional.getJSONObject(aw);
                                                     for (int i = 0; i < jsonArray.length(); i++) {
                                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(jsAw.getString("Code"))) {
+                                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(jsAw.getString("Code")) && jsonObject.getString("CustType").equalsIgnoreCase(outBoxCallLists.get(position).getCusType())) {
                                                             jsonArray.remove(i);
                                                         }
                                                     }

@@ -123,14 +123,14 @@ public class CallsFragment extends Fragment {
                                             for (int i = 0; i < jsonArray.length(); i++) {
                                                 JSONObject json = jsonArray.getJSONObject(i);
                                                 SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.toString());
-                                                TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
-                                                TodayCallListTwo.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                TodayCallListTwo.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
 
                                                 if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
                                                     for (int j = 0; j < jsonArray1.length(); j++) {
                                                         JSONObject jsonObject = jsonArray1.getJSONObject(j);
-                                                        if (json.optString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))) {
-                                                            TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                        if (json.optString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))&& jsonObject.optString("CustType").equalsIgnoreCase(json.optString("CustType"))) {
+                                                            TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                                                             jsonArray1.remove(j);
                                                             break;
                                                         }
@@ -138,8 +138,8 @@ public class CallsFragment extends Fragment {
                                                 } else {
                                                     for (int j = 0; j < jsonArray1.length(); j++) {
                                                         JSONObject jsonObject = jsonArray1.getJSONObject(j);
-                                                        if (json.optString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))) {
-                                                            TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                        if (json.optString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode")) && jsonObject.optString("CustType").equalsIgnoreCase(json.optString("CustType"))) {
+                                                            TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                                                             jsonArray1.remove(j);
                                                             break;
                                                         }
@@ -162,7 +162,7 @@ public class CallsFragment extends Fragment {
                                                         if (TodayCallListOne.size() > 0) {
                                                             isNeedtoAdd = true;
                                                             for (int j = 0; j < TodayCallListOne.size(); j++) {
-                                                                if (TodayCallListTwo.get(i).getDocCode().equalsIgnoreCase(TodayCallListOne.get(j).getDocCode())) {
+                                                                if (TodayCallListTwo.get(i).getCustCode().equalsIgnoreCase(TodayCallListOne.get(j).getCustCode())) {
                                                                     TodayCallListTwo.remove(i);
                                                                 }
                                                             }
@@ -254,7 +254,7 @@ public class CallsFragment extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject json = jsonArray.getJSONObject(i);
                         SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-                        TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                        TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                     }
                 }
             }
@@ -270,13 +270,13 @@ public class CallsFragment extends Fragment {
         try {
             SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("CustCode", todayCallListTwo.get(i).getDocCode());
+            jsonObject.put("CustCode", todayCallListTwo.get(i).getCustCode());
             jsonObject.put("CustType", todayCallListTwo.get(i).getDocNameID());
             jsonObject.put("Dcr_dt", todayCallListTwo.get(i).getCallsDateTime().substring(0, 10));
             jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
             jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
             jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
-            jsonObject.put("CustName", todayCallListTwo.get(i).getDocName());
+            jsonObject.put("CustName", todayCallListTwo.get(i).getCustName());
             jsonObject.put("town_code", "");
             jsonObject.put("town_name", "");
             jsonObject.put("Dcr_flag", "");

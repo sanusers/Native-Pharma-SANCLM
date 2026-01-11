@@ -50,6 +50,9 @@ public interface CallOfflineDataDao {
     @Query("SELECT * FROM `CALL_OFFLINE_TABLE` WHERE `CALL_CUS_CODE` = :cusCode AND `CALL_DATE` = :date")
     CallOfflineDataTable getCallOfflineData(String cusCode, String date);
 
+    @Query("SELECT * FROM `CALL_OFFLINE_TABLE` WHERE `CALL_CUS_CODE` = :cusCode AND `CALL_CUS_TYPE` = :cusType AND `CALL_DATE` = :date")
+    CallOfflineDataTable getCallOfflineData(String cusCode, String cusType, String date);
+
     @Query("UPDATE `CALL_OFFLINE_TABLE` SET `CALL_JSON_VALUES` = :jsonValue WHERE `CALL_DATE` = :date AND `CALL_CUS_CODE` = :cusCode")
     void saveOfflineUpdateJson(String date, String cusCode, String jsonValue);
 
@@ -69,7 +72,7 @@ public interface CallOfflineDataDao {
     List<String> getAllCallOfflineDates();
 
     default void saveOfflineCallIN(String date, String inTime, String cusCode, String cusName, String cusType) {
-        CallOfflineDataTable callOfflineDataTable = getCallOfflineData(cusCode, date);
+        CallOfflineDataTable callOfflineDataTable = getCallOfflineData(cusCode, cusType, date);
         CallOfflineDataTable callOfflineDataTable1 = new CallOfflineDataTable(date, null, inTime, null, cusCode, cusName, cusType, null, 0, "");
         if(callOfflineDataTable != null){
             callOfflineDataTable.setCallDate(date);
@@ -84,7 +87,7 @@ public interface CallOfflineDataDao {
     }
 
     default void saveOfflineCallOut(String date, String time, String outTime, String cusCode, String cusName, String cusType, String values, String status) {
-        CallOfflineDataTable callOfflineDataTable = getCallOfflineData(cusCode, date);
+        CallOfflineDataTable callOfflineDataTable = getCallOfflineData(cusCode, cusType, date);
         CallOfflineDataTable callOfflineDataTable1 = new CallOfflineDataTable(date, time, null, outTime, cusCode, cusName, cusType, values, 0, status);
         if(callOfflineDataTable != null){
             callOfflineDataTable.setCallTime(time);

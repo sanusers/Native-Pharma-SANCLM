@@ -1,8 +1,9 @@
 package saneforce.sanzen.activity.homeScreen.modelClass;
 
 public class CallsModalClass {
-    String DocName;
-    String DocCode;
+    String custName;
+    String custCode;
+    String custType;
     String CallsDateTime;
     String dcrDate;
     String DocNameID;
@@ -11,17 +12,18 @@ public class CallsModalClass {
     String Product;
     String Input;
 
-    public CallsModalClass(String docName, String callsDateTime, String docNameID) {
-        DocName = docName;
+    public CallsModalClass(String custName, String callsDateTime, String docNameID) {
+        this.custName = custName;
         CallsDateTime = callsDateTime;
         DocNameID = docNameID;
     }
 
-    public CallsModalClass(String TranslNo, String ADetSLNo, String docName, String docCode, String callsDateTime, String dcrDate, String docNameID, String product, String input) {
+    public CallsModalClass(String TranslNo, String ADetSLNo, String custName, String custCode, String custType, String callsDateTime, String dcrDate, String docNameID, String product, String input) {
         this.Trans_Slno = TranslNo;
         this.ADetSLNo = ADetSLNo;
-        DocName = docName;
-        DocCode = docCode;
+        this.custName = custName;
+        this.custCode = custCode;
+        this.custType = custType;
         CallsDateTime = callsDateTime;
         this.dcrDate = dcrDate;
         DocNameID = docNameID;
@@ -29,20 +31,28 @@ public class CallsModalClass {
         Input = input;
     }
 
-    public String getDocCode() {
-        return DocCode;
+    public String getCustCode() {
+        return custCode;
     }
 
-    public void setDocCode(String docCode) {
-        DocCode = docCode;
+    public void setCustCode(String custCode) {
+        this.custCode = custCode;
     }
 
-    public String getDocName() {
-        return DocName;
+    public String getCustName() {
+        return custName;
     }
 
-    public void setDocName(String docName) {
-        DocName = docName;
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
+    public String getCustType() {
+        return custType;
+    }
+
+    public void setCustType(String custType) {
+        this.custType = custType;
     }
 
     public String getCallsDateTime() {

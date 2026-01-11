@@ -2584,6 +2584,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             binding.tabLayout.setVisibility(View.GONE);
             binding.viewPager.setVisibility(View.GONE);
         } else {
+            if (!binding.textDate.getText().toString().trim().isEmpty()) {
+                selectedDate = LocalDate.parse(binding.textDate.getText().toString().trim(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_27));
+            }
             binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
             //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
             binding.tabLayout.setVisibility(View.VISIBLE);

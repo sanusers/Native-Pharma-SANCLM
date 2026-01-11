@@ -237,7 +237,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     for (int j = 0; j < groupModelClass.getChildItems().get(2).getOutBoxCallLists().size(); j++) {
-                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(groupModelClass.getChildItems().get(2).getOutBoxCallLists().get(j).getDates()) && (jsonObject.getString("CustCode").equalsIgnoreCase(groupModelClass.getChildItems().get(2).getOutBoxCallLists().get(j).getCusCode()) || jsonObject.getString("CustCode").isEmpty())) {
+                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(groupModelClass.getChildItems().get(2).getOutBoxCallLists().get(j).getDates()) && ((jsonObject.getString("CustCode").equalsIgnoreCase(groupModelClass.getChildItems().get(2).getOutBoxCallLists().get(j).getCusCode()) && jsonObject.getString("CustType").equalsIgnoreCase(groupModelClass.getChildItems().get(2).getOutBoxCallLists().get(j).getCusType())) || jsonObject.getString("CustCode").isEmpty())) {
                             jsonArray.remove(i);
                             i--;
                         } else if (groupModelClass.getGroupName().equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").isEmpty()) {
@@ -1151,7 +1151,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode) && jsonObject.getString("CustType").equalsIgnoreCase(cusType)) {
                     jsonArray.remove(i);
                     break;
                 }
@@ -1336,7 +1336,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     if (outBoxCallList.getSyncCount() <= 4) {
                         isCallAvailable = true;
                         Log.v("SendOutboxCall", "---" + outBoxCallList.getCusName());
-                        CallSendAPI(groupModelClass, outBoxCallList, childPos, i, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getSyncCount());
+                        CallSendAPI(groupModelClass, outBoxCallList, childPos, i, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getCusType(), outBoxCallList.getJsonData(), outBoxCallList.getSyncCount());
                         break;
                     }
                 }
@@ -2018,7 +2018,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         CallApiSignImage(groupModelClass, childPos);
     }
 
-    private void CallSendAPI(GroupModelClass groupModelClass, OutBoxCallList outBoxCallList, int childPos, int outBoxList, String date, String cusName, String cusCode, String jsonData, int SyncCount) {
+    private void CallSendAPI(GroupModelClass groupModelClass, OutBoxCallList outBoxCallList, int childPos, int outBoxList, String date, String cusName, String cusCode, String cusType, String jsonData, int SyncCount) {
         JSONObject jsonSaveDcr;
         try {
             jsonSaveDcr = new JSONObject(jsonData);
@@ -2041,7 +2041,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode) && jsonObject.getString("CustType").equalsIgnoreCase(cusType)) {
                                         jsonArray.remove(i);
                                         break;
                                     }
@@ -2065,7 +2065,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                     JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode) && jsonObject.getString("CustType").equalsIgnoreCase(cusType)) {
                                             jsonArray.remove(i);
                                             break;
                                         }
@@ -2088,7 +2088,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                     JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode) && jsonObject.getString("CustType").equalsIgnoreCase(cusType)) {
                                             jsonArray.remove(i);
                                             break;
                                         }

@@ -1316,7 +1316,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode) && jsonObject.getString("CustType").equalsIgnoreCase(cusType)) {
                     jsonArray.remove(i);
                     break;
                 }
