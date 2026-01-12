@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.approvals.geotagging;
 
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -106,7 +105,6 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                 intent.putExtra("from", "view_tag_approval");
                 geoTagViewList.clear();
                 geoTagViewList.add(new GeoTaggingModelList(geoTaggingModelLists.get(position).getName(), geoTaggingModelLists.get(position).getLatitude(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getAddress()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });
@@ -130,14 +128,13 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                 }
             }
         });
-
     }
 
-    private void CallApi(String Status, String MapId, String CustMode, String CustId, String hqCode, int Position,ViewHolder holder) {
+    private void CallApi(String Status, String MapId, String CustMode, String CustId, String hqCode, int Position, ViewHolder holder) {
         holder.progressBar.setVisibility(View.VISIBLE);
 
         try {
-            jsonGeoTag=CommonUtilsMethods.CommonObjectParameter(context);
+            jsonGeoTag = CommonUtilsMethods.CommonObjectParameter(context);
             jsonGeoTag.put("tableName", "savegeo_appr");
             switch (CustMode) {
                 case "D":
@@ -204,17 +201,16 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
 
             jsonGeoTag.put("status", Status);
             jsonGeoTag.put("sfcode", SharedPref.getSfCode(context));
-            jsonGeoTag.put("division_code",SharedPref.getDivisionCode(context));
+            jsonGeoTag.put("division_code", SharedPref.getDivisionCode(context));
             jsonGeoTag.put("Rsf", /*hqCode*/geoTaggingModelLists.get(Position).getName());
-
             Log.v("json_getGeoTag", jsonGeoTag.toString());
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/approvals");
-        Call<JsonElement> callGeoTag = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGeoTag.toString());
+        Call<JsonElement> callGeoTag = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonGeoTag.toString());
 
         callGeoTag.enqueue(new Callback<JsonElement>() {
             @Override
@@ -232,9 +228,9 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                             } else {
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.rejected_successfully));
                             }
-
                         }
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } else {
                     holder.progressBar.setVisibility(View.GONE);

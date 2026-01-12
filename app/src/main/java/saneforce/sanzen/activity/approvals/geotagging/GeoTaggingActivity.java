@@ -303,7 +303,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
                             }
                         }
 
-                        geoTaggingAdapter = new GeoTaggingAdapter(getApplicationContext(), geoTaggingModelSort);
+                        geoTaggingAdapter = new GeoTaggingAdapter(GeoTaggingActivity. this, geoTaggingModelSort);
                         geoTaggingBinding.rvGeoTagging.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         geoTaggingBinding.rvGeoTagging.setAdapter(geoTaggingAdapter);
                     } catch (Exception e) {
