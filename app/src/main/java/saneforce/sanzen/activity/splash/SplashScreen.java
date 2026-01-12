@@ -1,8 +1,11 @@
 package saneforce.sanzen.activity.splash;
 
+import static saneforce.sanzen.storage.SharedPref.SP_NAME;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.databinding.ActivitySplashScreenBinding;
@@ -42,6 +46,12 @@ public class SplashScreen extends AppCompatActivity {
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+//        SharedPreferences sharedPreferences;
+//        SharedPreferences.Editor editor;
+//        sharedPreferences = getSharedPreferences(SP_NAME, MODE_PRIVATE);
+//        editor = sharedPreferences.edit();
+//        editor.putString(SharedPref.DCR_SEQUENTIAL, "0");
+//        editor.apply();
         // Request storage permission if needed (for older Android versions)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)

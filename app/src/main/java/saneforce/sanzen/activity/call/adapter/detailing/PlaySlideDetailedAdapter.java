@@ -81,7 +81,6 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class PlaySlideDetailedAdapter extends PagerAdapter {
-
     public static ArrayList<LoadBitmap> storingSlide = new ArrayList<>();
     public static int presentSlidePos;
     public static String presentBrandName, presentBrandCode;
@@ -148,10 +147,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
-
         if(SharedPref.getZoomEnabled(context).equalsIgnoreCase("0") && SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")){
-            ZoomableImageView imageViewZoom =
-                    sliderLayout.findViewById(R.id.imageViewZoom);
+            ZoomableImageView imageViewZoom = sliderLayout.findViewById(R.id.imageViewZoom);
             ImageView imageView = sliderLayout.findViewById(R.id.imageView);
 
             imageViewZoom.setVisibility(View.VISIBLE);
@@ -183,8 +180,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 return false;
             });
         }else{
-            ZoomableImageView imageViewZoom =
-                    sliderLayout.findViewById(R.id.imageViewZoom);
+            ZoomableImageView imageViewZoom = sliderLayout.findViewById(R.id.imageViewZoom);
             ImageView imageView = sliderLayout.findViewById(R.id.imageView);
             imageViewZoom.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);

@@ -526,6 +526,7 @@ public class SharedPref {
     public static final String LEAVE_ATTACHMENT_NEED = "Leave_attachment_need";
 
     public static final String LAST_KNOWN_DATE = "last_known_date";
+    public static final String IS_WORKING_TODAY = "is_working_today";
 
     public static final String TodayTPDoctor = "TodayTPDoctor";
     public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
@@ -3421,4 +3422,15 @@ public static void addVisitedDoctor(Context context, String custCode) {
     public static String getLastKnownDate(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(LAST_KNOWN_DATE, "");
     }
+
+    public static void setIsWorkingToday(Context context, boolean isWorkingToday) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(IS_WORKING_TODAY, isWorkingToday).apply();
+    }
+
+    public static boolean getIsWorkingToday(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(IS_WORKING_TODAY, false);
+    }
+
 }
