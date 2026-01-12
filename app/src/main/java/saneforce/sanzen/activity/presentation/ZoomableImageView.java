@@ -15,6 +15,7 @@ public class ZoomableImageView extends AppCompatImageView {
     private final float[] matrixValues = new float[9];
 
     private float scale = 1f;
+    private final float minScale = 1f;
     private final float maxScale = 3f;
 
     private ScaleGestureDetector scaleDetector;
@@ -46,7 +47,6 @@ public class ZoomableImageView extends AppCompatImageView {
         return true;
     }
 
-
     private void handleDrag(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -68,7 +68,6 @@ public class ZoomableImageView extends AppCompatImageView {
         }
     }
 
-
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 
         @Override
@@ -82,13 +81,15 @@ public class ZoomableImageView extends AppCompatImageView {
             return true;
         }
 
-    /*    @Override
+        @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactor = detector.getScaleFactor();
             float newScale = scale * scaleFactor;
 
             if (newScale > maxScale) {
                 scaleFactor = maxScale / scale;
+            } else if (newScale < minScale) {
+                scaleFactor = minScale / scale;
             }
 
             scale *= scaleFactor;
@@ -102,38 +103,14 @@ public class ZoomableImageView extends AppCompatImageView {
 
             fixTranslation();
             setImageMatrix(matrix);
-            return true;
-        }*/
-    @Override
-    public boolean onScale(ScaleGestureDetector detector) {
 
-        float scaleFactor = detector.getScaleFactor();
+            if (scale <= minScale) {
+                resetToFit();
+            }
 
-        if (scaleFactor <= 1f) {
             return true;
         }
-
-        float newScale = scale * scaleFactor;
-
-        if (newScale > maxScale) {
-            scaleFactor = maxScale / scale;
-        }
-
-        scale *= scaleFactor;
-
-        matrix.postScale(
-                scaleFactor,
-                scaleFactor,
-                detector.getFocusX(),
-                detector.getFocusY()
-        );
-
-        fixTranslation();
-        setImageMatrix(matrix);
-        return true;
     }
-    }
-
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
@@ -150,7 +127,6 @@ public class ZoomableImageView extends AppCompatImageView {
         setImageMatrix(null);
         setScaleType(ScaleType.FIT_XY);
     }
-
 
     private void fixTranslation() {
         if (getDrawable() == null) return;
@@ -199,6 +175,3 @@ public class ZoomableImageView extends AppCompatImageView {
         setImageMatrix(matrix);
     }
 }
-
-
-
