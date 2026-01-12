@@ -3338,10 +3338,10 @@ public class SharedPref {
                 .getString(TodayTPDoctor, "");
     }
     // Save last date popup was shown
-    public static void setDoctorRemainingShownDate(Context context, String date) {
+    public static void setDoctorRemainingShownDate(Context context, String time) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(DoctorRemainingShownDate, date);
+        editor.putString(DoctorRemainingShownDate, time);
         editor.apply();
     }
 

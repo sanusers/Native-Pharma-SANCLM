@@ -830,10 +830,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 Log.d("PopupCheck", "Popup already shown today, skipping.");
                 return;
             }
-
 // ✅ Show popup
             showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
-
 // ✅ Mark popup as shown today
             SharedPref.setTodayPopupShown(this, today);
 //        boolean forceImmediate = false;
@@ -3471,7 +3469,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CommonAlertBox.DoctorPlanPopup(this, msg);
 
             // ✅ Mark popup shown today (for normal flow)
-            if (!isImmediatePopup) SharedPref.setDoctorRemainingShownDate(this, "15:00");
+            if (!isImmediatePopup) SharedPref.setDoctorRemainingShownDate(this," ");
 
         } catch (Exception e) {
             e.printStackTrace();

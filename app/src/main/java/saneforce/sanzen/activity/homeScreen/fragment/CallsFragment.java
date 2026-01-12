@@ -205,7 +205,6 @@ public class CallsFragment extends Fragment {
                                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                     }
                                 }
-
                                 @Override
                                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                     binding.rlSyncCall.setEnabled(true);

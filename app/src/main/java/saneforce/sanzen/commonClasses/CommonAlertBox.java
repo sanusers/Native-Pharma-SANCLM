@@ -524,7 +524,7 @@ public class CommonAlertBox {
         TextView heading = alertLayout.findViewById(R.id.heading);
         TextView messagePopup = alertLayout.findViewById(R.id.messagePopup);
         Button okButton = alertLayout.findViewById(R.id.okButton);
-        heading.setText("Today's Doctor Plan!!");
+        heading.setText(" Today's Planned " + SharedPref.getDrCap(activity));
         messagePopup.setText(message);
 
         alert.setView(alertLayout);
