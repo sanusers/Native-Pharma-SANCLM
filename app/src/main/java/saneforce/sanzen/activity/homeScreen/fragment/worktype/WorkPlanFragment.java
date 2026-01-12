@@ -155,7 +155,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private STPOfflineDataDao stpOfflineDataDao;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
-    private ProgressDialog syncProgressDialog;
+    private ProgressDialog syncProgressDialog, finalSubmitDialog;
     private int syncCount = 0, requiredSyncCount = 0;
     private String CheckInOutNeed, STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation, TPDCRMGRApprNeed;
     public static boolean isFromTP = false;
@@ -173,8 +173,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void checkDateChange() {
         if (!isAdded()) return;
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0"))) {
+                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
             return;
         }
         String savedDate = SharedPref.getLastKnownDate(requireContext());
@@ -187,26 +186,29 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void onDateChanged() {
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0"))) {
+                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
             return;
         }
-        JSONArray callSync = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
-        for (int i = callSync.length() - 1; i >= 0; i--) {
-            JSONObject jsonObject = callSync.optJSONObject(i);
-            if (jsonObject.optString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
-                    && jsonObject.optString("CustCode").equalsIgnoreCase("0")
-                    && jsonObject.optString("day_status").equalsIgnoreCase("0")) {
-                finalSubmit("Auto Submitted");
-                break;
+        if (SharedPref.getIsWorkingToday(requireContext())) {
+//        JSONArray callSync = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+//        for (int i = callSync.length() - 1; i >= 0; i--) {
+//            JSONObject jsonObject = callSync.optJSONObject(i);
+//            if (jsonObject.optString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
+//                    && jsonObject.optString("CustCode").equalsIgnoreCase("0")
+//                    && jsonObject.optString("day_status").equalsIgnoreCase("0")) {
+            if (finalSubmitDialog != null) {
+                finalSubmitDialog.show();
             }
+            finalSubmit("Auto Submitted", true);
+//                break;
+//            }
+//        }
         }
     }
 
     private void startDateWatcher() {
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0"))) {
+                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
             return;
         }
         dateHandler = new Handler(Looper.getMainLooper());
@@ -261,6 +263,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             syncProgressDialog.setMessage(context.getString(R.string.head_quarters_syncing));
             syncProgressDialog.setCancelable(false);
             syncProgressDialog.setIndeterminate(true);
+
+            finalSubmitDialog = new ProgressDialog(context);
+            finalSubmitDialog.setMessage(context.getString(R.string.final_submit));
+            finalSubmitDialog.setCancelable(false);
+            finalSubmitDialog.setIndeterminate(true);
 //            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
     }
@@ -1458,7 +1465,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     } else {
                         onSaveClicked();
                         // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor);
-
                     }
                     break;
 
@@ -2618,6 +2624,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                setUpWorkPlan();
 //                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.work_plan_updated_successfully));
 //            }else {
+            if (!HomeDashBoard.binding.textDate.getText().toString().trim().isEmpty()
+                    && HomeDashBoard.binding.textDate.getText().toString().trim().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_27))) {
+                SharedPref.setIsWorkingToday(requireContext(), true);
+            } else if (!SharedPref.getIsWorkingToday(requireContext())){
+                SharedPref.setIsWorkingToday(requireContext(), false);
+            }
             if (UtilityClass.isNetworkAvailable(requireContext()) && !outboxUtil.isOutBoxNonSyncDataAvailable()) {
                 workPlanSubmit("Save");
             } else {
@@ -3054,6 +3066,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHECK_IN, "[]", 2));
 //                            MyDayPlanEntriesNeeded.syncCallAndDate(requireContext());
                             updateLocalData();
+                            SharedPref.setIsWorkingToday(requireContext(), false);
+                            if (finalSubmitDialog != null && finalSubmitDialog.isShowing()) {
+                                finalSubmitDialog.dismiss();
+                            }
                             SharedPref.setDayPlanStartedDate(requireContext(), "");
                             SharedPref.setLastCallDate(requireContext(), "");
                             SharedPref.setSelectedDateCal(requireContext(), "");
@@ -4122,6 +4138,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     String DayplanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
                     String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
 
+                    if (!HomeDashBoard.binding.textDate.getText().toString().trim().isEmpty()
+                            && HomeDashBoard.binding.textDate.getText().toString().trim().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_27))) {
+                        SharedPref.setIsWorkingToday(requireContext(), true);
+                    } else if (!SharedPref.getIsWorkingToday(requireContext())){
+                        SharedPref.setIsWorkingToday(requireContext(), false);
+                    }
                     Date FirstPlanDate = sdf.parse(DayplanDate1);
                     Date CurentDate = sdf.parse(CurrentDate);
                     String TerritoryFlag1 = "", TerritoryFlag2 = "";
@@ -5265,7 +5287,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void finalSubmit(String remark) {
+    private void finalSubmit(String remark, boolean isAutoSubmit) {
         gpsTrack = new GPSTrack(requireActivity());
         latitude = gpsTrack.getLatitude();
         longitude = gpsTrack.getLongitude();
@@ -5340,6 +5362,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                }
 //            }
             HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+            SharedPref.setIsWorkingToday(requireContext(), false);
+            if (finalSubmitDialog != null && finalSubmitDialog.isShowing()) {
+                finalSubmitDialog.dismiss();
+            }
         }
     }
 
@@ -5383,7 +5409,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     dialogRemarks.dismiss();
                     remarks = remarks.replaceAll("'", "");
                     Log.e("Remarks", "remark : " + remarks);
-                    finalSubmit(remarks);
+                    finalSubmit(remarks, false);
                 } else if (remarks.isEmpty()) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
                 } else {
