@@ -670,7 +670,7 @@
     <string name="select_headquaters">Sélectionnez le siège</string>
     <string name="quick_links">Lien rapide</string>
     <string name="call_analysis">Analyse des appels</string>
-    <string name="day_report"> Rapport du jour </string>
+    <string name="day_report"> Rapport quotidien </string>
     <string name="leave_available"> Congés disponibles </string>
     <string name="visit_monitor"> Suivi des visites </string>
     <string name="missed_report"> Rapport manqué </string>
