@@ -710,18 +710,18 @@ public class ListedDoctorFragment extends Fragment {
                             }
                             Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                             if(!drList.isEmpty()) {
-                                if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                                if(todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
                                     prepareData(jsonObject, i, brands, false);
                                 }
                             } else {
-                                if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                                if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                                     prepareData(jsonObject, i, brands, false);
-                                } else {
-                                    prepareData(jsonObject, i, brands, true);
+//                                } else {
+//                                    prepareData(jsonObject, i, brands, true);
                                 }
                             }
                         } else {
-                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                            if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                                 prepareData(jsonObject, i, brands, false);
                             } else {
                                 prepareData(jsonObject, i, brands, true);
@@ -744,18 +744,18 @@ public class ListedDoctorFragment extends Fragment {
                             }
                             Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                             if(!drList.isEmpty()) {
-                                if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                                if(todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
                                     prepareData(jsonObject, i, brands, false);
                                 }
                             } else {
-                                if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                                if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                                     prepareData(jsonObject, i, brands, false);
-                                } else {
-                                    prepareData(jsonObject, i, brands, true);
+//                                } else {
+//                                    prepareData(jsonObject, i, brands, true);
                                 }
                             }
                         } else {
-                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                            if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
                                 prepareData(jsonObject, i, brands, false);
                             } else {
                                 prepareData(jsonObject, i, brands, true);

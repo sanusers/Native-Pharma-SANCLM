@@ -2583,7 +2583,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             binding.viewPager.setVisibility(View.GONE);
         } else {
             if (!binding.textDate.getText().toString().trim().isEmpty()) {
-                selectedDate = LocalDate.parse(binding.textDate.getText().toString().trim(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_27));
+                selectedDate = LocalDate.parse(binding.textDate.getText().toString().trim(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_27, Locale.ENGLISH));
             }
             binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
             //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
@@ -3375,7 +3375,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-
     private void showNotVisitedDoctorsPopup(String tpDoctorCodes, boolean isImmediatePopup, JSONArray doctorMasArray) {
         try {
             if (tpDoctorCodes == null || tpDoctorCodes.isEmpty()) return;
@@ -3476,7 +3475,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             Log.e("PopupError", e.getMessage());
         }
     }
-
 
     BroadcastReceiver syncReceiver = new BroadcastReceiver() {
         @Override

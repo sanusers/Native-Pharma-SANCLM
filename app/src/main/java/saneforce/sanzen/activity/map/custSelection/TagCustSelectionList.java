@@ -639,7 +639,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         if (docObj_che.containsKey(code)) {
                             JSONObject existingObject = docObj_che.get(code);
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys Tagcust:" + key);
+//                                System.out.println("Merging keys Tagcust:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));
@@ -725,7 +725,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         if (docObj_stk.containsKey(code)) {
                             JSONObject existingObject = docObj_stk.get(code);
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys Tagcust:" + key);
+//                                System.out.println("Merging keys Tagcust:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));

@@ -3347,8 +3347,7 @@ public class SharedPref {
     }
 
     public static String getDoctorRemainingShownDate(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
-                .getString(DoctorRemainingShownDate, "");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DoctorRemainingShownDate, "");
     }
 
 //    public static void addVisitedDoctor(Context context, String custCode) {

@@ -1105,7 +1105,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (docObj_che.containsKey(code)) {
                             JSONObject existingObject = docObj_che.get(code);
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys map update:" + key);
+//                                System.out.println("Merging keys map update:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));
@@ -1142,7 +1142,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (docObj_stk.containsKey(code)) {
                             JSONObject existingObject = docObj_stk.get(code);
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys map update:" + key);
+//                                System.out.println("Merging keys map update:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));
@@ -1180,7 +1180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (docObj_Unlist.containsKey(code)) {
                             JSONObject existingObject = docObj_Unlist.get(code);
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys map update:" + key);
+//                                System.out.println("Merging keys map update:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));
@@ -1579,7 +1579,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         }
                                     }*/
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys prepmasSync:" + key);
+//                                System.out.println("Merging keys prepmasSync:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));
@@ -1630,7 +1630,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         }
                                     }*/
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys prepmasSync:" + key);
+//                                System.out.println("Merging keys prepmasSync:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));
@@ -1680,7 +1680,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         }
                                     }*/
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys prepmasSync:" + key);
+//                                System.out.println("Merging keys prepmasSync:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));
@@ -2225,7 +2225,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (docObj_che.containsKey(code)) {
                             JSONObject existingObject = docObj_che.get(code);
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys addtagdet:" + key);
+//                                System.out.println("Merging keys addtagdet:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));
@@ -2307,7 +2307,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (docObj_stk.containsKey(code)) {
                             JSONObject existingObject = docObj_stk.get(code);
                             jsonObject_geo.keys().forEachRemaining(key -> {
-                                System.out.println("Merging keys addtagdet:" + key);
+//                                System.out.println("Merging keys addtagdet:" + key);
                                 try {
                                     assert existingObject != null;
                                     existingObject.put(key, jsonObject_geo.get(key));

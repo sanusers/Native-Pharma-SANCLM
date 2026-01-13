@@ -303,7 +303,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 if (docObj.containsKey(code)) {
                                     JSONObject existingObject = docObj.get(code);
                                     jsonObject_geo.keys().forEachRemaining(key -> {
-                                        System.out.println("Merging keys Res_Adp dr:" + key);
+//                                        System.out.println("Merging keys Res_Adp dr:" + key);
                                         try {
                                             assert existingObject != null;
                                             existingObject.put(key, jsonObject_geo.get(key));
@@ -423,7 +423,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 if (docObj_che.containsKey(code)) {
                                     JSONObject existingObject = docObj_che.get(code);
                                     jsonObject_geo.keys().forEachRemaining(key -> {
-                                        System.out.println("Merging keys Res_Adp Che:" + key);
+//                                        System.out.println("Merging keys Res_Adp Che:" + key);
                                         try {
                                             assert existingObject != null;
                                             existingObject.put(key, jsonObject_geo.get(key));
@@ -530,7 +530,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 if (docObj_stk.containsKey(code)) {
                                     JSONObject existingObject = docObj_stk.get(code);
                                     jsonObject_geo.keys().forEachRemaining(key -> {
-                                        System.out.println("Merging keys Res_Adp Che:" + key);
+//                                        System.out.println("Merging keys Res_Adp Che:" + key);
                                         try {
                                             assert existingObject != null;
                                             existingObject.put(key, jsonObject_geo.get(key));
@@ -652,7 +652,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 if (docObj_Unld.containsKey(code)) {
                                     JSONObject existingObject = docObj_Unld.get(code);
                                     jsonObject_geo.keys().forEachRemaining(key -> {
-                                        System.out.println("Merging keys Res_Adp dr:" + key);
+//                                        System.out.println("Merging keys Res_Adp dr:" + key);
                                         try {
                                             assert existingObject != null;
                                             existingObject.put(key, jsonObject_geo.get(key));

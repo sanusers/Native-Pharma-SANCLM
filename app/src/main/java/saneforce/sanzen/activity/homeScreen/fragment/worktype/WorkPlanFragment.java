@@ -2970,7 +2970,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                 jsonObject.put("InsMode", deviation);
             } else {
-                jsonObject.put("InsMode", insMode); // previously it was incMode
+                jsonObject.put("InsMode", insMode);
             }
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
             jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
@@ -3442,6 +3442,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                         @Override
                                         public void onSafeClick(View view) {
                                             insMode = "1";
+                                            deviation = "1";
                                             saveOrUpdateWorkPlan(false);
                                             deviationConfirmation.dismiss();
                                         }
@@ -4475,14 +4476,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             disableSession2();
                             if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
                                     || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && (!stpOfflineDataDao.isNotApproved() && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0))) {
-                                if (SecondSeasonDayPlanObject.has("Others_Code") && !SecondSeasonDayPlanObject.optString("Others_Code", "").isEmpty()) {
+//                                if (SecondSeasonDayPlanObject.has("Others_Code") && !SecondSeasonDayPlanObject.optString("Others_Code", "").isEmpty()) {
+                                if (mFwFlg2.equalsIgnoreCase("F")) {
                                     tpWorkType = SecondSeasonDayPlanObject.optString("TP_worktype");
                                     tpCluster = SecondSeasonDayPlanObject.optString("TP_cluster");
                                     tpDoctor = SecondSeasonDayPlanObject.optString("TP_Doctor");
+                                }
                                     deviation = SecondSeasonDayPlanObject.optString("TpVwFlg");
                                     workDayCode = SecondSeasonDayPlanObject.optString("Others_Code");
                                     workDayName = SecondSeasonDayPlanObject.optString("Others_Name");
-                                }
+//                                }+
 //                                isFromTP = SecondSeasonDayPlanObject.optBoolean("isFromTP", false);
                                 if (SharedPref.getTpDcrDeviatedDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
                                     deviation = "1";

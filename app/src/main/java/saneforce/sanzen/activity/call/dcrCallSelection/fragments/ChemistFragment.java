@@ -35,10 +35,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +61,8 @@ import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSel
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
+import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -214,7 +220,7 @@ public class ChemistFragment extends Fragment {
                     if (docObj_che.containsKey(code)) {
                         JSONObject existingObject = docObj_che.get(code);
                         jsonObject_geo.keys().forEachRemaining(key -> {
-                            System.out.println("Merging keys Tagcust Chm:" + key);
+//                            System.out.println("Merging keys Tagcust Chm:" + key);
                             try {
                                 assert existingObject != null;
                                 existingObject.put(key, jsonObject_geo.get(key));
@@ -401,6 +407,76 @@ public class ChemistFragment extends Fragment {
                         }
                     }
                 } else if (tpDataObj != null) {
+                    if(SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")){
+                        Type type = new TypeToken<OneBuildModelClass>() {
+                        }.getType();
+                        OneBuildModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                        int fwSession = -1;
+                        if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
+                            fwSession = 0;
+                        } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+                            fwSession = 1;
+                        }
+                        List<String> chmList = new ArrayList<>();
+                        if(fwSession != -1) {
+                            for (OneBuildModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getChemists()) {
+                                chmList.add(subClass.getCode());
+                            }
+                            Log.i("TP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
+                            if(!chmList.isEmpty()) {
+                                if(todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
+                                    cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", false));
+                                }
+                            } else {
+                                if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
+                                    cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", false));
+//                                } else {
+//                                    prepareData(jsonObject, i, brands, true);
+                                }
+                            }
+                        } else {
+                            if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {
+                                cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", false));
+                            } else {
+                                cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", true));
+                            }
+                        }
+                    }else{
+                        Type type = new TypeToken<ModelClass>() {
+                        }.getType();
+                        ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                        int fwSession = -1;
+                        if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
+                            fwSession = 0;
+                        } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+                            fwSession = 1;
+                        }
+                        List<String> chmList = new ArrayList<>();
+                        if(fwSession != -1) {
+                            for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getChemist()) {
+                                chmList.add(subClass.getCode());
+                            }
+                            Log.i("TP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
+                            if(!chmList.isEmpty()) {
+                                if(todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
+                                    cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", false));
+                                }
+                            } else {
+                                if (todayPlannedClusters.contains(jsonObject.getString("Town_Code"))) {
+                                    cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", false));
+//                                } else {
+//                                    prepareData(jsonObject, i, brands, true);
+                                }
+                            }
+                        } else {
+                            if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {
+                                cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", false));
+                            } else {
+                                cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", true));
+                            }
+                        }
+                    }
+
 //                    Type type = new TypeToken<ModelClass>() {
 //                    }.getType();
 //                    ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
