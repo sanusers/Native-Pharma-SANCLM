@@ -99,6 +99,7 @@ import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
 import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -371,14 +372,21 @@ public class DynamicActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
                 String activityDesignation = jsonObject.optString("Activity_Desig"), activityFor = jsonObject.optString("Activity_For");
+                if (SharedPref.getOneBuild(DynamicActivity.this).equalsIgnoreCase("0")) {
+                    activityDesignation = jsonObject.optString("Activity_Designation");
+                }
                 String dsName = SharedPref.getDsName(DynamicActivity.this);
 
                 if (activityDesignation.contains(dsName) && activityFor.contains("0")) {
                     binding.rlNoActivity.setVisibility(View.GONE);
                     binding.llMainLayout.setVisibility(View.VISIBLE);
                     binding.rlDetailsMain.setVisibility(View.VISIBLE);
-                    boolean isAvailableOffline = activityDetailsDataDao.isActivityDataAvailable(jsonObject.getString("Activity_SlNo") + "_" + selectedHQ);
-                    ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available"), isAvailableOffline));
+                    boolean isAvailableOffline = activityDetailsDataDao.isActivityDataAvailable(jsonObject.optString("Activity_SlNo") + "_" + selectedHQ);
+                    ActivityModelClass activityModelClass = new ActivityModelClass(jsonObject.optString("Activity_SlNo"), jsonObject.optString("Activity_Name"), jsonObject.optString("Activity_For"), jsonObject.optString("Active_Flag"), jsonObject.optString("Activity_Desig"), jsonObject.optString("Activity_Available"), isAvailableOffline);
+                    if (SharedPref.getOneBuild(DynamicActivity.this).equalsIgnoreCase("0")) {
+                        activityModelClass.setActivityDesig(jsonObject.optString("Activity_Designation"));
+                    }
+                    ActivityList.add(activityModelClass);
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -424,13 +432,13 @@ public class DynamicActivity extends AppCompatActivity {
                     binding.rlNoData.setVisibility(View.GONE);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        String Control_Id = jsonObject1.getString("Control_Id");
-                        String Field_Name = jsonObject1.getString("Field_Name");
-                        String Creation_Id = jsonObject1.getString("Creation_Id");
-                        String input = jsonObject1.getString("input");
-                        String madantaory = jsonObject1.getString("Mandatory");
-                        String Control_Para = jsonObject1.getString("Control_Para");
-                        String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
+                        String Control_Id = jsonObject1.optString("Control_Id");
+                        String Field_Name = jsonObject1.optString("Field_Name");
+                        String Creation_Id = jsonObject1.optString("Creation_Id");
+                        String input = jsonObject1.optString("input");
+                        String madantaory = jsonObject1.optString("Mandatory");
+                        String Control_Para = jsonObject1.optString("Control_Para");
+                        String Group_Creation_ID = jsonObject1.optString("Group_Creation_ID");
                         ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
                         String controlParam = Control_Para.toLowerCase();
                         if (SharedPref.getSfType(DynamicActivity.this).equalsIgnoreCase("2") && selectedHQ.equalsIgnoreCase(SharedPref.getSfCode(DynamicActivity.this)) && (controlParam.contains("doctor") || controlParam.contains("dr")
@@ -539,6 +547,9 @@ public class DynamicActivity extends AppCompatActivity {
         try {
             JSONObject object = CommonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
             object.put("tableName", "getdynactivity_details");
+            if (SharedPref.getOneBuild(DynamicActivity.this).equalsIgnoreCase("0")) {
+                object.put("tableName", "getdynactivity_details_onebuild");
+            }
             object.put("sfcode", SharedPref.getSfCode(this));
             object.put("division_code", SharedPref.getDivisionCode(this));
             object.put("Rsf", selectedHQ);
@@ -585,8 +596,11 @@ public class DynamicActivity extends AppCompatActivity {
             isEdited = false;
             binding.progressMain.setVisibility(View.VISIBLE);
             try {
-                JSONObject object = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
+                JSONObject object = CommonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
                 object.put("tableName", "getdynactivity");
+                if (SharedPref.getOneBuild(DynamicActivity.this).equalsIgnoreCase("0")) {
+                    object.put("tableName", "getdynactivity_onebuild");
+                }
                 object.put("sfcode", SharedPref.getSfCode(this));
                 object.put("division_code", SharedPref.getDivisionCode(this));
                 object.put("Rsf", hqcode);
@@ -608,8 +622,11 @@ public class DynamicActivity extends AppCompatActivity {
                                 if (jsonArray.length() > 0) {
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
-                                        String[] ActivityFor = jsonObject.getString("Activity_For").split(",");
+                                        String[] Activity_Desig = jsonObject.optString("Activity_Desig", "").split(",\\s*");
+                                        if (SharedPref.getOneBuild(DynamicActivity.this).equalsIgnoreCase("0")) {
+                                            Activity_Desig = jsonObject.optString("Activity_Designation", "").split(",\\s*");
+                                        }
+                                        String[] ActivityFor = jsonObject.optString("Activity_For").split(",");
                                         List<String> ActivityForList = Arrays.asList(ActivityFor);
                                         List<String> DegList = Arrays.asList(Activity_Desig);
 
@@ -617,7 +634,11 @@ public class DynamicActivity extends AppCompatActivity {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
-                                            ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available"), false));
+                                            ActivityModelClass activityModelClass = new ActivityModelClass(jsonObject.optString("Activity_SlNo"), jsonObject.optString("Activity_Name"), jsonObject.optString("Activity_For"), jsonObject.optString("Active_Flag"), jsonObject.optString("Activity_Desig"), jsonObject.optString("Activity_Available"), false);
+                                            if (SharedPref.getOneBuild(DynamicActivity.this).equalsIgnoreCase("0")) {
+                                                activityModelClass.setActivityDesig(jsonObject.optString("Activity_Designation"));
+                                            }
+                                            ActivityList.add(activityModelClass);
                                             adapter.notifyDataSetChanged();
                                         }
                                     }
@@ -658,8 +679,11 @@ public class DynamicActivity extends AppCompatActivity {
             isEdited = false;
             binding.progrlessdetail.setVisibility(View.VISIBLE);
             try {
-                JSONObject object = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
+                JSONObject object = CommonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
                 object.put("tableName", "getdynactivity_details");
+                if (SharedPref.getOneBuild(DynamicActivity.this).equalsIgnoreCase("0")) {
+                    object.put("tableName", "getdynactivity_details_onebuild");
+                }
                 object.put("sfcode", SharedPref.getSfCode(this));
                 object.put("division_code", SharedPref.getDivisionCode(this));
                 object.put("Rsf", SharedPref.getHqCode(this));
@@ -686,13 +710,13 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlNoData.setVisibility(View.GONE);
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                        String Control_Id = jsonObject1.getString("Control_Id");
-                                        String Field_Name = jsonObject1.getString("Field_Name");
-                                        String Creation_Id = jsonObject1.getString("Creation_Id");
-                                        String input = jsonObject1.getString("input");
-                                        String madantaory = jsonObject1.getString("Mandatory");
-                                        String Control_Para = jsonObject1.getString("Control_Para");
-                                        String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
+                                        String Control_Id = jsonObject1.optString("Control_Id");
+                                        String Field_Name = jsonObject1.optString("Field_Name");
+                                        String Creation_Id = jsonObject1.optString("Creation_Id");
+                                        String input = jsonObject1.optString("input");
+                                        String madantaory = jsonObject1.optString("Mandatory");
+                                        String Control_Para = jsonObject1.optString("Control_Para");
+                                        String Group_Creation_ID = jsonObject1.optString("Group_Creation_ID");
                                         ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, Data.getSlNo()));
                                     }
                                     int jjj = 0;
@@ -3121,7 +3145,7 @@ public class DynamicActivity extends AppCompatActivity {
             if (newJsonArray.length() > 0) {
                 for (int i = 0; i < newJsonArray.length(); i++) {
                     JSONObject jsonObject = newJsonArray.getJSONObject(i);
-                    list.add(jsonObject.getString("name"));
+                    list.add(jsonObject.optString("name"));
                 }
             }
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(DynamicActivity.this);

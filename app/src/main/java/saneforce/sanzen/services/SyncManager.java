@@ -301,6 +301,9 @@ public class SyncManager {
         //Activity
         activityModelArray.clear();
         MasterSyncItemModel activity = new MasterSyncItemModel(Constants.ACTIVITY, Constants.ACTIVITY, "getdynactivity", Constants.ACTIVITY, activityStatus, false);
+        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+            activity.setRemoteTableName("getdynactivity_onebuild");
+        }
         activityModelArray.add(activity);
 
         //Work Type

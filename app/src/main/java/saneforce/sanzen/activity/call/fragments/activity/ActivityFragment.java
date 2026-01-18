@@ -94,6 +94,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.activityModule.adapter.ActivityAdapter;
 import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
@@ -361,15 +362,21 @@ public class ActivityFragment extends Fragment {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
                 String activityDesignation = jsonObject.optString("Activity_Desig"), activityFor = jsonObject.optString("Activity_For");
+                if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                    activityDesignation = jsonObject.optString("Activity_Designation");
+                }
                 String dsName = SharedPref.getDsName(requireContext());
 
                 if (activityDesignation.contains(dsName) && activityFor.contains(CallActivityCustDetails.get(0).getType())) {
                     fragmentActivityBinding.rlNoActivity.setVisibility(View.GONE);
                     fragmentActivityBinding.llMainLayout.setVisibility(View.VISIBLE);
                     fragmentActivityBinding.rlDetailsMain.setVisibility(View.VISIBLE);
-                    boolean isAvailableOffline = activityDetailsDataDao.isActivityDataAvailable(jsonObject.getString("Activity_SlNo") + "_" + SharedPref.getHqCode(requireContext()));
-                    ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available"), isAvailableOffline));
-                    adapter.notifyDataSetChanged();
+                    boolean isAvailableOffline = activityDetailsDataDao.isActivityDataAvailable(jsonObject.optString("Activity_SlNo") + "_" + SharedPref.getHqCode(requireContext()));
+                    ActivityModelClass activityModelClass = new ActivityModelClass(jsonObject.optString("Activity_SlNo"), jsonObject.optString("Activity_Name"), jsonObject.optString("Activity_For"), jsonObject.optString("Active_Flag"), jsonObject.optString("Activity_Desig"), jsonObject.optString("Activity_Available"), isAvailableOffline);
+                    if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                        activityModelClass.setActivityDesig(jsonObject.optString("Activity_Designation"));
+                    }
+                    ActivityList.add(activityModelClass);                    adapter.notifyDataSetChanged();
                 }
             }
             if (ActivityList.isEmpty()) {
@@ -415,13 +422,13 @@ public class ActivityFragment extends Fragment {
                     fragmentActivityBinding.rlNoData.setVisibility(View.GONE);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        String Control_Id = jsonObject1.getString("Control_Id");
-                        String Field_Name = jsonObject1.getString("Field_Name");
-                        String Creation_Id = jsonObject1.getString("Creation_Id");
-                        String input = jsonObject1.getString("input");
-                        String madantaory = jsonObject1.getString("Mandatory");
-                        String Control_Para = jsonObject1.getString("Control_Para");
-                        String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
+                        String Control_Id = jsonObject1.optString("Control_Id");
+                        String Field_Name = jsonObject1.optString("Field_Name");
+                        String Creation_Id = jsonObject1.optString("Creation_Id");
+                        String input = jsonObject1.optString("input");
+                        String madantaory = jsonObject1.optString("Mandatory");
+                        String Control_Para = jsonObject1.optString("Control_Para");
+                        String Group_Creation_ID = jsonObject1.optString("Group_Creation_ID");
                         ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
                     }
                     int jjj = 0;
@@ -515,6 +522,9 @@ public class ActivityFragment extends Fragment {
         try {
             JSONObject object = CommonUtilsMethods.CommonObjectParameter(requireContext());
             object.put("tableName", "getdynactivity_details");
+            if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                object.put("tableName", "getdynactivity_details_onebuild");
+            }
             object.put("sfcode", SharedPref.getSfCode(requireContext()));
             object.put("division_code", SharedPref.getDivisionCode(requireContext()));
             object.put("Rsf", SharedPref.getHqCode(requireContext()));
@@ -2993,10 +3003,10 @@ public class ActivityFragment extends Fragment {
             JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             for (int j = 0; j < jsonArrayWt.length(); j++) {
                 JSONObject workTypeData = jsonArrayWt.getJSONObject(j);
-                if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
-                    wtCode = workTypeData.getString("Code");
-                    wtName = workTypeData.getString("Name");
-                    fwFlag = workTypeData.getString("FWFlg");
+                if (workTypeData.optString("FWFlg").equalsIgnoreCase("F")) {
+                    wtCode = workTypeData.optString("Code");
+                    wtName = workTypeData.optString("Name");
+                    fwFlag = workTypeData.optString("FWFlg");
                 }
             }
             Date today = new Date();

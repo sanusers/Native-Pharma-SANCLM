@@ -986,7 +986,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                     binding.syncFailedImageDcr.setVisibility(View.GONE);
                 }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity") || masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity_onebuild")) {
                 activityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.ACTIVITY);
                 if (activityStatus == 1) {
                     binding.syncFailedImageAct.setVisibility(View.VISIBLE);
@@ -1140,7 +1140,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
                 binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
             }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity") || masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity_onebuild")) {
                 binding.syncFailedImageAct.setVisibility(View.VISIBLE);
             }
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getworktype") ||
@@ -1371,6 +1371,9 @@ public class MasterSyncActivity extends AppCompatActivity {
 //        String activityLabel = context.getString(R.string.activity);
 //        MasterSyncItemModel activity = new MasterSyncItemModel(activityLabel, Constants.ACTIVITY, "getdynactivity",  Constants.ACTIVITY, activityStatus, false);
         MasterSyncItemModel activity = new MasterSyncItemModel(Constants.ACTIVITY, Constants.ACTIVITY, "getdynactivity", Constants.ACTIVITY, activityStatus, false);
+        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+            activity.setRemoteTableName("getdynactivity_onebuild");
+        }
         activityModelArray.add(activity);
 
         //Work Type
@@ -2180,6 +2183,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     try {
                         JSONObject object = CommonUtilsMethods.CommonObjectParameter(MasterSyncActivity.this);
                         object.put("tableName", "getdynactivity_details");
+                        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                            object.put("tableName", "getdynactivity_details_onebuild");
+                        }
                         object.put("sfcode", SharedPref.getSfCode(this));
                         object.put("division_code", SharedPref.getDivisionCode(this));
                         object.put("Rsf", SharedPref.getHqCode(this));
