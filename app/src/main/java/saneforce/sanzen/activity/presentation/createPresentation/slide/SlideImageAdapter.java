@@ -25,6 +25,12 @@ public class SlideImageAdapter extends RecyclerView.Adapter<SlideImageAdapter.My
 
     public SlideImageAdapter () {
     }
+    public void clearData() {
+        if (arrayList != null) {
+            arrayList.clear();
+            notifyDataSetChanged();
+        }
+    }
 
     public SlideImageAdapter (Context context, ArrayList<BrandModelClass.Product> arrayList,ImageSelectionInterface imageSelectionInterface) {
         this.context = context;

@@ -63,13 +63,148 @@
         android:orientation="horizontal"
         android:weightSum="3">
         <!--        android:layout_below="@id/appBar"-->
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/brandNameRecView"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
-            android:scrollbars="vertical" />
+            android:orientation="vertical">
+
+            <!-- ALL BRANDS HEADER -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clAllBrands"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_box"
+                android:padding="@dimen/_8sdp">
+
+                <TextView
+                    android:id="@+id/tvAllBrands"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="All Brands"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_6sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/imgAllBrandArrow"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/imgAllBrandArrow"
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- BRAND LIST (Existing RecyclerView) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/brandNameRecView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:scrollbars="vertical"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/brandMatrix"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/selector_box"
+                android:padding="@dimen/_8sdp">
+
+                <TextView
+                    android:id="@+id/tvBrandMatrix"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Brand Matrix"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_6sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/imgBrandMatrixArrow"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/imgBrandMatrixArrow"
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/brandMatrixRecView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:scrollbars="vertical"/>
+
+            <TextView
+                android:id="@+id/tvNoBrandMatrix"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No Brand Matrix Available"
+                android:gravity="center"
+                android:padding="12dp"
+                android:visibility="gone"/>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/speciality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/selector_box"
+                android:padding="@dimen/_8sdp">
+
+                <TextView
+                    android:id="@+id/tvspeciality"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Speciality"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_6sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/imgBrandMatrixArrow"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/imgspecialityArrow"
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/specialityRecView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:scrollbars="vertical"/>
+
+            <TextView
+                android:id="@+id/tvNospeciality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No Speciality Available"
+                android:gravity="center"
+                android:padding="12dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/brandNameRecView"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="0.7"-->
+<!--            android:scrollbars="vertical" />-->
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
