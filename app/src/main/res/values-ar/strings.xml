@@ -161,7 +161,7 @@
     <string name="yet_to_add_rcpa">لم يتم إضافة RCPA بعد</string>
     <string name="no_records_avail">لا توجد سجلات متاحة</string>
     <string name="competitor_product">منتج المنافس</string>
-    <string name="clear">مسح</string>
+    <string name="clear">واضح</string>
     <string name="comp_prd">منتج المنافس</string>
     <string name="enter_name">أدخل الاسم</string>
     <string name="enter_homeadd">أدخل عنوان المنزل</string>
@@ -375,7 +375,7 @@
     <string name="field_work">عمل ميداني</string>
     <string name="non_field_work">عمل غير ميداني</string>
     <string name="leave">إجازة</string>
-    <string name="missed_released">إصدار مفقود</string>
+    <string name="missed_released"> مطلق سراحه   مفتقد</string>
     <string name="re_entry">إعادة الدخول</string>
     <string name="holiday">عطلة</string>
     <string name="weekly_off">عطلة أسبوعية</string>
@@ -641,7 +641,7 @@
 
     <string name="leavestatus">حالة الإجازة</string>
     <string name="call_summary">ملخص المكالمات</string>
-    <string name="stock_balance">رصيد المخزون</string>
+    <string name="stock_balance"> توازن مخزون</string>
     <string name="profile">الملف الشخصي</string>
     <string name="birthday">عيد الميلاد</string>
     <string name="anniversary">ذكرى الزواج</string>
@@ -677,7 +677,7 @@
     <string name="call_sync">مزامنة المكالمات</string>
     <string name="date_sync">مزامنة التاريخ</string>
     <string name="work_plan">خطة العمل</string>
-    <string name="visit_control">التحكم في الزيارات</string>
+    <string name="visit_control">التحكم في الزيارة</string>
     <string name="work_type">نوع العمل</string>
     <string name="tp_setup">إعداد TP</string>
     <string name="stp_setup">إعداد STP</string>
@@ -1033,6 +1033,8 @@
     <string name="draft">مسودة</string>
     <string name="completed">مكتمل</string>
     <string name="captured">تم الالتقاط</string>
+    <string name="outbox">علبة الصادر </string>
+    <string name="dcr">تقرير المكالمات اليومية</string>
 
     <string name="selection">التحديد</string>
     <string name="total_calls">إجمالي المكالمات</string>

@@ -61,7 +61,7 @@
         android:layout_marginEnd="@dimen/_3sdp"
         android:layout_toRightOf="@+id/refresh"
         android:fontFamily="@font/satoshi_regular"
-        android:text="Sync"
+        android:text="@string/sync"
         android:textColor="@color/text_sync"
         android:textSize="@dimen/_7sdp"
         android:textStyle="bold">

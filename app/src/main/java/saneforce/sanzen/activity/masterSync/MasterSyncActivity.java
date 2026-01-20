@@ -509,7 +509,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.dcr.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.dcr);
-                    binding.childSync.setText("Sync DCR");
+                    //binding.childSync.setText("Sync DCR");
+                    String dcrLabel=getString(R.string.dcr);
+                    binding.childSync.setText(getString(R.string.sync) + " " + dcrLabel );
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(dcrModelArray);
                     populateAdapter(arrayForAdapter);

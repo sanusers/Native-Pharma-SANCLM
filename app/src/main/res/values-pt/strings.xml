@@ -1045,6 +1045,9 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
 
     <string name="draft">Rascunho</string>
     <string name="completed">Concluído</string>
+    <string name="captured">Capturado</string>
+    <string name="outbox">Caixa de saída</string>
+    <string name="dcr">Relatório diário de chamadas</string>
 
     <string name="selection">Seleção</string>
     <string name="total_calls">Total de chamadas</string>

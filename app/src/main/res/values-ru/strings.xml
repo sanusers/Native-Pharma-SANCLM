@@ -1040,6 +1040,9 @@
 
     <string name="draft">Черновик</string>
     <string name="completed">Завершено</string>
+    <string name="captured">Захвачено</string>
+    <string name="outbox">Исходящие</string>
+    <string name="dcr">Ежедневный отчет о звонках</string>
 
     <string name="selection">Выбор</string>
     <string name="total_calls">Всего вызовов</string>

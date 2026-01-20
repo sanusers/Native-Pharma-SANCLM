@@ -1042,6 +1042,9 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
 
     <string name="draft">Bản nháp</string>
     <string name="completed">Hoàn thành</string>
+    <string name="captured">Đã chụp</string>
+    <string name="outbox">Hộp thư đi</string>
+    <string name="dcr">Báo cáo cuộc gọi hằng ngày</string>
 
 
     <string name="selection">Lựa chọn</string>

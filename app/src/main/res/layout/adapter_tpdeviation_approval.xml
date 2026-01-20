@@ -247,6 +247,7 @@
         android:fontFamily="@font/satoshi_medium"
         android:paddingVertical="@dimen/_2sdp"
         android:text="@string/deviation_remarks"
+        android:gravity="left"
         android:textColor="@color/light_grey_2"
         android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toTopOf="@id/tv_deviation_remarks"

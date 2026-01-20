@@ -1032,6 +1032,9 @@
 
     <string name="draft">မူကြမ်း</string>
     <string name="completed">ပြီးစီးပြီး</string>
+    <string name="captured">ဖမ်းဆီးပြီး</string>
+    <string name="outbox">ပို့ရန်အကွက်</string>
+    <string name="dcr">နေ့စဉ် ဖုန်းခေါ်ဆိုမှု အစီရင်ခံစာ</string>
     <string name="selection">ရွေးချယ်မှု</string>
     <string name="total_calls">စုစုပေါင်းဖုန်းခေါ်ဆိုမှုများ</string>
     <string name="avg_calls">ပျမ်းမျှဖုန်းခေါ်ဆိုမှုများ</string>

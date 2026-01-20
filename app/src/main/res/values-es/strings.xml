@@ -1037,5 +1037,9 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="avg_calls">Promedio de llamadas</string>
     <string name="meter">Medidor</string>
 
+    <string name="captured">Capturado</string>
+    <string name="outbox">Bandeja de salida</string>
+    <string name="dcr">Informe diario de llamadas</string>
+
 
 </resources>

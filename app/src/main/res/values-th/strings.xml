@@ -1042,6 +1042,9 @@
 
     <string name="draft">ร่าง</string>
     <string name="completed">เสร็จสมบูรณ์</string>
+    <string name="captured">บันทึกแล้ว</string>
+    <string name="outbox">กล่องขาออก</string>
+    <string name="dcr">รายงานการโทรประจำวัน</string>
 
     <string name="selection">การเลือก</string>
     <string name="total_calls">จำนวนการโทรทั้งหมด</string>

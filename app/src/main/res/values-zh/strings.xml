@@ -1038,6 +1038,9 @@
 
     <string name="draft">草稿</string>
     <string name="completed">已完成</string>
+    <string name="captured">已捕获</string>
+    <string name="outbox">发件箱</string>
+    <string name="dcr">每日通话报告</string>
 
     <string name="selection">选择</string>
     <string name="total_calls">通话总数</string>
