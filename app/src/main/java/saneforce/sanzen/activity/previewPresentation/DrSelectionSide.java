@@ -86,6 +86,7 @@ public class DrSelectionSide extends Fragment {
             public void onSafeClick(View view) {
             }
         });
+        drSelectionSideBinding.tvTagHeader.setText(SharedPref.getDrCap(requireContext()) + " "+ getString(R.string.selection));
 
         drSelectionSideBinding.imgClose.setOnClickListener(new SafeClickListener() {
             @Override

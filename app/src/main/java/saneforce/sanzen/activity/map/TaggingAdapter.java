@@ -48,7 +48,9 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tv_name.setText(taggedMapLists.get(position).getName());
         holder.tv_address.setText(taggedMapLists.get(position).getAddr());
-        holder.tv_meters.setText(String.format("%s Meter", taggedMapLists.get(position).getMeters()));
+//        holder.tv_meters.setText(String.format("%s Meter", taggedMapLists.get(position).getMeters()));
+        String unit = context.getString(R.string.meter);
+        holder.tv_meters.setText(taggedMapLists.get(position).getMeters()+ " "+ unit);
 
         if (taggedMapLists.get(position).clicked) {
             holder.img_info.setImageDrawable(context.getResources().getDrawable(R.drawable.info_icon_pink));

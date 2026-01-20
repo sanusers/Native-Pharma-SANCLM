@@ -703,9 +703,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void populateDocDataAdapter() {
-        activityStandardTourPlanBinding.tvDdDocCategory.setText(drCap + " Category");
+        activityStandardTourPlanBinding.tvDdDocCategory.setText(drCap + " "+R.string.category);
         activityStandardTourPlanBinding.tvDdTotalDoctors.setText(getString(R.string.total)+ " " + drCap);
         activityStandardTourPlanBinding.tvDdPlannedDoctors.setText(getString(R.string.planned)+ " " + drCap);
+        activityStandardTourPlanBinding.tvDdTotalVisits.setText(getString(R.string.total)+ " "+ getString(R.string.visit));
+        activityStandardTourPlanBinding.tvDdPlannedVisits.setText(getString(R.string.planned)+ " "+getString(R.string.visit));
         docDataModelList = new ArrayList<>();
         for (String key : docCategoryModelMap.keySet()) {
             DocCategoryModel docCategoryModel = docCategoryModelMap.get(key);

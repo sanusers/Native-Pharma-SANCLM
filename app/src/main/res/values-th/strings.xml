@@ -1043,5 +1043,9 @@
     <string name="draft">ร่าง</string>
     <string name="completed">เสร็จสมบูรณ์</string>
 
+    <string name="selection">การเลือก</string>
+    <string name="total_calls">จำนวนการโทรทั้งหมด</string>
+    <string name="avg_calls">ค่าเฉลี่ยการโทร</string>
+    <string name="meter">มาตรวัด</string>
 
 </resources>

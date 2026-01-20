@@ -189,7 +189,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                 }
             }
 
-            binding.title.setText(String.format("Select %s", selectedCustomerCaption));
+            binding.title.setText(CustomerSelectionActivity.this.getString(R.string.select)+" "+ selectedCustomerCaption);
 
         } catch (Exception e) {
             e.printStackTrace();

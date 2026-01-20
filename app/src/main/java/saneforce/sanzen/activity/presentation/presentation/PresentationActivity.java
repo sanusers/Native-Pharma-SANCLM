@@ -109,7 +109,7 @@ public class PresentationActivity extends AppCompatActivity {
         hosCap = SharedPref.getHospCaption(this);
 
         viewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
-        viewPagerAdapter.add(new CommonPresentationFragment(), "Common");
+        viewPagerAdapter.add(new CommonPresentationFragment(), getString(R.string.common));
         if (SharedPref.getDrNeed(PresentationActivity.this).equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new DoctorPresentationFragment(this::viewSideScreen), drCap);
         }

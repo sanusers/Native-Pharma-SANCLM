@@ -1041,6 +1041,10 @@
     <string name="draft">Черновик</string>
     <string name="completed">Завершено</string>
 
+    <string name="selection">Выбор</string>
+    <string name="total_calls">Всего вызовов</string>
+    <string name="avg_calls">Среднее количество вызовов</string>
+    <string name="meter">Счётчик</string>
 
 
 </resources>

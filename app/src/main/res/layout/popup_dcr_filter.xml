@@ -200,7 +200,7 @@
             android:paddingVertical="@dimen/_5sdp"
             android:paddingStart="@dimen/_5sdp"
             android:paddingEnd="@dimen/_7sdp"
-            android:text="Add Condition"
+            android:text="@string/add_condition"
             android:visibility="gone"
             android:textColor="@color/green_2"
             android:textSize="@dimen/_6ssp"

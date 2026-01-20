@@ -1047,6 +1047,10 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="draft">Draft</string>
     <string name="completed">Completed</string>
     <string name="captured">Captured</string>
+    <string name="selection"> Selection </string>
+    <string name="total_calls"> Total Calls</string>
+    <string name="avg_calls"> AvgCalls</string>
+    <string name="meter"> Meter </string>
 
 
 

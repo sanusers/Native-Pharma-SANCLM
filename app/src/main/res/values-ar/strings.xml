@@ -62,7 +62,7 @@
     <string name="value">القيمة</string>
     <string name="add_competitor">إضافة منافس</string>
     <string name="competitor_company">شركة منافسة</string>
-    <string name="comp_brand">العلامة التجارية المنافسة</string>
+    <string name="comp_brand">ماركة منافسة</string>
     <string name="remarks">ملاحظات</string>
     <string name="delete">حذف</string>
     <string name="confirm">تأكيد</string>
@@ -671,7 +671,7 @@
     <string name="slide_wise">حسب الشريحة</string>
     <string name="play">تشغيل</string>
     <string name="slide_downloader">مُنزّل الشرائح</string>
-    <string name="welcome_slide_downloader">مرحبًا بك في مُنزّل الشرائح</string>
+    <string name="welcome_slide_downloader">أداة تنزيل الشرائح الترحيبية</string>
     <string name="brand">علامة تجارية</string>
     <string name="mapped_competitor_prod">منتج المنافس المحدد على الخريطة</string>
     <string name="call_sync">مزامنة المكالمات</string>
@@ -1034,6 +1034,10 @@
     <string name="completed">مكتمل</string>
     <string name="captured">تم الالتقاط</string>
 
+    <string name="selection">التحديد</string>
+    <string name="total_calls">إجمالي المكالمات</string>
+    <string name="avg_calls">متوسط المكالمات</string>
+    <string name="meter">العداد</string>
 
 
 </resources>

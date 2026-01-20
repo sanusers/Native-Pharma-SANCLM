@@ -1032,5 +1032,10 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="draft">Borrador</string>
     <string name="completed">Completado</string>
 
+    <string name="selection">Selección</string>
+    <string name="total_calls">Total de llamadas</string>
+    <string name="avg_calls">Promedio de llamadas</string>
+    <string name="meter">Medidor</string>
+
 
 </resources>

@@ -1044,6 +1044,10 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="completed">Hoàn thành</string>
 
 
+    <string name="selection">Lựa chọn</string>
+    <string name="total_calls">Tổng số cuộc gọi</string>
+    <string name="avg_calls">Số cuộc gọi trung bình</string>
+    <string name="meter">Đồng hồ đo</string>
 
 
 

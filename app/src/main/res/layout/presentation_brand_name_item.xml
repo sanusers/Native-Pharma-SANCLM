@@ -24,6 +24,7 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="left"
             android:text="@string/brand_name_1"
             android:textColor="@color/text_dark"
             android:textSize="@dimen/_6sdp"

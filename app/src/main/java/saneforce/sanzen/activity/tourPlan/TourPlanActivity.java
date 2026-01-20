@@ -2043,7 +2043,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     private String monthYearFromDateUI(LocalDate date) {
         DateTimeFormatter formatter = null;
-        formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.getDefault());
+        formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.ENGLISH);
 
         return date.format(formatter);
     }

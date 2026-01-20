@@ -64,12 +64,12 @@ public class TimeUtils {
     public static final String FORMAT_41 = "hh:mm a";
     public static final String FORMAT_42 = "MMM dd, yyyy | EEEE";
 
-    public static String getCurrentDateTime(String format) {
+/*    public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         return simpleDateFormat.format(new Date(timestampMilliseconds));
-    }
-/*   public static String getCurrentDateTime(String format) {
+    }*/
+   public static String getCurrentDateTime(String format) {
        long ts = System.currentTimeMillis();
 
        Locale deviceLocale = Locale.getDefault();
@@ -80,7 +80,7 @@ public class TimeUtils {
 
        SimpleDateFormat sdf = new SimpleDateFormat(format, outputLocale);
        return sdf.format(new Date(ts));
-   }*/
+   }
 
 
     public static String getCurrentDateTimeTp(String format) {
@@ -89,14 +89,14 @@ public class TimeUtils {
         return simpleDateFormat.format(new Date(timestampMilliseconds));
     }
 
-    public static String GetCurrentTimeStamp(String mFormat) {
+/*    public static String GetCurrentTimeStamp(String mFormat) {
         String stringDate;
         long timestampMilliseconds = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mFormat, Locale.ENGLISH);
         stringDate = simpleDateFormat.format(new Date(timestampMilliseconds));
         return stringDate;
-    }
-/*   public static String GetCurrentTimeStamp(String mFormat) {
+    }*/
+   public static String GetCurrentTimeStamp(String mFormat) {
 
        long ts = System.currentTimeMillis();
 
@@ -110,7 +110,7 @@ public class TimeUtils {
        SimpleDateFormat sdf = new SimpleDateFormat(mFormat, outputLocale);
 
        return sdf.format(new Date(ts));
-   }*/
+   }
 
     public static long GetTimeStamp(String mDate, String mFormat) {
         Date date = null;
@@ -123,15 +123,15 @@ public class TimeUtils {
         return Objects.requireNonNull(date).getTime();
     }
 
-    public static String GetCurrentDateTime(String format) {
+  /*  public static String GetCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         String Str_Date = simpleDateFormat.format(new Date(timestampMilliseconds));
         Log.d(TAG, "GetCurrentDateTime: => " + Str_Date);
         return Str_Date;
-    }
+    }*/
 
-    /*public static String GetCurrentDateTime(String format) {
+    public static String GetCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
 
         Locale deviceLocale = Locale.getDefault();
@@ -147,7 +147,7 @@ public class TimeUtils {
         Log.d("TAG", "GetCurrentDateTime: => " + Str_Date);
 
         return Str_Date;
-    }*/
+    }
 
 
     public static String GetNextDateTime() {
@@ -176,31 +176,58 @@ public class TimeUtils {
           return outputDate;
       }
 
-/*    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
 
-        if (mDate == null) return null;
+//    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+//
+//        if (mDate == null) return null;
+//
+//        mDate = normalizeDigits(mDate);
+//
+//        Locale deviceLocale = Locale.getDefault();
+//        boolean isArabic = deviceLocale.getLanguage().equals("ar");
+//        boolean isBurmese = deviceLocale.getLanguage().equals("my");
+//
+//        // If Arabic OR Burmese → force English digits
+////        Locale formatLocale = (isArabic || isBurmese) ? Locale.ENGLISH : deviceLocale;
+//
+//        try {
+//            SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, deviceLocale);
+//            SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat, deviceLocale);
+//
+//            Date convertedDate = currentDateFormat.parse(mDate);
+//            return requiredDateFormat.format(convertedDate);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+ /*  public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
 
-        mDate = normalizeDigits(mDate);
+       if (mDate == null) return null;
 
-        Locale deviceLocale = Locale.getDefault();
-        boolean isArabic = deviceLocale.getLanguage().equals("ar");
-        boolean isBurmese = deviceLocale.getLanguage().equals("my");
+       mDate = normalizeDigits(mDate);
 
-        // If Arabic OR Burmese → force English digits
-        Locale formatLocale = (isArabic || isBurmese) ? Locale.ENGLISH : deviceLocale;
+       // 1. Keep the user's actual locale for month names
+       Locale userLocale = Locale.getDefault();
 
-        try {
-            SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, formatLocale);
-            SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat, formatLocale);
+       try {
+           // 2. Parser: Usually best to keep this English/Standard if source is DB/API
+           SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.ENGLISH);
 
-            Date convertedDate = currentDateFormat.parse(mDate);
-            return requiredDateFormat.format(convertedDate);
+           // 3. Formatter: Use userLocale so months are translated (e.g., Arabic/Burmese)
+           SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat, userLocale);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }*/
+//           requiredDateFormat.setNumberFormat(java.text.NumberFormat.getInstance(Locale.ENGLISH));
+
+           Date convertedDate = currentDateFormat.parse(mDate);
+           return requiredDateFormat.format(convertedDate);
+
+       } catch (Exception e) {
+           e.printStackTrace();
+           return null;
+       }
+   }*/
     private static String normalizeDigits(String input) {
         if (input == null) return null;
 

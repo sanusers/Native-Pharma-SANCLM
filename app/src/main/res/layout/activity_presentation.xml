@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_16sdp"
                     android:fontFamily="@font/satoshi_variable"
-                    android:text="Presentation"
+                    android:text="@string/presentation"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_7sdp"
                     tools:ignore="SpUsage" />
