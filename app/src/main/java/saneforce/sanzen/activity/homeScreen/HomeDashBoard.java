@@ -253,8 +253,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ArrayList<MenuModel> menuList = new ArrayList<>();
     ReportsAdapter reportsAdapter;
     private final Handler handler = new Handler();
-    private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.getDefault());
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.ENGLISH);
     private boolean isLocationPermissionRequested = false;
     private android.app.AlertDialog locationDialog;
     private ConnectivityManager.NetworkCallback networkCallback;
@@ -654,6 +654,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             super.onResume();
             AppIdentify();
             Log.d("ACTIVITY_STATUS", "OnResume");
+            commonUtilsMethods = new CommonUtilsMethods(HomeDashBoard.this);
             commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
             if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
@@ -743,7 +744,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
                 CheckedTpRange();
                 //  showBirthdayPopup();
-                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
 
                 if (!today.equals(SharedPref.getBirthdayShownDate(HomeDashBoard.this)) || !today.equals(SharedPref.getAnniversaryShownDate(HomeDashBoard.this))) {
                     new Handler().postDelayed(this::showCombinedWishesPopup, 1000);
@@ -824,7 +825,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
 
 // ✅ Prevent popup if already shown today (unless forced)
-            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
             String lastShownDate = SharedPref.getTodayPopupShown(this);
             if (today.equals(lastShownDate) && !forceImmediate) {
                 Log.d("PopupCheck", "Popup already shown today, skipping.");
@@ -901,6 +902,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         previousDate = dateFormat.format(new Date());
         handler.post(updateClock);
         Log.d("ACTIVITY_STATUS", "OnCreate");
+        commonUtilsMethods = new CommonUtilsMethods(HomeDashBoard.this);
+        commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -980,7 +983,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         commonUtilsMethods = new CommonUtilsMethods(HomeDashBoard.this);
-        commonUtilsMethods.setUpLanguage(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
         binding.subDivision.setText(SharedPref.getSubDivisionNames(this));
         isDateSelectionClicked = false;
@@ -1548,7 +1551,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String dayPlan_Date = jsonObject1.getString("date");
                     String CurrentDate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_15);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                     Date date1 = sdf.parse(dayPlan_Date);
                     Date date2 = sdf.parse(CurrentDate);
                     if (Objects.requireNonNull(date1).equals(date2)) {
@@ -2910,7 +2913,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM d", Locale.US);
             String todayStr = outputFormat.format(new Date());
-            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
 
             String birthdayMsg = "";
             String anniversaryMsg = "";
@@ -2985,8 +2988,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     !SharedPref.getTpStartDate(HomeDashBoard.this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(HomeDashBoard.this).equalsIgnoreCase("-1") &&
                     !SharedPref.getTpEndDate(HomeDashBoard.this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(HomeDashBoard.this).equalsIgnoreCase("-1")) {
                 Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-                SimpleDateFormat date = new SimpleDateFormat("dd", Locale.getDefault());
+                SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+                SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
                 String mCurrDate = date.format(calendar.getTime());
                 String currentDate = sdf.format(calendar.getTime());
                 calendar.add(Calendar.MONTH, 1);

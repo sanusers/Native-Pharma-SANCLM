@@ -223,27 +223,27 @@ public class MasterSyncActivity extends AppCompatActivity {
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             binding.listedDr.setSelected(true);
-            binding.childSync.setText("Sync " + SharedPref.getDrCap(MasterSyncActivity.this));
+            binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getDrCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(doctorModelArray);
         } else if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
             binding.chemist.setSelected(true);
-            binding.childSync.setText("Sync " + SharedPref.getChmCap(MasterSyncActivity.this));
+            binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getChmCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(chemistModelArray);
         } else if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
             binding.stockiest.setSelected(true);
-            binding.childSync.setText("Sync " + SharedPref.getStkCap(MasterSyncActivity.this));
+            binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getStkCap(MasterSyncActivity.this));
             arrayForAdapter.addAll(stockiestModelArray);
         } else if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
             binding.unlistedDoctor.setSelected(true);
-            binding.childSync.setText("Sync " + SharedPref.getUNLcap(MasterSyncActivity.this));
+            binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getUNLcap(MasterSyncActivity.this));
             arrayForAdapter.addAll(unlistedDrModelArray);
         } else if (SharedPref.getCipNeed(this).equalsIgnoreCase("0")) {
             binding.cip.setSelected(true);
-            binding.childSync.setText("Sync " + SharedPref.getCipCaption(MasterSyncActivity.this));
+            binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getCipCaption(MasterSyncActivity.this));
             arrayForAdapter.addAll(cipModelArray);
         } else if (SharedPref.getHospNeed(this).equalsIgnoreCase("0")) {
             binding.hospital.setSelected(true);
-            binding.childSync.setText("Sync " + SharedPref.getHospCaption(MasterSyncActivity.this));
+            binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getHospCaption(MasterSyncActivity.this));
             arrayForAdapter.addAll(hospitalModelArray);
         } else {
             binding.cluster.setSelected(true);
@@ -388,7 +388,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                 if (!view.isSelected()) {
                     listItemClicked(binding.listedDr);
-                    binding.childSync.setText("Sync " + SharedPref.getDrCap(MasterSyncActivity.this));
+                    binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getDrCap(MasterSyncActivity.this));
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(doctorModelArray);
                     populateAdapter(arrayForAdapter);
@@ -400,7 +400,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                 if (!view.isSelected()) {
                     listItemClicked(binding.chemist);
-                    binding.childSync.setText("Sync " + SharedPref.getChmCap(MasterSyncActivity.this));
+                    binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getChmCap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(chemistModelArray);
@@ -412,7 +412,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.stockiest.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.stockiest);
-                    binding.childSync.setText("Sync " + SharedPref.getStkCap(MasterSyncActivity.this));
+                    binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getStkCap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(stockiestModelArray);
@@ -423,7 +423,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.unlistedDoctor.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.unlistedDoctor);
-                    binding.childSync.setText("Sync " + SharedPref.getUNLcap(MasterSyncActivity.this));
+                    binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getUNLcap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(unlistedDrModelArray);
@@ -434,7 +434,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.hospital.setOnClickListener(view ->{
                 if (!view.isSelected()) {
                     listItemClicked(binding.hospital);
-                    binding.childSync.setText("Sync " + SharedPref.getHospCaption(MasterSyncActivity.this));
+                    binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getHospCaption(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(hospitalModelArray);
@@ -448,7 +448,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 if (!view.isSelected()) {
                     listItemClicked(binding.cip);
-                    binding.childSync.setText("Sync " + SharedPref.getCipCaption(MasterSyncActivity.this));
+                    binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " " + SharedPref.getCipCaption(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(cipModelArray);
@@ -484,7 +484,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.cluster.setOnClickListener(view ->{
                 if (!view.isSelected()) {
                     listItemClicked(binding.cluster);
-                    binding.childSync.setText("Sync " + SharedPref.getClusterCap(MasterSyncActivity.this));
+                    binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+" "+  SharedPref.getClusterCap(MasterSyncActivity.this));
 
                     arrayForAdapter.clear();
                     arrayForAdapter.addAll(clusterModelArray);
@@ -524,7 +524,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.activity.setOnClickListener(view -> {
                 if (!view.isSelected()) {
                     listItemClicked(binding.activity);
-                    binding.childSync.setText("Sync " + SharedPref.getActivityCap(MasterSyncActivity.this));
+                    binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync)+ " "+ SharedPref.getActivityCap(MasterSyncActivity.this));
                     String activityLabel = SharedPref.getActivityCap(MasterSyncActivity.this);
 //                    binding.childSync.setText(getString(R.string.sync_activity, activityLabel));
 //                    String activityLabel = getString(R.string.activity);

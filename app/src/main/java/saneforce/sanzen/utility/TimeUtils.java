@@ -64,12 +64,12 @@ public class TimeUtils {
     public static final String FORMAT_41 = "hh:mm a";
     public static final String FORMAT_42 = "MMM dd, yyyy | EEEE";
 
-/*    public static String getCurrentDateTime(String format) {
+    public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         return simpleDateFormat.format(new Date(timestampMilliseconds));
-    }*/
-   public static String getCurrentDateTime(String format) {
+    }
+/*   public static String getCurrentDateTime(String format) {
        long ts = System.currentTimeMillis();
 
        Locale deviceLocale = Locale.getDefault();
@@ -80,7 +80,7 @@ public class TimeUtils {
 
        SimpleDateFormat sdf = new SimpleDateFormat(format, outputLocale);
        return sdf.format(new Date(ts));
-   }
+   }*/
 
 
     public static String getCurrentDateTimeTp(String format) {
@@ -89,14 +89,14 @@ public class TimeUtils {
         return simpleDateFormat.format(new Date(timestampMilliseconds));
     }
 
-/*    public static String GetCurrentTimeStamp(String mFormat) {
+    public static String GetCurrentTimeStamp(String mFormat) {
         String stringDate;
         long timestampMilliseconds = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mFormat, Locale.ENGLISH);
         stringDate = simpleDateFormat.format(new Date(timestampMilliseconds));
         return stringDate;
-    }*/
-   public static String GetCurrentTimeStamp(String mFormat) {
+    }
+ /*  public static String GetCurrentTimeStamp(String mFormat) {
 
        long ts = System.currentTimeMillis();
 
@@ -110,7 +110,7 @@ public class TimeUtils {
        SimpleDateFormat sdf = new SimpleDateFormat(mFormat, outputLocale);
 
        return sdf.format(new Date(ts));
-   }
+   }*/
 
     public static long GetTimeStamp(String mDate, String mFormat) {
         Date date = null;
