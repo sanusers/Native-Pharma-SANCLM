@@ -814,6 +814,11 @@ public class Leave_Application extends AppCompatActivity {
                                         Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
                                         Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
                                         l_details.notifyDataSetChanged();
+                                        if ("Leave balance not available".equalsIgnoreCase(msg)
+                                                || "Leave Balance Not Available".equalsIgnoreCase(msg)) {
+
+                                            msg = getString(R.string.leave_balance_not_available);
+                                        }
 
                                         commonUtilsMethods.showToastMessage(Leave_Application.this, msg);
                                     }

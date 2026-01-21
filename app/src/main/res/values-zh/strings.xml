@@ -1046,6 +1046,7 @@
     <string name="total_calls">通话总数</string>
     <string name="avg_calls">平均通话次数</string>
     <string name="meter">计量器</string>
+    <string name="leave_balance_not_available">未提供休假余额</string>
 
 
 

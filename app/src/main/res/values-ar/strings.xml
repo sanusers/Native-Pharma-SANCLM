@@ -1040,6 +1040,7 @@
     <string name="total_calls">إجمالي المكالمات</string>
     <string name="avg_calls">متوسط المكالمات</string>
     <string name="meter">العداد</string>
+    <string name="leave_balance_not_available">رصيد الإجازات غير متوفر</string>
 
 
 </resources>

@@ -1050,5 +1050,6 @@
     <string name="total_calls">จำนวนการโทรทั้งหมด</string>
     <string name="avg_calls">ค่าเฉลี่ยการโทร</string>
     <string name="meter">มาตรวัด</string>
+    <string name="leave_balance_not_available">ไม่พบยอดวันลา</string>
 
 </resources>

@@ -1051,6 +1051,7 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="total_calls">Tổng số cuộc gọi</string>
     <string name="avg_calls">Số cuộc gọi trung bình</string>
     <string name="meter">Đồng hồ đo</string>
+    <string name="leave_balance_not_available">Không có số dư ngày nghỉ</string>
 
 
 

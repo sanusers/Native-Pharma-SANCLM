@@ -1053,5 +1053,7 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="total_calls">Total de chamadas</string>
     <string name="avg_calls">Chamadas médias</string>
     <string name="meter">Medidor</string>
+    <string name="leave_balance_not_available">Saldo de férias indisponível</string>
+
 
 </resources>

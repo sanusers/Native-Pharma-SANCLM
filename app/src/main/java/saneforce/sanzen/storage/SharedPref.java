@@ -529,7 +529,8 @@ public class SharedPref {
     public static final String IS_WORKING_TODAY = "is_working_today";
 
     public static final String TodayTPDoctor = "TodayTPDoctor";
-    public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
+   // public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
+    public static final String RemainderTime = "RemainderTime";
     public static final String DataClearedFlag = "DataClearedFlag";
     private static final String TodayPopupShown = "TodayPopupShown";
     public static final String LAST_KNOWN_VERSION = "last_known_version";
@@ -3342,12 +3343,12 @@ public class SharedPref {
     public static void setDoctorRemainingShownDate(Context context, String time) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(DoctorRemainingShownDate, time);
+        editor.putString(RemainderTime, time);
         editor.apply();
     }
 
     public static String getDoctorRemainingShownDate(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DoctorRemainingShownDate, "");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(RemainderTime, "");
     }
 
 //    public static void addVisitedDoctor(Context context, String custCode) {

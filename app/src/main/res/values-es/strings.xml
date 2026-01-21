@@ -1040,6 +1040,7 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="captured">Capturado</string>
     <string name="outbox">Bandeja de salida</string>
     <string name="dcr">Informe diario de llamadas</string>
+    <string name="leave_balance_not_available">Saldo de vacaciones no disponible</string>
 
 
 </resources>

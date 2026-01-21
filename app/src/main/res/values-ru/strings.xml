@@ -1048,6 +1048,7 @@
     <string name="total_calls">Всего вызовов</string>
     <string name="avg_calls">Среднее количество вызовов</string>
     <string name="meter">Счётчик</string>
+    <string name="leave_balance_not_available">Баланс отпусков недоступен</string>
 
 
 </resources>
