@@ -3327,6 +3327,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     public void showDoctorPlanPopup(String tpDoctor, boolean isFromTP) {
         try {
+            if (!selectedDate.isEqual(LocalDate.now())){
+                Log.e("DoctorPopup", "Popup skipped because selected date is not today");
+                return;
+            }
             if (!isFromTP) {
                 Log.e("DoctorPopup", "Popup skipped because isFromTP=false");
                 return;

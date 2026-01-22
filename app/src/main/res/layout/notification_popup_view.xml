@@ -45,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:gravity="left"
                     android:fontFamily="@font/satoshi_medium"
                     android:text="@string/notifications"
                     android:textColor="@color/dark_purple"

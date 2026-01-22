@@ -692,15 +692,15 @@ public class ListedDoctorFragment extends Fragment {
 //                            prepareData(jsonObject, i, brands, false);
 //                        }
 //                    }
-                } else if (tpDataObj != null) {
+                } else if (tpDataObj != null && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                     if(SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")){
                         Type type = new TypeToken<OneBuildModelClass>() {
                         }.getType();
                         OneBuildModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
                         int fwSession = -1;
-                        if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
+                        if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(0).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))){
                             fwSession = 0;
-                        } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+                        } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(1).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)|| SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
                             fwSession = 1;
                         }
                         List<String> drList = new ArrayList<>();
@@ -732,9 +732,9 @@ public class ListedDoctorFragment extends Fragment {
                         }.getType();
                         ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
                         int fwSession = -1;
-                        if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
+                        if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)|| SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))){
                             fwSession = 0;
-                        } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+                        } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)|| SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
                             fwSession = 1;
                         }
                         List<String> drList = new ArrayList<>();

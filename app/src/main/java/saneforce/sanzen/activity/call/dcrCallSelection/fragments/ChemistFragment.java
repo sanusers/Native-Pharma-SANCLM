@@ -406,25 +406,25 @@ public class ChemistFragment extends Fragment {
                             cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", true));
                         }
                     }
-                } else if (tpDataObj != null) {
-                    if(SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")){
+                } else if (tpDataObj != null && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                    if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         Type type = new TypeToken<OneBuildModelClass>() {
                         }.getType();
                         OneBuildModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
                         int fwSession = -1;
-                        if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
+                        if (!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(0).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
                             fwSession = 0;
-                        } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+                        } else if ((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(1).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
                             fwSession = 1;
                         }
                         List<String> chmList = new ArrayList<>();
-                        if(fwSession != -1) {
+                        if (fwSession != -1) {
                             for (OneBuildModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getChemists()) {
                                 chmList.add(subClass.getCode());
                             }
                             Log.i("TP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
-                            if(!chmList.isEmpty()) {
-                                if(todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
+                            if (!chmList.isEmpty()) {
+                                if (todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
                                     cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", false));
                                 }
                             } else {
@@ -441,24 +441,24 @@ public class ChemistFragment extends Fragment {
                                 cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", true));
                             }
                         }
-                    }else{
+                    } else {
                         Type type = new TypeToken<ModelClass>() {
                         }.getType();
                         ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
                         int fwSession = -1;
-                        if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
+                        if (!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
                             fwSession = 0;
-                        } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+                        } else if ((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
                             fwSession = 1;
                         }
                         List<String> chmList = new ArrayList<>();
-                        if(fwSession != -1) {
+                        if (fwSession != -1) {
                             for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getChemist()) {
                                 chmList.add(subClass.getCode());
                             }
                             Log.i("TP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
-                            if(!chmList.isEmpty()) {
-                                if(todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
+                            if (!chmList.isEmpty()) {
+                                if (todayPlannedClusters.contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
                                     cusListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "2", getChemistCategory(jsonObject.optString("Chm_cat")), jsonObject.optString("Chm_cat"), "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), "", "", jsonObject.optString("Chemists_Email"), jsonObject.optString("Chemists_Mobile"), jsonObject.optString("Chemists_Phone"), "", "", "", "", false));
                                 }
                             } else {
