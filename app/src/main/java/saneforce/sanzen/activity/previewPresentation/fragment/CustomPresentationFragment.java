@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.presentation.createPresentation.brand.SpecialityNameAdapter;
+import saneforce.sanzen.activity.presentation.createPresentation.slide.SpecialityModelClass;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
@@ -62,6 +64,12 @@ public class CustomPresentationFragment extends Fragment {
     private ItemTouchHelper itemTouchHelper;
     private boolean isAllBrandsExpanded = false;
     private boolean isBrandMatrixExpanded = false;
+    private boolean isSpecialityExpanded=false;
+
+
+//    private ArrayList<SpecialityModelClass> specialityArrayList = new ArrayList<>();
+//    private SpecialityNameAdapter SpecialityNameAdapter;
+//    private String selectedSpecialityCode = ""; // Keep track of selected speciality
 
 
     public CustomPresentationFragment() {
@@ -81,99 +89,102 @@ public class CustomPresentationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCustomPresentationBinding.inflate(inflater);
         uiInitialisation();
-        //corrected code
-//        binding.clAllBrands.setOnClickListener(v -> {
-//            if (isAllBrandsExpanded) {
-//                binding.brandNameRecView.setVisibility(View.GONE);
-//                binding.imgAllBrandArrow.setRotation(0);
-//            } else {
-//                binding.brandNameRecView.setVisibility(View.VISIBLE);
-//                binding.imgAllBrandArrow.setRotation(180);
-//            }
-//            isAllBrandsExpanded = !isAllBrandsExpanded;
-//        });
-
-//        binding.brandMatrix.setOnClickListener(view -> {
-//            if(isBrandMatrixExpanded){
-//                binding.brandMatrixRecView.setVisibility(View.GONE);
-//                binding.imgBrandMatrixArrow.setRotation(0);
-//            } else {
-//                binding.brandMatrixRecView.setVisibility(View.VISIBLE);
-//                binding.imgBrandMatrixArrow.setRotation(180);
-//            }
-//            isBrandMatrixExpanded = !isBrandMatrixExpanded;
-//        });
-      //corrected code
-//        binding.brandMatrix.setOnClickListener(view -> {
-//            if (isBrandMatrixExpanded) {
-//                binding.brandMatrixRecView.setVisibility(View.GONE);
-//                binding.tvNoBrandMatrix.setVisibility(View.GONE);
-//                binding.imgBrandMatrixArrow.setRotation(0);
-//            } else {
-//                binding.brandMatrixRecView.setVisibility(View.GONE);
-//                binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
-//                binding.imgBrandMatrixArrow.setRotation(180);
-//            }
-//            isBrandMatrixExpanded = !isBrandMatrixExpanded;
-//        });
-
+      //  loadSpecialitiesFromMaster();
+        // changed 22/1== ALL BRANDS
         binding.clAllBrands.setOnClickListener(v -> {
+
             if (isAllBrandsExpanded) {
                 // Collapse All Brands
                 binding.brandNameRecView.setVisibility(View.GONE);
                 binding.imgAllBrandArrow.setRotation(0);
+
             } else {
                 // Expand All Brands
                 binding.brandNameRecView.setVisibility(View.VISIBLE);
                 binding.imgAllBrandArrow.setRotation(180);
 
-                // Collapse Brand Matrix if open
-                if (isBrandMatrixExpanded) {
-                    binding.brandMatrixRecView.setVisibility(View.GONE);
-                    binding.tvNoBrandMatrix.setVisibility(View.GONE);
-                    binding.imgBrandMatrixArrow.setRotation(0);
-                    isBrandMatrixExpanded = false;
+                // 🔵 SHOW slides back
+                binding.slideImageRecView.setVisibility(View.VISIBLE);
+
+                // Hide Brand Matrix empty msg
+                binding.tvNoBrandMatrix.setVisibility(View.GONE);
+                binding.imgBrandMatrixArrow.setRotation(0);
+                isBrandMatrixExpanded = false;
+
+                // 🔹 Collapse Speciality if open
+                if (isSpecialityExpanded) {
+                    binding.tvNospeciality.setVisibility(View.GONE);
+                    binding.imgspecialityArrow.setRotation(0);
+                    isSpecialityExpanded = false;
                 }
             }
+
             isAllBrandsExpanded = !isAllBrandsExpanded;
         });
 
-//        binding.brandMatrix.setOnClickListener(view -> {
-//            if (isBrandMatrixExpanded) {
-//                // Collapse Brand Matrix
-//                binding.brandMatrixRecView.setVisibility(View.GONE);
-//                binding.tvNoBrandMatrix.setVisibility(View.GONE);
-//                binding.imgBrandMatrixArrow.setRotation(0);
-//            } else {
-//                // Expand Brand Matrix
-//                binding.brandMatrixRecView.setVisibility(View.VISIBLE); // show the recycler view
-//                binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
-//                binding.imgBrandMatrixArrow.setRotation(180);
-//
-//                // Collapse All Brands if open
-//                if (isAllBrandsExpanded) {
-//                    binding.brandNameRecView.setVisibility(View.GONE);
-//                    binding.imgAllBrandArrow.setRotation(0);
-//                    isAllBrandsExpanded = false;
-//                }
-//            }
-//            isBrandMatrixExpanded = !isBrandMatrixExpanded;
-//        });
+ ;
 
-        //no datas in brand it shows empty
+        // changed 22/1==BRAND MATRIX
         binding.brandMatrix.setOnClickListener(view -> {
 
             if (isBrandMatrixExpanded) {
+
                 // Collapse Brand Matrix
-                binding.brandMatrixRecView.setVisibility(View.GONE);
                 binding.tvNoBrandMatrix.setVisibility(View.GONE);
                 binding.imgBrandMatrixArrow.setRotation(0);
 
+                // Show slides
+                binding.slideImageRecView.setVisibility(View.VISIBLE);
+
             } else {
+
                 // Expand Brand Matrix
-                binding.brandMatrixRecView.setVisibility(View.VISIBLE);
                 binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
                 binding.imgBrandMatrixArrow.setRotation(180);
+
+                // Hide slides
+                binding.slideImageRecView.setVisibility(View.GONE);
+
+                // 🔴 CLOSE ALL BRANDS
+                if (isAllBrandsExpanded) {
+                    binding.brandNameRecView.setVisibility(View.GONE);
+                    binding.imgAllBrandArrow.setRotation(0);
+                    isAllBrandsExpanded = false;
+                }
+
+                // 🔴 CLOSE SPECIALITY  ← THIS WAS MISSING ❌
+                if (isSpecialityExpanded) {
+                    binding.tvNospeciality.setVisibility(View.GONE);
+                    binding.imgspecialityArrow.setRotation(0);
+                    isSpecialityExpanded = false;
+                }
+
+                binding.playBtn.setEnabled(false);
+                binding.clearBtn.setEnabled(false);
+            }
+
+            isBrandMatrixExpanded = !isBrandMatrixExpanded;
+        });
+
+
+        // changed 22/1== SPECIALITY
+        binding.speciality.setOnClickListener(view -> {
+
+            if (isSpecialityExpanded) {
+                // Collapse Speciality
+                binding.tvNospeciality.setVisibility(View.GONE);
+                binding.imgspecialityArrow.setRotation(0);
+
+                // Show slides
+                binding.slideImageRecView.setVisibility(View.VISIBLE);
+
+            } else {
+                // Expand Speciality
+                binding.tvNospeciality.setVisibility(View.VISIBLE);
+                binding.imgspecialityArrow.setRotation(180);
+
+                // Hide slides
+                binding.slideImageRecView.setVisibility(View.GONE);
 
                 // Collapse All Brands if open
                 if (isAllBrandsExpanded) {
@@ -182,18 +193,19 @@ public class CustomPresentationFragment extends Fragment {
                     isAllBrandsExpanded = false;
                 }
 
-                // clearing slide when there is no datas is found
-
-                if (slideImageAdapter != null) {
-                    slideImageAdapter.clearData();
+                // Collapse Brand Matrix if open
+                if (isBrandMatrixExpanded) {
+                    binding.tvNoBrandMatrix.setVisibility(View.GONE);
+                    binding.imgBrandMatrixArrow.setRotation(0);
+                    isBrandMatrixExpanded = false;
                 }
 
-                // disable buttons
+                // Disable buttons for Speciality
                 binding.playBtn.setEnabled(false);
                 binding.clearBtn.setEnabled(false);
             }
 
-            isBrandMatrixExpanded = !isBrandMatrixExpanded;
+            isSpecialityExpanded = !isSpecialityExpanded;
         });
 
 
@@ -425,5 +437,125 @@ public class CustomPresentationFragment extends Fragment {
             binding.slidesRecView.scrollToPosition(position);
         }
     }
+
+//    private void loadSpecialitiesFromMaster() {
+//        try {
+//            JSONArray specialityMaster = masterDataDao
+//                    .getMasterDataTableOrNew(Constants.SPECIALITY)
+//                    .getMasterSyncDataJsonArray();
+//
+//            specialityArrayList.clear();
+//
+//            for (int i = 0; i < specialityMaster.length(); i++) {
+//                JSONObject obj = specialityMaster.getJSONObject(i);
+//                String code = obj.getString("Code");
+//                String name = obj.getString("Name");
+//                String docSpecialName = obj.getString("Doc_Special_Name");
+//                String divisionCode = obj.getString("Division_Code");
+//
+//                SpecialityModelClass speciality = new SpecialityModelClass(code, name, docSpecialName, divisionCode);
+//                specialityArrayList.add(speciality);
+//            }
+//
+//            if (!specialityArrayList.isEmpty()) {
+//                selectedSpecialityCode = specialityArrayList.get(0).getCode(); // select first by default
+//            }
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        populateSpecialityAdapter();
+//    }
+//
+//
+//    private void populateSpecialityAdapter() {
+//        if (specialityArrayList.isEmpty()) {
+//            binding.tvNospeciality.setVisibility(View.VISIBLE);
+//            binding.specialityRecView.setVisibility(View.GONE);
+//            return;
+//        }
+//
+//        binding.tvNospeciality.setVisibility(View.GONE);
+//        binding.specialityRecView.setVisibility(View.VISIBLE);
+//
+//        SpecialityNameAdapter = new SpecialityNameAdapter(requireContext(), specialityArrayList, (speciality, position) -> {
+//            selectedSpecialityCode = speciality.getCode(); // update selected speciality
+//            loadProductsForSelectedSpeciality();          // reload slides for this speciality
+//            SpecialityNameAdapter.notifyDataSetChanged();
+//        });
+//
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+//        binding.specialityRecView.setLayoutManager(layoutManager);
+//        binding.specialityRecView.setAdapter(SpecialityNameAdapter);
+//    }
+//
+//
+//    private void loadProductsForSelectedSpeciality() {
+//        try {
+//            JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE)
+//                    .getMasterSyncDataJsonArray();
+//            JSONArray specSlide = masterDataDao.getMasterDataTableOrNew(Constants.SPL_SLIDE)
+//                    .getMasterSyncDataJsonArray();
+//
+//            // Map: SlideId-SpecialityCode → Priority
+//            HashMap<String, String> specialityWithPriority = new HashMap<>();
+//            for (int i = 0; i < specSlide.length(); i++) {
+//                JSONObject obj = specSlide.getJSONObject(i);
+//                String slideId = obj.getString("ID");
+//                String specCode = obj.getString("Doc_Special_Code");
+//                String priority = obj.getString("Priority");
+//
+//                specialityWithPriority.put(slideId + "-" + specCode, priority);
+//            }
+//
+//            ArrayList<BrandModelClass.Product> filteredProducts = new ArrayList<>();
+//
+//            for (int i = 0; i < prodSlide.length(); i++) {
+//                JSONObject productObj = prodSlide.getJSONObject(i);
+//                String slideId = productObj.getString("SlideId");
+//
+//                String key = slideId + "-" + selectedSpecialityCode;
+//                if (specialityWithPriority.containsKey(key)) {
+//                    String priority = specialityWithPriority.get(key);
+//                    BrandModelClass.Product product = getProductData(productObj, priority);
+//                    if (product != null) filteredProducts.add(product);
+//                }
+//            }
+//
+//            // Now populate the brand list with filtered products
+//            HashMap<String, ArrayList<BrandModelClass.Product>> brandMap = new HashMap<>();
+//            for (BrandModelClass.Product p : filteredProducts) {
+//                brandMap.computeIfAbsent(p.getBrandCode(), k -> new ArrayList<>()).add(p);
+//            }
+//
+//            brandProductArrayList.clear();
+//            for (String brandCode : brandMap.keySet()) {
+//                ArrayList<BrandModelClass.Product> products = brandMap.get(brandCode);
+//                if (products != null && !products.isEmpty()) {
+//                    BrandModelClass brandModel = new BrandModelClass(
+//                            products.get(0).getBrandName(),
+//                            brandCode,
+//                            "0",
+//                            0,
+//                            false,
+//                            products
+//                    );
+//                    brandProductArrayList.add(brandModel);
+//                }
+//            }
+//
+//            // Select first brand by default
+//            if (!brandProductArrayList.isEmpty()) {
+//                brandProductArrayList.get(0).setBrandSelected(true);
+//            }
+//
+//            populateBrandNameAdapter(brandProductArrayList);
+//            populateSelectedSlideAdapter(new ArrayList<>(), -1);
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }

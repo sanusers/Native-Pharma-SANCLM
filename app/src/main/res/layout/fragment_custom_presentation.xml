@@ -168,7 +168,7 @@
                     android:textStyle="bold"
                     android:textSize="@dimen/_6sdp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/imgBrandMatrixArrow"
+                    app:layout_constraintEnd_toStartOf="@id/imgspecialityArrow"
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <ImageView
