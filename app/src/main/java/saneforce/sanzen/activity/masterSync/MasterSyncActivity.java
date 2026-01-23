@@ -326,6 +326,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 searchView.setIconified(false);
                 searchView.setIconifiedByDefault(false);
                 searchView.setMaxWidth(Integer.MAX_VALUE);
+                searchView.setTextDirection(View.TEXT_DIRECTION_LTR);
 
                 headerTxt.setText(getResources().getText(R.string.select_hq));
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(MasterSyncActivity.this, android.R.layout.simple_list_item_1, new ArrayList<>(list));

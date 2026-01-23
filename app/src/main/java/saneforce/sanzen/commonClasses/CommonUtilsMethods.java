@@ -84,7 +84,7 @@ public class CommonUtilsMethods {
         Geocoder geocoder;
         List<Address> addresses;
         String address = activity.getString(R.string.no_address_found);
-        geocoder = new Geocoder(activity, Locale.getDefault());
+        geocoder = new Geocoder(activity, Locale.ENGLISH);
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);
             if (addresses != null && !addresses.isEmpty()) {

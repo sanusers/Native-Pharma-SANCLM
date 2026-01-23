@@ -627,8 +627,8 @@ public class DCRCallActivity extends AppCompatActivity {
         viewPagerAdapter = new DCRCallTabLayoutAdapter(getSupportFragmentManager());
 
         if (isDetailingRequired.equalsIgnoreCase("true")) {
-            viewPagerAdapter.add(new DetailedFragment(), "Detailed");
-            pages.add("Detailed");
+            viewPagerAdapter.add(new DetailedFragment(), DCRCallActivity.this.getString(R.string.detailed));
+            pages.add(DCRCallActivity.this.getString(R.string.detailed));
         } else {
             DetailedFragment.callDetailingLists = new ArrayList<>();
         }
@@ -673,8 +673,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     pages.add(capInp);
                 }
                 if (AdditionalCallNeed.equalsIgnoreCase("0") && !(isFromActivity.equalsIgnoreCase("edit_local") || isFromActivity.equalsIgnoreCase("edit_online"))) {
-                    viewPagerAdapter.add(new AdditionalCallFragment(), "Additional Calls");
-                    pages.add("Additional Calls");
+                    viewPagerAdapter.add(new AdditionalCallFragment(), DCRCallActivity.this.getString(R.string.additional_call));
+                    pages.add(DCRCallActivity.this.getString(R.string.additional_call));
                 }
                 if (RCPANeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
@@ -685,11 +685,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     pages.add(capActivity);
                 }
             }
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-            pages.add("JFW/Others");
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
 
-            viewPagerAdapter.add(signatureFragment1, "Signature");
-            pages.add("Signature");
+            viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
+            pages.add(DCRCallActivity.this.getString(R.string.signature));
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             if (ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -712,8 +712,8 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(signatureFragment1, "Signature");
-            pages.add("Signature");
+            viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
+            pages.add(DCRCallActivity.this.getString(R.string.signature));
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             if (ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -727,11 +727,11 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-            pages.add("JFW/Others");
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
 
-            viewPagerAdapter.add(signatureFragment1, "Signature");
-            pages.add("Signature");
+            viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
+            pages.add(DCRCallActivity.this.getString(R.string.signature));
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
             if (ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -745,25 +745,25 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-            pages.add("JFW/Others");
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
 
-            viewPagerAdapter.add(signatureFragment1, "Signature");
-            pages.add("Signature");
+            viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
+            pages.add(DCRCallActivity.this.getString(R.string.signature));
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
-            viewPagerAdapter.add(new ProductFragment(), "Product");
-            pages.add("Product");
-            viewPagerAdapter.add(new InputFragment(), "Input");
-            pages.add("Input");
+            viewPagerAdapter.add(new ProductFragment(), capPrd);
+            pages.add(capPrd);
+            viewPagerAdapter.add(new InputFragment(), capInp);
+            pages.add(capInp);
             if (ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-            pages.add("JFW/Others");
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
 
-            viewPagerAdapter.add(signatureFragment1, "Signature");
-            pages.add("Signature");
+            viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
+            pages.add(DCRCallActivity.this.getString(R.string.signature));
         }
 
         dcrCallBinding.viewPager.setAdapter(viewPagerAdapter);

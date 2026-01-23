@@ -232,11 +232,16 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     }
 
     private double getDistanceMeters(double CurLat, double CurLng, double CustLat, double CustLng) {
-        distanceTag = distance(CurLat, CurLng, CustLat, CustLng);
+      /*  distanceTag = distance(CurLat, CurLng, CustLat, CustLng);
         distanceTag = milesToMeters(distanceTag);
         DecimalFormat decFor = new DecimalFormat("0.00");
         distanceTag = valueOf(decFor.format(distanceTag));
-        return distanceTag;
+        return distanceTag;*/
+        double distanceMiles = distance(CurLat, CurLng, CustLat, CustLng);
+        double distanceMeters = milesToMeters(distanceMiles);
+
+
+        return Math.round(distanceMeters * 100.0) / 100.0;
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {

@@ -339,7 +339,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         //   B  -  PastMonth     B1  is = 1-15 ,B2  is = 1-31
         //  C -  PastMonth      C1  is = 1-15 ,C2  is = 1-31
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd",Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd",Locale.ENGLISH);
         SimpleDateFormat sdfs = new SimpleDateFormat("MMMM",Locale.getDefault());
         Calendar MonthC = Calendar.getInstance();
         MonthC.add(Calendar.MONTH, -2);
@@ -378,7 +378,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
             callAnalysisBinding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
             callAnalysisBinding.inChart.txtMonthThree.setVisibility(View.VISIBLE);
-            callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(MonthC.getTime()), MonthC.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
+            callAnalysisBinding.textDate.setText(String.format(Locale.ENGLISH,"%s %d - %s %d", sdfs.format(MonthC.getTime()), MonthC.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis1 = callTableDao.getCallsCountByRange("C1", Custype);
             int xaxis2 = callTableDao.getCallsCountByRange("C1", "C2", Custype);
@@ -410,7 +410,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.inChart.txtMonthThree.setVisibility(View.INVISIBLE);
             callAnalysisBinding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
             callAnalysisBinding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
-            callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(MonthB.getTime()), MonthB.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
+            callAnalysisBinding.textDate.setText(String.format(Locale.ENGLISH,"%s %d - %s %d", sdfs.format(MonthB.getTime()), MonthB.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis3 = callTableDao.getCallsCountByRange("B1", Custype);
             int xaxis4 = callTableDao.getCallsCountByRange("B1", "B2", Custype);
@@ -435,7 +435,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.inChart.txtMonthTwo.setVisibility(View.INVISIBLE);
             callAnalysisBinding.inChart.txtMonthThree.setVisibility(View.INVISIBLE);
             callAnalysisBinding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
-            callAnalysisBinding.textDate.setText(String.format("%s %d", sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
+            callAnalysisBinding.textDate.setText(String.format(Locale.ENGLISH,"%s %d", sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
             int xaxis6 = callTableDao.getCallsCountByRange("A1", "A2", Custype);
