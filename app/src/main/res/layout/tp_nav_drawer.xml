@@ -89,11 +89,7 @@
         android:layout_below="@id/planDate"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="-4dp"
-        android:layout_marginEnd="-10dp"
         android:layout_marginBottom="3dp"
-        android:layoutDirection="ltr"
         android:overScrollMode="never" />
 
     <LinearLayout

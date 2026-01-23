@@ -140,6 +140,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:paddingVertical="@dimen/_2sdp"
             android:text="@string/cluster"
+            android:gravity="left"
             android:textColor="@color/cheked_txt_color"
             android:textSize="@dimen/_6ssp"
             app:layout_constraintBottom_toBottomOf="parent"

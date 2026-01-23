@@ -1053,6 +1053,9 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="meter">Đồng hồ đo</string>
     <string name="leave_balance_not_available">Không có số dư ngày nghỉ</string>
 
+    <string name="detailed">Chi tiết</string>
+    <string name="jfw">Làm việc chung</string>
+    <string name="others">Khác</string>
 
 
 </resources>

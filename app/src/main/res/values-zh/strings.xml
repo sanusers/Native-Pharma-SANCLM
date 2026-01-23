@@ -1047,6 +1047,9 @@
     <string name="avg_calls">平均通话次数</string>
     <string name="meter">计量器</string>
     <string name="leave_balance_not_available">未提供休假余额</string>
+    <string name="detailed">详细</string>
+    <string name="jfw">联合工作</string>
+    <string name="others">其他</string>
 
 
 

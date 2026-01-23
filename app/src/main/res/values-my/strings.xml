@@ -1040,6 +1040,9 @@
     <string name="avg_calls">ပျမ်းမျှဖုန်းခေါ်ဆိုမှုများ</string>
     <string name="meter">မီတာ</string>
     <string name="leave_balance_not_available">ခွင့်ရက်လက်ကျန် မရရှိနိုင်ပါ</string>
+    <string name="detailed">အသေးစိတ်</string>
+    <string name="jfw">အတူလုပ်ဆောင်မှု</string>
+    <string name="others">အခြား</string>
 
 
 

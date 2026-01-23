@@ -1039,6 +1039,9 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="avg_calls">Appels moyens</string>
     <string name="meter">Compteur</string>
     <string name="leave_balance_not_available">Solde de congés non disponible</string>
+    <string name="detailed">Détaillé</string>
+    <string name="jfw">Travail conjoint</string>
+    <string name="others">Autres</string>
 
 
 </resources>

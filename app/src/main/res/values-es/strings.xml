@@ -1041,6 +1041,9 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="outbox">Bandeja de salida</string>
     <string name="dcr">Informe diario de llamadas</string>
     <string name="leave_balance_not_available">Saldo de vacaciones no disponible</string>
+    <string name="detailed">Detallado</string>
+    <string name="jfw">Trabajo conjunto</string>
+    <string name="others">Otros</string>
 
 
 </resources>

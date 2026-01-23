@@ -80,6 +80,7 @@
                 android:drawablePadding="@dimen/_5sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:hint="@string/search"
+                android:gravity="left|center"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
                 android:paddingHorizontal="@dimen/_10sdp"

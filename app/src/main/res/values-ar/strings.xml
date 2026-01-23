@@ -1041,6 +1041,9 @@
     <string name="avg_calls">متوسط المكالمات</string>
     <string name="meter">العداد</string>
     <string name="leave_balance_not_available">رصيد الإجازات غير متوفر</string>
+    <string name="detailed">مفصل</string>
+    <string name="jfw">عمل مشترك</string>
+    <string name="others">أخرى</string>
 
 
 </resources>

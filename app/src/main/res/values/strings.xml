@@ -1055,6 +1055,9 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="avg_calls"> AvgCalls</string>
     <string name="meter"> Meter </string>
     <string name="leave_balance_not_available">Leave balance not available</string>
+    <string name="detailed"> Detailed </string>
+    <string name="jfw"> JFW </string>
+    <string name="others"> Others</string>
 
 
 
