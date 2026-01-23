@@ -1,4 +1,4 @@
-package saneforce.sanzen.activity.presentation.createPresentation.slide;
+package saneforce.sanzen.activity.presentation.createPresentation;
 
 public class SpecialityModelClass {
     private String code;

@@ -16,37 +16,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.createPresentation.brand.SpecialityNameAdapter;
-import saneforce.sanzen.activity.presentation.createPresentation.slide.SpecialityModelClass;
-import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.activity.presentation.createPresentation.SpecialityModelClass;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanzen.activity.presentation.createPresentation.brand.BrandNameAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.selectedSlide.ItemTouchHelperCallBack;
 import saneforce.sanzen.activity.presentation.createPresentation.selectedSlide.SelectedSlidesAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.slide.ImageSelectionInterface;
 import saneforce.sanzen.activity.presentation.createPresentation.slide.SlideImageAdapter;
-import saneforce.sanzen.activity.presentation.playPreview.PlaySlidePreviewActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentCustomPresentationBinding;
-import saneforce.sanzen.databinding.FragmentCustomerPresentationBinding;
-import saneforce.sanzen.databinding.FragmentHomePreviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
-import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
 public class CustomPresentationFragment extends Fragment {
@@ -67,9 +58,9 @@ public class CustomPresentationFragment extends Fragment {
     private boolean isSpecialityExpanded=false;
 
 
-//    private ArrayList<SpecialityModelClass> specialityArrayList = new ArrayList<>();
-//    private SpecialityNameAdapter SpecialityNameAdapter;
-//    private String selectedSpecialityCode = ""; // Keep track of selected speciality
+    private ArrayList<SpecialityModelClass> specialityArrayList = new ArrayList<>();
+    private SpecialityNameAdapter SpecialityNameAdapter;
+    private String selectedSpecialityCode = ""; // Keep track of selected speciality
 
 
     public CustomPresentationFragment() {
@@ -89,7 +80,7 @@ public class CustomPresentationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCustomPresentationBinding.inflate(inflater);
         uiInitialisation();
-      //  loadSpecialitiesFromMaster();
+       loadSpecialitiesFromMaster();
         // changed 22/1== ALL BRANDS
         binding.clAllBrands.setOnClickListener(v -> {
 
@@ -174,15 +165,16 @@ public class CustomPresentationFragment extends Fragment {
                 // Collapse Speciality
                 binding.tvNospeciality.setVisibility(View.GONE);
                 binding.imgspecialityArrow.setRotation(0);
-
+                binding.specialityRecView.setVisibility(View.VISIBLE);
                 // Show slides
                 binding.slideImageRecView.setVisibility(View.VISIBLE);
 
             } else {
                 // Expand Speciality
+
                 binding.tvNospeciality.setVisibility(View.VISIBLE);
                 binding.imgspecialityArrow.setRotation(180);
-
+                binding.specialityRecView.setVisibility(View.GONE);
                 // Hide slides
                 binding.slideImageRecView.setVisibility(View.GONE);
 
@@ -438,124 +430,50 @@ public class CustomPresentationFragment extends Fragment {
         }
     }
 
-//    private void loadSpecialitiesFromMaster() {
-//        try {
-//            JSONArray specialityMaster = masterDataDao
-//                    .getMasterDataTableOrNew(Constants.SPECIALITY)
-//                    .getMasterSyncDataJsonArray();
-//
-//            specialityArrayList.clear();
-//
-//            for (int i = 0; i < specialityMaster.length(); i++) {
-//                JSONObject obj = specialityMaster.getJSONObject(i);
-//                String code = obj.getString("Code");
-//                String name = obj.getString("Name");
-//                String docSpecialName = obj.getString("Doc_Special_Name");
-//                String divisionCode = obj.getString("Division_Code");
-//
-//                SpecialityModelClass speciality = new SpecialityModelClass(code, name, docSpecialName, divisionCode);
-//                specialityArrayList.add(speciality);
-//            }
-//
-//            if (!specialityArrayList.isEmpty()) {
-//                selectedSpecialityCode = specialityArrayList.get(0).getCode(); // select first by default
-//            }
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        populateSpecialityAdapter();
-//    }
-//
-//
-//    private void populateSpecialityAdapter() {
-//        if (specialityArrayList.isEmpty()) {
-//            binding.tvNospeciality.setVisibility(View.VISIBLE);
-//            binding.specialityRecView.setVisibility(View.GONE);
-//            return;
-//        }
-//
-//        binding.tvNospeciality.setVisibility(View.GONE);
-//        binding.specialityRecView.setVisibility(View.VISIBLE);
-//
-//        SpecialityNameAdapter = new SpecialityNameAdapter(requireContext(), specialityArrayList, (speciality, position) -> {
-//            selectedSpecialityCode = speciality.getCode(); // update selected speciality
-//            loadProductsForSelectedSpeciality();          // reload slides for this speciality
-//            SpecialityNameAdapter.notifyDataSetChanged();
-//        });
-//
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-//        binding.specialityRecView.setLayoutManager(layoutManager);
-//        binding.specialityRecView.setAdapter(SpecialityNameAdapter);
-//    }
-//
-//
-//    private void loadProductsForSelectedSpeciality() {
-//        try {
-//            JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE)
-//                    .getMasterSyncDataJsonArray();
-//            JSONArray specSlide = masterDataDao.getMasterDataTableOrNew(Constants.SPL_SLIDE)
-//                    .getMasterSyncDataJsonArray();
-//
-//            // Map: SlideId-SpecialityCode → Priority
-//            HashMap<String, String> specialityWithPriority = new HashMap<>();
-//            for (int i = 0; i < specSlide.length(); i++) {
-//                JSONObject obj = specSlide.getJSONObject(i);
-//                String slideId = obj.getString("ID");
-//                String specCode = obj.getString("Doc_Special_Code");
-//                String priority = obj.getString("Priority");
-//
-//                specialityWithPriority.put(slideId + "-" + specCode, priority);
-//            }
-//
-//            ArrayList<BrandModelClass.Product> filteredProducts = new ArrayList<>();
-//
-//            for (int i = 0; i < prodSlide.length(); i++) {
-//                JSONObject productObj = prodSlide.getJSONObject(i);
-//                String slideId = productObj.getString("SlideId");
-//
-//                String key = slideId + "-" + selectedSpecialityCode;
-//                if (specialityWithPriority.containsKey(key)) {
-//                    String priority = specialityWithPriority.get(key);
-//                    BrandModelClass.Product product = getProductData(productObj, priority);
-//                    if (product != null) filteredProducts.add(product);
-//                }
-//            }
-//
-//            // Now populate the brand list with filtered products
-//            HashMap<String, ArrayList<BrandModelClass.Product>> brandMap = new HashMap<>();
-//            for (BrandModelClass.Product p : filteredProducts) {
-//                brandMap.computeIfAbsent(p.getBrandCode(), k -> new ArrayList<>()).add(p);
-//            }
-//
-//            brandProductArrayList.clear();
-//            for (String brandCode : brandMap.keySet()) {
-//                ArrayList<BrandModelClass.Product> products = brandMap.get(brandCode);
-//                if (products != null && !products.isEmpty()) {
-//                    BrandModelClass brandModel = new BrandModelClass(
-//                            products.get(0).getBrandName(),
-//                            brandCode,
-//                            "0",
-//                            0,
-//                            false,
-//                            products
-//                    );
-//                    brandProductArrayList.add(brandModel);
-//                }
-//            }
-//
-//            // Select first brand by default
-//            if (!brandProductArrayList.isEmpty()) {
-//                brandProductArrayList.get(0).setBrandSelected(true);
-//            }
-//
-//            populateBrandNameAdapter(brandProductArrayList);
-//            populateSelectedSlideAdapter(new ArrayList<>(), -1);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void loadSpecialitiesFromMaster() {
+        try {
+            JSONArray specialityMaster = masterDataDao
+                    .getMasterDataTableOrNew(Constants.SPECIALITY)
+                    .getMasterSyncDataJsonArray();
+
+            specialityArrayList.clear();
+
+            for (int i = 0; i < specialityMaster.length(); i++) {
+                JSONObject obj = specialityMaster.getJSONObject(i);
+                String code = obj.getString("Code");
+                String name = obj.getString("Name");
+                String docSpecialName = obj.getString("Doc_Special_Name");
+                String divisionCode = obj.getString("Division_Code");
+
+                SpecialityModelClass speciality = new SpecialityModelClass(code, name, docSpecialName, divisionCode);
+                specialityArrayList.add(speciality);
+            }
+
+            if (!specialityArrayList.isEmpty()) {
+                selectedSpecialityCode = specialityArrayList.get(0).getCode(); // select first by default
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        populateSpecialityAdapter();
+    }
+
+
+    private void populateSpecialityAdapter() {
+
+
+        SpecialityNameAdapter = new SpecialityNameAdapter(requireContext(), specialityArrayList, (speciality, position) -> {
+            selectedSpecialityCode = speciality.getCode(); // update selected speciality
+        //    loadProductsForSelectedSpeciality();          // reload slides for this speciality
+            SpecialityNameAdapter.notifyDataSetChanged();
+        });
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        binding.specialityRecView.setLayoutManager(layoutManager);
+        binding.specialityRecView.setAdapter(SpecialityNameAdapter);
+    }
+
 
 }

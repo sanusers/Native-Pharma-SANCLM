@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.presentation.createPresentation.slide.SpecialityModelClass;
+import saneforce.sanzen.activity.presentation.createPresentation.SpecialityModelClass;
 
 public class SpecialityNameAdapter extends RecyclerView.Adapter<SpecialityNameAdapter.ViewHolder> {
 
@@ -34,13 +33,14 @@ public class SpecialityNameAdapter extends RecyclerView.Adapter<SpecialityNameAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_speciality, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_speciality, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        SpecialityModelClass speciality = list.get(position);
+        SpecialityModelClass speciality = list.get(holder.getAbsoluteAdapterPosition());
+        holder.setIsRecyclable(false);
         holder.tvName.setText(speciality.getDocSpecialName());
 
         holder.itemView.setOnClickListener(v -> {
