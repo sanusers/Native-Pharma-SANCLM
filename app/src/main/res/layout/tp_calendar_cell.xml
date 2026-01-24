@@ -23,32 +23,51 @@
         app:layout_constraintVertical_bias="0.0"
         android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/dateNo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1"
-        android:textSize="@dimen/_7ssp"
-        android:textColor="@color/text_dark_65"
-        android:textStyle="bold"
-        android:fontFamily="@font/satoshi_medium"
-        android:layout_marginVertical="@dimen/_3sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+<!--    <TextView-->
+<!--        android:id="@+id/dateNo"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="1"-->
+<!--        android:textSize="@dimen/_7ssp"-->
+<!--        android:textColor="@color/text_dark_65"-->
+<!--        android:textStyle="bold"-->
+<!--        android:visibility="gone"-->
+<!--        android:fontFamily="@font/satoshi_medium"-->
+<!--        android:layout_marginVertical="@dimen/_3sdp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-    <ImageView
-        android:id="@+id/img_event_point"
-        android:layout_width="@dimen/_3sdp"
-        android:layout_height="@dimen/_3sdp"
-        android:visibility="invisible"
-        android:src="@drawable/testdrawable"
-        android:layout_marginVertical="@dimen/_3sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/dateNo"
-        app:layout_constraintEnd_toEndOf="@id/dateNo"
-        app:layout_constraintTop_toBottomOf="@id/dateNo"
-        tools:ignore="ContentDescription" />
+   <TextView
+       android:id="@+id/dateNo"
+       android:layout_width="@dimen/_12sdp"
+       android:layout_height="@dimen/_12sdp"
+       android:background="@drawable/circular_background_black"
+       android:backgroundTint="@color/white"
+       android:fontFamily="@font/satoshi_bold"
+       android:textColor="@color/text_dark_65"
+       android:textSize="@dimen/_7ssp"
+       android:gravity="center"
+       android:textStyle="bold"
+       android:layout_marginVertical="@dimen/_3sdp"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintBottom_toBottomOf="parent"
+       tools:text="2" />
+
+   <ImageView
+       android:id="@+id/img_event_point"
+       android:layout_width="@dimen/_3sdp"
+       android:layout_height="@dimen/_3sdp"
+       android:visibility="invisible"
+       android:src="@drawable/testdrawable"
+       android:layout_marginVertical="@dimen/_3sdp"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintStart_toStartOf="@id/dateNo"
+       app:layout_constraintEnd_toEndOf="@id/dateNo"
+       app:layout_constraintTop_toBottomOf="@id/dateNo"
+       tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

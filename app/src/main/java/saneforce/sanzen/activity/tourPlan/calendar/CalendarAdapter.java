@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.tourPlan.calendar;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                 if (Integer.valueOf(date) < TourPlanActivity.JoningDate && Integer.valueOf(oneBuildModelClass.getMonth()) == TourPlanActivity.JoiningMonth && Integer.valueOf(oneBuildModelClass.getYear()) == TourPlanActivity.JoinYear) {
                     TourPlanActivity.binding.calendarPrevButton.setEnabled(false);
                     holder.mainLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.bg_pink10));
+                    holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_pink10)));
                     TourPlanActivity.binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.less_than_gray, null));
                     holder.itemView.setEnabled(false);
                 } else {
@@ -110,6 +112,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                 if (Integer.valueOf(date) < TourPlanActivity.JoningDate && Integer.valueOf(modelClass.getMonth()) == TourPlanActivity.JoiningMonth && Integer.valueOf(modelClass.getYear()) == TourPlanActivity.JoinYear) {
                     TourPlanActivity.binding.calendarPrevButton.setEnabled(false);
                     holder.mainLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.bg_pink10));
+                    holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_pink10)));
                     TourPlanActivity.binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.less_than_gray, null));
                     holder.itemView.setEnabled(false);
                 } else {
@@ -124,31 +127,47 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         if (fwFlag.equalsIgnoreCase("F")) {
             drawable.setColor(context.getResources().getColor(R.color.green_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
+            holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else if (fwFlag.equalsIgnoreCase("L")) {
             drawable.setColor(context.getResources().getColor(R.color.red_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
+            holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.red_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else if (fwFlag.equalsIgnoreCase("N")) {
             drawable.setColor(context.getResources().getColor(R.color.blue_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
+            holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.blue_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else if (fwFlag.equalsIgnoreCase("M")) {
             drawable.setColor(context.getResources().getColor(R.color.Hilo_bay_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
+            holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.Hilo_bay_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else if (fwFlag.equalsIgnoreCase("RE")) {
             drawable.setColor(context.getResources().getColor(R.color.pink_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
+            holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.pink_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else if (fwFlag.equalsIgnoreCase("R")) {
             drawable.setColor(context.getResources().getColor(R.color.brown_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
+            holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.brown_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else if (fwFlag.equalsIgnoreCase("W")) {
             drawable.setColor(context.getResources().getColor(R.color.yellow_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
+            holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.yellow_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else if (fwFlag.equalsIgnoreCase("H")) {
             drawable.setColor(context.getResources().getColor(R.color.lustylavender_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
+            holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.lustylavender_60)));
         } else {
             holder.cornerImage.setVisibility(View.INVISIBLE);
         }
         holder.cornerImage.setImageDrawable(drawable);
+        holder.cornerImage.setVisibility(View.INVISIBLE);
     }
 
     @Override
