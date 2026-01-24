@@ -13,6 +13,8 @@ public class SpecialityModelClass {
    // private ArrayList<Slide> slideList;
     private int selectedSlideCount = 0;
 
+   // private ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
+
     public SpecialityModelClass(String code, String name, String docSpecialName, String divisionCode) {
         this.code = code;
         this.name = name;
@@ -39,5 +41,8 @@ public class SpecialityModelClass {
 
     public int getSelectedSlideCount() { return selectedSlideCount; }
     public void setSelectedSlideCount(int count) { this.selectedSlideCount = count; }
+
+//    public ArrayList<BrandModelClass.Product> getProductArrayList() { return productArrayList; }
+//    public void setProductArrayList(ArrayList<BrandModelClass.Product> list) { this.productArrayList = list; }
 
 }

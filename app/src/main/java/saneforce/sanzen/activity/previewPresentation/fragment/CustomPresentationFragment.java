@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.activity.presentation.createPresentation.brand.SpecialityNameAdapter;
@@ -564,36 +565,125 @@ public class CustomPresentationFragment extends Fragment {
         binding.specialityRecView.setAdapter(SpecialityNameAdapter);
     }
 
+    //    private void loadSlidesForSpeciality(String specialityCode) {
+//
+//        ArrayList<BrandModelClass.Product> slidesForSpeciality = new ArrayList<>();
+//
+//        JSONArray splSlide = masterDataDao
+//                .getMasterDataTableOrNew(Constants.SPL_SLIDE)
+//                .getMasterSyncDataJsonArray();
+//
+//        try {
+//            for (int i = 0; i < splSlide.length(); i++) {
+//                JSONObject obj = splSlide.getJSONObject(i);
+//
+//                String docSpecCode = obj.getString("Doc_Special_Code");
+//                String productBrdCode = obj.getString("Product_Brd_Code");
+//
+//                if (docSpecCode.equalsIgnoreCase(specialityCode)) {
+//
+//                    for (BrandModelClass brand : brandProductArrayList) {
+//                        if (brand.getBrandCode().equalsIgnoreCase(productBrdCode)) {
+//                            slidesForSpeciality.addAll(brand.getProductArrayList());
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        populateSlideImageAdapter(slidesForSpeciality);
+//    }
+//    private void loadSlidesForSpeciality(String specialityCode) {
+//        ArrayList<BrandModelClass.Product> slidesForSpeciality = new ArrayList<>();
+//
+//        try {
+//            JSONArray splSlide = masterDataDao
+//                    .getMasterDataTableOrNew(Constants.SPL_SLIDE)
+//                    .getMasterSyncDataJsonArray();
+//
+//            // 1. Matching Brand Codes-ai mattum collect pannuvom
+//            HashSet<String> matchedBrandCodes = new HashSet<>();
+//
+//            for (int i = 0; i < splSlide.length(); i++) {
+//                JSONObject obj = splSlide.getJSONObject(i);
+//
+//                // JSON-la irukkura column names: "Doc_Special_Code" matrum "Product_Brd_Code"
+//                String docSpecCode = obj.optString("Doc_Special_Code");
+//                String brandCode = obj.optString("Product_Brd_Code");
+//
+//                if (docSpecCode.equalsIgnoreCase(specialityCode)) {
+//                    matchedBrandCodes.add(brandCode);
+//                }
+//            }
+//
+//            Log.d("CheckData", "Matched Brand Codes: " + matchedBrandCodes.toString());
+//
+//            // 2. brandProductArrayList-la matching brands-oda slides-ai add pannuvom
+//            for (BrandModelClass brand : brandProductArrayList) {
+//                // Check if this brand's code is in our matched set
+//                if (matchedBrandCodes.contains(brand.getBrandCode())) {
+//                    slidesForSpeciality.addAll(brand.getProductArrayList());
+//                }
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        Log.d("CheckData", "Final Slides count: " + slidesForSpeciality.size());
+//
+//        // Grid refresh
+//        populateSlideImageAdapter(slidesForSpeciality);
+//    }
     private void loadSlidesForSpeciality(String specialityCode) {
-
         ArrayList<BrandModelClass.Product> slidesForSpeciality = new ArrayList<>();
 
-        JSONArray splSlide = masterDataDao
-                .getMasterDataTableOrNew(Constants.SPL_SLIDE)
-                .getMasterSyncDataJsonArray();
-
         try {
+            JSONArray splSlide = masterDataDao
+                    .getMasterDataTableOrNew(Constants.SPL_SLIDE)
+                    .getMasterSyncDataJsonArray();
+
+            // 1. Intha Speciality-kku mapped-ah irukura Unique Brand Codes-ai edunga (e.g., BLACK SQUAD & BPILIN)
+            HashSet<String> matchedBrandCodes = new HashSet<>();
             for (int i = 0; i < splSlide.length(); i++) {
                 JSONObject obj = splSlide.getJSONObject(i);
+                if (obj.optString("Doc_Special_Code").equalsIgnoreCase(specialityCode)) {
+                    matchedBrandCodes.add(obj.optString("Product_Brd_Code"));
+                }
+            }
 
-                String docSpecCode = obj.getString("Doc_Special_Code");
-                String productBrdCode = obj.getString("Product_Brd_Code");
+            // 2. Duplicate slides-ai avoid panna Slide ID-ai track panna oru Set
+            HashSet<String> uniqueSlideCheckSet = new HashSet<>();
 
-                if (docSpecCode.equalsIgnoreCase(specialityCode)) {
+            // 3. brandProductArrayList-la loop panni matching brands-oda slides-ai unique-ah edunga
+            for (BrandModelClass brand : brandProductArrayList) {
 
-                    for (BrandModelClass brand : brandProductArrayList) {
-                        if (brand.getBrandCode().equalsIgnoreCase(productBrdCode)) {
-                            slidesForSpeciality.addAll(brand.getProductArrayList());
+                // Step 1: Matching brand-ah nu paarkurom
+                if (matchedBrandCodes.contains(brand.getBrandCode())) {
+
+                    for (BrandModelClass.Product product : brand.getProductArrayList()) {
+
+                        // Step 2: Intha Slide ID munnadiyae add aagalana mattum add pannurom
+                        // product.getSlideId() unga unique identifier-ah irukanum
+                        if (!uniqueSlideCheckSet.contains(product.getSlideId())) {
+                            slidesForSpeciality.add(product);
+                            uniqueSlideCheckSet.add(product.getSlideId());
                         }
                     }
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        // ✅ Ippo 10 + 2 = 12 slides thaan varum
+        Log.d("CheckData", "Speciality: " + specialityCode);
+        Log.d("CheckData", "Final Unique Slides count: " + slidesForSpeciality.size());
+
         populateSlideImageAdapter(slidesForSpeciality);
     }
-
 
 }
