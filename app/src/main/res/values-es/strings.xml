@@ -1044,6 +1044,6 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="detailed">Detallado</string>
     <string name="jfw">Trabajo conjunto</string>
     <string name="others">Otros</string>
-
+    <string name="location">Ubicación</string>
 
 </resources>

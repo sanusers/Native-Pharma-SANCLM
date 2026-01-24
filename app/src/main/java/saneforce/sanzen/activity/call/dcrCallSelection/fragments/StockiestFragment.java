@@ -1,5 +1,8 @@
 package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
+import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.deviation;
+import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.tpDataObj;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -26,10 +29,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +54,8 @@ import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSel
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
+import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -341,35 +350,122 @@ public class StockiestFragment extends Fragment {
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i, boolean isFenced) {
         try {
             List<String> todayPlannedClusters = Arrays.asList(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(SharedPref.getTodayDayPlanClusterName(requireContext()))).split(","));
-//            if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-//                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
-//                    && !deviation.equalsIgnoreCase("1")) {
-//                if (tpDataObj != null) {
+            if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    && !deviation.equalsIgnoreCase("1")) {
+                if (tpDataObj != null) {
 //                    if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
-//                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", false));
-//                    }
-//                }
-//            } else if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-//                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
-//                    && deviation.equalsIgnoreCase("1")) {
-            if (isFenced) {
+                    if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                        Type type = new TypeToken<OneBuildModelClass>() {
+                        }.getType();
+                        OneBuildModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                        int fwSession = -1;
+                        if (!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(0).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
+                            fwSession = 0;
+                        } else if ((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(1).getHeadquarters().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
+                            fwSession = 1;
+                        }
+                        List<String> stkList = new ArrayList<>();
+                        if (fwSession != -1) {
+                            for (OneBuildModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getStockists()) {
+                                stkList.add(subClass.getCode());
+                            }
+                            Log.i("TP DR LIST", "SaveData: " + Arrays.toString(stkList.toArray()));
+                            if (!stkList.isEmpty()) {
+                                if (stkList.contains(jsonObject.getString("Code"))) {
+                                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
+                                }
+                            } else {
+                                if (isFenced) {
 //                if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
 //                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
-                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", ""));
+                                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", ""));
 //                }
-            } else {
-                if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
+                                } else {
+                                    if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
 //                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
-                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
-                } else {
-                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", true));
+                                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
+                                    } else {
+                                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", true));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
+//                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
+                                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
+                            } else {
+                                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", true));
+                            }
+                        }
+                    } else {
+                        Type type = new TypeToken<ModelClass>() {
+                        }.getType();
+                        ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                        int fwSession = -1;
+                        if (!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
+                            fwSession = 0;
+                        } else if ((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && (modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode) || SharedPref.getSfCode(requireContext()).equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode))) {
+                            fwSession = 1;
+                        }
+                        List<String> stkList = new ArrayList<>();
+                        if (fwSession != -1) {
+                            for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getStockiest()) {
+                                stkList.add(subClass.getCode());
+                            }
+                            Log.i("TP DR LIST", "SaveData: " + Arrays.toString(stkList.toArray()));
+                            if (!stkList.isEmpty()) {
+                                if (stkList.contains(jsonObject.getString("Code"))) {
+                                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
+                                }
+                            } else {
+                                if (isFenced) {
+//                if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
+//                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
+                                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", ""));
+//                }
+                                } else {
+                                    if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
+//                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
+                                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
+                                    } else {
+                                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", true));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
+//                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
+                                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
+                            } else {
+                                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", true));
+                            }
+                        }
+                    }
+//                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", false));
+//                    }
                 }
+            } else if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    && deviation.equalsIgnoreCase("1")) {
+                if (isFenced) {
+//                if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
+//                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
+                    custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", ""));
+//                }
+                } else {
+                    if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
+//                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("MaxGeoMap"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("Addr"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "","","",false));
+                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", false));
+                    } else {
+                        custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", "", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", "", "", "", true));
+                    }
+                }
+            } else if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
+                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", false));
+            } else {
+                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", true));
             }
-//            } else if (todayPlannedClusters.contains(jsonObject.optString("Town_Name"))) {
-//                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", false));
-//            } else {
-//                custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "3", "Category", "", "Specialty", jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), "", "", jsonObject.optString("Stockiest_Email"), jsonObject.optString("Stockiest_Mobile"), jsonObject.optString("Stockiest_Phone"), jsonObject.optString("Stockiest_Cont_Desig"), "", "", "", true));
-//            }
 
         } catch (Exception e) {
             Log.v("STKCALL", "--1111---" + e.toString());

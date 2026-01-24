@@ -1052,6 +1052,6 @@
     <string name="detailed">Подробно</string>
     <string name="jfw">Совместная работа</string>
     <string name="others">Другое</string>
-
+    <string name="location">Местоположение</string>
 
 </resources>

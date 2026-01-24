@@ -1057,6 +1057,6 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="detailed">Detalhado</string>
     <string name="jfw">Trabalho conjunto</string>
     <string name="others">Outros</string>
-
+    <string name="location">Localização</string>
 
 </resources>

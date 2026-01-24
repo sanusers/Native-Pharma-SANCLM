@@ -1058,6 +1058,7 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="detailed"> Detailed </string>
     <string name="jfw"> JFW </string>
     <string name="others"> Others</string>
+    <string name="location"> Location</string>
 
 
 
