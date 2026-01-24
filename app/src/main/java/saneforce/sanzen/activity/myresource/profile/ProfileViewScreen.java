@@ -20,19 +20,15 @@ import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.utility.TimeUtils;
 
-
 public class ProfileViewScreen extends AppCompatActivity {
     public ActivityProfileViewBinding activityProfileViewScreenBinding;
     MasterDataDao masterDataDao;
     private RoomDB roomDB;
     int position;
 
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         activityProfileViewScreenBinding = ActivityProfileViewBinding.inflate(getLayoutInflater());
         setContentView(activityProfileViewScreenBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -105,33 +101,18 @@ public class ProfileViewScreen extends AppCompatActivity {
                 activityProfileViewScreenBinding.emailTxt.setText(email);
                 activityProfileViewScreenBinding.dobTxt.setText(dob);
                 activityProfileViewScreenBinding.dowTxt.setText(dow);
-
-
-
-
-
-
-
-
-
                 /* String tp_rpt = profileObject.optString("TpMgrName");
                 String lev_rpt = profileObject.optString("LeaveMgrName");
-                String tp_range = "Every Month"+" "+profileObject.optString("Tp_Start_Date") + "-" +profileObject.optString("Tp_End_Date");
-*/
-
+                String tp_range = "Every Month"+" "+profileObject.optString("Tp_Start_Date") + "-" +profileObject.optString("Tp_End_Date");*/
                 /*activityProfileViewScreenBinding.startDtTxt.setText(sfdcrDate);*/
                 /*activityProfileViewScreenBinding.tpStartDtTxt.setText(sftpDate);*/
                /* activityProfileViewScreenBinding.tpRptName.setText(tp_rpt);
                 activityProfileViewScreenBinding.levRptName.setText(lev_rpt);
                 activityProfileViewScreenBinding.tpMandRangeTxt.setText(tp_range);*/
-
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-
-
 
         activityProfileViewScreenBinding.ivBack.setOnClickListener(new SafeClickListener() {
             @Override
@@ -139,7 +120,6 @@ public class ProfileViewScreen extends AppCompatActivity {
                 getOnBackPressedDispatcher().onBackPressed();
             }
         });
-
 
     }
 

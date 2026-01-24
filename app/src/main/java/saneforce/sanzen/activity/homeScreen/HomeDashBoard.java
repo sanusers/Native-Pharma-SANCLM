@@ -138,6 +138,8 @@ import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.myresource.MyResource_Activity;
+import saneforce.sanzen.activity.myresource.ProfilingActivity;
+import saneforce.sanzen.activity.myresource.profile.ProfileViewScreen;
 import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
@@ -1725,6 +1727,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         TextView Cluster = popupView.findViewById(R.id.clut);
         LinearLayout l_click = popupView.findViewById(R.id.change_passwrd);
         LinearLayout user_logout = popupView.findViewById(R.id.user_logout);
+        ImageView info = popupView.findViewById(R.id.info);
 
         user_logout.setOnClickListener(new SafeClickListener() {
             @Override
@@ -1744,6 +1747,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         sf_name.setText(SharedPref.getDsName(this));
         Cluster.setText(SharedPref.getHqNameMain(this));
 
+        info.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                popupWindow.dismiss();
+                startActivity(new Intent(HomeDashBoard.this, ProfileViewScreen.class));
+            }
+        });
 
         if (SharedPref.getPwdSetup(this).equalsIgnoreCase("0")) {
             l_click.setVisibility(View.VISIBLE);
