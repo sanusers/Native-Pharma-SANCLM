@@ -323,7 +323,7 @@ public class CommonUtilsMethods {
                 newDate = spf.parse(date);
             } catch (ParseException ignored) {
             }
-            spf = new SimpleDateFormat(requiredFormat);
+            spf = new SimpleDateFormat(requiredFormat,Locale.ENGLISH);
             assert newDate != null;
             return spf.format(newDate);
         } catch (Exception e) {

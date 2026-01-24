@@ -692,7 +692,7 @@ public class ListedDoctorFragment extends Fragment {
 //                            prepareData(jsonObject, i, brands, false);
 //                        }
 //                    }
-                } else if (tpDataObj != null && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                } else if (tpDataObj != null ) {
                     if(SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")){
                         Type type = new TypeToken<OneBuildModelClass>() {
                         }.getType();
