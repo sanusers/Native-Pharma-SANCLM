@@ -55,7 +55,7 @@ public class CustomPresentationFragment extends Fragment {
     private ItemTouchHelper itemTouchHelper;
     private boolean isAllBrandsExpanded = false;
     private boolean isBrandMatrixExpanded = false;
-    private boolean isSpecialityExpanded=false;
+    private boolean isSpecialityExpanded = false;
 
 
     private ArrayList<SpecialityModelClass> specialityArrayList = new ArrayList<>();
@@ -80,125 +80,213 @@ public class CustomPresentationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCustomPresentationBinding.inflate(inflater);
         uiInitialisation();
-       loadSpecialitiesFromMaster();
-        // changed 22/1== ALL BRANDS
+        loadSpecialitiesFromMaster();
+        // changed 24/1== ALL BRANDS
         binding.clAllBrands.setOnClickListener(v -> {
-
             if (isAllBrandsExpanded) {
-                // Collapse All Brands
                 binding.brandNameRecView.setVisibility(View.GONE);
                 binding.imgAllBrandArrow.setRotation(0);
-
             } else {
                 // Expand All Brands
                 binding.brandNameRecView.setVisibility(View.VISIBLE);
                 binding.imgAllBrandArrow.setRotation(180);
-
-                // 🔵 SHOW slides back
                 binding.slideImageRecView.setVisibility(View.VISIBLE);
-
-                // Hide Brand Matrix empty msg
                 binding.tvNoBrandMatrix.setVisibility(View.GONE);
                 binding.imgBrandMatrixArrow.setRotation(0);
                 isBrandMatrixExpanded = false;
 
-                // 🔹 Collapse Speciality if open
+                // 🟢 AUTO-CLOSE SPECIALITY (Indha idathula Recycler-aiyum GONE pannanum)
                 if (isSpecialityExpanded) {
+                    binding.specialityRecView.setVisibility(View.GONE); // Mukkiyam: Indha line missing
                     binding.tvNospeciality.setVisibility(View.GONE);
                     binding.imgspecialityArrow.setRotation(0);
                     isSpecialityExpanded = false;
                 }
             }
-
             isAllBrandsExpanded = !isAllBrandsExpanded;
         });
 
- ;
-
-        // changed 22/1==BRAND MATRIX
+        // changed 24/1== BRAND MATRIX
         binding.brandMatrix.setOnClickListener(view -> {
-
             if (isBrandMatrixExpanded) {
-
-                // Collapse Brand Matrix
                 binding.tvNoBrandMatrix.setVisibility(View.GONE);
                 binding.imgBrandMatrixArrow.setRotation(0);
-
-                // Show slides
                 binding.slideImageRecView.setVisibility(View.VISIBLE);
-
             } else {
-
-                // Expand Brand Matrix
                 binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
                 binding.imgBrandMatrixArrow.setRotation(180);
-
-                // Hide slides
                 binding.slideImageRecView.setVisibility(View.GONE);
 
-                // 🔴 CLOSE ALL BRANDS
+                // 🔴 AUTO-CLOSE ALL BRANDS
                 if (isAllBrandsExpanded) {
                     binding.brandNameRecView.setVisibility(View.GONE);
                     binding.imgAllBrandArrow.setRotation(0);
                     isAllBrandsExpanded = false;
                 }
 
-                // 🔴 CLOSE SPECIALITY  ← THIS WAS MISSING ❌
+                // 🔴 AUTO-CLOSE SPECIALITY
                 if (isSpecialityExpanded) {
+                    binding.specialityRecView.setVisibility(View.GONE); // Mukkiyam
                     binding.tvNospeciality.setVisibility(View.GONE);
                     binding.imgspecialityArrow.setRotation(0);
                     isSpecialityExpanded = false;
                 }
-
-                binding.playBtn.setEnabled(false);
-                binding.clearBtn.setEnabled(false);
             }
-
             isBrandMatrixExpanded = !isBrandMatrixExpanded;
         });
 
-
-        // changed 22/1== SPECIALITY
+        // changed 24/1== SPECIALITY
         binding.speciality.setOnClickListener(view -> {
-
             if (isSpecialityExpanded) {
                 // Collapse Speciality
+                binding.specialityRecView.setVisibility(View.GONE); // Visibility-ai GONE pannanum
                 binding.tvNospeciality.setVisibility(View.GONE);
                 binding.imgspecialityArrow.setRotation(0);
-                binding.specialityRecView.setVisibility(View.VISIBLE);
-                // Show slides
                 binding.slideImageRecView.setVisibility(View.VISIBLE);
-
             } else {
                 // Expand Speciality
-
-                binding.tvNospeciality.setVisibility(View.VISIBLE);
+                // ✅ CORRECTED: Expand aagum pothu Recycler-ai VISIBLE pannanum
+                binding.specialityRecView.setVisibility(View.VISIBLE);
+                binding.tvNospeciality.setVisibility(View.GONE);
                 binding.imgspecialityArrow.setRotation(180);
-                binding.specialityRecView.setVisibility(View.GONE);
-                // Hide slides
-                binding.slideImageRecView.setVisibility(View.GONE);
+                binding.slideImageRecView.setVisibility(View.VISIBLE);
 
-                // Collapse All Brands if open
+                // 🔴 AUTO-CLOSE ALL BRANDS
                 if (isAllBrandsExpanded) {
                     binding.brandNameRecView.setVisibility(View.GONE);
                     binding.imgAllBrandArrow.setRotation(0);
                     isAllBrandsExpanded = false;
                 }
 
-                // Collapse Brand Matrix if open
+                // 🔴 AUTO-CLOSE BRAND MATRIX
                 if (isBrandMatrixExpanded) {
                     binding.tvNoBrandMatrix.setVisibility(View.GONE);
                     binding.imgBrandMatrixArrow.setRotation(0);
                     isBrandMatrixExpanded = false;
                 }
-
-                // Disable buttons for Speciality
-                binding.playBtn.setEnabled(false);
-                binding.clearBtn.setEnabled(false);
             }
-
             isSpecialityExpanded = !isSpecialityExpanded;
         });
+
+
+        // changed 22/1== ALL BRANDS
+//        binding.clAllBrands.setOnClickListener(v -> {
+//
+//            if (isAllBrandsExpanded) {
+//                // Collapse All Brands
+//                binding.brandNameRecView.setVisibility(View.GONE);
+//                binding.imgAllBrandArrow.setRotation(0);
+//
+//            } else {
+//                // Expand All Brands
+//                binding.brandNameRecView.setVisibility(View.VISIBLE);
+//                binding.imgAllBrandArrow.setRotation(180);
+//
+//                // 🔵 SHOW slides back
+//                binding.slideImageRecView.setVisibility(View.VISIBLE);
+//
+//                // Hide Brand Matrix empty msg
+//                binding.tvNoBrandMatrix.setVisibility(View.GONE);
+//                binding.imgBrandMatrixArrow.setRotation(0);
+//                isBrandMatrixExpanded = false;
+//
+//                // 🔹 Collapse Speciality if open
+//                if (isSpecialityExpanded) {
+//                    binding.tvNospeciality.setVisibility(View.GONE);
+//                    binding.imgspecialityArrow.setRotation(0);
+//                    isSpecialityExpanded = false;
+//                }
+//            }
+//
+//            isAllBrandsExpanded = !isAllBrandsExpanded;
+//        });
+//
+// ;
+//
+//        // changed 22/1==BRAND MATRIX
+//        binding.brandMatrix.setOnClickListener(view -> {
+//
+//            if (isBrandMatrixExpanded) {
+//
+//                // Collapse Brand Matrix
+//                binding.tvNoBrandMatrix.setVisibility(View.GONE);
+//                binding.imgBrandMatrixArrow.setRotation(0);
+//
+//                // Show slides
+//                binding.slideImageRecView.setVisibility(View.VISIBLE);
+//
+//            } else {
+//
+//                // Expand Brand Matrix
+//                binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
+//                binding.imgBrandMatrixArrow.setRotation(180);
+//
+//                // Hide slides
+//                binding.slideImageRecView.setVisibility(View.GONE);
+//
+//                // 🔴 CLOSE ALL BRANDS
+//                if (isAllBrandsExpanded) {
+//                    binding.brandNameRecView.setVisibility(View.GONE);
+//                    binding.imgAllBrandArrow.setRotation(0);
+//                    isAllBrandsExpanded = false;
+//                }
+//
+//                // 🔴 CLOSE SPECIALITY  ← THIS WAS MISSING ❌
+//                if (isSpecialityExpanded) {
+//                    binding.tvNospeciality.setVisibility(View.GONE);
+//                    binding.imgspecialityArrow.setRotation(0);
+//                    isSpecialityExpanded = false;
+//                }
+//
+//                binding.playBtn.setEnabled(false);
+//                binding.clearBtn.setEnabled(false);
+//            }
+//
+//            isBrandMatrixExpanded = !isBrandMatrixExpanded;
+//        });
+//
+//
+//        // changed 22/1== SPECIALITY
+//        binding.speciality.setOnClickListener(view -> {
+//
+//            if (isSpecialityExpanded) {
+//                // Collapse Speciality
+//                binding.tvNospeciality.setVisibility(View.GONE);
+//                binding.imgspecialityArrow.setRotation(0);
+//                binding.specialityRecView.setVisibility(View.VISIBLE);
+//                // Show slides
+//                binding.slideImageRecView.setVisibility(View.VISIBLE);
+//
+//            } else {
+//                // Expand Speciality
+//
+//                binding.tvNospeciality.setVisibility(View.VISIBLE);
+//                binding.imgspecialityArrow.setRotation(180);
+//                binding.specialityRecView.setVisibility(View.GONE);
+//                // Hide slides
+//                binding.slideImageRecView.setVisibility(View.GONE);
+//
+//                // Collapse All Brands if open
+//                if (isAllBrandsExpanded) {
+//                    binding.brandNameRecView.setVisibility(View.GONE);
+//                    binding.imgAllBrandArrow.setRotation(0);
+//                    isAllBrandsExpanded = false;
+//                }
+//
+//                // Collapse Brand Matrix if open
+//                if (isBrandMatrixExpanded) {
+//                    binding.tvNoBrandMatrix.setVisibility(View.GONE);
+//                    binding.imgBrandMatrixArrow.setRotation(0);
+//                    isBrandMatrixExpanded = false;
+//                }
+//
+//                // Disable buttons for Speciality
+//                binding.playBtn.setEnabled(false);
+//                binding.clearBtn.setEnabled(false);
+//            }
+//
+//            isSpecialityExpanded = !isSpecialityExpanded;
+//        });
 
 
         binding.playBtn.setOnClickListener(view -> {
@@ -235,23 +323,23 @@ public class CustomPresentationFragment extends Fragment {
                 JSONObject productObject = prodSlide.getJSONObject(i);
                 String id = productObject.getString("SlideId");
                 String code = productObject.getString("Code");
-                if(brandToProducts.containsKey(code)){
+                if (brandToProducts.containsKey(code)) {
                     brandToProducts.get(code).put(id, productObject);
-                }else {
+                } else {
                     LinkedHashMap<String, JSONObject> productData = new LinkedHashMap<>();
                     productData.put(id, productObject);
                     brandToProducts.put(code, productData);
                 }
             }
 
-            for(int i = 0; i < brandSlide.length(); i++) {
+            for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
                 String id = brandObject.getString("ID");
-                if(brandToProductWithPriority.containsKey(brandCode)){
+                if (brandToProductWithPriority.containsKey(brandCode)) {
                     brandToProductWithPriority.get(brandCode).put(id, priority);
-                }else{
+                } else {
                     LinkedHashMap<String, String> productsList = new LinkedHashMap<>();
                     productsList.put(id, priority);
                     brandToProductWithPriority.put(brandCode, productsList);
@@ -263,43 +351,43 @@ public class CustomPresentationFragment extends Fragment {
                 String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
                 LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
                 HashMap<String, JSONObject> products = brandToProducts.get(brandCode);
-                if(productWithPriority != null) {
+                if (productWithPriority != null) {
                     for (String productID : productWithPriority.keySet()) {
-                        if(products != null && products.containsKey(productID)) {
+                        if (products != null && products.containsKey(productID)) {
                             JSONObject productObject = products.get(productID);
-                            if(productObject != null) {
+                            if (productObject != null) {
                                 brandName = productObject.getString("Name");
                                 BrandModelClass.Product product = getProductData(productObject, priority);
-                                if(product != null) {
+                                if (product != null) {
                                     productArrayList.add(product);
                                 }
                             }
                         }
                     }
-                    if(!productWithPriority.isEmpty() && products != null) {
+                    if (!productWithPriority.isEmpty() && products != null) {
                         for (String productID : productWithPriority.keySet()) {
                             products.remove(productID);
                         }
                     }
                 }
-                if(products != null && !products.isEmpty()) {
+                if (products != null && !products.isEmpty()) {
                     for (String productID : products.keySet()) {
                         JSONObject productObject = products.get(productID);
-                        if(productObject != null) {
+                        if (productObject != null) {
                             brandName = productObject.getString("Name");
                             BrandModelClass.Product product = getProductData(productObject, priority);
-                            if(product != null) {
+                            if (product != null) {
                                 productArrayList.add(product);
                             }
                         }
                     }
                 }
-                if(!brandName.isEmpty() && !productArrayList.isEmpty()) {
+                if (!brandName.isEmpty() && !productArrayList.isEmpty()) {
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
                     brandProductArrayList.add(brandModelClass);
                 }
             }
-            if(!brandProductArrayList.isEmpty()) {
+            if (!brandProductArrayList.isEmpty()) {
                 BrandModelClass brandModelClass = brandProductArrayList.get(0);
                 brandModelClass.setBrandSelected(true);
                 brandProductArrayList.set(0, brandModelClass);
@@ -336,7 +424,7 @@ public class CustomPresentationFragment extends Fragment {
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
             String productDetailCode = productObject.getString("Product_Detail_Code");
-            if(priority.isEmpty()) priority = "500" + slidePriority;
+            if (priority.isEmpty()) priority = "500" + slidePriority;
             return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode);
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());
@@ -466,13 +554,45 @@ public class CustomPresentationFragment extends Fragment {
 
         SpecialityNameAdapter = new SpecialityNameAdapter(requireContext(), specialityArrayList, (speciality, position) -> {
             selectedSpecialityCode = speciality.getCode(); // update selected speciality
-        //    loadProductsForSelectedSpeciality();          // reload slides for this speciality
+            //    loadProductsForSelectedSpeciality();          // reload slides for this speciality
+            loadSlidesForSpeciality(selectedSpecialityCode);
             SpecialityNameAdapter.notifyDataSetChanged();
         });
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
         binding.specialityRecView.setLayoutManager(layoutManager);
         binding.specialityRecView.setAdapter(SpecialityNameAdapter);
+    }
+
+    private void loadSlidesForSpeciality(String specialityCode) {
+
+        ArrayList<BrandModelClass.Product> slidesForSpeciality = new ArrayList<>();
+
+        JSONArray splSlide = masterDataDao
+                .getMasterDataTableOrNew(Constants.SPL_SLIDE)
+                .getMasterSyncDataJsonArray();
+
+        try {
+            for (int i = 0; i < splSlide.length(); i++) {
+                JSONObject obj = splSlide.getJSONObject(i);
+
+                String docSpecCode = obj.getString("Doc_Special_Code");
+                String productBrdCode = obj.getString("Product_Brd_Code");
+
+                if (docSpecCode.equalsIgnoreCase(specialityCode)) {
+
+                    for (BrandModelClass brand : brandProductArrayList) {
+                        if (brand.getBrandCode().equalsIgnoreCase(productBrdCode)) {
+                            slidesForSpeciality.addAll(brand.getProductArrayList());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        populateSlideImageAdapter(slidesForSpeciality);
     }
 
 
