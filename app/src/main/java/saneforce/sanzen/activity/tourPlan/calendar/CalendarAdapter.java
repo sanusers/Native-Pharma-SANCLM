@@ -163,6 +163,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             drawable.setColor(context.getResources().getColor(R.color.lustylavender_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
             holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.lustylavender_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else {
             holder.cornerImage.setVisibility(View.INVISIBLE);
         }
