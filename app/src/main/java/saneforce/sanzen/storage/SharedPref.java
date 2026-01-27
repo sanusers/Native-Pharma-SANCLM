@@ -535,6 +535,10 @@ public class SharedPref {
     private static final String TodayPopupShown = "TodayPopupShown";
     public static final String LAST_KNOWN_VERSION = "last_known_version";
 
+    public static final String SCREEN_ACCESS = "screen_access";
+    public static final String SEND_LOGS = "send_logs";
+    public static final String CLEAR_DATA_ACCESS = "clear_data_access";
+
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
