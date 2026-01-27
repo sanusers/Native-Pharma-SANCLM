@@ -45,6 +45,7 @@ public class StoreImageTypeUrl
     File ffile;
     String rating;
     String scribble;
+    String productCode;
     int flag = 0;
 
     boolean mandatory_slide; // <-- Added
@@ -149,9 +150,10 @@ public class StoreImageTypeUrl
         this.rating=rating;
     }
 
-    public StoreImageTypeUrl(String scribble, String slideNam, String slideTyp, String slideUrl, String timing, String slideComments, String remTime, String brdName,String brandCode, boolean xx)
+    public StoreImageTypeUrl(String scribble, String slideID, String slideNam, String slideTyp, String slideUrl, String timing, String slideComments, String remTime, String brdName, String brandCode, String productCode, boolean xx)
     {
         this.scribble = scribble;
+        this.slideid = slideID;
         this.slideNam = slideNam;
         this.slideTyp = slideTyp;
         this.slideUrl = slideUrl;
@@ -160,10 +162,10 @@ public class StoreImageTypeUrl
         this.remTime=remTime;
         this.brdName=brdName;
         this.brdCode = brandCode;
+        this.productCode = productCode;
     }
 
-    public StoreImageTypeUrl(String scribble, String slideNam, String slideTyp, String slideUrl, String timing, String slideid, String brdName, String brdCode)
-    {
+    public StoreImageTypeUrl(String scribble, String slideNam, String slideTyp, String slideUrl, String timing, String slideid, String brdName, String brdCode, String productCode) {
         this.scribble = scribble;
         this.slideNam = slideNam;
         this.slideTyp = slideTyp;
@@ -172,6 +174,7 @@ public class StoreImageTypeUrl
         this.slideid=slideid;
         this.brdName=brdName;
         this.brdCode=brdCode;
+        this.productCode = productCode;
     }
 
     public String getRating() {
@@ -262,5 +265,12 @@ public class StoreImageTypeUrl
         this.timing = timing;
     }
 
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
 }
 

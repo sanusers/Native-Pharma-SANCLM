@@ -218,7 +218,7 @@ public class DayReportFragment extends Fragment {
     }
 
     private String monthYearFromDate(LocalDate date, String requiredFormat) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(requiredFormat);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(requiredFormat,Locale.ENGLISH);
         return date.format(formatter);
     }
 
@@ -267,7 +267,7 @@ public class DayReportFragment extends Fragment {
     }
 
     public void populateCalendarAdapter(RecyclerView recyclerView) {
-        if (OneBuildSetup == 0) {
+        if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
             calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), localDate, new OnDayClickOneBuildInterface() {
                 @Override
                 public void onDayClickedOneBuild(int position, String date, OneBuildModelClass oneBuildModelClass) {
@@ -421,7 +421,7 @@ public class DayReportFragment extends Fragment {
     public static LocalDate parseMultiLocale(String date, String pattern) {
 
         try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH);
                 return LocalDate.parse(date, formatter);
             } catch (Exception e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.previewPresentation;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.binding;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.mandatoryProductList;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.playedMandatorySlideIds;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.context;
@@ -34,12 +35,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import saneforce.sanzen.R;
@@ -82,7 +85,7 @@ public class PreviewActivity extends AppCompatActivity {
     PreviewTabAdapter viewPagerAdapter;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
-    String startT, endT, presentationNeed, therapticNeed;
+    String startT, endT, presentationNeed, therapticNeed, caption = "";
     CommonUtilsMethods commonUtilsMethods;
     //    CustomSetupResponse customSetupResponse;
     private RoomDB roomDB;
@@ -166,7 +169,27 @@ public class PreviewActivity extends AppCompatActivity {
                 SpecialityName = extra.getString("SpecialityName");
                 BrandCode = extra.getString("MappedProdCode");
                 SlideCode = extra.getString("MappedSlideCode");
-                CusType = extra.getString("CusType");
+                CusType = extra.getString("CusType", "");
+                switch (CusType) {
+                    case "1":
+                        caption = SharedPref.getDrCap(PreviewActivity.this);
+                        break;
+                    case "2":
+                        caption = SharedPref.getChmCap(PreviewActivity.this);
+                        break;
+                    case "3":
+                        caption = SharedPref.getStkCap(PreviewActivity.this);
+                        break;
+                    case "4":
+                        caption = SharedPref.getUNLcap(PreviewActivity.this);
+                        break;
+                    case "5":
+                        caption = SharedPref.getCipCaption(PreviewActivity.this);
+                        break;
+                    case "6":
+                        caption = SharedPref.getHospCaption(PreviewActivity.this);
+                        break;
+                }
                 if (extra.containsKey("CheckInJsonObject")) {
                     String jsonObject = extra.getString("CheckInJsonObject");
                     try {
@@ -278,30 +301,6 @@ public class PreviewActivity extends AppCompatActivity {
             }
         });
 
-//        previewBinding.btnFinishDet.setOnClickListener(view -> {
-//
-//            ArrayList<String> pendingSlides = new ArrayList<>();
-//            for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
-//                if (!PlaySlideDetailedAdapter.playedMandatorySlideIds.contains(p.getSlideId())) {
-//                    pendingSlides.add(p.getSlideName());
-//                }
-//            }
-//
-//            if (!pendingSlides.isEmpty()) {
-//                StringBuilder msg = new StringBuilder();
-//                for (String s : pendingSlides) msg.append(s).append(", ");
-//                msg.setLength(msg.length() - 2);
-//                Toast.makeText(this, "Mandatory slides pending: " + msg.toString(), Toast.LENGTH_LONG).show();
-//                return;
-//            }else{
-//                if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
-//
-//                    Toast.makeText(this,
-//                            "Please view mandatory slides before finishing detailing",
-//                            Toast.LENGTH_LONG).show();
-//                    return;
-//                }
-//            }
         previewBinding.btnFinishDet.setOnClickListener(view -> {
 
             Set<String> pendingSlides = new LinkedHashSet<>();
@@ -322,6 +321,15 @@ public class PreviewActivity extends AppCompatActivity {
                 return;
             }
 
+            previewBinding.rlThankYou.setVisibility(View.VISIBLE);
+            previewBinding.docName.setText("Thank You\n"+ caption + " " + CallActivityCustDetails.get(0).getName());
+            previewBinding.btnFinishDet.setVisibility(View.GONE);
+//            @Override
+//            public void onSafeClick(View view) {
+//            }
+        });
+
+        previewBinding.proceed.setOnClickListener( view -> {
             Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
             String totalDuration = "";
             for (int j = 0; j < arrayStore.size(); j++) {
@@ -376,16 +384,22 @@ public class PreviewActivity extends AppCompatActivity {
                     callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
                 }
             }
+            Set<String> detailedProducts = new HashSet<>();
+            for (StoreImageTypeUrl storeImageTypeUrl : arrayStore) {
+                String[] productCode = storeImageTypeUrl.getProductCode().split(",");
+                detailedProducts.addAll(Arrays.asList(productCode));
+            }
+            Log.d("Slide detailed", "onCreate: " + detailedProducts.toString());
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
             intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
             intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
+            intent1.putExtra("DetailedProducts", detailedProducts.stream().collect(Collectors.joining(",")));
             intent1.putExtra("remainder_save", "0");
             intent1.putExtra("hq_code", "");
             intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
 //                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
-//            }
         });
 
     }

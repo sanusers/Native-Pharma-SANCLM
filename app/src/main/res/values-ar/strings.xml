@@ -971,7 +971,58 @@
     <string name="tour_plan_not_sync_properly_once_sync_again">
     لم تتم مزامنة خطة الجولة بشكل صحيح، يرجى المزامنة مرة أخرى...
 </string>
+    <string name="activity_mandatory">النشاط إلزامي</string>
+    <string name="location_permission_needed">مطلوب إذن الموقع!</string>
+    <string name="signature">التوقيع</string>
+    <string name="available">متاح:</string>
+    <string name="need_remarks">يرجى إدخال الملاحظات في الجلسة</string>
+    <string name="reset_password">إعادة تعيين كلمة المرور</string>
+    <string name="moile_mand">رقم الجوال إلزامي</string>
+    <string name="mob_mandt">الجوال <font color='#FF0000'>*</font></string>
+    <string name="division">القسم</string>
+    <string name="sub_division">القسم الفرعي</string>
+    <string name="dcr_start_dt">تاريخ بدء DCR</string>
+    <string name="tp_start_dt">تاريخ بدء خطة الجولة</string>
+    <string name="rpt_mgr">مدير التقارير</string>
+    <string name="tp_rpt">مدير تقارير خطة الجولة</string>
+    <string name="lev_rpt">مدير تقارير الإجازة</string>
+    <string name="tp_mand_range">النطاق الإلزامي لخطة الجولة</string>
+    <string name="already_exist">موجود بالفعل</string>
+    <string name="state">الولاية</string>
+    <string name="employe_code">رمز الموظف</string>
+    <string name="join_dt">تاريخ الانضمام</string>
+    <string name="con_internet">متصل بالإنترنت</string>
+    <string name="option">الخيارات</string>
+    <string name="edit_plan">تعديل الخطة</string>
 
+    <string name="str_password_changed_login_with_online">تم تغيير كلمة المرور الخاصة بك. يرجى تسجيل الدخول عبر الإنترنت.</string>
+    <string name="str_password_changed">تم تغيير كلمة المرور الخاصة بك. يرجى تسجيل الخروج ثم تسجيل الدخول مرة أخرى.</string>
+    <string name="str_device_id_updated">تم تحديث معرف الجهاز الخاص بك. يرجى تسجيل الخروج ثم تسجيل الدخول مرة أخرى.</string>
+    <string name="str_device_not_valid">الجهاز غير صالح</string>
+    <string name="str_access_denied">تم رفض الوصول! اتصل بالمسؤول.</string>
+    <string name="str_user_status_vacant">حالة المستخدم شاغرة! اتصل بالمسؤول.</string>
+    <string name="str_user_status_hold">حالة المستخدم موقوفة! اتصل بالمسؤول.</string>
+    <string name="str_user_status_blocked">حالة المستخدم محظورة! اتصل بالمسؤول.</string>
+    <string name="str_user_status_deactivated">حالة المستخدم معطلة! اتصل بالمسؤول.</string>
+    <string name="pause">إيقاف مؤقت</string>
+    <string name="please_select_at_least">يرجى اختيار على الأقل </string>
+    <string name="please_plan_all_the">يرجى التخطيط لكل </string>
+    <string name="at_least_one_time"> مرة واحدة على الأقل</string>
+    <string name="not_planned">غير مخطط</string>
+    <string name="plan_overview">نظرة عامة على الخطة</string>
+    <string name="tour_plan_overview">نظرة عامة على خطة الجولة</string>
+    <string name="total_planned_days">إجمالي الأيام المخططة: </string>
+    <string name="planned_">مخطط: </string>
+    <string name="total_">الإجمالي: </string>
+    <string name="planned_days">الأيام المخططة: </string>
+    <string name="work_category_in_days">فئة العمل (بالأيام)</string>
+    <string name="work_type_in_days">نوع العمل (بالأيام)</string>
+    <string name="unplanned">غير مخطط</string>
+    <string name="planned_visits">الزيارات المخططة</string>
+    <string name="total_visits">إجمالي الزيارات</string>
+    <string name="cluster_wise">حسب المجموعة</string>
+    <string name="category_wise">حسب الفئة</string>
+    <string name="plan_more">التخطيط للمزيد</string>
 
 
 

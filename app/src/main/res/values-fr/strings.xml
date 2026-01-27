@@ -625,7 +625,6 @@
     <string name="Business">Quantité affaires</string>
     <string name="Business_value">Valeur affaires</string>
     <string name="no_of_product">Nombre de produits :</string>
-    <string name="Available">Disponible :</string>
     <string name="enter_crct_email"><![CDATA[Veuillez entrer l\'e-mail correct avant d\'enregistrer]]></string>
     <string name="work_plan_updated_successfully">Plan de travail mis à jour avec succès</string>
     <string name="work_day">Jour de travail</string>
@@ -984,6 +983,44 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="unplanned_visit_count">Nombre de visites non prévues</string>
     <string name="planned_everything">Tout planifié</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">Le plan de tournée n\'a pas été synchronisé correctement, veuillez synchroniser à nouveau...</string>
+    <string name="activity_mandatory">Activité obligatoire</string>
+    <string name="location_permission_needed">Autorisation de localisation requise !</string>
+    <string name="available">Disponible :</string>
+    <string name="select_headquarters">Sélectionner le siège</string>
+    <string name="latitude_label">Latitude :</string>
+    <string name="time_label">Heure :</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="view_plan">Voir le plan</string>
+    <string name="dcr_status">Statut DCR</string>
+    <string name="edit_plan">Modifier le plan</string>
+    <string name="str_password_changed_login_with_online">Votre mot de passe a été modifié. Veuillez vous connecter en ligne.</string>
+    <string name="str_password_changed">Votre mot de passe a été modifié. Veuillez vous déconnecter puis vous reconnecter.</string>
+    <string name="str_device_id_updated">Votre identifiant d’appareil a été mis à jour. Veuillez vous déconnecter puis vous reconnecter.</string>
+    <string name="str_device_not_valid">L’appareil n’est pas valide</string>
+    <string name="str_access_denied">Accès refusé ! Contactez l’administrateur.</string>
+    <string name="str_user_status_vacant">Statut utilisateur vacant ! Contactez l’administrateur.</string>
+    <string name="str_user_status_hold">Statut utilisateur en attente ! Contactez l’administrateur.</string>
+    <string name="str_user_status_blocked">Statut utilisateur bloqué ! Contactez l’administrateur.</string>
+    <string name="str_user_status_deactivated">Statut utilisateur désactivé ! Contactez l’administrateur.</string>
+    <string name="pause">Pause</string>
+    <string name="please_select_at_least">Veuillez sélectionner au moins </string>
+    <string name="please_plan_all_the">Veuillez planifier tous les </string>
+    <string name="at_least_one_time"> au moins une fois</string>
+    <string name="not_planned">Non planifié</string>
+    <string name="plan_overview">Aperçu du plan</string>
+    <string name="tour_plan_overview">Aperçu du plan de tournée</string>
+    <string name="total_planned_days">Total des jours planifiés : </string>
+    <string name="planned_">Planifié : </string>
+    <string name="total_">Total : </string>
+    <string name="planned_days">Jours planifiés : </string>
+    <string name="work_category_in_days">Catégorie de travail (en jours)</string>
+    <string name="work_type_in_days">Type de travail (en jours)</string>
+    <string name="unplanned">Non planifié</string>
+    <string name="planned_visits">Visites planifiées</string>
+    <string name="total_visits">Visites totales</string>
+    <string name="cluster_wise">Par groupe</string>
+    <string name="category_wise">Par catégorie</string>
+    <string name="plan_more">Planifier plus</string>
 
 
 </resources>

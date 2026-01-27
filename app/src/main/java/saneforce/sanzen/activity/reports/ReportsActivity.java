@@ -425,8 +425,8 @@ public class ReportsActivity extends AppCompatActivity {
     public void populateAdapter() {
         reportTitles.clear();
         reportTitles.add(getString(R.string.day_report));
-       reportTitles.add(getString(R.string.visit_monitor));
-         reportTitles.add(getString(R.string.missed_report));
+      /* reportTitles.add(getString(R.string.visit_monitor));*/
+      /*   reportTitles.add(getString(R.string.missed_report));*/
         if (SharedPref.getDashboard(this).equals("0")) {
             reportTitles.add(getString(R.string.dashboard));
         }

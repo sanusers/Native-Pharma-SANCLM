@@ -870,7 +870,7 @@ public class ChemistAddition extends AppCompatActivity {
                     calendar.set(selectedYear, selectedMonth, selectedDay);
 
                     // Format the date as "1970-01-01 00:00:00"
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                     String formattedDate = formatter.format(calendar.getTime());
 
                     // Set the formatted date to the TextView
@@ -897,7 +897,7 @@ public class ChemistAddition extends AppCompatActivity {
                     calendar.set(selectedYear, selectedMonth, selectedDay);
 
                     // Format the date as "1970-01-01 00:00:00"
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                     String formattedDate = formatter.format(calendar.getTime());
 
                     // Set the formatted date to the TextView

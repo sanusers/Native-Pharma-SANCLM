@@ -22,7 +22,10 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.InputFilter;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -54,6 +57,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.login.LoginActivity;
@@ -305,14 +310,14 @@ public class CommonUtilsMethods {
 
     public static String getCurrentInstance(String requiredFormat) {
         Calendar c = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(requiredFormat);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(requiredFormat,Locale.ENGLISH);
         return sdf.format(c.getTimeInMillis());
     }
 
     @SuppressLint("SimpleDateFormat")
     public static String setConvertDate(String currentFormat, String requiredFormat, String date) {
         try {
-            SimpleDateFormat spf = new SimpleDateFormat(currentFormat);
+            SimpleDateFormat spf = new SimpleDateFormat(currentFormat,Locale.ENGLISH);
             Date newDate = null;
             try {
                 newDate = spf.parse(date);
@@ -587,15 +592,16 @@ public class CommonUtilsMethods {
     }
 
     public static String convertDate(String originalDateString) {
-        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        SimpleDateFormat targetFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat targetFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
+        SimpleDateFormat targetFormat1 = new SimpleDateFormat("dd, yyyy", Locale.ENGLISH);
         Date date = null;
         try {
             date = originalFormat.parse(originalDateString);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return targetFormat.format(date);
+        return targetFormat.format(date)+ " " + targetFormat1.format(date);
     }
 
     public static class DoubleClickListener implements View.OnClickListener {
@@ -613,6 +619,23 @@ public class CommonUtilsMethods {
 
         public void onDoubleClick(View view) {
         }
+    }
+
+    public static SpannableString applyOrdinalSuperscript(String input) {
+        SpannableString spannable = new SpannableString(input);
+        Pattern pattern = Pattern.compile("\\b\\d+(st|nd|rd|th)\\b");
+        Matcher matcher = pattern.matcher(input);
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            int suffixStart = start;
+            while (suffixStart < end && Character.isDigit(input.charAt(suffixStart))) {
+                suffixStart++;
+            }
+            spannable.setSpan(new SuperscriptSpan(), suffixStart, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new RelativeSizeSpan(0.6f), suffixStart, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return spannable;
     }
 
 }

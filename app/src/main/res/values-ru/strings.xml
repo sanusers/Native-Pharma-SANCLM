@@ -997,8 +997,39 @@
     <string name="unplanned_visit_count">Количество незапланированных визитов</string>
     <string name="planned_everything">Всё запланировано</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">План тура не синхронизирован должным образом, повторите синхронизацию...</string>
+    <string name="activity_mandatory">Активность обязательна</string>
+    <string name="location_permission_needed">Требуется разрешение на доступ к местоположению!</string>
+    <string name="signature">Подпись</string>
+    <string name="available">Доступно:</string>
+    <string name="edit_plan">Редактировать план</string>
 
-    <!-- <string name="search">Russia</string>
-     <string name="str_save_settings">Сохранить настройки</string>
-     <string name="user_id">ID пользователя</string>-->
+    <string name="str_password_changed_login_with_online">Ваш пароль был изменён. Пожалуйста, войдите онлайн.</string>
+    <string name="str_password_changed">Ваш пароль был изменён. Пожалуйста, выйдите и войдите снова.</string>
+    <string name="str_device_id_updated">Идентификатор устройства был обновлён. Пожалуйста, выйдите и войдите снова.</string>
+    <string name="str_device_not_valid">Устройство недействительно</string>
+    <string name="str_access_denied">Доступ запрещён! Обратитесь к администратору.</string>
+    <string name="str_user_status_vacant">Статус пользователя вакантен! Обратитесь к администратору.</string>
+    <string name="str_user_status_hold">Статус пользователя приостановлен! Обратитесь к администратору.</string>
+    <string name="str_user_status_blocked">Статус пользователя заблокирован! Обратитесь к администратору.</string>
+    <string name="str_user_status_deactivated">Статус пользователя деактивирован! Обратитесь к администратору.</string>
+    <string name="pause">Пауза</string>
+    <string name="please_select_at_least">Пожалуйста, выберите как минимум </string>
+    <string name="please_plan_all_the">Пожалуйста, запланируйте все </string>
+    <string name="at_least_one_time"> хотя бы один раз</string>
+    <string name="not_planned">Не запланировано</string>
+    <string name="plan_overview">Обзор плана</string>
+    <string name="tour_plan_overview">Обзор плана тура</string>
+    <string name="total_planned_days">Всего запланированных дней: </string>
+    <string name="planned_">Запланировано: </string>
+    <string name="total_">Всего: </string>
+    <string name="planned_days">Запланированные дни: </string>
+    <string name="work_category_in_days">Категория работы (в днях)</string>
+    <string name="work_type_in_days">Тип работы (в днях)</string>
+    <string name="unplanned">Не запланировано</string>
+    <string name="planned_visits">Запланированные визиты</string>
+    <string name="total_visits">Всего визитов</string>
+    <string name="cluster_wise">По группам</string>
+    <string name="category_wise">По категориям</string>
+    <string name="plan_more">Запланировать ещё</string>
+
 </resources>

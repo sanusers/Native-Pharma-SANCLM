@@ -116,8 +116,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                 if (MapsActivity.GeoTagApprovalNeed.equalsIgnoreCase("0")) {
                     mm.setGeoTagStatus("1");
                 }
-                mm.setLatitude(String.valueOf(MapsActivity.TaggedLat));
-                mm.setLongitude(String.valueOf(MapsActivity.TaggedLng));
+                mm.setLatitude(String.valueOf(MapsActivity.TaggedLat).replace(",","."));
+                mm.setLongitude(String.valueOf(MapsActivity.TaggedLng).replace(",","."));
                 mm.setAddress(String.valueOf(MapsActivity.TaggedAdd));
                 custListAdapter.notifyDataSetChanged();
                 MapsActivity.isTagged = false;

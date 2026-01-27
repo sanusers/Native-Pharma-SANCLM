@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layoutDirection="ltr"
     tools:context=".activity.forms.weekoff.WeekoffFragment">
 
-
-
-
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/weekoffl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_3sdp"
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_3sdp"
-        android:background="@color/black"
+        android:background="@color/white"
         android:visibility="visible"
+        android:layoutDirection="ltr"
+        android:textDirection="ltr"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/days_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:gravity="start|center_vertical"
             android:fontFamily="@font/satoshi_bold"
-
+            android:layout_alignParentStart="true"
             android:padding="@dimen/_12sdp"
-            android:text=""
+            android:text="Sunday"
             android:textSize="@dimen/_8sdp"
+            android:textDirection="ltr"
+            android:layoutDirection="ltr"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
 
@@ -38,15 +40,64 @@
             android:layout_width="@dimen/_55sdp"
             android:layout_height="@dimen/_30sdp"
             android:layout_gravity="center"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/_2sdp"
             android:layout_weight="1"
             android:src="@drawable/weekofficon"
             android:textStyle="bold"
             tools:ignore="ContentDescription" />
-    </LinearLayout>
+    </RelativeLayout>
 
 
 
 
-</LinearLayout>
 
+</RelativeLayout>-->
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layoutDirection="ltr"
+    tools:context=".activity.forms.weekoff.WeekoffFragment">
+
+    <RelativeLayout
+        android:id="@+id/weekoffl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:background="@color/white"
+        android:layoutDirection="ltr">
+
+
+        <ImageView
+            android:id="@+id/imgscr"
+            android:layout_width="@dimen/_55sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:src="@drawable/weekofficon"
+            tools:ignore="ContentDescription" />
+
+
+        <TextView
+            android:id="@+id/days_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/imgscr"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_12sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:text="Sunday"
+            android:textSize="@dimen/_8sdp"
+            android:textStyle="bold"
+            android:gravity="left|center_vertical"
+            android:textDirection="ltr"
+            tools:ignore="SpUsage" />
+    </RelativeLayout>
+</RelativeLayout>

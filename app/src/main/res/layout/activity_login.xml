@@ -134,7 +134,6 @@
                         </ImageView>
                     </LinearLayout>
 
-
                     <ImageView
                         android:id="@+id/logoImg"
                         android:layout_width="wrap_content"
@@ -204,6 +203,23 @@
                         android:textColorHint="@color/text_dark_65"
                         android:textSize="@dimen/_6sdp"
                         tools:ignore="RtlSymmetry,VisualLintBounds,VisualLintTextFieldSize"/>-->
+                  <!--  <EditText
+                        android:id="@+id/userId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/edittext_stroke"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:hint="@string/enter_user_id"
+                        android:maxLines="1"
+                        android:padding="@dimen/_7sdp"
+                        android:cursorVisible="true"
+                        android:inputType="text"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/text_dark_65"
+                        android:textSize="@dimen/_6sdp"
+                        android:gravity="start|center_vertical"
+                        android:textAlignment="viewStart" />-->
                     <EditText
                         android:id="@+id/userId"
                         android:layout_width="match_parent"
@@ -214,14 +230,14 @@
                         android:hint="@string/enter_user_id"
                         android:maxLines="1"
                         android:padding="@dimen/_7sdp"
+                        android:cursorVisible="true"
                         android:inputType="text"
                         android:textColor="@color/text_dark"
                         android:textColorHint="@color/text_dark_65"
                         android:textSize="@dimen/_6sdp"
-                        android:gravity="start|center_vertical"
-                        android:textAlignment="viewStart"
-                        android:layoutDirection="ltr"
-                        android:textDirection="ltr" />
+                        android:gravity="left"
+                        android:textAlignment="viewEnd"
+                        android:textDirection="ltr"/>
 
                     <TextView
                         android:id="@+id/tagPassword"
@@ -235,7 +251,7 @@
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
+                   <!-- <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_4sdp"
@@ -244,14 +260,15 @@
 
                         <EditText
                             android:id="@+id/password"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@null"
                             android:cursorVisible="true"
                             android:focusable="true"
                             android:fontFamily="@font/satoshi_medium"
-                            android:gravity="center|start"
+                            android:gravity="left"
+                            android:textDirection="ltr"
                             android:hint="@string/enterpassword"
                             android:inputType="textPassword"
                             android:maxLines="1"
@@ -268,6 +285,35 @@
                             android:layout_height="@dimen/_15sdp"
                             android:layout_gravity="center"
                             android:paddingEnd="@dimen/_5sdp"
+                            android:src="@drawable/eye_visible" />
+
+                    </LinearLayout>-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/edittext_stroke"
+                        android:orientation="horizontal"
+                        android:layoutDirection="ltr">
+                        <EditText
+                        android:id="@+id/password"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="left|center_vertical"
+                        android:textDirection="ltr"
+                        android:hint="@string/enterpassword"
+                        android:inputType="textPassword"
+                        android:padding="@dimen/_7sdp"
+                        android:textSize="@dimen/_6sdp" />
+
+                        <ImageView
+                            android:id="@+id/eyeImage"
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_gravity="center"
+                            android:paddingRight="@dimen/_5sdp"
                             android:src="@drawable/eye_visible" />
 
                     </LinearLayout>

@@ -379,7 +379,9 @@ public class ActivityFragment extends Fragment {
                 fragmentActivityBinding.llMainLayout.setVisibility(View.GONE);
 //                commonUtilsMethods.showToastMessage(requireContext(), "No " + activityCap);
             }
-            ActivityList.add(0, new ActivityModelClass("-1", "No Activity", "", "", "", "", true));
+            if (SharedPref.getActivityNd(requireContext()).equalsIgnoreCase("0") && SharedPref.getActivityMand(requireContext()).equalsIgnoreCase("0")) {
+                ActivityList.add(0, new ActivityModelClass("-1", "No Activity", "", "", "", "", true));
+            }
             fragmentActivityBinding.progressMain.setVisibility(View.GONE);
         } catch (Exception e) {
             e.printStackTrace();

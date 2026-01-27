@@ -1,6 +1,10 @@
 package saneforce.sanzen.utility;
 
 import android.annotation.SuppressLint;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 import android.util.Log;
 
 import java.text.ParseException;
@@ -58,13 +62,14 @@ public class TimeUtils {
     public static final String FORMAT_39 = "dd-MM-yyyy hh:mm a";
     public static final String FORMAT_40 = "mm:ss";
     public static final String FORMAT_41 = "hh:mm a";
+    public static final String FORMAT_42 = "MMM dd, yyyy | EEEE";
 
-   /* public static String getCurrentDateTime(String format) {
+    public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         return simpleDateFormat.format(new Date(timestampMilliseconds));
-    }*/
-   public static String getCurrentDateTime(String format) {
+    }
+/*   public static String getCurrentDateTime(String format) {
        long ts = System.currentTimeMillis();
 
        Locale deviceLocale = Locale.getDefault();
@@ -75,7 +80,7 @@ public class TimeUtils {
 
        SimpleDateFormat sdf = new SimpleDateFormat(format, outputLocale);
        return sdf.format(new Date(ts));
-   }
+   }*/
 
 
     public static String getCurrentDateTimeTp(String format) {
@@ -84,14 +89,14 @@ public class TimeUtils {
         return simpleDateFormat.format(new Date(timestampMilliseconds));
     }
 
-   /* public static String GetCurrentTimeStamp(String mFormat) {
+    public static String GetCurrentTimeStamp(String mFormat) {
         String stringDate;
         long timestampMilliseconds = System.currentTimeMillis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mFormat, Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mFormat, Locale.ENGLISH);
         stringDate = simpleDateFormat.format(new Date(timestampMilliseconds));
         return stringDate;
-    }*/
-   public static String GetCurrentTimeStamp(String mFormat) {
+    }
+/*   public static String GetCurrentTimeStamp(String mFormat) {
 
        long ts = System.currentTimeMillis();
 
@@ -105,7 +110,7 @@ public class TimeUtils {
        SimpleDateFormat sdf = new SimpleDateFormat(mFormat, outputLocale);
 
        return sdf.format(new Date(ts));
-   }
+   }*/
 
     public static long GetTimeStamp(String mDate, String mFormat) {
         Date date = null;
@@ -118,15 +123,15 @@ public class TimeUtils {
         return Objects.requireNonNull(date).getTime();
     }
 
-/*    public static String GetCurrentDateTime(String format) {
+    public static String GetCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         String Str_Date = simpleDateFormat.format(new Date(timestampMilliseconds));
         Log.d(TAG, "GetCurrentDateTime: => " + Str_Date);
         return Str_Date;
-    }*/
+    }
 
-    public static String GetCurrentDateTime(String format) {
+    /*public static String GetCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
 
         Locale deviceLocale = Locale.getDefault();
@@ -142,7 +147,7 @@ public class TimeUtils {
         Log.d("TAG", "GetCurrentDateTime: => " + Str_Date);
 
         return Str_Date;
-    }
+    }*/
 
 
     public static String GetNextDateTime() {
@@ -155,11 +160,11 @@ public class TimeUtils {
         return Str_Date;
     }
 
-     /* public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+      public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
 
 
-          SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.getDefault());
-          SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat,Locale.getDefault());
+          SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.ENGLISH);
+          SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat,Locale.ENGLISH);
           String outputDate = null;
           try {
               Date ConvertedDate = currentDateFormat.parse(mDate);
@@ -169,9 +174,9 @@ public class TimeUtils {
           }
 
           return outputDate;
-      }*/
+      }
 
-    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+/*    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
 
         if (mDate == null) return null;
 
@@ -195,7 +200,7 @@ public class TimeUtils {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
     private static String normalizeDigits(String input) {
         if (input == null) return null;
 
@@ -345,8 +350,8 @@ public class TimeUtils {
     }
 
     public static String timeConverter(String time) {
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault());
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH);
 
         try {
             Date date = inputFormat.parse(time);
@@ -449,7 +454,71 @@ public class TimeUtils {
         String parsedDate = GetConvertedDate(givenFormat, FORMAT_4, date);
         LocalDate givenDate = LocalDate.parse(parsedDate);
         LocalDate today = LocalDate.now();
-        return !givenDate.isAfter(today); // means: givenDate <= today
+        return !givenDate.isAfter(today);
+    }
+
+    public static String formatFullDate(String day, String monthYear) {
+        try {
+            String input = day + " " + monthYear;
+            SimpleDateFormat inputFormat = new SimpleDateFormat(FORMAT_17, Locale.getDefault());
+            Date date = inputFormat.parse(input);
+            SimpleDateFormat outputFormat = new SimpleDateFormat(FORMAT_42, Locale.getDefault());
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public static String getOrdinal(int day) {
+        if (day >= 11 && day <= 13) {
+            return day + "th";
+        }
+        switch (day % 10) {
+            case 1: return day + "st";
+            case 2: return day + "nd";
+            case 3: return day + "rd";
+            default: return day + "th";
+        }
+    }
+
+    public static SpannableString getSuperscriptOrdinalDate(String day) {
+        int dayInt = Integer.parseInt(day);
+        String ordinal = getOrdinal(dayInt);
+        String fullText = dayInt + ordinal;
+        SpannableString spannable = new SpannableString(fullText);
+        int start = String.valueOf(dayInt).length();
+        int end = start + ordinal.length();
+        spannable.setSpan(new SuperscriptSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new RelativeSizeSpan(0.6f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
+    }
+
+    public static SpannableString getSuperscriptOrdinalDateWithMonth(String day, String monthYear) {
+        int dayInt = Integer.parseInt(day);
+        String ordinal = getOrdinal(dayInt);
+        String[] parts = monthYear.split(" ");
+        String shortMonth = parts[0].substring(0, 3).toLowerCase();
+        String fullText = dayInt + ordinal + " " + shortMonth;
+        SpannableString spannable = new SpannableString(fullText);
+        int start = String.valueOf(dayInt).length();
+        int end = start + ordinal.length();
+        spannable.setSpan(new SuperscriptSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new RelativeSizeSpan(0.6f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
+    }
+
+    public static String formatShortDate(String day, String monthYear) {
+        try {
+            int dayInt = Integer.parseInt(day);
+            String[] parts = monthYear.split(" ");
+            String month = parts[0];
+            String shortMonth = month.substring(0, 3).toLowerCase();
+            return getOrdinal(dayInt) + " " + shortMonth;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
 }

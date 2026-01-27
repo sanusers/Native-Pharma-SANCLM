@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.HQChangeListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.HQSelector;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
@@ -66,9 +65,11 @@ public class Speciality extends Fragment {
             SlideSpecialityList.clear();
             brandCodeList.clear();
             JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+            JSONArray specSlide = masterDataDao.getMasterDataTableOrNew(Constants.SPL_SLIDE).getMasterSyncDataJsonArray();
             JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
             LinkedHashMap<String, LinkedHashMap<String, String>> brandToProductWithPriority = new LinkedHashMap<>();
             HashMap<String, LinkedHashMap<String, JSONObject>> brandToProducts = new HashMap<>();
+            HashMap<String, String> specialityWithPriority = new HashMap<>();
 
             for (int i = 0; i < prodSlide.length(); i++) {
                 JSONObject productObject = prodSlide.getJSONObject(i);
@@ -81,6 +82,14 @@ public class Speciality extends Fragment {
                     productData.put(id, productObject);
                     brandToProducts.put(code, productData);
                 }
+            }
+
+            for (int i = 0; i < specSlide.length(); i++) {
+                JSONObject productObject = specSlide.getJSONObject(i);
+                String id = productObject.getString("ID");
+                String specialityCode = productObject.getString("Doc_Special_Code");
+                String priority = productObject.getString("Priority");
+                specialityWithPriority.put(id + "-" + specialityCode, priority);
             }
 
             for (int i = 0; i < brandSlide.length(); i++) {
@@ -112,8 +121,9 @@ public class Speciality extends Fragment {
                                 slideId = productObject.getString("SlideId");
                                 fileName = productObject.getString("FilePath");
                                 slidePriority = productObject.getString("Priority");
+                                String productDetailCode = productObject.getString("Product_Detail_Code");
                                 if (priority.isEmpty()) priority = "500" + slidePriority;
-                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode,"");
                                 productArrayList.add(product);
                             }
                         }
@@ -133,8 +143,9 @@ public class Speciality extends Fragment {
                             slideId = productObject.getString("SlideId");
                             fileName = productObject.getString("FilePath");
                             slidePriority = productObject.getString("Priority");
+                            String productDetailCode = productObject.getString("Product_Detail_Code");
                             if (priority.isEmpty()) priority = "500" + slidePriority;
-                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
+                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode,"");
                             productArrayList.add(product);
                         }
                     }
@@ -195,8 +206,8 @@ public class Speciality extends Fragment {
                 specialityPreviewBinding.viewDummy2.setVisibility(View.GONE);
             }
 
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -206,9 +217,11 @@ public class Speciality extends Fragment {
             SlideSpecialityList.clear();
             brandCodeList.clear();
             JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+            JSONArray specSlide = masterDataDao.getMasterDataTableOrNew(Constants.SPL_SLIDE).getMasterSyncDataJsonArray();
             JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
             LinkedHashMap<String, LinkedHashMap<String, String>> brandToProductWithPriority = new LinkedHashMap<>();
             HashMap<String, LinkedHashMap<String, JSONObject>> brandToProducts = new HashMap<>();
+            HashMap<String, String> specialityWithPriority = new HashMap<>();
 
             for (int i = 0; i < prodSlide.length(); i++) {
                 JSONObject productObject = prodSlide.getJSONObject(i);
@@ -221,6 +234,14 @@ public class Speciality extends Fragment {
                     productData.put(id, productObject);
                     brandToProducts.put(code, productData);
                 }
+            }
+
+            for (int i = 0; i < specSlide.length(); i++) {
+                JSONObject productObject = specSlide.getJSONObject(i);
+                String id = productObject.getString("ID");
+                String specialityCode = productObject.getString("Doc_Special_Code");
+                String priority = productObject.getString("Priority");
+                specialityWithPriority.put(id + "-" + specialityCode, priority);
             }
 
             for (int i = 0; i < brandSlide.length(); i++) {
@@ -251,9 +272,13 @@ public class Speciality extends Fragment {
                                 code = productObject.getString("Code");
                                 slideId = productObject.getString("SlideId");
                                 fileName = productObject.getString("FilePath");
-                                slidePriority = productObject.getString("Priority");
+                                String productDetailCode = productObject.getString("Product_Detail_Code");
+                                slidePriority = specialityWithPriority.get(slideId + "-" + selectedSpecialityCode);
+                                if (slidePriority == null || slidePriority.isEmpty()) {
+                                    continue;
+                                }
                                 if (priority.isEmpty()) priority = "500" + slidePriority;
-                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,"");
                                 productArrayList.add(product);
                             }
                         }
@@ -272,14 +297,26 @@ public class Speciality extends Fragment {
                             code = productObject.getString("Code");
                             slideId = productObject.getString("SlideId");
                             fileName = productObject.getString("FilePath");
-                            slidePriority = productObject.getString("Priority");
+                            String productDetailCode = productObject.getString("Product_Detail_Code");
+                            slidePriority = specialityWithPriority.get(slideId + "-" + selectedSpecialityCode);
+                            if (slidePriority == null || slidePriority.isEmpty()) {
+                                continue;
+                            }
                             if (priority.isEmpty()) priority = "500" + slidePriority;
-                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
+                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,"");
                             productArrayList.add(product);
                         }
                     }
                 }
                 if (!brandName.isEmpty() && !productArrayList.isEmpty()) {
+                    Collections.sort(productArrayList,
+                                     Comparator.comparingInt(p -> {
+                                         try {
+                                             return Integer.parseInt(p.getPriority());
+                                         } catch (Exception e) {
+                                             return Integer.MAX_VALUE;
+                                         }
+                                     }));
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
                     SlideSpecialityList.add(brandModelClass);
                 }
@@ -332,10 +369,17 @@ public class Speciality extends Fragment {
                     specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
                     specialityPreviewBinding.viewDummy2.setVisibility(View.INVISIBLE);
                 }
+                Collections.sort(SlideSpecialityList,
+                                  Comparator.comparingInt(p -> {
+                                      try {
+                                          return Integer.parseInt(p.getPriority());
+                                      } catch (Exception e) {
+                                          return Integer.MAX_VALUE;
+                                      }
+                                  }));
                 previewAdapter = new PreviewAdapter(context, SlideSpecialityList);
                 specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
                 specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
             } else {
                 specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.constraintSortFilter.setVisibility(View.GONE);
@@ -343,9 +387,8 @@ public class Speciality extends Fragment {
                 specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
                 specialityPreviewBinding.viewDummy2.setVisibility(View.GONE);
             }
-
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -498,8 +541,9 @@ public class Speciality extends Fragment {
             String slideId = productObject.getString("SlideId");
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
+            String productDetailCode = productObject.getString("Product_Detail_Code");
             if (priority.isEmpty()) priority = "500" + slidePriority;
-            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false,"");
+            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode,"");
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());
             e.printStackTrace();

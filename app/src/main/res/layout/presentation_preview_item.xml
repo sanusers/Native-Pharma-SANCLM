@@ -7,19 +7,19 @@
     <!--    <ImageView-->
 
 
-    <!--<view
-        android:id="@+id/imageView"
-        class="saneforce.sanzen.activity.presentation.ZoomableImageView"
+    <saneforce.sanzen.activity.presentation.ZoomableImageView
+        android:id="@+id/imageViewZoom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/no_image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
--->
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
@@ -28,7 +28,8 @@
         android:src="@drawable/no_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible"/>
 
     <WebView
         android:id="@+id/webView"

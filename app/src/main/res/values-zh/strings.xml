@@ -497,7 +497,6 @@
     <string name="deleting_field_work_with_calls">删除外勤工作也将删除所有呼叫</string>
     <string name="select_workday">选择工作日</string>
     <string name="refresh">刷新</string>
-    <string name="Signature">签名</string>
     <string name="fill">请填写 </string>
     <string name="select_headquater">选择总部</string>
     <string name="location_add">标记成功</string>
@@ -627,7 +626,6 @@
     <string name="Business">业务数量</string>
     <string name="Business_value">业务金额</string>
     <string name="no_of_product">产品数量 :</string>
-    <string name="Available">可用 :</string>
     <string name="enter_crct_email">保存前请输入正确邮箱</string>
     <string name="work_plan_updated_successfully">工作计划更新成功</string>
     <string name="work_day">工作日</string>
@@ -994,18 +992,40 @@
     <string name="unplanned_visit_count">未计划的访问次数</string>
     <string name="planned_everything">已计划所有内容</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">行程计划未正确同步，请重新同步...</string>
+    <string name="activity_mandatory">活动是必填的</string>
+    <string name="location_permission_needed">需要位置权限！</string>
+    <string name="signature">签名</string>
+    <string name="available">可用：</string>
+    <string name="edit_plan">编辑计划</string>
 
+    <string name="str_password_changed_login_with_online">您的密码已更改。请使用在线方式登录。</string>
+    <string name="str_password_changed">您的密码已更改。请退出并重新登录。</string>
+    <string name="str_device_id_updated">您的设备ID已更新。请退出并重新登录。</string>
+    <string name="str_device_not_valid">设备无效</string>
+    <string name="str_access_denied">拒绝访问！请联系管理员。</string>
+    <string name="str_user_status_vacant">用户状态为空！请联系管理员。</string>
+    <string name="str_user_status_hold">用户状态已暂停！请联系管理员。</string>
+    <string name="str_user_status_blocked">用户状态已封锁！请联系管理员。</string>
+    <string name="str_user_status_deactivated">用户状态已停用！请联系管理员。</string>
+    <string name="pause">暂停</string>
+    <string name="please_select_at_least">请至少选择 </string>
+    <string name="please_plan_all_the">请计划所有 </string>
+    <string name="at_least_one_time"> 至少一次</string>
+    <string name="not_planned">未计划</string>
+    <string name="plan_overview">计划概览</string>
+    <string name="tour_plan_overview">行程计划概览</string>
+    <string name="total_planned_days">计划天数总计: </string>
+    <string name="planned_">已计划：</string>
+    <string name="total_">总计：</string>
+    <string name="planned_days">计划天数：</string>
+    <string name="work_category_in_days">工作类别（按天）</string>
+    <string name="work_type_in_days">工作类型（按天）</string>
+    <string name="unplanned">未计划</string>
+    <string name="planned_visits">已计划拜访</string>
+    <string name="total_visits">拜访总数</string>
+    <string name="cluster_wise">按集群</string>
+    <string name="category_wise">按类别</string>
+    <string name="plan_more">计划更多</string>
 
-
-
-    <!-- <string name="txt_tagging">标记</string>
-     <string name="txt_doctor">医生</string>
-     <string name="txt_chemist">化学家</string>
-     <string name="txt_stockist">最库存</string>
-     <string name="txt_undr">未列名医生</string>
-     <string name="txt_add_tag">添加标签</string>
-     <string name="search">Chinese</string>
-     <string name="str_save_settings">保存设置</string>
-     <string name="user_id">用户身份</string>-->
 
 </resources>

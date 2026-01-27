@@ -344,6 +344,9 @@ public class CallCommonCheckedList implements Parcelable {
         this.checkedItem = checkedItem;
         this.name = name;
     }
+
+
+
     public String getCode() {
         return code;
     }

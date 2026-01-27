@@ -514,8 +514,15 @@ public class SharedPref {
     public static final String RESET_PASSWORD_NEED = "reset_password_need";
     public static final String RESET_PASSWORD_DAYS = "reset_password_days";
 
+    public static final String ZOOM_FLAG = "Zoomflag";
     public static final String SLIDE_AUTO_PLAY = "Html_Play";
     public static final String SLIDEWISE_DETAILING_NEED = "slidewise_detailing_need";
+    public static final String JW_AUTO_SELECTION_NEED = "jw_auto_selection_need";
+
+    public static final String STATUS_CHECKED_DATE = "Status_checked_date";
+    public static final String LOGOUT_REASON = "Logout_reason";
+
+    public static final String LEAVE_ATTACHMENT_NEED = "Leave_attachment_need";
     public static final String MANDATORY_SLIDE = "mandatory_slide";
 
     public static SharedPreferences.Editor editor;
@@ -886,6 +893,9 @@ public class SharedPref {
             editor.putString(TP_MGR_NAME,jsonObject.optString("ReportingTPMgrName"));
             editor.putString(LEV_MGR_CODE,jsonObject.optString("ReportingLeaveMgrCode"));
             editor.putString(LEV_MGR_NAME,jsonObject.optString("ReportingLeaveMgrName"));
+            editor.putString(ZOOM_FLAG,jsonObject.optString("Zoomflag"));
+            editor.putString(LEAVE_ATTACHMENT_NEED,jsonObject.optString("leave_attachment_need"));
+            editor.putString(JW_AUTO_SELECTION_NEED, jsonObject.optString("jw_auto_selection_need"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3254,6 +3264,37 @@ public class SharedPref {
 
     public static String getSlideWiseDetailingNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
+    }
+    public static String getZoomEnabled(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(ZOOM_FLAG,"1");
+    }
+
+    public static void setStatusCheckedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STATUS_CHECKED_DATE, date).apply();
+    }
+
+    public static String getStatusCheckedDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STATUS_CHECKED_DATE, "");
+    }
+
+    public static void setLogoutReason(Context context, String reason) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGOUT_REASON, reason).apply();
+    }
+
+    public static String getLogoutReason(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGOUT_REASON, "");
+    }
+
+    public static String getLeaveAttachmentNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LEAVE_ATTACHMENT_NEED, "1");
+    }
+
+    public static String getJwAutoSelectionNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(JW_AUTO_SELECTION_NEED, "1");
     }
 
     public static String getMandatorySlide(Context context){

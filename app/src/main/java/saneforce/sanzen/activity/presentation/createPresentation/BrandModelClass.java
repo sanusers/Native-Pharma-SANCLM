@@ -119,6 +119,7 @@ public class BrandModelClass {
         String slideId = "";
         String slideName = "";
         String priority = "";
+        String productCode = "";
         boolean imageSelected = false;
         int draggedPosition = -1;
         String mandatorySlide = "";
@@ -126,15 +127,24 @@ public class BrandModelClass {
         public Product () {
         }
 
-        public Product(String brandCode, String brandName, String slideId, String slideName, String priority, boolean imageSelected,String mandatorySlide) {
+        public Product(String brandCode, String brandName, String slideId, String slideName, String priority, boolean imageSelected, String productCode, String mandatorySlide) {
             this.brandCode = brandCode;
             this.brandName = brandName;
             this.slideId = slideId;
             this.slideName = slideName;
             this.priority = priority;
+            this.productCode = productCode;
             this.imageSelected = imageSelected;
             this.mandatorySlide=mandatorySlide;
         }
+//        public Product(String brandCode, String brandName, String slideId, String slideName, String priority, boolean imageSelected) {
+//            this.brandCode = brandCode;
+//            this.brandName = brandName;
+//            this.slideId = slideId;
+//            this.slideName = slideName;
+//            this.priority = priority;
+//            this.imageSelected = imageSelected;
+//        }
 
         public Product(String presentationName, String slideId, String slideName, String priority, boolean imageSelected,String mandatorySlide) {
             this.presentationName = presentationName;
@@ -222,6 +232,14 @@ public class BrandModelClass {
 
         public int getDraggedPosition () {
             return draggedPosition;
+        }
+
+        public String getProductCode() {
+            return productCode;
+        }
+
+        public void setProductCode(String productCode) {
+            this.productCode = productCode;
         }
 
         public void setDraggedPosition (int draggedPosition) {

@@ -219,53 +219,6 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Initializing all the data array
 
-        try {
-            boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
-            if (isArabic) {
-                binding.listedDr.setGravity(Gravity.CENTER | Gravity.END);
-                binding.chemist.setGravity(Gravity.CENTER | Gravity.END);
-                binding.stockiest.setGravity(Gravity.CENTER | Gravity.END);
-                binding.unlistedDoctor.setGravity(Gravity.CENTER | Gravity.END);
-                binding.hospital.setGravity(Gravity.CENTER | Gravity.END);
-                binding.cip.setGravity(Gravity.CENTER | Gravity.END);
-                binding.cluster.setGravity(Gravity.CENTER | Gravity.END);
-                binding.input.setGravity(Gravity.CENTER | Gravity.END);
-                binding.product.setGravity(Gravity.CENTER | Gravity.END);
-                binding.leave.setGravity(Gravity.CENTER | Gravity.END);
-                binding.activity.setGravity(Gravity.CENTER | Gravity.END);
-                binding.tourPlan.setGravity(Gravity.CENTER | Gravity.END);
-                binding.workType.setGravity(Gravity.CENTER | Gravity.END);
-                binding.slide.setGravity(Gravity.CENTER | Gravity.END);
-                binding.subordinate.setGravity(Gravity.CENTER | Gravity.END);
-                binding.Other.setGravity(Gravity.CENTER | Gravity.END);
-                binding.Profile.setGravity(Gravity.CENTER | Gravity.END);
-                binding.setup.setGravity(Gravity.CENTER | Gravity.END);
-            } else {
-                binding.listedDr.setGravity(Gravity.CENTER | Gravity.START);
-                binding.chemist.setGravity(Gravity.CENTER | Gravity.START);
-                binding.stockiest.setGravity(Gravity.CENTER | Gravity.START);
-                binding.unlistedDoctor.setGravity(Gravity.CENTER | Gravity.START);
-                binding.hospital.setGravity(Gravity.CENTER | Gravity.START);
-                binding.cip.setGravity(Gravity.CENTER | Gravity.START);
-                binding.cluster.setGravity(Gravity.CENTER | Gravity.START);
-                binding.input.setGravity(Gravity.CENTER | Gravity.START);
-                binding.product.setGravity(Gravity.CENTER | Gravity.START);
-                binding.leave.setGravity(Gravity.CENTER | Gravity.START);
-                binding.dcr.setGravity(Gravity.CENTER | Gravity.START);
-                binding.activity.setGravity(Gravity.CENTER | Gravity.START);
-                binding.tourPlan.setGravity(Gravity.CENTER | Gravity.START);
-                binding.workType.setGravity(Gravity.CENTER | Gravity.START);
-                binding.slide.setGravity(Gravity.CENTER | Gravity.START);
-                binding.subordinate.setGravity(Gravity.CENTER | Gravity.START);
-                binding.Other.setGravity(Gravity.CENTER | Gravity.START);
-                binding.Profile.setGravity(Gravity.CENTER | Gravity.START);
-                binding.setup.setGravity(Gravity.CENTER | Gravity.START);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         uiInitialization();
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
@@ -1238,11 +1191,11 @@ public class MasterSyncActivity extends AppCompatActivity {
 //                MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
             MasterSyncItemModel dr_mas = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
             MasterSyncItemModel geo = new MasterSyncItemModel(SharedPref.getDrCap(this) + " Geo", Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
-            MasterSyncItemModel spl = new MasterSyncItemModel(getString(R.string.speciality)/*Constants.SPECIALITY*/, Constants.DOCTOR_MAS, "getspeciality", getString(R.string.speciality)/*Constants.SPECIALITY*/, specialityStatus, false);
-            MasterSyncItemModel ql = new MasterSyncItemModel(getString(R.string.qualification), Constants.DOCTOR_MAS, "getquali",getString(R.string.qualification) /*Constants.QUALIFICATION*/, qualificationStatus, false);
-            MasterSyncItemModel cat = new MasterSyncItemModel(getString(R.string.category), Constants.DOCTOR_MAS, "getcategorys",getString(R.string.category) /*Constants.CATEGORY*/, categoryStatus, false);
+            MasterSyncItemModel spl = new MasterSyncItemModel(getString(R.string.speciality)/*Constants.SPECIALITY*/, Constants.DOCTOR_MAS, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
+            MasterSyncItemModel ql = new MasterSyncItemModel(getString(R.string.qualification), Constants.DOCTOR_MAS, "getquali",Constants.QUALIFICATION, qualificationStatus, false);
+            MasterSyncItemModel cat = new MasterSyncItemModel(getString(R.string.category), Constants.DOCTOR_MAS, "getcategorys", Constants.CATEGORY, categoryStatus, false);
 //                    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
-            MasterSyncItemModel clas = new MasterSyncItemModel(getString(R.string.clases), Constants.DOCTOR_MAS, "getclass", getString(R.string.clases)/*Constants.CLASS*/, classStatus, false);
+            MasterSyncItemModel clas = new MasterSyncItemModel(getString(R.string.clases), Constants.DOCTOR_MAS, "getclass", Constants.CLASS, classStatus, false);
 //                doctorModelArray.add(doctorModel);
             doctorModelArray.add(dr_mas);
             doctorModelArray.add(geo);

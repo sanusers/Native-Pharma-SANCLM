@@ -1031,8 +1031,8 @@ public class OutboxFragment extends Fragment {
                         public void onError(int idInt, Exception ex) {
                             Log.e("S3 Upload", "Error: " + ex.getMessage());
                             signModelClass.setSynced(1);
-                            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
+                            signModelClass.setSync_status(Constants.UPLOAD_FAILED);
+                            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.UPLOAD_FAILED, 1);
                             //notifyedmethod();
                             if (attempt != 5) {
                                 CallSendAPIImageS3(child, index, attempt + 1, signModelClass, callback);
@@ -1047,8 +1047,8 @@ public class OutboxFragment extends Fragment {
         } catch (Exception e) {
             Log.v("img_tagOF", e.toString());
             signModelClass.setSynced(1);
-            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
+            signModelClass.setSync_status(Constants.UPLOAD_FAILED);
+            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.UPLOAD_FAILED, 1);
             //notifyedmethod();
             callback.onFailure();
         }

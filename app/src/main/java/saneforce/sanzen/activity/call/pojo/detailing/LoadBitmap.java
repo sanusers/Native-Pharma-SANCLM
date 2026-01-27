@@ -2,14 +2,15 @@ package saneforce.sanzen.activity.call.pojo.detailing;
 
 import android.graphics.Bitmap;
 
-public class LoadBitmap
-{
+public class LoadBitmap {
     Bitmap bitmaps;
     int indexVal;
     String timing;
     String dateVal;
     String slideName;
     String slideUrl;
+    String slideID;
+    String productCode;
 
     public String getSlideUrl() {
         return slideUrl;
@@ -58,43 +59,39 @@ public class LoadBitmap
         this.scribble = scribble;
     }
 
-    public LoadBitmap(String slideName, String timing)
-    {
+    public LoadBitmap(String slideName, String timing) {
         this.slideName = slideName;
-        this.timing=timing;
+        this.timing = timing;
     }
 
-    public LoadBitmap(String timing)
-    {
+    public LoadBitmap(String timing) {
         this.slideName = slideName;
-        this.timing=timing;
-        this.dateVal=dateVal;
+        this.timing = timing;
+        this.dateVal = dateVal;
     }
 
-    public LoadBitmap(Bitmap bitmaps, int indexVal)
-    {
+    public LoadBitmap(Bitmap bitmaps, int indexVal) {
         this.bitmaps = bitmaps;
         this.indexVal = indexVal;
     }
 
-    public LoadBitmap(String scribble, String timing, int indexVal, String dateVal, String slideName,String slideType,String slideUrl,String brandName,String brandCode)
-    {
+    public LoadBitmap(String scribble, String timing, int indexVal, String dateVal, String slideID, String slideName, String slideType, String slideUrl, String brandName, String brandCode, String productCode) {
         this.scribble = scribble;
-        this.timing=timing;
-        this.indexVal=indexVal;
-        this.dateVal=dateVal;
+        this.timing = timing;
+        this.indexVal = indexVal;
+        this.dateVal = dateVal;
+        this.slideID = slideID;
         this.slideName = slideName;
         this.slideType = slideType;
         this.brandName = brandName;
         this.brandCode = brandCode;
         this.slideUrl = slideUrl;
-
+        this.productCode = productCode;
     }
 
-    public LoadBitmap(String name, boolean isCheck)
-    {
-        slideName =name;
-        this.isCheck=isCheck;
+    public LoadBitmap(String name, boolean isCheck) {
+        slideName = name;
+        this.isCheck = isCheck;
     }
 
     public String getSlideName() {
@@ -143,5 +140,21 @@ public class LoadBitmap
 
     public void setCheck(boolean check) {
         isCheck = check;
+    }
+
+    public String getSlideID() {
+        return slideID;
+    }
+
+    public void setSlideID(String slideID) {
+        this.slideID = slideID;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 }

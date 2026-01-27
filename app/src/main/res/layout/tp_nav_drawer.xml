@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,39 +15,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_alignParentTop="true"
+        android:layoutDirection="ltr"
         tools:ignore="DuplicateIncludedIds">
 
         <TextView
             android:id="@+id/addEditViewTxt"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="start"
+            android:gravity="left"
             android:text="@string/add_plan"
             android:textColor="@color/text_dark"
+            android:layout_alignParentStart="true"
             android:textSize="@dimen/_7sdp"
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
             android:padding="@dimen/_6sdp"
             tools:ignore="SpUsage"/>
 
-        <LinearLayout
+
+        <ImageView
             android:id="@+id/tp_drawer_closeIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/_12sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:src="@drawable/close_icon"
+            android:layout_gravity="center"
+            android:layout_alignParentEnd="true"
+            tools:ignore="ContentDescription" />
+
+       <!-- <RelativeLayout
+            android:id="@+id/tp_drawer_closeIcon"
+            android:layout_width="match_parent"
+            android:layout_height="mat"
             android:paddingStart="@dimen/_6sdp"
             android:paddingEnd="@dimen/_6sdp">
 
-            <ImageView
-                android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_12sdp"
-                android:src="@drawable/close_icon"
-                android:layout_gravity="center"
-                tools:ignore="ContentDescription" />
 
-        </LinearLayout>
+        </RelativeLayout>-->
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:id="@+id/lineView"
@@ -81,6 +89,11 @@
         android:layout_below="@id/planDate"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="-4dp"
+        android:layout_marginEnd="-10dp"
+        android:layout_marginBottom="3dp"
+        android:layoutDirection="ltr"
         android:overScrollMode="never" />
 
     <LinearLayout
@@ -137,7 +150,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Clear"
+                    android:text="@string/clear"
                     android:textSize="@dimen/_6sdp"
                     android:textColor="@color/text_dark"
                     android:fontFamily="@font/satoshi_variable"
@@ -158,7 +171,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Save"
+                    android:text="@string/save"
                     android:textSize="@dimen/_6sdp"
                     android:textColor="@color/white"
                     android:fontFamily="@font/satoshi_variable"

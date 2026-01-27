@@ -43,7 +43,6 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
     ArrayList<BrandModelClass.Product> products = new ArrayList<>();
     Intent intent;
 
-
     public PreviewAdapter(Context context, ArrayList<BrandModelClass> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
@@ -77,15 +76,13 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
             @Override
             public void onSafeClick(View view) {
                 int SelectedPos = 0;
-
                 int count = products.size();
                 if (count > 0) {
                     ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                     if (from_where.equalsIgnoreCase("call")) {
                         for (int i = 0; i < arrayList.size(); i++) {
                             for (int j = 0; j < arrayList.get(i).getProductArrayList().size(); j++) {
-                                productsList.add(new BrandModelClass.Product(arrayList.get(i).getBrandCode(), arrayList.get(i).getBrandName(), arrayList.get(i).getProductArrayList().get(j).getSlideId()
-                                        , arrayList.get(i).getProductArrayList().get(j).getSlideName(), arrayList.get(i).getProductArrayList().get(j).getPriority(), arrayList.get(i).getProductArrayList().get(j).isImageSelected(), arrayList.get(i).getProductArrayList().get(j).getMandatorySlide()));
+                                productsList.add(new BrandModelClass.Product(arrayList.get(i).getBrandCode(), arrayList.get(i).getBrandName(), arrayList.get(i).getProductArrayList().get(j).getSlideId(), arrayList.get(i).getProductArrayList().get(j).getSlideName(), arrayList.get(i).getProductArrayList().get(j).getPriority(), arrayList.get(i).getProductArrayList().get(j).isImageSelected(), arrayList.get(i).getProductArrayList().get(j).getProductCode(), arrayList.get(i).getProductArrayList().get(j).getMandatorySlide()));
                             }
                         }
 
@@ -109,6 +106,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
                 }
             }
         });
+
         holder.info.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {

@@ -125,6 +125,7 @@ public class Constants {
     public static final String WAITING_FOR_SYNC = "Waiting for Sync";
     public static final String DUPLICATE_CALL = "Duplicate Call";
     public static final String CALL_FAILED = "Call Failed";
+    public static final String UPLOAD_FAILED = "Upload Failed";
     public static final String FAILED = "Failed";
     public static final String EXCEPTION_ERROR = "Exception Error";
     public static final String DCR_FROM_ACTIVITY = "dcr_from_activity";

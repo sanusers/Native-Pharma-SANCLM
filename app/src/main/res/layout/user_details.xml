@@ -93,17 +93,20 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_12sdp"
+                android:id="@+id/passImg"
+                android:layout_width="@dimen/_26sdp"
+                android:layout_height="@dimen/_10sdp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
+                android:layout_alignParentStart="true"
                 android:src="@drawable/password" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="left"
                 android:fontFamily="@font/satoshi_medium"
                 android:text="@string/change_password"
                 android:textColor="#282A3C"
@@ -132,8 +135,9 @@
             android:paddingBottom="@dimen/_2sdp">
 
             <ImageView
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_12sdp"
+                android:id="@+id/logoutImg"
+                android:layout_width="@dimen/_26sdp"
+                android:layout_height="@dimen/_10sdp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
@@ -144,6 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/satoshi_medium"
+                android:gravity="left"
                 android:text="@string/logout"
                 android:textColor="#282A3C"
                 android:textSize="@dimen/_7ssp" />

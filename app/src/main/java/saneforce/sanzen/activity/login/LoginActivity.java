@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         UtilityClass.setLanguage(LoginActivity.this);
         setContentView(binding.getRoot());
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.LAYOUT_DIRECTION_LTR);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
@@ -122,21 +122,10 @@ public class LoginActivity extends AppCompatActivity {
         callTableDao = roomDB.callTableDao();
         loginDataDao = roomDB.loginDataDao();
         notificationDataDao = roomDB.notificationDataDao();
-
-        uiInitialisation();
-        try {
-            boolean isArabic = Locale.getDefault().getLanguage().equals("ar");
-
-            if (isArabic) {
-                binding.userId.setGravity(Gravity.CENTER | Gravity.END);
-                binding.userId.setTextDirection(View.TEXT_DIRECTION_LTR);
-                binding.userId.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-            } else {
-                binding.userId.setGravity(Gravity.CENTER | Gravity.START);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
+        uiInitialisation();
         binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
 
         int loginFailedCount = SharedPref.getLoginFailedCount(LoginActivity.this);
@@ -426,6 +415,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+        String reason = SharedPref.getLogoutReason(LoginActivity.this);
+        if (!reason.isEmpty()) {
+            if (reason.contains(".")) {
+                reason = reason.substring(0, reason.indexOf("."));
+            }
+            binding.logoutReasonLayout.setVisibility(View.VISIBLE);
+            binding.logoutReasonTxt.setText(reason);
+        }
         SetUpLanguage();
     }
 
@@ -623,8 +620,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void
-    process(JSONObject jsonObject) {
+    public void process(JSONObject jsonObject) {
         try {
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             notificationDataDao.getNotificationBySyncStatus(5).forEach(data -> {
@@ -635,6 +631,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveKeys(LoginActivity.this, jsonObject.optString("zakey"), jsonObject.optString("zskey"));
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
+            SharedPref.setLogoutReason(LoginActivity.this, "");
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             //   SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
             SharedPref.saveHqMain(LoginActivity.this, jsonObject.getString("HQName"));

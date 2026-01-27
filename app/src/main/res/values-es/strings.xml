@@ -494,7 +494,6 @@
     <string name="deleting_field_work_with_calls">Eliminar trabajo de campo también eliminará todas las llamadas</string>
     <string name="select_workday">Seleccionar día laboral</string>
     <string name="refresh">Actualizar</string>
-    <string name="Signature">Firma</string>
     <string name="fill">Por favor complete </string>
     <string name="select_headquater">SELECCIONAR SEDE</string>
     <string name="location_add">Marcado exitosamente</string>
@@ -623,7 +622,6 @@
     <string name="Business">Cantidad de negocios</string>
     <string name="Business_value">Valor de negocio</string>
     <string name="no_of_product">Número de productos:</string>
-    <string name="Available">Disponible:</string>
     <string name="enter_crct_email">Por favor ingrese el correo electrónico correcto antes de guardar</string>
     <string name="work_plan_updated_successfully">Plan de trabajo actualizado correctamente</string>
     <string name="work_day">Día laboral</string>
@@ -990,9 +988,39 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="unplanned_visit_count">Cantidad de visitas no planificadas</string>
     <string name="planned_everything">Todo planificado</string>
     <string name="tour_plan_not_sync_properly_once_sync_again">El plan de visita no se sincronizó correctamente, por favor sincronice de nuevo...</string>
+    <string name="activity_mandatory">Actividad obligatoria</string>
+    <string name="location_permission_needed">¡Se necesita permiso de ubicación!</string>
+    <string name="signature">Firma</string>
+    <string name="available">Disponible:</string>
+    <string name="edit_plan">Editar plan</string>
 
+    <string name="str_password_changed_login_with_online">Su contraseña ha sido cambiada. Por favor inicie sesión en línea.</string>
+    <string name="str_password_changed">Su contraseña ha sido cambiada. Cierre sesión e inicie sesión nuevamente.</string>
+    <string name="str_device_id_updated">El ID del dispositivo ha sido actualizado. Cierre sesión e inicie sesión nuevamente.</string>
+    <string name="str_device_not_valid">El dispositivo no es válido</string>
+    <string name="str_access_denied">¡Acceso denegado! Contacte al administrador.</string>
+    <string name="str_user_status_vacant">¡Estado de usuario vacante! Contacte al administrador.</string>
+    <string name="str_user_status_hold">¡Estado de usuario en espera! Contacte al administrador.</string>
+    <string name="str_user_status_blocked">¡Estado de usuario bloqueado! Contacte al administrador.</string>
+    <string name="str_user_status_deactivated">¡Estado de usuario desactivado! Contacte al administrador.</string>
+    <string name="pause">Pausa</string>
+    <string name="please_select_at_least">Por favor seleccione al menos </string>
+    <string name="please_plan_all_the">Por favor planifique todos los </string>
+    <string name="at_least_one_time"> al menos una vez</string>
+    <string name="not_planned">No planificado</string>
+    <string name="plan_overview">Resumen del plan</string>
+    <string name="tour_plan_overview">Resumen del plan de viaje</string>
+    <string name="total_planned_days">Total de días planificados: </string>
+    <string name="planned_">Planificado: </string>
+    <string name="total_">Total: </string>
+    <string name="planned_days">Días planificados: </string>
+    <string name="work_category_in_days">Categoría de trabajo (en días)</string>
+    <string name="work_type_in_days">Tipo de trabajo (en días)</string>
+    <string name="unplanned">No planificado</string>
+    <string name="planned_visits">Visitas planificadas</string>
+    <string name="total_visits">Total de visitas</string>
+    <string name="cluster_wise">Por grupo</string>
+    <string name="category_wise">Por categoría</string>
+    <string name="plan_more">Planificar más</string>
 
-    <!--<string name="str_save_settings">Guardar ajustes</string>
-    <string name="user_id">identificación de usuario</string>
-    <string name="google_maps_key">AIzaSyBQe14kV-8aZneHfyAMYDT5PKeG5eNKCEE</string>-->
 </resources>
