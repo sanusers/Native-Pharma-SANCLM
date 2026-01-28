@@ -11,6 +11,7 @@ public class SpecialityModelClass {
     private String divisionCode;
     boolean specialitySelected = false;
    // private ArrayList<Slide> slideList;
+   private ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
     private int selectedSlideCount = 0;
 
    // private ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
@@ -20,6 +21,13 @@ public class SpecialityModelClass {
         this.name = name;
         this.docSpecialName = docSpecialName;
         this.divisionCode = divisionCode;
+    }
+    public ArrayList<BrandModelClass.Product> getProductArrayList() {
+        return productArrayList;
+    }
+
+    public void setProductArrayList(ArrayList<BrandModelClass.Product> list) {
+        this.productArrayList = list;
     }
 
     public String getCode() { return code; }

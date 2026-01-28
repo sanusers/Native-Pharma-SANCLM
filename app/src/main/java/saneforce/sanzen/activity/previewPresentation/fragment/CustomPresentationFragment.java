@@ -96,9 +96,26 @@ public class CustomPresentationFragment extends Fragment {
                 binding.imgBrandMatrixArrow.setRotation(0);
                 isBrandMatrixExpanded = false;
 
-                // 🟢 AUTO-CLOSE SPECIALITY (Indha idathula Recycler-aiyum GONE pannanum)
+//                binding.brandNameRecView.post(() -> {
+//                    if (binding.brandNameRecView.getChildAt(0) != null) {
+//                        binding.brandNameRecView.getChildAt(0).performClick();
+//                    }
+//                });
+                binding.brandNameRecView.post(() -> {
+                    binding.brandNameRecView.scrollToPosition(0);
+                    binding.brandNameRecView.postDelayed(() -> {
+                        RecyclerView.ViewHolder viewHolder =
+                                binding.brandNameRecView.findViewHolderForAdapterPosition(0);
+
+                        if (viewHolder != null) {
+                            viewHolder.itemView.performClick();
+                        }
+                    }, 100);
+                });
+
+                //  AUTO-CLOSE SPECIALITY
                 if (isSpecialityExpanded) {
-                    binding.specialityRecView.setVisibility(View.GONE); // Mukkiyam: Indha line missing
+                    binding.specialityRecView.setVisibility(View.GONE);
                     binding.tvNospeciality.setVisibility(View.GONE);
                     binding.imgspecialityArrow.setRotation(0);
                     isSpecialityExpanded = false;
@@ -118,14 +135,31 @@ public class CustomPresentationFragment extends Fragment {
                 binding.imgBrandMatrixArrow.setRotation(180);
                 binding.slideImageRecView.setVisibility(View.GONE);
 
-                // 🔴 AUTO-CLOSE ALL BRANDS
+//                binding.brandMatrixRecView.post(() -> {
+//                    if (binding.brandMatrixRecView.getChildAt(0) != null) {
+//                        binding.brandMatrixRecView.getChildAt(0).performClick();
+//                    }
+//                });
+                binding.brandMatrixRecView.post(() -> {
+                    binding.brandMatrixRecView.scrollToPosition(0);
+                    binding.brandMatrixRecView.postDelayed(() -> {
+                        RecyclerView.ViewHolder viewHolder =
+                                binding.brandMatrixRecView.findViewHolderForAdapterPosition(0);
+
+                        if (viewHolder != null) {
+                            viewHolder.itemView.performClick();
+                        }
+                    }, 100);
+                });
+
+                //  AUTO-CLOSE ALL BRANDS
                 if (isAllBrandsExpanded) {
                     binding.brandNameRecView.setVisibility(View.GONE);
                     binding.imgAllBrandArrow.setRotation(0);
                     isAllBrandsExpanded = false;
                 }
 
-                // 🔴 AUTO-CLOSE SPECIALITY
+                // AUTO-CLOSE SPECIALITY
                 if (isSpecialityExpanded) {
                     binding.specialityRecView.setVisibility(View.GONE); // Mukkiyam
                     binding.tvNospeciality.setVisibility(View.GONE);
@@ -140,26 +174,50 @@ public class CustomPresentationFragment extends Fragment {
         binding.speciality.setOnClickListener(view -> {
             if (isSpecialityExpanded) {
                 // Collapse Speciality
-                binding.specialityRecView.setVisibility(View.GONE); // Visibility-ai GONE pannanum
+                binding.specialityRecView.setVisibility(View.GONE);
                 binding.tvNospeciality.setVisibility(View.GONE);
                 binding.imgspecialityArrow.setRotation(0);
                 binding.slideImageRecView.setVisibility(View.VISIBLE);
             } else {
                 // Expand Speciality
-                // ✅ CORRECTED: Expand aagum pothu Recycler-ai VISIBLE pannanum
                 binding.specialityRecView.setVisibility(View.VISIBLE);
                 binding.tvNospeciality.setVisibility(View.GONE);
                 binding.imgspecialityArrow.setRotation(180);
                 binding.slideImageRecView.setVisibility(View.VISIBLE);
 
-                // 🔴 AUTO-CLOSE ALL BRANDS
+//                binding.specialityRecView.post(() -> {
+//                    if (binding.specialityRecView.getChildAt(0) != null) {
+//                        binding.specialityRecView.getChildAt(0).performClick();
+//                    }
+//                });
+//                binding.specialityRecView.post(() -> {
+//                    RecyclerView.ViewHolder viewHolder =
+//                            binding.specialityRecView.findViewHolderForAdapterPosition(0);
+//
+//                    if (viewHolder != null) {
+//                        viewHolder.itemView.performClick();
+//                    }
+//                });
+                binding.specialityRecView.post(() -> {
+                    binding.specialityRecView.scrollToPosition(0);
+                    binding.specialityRecView.postDelayed(() -> {
+                        RecyclerView.ViewHolder viewHolder =
+                                binding.specialityRecView.findViewHolderForAdapterPosition(0);
+                        if (viewHolder != null) {
+                            viewHolder.itemView.performClick();
+                        }
+                    }, 100);
+                });
+
+
+                //  AUTO-CLOSE ALL BRANDS
                 if (isAllBrandsExpanded) {
                     binding.brandNameRecView.setVisibility(View.GONE);
                     binding.imgAllBrandArrow.setRotation(0);
                     isAllBrandsExpanded = false;
                 }
 
-                // 🔴 AUTO-CLOSE BRAND MATRIX
+                //  AUTO-CLOSE BRAND MATRIX
                 if (isBrandMatrixExpanded) {
                     binding.tvNoBrandMatrix.setVisibility(View.GONE);
                     binding.imgBrandMatrixArrow.setRotation(0);
@@ -448,57 +506,215 @@ public class CustomPresentationFragment extends Fragment {
             populateSlideImageAdapter(arrayList.get(0).getProductArrayList());
     }
 
+    //    @SuppressLint("NotifyDataSetChanged")
+//    public void populateSlideImageAdapter(ArrayList<BrandModelClass.Product> arrayList) {
+//        imageSelectionInterface = (arrayList1, position) -> {
+//            brandNameAdapter.notifyDataSetChanged();
+//            slideImageAdapter.notifyDataSetChanged();
+//            for (BrandModelClass brandModelClass : brandProductArrayList) {
+//                for (BrandModelClass.Product product : brandModelClass.getProductArrayList()) {
+//                    if (product.isImageSelected()) {
+//                        if (!selectedSlideArrayList.isEmpty()) {
+//                            for (int i = 0; i < selectedSlideArrayList.size(); i++) {
+//                                if (!selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(product.getSlideId())) {
+//                                    selectedSlideArrayList.add(selectedSlideArrayList.size(), product);
+//                                    break;
+//                                }
+//                            }
+//                        } else {
+//                            selectedSlideArrayList.add(selectedSlideArrayList.size(), product);
+//                        }
+//                    } else {
+//                        if (!selectedSlideArrayList.isEmpty()) {
+//                            for (int i = 0; i < selectedSlideArrayList.size(); i++) {
+//                                if (selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(product.getSlideId())) {
+//                                    selectedSlideArrayList.remove(i);
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            int count = selectedSlideArrayList.size();
+//            for (int i = 0; i < count; i++) {
+//                for (int j = i + 1; j < count; j++) {
+//                    if (selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(selectedSlideArrayList.get(j).getSlideId())) {
+//                        selectedSlideArrayList.remove(j--);
+//                        count--;
+//                    }
+//                }
+//            }
+//
+//            populateSelectedSlideAdapter(selectedSlideArrayList, position);
+//            binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+//            binding.clearBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+//        };
+//        slideImageAdapter = new SlideImageAdapter(requireContext(), arrayList, imageSelectionInterface);
+//        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
+//        binding.slideImageRecView.setLayoutManager(layoutManager);
+//        binding.slideImageRecView.setAdapter(slideImageAdapter);
+//        binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+//        binding.clearBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+//    }
+
     @SuppressLint("NotifyDataSetChanged")
     public void populateSlideImageAdapter(ArrayList<BrandModelClass.Product> arrayList) {
+
+
+//        for (BrandModelClass.Product gridProduct : arrayList) {
+//            for (BrandModelClass.Product selected : selectedSlideArrayList) {
+//                if (gridProduct.getSlideId().equalsIgnoreCase(selected.getSlideId())) {
+//                    gridProduct.setImageSelected(true);
+//                    break;
+//                }
+//            }
+//        }
+        for (BrandModelClass.Product gridProduct : arrayList) {
+            boolean isSelected = false;
+            for (BrandModelClass.Product selected : selectedSlideArrayList) {
+                if (gridProduct.getSlideId().equalsIgnoreCase(selected.getSlideId())) {
+                    isSelected = true;
+                    break;
+                }
+            }
+            gridProduct.setImageSelected(isSelected);
+        }
+
         imageSelectionInterface = (arrayList1, position) -> {
-            brandNameAdapter.notifyDataSetChanged();
-            slideImageAdapter.notifyDataSetChanged();
-            for (BrandModelClass brandModelClass : brandProductArrayList) {
-                for (BrandModelClass.Product product : brandModelClass.getProductArrayList()) {
-                    if (product.isImageSelected()) {
-                        if (!selectedSlideArrayList.isEmpty()) {
-                            for (int i = 0; i < selectedSlideArrayList.size(); i++) {
-                                if (!selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(product.getSlideId())) {
-                                    selectedSlideArrayList.add(selectedSlideArrayList.size(), product);
-                                    break;
-                                }
-                            }
-                        } else {
-                            selectedSlideArrayList.add(selectedSlideArrayList.size(), product);
-                        }
-                    } else {
-                        if (!selectedSlideArrayList.isEmpty()) {
-                            for (int i = 0; i < selectedSlideArrayList.size(); i++) {
-                                if (selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(product.getSlideId())) {
-                                    selectedSlideArrayList.remove(i);
-                                    break;
-                                }
-                            }
-                        }
+            //  Selection Sync
+            for (BrandModelClass.Product product : arrayList1) {
+                boolean alreadyExists = false;
+                int existingIndex = -1;
+                for (int i = 0; i < selectedSlideArrayList.size(); i++) {
+                    if (selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(product.getSlideId())) {
+                        alreadyExists = true;
+                        existingIndex = i;
+                        break;
                     }
+                }
+                if (product.isImageSelected() && !alreadyExists) {
+                    selectedSlideArrayList.add(product);
+                } else if (!product.isImageSelected() && alreadyExists) {
+                    selectedSlideArrayList.remove(existingIndex);
                 }
             }
 
-            int count = selectedSlideArrayList.size();
-            for (int i = 0; i < count; i++) {
-                for (int j = i + 1; j < count; j++) {
-                    if (selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(selectedSlideArrayList.get(j).getSlideId())) {
-                        selectedSlideArrayList.remove(j--);
-                        count--;
-                    }
-                }
-            }
+            // Automatic Global Sync (Brands & Specialities)
+            updateAllSpecialityCounts();
+
+            // Refresh UI
+            if (brandNameAdapter != null) brandNameAdapter.notifyDataSetChanged();
+            if (slideImageAdapter != null) slideImageAdapter.notifyDataSetChanged();
+            if (SpecialityNameAdapter != null) SpecialityNameAdapter.notifyDataSetChanged();
 
             populateSelectedSlideAdapter(selectedSlideArrayList, position);
+
+            binding.selectedSlideCount.setText(String.valueOf(selectedSlideArrayList.size()));
             binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
             binding.clearBtn.setEnabled(!selectedSlideArrayList.isEmpty());
         };
+
         slideImageAdapter = new SlideImageAdapter(requireContext(), arrayList, imageSelectionInterface);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
-        binding.slideImageRecView.setLayoutManager(layoutManager);
+        binding.slideImageRecView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         binding.slideImageRecView.setAdapter(slideImageAdapter);
-        binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
-        binding.clearBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+    }
+
+    //    private void updateAllSpecialityCounts() {
+//        if (specialityArrayList == null) return;
+//
+//        // 1. First, Brand counts-ai master selected list vachu update pannuvom
+//        for (BrandModelClass brand : brandProductArrayList) {
+//            int bCount = 0;
+//            for (BrandModelClass.Product p : brand.getProductArrayList()) {
+//                // Check global selection
+//                boolean isSel = false;
+//                for (BrandModelClass.Product s : selectedSlideArrayList) {
+//                    if (p.getSlideId().equalsIgnoreCase(s.getSlideId())) {
+//                        isSel = true;
+//                        p.setImageSelected(true); // Automatic tick in other lists
+//                        break;
+//                    }
+//                }
+//                if (isSel) bCount++;
+//                else p.setImageSelected(false);
+//            }
+//            brand.setSelectedSlideCount(bCount);
+//        }
+//
+//
+//        for (SpecialityModelClass spec : specialityArrayList) {
+//            int specTotal = 0;
+//
+//
+//            for (BrandModelClass brand : brandProductArrayList) {
+//                for (BrandModelClass.Product p : brand.getProductArrayList()) {
+//
+//                    for (BrandModelClass.Product selected : selectedSlideArrayList) {
+//                        if (p.getSlideId().equalsIgnoreCase(selected.getSlideId())) {
+//
+//                            specTotal = calculateCountForSpec(spec.getCode());
+//                        }
+//                    }
+//                }
+//            }
+//            spec.setSelectedSlideCount(specTotal);
+//        }
+//    }
+    private void updateAllSpecialityCounts() {
+
+        if (specialityArrayList == null) return;
+
+        // 🟢 1. BRAND COUNTS (from global selected list)
+        for (BrandModelClass brand : brandProductArrayList) {
+
+            int brandCount = 0;
+
+            for (BrandModelClass.Product p : brand.getProductArrayList()) {
+
+                boolean isSelected = false;
+                for (BrandModelClass.Product s : selectedSlideArrayList) {
+                    if (p.getSlideId().equalsIgnoreCase(s.getSlideId())) {
+                        isSelected = true;
+                        break;
+                    }
+                }
+
+                p.setImageSelected(isSelected);
+                if (isSelected) brandCount++;
+            }
+
+            brand.setSelectedSlideCount(brandCount);
+        }
+
+        // 🟢 2. SPECIALITY COUNTS (DIRECT & SAFE)
+        for (SpecialityModelClass spec : specialityArrayList) {
+            int count = calculateCountForSpec(spec.getCode());
+            spec.setSelectedSlideCount(count);
+        }
+    }
+
+    // Helper to calculate count for a specific speciality code based on global selection
+    private int calculateCountForSpec(String specCode) {
+        int count = 0;
+        HashSet<String> selectedIds = new HashSet<>();
+        for (BrandModelClass.Product s : selectedSlideArrayList) selectedIds.add(s.getSlideId());
+
+        try {
+            JSONArray splSlide = masterDataDao.getMasterDataTableOrNew(Constants.SPL_SLIDE).getMasterSyncDataJsonArray();
+            for (int i = 0; i < splSlide.length(); i++) {
+                JSONObject obj = splSlide.getJSONObject(i);
+                if (obj.optString("Doc_Special_Code").equalsIgnoreCase(specCode)) {
+                    if (selectedIds.contains(obj.optString("ID"))) {
+                        count++;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
     public void populateSelectedSlideAdapter(ArrayList<BrandModelClass.Product> arrayList, int position) {
@@ -565,78 +781,6 @@ public class CustomPresentationFragment extends Fragment {
         binding.specialityRecView.setAdapter(SpecialityNameAdapter);
     }
 
-    //    private void loadSlidesForSpeciality(String specialityCode) {
-//
-//        ArrayList<BrandModelClass.Product> slidesForSpeciality = new ArrayList<>();
-//
-//        JSONArray splSlide = masterDataDao
-//                .getMasterDataTableOrNew(Constants.SPL_SLIDE)
-//                .getMasterSyncDataJsonArray();
-//
-//        try {
-//            for (int i = 0; i < splSlide.length(); i++) {
-//                JSONObject obj = splSlide.getJSONObject(i);
-//
-//                String docSpecCode = obj.getString("Doc_Special_Code");
-//                String productBrdCode = obj.getString("Product_Brd_Code");
-//
-//                if (docSpecCode.equalsIgnoreCase(specialityCode)) {
-//
-//                    for (BrandModelClass brand : brandProductArrayList) {
-//                        if (brand.getBrandCode().equalsIgnoreCase(productBrdCode)) {
-//                            slidesForSpeciality.addAll(brand.getProductArrayList());
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        populateSlideImageAdapter(slidesForSpeciality);
-//    }
-//    private void loadSlidesForSpeciality(String specialityCode) {
-//        ArrayList<BrandModelClass.Product> slidesForSpeciality = new ArrayList<>();
-//
-//        try {
-//            JSONArray splSlide = masterDataDao
-//                    .getMasterDataTableOrNew(Constants.SPL_SLIDE)
-//                    .getMasterSyncDataJsonArray();
-//
-//            // 1. Matching Brand Codes-ai mattum collect pannuvom
-//            HashSet<String> matchedBrandCodes = new HashSet<>();
-//
-//            for (int i = 0; i < splSlide.length(); i++) {
-//                JSONObject obj = splSlide.getJSONObject(i);
-//
-//                // JSON-la irukkura column names: "Doc_Special_Code" matrum "Product_Brd_Code"
-//                String docSpecCode = obj.optString("Doc_Special_Code");
-//                String brandCode = obj.optString("Product_Brd_Code");
-//
-//                if (docSpecCode.equalsIgnoreCase(specialityCode)) {
-//                    matchedBrandCodes.add(brandCode);
-//                }
-//            }
-//
-//            Log.d("CheckData", "Matched Brand Codes: " + matchedBrandCodes.toString());
-//
-//            // 2. brandProductArrayList-la matching brands-oda slides-ai add pannuvom
-//            for (BrandModelClass brand : brandProductArrayList) {
-//                // Check if this brand's code is in our matched set
-//                if (matchedBrandCodes.contains(brand.getBrandCode())) {
-//                    slidesForSpeciality.addAll(brand.getProductArrayList());
-//                }
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        Log.d("CheckData", "Final Slides count: " + slidesForSpeciality.size());
-//
-//        // Grid refresh
-//        populateSlideImageAdapter(slidesForSpeciality);
-//    }
     private void loadSlidesForSpeciality(String specialityCode) {
         ArrayList<BrandModelClass.Product> slidesForSpeciality = new ArrayList<>();
 
@@ -645,32 +789,30 @@ public class CustomPresentationFragment extends Fragment {
                     .getMasterDataTableOrNew(Constants.SPL_SLIDE)
                     .getMasterSyncDataJsonArray();
 
-            // 1. Intha Speciality-kku mapped-ah irukura Unique Brand Codes-ai edunga (e.g., BLACK SQUAD & BPILIN)
-            HashSet<String> matchedBrandCodes = new HashSet<>();
+            HashSet<String> allowedSlideCodes = new HashSet<>();
+
             for (int i = 0; i < splSlide.length(); i++) {
                 JSONObject obj = splSlide.getJSONObject(i);
+
                 if (obj.optString("Doc_Special_Code").equalsIgnoreCase(specialityCode)) {
-                    matchedBrandCodes.add(obj.optString("Product_Brd_Code"));
+                    allowedSlideCodes.add(obj.optString("ID")); // 🔥 KEY
                 }
             }
-
-            // 2. Duplicate slides-ai avoid panna Slide ID-ai track panna oru Set
             HashSet<String> uniqueSlideCheckSet = new HashSet<>();
 
-            // 3. brandProductArrayList-la loop panni matching brands-oda slides-ai unique-ah edunga
             for (BrandModelClass brand : brandProductArrayList) {
 
-                // Step 1: Matching brand-ah nu paarkurom
-                if (matchedBrandCodes.contains(brand.getBrandCode())) {
+                for (BrandModelClass.Product product : brand.getProductArrayList()) {
 
-                    for (BrandModelClass.Product product : brand.getProductArrayList()) {
+                    String slideId = product.getSlideId();
+                    if (slideId == null) continue;
 
-                        // Step 2: Intha Slide ID munnadiyae add aagalana mattum add pannurom
-                        // product.getSlideId() unga unique identifier-ah irukanum
-                        if (!uniqueSlideCheckSet.contains(product.getSlideId())) {
-                            slidesForSpeciality.add(product);
-                            uniqueSlideCheckSet.add(product.getSlideId());
-                        }
+                    if (allowedSlideCodes.contains(slideId)
+                            && !uniqueSlideCheckSet.contains(slideId)) {
+
+                        slidesForSpeciality.add(product);
+                        uniqueSlideCheckSet.add(slideId);
+
                     }
                 }
             }

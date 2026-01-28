@@ -26,7 +26,9 @@ public class SpecialityNameAdapter extends RecyclerView.Adapter<SpecialityNameAd
     private Context context;
     private SpecialityClickListener listener;
     private int selectedPos = 0;
-
+    public int getSelectedPosition() {
+        return selectedPos;
+    }
     public SpecialityNameAdapter(Context context, ArrayList<SpecialityModelClass> list, SpecialityClickListener listener) {
         this.context = context;
         this.list = list;
@@ -67,6 +69,18 @@ public class SpecialityNameAdapter extends RecyclerView.Adapter<SpecialityNameAd
             selectedPos = position; // make sure selectedPos tracks this
             notifyDataSetChanged(); // refresh to apply arrow
         }
+        holder.itemView.setOnClickListener(v -> {
+            int oldPos = selectedPos;
+            selectedPos = holder.getAbsoluteAdapterPosition();
+
+            notifyItemChanged(oldPos);
+            notifyItemChanged(selectedPos);
+
+            if (listener != null) {
+                listener.onSpecialityClick(speciality, selectedPos);
+            }
+        });
+
 
 //        if (speciality.isSpecialitySelected()){
 //            holder.itemView.setSelected(true);
@@ -81,19 +95,6 @@ public class SpecialityNameAdapter extends RecyclerView.Adapter<SpecialityNameAd
 //                        ? context.getResources().getDrawable(R.drawable.greater_than_black)
 //                        : null // or set default arrow if needed
 //        );
-
-
-            holder.itemView.setOnClickListener(v -> {
-                int oldPos = selectedPos;
-                selectedPos = holder.getAbsoluteAdapterPosition();
-
-                notifyItemChanged(oldPos);
-                notifyItemChanged(selectedPos);
-
-                if (listener != null) {
-                    listener.onSpecialityClick(speciality, selectedPos);
-                }
-            });
 //        holder.itemView.setOnClickListener(v -> {
 //            if (listener != null) {
 //                listener.onSpecialityClick(speciality, position);
