@@ -46,6 +46,26 @@ public class StoreImageTypeUrl
     String rating;
     String scribble;
     String productCode;
+    int flag = 0;
+
+    boolean mandatory_slide; // <-- Added
+
+    // Getter and Setter for mandatory_slide
+    public boolean isMandatory_slide() {
+        return mandatory_slide;
+    }
+
+    public void setMandatory_slide(boolean mandatory_slide) {
+        this.mandatory_slide = mandatory_slide;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
 
     public String getScribble() {
         return scribble;
@@ -106,7 +126,7 @@ public class StoreImageTypeUrl
             this.brdName=brdName;
         }
     */
-    public StoreImageTypeUrl(String scribble, String slideNam, String slideTyp, String slideUrl, String timing, String slideComments, String remTime)
+    public StoreImageTypeUrl(String scribble, String slideNam, String slideTyp, String slideUrl, String timing, String slideComments, String remTime,int flag)
     {
         this.scribble = scribble;
         this.slideNam = slideNam;
@@ -115,6 +135,7 @@ public class StoreImageTypeUrl
         this.timing=timing;
         this.slideComments=slideComments;
         this.remTime=remTime;
+        this.flag = flag;
     }
 
     public StoreImageTypeUrl(String slideNam, String slideTyp, String slideUrl, String timing, String slideComments, String remTime, int columnid, String rating)

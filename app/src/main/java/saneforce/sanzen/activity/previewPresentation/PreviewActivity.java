@@ -3,19 +3,25 @@ package saneforce.sanzen.activity.previewPresentation;
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.binding;
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.mandatoryProductList;
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.playedMandatorySlideIds;
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.context;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.headingData;
 import static saneforce.sanzen.activity.call.fragments.detailing.DetailedFragment.callDetailingLists;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -33,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,10 +48,12 @@ import java.util.stream.Stream;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter;
+import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
 import saneforce.sanzen.activity.presentation.presentation.adapter.SideScreenAdapter;
 import saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix;
@@ -135,6 +144,7 @@ public class PreviewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        playedMandatorySlideIds.clear();
         previewBinding = saneforce.sanzen.databinding.ActivityPreviewBinding.inflate(getLayoutInflater());
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -292,6 +302,25 @@ public class PreviewActivity extends AppCompatActivity {
         });
 
         previewBinding.btnFinishDet.setOnClickListener(view -> {
+
+            Set<String> pendingSlides = new LinkedHashSet<>();
+
+            for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
+                if (!PlaySlideDetailedAdapter.playedMandatorySlideIds.contains(p.getSlideId())) {
+                    pendingSlides.add(p.getSlideName());
+                }
+            }
+
+            if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
+                Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (!pendingSlides.isEmpty()) {
+                Toast.makeText(this, "Mandatory slides pending: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
+                return;
+            }
+
             previewBinding.rlThankYou.setVisibility(View.VISIBLE);
             previewBinding.docName.setText("Thank You\n"+ caption + " " + CallActivityCustDetails.get(0).getName());
             previewBinding.btnFinishDet.setVisibility(View.GONE);
@@ -372,6 +401,7 @@ public class PreviewActivity extends AppCompatActivity {
             callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });
+
     }
 
     private void viewSideScreen(String customerType, String presentationName) {
@@ -536,7 +566,7 @@ public class PreviewActivity extends AppCompatActivity {
         try {
             for (int i = 0; i < arrayStore.size(); i++) {
                 if (arrayStore.get(i).getBrdName().equalsIgnoreCase(BrandName)) {
-                    dummyArr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming()));
+                    dummyArr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming(),arrayStore.get(i).getFlag()));
                 }
             }
             ArrayList<String> timesMax = new ArrayList<>();

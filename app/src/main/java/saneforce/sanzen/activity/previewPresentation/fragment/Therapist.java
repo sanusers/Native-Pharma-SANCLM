@@ -203,7 +203,7 @@ public class Therapist extends Fragment {
                                 String[] codes = categoryCode.split(",");
                                 for (String categoryGrpCode: codes){
                                     if(therapticCodes.contains(categoryGrpCode)){
-                                        BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode);
+                                        BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,"");
                                         productArrayList.add(product);
                                         break;
                                     }
@@ -232,7 +232,7 @@ public class Therapist extends Fragment {
                             String[] codes = categoryCode.split(",");
                             for (String categoryGrpCode: codes){
                                 if(therapticCodes.contains(categoryGrpCode)){
-                                    BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode);
+                                    BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,"");
                                     productArrayList.add(product);
                                     break;
                                 }
@@ -339,7 +339,7 @@ public class Therapist extends Fragment {
                         String[] codes = categoryCode.split(",");
                         for (String categoryGrpCode: codes){
                             if(therapticCode.equalsIgnoreCase(categoryGrpCode)){
-                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode);
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,"");
                                 productArrayList.add(product);
                                 break;
                             }
@@ -390,7 +390,7 @@ public class Therapist extends Fragment {
             String slidePriority = productObject.getString("Priority");
             String productDetailCode = productObject.getString("Product_Detail_Code");
             if(priority.isEmpty()) priority = "500" + slidePriority;
-            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode);
+            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode,"");
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());
             e.printStackTrace();

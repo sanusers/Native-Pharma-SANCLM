@@ -90,6 +90,8 @@ import saneforce.sanzen.activity.call.fragments.input.InputFragment;
 import saneforce.sanzen.activity.call.fragments.jwOthers.FeedbackSelectionSide;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JointWorkSelectionSide;
+import saneforce.sanzen.activity.call.fragments.jwOthers.PopupNameAdapter;
+import saneforce.sanzen.activity.call.fragments.jwOthers.modelClass;
 import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPAFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectCompSide;
@@ -536,17 +538,17 @@ public class DCRCallActivity extends AppCompatActivity {
 //                                    finish();
 //                                }
 
-            if (!JWOthersFragment.callCaptureImageLists.isEmpty()) {
-                for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
+            if (!callCaptureImageLists.isEmpty()) {
+                for (int i = 0; i < callCaptureImageLists.size(); i++) {
                     if (!callCaptureImageLists.get(i).getFilePath().isEmpty() && !callCaptureImageLists.get(i).getSystemImgName().isEmpty()) {
-                        callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
+                        callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), callCaptureImageLists.get(i).getSystemImgName(), callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                     }
                 }
             }
-            if (SignatureFragment1.callSignCaptureImage != null) {
-                for (int i = 0; i < SignatureFragment1.callSignCaptureImage.size(); i++) {
+            if (callSignCaptureImage != null) {
+                for (int i = 0; i < callSignCaptureImage.size(); i++) {
                     if (!callSignCaptureImage.get(i).getFilepath().isEmpty() && !callSignCaptureImage.get(i).getImg_Name().isEmpty()) {
-                        callOfflineSignDataDao.saveOfflineSign(SignatureFragment1.callSignCaptureImage.get(i).getImg_Name(), SignatureFragment1.callSignCaptureImage.get(i).getFilepath(), jsonSign.toString(), Constants.WAITING_FOR_SYNC, 0, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(i).getCode(), CallActivityCustDetails.get(i).getName());
+                        callOfflineSignDataDao.saveOfflineSign(callSignCaptureImage.get(i).getImg_Name(), callSignCaptureImage.get(i).getFilepath(), jsonSign.toString(), Constants.WAITING_FOR_SYNC, 0, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(i).getCode(), CallActivityCustDetails.get(i).getName());
                     }
                 }
             }
@@ -2234,7 +2236,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //Additional Call
             JSONArray jsonAdditional = json.getJSONArray("AdCuss");
-            String code = "", townCode = "", townName = "";
+            String code = "", townCode = "", townName = "",sfType = "";
             for (int aw = 0; aw < jsonAdditional.length(); aw++) {
                 JSONObject jsAw = jsonAdditional.getJSONObject(aw);
                 if (funStringValidation(jsAw.getString("Name"))) nam = jsAw.getString("Name");
@@ -2657,9 +2659,9 @@ public class DCRCallActivity extends AppCompatActivity {
                 for (int j = 0; j < arrayStore.size(); j++) {
                     if (DetailedFragment.callDetailingLists.get(i).getBrandName().equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
                         if (!arrayStore.get(j).getScribble().isEmpty()) {
-                            arr.add(new StoreImageTypeUrl(arrayStore.get(j).getScribble(), arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), arrayStore.get(j).getSlideComments(), arrayStore.get(j).getTiming()));
+                            arr.add(new StoreImageTypeUrl(arrayStore.get(j).getScribble(), arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), arrayStore.get(j).getSlideComments(), arrayStore.get(j).getTiming(),arrayStore.get(j).getFlag()));
                         } else {
-                            arr.add(new StoreImageTypeUrl("", arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), "", arrayStore.get(j).getTiming()));
+                            arr.add(new StoreImageTypeUrl("", arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), "", arrayStore.get(j).getTiming(),arrayStore.get(j).getFlag()));
                         }
                     }
                 }
@@ -2795,6 +2797,77 @@ public class DCRCallActivity extends AppCompatActivity {
                 jsonArray.put(json_AdditionalCall);
             }
             jsonSaveDcr.put("AdCuss", jsonArray);
+            JSONArray doctorJsonArray = masterDataDao
+                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(getApplicationContext()))
+                    .getMasterSyncDataJsonArray();
+
+            // 2️⃣ Build a map: DoctorCode -> JSONObject (for town lookup)
+            HashMap<String, JSONObject> doctorMasterMap = new HashMap<>();
+            for (int i = 0; i < doctorJsonArray.length(); i++) {
+                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
+                String code = doctorObj.optString("Code").trim();
+                doctorMasterMap.put(code, doctorObj);
+            }
+
+            // 3️⃣ Build AdCuss JSON
+            JSONArray jsonAdCuss = new JSONArray();
+            HashSet<String> selectedNames = PopupNameAdapter.getSelectedNames();
+
+            for (modelClass doc : JointWorkSelectionSide.TodayCallList) {
+                if (doc.getDocName() != null) {
+                    String cleanName = doc.getDocName().split("---")[0].trim();
+
+                    if (selectedNames.contains(cleanName)) {
+                        String code = doc.getDocCode().trim();
+                        JSONObject jsonDoc = new JSONObject();
+                        jsonDoc.put("Code", code);
+                        jsonDoc.put("Name", doc.getDocName());
+
+                        // 4️⃣ Get Town info from doctorMasterMap
+                        if (doctorMasterMap.containsKey(code)) {
+                            JSONObject doctorObj = doctorMasterMap.get(code);
+                            String townCode = doctorObj.optString("Town_Code", ""); // default empty
+                            String townName = doctorObj.optString("Town_Name", "");
+                            jsonDoc.put("Town_Code", townCode);
+                            jsonDoc.put("Town_Name", townName);
+                        } else {
+                            jsonDoc.put("Town_Code", "");
+                            jsonDoc.put("Town_Name", "");
+                        }
+
+                        jsonAdCuss.put(jsonDoc);
+                    }
+                }
+            }
+
+            // 5️⃣ Add to main JSON for submission
+            jsonSaveDcr.put("AdCuss", jsonAdCuss);
+            Log.d("DEBUG_ADCUSS_FINAL", jsonAdCuss.toString());
+
+//            JSONArray jsonAdCuss = new JSONArray();
+//            HashSet<String> selectedNames = PopupNameAdapter.getSelectedNames();
+//
+//            for (modelClass doc : JointWorkSelectionSide.TodayCallList) {
+//                Log.d("DEBUG_ADCUSS", "DocName: " + doc.getDocName() + " | DocCode: " + doc.getDocCode());
+//                Log.d("DEBUG_ADCUSS", "SelectedNames: " + selectedNames.toString());
+//                if (doc.getDocName() != null) {
+//                    // Trim the name like you did for the popup
+//                    String cleanName = doc.getDocName().split("---")[0].trim();
+//
+//                    if (selectedNames.contains(cleanName)) {
+//                        JSONObject jsonDoc = new JSONObject();
+//                        jsonDoc.put("Code", doc.getDocCode());
+//                        jsonDoc.put("Name", doc.getDocName()); // keep full name in JSON
+//                        jsonArray.put(jsonDoc);
+//
+//                        Log.d("DEBUG_ADCUSS", "MATCHED: " + doc.getDocName());
+//                    }
+//                }
+//            }
+//
+//            jsonSaveDcr.put("AdCuss", jsonArray);
+//            Log.d("DEBUG_ADCUSS_FINAL", jsonArray.toString());
+//
 
             //RCPA
             jsonArray = new JSONArray();

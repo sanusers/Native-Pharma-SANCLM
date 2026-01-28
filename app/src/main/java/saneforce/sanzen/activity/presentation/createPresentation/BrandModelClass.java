@@ -11,6 +11,7 @@ public class BrandModelClass {
     int selectedSlideCount = 0;
     boolean brandSelected = false;
     ArrayList<Product> productArrayList;
+//    String mandatory_Slide="";
 
     public BrandModelClass () {
     }
@@ -22,6 +23,7 @@ public class BrandModelClass {
         this.selectedSlideCount = selectedSlideCount;
         this.brandSelected = brandSelected;
         this.productArrayList = productArrayList;
+//        this.mandatory_Slide = mandatory_Slide;
     }
 
 
@@ -72,6 +74,13 @@ public class BrandModelClass {
     public void setProductArrayList (ArrayList<Product> productArrayList) {
         this.productArrayList = productArrayList;
     }
+    //    public String getMandatorySlide() {
+//        return mandatory_Slide;
+//    }
+//    public void setMandatory_Slide(String mandatory_slide) {
+//        this.mandatory_Slide = mandatory_slide;
+//    }
+
 
     public static class Presentation {
         String presentationName = "";
@@ -102,6 +111,7 @@ public class BrandModelClass {
         }
     }
 
+
     public static class Product implements Comparable<Product>{
         String brandCode = "";
         String presentationName = "";
@@ -112,11 +122,12 @@ public class BrandModelClass {
         String productCode = "";
         boolean imageSelected = false;
         int draggedPosition = -1;
+        String mandatorySlide = "";
 
         public Product () {
         }
 
-        public Product(String brandCode, String brandName, String slideId, String slideName, String priority, boolean imageSelected, String productCode) {
+        public Product(String brandCode, String brandName, String slideId, String slideName, String priority, boolean imageSelected, String productCode, String mandatorySlide) {
             this.brandCode = brandCode;
             this.brandName = brandName;
             this.slideId = slideId;
@@ -124,17 +135,27 @@ public class BrandModelClass {
             this.priority = priority;
             this.productCode = productCode;
             this.imageSelected = imageSelected;
+            this.mandatorySlide=mandatorySlide;
         }
+//        public Product(String brandCode, String brandName, String slideId, String slideName, String priority, boolean imageSelected) {
+//            this.brandCode = brandCode;
+//            this.brandName = brandName;
+//            this.slideId = slideId;
+//            this.slideName = slideName;
+//            this.priority = priority;
+//            this.imageSelected = imageSelected;
+//        }
 
-        public Product(String presentationName, String slideId, String slideName, String priority, boolean imageSelected) {
+        public Product(String presentationName, String slideId, String slideName, String priority, boolean imageSelected,String mandatorySlide) {
             this.presentationName = presentationName;
             this.slideId = slideId;
             this.slideName = slideName;
             this.priority = priority;
             this.imageSelected = imageSelected;
+            this.mandatorySlide=mandatorySlide;
         }
 
-        public Product(String presentationName,String brandName,String brandCode, String slideId, String slideName, String priority, boolean imageSelected) {
+        public Product(String presentationName,String brandName,String brandCode, String slideId, String slideName, String priority, boolean imageSelected,String mandatorySlide) {
             this.presentationName = presentationName;
             this.brandName = brandName;
             this.brandCode = brandCode;
@@ -142,6 +163,7 @@ public class BrandModelClass {
             this.slideName = slideName;
             this.priority = priority;
             this.imageSelected = imageSelected;
+            this.mandatorySlide=mandatorySlide;
         }
 
 
@@ -152,6 +174,7 @@ public class BrandModelClass {
         public void setPresentationName(String presentationName) {
             this.presentationName = presentationName;
         }
+
 
         public String getBrandCode () {
             return brandCode;
@@ -195,6 +218,12 @@ public class BrandModelClass {
 
         public boolean isImageSelected () {
             return imageSelected;
+        }
+        public String getMandatorySlide() {
+            return mandatorySlide;
+        }
+        public void setMandatorySlide(String mandatorySlide) {
+            this.mandatorySlide = mandatorySlide;
         }
 
         public void setImageSelected (boolean imageSelected) {

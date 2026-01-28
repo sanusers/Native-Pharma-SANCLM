@@ -524,6 +524,7 @@ public class SharedPref {
     public static final String LOGOUT_REASON = "Logout_reason";
 
     public static final String LEAVE_ATTACHMENT_NEED = "Leave_attachment_need";
+    public static final String MANDATORY_SLIDE = "mandatory_slide";
 
     public static final String LAST_KNOWN_DATE = "last_known_date";
     public static final String IS_WORKING_TODAY = "is_working_today";
@@ -920,8 +921,11 @@ public class SharedPref {
             editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
             editor.putString(RESET_PASSWORD_NEED,jsonObject.optString("reset_password_need"));
             editor.putString(RESET_PASSWORD_DAYS,jsonObject.optString("reset_password_days"));
+            editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
+            editor.putString(MANDATORY_SLIDE,jsonObject.optString("MandatorySlide"));
+            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
             editor.putString(RPT_MGR_CODE,jsonObject.optString("ReportingMgrCode"));
             editor.putString(RPT_MGR_NAME,jsonObject.optString("ReportingMgrName"));
             editor.putString(TP_MGR_CODE,jsonObject.optString("ReportingTPMgrCode"));
@@ -3330,6 +3334,10 @@ public class SharedPref {
 
     public static String getJwAutoSelectionNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(JW_AUTO_SELECTION_NEED, "1");
+    }
+
+    public static String getMandatorySlide(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(MANDATORY_SLIDE,"0");
     }
 
     public static void setTodayTPDoctor(Context context, String doctorCodes) {

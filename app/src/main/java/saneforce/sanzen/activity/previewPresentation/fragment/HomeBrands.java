@@ -227,8 +227,9 @@ public class HomeBrands extends Fragment {
             String fileName = productObject.getString("FilePath");
             String slidePriority = productObject.getString("Priority");
             String productDetailCode = productObject.getString("Product_Detail_Code");
+            String mandatorySlide = productObject.getString("Mandatory_slide");
             if (priority.isEmpty()) priority = "500" + slidePriority;
-            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode);
+            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode,mandatorySlide);
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());
             e.printStackTrace();
