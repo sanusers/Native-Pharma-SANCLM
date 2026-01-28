@@ -58,6 +58,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String fwFlag = "";
+//        holder.mainLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+        holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
+        holder.dateNo.setTextColor(context.getResources().getColor(R.color.text_dark_65));
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             OneBuildModelClass oneBuildModelClass = OneBuildInputData.get(holder.getAbsoluteAdapterPosition());
             String date = oneBuildModelClass.getDayNo();
@@ -163,6 +166,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             drawable.setColor(context.getResources().getColor(R.color.lustylavender_60));
             holder.cornerImage.setVisibility(View.VISIBLE);
             holder.dateNo.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.lustylavender_60)));
+            holder.dateNo.setTextColor(context.getResources().getColor(R.color.white));
         } else {
             holder.cornerImage.setVisibility(View.INVISIBLE);
         }
