@@ -214,7 +214,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             }
         });
 
-       /* if (isFencing) {
+        if (isFencing) {
             holder.info.setVisibility(View.VISIBLE);
             holder.info.setOnClickListener(view -> {
                 String address = cusListArrayList.get(position).getAddress();
@@ -225,7 +225,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             });
         } else {
             holder.info.setVisibility(View.GONE);
-        }*/
+        }
     }
 
     private void showTimelinePopUp(View view, String latitude, String longitude, String address) {

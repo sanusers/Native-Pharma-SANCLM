@@ -50,7 +50,7 @@
             android:layout_width="@dimen/_13sdp"
             android:layout_height="@dimen/_13sdp"
             android:padding="@dimen/_3sdp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:src="@drawable/info_icon_purple"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
