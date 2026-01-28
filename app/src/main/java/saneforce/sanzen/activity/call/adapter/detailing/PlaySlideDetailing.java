@@ -774,59 +774,59 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 for (int i = 0; i < brandSlide.length(); i++) {
                     JSONObject brandObject = brandSlide.getJSONObject(i);
                     String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", productDetailCode = "",mandatorySlide="";
-                    String brandCode = brandObject.getString("Product_Brd_Code");
-                    String priority = brandObject.getString("Priority");
+                    String brandCode = brandObject.optString("Product_Brd_Code");
+                    String priority = brandObject.optString("Priority");
 
 
                     ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
                     for (int j = 0; j < prodSlide.length(); j++) {
                         JSONObject productObject = prodSlide.getJSONObject(j);
-                        if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
+                        if (productObject.optString("Code").equalsIgnoreCase(brandCode)) {
                             switch (Selection) {
                                 case "A":
-                                    brandName = productObject.getString("Name");
-                                    code = productObject.getString("Code");
-                                    slideId = productObject.getString("SlideId");
-                                    fileName = productObject.getString("FilePath");
-                                    slidePriority = productObject.getString("Priority");
-                                    productDetailCode = productObject.getString("Product_Detail_Code");
-                                    mandatorySlide=productObject.getString("Mandatory_slide");
+                                    brandName = productObject.optString("Name");
+                                    code = productObject.optString("Code");
+                                    slideId = productObject.optString("SlideId");
+                                    fileName = productObject.optString("FilePath");
+                                    slidePriority = productObject.optString("Priority");
+                                    productDetailCode = productObject.optString("Product_Detail_Code");
+                                    mandatorySlide=productObject.optString("Mandatory_slide");
                                     product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,mandatorySlide);
                                     productArrayList.add(product);
                                     break;
                                 case "B":
-                                    if (PlaySlideDetailing.MappedBrandsPlay.contains(productObject.getString("Code")) && PlaySlideDetailing.MappedSlidesPlay.contains(productObject.getString("Product_Detail_Code"))) {
-                                        brandName = productObject.getString("Name");
-                                        code = productObject.getString("Code");
-                                        slideId = productObject.getString("SlideId");
-                                        fileName = productObject.getString("FilePath");
-                                        slidePriority = productObject.getString("Priority");
-                                        productDetailCode = productObject.getString("Product_Detail_Code");
-                                        mandatorySlide=productObject.getString("Mandatory_slide");
+                                    if (PlaySlideDetailing.MappedBrandsPlay.contains(productObject.optString("Code")) && PlaySlideDetailing.MappedSlidesPlay.contains(productObject.optString("Product_Detail_Code"))) {
+                                        brandName = productObject.optString("Name");
+                                        code = productObject.optString("Code");
+                                        slideId = productObject.optString("SlideId");
+                                        fileName = productObject.optString("FilePath");
+                                        slidePriority = productObject.optString("Priority");
+                                        productDetailCode = productObject.optString("Product_Detail_Code");
+                                        mandatorySlide=productObject.optString("Mandatory_slide");
                                         product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,mandatorySlide);
                                         productArrayList.add(product);
                                     }
                                     break;
                                 case "C":
-                                    if (productObject.getString("Speciality_Code").contains(PlaySlideDetailing.SpecialityCodePlay)) {
-                                        brandName = productObject.getString("Name");
-                                        code = productObject.getString("Code");
-                                        slideId = productObject.getString("SlideId");
-                                        fileName = productObject.getString("FilePath");
-                                        slidePriority = productObject.getString("Priority");
-                                        productDetailCode = productObject.getString("Product_Detail_Code");
-                                        mandatorySlide=productObject.getString("Mandatory_slide");
+                                    if (productObject.optString("Speciality_Code").contains(PlaySlideDetailing.SpecialityCodePlay)) {
+                                        brandName = productObject.optString("Name");
+                                        code = productObject.optString("Code");
+                                        slideId = productObject.optString("SlideId");
+                                        fileName = productObject.optString("FilePath");
+                                        slidePriority = productObject.optString("Priority");
+                                        productDetailCode = productObject.optString("Product_Detail_Code");
+                                        mandatorySlide=productObject.optString("Mandatory_slide");
                                         product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,mandatorySlide);
                                         productArrayList.add(product);
                                     }
                                     break;
 //                                case "D":
-//                                    if (productObject.getString("Speciality_Code").contains(PlaySlideDetailing.SpecialityCodePlay)) {
-//                                        brandName = productObject.getString("Name");
-//                                        code = productObject.getString("Code");
-//                                        slideId = productObject.getString("SlideId");
-//                                        fileName = productObject.getString("FilePath");
-//                                        slidePriority = productObject.getString("Priority");
+//                                    if (productObject.optString("Speciality_Code").contains(PlaySlideDetailing.SpecialityCodePlay)) {
+//                                        brandName = productObject.optString("Name");
+//                                        code = productObject.optString("Code");
+//                                        slideId = productObject.optString("SlideId");
+//                                        fileName = productObject.optString("FilePath");
+//                                        slidePriority = productObject.optString("Priority");
 //                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
 //                                        productArrayList.add(product);
 //                                    }

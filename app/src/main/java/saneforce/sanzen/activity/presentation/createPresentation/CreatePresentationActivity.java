@@ -175,8 +175,8 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
             for (int i = 0; i < prodSlide.length(); i++) {
                 JSONObject productObject = prodSlide.getJSONObject(i);
-                String id = productObject.getString("SlideId");
-                String code = productObject.getString("Code");
+                String id = productObject.optString("SlideId");
+                String code = productObject.optString("Code");
                 if(brandToProducts.containsKey(code)){
                     brandToProducts.get(code).put(id, productObject);
                 }else {
@@ -188,9 +188,9 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
             for(int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
-                String brandCode = brandObject.getString("Product_Brd_Code");
-                String priority = brandObject.getString("Priority");
-                String id = brandObject.getString("ID");
+                String brandCode = brandObject.optString("Product_Brd_Code");
+                String priority = brandObject.optString("Priority");
+                String id = brandObject.optString("ID");
                 if(brandToProductWithPriority.containsKey(brandCode)){
                     brandToProductWithPriority.get(brandCode).put(id, priority);
                 }else{
@@ -210,7 +210,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                         if(products != null && products.containsKey(productID)) {
                             JSONObject productObject = products.get(productID);
                             if(productObject != null) {
-                                brandName = productObject.getString("Name");
+                                brandName = productObject.optString("Name");
                                 BrandModelClass.Product product = getProductData(productObject, priority);
                                 if(product != null) {
                                     productArrayList.add(product);
@@ -228,7 +228,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                     for (String productID : products.keySet()) {
                         JSONObject productObject = products.get(productID);
                         if(productObject != null) {
-                            brandName = productObject.getString("Name");
+                            brandName = productObject.optString("Name");
                             BrandModelClass.Product product = getProductData(productObject, priority);
                             if(product != null) {
                                 productArrayList.add(product);
@@ -420,13 +420,13 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
     private BrandModelClass.Product getProductData(JSONObject productObject, String priority) {
         try {
-            String brandName = productObject.getString("Name");
-            String code = productObject.getString("Code");
-            String slideId = productObject.getString("SlideId");
-            String fileName = productObject.getString("FilePath");
-            String slidePriority = productObject.getString("Priority");
-            String mandatorySlide = productObject.getString("Mandatory_slide");
-            String productDetailCode = productObject.getString("Product_Detail_Code");
+            String brandName = productObject.optString("Name");
+            String code = productObject.optString("Code");
+            String slideId = productObject.optString("SlideId");
+            String fileName = productObject.optString("FilePath");
+            String slidePriority = productObject.optString("Priority");
+            String mandatorySlide = productObject.optString("Mandatory_slide");
+            String productDetailCode = productObject.optString("Product_Detail_Code");
             if(priority.isEmpty()) priority = "500" + slidePriority;
             return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode,mandatorySlide);
         } catch (Exception e) {

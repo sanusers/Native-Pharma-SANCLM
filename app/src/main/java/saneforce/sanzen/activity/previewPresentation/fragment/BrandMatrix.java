@@ -73,8 +73,8 @@ public class BrandMatrix extends Fragment {
 
             for (int i = 0; i < prodSlide.length(); i++) {
                 JSONObject productObject = prodSlide.getJSONObject(i);
-                String id = productObject.getString("SlideId");
-                String code = productObject.getString("Code");
+                String id = productObject.optString("SlideId");
+                String code = productObject.optString("Code");
                 if (brandToProducts.containsKey(code)) {
                     brandToProducts.get(code).put(id, productObject);
                 } else {
@@ -86,9 +86,9 @@ public class BrandMatrix extends Fragment {
 
             for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
-                String brandCode = brandObject.getString("Product_Brd_Code");
-                String priority = brandObject.getString("Priority");
-                String id = brandObject.getString("ID");
+                String brandCode = brandObject.optString("Product_Brd_Code");
+                String priority = brandObject.optString("Priority");
+                String id = brandObject.optString("ID");
                 if (brandToProductWithPriority.containsKey(brandCode)) {
                     brandToProductWithPriority.get(brandCode).put(id, priority);
                 } else {
@@ -112,12 +112,12 @@ public class BrandMatrix extends Fragment {
                                 JSONObject productObject = products.get(productID);
                                 if (productObject != null) {
                                     String[] separated1 = mappedSlides.split(",");
-                                    String[] separated2 = productObject.getString("Product_Detail_Code").split(",");
-                                    Log.d("TAG", "getSelectedMatrix: " + mappedSlides + "\n" + productObject.getString("Product_Detail_Code"));
+                                    String[] separated2 = productObject.optString("Product_Detail_Code").split(",");
+                                    Log.d("TAG", "getSelectedMatrix: " + mappedSlides + "\n" + productObject.optString("Product_Detail_Code"));
                                     for (String value : separated1) {
                                         for (String s : separated2) {
                                             if (value.equalsIgnoreCase(s)) {
-                                                brandName = productObject.getString("Name");
+                                                brandName = productObject.optString("Name");
                                                 BrandModelClass.Product product = getProductData(productObject, priority);
                                                 if (product != null) {
                                                     productArrayList.add(product);
@@ -140,11 +140,11 @@ public class BrandMatrix extends Fragment {
                             JSONObject productObject = products.get(productID);
                             if (productObject != null) {
                                 String[] separated1 = mappedSlides.split(",");
-                                String[] separated2 = productObject.getString("Product_Detail_Code").split(",");
+                                String[] separated2 = productObject.optString("Product_Detail_Code").split(",");
 //                                for (String value : separated1) {
                                 for (String s : separated2) {
                                     if (Arrays.asList(separated1).contains(s)) {
-                                        brandName = productObject.getString("Name");
+                                        brandName = productObject.optString("Name");
                                         BrandModelClass.Product product = getProductData(productObject, priority);
                                         if (product != null) {
                                             productArrayList.add(product);
@@ -172,26 +172,26 @@ public class BrandMatrix extends Fragment {
 //            for (int i = 0; i < brandSlide.length(); i++) {
 //                JSONObject brandObject = brandSlide.getJSONObject(i);
 //                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
-//                String brandCode = brandObject.getString("Product_Brd_Code");
-//                String priority = brandObject.getString("Priority");
+//                String brandCode = brandObject.optString("Product_Brd_Code");
+//                String priority = brandObject.optString("Priority");
 //
 //                ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
 //                for (int j = 0; j < prodSlide.length(); j++) {
 //                    JSONObject productObject = prodSlide.getJSONObject(j);
 //
-//                    if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
-//                        if (mappedBrands.contains(productObject.getString("Code"))) {
+//                    if (productObject.optString("Code").equalsIgnoreCase(brandCode)) {
+//                        if (mappedBrands.contains(productObject.optString("Code"))) {
 //                            String[] separated1 = mappedSlides.split(",");
-//                            String[] separated2 = productObject.getString("Product_Detail_Code").split(",");
+//                            String[] separated2 = productObject.optString("Product_Detail_Code").split(",");
 //                            for (String value : separated1) {
 //                                for (String s : separated2) {
 //                                    if (value.equalsIgnoreCase(s)) {
-//                                        if (!slideIdList.contains(productObject.getString("SlideId")) && !productObject.getString("SlideId").isEmpty()) {
-//                                            brandName = productObject.getString("Name");
-//                                            code = productObject.getString("Code");
-//                                            slideId = productObject.getString("SlideId");
-//                                            fileName = productObject.getString("FilePath");
-//                                            slidePriority = productObject.getString("Priority");
+//                                        if (!slideIdList.contains(productObject.optString("SlideId")) && !productObject.optString("SlideId").isEmpty()) {
+//                                            brandName = productObject.optString("Name");
+//                                            code = productObject.optString("Code");
+//                                            slideId = productObject.optString("SlideId");
+//                                            fileName = productObject.optString("FilePath");
+//                                            slidePriority = productObject.optString("Priority");
 //                                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
 //                                            productArrayList.add(product);
 //                                            slideIdList.add(slideId);
@@ -203,13 +203,13 @@ public class BrandMatrix extends Fragment {
 //                        }
 //                    }
 //
-//                 /*   if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
-//                        if (mappedBrands.contains(productObject.getString("Code")) && mappedSlides.contains(productObject.getString("Product_Detail_Code"))) {
-//                            brandName = productObject.getString("Name");
-//                            code = productObject.getString("Code");
-//                            slideId = productObject.getString("SlideId");
-//                            fileName = productObject.getString("FilePath");
-//                            slidePriority = productObject.getString("Priority");
+//                 /*   if (productObject.optString("Code").equalsIgnoreCase(brandCode)) {
+//                        if (mappedBrands.contains(productObject.optString("Code")) && mappedSlides.contains(productObject.optString("Product_Detail_Code"))) {
+//                            brandName = productObject.optString("Name");
+//                            code = productObject.optString("Code");
+//                            slideId = productObject.optString("SlideId");
+//                            fileName = productObject.optString("FilePath");
+//                            slidePriority = productObject.optString("Priority");
 //                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
 //                            productArrayList.add(product);
 //                        }
@@ -392,14 +392,15 @@ public class BrandMatrix extends Fragment {
 
     private static BrandModelClass.Product getProductData(JSONObject productObject, String priority) {
         try {
-            String brandName = productObject.getString("Name");
-            String code = productObject.getString("Code");
-            String slideId = productObject.getString("SlideId");
-            String fileName = productObject.getString("FilePath");
-            String slidePriority = productObject.getString("Priority");
-            String productDetailCode = productObject.getString("Product_Detail_Code");
+            String brandName = productObject.optString("Name");
+            String code = productObject.optString("Code");
+            String slideId = productObject.optString("SlideId");
+            String fileName = productObject.optString("FilePath");
+            String slidePriority = productObject.optString("Priority");
+            String productDetailCode = productObject.optString("Product_Detail_Code");
+            String mandatorySlide = productObject.optString("Mandatory_slide");
             if (priority.isEmpty()) priority = "500" + slidePriority;
-            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode);
+            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false, productDetailCode, mandatorySlide);
         } catch (Exception e) {
             Log.e("GetProductData", "getProductData: " + e.getMessage());
             e.printStackTrace();

@@ -2,7 +2,6 @@ package saneforce.sanzen.application;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.Presentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,15 +25,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.camera.CameraActivity;
-import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanzen.activity.presentation.playPreview.PlaySlidePreviewActivity;
 import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.commonClasses.ContinuousLogCollector;
+import saneforce.sanzen.storage.SharedPref;
 
 public class SanZenApp extends Application {
     private static final String TAG = "CrashReport";
@@ -87,12 +85,18 @@ public class SanZenApp extends Application {
             public void onActivityPostCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
 //                ActivityLifecycleCallbacks.super.onActivityPostCreated(activity, savedInstanceState);
                 if (activity.getWindow() != null) {
-//                    if ((activity instanceof PreviewActivity) || (activity instanceof PresentationActivity) || (activity instanceof CreatePresentationActivity) || (activity instanceof PlaySlideDetailing) || (activity instanceof PlaySlidePreviewActivity) || (activity instanceof CameraActivity)) {
-//                        activity.getWindow().setFlags(
-//                                WindowManager.LayoutParams.FLAG_SECURE,
-//                                WindowManager.LayoutParams.FLAG_SECURE
-//                        );
-//                    }
+                    if ((activity instanceof PreviewActivity) || (activity instanceof PresentationActivity) || (activity instanceof CreatePresentationActivity) || (activity instanceof PlaySlideDetailing) || (activity instanceof PlaySlidePreviewActivity) || (activity instanceof CameraActivity)) {
+                        if (!SharedPref.getScreenAccess(activity).equalsIgnoreCase("0")) {
+                            activity.getWindow().setFlags(
+                                    WindowManager.LayoutParams.FLAG_SECURE,
+                                    WindowManager.LayoutParams.FLAG_SECURE
+                            );
+                        } else {
+                            activity.getWindow().clearFlags(
+                                    WindowManager.LayoutParams.FLAG_SECURE
+                            );
+                        }
+                    }
 //                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
                         final WindowInsetsController insetsController = activity.getWindow().getInsetsController();
