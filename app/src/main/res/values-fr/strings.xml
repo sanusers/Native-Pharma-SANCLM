@@ -1044,4 +1044,7 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="others">Autres</string>
     <string name="location">Emplacement</string>
 
+    <string name="address_format">Adresse : %1$s</string>
+    <string name="distance_format">Distance : %1$.2f mètres</string>
+
 </resources>

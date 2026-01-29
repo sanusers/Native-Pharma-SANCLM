@@ -90,7 +90,7 @@
                     android:padding="@dimen/_5sdp"
                     android:text="@string/plan_overview"
                     android:textAllCaps="false"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_8ssp" />
 

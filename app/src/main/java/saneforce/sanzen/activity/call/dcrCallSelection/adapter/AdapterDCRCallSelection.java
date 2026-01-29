@@ -246,7 +246,8 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             }
         });
 
-        tvAddress.setText(String.format("Address : %s", address));
+        tvAddress.setText(String.format(address));
+        //tvAddress.setText(context.getString(R.string.address_format, address));
         String meters = calculateDistance(Double.parseDouble(latitude), Double.parseDouble(longitude));
         if (!meters.isEmpty()) {
             tvMeters.setVisibility(View.VISIBLE);
@@ -268,7 +269,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         try {
             float[] distance = new float[2];
             Location.distanceBetween(latitude, longitude, DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-            return String.format(Locale.getDefault(), "Distance : %.2f meters", distance[0]);
+           // return String.format(Locale.getDefault(), "Distance : %.2f meters", distance[0]);
+            return context.getString(R.string.distance_format, distance[0]);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

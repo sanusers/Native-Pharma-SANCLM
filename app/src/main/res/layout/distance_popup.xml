@@ -53,35 +53,90 @@
                 android:layout_below="@id/tv_head"
                 android:background="@color/red_60" />
 
-            <TextView
-                android:id="@+id/address"
+<!--            <TextView-->
+<!--                android:id="@+id/address"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/view_dummy"-->
+<!--                android:layout_marginHorizontal="@dimen/_3sdp"-->
+<!--                android:fontFamily="@font/satoshi_bold"-->
+<!--                android:paddingHorizontal="@dimen/_4sdp"-->
+<!--                android:paddingVertical="@dimen/_2sdp"-->
+<!--                android:visibility="visible"-->
+
+<!--                android:gravity="left"-->
+<!--                android:layoutDirection="ltr"-->
+<!--                android:textDirection="ltr"-->
+
+<!--                tools:text="4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="@dimen/_4ssp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/meters"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/address"-->
+<!--                android:layout_marginHorizontal="@dimen/_3sdp"-->
+<!--                android:fontFamily="@font/satoshi_bold"-->
+<!--                android:paddingHorizontal="@dimen/_4sdp"-->
+<!--                android:textAlignment="textStart"-->
+<!--                android:layout_marginBottom="@dimen/_4sdp"-->
+<!--                android:visibility="visible"-->
+<!--                android:gravity="left"-->
+<!--                tools:text="500 meters"-->
+<!--                android:textColor="@color/red_60"-->
+<!--                android:textSize="@dimen/_5ssp" />-->
+            <LinearLayout
+                android:id="@+id/address_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/view_dummy"
-                android:layout_marginHorizontal="@dimen/_3sdp"
-                android:fontFamily="@font/satoshi_bold"
-                android:paddingHorizontal="@dimen/_4sdp"
-                android:textAlignment="textStart"
-                android:paddingVertical="@dimen/_2sdp"
-                android:visibility="visible"
-                tools:text="4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_4ssp" />
+                android:orientation="horizontal"
+                android:layoutDirection="ltr"
+                android:gravity="left">
 
-            <TextView
-                android:id="@+id/meters"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/address"
-                android:layout_marginHorizontal="@dimen/_3sdp"
-                android:fontFamily="@font/satoshi_bold"
-                android:paddingHorizontal="@dimen/_4sdp"
-                android:textAlignment="textStart"
-                android:layout_marginBottom="@dimen/_4sdp"
-                android:visibility="visible"
-                tools:text="500 meters"
-                android:textColor="@color/red_60"
-                android:textSize="@dimen/_5ssp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/address_label"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:textSize="@dimen/_4ssp"
+                    android:gravity="left"/>
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:paddingHorizontal="@dimen/_4sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:visibility="visible"
+                    android:gravity="left"
+                    android:layoutDirection="ltr"
+                    android:textDirection="ltr"
+                    tools:text="4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_4ssp" />
+            </LinearLayout>
+
+                <TextView
+                    android:id="@+id/meters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:paddingHorizontal="@dimen/_4sdp"
+                    android:layout_below="@+id/address_container"
+                    android:layout_marginBottom="@dimen/_4sdp"
+                    android:visibility="visible"
+                    android:gravity="left"
+                    tools:text="500 meters"
+                    android:textColor="@color/red_60"
+                    android:textSize="@dimen/_5ssp" />
+
 
         </RelativeLayout>
 
@@ -90,6 +145,7 @@
             android:layout_height="@dimen/_6sdp"
             android:layout_alignEnd="@id/popup_layout"
             android:layout_below="@id/popup_layout"
+
             android:src="@drawable/pointer" />
     </RelativeLayout>
 

@@ -1061,5 +1061,10 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="location"> Location</string>
 
 
+    <string name="address_format">Address:</string>
+    <string name="distance_format">Distance : %1$.2f meters</string>
+
+
+
 
 </resources>

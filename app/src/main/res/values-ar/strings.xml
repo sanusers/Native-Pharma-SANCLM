@@ -1046,4 +1046,8 @@
     <string name="others">أخرى</string>
     <string name="location">الموقع</string>
 
+    <string name="address_format">العنوان : %1$s</string>
+    <string name="distance_format">المسافة : %1$.2f متر</string>
+
+
 </resources>
