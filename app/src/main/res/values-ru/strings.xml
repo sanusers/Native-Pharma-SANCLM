@@ -1053,5 +1053,6 @@
     <string name="jfw">Совместная работа</string>
     <string name="others">Другое</string>
     <string name="location">Местоположение</string>
+    <string name="failed_to_save_image">Не удалось сохранить изображение</string>
 
 </resources>

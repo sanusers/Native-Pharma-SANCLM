@@ -1044,6 +1044,7 @@
     <string name="jfw">အတူလုပ်ဆောင်မှု</string>
     <string name="others">အခြား</string>
     <string name="location">တည်နေရာ</string>
+    <string name="failed_to_save_image">ပုံကို သိမ်းဆည်းရန် မအောင်မြင်ပါ</string>
 
 
 </resources>

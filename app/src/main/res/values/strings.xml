@@ -724,7 +724,7 @@
     <string name="no_activity_details">No</string>
     <string name="select_activity">Select any activity on the list to view content</string>
     <string name="location_captured">Location Captured : </string>
-<!--    <string name="message">Message</string>-->
+    <!--    <string name="message">Message</string>-->
 
     <string name="update_canceled">Update canceled</string>
     <string name="please_check_the_internet_connection">Please check the Internet connection</string>
@@ -754,25 +754,25 @@
     <string name="image_not_found">Image not found</string>
     <string name="no_network_available">No network available</string>
 
-        <string name="network_timeout_please_try_again">Network timeout, please try again</string>
-        <string name="no_event_capture">No event captured</string>
-        <string name="signature_not_available">Signature not available</string>
-        <string name="slides_details_not_available">Slides details not available</string>
-        <string name="product_selection_is_mandatory">Product selection is mandatory</string>
-        <string name="please_deselect_the_selected_products">Please deselect the selected products</string>
-        <string name="cannot_deselect_no_product">Cannot deselect, no product selected</string>
-        <string name="check_in_successfully">Check-in successfully</string>
-        <string name="qty_cannot_be_empty">Quantity cannot be empty</string>
-        <string name="kindly_sync_subordinate">Kindly sync subordinate</string>
-        <string name="deviate_to_add_plan">Deviate to add plan</string>
-        <string name="cannot_add_plan_in_tour_plan_based_dcr">Cannot add plan in Tour Plan based DCR</string>
-        <string name="deviate_to_edit_work_plan">Deviate to edit Work plan</string>
-        <string name="please_update_session_2">Please update Session 2</string>
-        <string name="please_update_session_1">Please update Session 1</string>
-        <string name="standard_tour_plan_must_be_approved_to_enter_tour_plan">Standard tour plan must be approved to enter tour plan</string>
-        <string name="file_does_not_exist">File does not exist</string>
-        <string name="please_fill_atleast_any_one_question">Please fill at least any one question</string>
-        <string name="slide_updated">Slide updated</string>
+    <string name="network_timeout_please_try_again">Network timeout, please try again</string>
+    <string name="no_event_capture">No event captured</string>
+    <string name="signature_not_available">Signature not available</string>
+    <string name="slides_details_not_available">Slides details not available</string>
+    <string name="product_selection_is_mandatory">Product selection is mandatory</string>
+    <string name="please_deselect_the_selected_products">Please deselect the selected products</string>
+    <string name="cannot_deselect_no_product">Cannot deselect, no product selected</string>
+    <string name="check_in_successfully">Check-in successfully</string>
+    <string name="qty_cannot_be_empty">Quantity cannot be empty</string>
+    <string name="kindly_sync_subordinate">Kindly sync subordinate</string>
+    <string name="deviate_to_add_plan">Deviate to add plan</string>
+    <string name="cannot_add_plan_in_tour_plan_based_dcr">Cannot add plan in Tour Plan based DCR</string>
+    <string name="deviate_to_edit_work_plan">Deviate to edit Work plan</string>
+    <string name="please_update_session_2">Please update Session 2</string>
+    <string name="please_update_session_1">Please update Session 1</string>
+    <string name="standard_tour_plan_must_be_approved_to_enter_tour_plan">Standard tour plan must be approved to enter tour plan</string>
+    <string name="file_does_not_exist">File does not exist</string>
+    <string name="please_fill_atleast_any_one_question">Please fill at least any one question</string>
+    <string name="slide_updated">Slide updated</string>
 
     <string name="survey_submitted_successfully">Survey submitted successfully</string>
     <string name="select_option_for">Select option for</string>
@@ -956,7 +956,7 @@
     <string name="check_in_out_is_enabled_and_date_has_been_changed_so_logged_out_kindly_start_over_after_login">
 Check-in/Out is enabled and the date has been changed, so you have been logged out. Kindly start over after login.</string>
 
-    <string name ="sunday"> Sunday</string>
+    <string name="sunday"> Sunday</string>
     <string name="monday"> Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
@@ -1059,7 +1059,6 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="jfw"> JFW </string>
     <string name="others"> Others</string>
     <string name="location"> Location</string>
-
 
 
 </resources>
