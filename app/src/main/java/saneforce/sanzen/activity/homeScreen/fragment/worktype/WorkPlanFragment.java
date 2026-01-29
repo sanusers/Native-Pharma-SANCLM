@@ -187,7 +187,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void onDateChanged() {
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
                 && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
-            return;
+            if (SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0")) {
+                return;
+            } else if (!SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1")
+                    || !SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")
+                    || !SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")
+                    || !SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")) {
+                return;
+            }
         }
         if (SharedPref.getIsWorkingToday(requireContext())) {
 //        JSONArray callSync = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
