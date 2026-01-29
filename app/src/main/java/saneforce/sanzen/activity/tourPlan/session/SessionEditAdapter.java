@@ -394,7 +394,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
             }
 
-            holder.sessionNoTxt.setText(R.string.session + (position + 1));
+            holder.sessionNoTxt.setText(context.getString(R.string.session)+ " " + (position + 1));
             if (holder.getAbsoluteAdapterPosition() == 0) { //No need to show delete icon if there is only one session
                 if (inputDataArrayOneBuild.getSessionList().size() > 1)
                     holder.sessionDelete.setVisibility(View.VISIBLE);

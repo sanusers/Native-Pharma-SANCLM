@@ -964,7 +964,7 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="friday"> Friday</string>
     <string name="sat">Saturday</string>
     <string name="summary"> Summary </string>
-    <string name="session">Session </string>
+    <string name="session">Session</string>
     <string name="tp_waiting_for_approval"> Planning completed/Waiting for approval</string>
     <string name="tp_rejected"> TP rejected</string>
     <string name="tp_approved"> TP approved</string>
