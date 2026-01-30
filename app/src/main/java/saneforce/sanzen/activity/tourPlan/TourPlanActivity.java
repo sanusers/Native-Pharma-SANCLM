@@ -440,8 +440,8 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.calendarNextButton.setOnClickListener(view -> {
                 binding.calendarPrevButton.setEnabled(true);
                 binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
-                localDate = localDate.plusMonths(1);
-                if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
+                localDate = localDate.plusMonths(1).withDayOfMonth(1);
+                if (LocalDate.now().plusMonths(1).withDayOfMonth(1).isEqual(localDate)) {
                     binding.calendarNextButton.setEnabled(false);
                     binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                 } else binding.calendarNextButton.setEnabled(true);
@@ -468,8 +468,8 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.calendarNextButton.setOnClickListener(view -> {
                 binding.calendarPrevButton.setEnabled(true);
                 binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
-                localDate = localDate.plusMonths(1);
-                if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
+                localDate = localDate.plusMonths(1).withDayOfMonth(1);
+                if (LocalDate.now().plusMonths(1).withDayOfMonth(1).isEqual(localDate)) {
                     binding.calendarNextButton.setEnabled(false);
                     binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                 } else binding.calendarNextButton.setEnabled(true);
@@ -496,8 +496,8 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.calendarPrevButton.setOnClickListener(view -> {
                 binding.calendarNextButton.setEnabled(true);
                 binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
-                localDate = localDate.minusMonths(1);
-                if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
+                localDate = localDate.minusMonths(1).withDayOfMonth(1);
+                if (LocalDate.now().minusMonths(1).withDayOfMonth(1).isEqual(localDate)) {
                     binding.calendarPrevButton.setEnabled(false);
                     binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
                 } else if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {
@@ -527,8 +527,8 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.calendarPrevButton.setOnClickListener(view -> {
                 binding.calendarNextButton.setEnabled(true);
                 binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
-                localDate = localDate.minusMonths(1);
-                if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
+                localDate = localDate.minusMonths(1).withDayOfMonth(1);
+                if (LocalDate.now().minusMonths(1).withDayOfMonth(1).isEqual(localDate)) {
                     binding.calendarPrevButton.setEnabled(false);
                     binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
                 } else if (localDate.getMonthValue() == JoiningMonth && localDate.getYear() == JoinYear) {

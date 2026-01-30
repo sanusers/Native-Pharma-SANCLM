@@ -831,23 +831,38 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             String lastShownDate = SharedPref.getTodayPopupShown(this);
             if (today.equals(lastShownDate) && !forceImmediate) {
                 Log.d("PopupCheck", "Popup already shown today, skipping.");
-                return;
+//                return;
             }
-// ✅ Show popup
-            showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
-// ✅ Mark popup as shown today
-            SharedPref.setTodayPopupShown(this, today);
-//        boolean forceImmediate = false;
-//        if (SharedPref.isDataCleared(this)) {
-//            SharedPref.clearCumulativeVisitedDoctors(this);
-//            Log.e("PopupCheck", "🧹 Cleared cumulative visited doctors on fresh login.");
-//            forceImmediate = true;
-//        }
-//
-//        // ✅ Show popup
-//        showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
+         /*   String remainderTime = (SharedPref.getDoctorRemainingShownDate(this));
+            String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_4);
+            if(time >= remainderTime){
+                Log.d("TAG", "checkAndShowDoctorPopup: "+"Entered Remainder time cond");
+                showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
+            }else{
+                Log.d("TAG", "checkAndShowDoctorPopup: "+" Not Entered Remainder time cond");
+            }*/
+            String remainderTime = SharedPref.getDoctorRemainingShownDate(this); // e.g., "18:00"
+            String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_32);    // e.g., "19:10"
 
-            // ✅ Prevent next popup automatically
+            try {
+
+                int currentTimeInt = Integer.parseInt(time.replace(":", ""));
+                int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
+
+
+                if (currentTimeInt >= remainderTimeInt) {
+                    Log.d("TAG", "checkAndShowDoctorPopup: Entered Remainder time cond");
+                    showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
+                } else {
+                    Log.d("TAG", "checkAndShowDoctorPopup: Not Entered Remainder time cond");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("TAG", "Error parsing time strings: " + time + " vs " + remainderTime);
+            }
+
+            SharedPref.setTodayPopupShown(this, today);
+
             SharedPref.setDataCleared(this, false);
 
         } catch (Exception e) {
