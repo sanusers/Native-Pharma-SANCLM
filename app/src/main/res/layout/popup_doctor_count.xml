@@ -64,28 +64,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/messagePopup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_head"
-                android:layout_marginStart="@dimen/_2sdp"
-                android:fontFamily="@font/satoshi_medium"
-                android:hint=""
-                android:padding="@dimen/_4sdp"
-                android:textSize="@dimen/_7sdp"
-                android:textStyle="bold" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/messagePopup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_head"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:hint=""
+            android:padding="@dimen/_4sdp"
+            android:textSize="@dimen/_7sdp"
+            android:textStyle="bold" />
+    </ScrollView>
+
     <RelativeLayout
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ed_alert_msg"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        android:layout_marginTop="@dimen/_25sdp"
+        android:orientation="horizontal">
 
 <!--        <androidx.appcompat.widget.AppCompatButton-->
 <!--            android:id="@+id/btnNo"-->
