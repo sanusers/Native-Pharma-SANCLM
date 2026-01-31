@@ -3171,6 +3171,20 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(TpIdNext, 0);
     }
 
+    public static void saveTpId(Context context, String monthYear, int retrievedIdNm) {
+        try {
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt(monthYear, retrievedIdNm);
+            editor.apply();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int getTpId(Context context, String monthYear) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(monthYear, 0);
+    }
 
     public static void saveKeys(Context context, String aKey, String sKey) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);

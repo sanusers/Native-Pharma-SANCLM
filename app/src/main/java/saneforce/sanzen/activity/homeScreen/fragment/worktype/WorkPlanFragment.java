@@ -189,10 +189,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
             if (SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0")) {
                 return;
-            } else if (!SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1")
-                    || !SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")
-                    || !SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")
-                    || !SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")) {
+            } else if (!(SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1")
+                    || SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")
+                    || SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1")
+                    || SharedPref.getGeotagNeedUnlst(requireContext()).equalsIgnoreCase("1"))) {
                 return;
             }
         }
@@ -204,7 +204,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                    && jsonObject.optString("CustCode").equalsIgnoreCase("0")
 //                    && jsonObject.optString("day_status").equalsIgnoreCase("0")) {
             if (finalSubmitDialog != null) {
-                finalSubmitDialog.show();
+//                finalSubmitDialog.show();
             }
             finalSubmit("Auto Submitted", true);
 //                break;
