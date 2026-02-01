@@ -377,17 +377,16 @@ public class TourPlanActivity extends AppCompatActivity {
                         @Override
                         public void isNetworkAvailable(Boolean status) {
                             if (status) {
-
                                 isFrom = getString(R.string.sync);
                                 binding.tvSync.setEnabled(true);
                                 binding.progressBar.setVisibility(View.VISIBLE);
                                 LocalDate localDate1 = LocalDate.now();
                                 if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.minusMonths(1)))) {
-                                    getDraftSaveOneBuild("previous", dayWiseArrayPreviousMonthOneBuild, isFrom, status);
+                                    getDraftSaveOneBuild("previous", monthYearFromDateUI(localDate1.minusMonths(1)), dayWiseArrayPreviousMonthOneBuild, isFrom, status);
                                 } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1))) {
-                                    getDraftSaveOneBuild("current", dayWiseArrayCurrentMonthOneBuild, isFrom, status);
+                                    getDraftSaveOneBuild("current", monthYearFromDateUI(localDate1), dayWiseArrayCurrentMonthOneBuild, isFrom, status);
                                 } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.plusMonths(1)))) {
-                                    getDraftSaveOneBuild("next", dayWiseArrayNextMonthOneBuild, isFrom, status);
+                                    getDraftSaveOneBuild("next", monthYearFromDateUI(localDate1.plusMonths(1)), dayWiseArrayNextMonthOneBuild, isFrom, status);
                                 }
                             } else {
                                 binding.progressBar.setVisibility(View.GONE);
@@ -1603,11 +1602,11 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.progressBar.setVisibility(View.VISIBLE);
                 LocalDate localDate1 = LocalDate.now();
                 if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
-                    getDraftSaveOneBuild("previous", dayWiseArrayPreviousMonthOneBuild, isFrom, status);
+                    getDraftSaveOneBuild("previous", monthYearFromDate(localDate1.minusMonths(1)), dayWiseArrayPreviousMonthOneBuild, isFrom, status);
                 } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
-                    getDraftSaveOneBuild("current", dayWiseArrayCurrentMonthOneBuild, isFrom, status);
+                    getDraftSaveOneBuild("current", monthYearFromDate(localDate1), dayWiseArrayCurrentMonthOneBuild, isFrom, status);
                 } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
-                    getDraftSaveOneBuild("next", dayWiseArrayNextMonthOneBuild, isFrom, status);
+                    getDraftSaveOneBuild("next", monthYearFromDate(localDate1.plusMonths(1)), dayWiseArrayNextMonthOneBuild, isFrom, status);
                 }
             } else {
                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
@@ -2044,13 +2043,11 @@ public class TourPlanActivity extends AppCompatActivity {
     private String monthYearFromDateUI(LocalDate date) {
         DateTimeFormatter formatter = null;
         formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.ENGLISH);
-
         return date.format(formatter);
     }
     private String monthYearFromDate(LocalDate date) {
         DateTimeFormatter formatter = null;
         formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.ENGLISH);
-
         return date.format(formatter);
     }
 
@@ -3390,11 +3387,12 @@ public class TourPlanActivity extends AppCompatActivity {
         networkStatusTask.execute();
     }
 
-    public void getDraftSaveOneBuild(String isClickedName, ArrayList<OneBuildModelClass> arrayList, String isFrom, boolean statusOffline) {
+    public void getDraftSaveOneBuild(String isClickedName, String monthYear, ArrayList<OneBuildModelClass> arrayList, String isFrom, boolean statusOffline) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
             if (status) {
                 try {
                     int id = 0;
+                    int previous = SharedPref.getTpIdPreviousMonth(TourPlanActivity.this), current = SharedPref.getTpIdCurrentMonth(TourPlanActivity.this), next = SharedPref.getTpIdNextMonth(TourPlanActivity.this);
                     switch (isClickedName) {
                         case "previous":
                             id = SharedPref.getTpIdPreviousMonth(TourPlanActivity.this);
@@ -3405,6 +3403,20 @@ public class TourPlanActivity extends AppCompatActivity {
                         case "next":
                             id = SharedPref.getTpIdNextMonth(TourPlanActivity.this);
                             break;
+                    }
+                    Log.d("tp", "getDraftSaveOneBuild: " + previous + " --> " + current + " --> " + next);
+                    if ("current".equalsIgnoreCase(isClickedName)) {
+                        if (previous == current) id = 0;
+                        Log.e("current", "getDraftSaveOneBuild: " + id);
+                    } else if ("next".equalsIgnoreCase(isClickedName)) {
+                        if (previous == current || previous == next || current == next) id = 0;
+                        Log.e("next", "getDraftSaveOneBuild: " + id);
+                        id = 0;
+                    }
+                    int tpID = SharedPref.getTpId(TourPlanActivity.this, monthYear);
+                    Log.d("tp", "getDraftSaveOneBuild: " + id + " --> " + tpID);
+                    if (tpID != 0) {
+                        id = tpID;
                     }
 
                     JsonObject jsonObject = new JsonObject();
@@ -3860,10 +3872,14 @@ public class TourPlanActivity extends AppCompatActivity {
                                     JSONObject outer = new JSONObject(response.body().toString());
                                     String dString = outer.getString("d");
                                     JSONObject inner = new JSONObject(dString);
-                                    boolean status = inner.getBoolean("Status");
-                                    status = true;
+                                    boolean status = false;
+                                    if (inner.has("Status")) {
+                                        status = inner.getBoolean("Status");
+                                    }
+//                                    status = true;
                                     /*int data = inner.getInt("Data");*/
                                     String message = inner.optString("Message", "");
+                                    Log.d("TP", "onResponse: " + message);
                                     if (response.body() != null && !response.body().isJsonNull() && status) {
                                         try {
                                             //JsonObject jsonObject = new JsonObject(response.body().toString());
@@ -3881,18 +3897,21 @@ public class TourPlanActivity extends AppCompatActivity {
                                                             switch (isClickedName) {
                                                                 case "previous":
                                                                     int retrievedIdPm = innerJsonObject.getInt("Data");
+                                                                    SharedPref.saveTpId(TourPlanActivity.this, monthYear, retrievedIdPm);
                                                                     SharedPref.saveTpId(TourPlanActivity.this, retrievedIdPm);
-                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdPm);
+                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdPm + " -> " + monthYear);
                                                                     break;
                                                                 case "current":
                                                                     int retrievedIdCm = innerJsonObject.getInt("Data");
+                                                                    SharedPref.saveTpId(TourPlanActivity.this, monthYear, retrievedIdCm);
                                                                     SharedPref.saveTpIdCm(TourPlanActivity.this, retrievedIdCm);
-                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdCm);
+                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdCm + " -> " + monthYear);
                                                                     break;
                                                                 case "next":
                                                                     int retrievedIdNm = innerJsonObject.getInt("Data");
+                                                                    SharedPref.saveTpId(TourPlanActivity.this, monthYear, retrievedIdNm);
                                                                     SharedPref.saveTpIdNm(TourPlanActivity.this, retrievedIdNm);
-                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdNm);
+                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdNm + " -> " + monthYear);
                                                                     break;
                                                             }
                                                         } else {
