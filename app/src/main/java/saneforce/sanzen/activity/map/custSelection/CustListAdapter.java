@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -145,6 +146,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                     getCustListNew.clear();
                     for (int m = 0; m < custListArrayListNew.size(); m++) {
                         if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
+                            Log.d("TAG", custListArrayListNew.get(position).getName());
                             if (!custListArrayListNew.get(m).getLatitude().isEmpty() && !custListArrayListNew.get(m).getLongitude().isEmpty()) {
                                 getCustListNew.add(new CustList(custListArrayListNew.get(m).getLatitude(), custListArrayListNew.get(m).getLongitude(), custListArrayListNew.get(m).getAddress()));
                             } else {

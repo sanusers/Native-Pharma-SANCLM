@@ -45,6 +45,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -455,7 +456,7 @@ public class ListedDoctorFragment extends Fragment {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         custListArrayList.clear();
         if (SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-            try {
+           /* try {
                 JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 HashMap<String, JSONObject> docObj = new HashMap<>();
@@ -559,7 +560,134 @@ public class ListedDoctorFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.v("DrCall", "-dr--error-2-" + e);
+            }*/
+            try {
+                JSONArray masArray = masterDataDao
+                        .getMasterDataTableOrNew(Constants.DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode)
+                        .getMasterSyncDataJsonArray();
+
+                JSONArray geoArray = masterDataDao
+                        .getMasterDataTableOrNew(Constants.DOCTOR_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode)
+                        .getMasterSyncDataJsonArray();
+
+                HashMap<String, JSONObject> masMap = new HashMap<>();
+                for (int i = 0; i < masArray.length(); i++) {
+                    JSONObject obj = masArray.getJSONObject(i);
+                    String code = obj.optString("Code");
+                    if (!code.isEmpty()) {
+                        masMap.put(code, obj);
+                    }
+                }
+
+                HashMap<String, List<JSONObject>> geoMap = new HashMap<>();
+                for (int i = 0; i < geoArray.length(); i++) {
+                    JSONObject geoObj = geoArray.getJSONObject(i);
+                    String code = geoObj.optString("Code");
+                    if (!code.isEmpty()) {
+                        geoMap.computeIfAbsent(code, k -> new ArrayList<>()).add(geoObj);
+                    }
+                }
+
+                List<JSONObject> finalDoctorList = new ArrayList<>();
+
+                for (String code : masMap.keySet()) {
+
+                    JSONObject masDoctor = masMap.get(code);
+
+                    if (geoMap.containsKey(code)) {
+                        // Tagged doctors (can have multiple locations)
+                        for (JSONObject geoObj : geoMap.get(code)) {
+
+                            JSONObject merged = new JSONObject(masDoctor.toString());
+
+                            Iterator<String> keys = geoObj.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                merged.put(key, geoObj.opt(key));
+                            }
+
+                            // Town fallback
+                            if (merged.optString("Town_Name").isEmpty())
+                                merged.put("Town_Name", masDoctor.optString("Town_Name"));
+
+                            if (merged.optString("Town_Code").isEmpty())
+                                merged.put("Town_Code", masDoctor.optString("Town_Code"));
+
+                            finalDoctorList.add(merged);
+                        }
+                    } else {
+                        // Not tagged doctors
+                        JSONObject notTagged = new JSONObject(masDoctor.toString());
+
+                        notTagged.put("lat", "");
+                        notTagged.put("long", "");
+                        notTagged.put("addrs", "");
+                        notTagged.put("GEOTagedCnt", "0");
+
+                        // Use MAS town
+                        notTagged.put("Town_Name", masDoctor.optString("Town_Name"));
+                        notTagged.put("Town_Code", masDoctor.optString("Town_Code"));
+
+                        finalDoctorList.add(notTagged);
+                    }
+                }
+
+                Collections.sort(finalDoctorList, (o1, o2) ->
+                        o1.optString("Name", "").compareToIgnoreCase(o2.optString("Name", ""))
+                );
+
+                jsonArray = new JSONArray();
+                for (JSONObject obj : finalDoctorList) {
+                    jsonArray.put(obj);
+                }
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    try {
+                        boolean allowAdd = false;
+
+                        if (SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1")
+                                && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+
+                            if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
+
+                                float[] distance = new float[2];
+                                Location.distanceBetween(
+                                        Double.parseDouble(jsonObject.optString("lat")),
+                                        Double.parseDouble(jsonObject.optString("long")),
+                                        DcrCallTabLayoutActivity.lat,
+                                        DcrCallTabLayoutActivity.lng,
+                                        distance
+                                );
+
+                                if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
+
+                                    if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
+                                        allowAdd = jsonObject.optString("cust_status").equalsIgnoreCase("0");
+                                    } else {
+                                        allowAdd = true;
+                                    }
+                                }
+                            }
+
+                        } else {
+                            allowAdd = true;
+                        }
+
+                        if (allowAdd) {
+                            custListArrayList = SaveData(jsonObject, i, allowAdd);
+                        }
+
+                    } catch (Exception e) {
+                        Log.e("DrCall", "Distance filter error", e);
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.e("DrCall", "Doctor merge error", e);
             }
+
             Log.v("call", "-dr--size--" + custListArrayList.size());
 
         } else {

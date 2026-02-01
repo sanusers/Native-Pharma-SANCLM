@@ -131,6 +131,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.map.custSelection.CustListAdapter;
 import saneforce.sanzen.activity.map.custSelection.TagCustSelectionList;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
@@ -187,6 +188,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationCallback locationCallback;
     Util util;
     public static Bundle bundle;
+    private ArrayList<CustList> taggedLocations;
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
@@ -1573,7 +1575,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 switch (selectedTab) {
-                /*    case "D":
+                    case "D":
                         JSONArray existingGeoArrayDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                         JSONArray updatedGeoArrayDr = new JSONArray();
 
@@ -1589,8 +1591,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         JSONArray masterJsonArrayGeoDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                         Log.d("MASter Geo", "updateMasterData: " + masterJsonArrayGeoDr);
-                        break;*/
-                    case "D":
+                        break;
+            /*        case "D":
                         JSONArray existingGeoArrayDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                         JSONArray updatedGeoArrayDr = new JSONArray();
                         for (int i = 0; i < existingGeoArrayDr.length(); i++) {
@@ -1604,7 +1606,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         JSONArray masterJsonArrayGeoDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                         Log.d("MASTER_GEO", "Doctor GEO After Insert: " + masterJsonArrayGeoDr);
 
-                        break;
+                        break;*/
 
                /*     case "C":
                         JSONArray existingGeoArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + taggedHQ).getMasterSyncDataJsonArray();
@@ -3006,6 +3008,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             for (int i = 0; i < list.size(); i++) {
                 mm = list.get(i);
+                Log.d(TAG, mm.getName());
                 LatLng latLng = new LatLng(parseDouble(mm.getLat()), parseDouble(mm.getLng()));
                 float[] distance = new float[2];
                 Location.distanceBetween(parseDouble(mm.getLat()), parseDouble(mm.getLng()), lat, lng, distance);

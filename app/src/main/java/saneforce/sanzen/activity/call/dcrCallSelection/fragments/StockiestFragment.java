@@ -43,8 +43,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
@@ -171,7 +174,7 @@ public class StockiestFragment extends Fragment {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         custListArrayList.clear();
         if (SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1")) {
-            try {
+           /* try {
                 JSONArray masterJsonArrayStkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 JSONArray masterJsonArrayStkGeo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 HashMap<String, JSONObject> docObj_stk = new HashMap<>();
@@ -204,12 +207,12 @@ public class StockiestFragment extends Fragment {
                         });
                     }
                 }
-/*       List<JSONObject> sortedList = new ArrayList<>(docObj_stk.values());
+*//*       List<JSONObject> sortedList = new ArrayList<>(docObj_stk.values());
                 Collections.sort(sortedList, (o1, o2) -> {
                     String name1 = o1.optString("Name", "");
                     String name2 = o2.optString("Name", "");
                     return name1.compareToIgnoreCase(name2);
-                });*/
+                });*//*
 
                 jsonArray = new JSONArray(docObj_stk.values());
 
@@ -265,7 +268,105 @@ public class StockiestFragment extends Fragment {
 
             } catch (Exception e) {
                 Log.v("STKCALL", "-stk--error--" + e);
+            }*/
+            try {
+                JSONArray masterJsonArrayStkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+                JSONArray masterJsonArrayStkGeo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+
+                HashMap<String, List<JSONObject>> stockistMap = new HashMap<>();
+
+                for (int i = 0; i < masterJsonArrayStkMas.length(); i++) {
+                    JSONObject masObj = masterJsonArrayStkMas.getJSONObject(i);
+                    String code = masObj.optString("Code");
+                    if (code.isEmpty()) continue;
+
+                    stockistMap.putIfAbsent(code, new ArrayList<>());
+                    stockistMap.get(code).add(new JSONObject(masObj.toString())); // clone
+                }
+
+                for (int i = 0; i < masterJsonArrayStkGeo.length(); i++) {
+                    JSONObject geoObj = masterJsonArrayStkGeo.getJSONObject(i);
+                    String code = geoObj.optString("Code");
+                    if (code.isEmpty()) continue;
+
+                    if (stockistMap.containsKey(code)) {
+                        for (JSONObject masObj : stockistMap.get(code)) {
+                            Iterator<String> keys = geoObj.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                try {
+                                    masObj.put(key, geoObj.get(key));
+                                } catch (JSONException ignored) {}
+                            }
+                        }
+                    }
+                }
+
+                jsonArray = new JSONArray();
+                for (List<JSONObject> list : stockistMap.values()) {
+                    for (JSONObject obj : list) {
+                        jsonArray.put(obj);
+                    }
+                }
+
+                Log.v("STKCALL", "Merged stockist count: " + jsonArray.length());
+
+                custListArrayList = new ArrayList<>();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    try {
+                        boolean withinDistance = true;
+
+                        if (SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1")
+                                && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+
+                            if (!jsonObject.optString("lat").isEmpty() &&
+                                    !jsonObject.optString("long").isEmpty()) {
+
+                                float[] distance = new float[1];
+                                Location.distanceBetween(
+                                        Double.parseDouble(jsonObject.optString("lat")),
+                                        Double.parseDouble(jsonObject.optString("long")),
+                                        DcrCallTabLayoutActivity.lat,
+                                        DcrCallTabLayoutActivity.lng,
+                                        distance
+                                );
+
+                                withinDistance = distance[0] < (DcrCallTabLayoutActivity.limitKm * 1000.0);
+                            }
+                        }
+
+                        if (withinDistance) {
+                            custListArrayList = SaveData(jsonObject, i, true);                        }
+
+                    } catch (Exception e) {
+                        Log.e("STKCALL", "Distance filter error: " + e.getMessage());
+                    }
+                }
+
+                Set<String> uniqueKeys = new HashSet<>();
+                Iterator<CustList> iterator = custListArrayList.iterator();
+
+                while (iterator.hasNext()) {
+                    CustList c = iterator.next();
+                    String key = c.getCode() + "_" + c.getLatitude() + "_" + c.getLongitude();
+
+                    if (uniqueKeys.contains(key)) {
+                        iterator.remove();
+                    } else {
+                        uniqueKeys.add(key);
+                    }
+                }
+
+                Log.v("STKCALL", "Final stockist count: " + custListArrayList.size());
+
+            } catch (Exception e) {
+                Log.e("STKCALL", "Stockist error: " + e.getMessage());
+                e.printStackTrace();
             }
+
 
         } else {
             try {
