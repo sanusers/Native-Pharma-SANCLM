@@ -540,7 +540,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         Log.v("selected_hq", "---" + selectedHqCode);
         binding.rvCustList.setVisibility(View.VISIBLE);
         switch (SelectedTab) {
-           /* case "D":
+          /*  case "D":
                 try {
                     binding.tagSelection.setText(SharedPref.getDrCap(this));
                     JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHqCode).getMasterSyncDataJsonArray();
@@ -617,133 +617,83 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "D":
                 try {
                     binding.tagSelection.setText(SharedPref.getDrCap(this));
+                    JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHqCode).getMasterSyncDataJsonArray();
+                    JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + selectedHqCode).getMasterSyncDataJsonArray();
 
-                    JSONArray masArray = masterDataDao
-                            .getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHqCode)
-                            .getMasterSyncDataJsonArray();
-
-                    JSONArray geoArray = masterDataDao
-                            .getMasterDataTableOrNew(Constants.DOCTOR_GEO + selectedHqCode)
-                            .getMasterSyncDataJsonArray();
-
-                    // Map of Doctor Code → MAS Doctor Object
-                    HashMap<String, JSONObject> masMap = new HashMap<>();
-
-                    for (int i = 0; i < masArray.length(); i++) {
-                        JSONObject obj = masArray.getJSONObject(i);
-                        String code = obj.optString("Code");
-                        if (!code.isEmpty()) {
-                            masMap.put(code, obj);
-                        }
-                    }
-
-                    // Map of Doctor Code → List of GEO Objects
+                    // 1. Group Geo Tags by Code so we can find multiple locations quickly
                     HashMap<String, List<JSONObject>> geoMap = new HashMap<>();
-
-                    for (int i = 0; i < geoArray.length(); i++) {
-                        JSONObject geoObj = geoArray.getJSONObject(i);
+                    for (int i = 0; i < masterJsonArray2.length(); i++) {
+                        JSONObject geoObj = masterJsonArray2.getJSONObject(i);
                         String code = geoObj.optString("Code");
-                        if (!code.isEmpty()) {
-                            geoMap.computeIfAbsent(code, k -> new ArrayList<>()).add(geoObj);
+                        if (!geoMap.containsKey(code)) {
+                            geoMap.put(code, new ArrayList<>());
                         }
+                        geoMap.get(code).add(geoObj);
                     }
 
-                    List<JSONObject> finalDoctorList = new ArrayList<>();
+                    // 2. This list will hold the final combined data
+                    List<JSONObject> finalDisplayList = new ArrayList<>();
 
-                    // 🔥 Merge MAS + GEO
-                    for (String code : masMap.keySet()) {
-                        JSONObject baseDoctor = masMap.get(code);
+                    // 3. Loop through EVERY doctor in the Master List
+                    for (int i = 0; i < masterJsonArray1.length(); i++) {
+                        JSONObject masterObj = masterJsonArray1.getJSONObject(i);
+                        String code = masterObj.optString("Code");
 
                         if (geoMap.containsKey(code)) {
-                            // Tagged Doctors
-                            for (JSONObject geoObj : geoMap.get(code)) {
 
-                                JSONObject merged = new JSONObject(baseDoctor.toString());
-
-                                Iterator<String> keys = geoObj.keys();
-                                while (keys.hasNext()) {
-                                    String key = keys.next();
-                                    merged.put(key, geoObj.opt(key));
+                            List<JSONObject> tags = geoMap.get(code);
+                            for (JSONObject specificTag : tags) {
+                                // Create a copy of master info and merge this specific tag's data
+                                JSONObject combined = new JSONObject(masterObj.toString());
+                                java.util.Iterator<String> it = specificTag.keys();
+                                while (it.hasNext()) {
+                                    String key = it.next();
+                                    combined.put(key, specificTag.get(key));
                                 }
-
-                                // Territory fallback safety
-                                if (merged.optString("Territory").isEmpty()) {
-                                    merged.put("Territory", baseDoctor.optString("Territory"));
-                                }
-
-                                finalDoctorList.add(merged);
+                                finalDisplayList.add(combined);
                             }
                         } else {
-                            // Not Tagged Doctors
-                            JSONObject notTagged = new JSONObject(baseDoctor.toString());
-
-                            notTagged.put("lat", "");
-                            notTagged.put("long", "");
-                            notTagged.put("addrs", "");
-                            notTagged.put("Town_Name", "");
-                            notTagged.put("Town_Code", "");
-                            notTagged.put("GEOTagedCnt", "0");
-
-                            // Territory fallback safety
-                            if (notTagged.optString("Territory").isEmpty()) {
-                                notTagged.put("Territory", baseDoctor.optString("Territory"));
-                            }
-
-                            finalDoctorList.add(notTagged);
+                            finalDisplayList.add(masterObj);
                         }
                     }
 
-                    // 🔠 Sort by Name
-                    Collections.sort(finalDoctorList, (o1, o2) ->
-                            o1.optString("Name", "").compareToIgnoreCase(o2.optString("Name", ""))
-                    );
+                    // 4. Sort the final list alphabetically
+                    Collections.sort(finalDisplayList, (o1, o2) ->
+                            o1.optString("Name").compareToIgnoreCase(o2.optString("Name")));
 
-                    // Convert to JSONArray
-                    jsonArray = new JSONArray();
-                    for (JSONObject obj : finalDoctorList) {
-                        jsonArray.put(obj);
-                    }
-
-                    // 🚀 Populate List
+                    // 5. Populate your ArrayLists
                     custListArrayList.clear();
                     custListArrayNew.clear();
+                    for (int i = 0; i < finalDisplayList.size(); i++) {
+                        JSONObject obj = finalDisplayList.get(i);
 
-                    if (jsonArray.length() > 0) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        // Use optString with defaults to prevent "null" showing on UI
+                        String lat = obj.optString("lat", "0.0");
+                        String lon = obj.optString("long", "0.0");
+                        String addr = obj.optString("addrs", "No Address Found");
+                        String status = obj.optString("cust_status", "0");
 
-                            String geoCount = jsonObject.optString("GEOTagedCnt", "0");
-                            String custStatus = jsonObject.optString("cust_status", "0");
-
-                            CustList cust = new CustList(
-                                    jsonObject.optString("Name"),
-                                    jsonObject.optString("Code"),
-                                    SelectedTab,
-                                    jsonObject.optString("Category"),
-                                    jsonObject.optString("Specialty"),
-                                    jsonObject.optString("lat"),
-                                    jsonObject.optString("long"),
-                                    jsonObject.optString("addrs"),
-                                    jsonObject.optString("Town_Name"),
-                                    jsonObject.optString("Town_Code"),
-                                    geoCount,
-                                    jsonObject.optString("Geototal"),
-                                    String.valueOf(i),
-                                    custStatus
-                            );
-
-                            custListArrayList.add(cust);
-                            custListArrayNew.add(cust);
-                        }
-                    } else {
-                        commonUtilsMethods.showToastMessage(
-                                TagCustSelectionList.this,
-                                getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync)
+                        CustList item = new CustList(
+                                obj.optString("Name"),
+                                obj.optString("Code"),
+                                SelectedTab,
+                                obj.optString("Category"),
+                                obj.optString("Specialty"),
+                                lat, lon, addr,
+                                obj.optString("Town_Name"),
+                                obj.optString("Town_Code"),
+                                obj.optString("GEOTagedCnt", "0"),
+                                obj.optString("Geototal", "0"),
+                                String.valueOf(i),
+                                status
                         );
+
+                        custListArrayList.add(item);
+                        custListArrayNew.add(item);
                     }
 
                 } catch (Exception e) {
-                    Log.e("DoctorMerge", "Error: ", e);
+                    Log.e("dr_tag", "Error in combined logic: ", e);
                 }
                 break;
 
@@ -1100,10 +1050,26 @@ public class TagCustSelectionList extends AppCompatActivity {
                             for (JSONObject geo : geoMap.get(code)) {
                                 JSONObject merged = new JSONObject(mas.toString());
                                 Iterator<String> keys = geo.keys();
-                                while (keys.hasNext())
-                                    merged.put(keys.next(), geo.opt(keys.next()));
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    merged.put(key, geo.opt(key));
+                                }
                                 finalList.add(merged);
                             }
+                    /*        for (JSONObject geo : geoMap.get(code)) {
+                                JSONObject merged = new JSONObject(mas.toString());
+                                Iterator<String> keys = geo.keys();
+                                *//*while (keys.hasNext())
+                                    merged.put(keys.next(), geo.opt(keys.next()));
+                                finalList.add(merged);*//*
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    Object value = geo.opt(key);
+                                    if (value != null) {
+                                        merged.put(key, value);
+                                    }
+                                }
+                            }*/
                         } else {
                             JSONObject notTagged = new JSONObject(mas.toString());
                             notTagged.put("lat", "");
@@ -1172,10 +1138,19 @@ public class TagCustSelectionList extends AppCompatActivity {
                             for (JSONObject geo : geoMap.get(code)) {
                                 JSONObject merged = new JSONObject(mas.toString());
                                 Iterator<String> keys = geo.keys();
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    merged.put(key, geo.opt(key));
+                                }
+                                finalList.add(merged);
+                            }
+                     /*       for (JSONObject geo : geoMap.get(code)) {
+                                JSONObject merged = new JSONObject(mas.toString());
+                                Iterator<String> keys = geo.keys();
                                 while (keys.hasNext())
                                     merged.put(keys.next(), geo.opt(keys.next()));
                                 finalList.add(merged);
-                            }
+                            }*/
                         } else {
                             JSONObject notTagged = new JSONObject(mas.toString());
                             notTagged.put("lat", "");
