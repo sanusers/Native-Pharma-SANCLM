@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.myresource.profile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivityProfileViewBinding;
@@ -101,6 +103,22 @@ public class ProfileViewScreen extends AppCompatActivity {
                 activityProfileViewScreenBinding.emailTxt.setText(email);
                 activityProfileViewScreenBinding.dobTxt.setText(dob);
                 activityProfileViewScreenBinding.dowTxt.setText(dow);
+
+
+                activityProfileViewScreenBinding.txtDr.setText(this.getString(R.string.division) + " : " );
+                activityProfileViewScreenBinding.txtHq.setText(this.getString(R.string.sub_division) + " : " );
+                activityProfileViewScreenBinding.txtTerritory.setText(this.getString(R.string.territory) + " : " );
+                activityProfileViewScreenBinding.desig.setText(this.getString(R.string.designation) + " : " );
+                activityProfileViewScreenBinding.state.setText(this.getString(R.string.state) + " : " );
+                activityProfileViewScreenBinding.empCode.setText(this.getString(R.string.employe_code) + " : " );
+                activityProfileViewScreenBinding.rptMgr.setText(this.getString(R.string.rpt_mgr) + " : " );
+                activityProfileViewScreenBinding.joinDt.setText(this.getString(R.string.join_dt) + " : " );
+                activityProfileViewScreenBinding.phone.setText(this.getString(R.string.mobile) + " : " );
+                activityProfileViewScreenBinding.email.setText(this.getString(R.string.email) + " : " );
+                activityProfileViewScreenBinding.dob.setText(this.getString(R.string.Dateofbirth) + " : " );
+                activityProfileViewScreenBinding.dow.setText(this.getString(R.string.Dateofwedding) + " : " );
+
+
                 /* String tp_rpt = profileObject.optString("TpMgrName");
                 String lev_rpt = profileObject.optString("LeaveMgrName");
                 String tp_range = "Every Month"+" "+profileObject.optString("Tp_Start_Date") + "-" +profileObject.optString("Tp_End_Date");*/
