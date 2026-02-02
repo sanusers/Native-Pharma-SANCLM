@@ -201,7 +201,7 @@ public class ChemistFragment extends Fragment {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         cusListArrayList.clear();
         if (SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")&& HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-           /* try {
+            try {
                 JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 HashMap<String, JSONObject> docObj_che = new HashMap<>();
@@ -293,8 +293,8 @@ public class ChemistFragment extends Fragment {
             } catch (Exception e) {
                 Log.v("CheCall", "-che--error--" + e);
                 e.printStackTrace();
-            }*/
-            try {
+            }
+           /* try {
                 JSONArray masterJsonArrayChe = masterDataDao
                         .getMasterDataTableOrNew(Constants.CHEMIST_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode)
                         .getMasterSyncDataJsonArray();
@@ -403,7 +403,7 @@ public class ChemistFragment extends Fragment {
             } catch (Exception e) {
                 Log.e("CheCall", "CHEMIST ERROR: " + e.getMessage());
                 e.printStackTrace();
-            }
+            }*/
 
         } else {
             try {

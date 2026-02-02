@@ -456,7 +456,7 @@ public class ListedDoctorFragment extends Fragment {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         custListArrayList.clear();
         if (SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-           /* try {
+            try {
                 JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 HashMap<String, JSONObject> docObj = new HashMap<>();
@@ -560,8 +560,8 @@ public class ListedDoctorFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.v("DrCall", "-dr--error-2-" + e);
-            }*/
-            try {
+            }
+           /* try {
                 JSONArray masArray = masterDataDao
                         .getMasterDataTableOrNew(Constants.DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode)
                         .getMasterSyncDataJsonArray();
@@ -686,7 +686,7 @@ public class ListedDoctorFragment extends Fragment {
 
             } catch (Exception e) {
                 Log.e("DrCall", "Doctor merge error", e);
-            }
+            }*/
 
             Log.v("call", "-dr--size--" + custListArrayList.size());
 

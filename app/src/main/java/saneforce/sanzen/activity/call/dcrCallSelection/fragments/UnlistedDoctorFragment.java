@@ -196,7 +196,7 @@ public class UnlistedDoctorFragment extends Fragment {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         custListArrayList.clear();
         if (SharedPref.getGeotagNeedUnlst(requireContext()).equalsIgnoreCase("1")) {
-           /* try {
+            try {
                 JSONArray masterJsonArrayUlist1 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 JSONArray masterJsonArrayUlist2 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 HashMap<String, JSONObject> docObj_UnList = new HashMap<>();
@@ -229,14 +229,14 @@ public class UnlistedDoctorFragment extends Fragment {
                         }
                     }
                 }
-*//*        List<JSONObject> sortedList = new ArrayList<>(docObj_UnList.values());
+                List<JSONObject> sortedList = new ArrayList<>(docObj_UnList.values());
 
 
                 Collections.sort(sortedList, (o1, o2) -> {
                     String name1 = o1.optString("Name", "");
                     String name2 = o2.optString("Name", "");
                     return name1.compareToIgnoreCase(name2);
-                });*//*
+                });
 
 
                 jsonArray = new JSONArray(docObj_UnList.values());
@@ -296,8 +296,7 @@ public class UnlistedDoctorFragment extends Fragment {
             } catch (Exception e) {
                 Log.v("UNDRCALL", "-UnDr--error--" + e);
             }
-*/
-            try {
+           /* try {
                 JSONArray masterMas = masterDataDao
                         .getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode)
                         .getMasterSyncDataJsonArray();
@@ -332,7 +331,8 @@ public class UnlistedDoctorFragment extends Fragment {
                                 String key = keys.next();
                                 try {
                                     masObj.put(key, geoObj.get(key));
-                                } catch (JSONException ignored) {}
+                                } catch (JSONException ignored) {
+                                }
                             }
                         }
                     }
@@ -404,7 +404,7 @@ public class UnlistedDoctorFragment extends Fragment {
             } catch (Exception e) {
                 Log.e("UNDRCALL", "Unlisted Doctor error: " + e.getMessage());
                 e.printStackTrace();
-            }
+            }*/
 
         } else {
             try {

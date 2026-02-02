@@ -174,7 +174,7 @@ public class StockiestFragment extends Fragment {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         custListArrayList.clear();
         if (SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1")) {
-           /* try {
+            try {
                 JSONArray masterJsonArrayStkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 JSONArray masterJsonArrayStkGeo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 HashMap<String, JSONObject> docObj_stk = new HashMap<>();
@@ -207,12 +207,12 @@ public class StockiestFragment extends Fragment {
                         });
                     }
                 }
-*//*       List<JSONObject> sortedList = new ArrayList<>(docObj_stk.values());
+       List<JSONObject> sortedList = new ArrayList<>(docObj_stk.values());
                 Collections.sort(sortedList, (o1, o2) -> {
                     String name1 = o1.optString("Name", "");
                     String name2 = o2.optString("Name", "");
                     return name1.compareToIgnoreCase(name2);
-                });*//*
+                });
 
                 jsonArray = new JSONArray(docObj_stk.values());
 
@@ -268,8 +268,8 @@ public class StockiestFragment extends Fragment {
 
             } catch (Exception e) {
                 Log.v("STKCALL", "-stk--error--" + e);
-            }*/
-            try {
+            }
+           /* try {
                 JSONArray masterJsonArrayStkMas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 JSONArray masterJsonArrayStkGeo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
 
@@ -365,7 +365,7 @@ public class StockiestFragment extends Fragment {
             } catch (Exception e) {
                 Log.e("STKCALL", "Stockist error: " + e.getMessage());
                 e.printStackTrace();
-            }
+            }*/
 
 
         } else {
