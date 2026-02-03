@@ -1043,6 +1043,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             String address = tagJsonObject.optString("addr");
             String imageName = tagJsonObject.optString("image_name");
             String taggedHQ = tagJsonObject.optString("tagged_cust_HQ");
+            String geoTagCnt = tagJsonObject.optString("GEOTagedCnt");
             String geoTotal = tagJsonObject.optString("Geototal");
             String tableKey = "";
             switch (selectedTab) {
@@ -1134,7 +1135,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     addTaggedCustomer(SharedPref.getDrCap(MapsActivity.this));
                     break;
 
-               /* case "C":
+            /*    case "C":
                     JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + taggedHQ).getMasterSyncDataJsonArray();
                     JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + taggedHQ).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj_che = new HashMap<>();
@@ -1172,59 +1173,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     break;*/
                 case "C":
+                    try {
+                        JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + taggedHQ).getMasterSyncDataJsonArray();
 
-                    JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + taggedHQ).getMasterSyncDataJsonArray();
-                    JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + taggedHQ).getMasterSyncDataJsonArray();
-
-                    HashMap<String, JSONObject> chemistBaseMap = new HashMap<>();
-
-                    for (int i = 0; i < masterJsonArrayChe.length(); i++) {
-                        JSONObject obj = masterJsonArrayChe.getJSONObject(i);
-                        String code = obj.optString("Code");
-
-                        if (!code.isEmpty()) {
-                            chemistBaseMap.put(code, obj);
-                        } else {
-                            Log.d("Merge", "Skipping CHEMIST_MAS with empty Code: " + obj);
-                        }
-                    }
-
-                    List<JSONObject> mergedChemistList = new ArrayList<>();
-
-                    for (int i = 0; i < masterJsonArrayGeo.length(); i++) {
-                        JSONObject geoObj = masterJsonArrayGeo.getJSONObject(i);
-                        String code = geoObj.optString("Code");
-
-                        if (code.isEmpty()) {
-                            Log.w("Merge", "Skipping CHEMIST_GEO with empty Code: " + geoObj);
-                            continue;
+                        HashMap<String, JSONObject> masterLookup = new HashMap<>();
+                        for (int i = 0; i < masterJsonArrayChe.length(); i++) {
+                            JSONObject masterObj = masterJsonArrayChe.getJSONObject(i);
+                            String code = masterObj.optString("Code");
+                            if (!code.isEmpty()) masterLookup.put(code, masterObj);
                         }
 
-                        if (!chemistBaseMap.containsKey(code)) continue;
+                        ArrayList<JSONObject> finalMergedList = new ArrayList<>();
+                        HashSet<String> taggedCodes = new HashSet<>();
 
-                        try {
-                            JSONObject mergedChemist = new JSONObject(chemistBaseMap.get(code).toString());
+                        for (int i = 0; i < masterJsonArrayGeo.length(); i++) {
+                            JSONObject geoObj = masterJsonArrayGeo.getJSONObject(i);
+                            String code = geoObj.optString("Code");
 
-                            Iterator<String> keys = geoObj.keys();
-                            while (keys.hasNext()) {
-                                String key = keys.next();
-                                mergedChemist.put(key, geoObj.get(key));
+                            if (!code.isEmpty() && masterLookup.containsKey(code)) {
+                                JSONObject masterInfo = masterLookup.get(code);
+
+                                JSONObject combinedInstance = new JSONObject(masterInfo.toString());
+
+                                java.util.Iterator<String> it = geoObj.keys();
+                                while (it.hasNext()) {
+                                    String key = it.next();
+                                    combinedInstance.put(key, geoObj.get(key));
+                                }
+
+                                finalMergedList.add(combinedInstance);
+                                taggedCodes.add(code);
                             }
-
-                            mergedChemistList.add(mergedChemist);
-
-                        } catch (JSONException e) {
-                            Log.e("MergeError", "Error merging GEO for chemist " + code + ": " + e.getMessage());
                         }
+
+                        for (int i = 0; i < masterJsonArrayChe.length(); i++) {
+                            JSONObject masterObj = masterJsonArrayChe.getJSONObject(i);
+                            String code = masterObj.optString("Code");
+                            if (!code.isEmpty() && !taggedCodes.contains(code)) {
+                                finalMergedList.add(masterObj);
+                            }
+                        }
+
+                        masterJsonArray = new JSONArray(finalMergedList);
+
+                        list.clear();
+
+                        addTaggedCustomer(SharedPref.getChmCap(MapsActivity.this));
+
+                    } catch (Exception e) {
+                        Log.e("MergeError_C", "Error: " + e.getMessage());
                     }
-
-                    masterJsonArray = new JSONArray(mergedChemistList);
-
-                    addTaggedCustomer(SharedPref.getChmCap(MapsActivity.this));
-
                     break;
 
-               /* case "S":
+                case "S":
                     JSONArray masterJsonArrayStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + taggedHQ).getMasterSyncDataJsonArray();
                     JSONArray masterJsonArrayStkGeo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + taggedHQ).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj_stk = new HashMap<>();
@@ -1260,8 +1262,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     masterJsonArray = new JSONArray(docObj_stk.values());
                     addTaggedCustomer(SharedPref.getStkCap(MapsActivity.this));
 //                    tableKey = Constants.STOCKIEST + taggedHQ;
-                    break;*/
-                case "S":
+                    break;
+             /*   case "S":
                     JSONArray masterJsonArrayStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + taggedHQ).getMasterSyncDataJsonArray();
                     JSONArray masterJsonArrayStkGeo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + taggedHQ).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> stockistBaseMap = new HashMap<>();
@@ -1307,9 +1309,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     masterJsonArray = new JSONArray(mergedStockistList);
                     addTaggedCustomer(SharedPref.getStkCap(MapsActivity.this));
-                    break;
+                    break;*/
 
-               /* case "U":
+                case "U":
                     JSONArray masterJsonArrayUnlistMas = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + taggedHQ).getMasterSyncDataJsonArray();
                     JSONArray masterJsonArrayUnlistGeo = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj_Unlist = new HashMap<>();
@@ -1344,8 +1346,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     masterJsonArray = new JSONArray(docObj_Unlist.values());
                     addTaggedCustomer(SharedPref.getUNLcap(MapsActivity.this));
-                    break;*/
-                case "U":
+                    break;
+                /*case "U":
 
                     JSONArray masterJsonArrayUnlistMas = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + taggedHQ).getMasterSyncDataJsonArray();
                     JSONArray masterJsonArrayUnlistGeo = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
@@ -1391,7 +1393,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     masterJsonArray = new JSONArray(mergedUnlistedList);
                     addTaggedCustomer(SharedPref.getUNLcap(MapsActivity.this));
-                    break;
+                    break;*/
 
 /*                          case "D":
                     masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
@@ -1453,39 +1455,55 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 if (SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
 //                    jsonObject.put("cust_status", "1");
-                    jsonObject.put("status", "1");
+                    jsonObject.put("cust_status", "1");
                 } else {
 //                    jsonObject.put("cust_status", "0");
-                    jsonObject.put("status", "0");
+                    jsonObject.put("cust_status", "0");
                 }
                 switch (selectedTab) {
                     case "D":
-                        jsonObject.put("GEOTagedCnt", "1");
+                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                            jsonObject.put("GEOTagedCnt", "0");
+                        }else{
+                            jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
+                        }
                         jsonObject.put("lat", latitude);
                         jsonObject.put("long", longitude);
                         jsonObject.put("addrs", address);
-                        jsonObject.put("Geototal", geoTotal);
+                        jsonObject.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
+                        jsonObject.put("Town_Code",town_code);
+                        jsonObject.put("Town_Name",town_name);
+                        jsonObject.put("StatFlag","0");
                         break;
                     case "C":
-                        jsonObject.put("GEOTagCnt", "1");
+                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
                         jsonObject.put("lat", latitude);
                         jsonObject.put("long", longitude);
                         jsonObject.put("addr", address);
-                        jsonObject.put("Geototal", geoTotal);
+                        jsonObject.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
+                        jsonObject.put("Town_Code",town_code);
+                        jsonObject.put("Town_Name",town_name);
+                        jsonObject.put("StatFlag","0");
                         break;
                     case "S":
-                        jsonObject.put("GEOTagedCnt", "1");
+                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
                         jsonObject.put("lat", latitude);
                         jsonObject.put("long", longitude);
                         jsonObject.put("addrs", address);
-                        jsonObject.put("Geototal", geoTotal);
+                        jsonObject.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
+                        jsonObject.put("Town_Code",town_code);
+                        jsonObject.put("Town_Name",town_name);
+                        jsonObject.put("StatFlag","0");
                         break;
                     case "U":
-                        jsonObject.put("GEOTagedCnt", "1");
+                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
                         jsonObject.put("lat", latitude);
                         jsonObject.put("long", longitude);
                         jsonObject.put("addr", address);
-                        jsonObject.put("Geototal", geoTotal);
+                        jsonObject.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
+                        jsonObject.put("Town_Code",town_code);
+                        jsonObject.put("Town_Name",town_name);
+                        jsonObject.put("StatFlag","0");
                         break;
                     case "H":
                         jsonObject.put("Lat", latitude);
@@ -1527,35 +1545,59 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 createGeoJson.put("Name", custJsonObjects.get(0).optString("Name"));
 
                 if (SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-                    createGeoJson.put("status", "1");
+                    createGeoJson.put("cust_status", "1");
                 } else {
-                    createGeoJson.put("status", "0");
+                    createGeoJson.put("cust_status", "0");
                 }
 
                 switch (selectedTab) {
                     case "D":
-                        createGeoJson.put("GEOTagedCnt", "1");
+                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                            createGeoJson.put("GEOTagedCnt", "0");
+                        }else{
+                            jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
+                        }
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addrs", address);
+                        createGeoJson.put("Town_Code",town_code);
+                        createGeoJson.put("Town_Name",town_name);
+                        createGeoJson.put("StatFlag","0");
+                        createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
                         break;
                     case "U":
-                        createGeoJson.put("GEOTagedCnt", "1");
+                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                            createGeoJson.put("GEOTagedCnt", "0");
+                        }else{
+                            jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
+                        }
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addr", address);
+                        createGeoJson.put("Town_Code",town_code);
+                        createGeoJson.put("Town_Name",town_name);
+                        createGeoJson.put("StatFlag","0");
+                        createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
                         break;
                     case "C":
-                        createGeoJson.put("GEOTagCnt", "1");
+                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addr", address);
+                        createGeoJson.put("Town_Code",town_code);
+                        createGeoJson.put("Town_Name",town_name);
+                        createGeoJson.put("StatFlag","0");
+                        createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
                         break;
                     case "S":
-                        createGeoJson.put("GEOTagedCnt", "1");
+                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addrs", address);
+                        createGeoJson.put("Town_Code",town_code);
+                        createGeoJson.put("Town_Name",town_name);
+                        createGeoJson.put("StatFlag","0");
+                        createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
                         break;
                     case "H":
                     case "CIP":
@@ -2442,73 +2484,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 try {
                     JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + sfCode).getMasterSyncDataJsonArray();
                     JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + sfCode).getMasterSyncDataJsonArray();
-
-                    HashMap<String, List<JSONObject>> docObj = new HashMap<>();
-
+                    HashMap<String, JSONObject> doctorMasterMap = new HashMap<>();
                     for (int i = 0; i < jsonArray1.length(); i++) {
-                        JSONObject jsonObject = jsonArray1.getJSONObject(i);
-                        String code = jsonObject.optString("Code");
+                        JSONObject masterObj = jsonArray1.getJSONObject(i);
+                        String code = masterObj.optString("Code");
                         if (!code.isEmpty()) {
-                            if (!docObj.containsKey(code)) {
-                                docObj.put(code, new ArrayList<>());
-                            }
-                            docObj.get(code).add(jsonObject);
+                            doctorMasterMap.put(code, masterObj);
                         }
                     }
 
                     for (int i = 0; i < jsonArray2.length(); i++) {
-                        JSONObject jsonObject_geo = jsonArray2.getJSONObject(i);
-                        String code = jsonObject_geo.optString("Code");
+                        JSONObject geoObj = jsonArray2.getJSONObject(i);
+                        String code = geoObj.optString("Code");
 
-                        if (!code.isEmpty() && docObj.containsKey(code)) {
-                            List<JSONObject> existingList = docObj.get(code);
+                        if (!code.isEmpty() && doctorMasterMap.containsKey(code)) {
+                            JSONObject masterInfo = doctorMasterMap.get(code);
 
-                            for (JSONObject targetObj : existingList) {
-                                java.util.Iterator<String> it = jsonObject_geo.keys();
-                                while (it.hasNext()) {
-                                    String key = it.next();
-                                    try {
-                                        targetObj.put(key, jsonObject_geo.get(key));
-                                    } catch (JSONException e) {
-                                        Log.e("MergeError", "Key " + key + " error: " + e.getMessage());
-                                    }
+                            String lat = geoObj.optString("lat").trim();
+                            String lon = geoObj.optString("long").trim();
+                            String address = geoObj.optString("addrs").trim();
+
+                            if (address.isEmpty()) {
+                                if (!lat.isEmpty() && !lon.isEmpty() && !lat.equals("0.0")) {
+                                    address = CommonUtilsMethods.gettingAddress(MapsActivity.this,
+                                            Double.parseDouble(lat), Double.parseDouble(lon), false);
+                                } else {
+                                    address = "No Address Found";
                                 }
                             }
-                        }
-                    }
 
-                    for (List<JSONObject> doctorList : docObj.values()) {
-                        for (JSONObject jsonObject : doctorList) {
-
-                            if (jsonObject.has("addrs")) {
-                                cust_address = jsonObject.optString("addrs");
-                                String lat = jsonObject.optString("lat").trim();
-                                String lon = jsonObject.optString("long").trim();
-
-                                if (!lat.isEmpty() && !lon.isEmpty()) {
-                                    if (!cust_address.isEmpty()) {
-                                        list.add(new ViewTagModel(
-                                                jsonObject.getString("Code"), jsonObject.getString("Name"), "1",
-                                                lat, lon, cust_address, jsonObject.optString("img_name"),
-                                                jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")
-                                        ));
-                                    } else {
-                                        if (lat.equals("0.0") || lon.equals("0.0")) {
-                                            cust_address = "No Address Found";
-                                        } else {
-
-                                            cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(lat), Double.parseDouble(lon), false);
-                                            list.add(new ViewTagModel(
-                                                    jsonObject.getString("Code"), jsonObject.getString("Name"), "1",
-                                                    lat, lon, cust_address, jsonObject.optString("img_name"),
-                                                    jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")
-                                            ));
-                                        }
-                                    }
-                                }
-                            } else {
-                                Log.d(TAG, "AddTaggedDetails: No Addrs Found for Code: " + jsonObject.optString("Code"));
-                            }
+                            list.add(new ViewTagModel(code, masterInfo.optString("Name"), "1", lat, lon, address, geoObj.optString("img_name"), geoObj.optString("Town_Name"), geoObj.optString("Town_Code")));
                         }
                     }
                 } catch (Exception e) {
@@ -2517,8 +2522,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
 
 
-            case "C":
-               /* try {
+           /* case "C":
+                try {
                     JSONArray jsonArray_master = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + sfCode).getMasterSyncDataJsonArray();
                     JSONArray jsonArray_geo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + sfCode).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj_che = new HashMap<>();
@@ -2576,99 +2581,56 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.v("map_camera_tt_C", "error---che-" + e);
                 }
                 break;*/
+            case "C":
                 try {
-                    JSONArray jsonArray_master = masterDataDao
-                            .getMasterDataTableOrNew(Constants.CHEMIST_MAS + sfCode)
-                            .getMasterSyncDataJsonArray();
-
-                    JSONArray jsonArray_geo = masterDataDao
-                            .getMasterDataTableOrNew(Constants.CHEMIST_GEO + sfCode)
-                            .getMasterSyncDataJsonArray();
-
-                    // Step 1: Store base chemist info
-                    HashMap<String, JSONObject> chemistBaseMap = new HashMap<>();
-
+                    JSONArray jsonArray_master = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + sfCode).getMasterSyncDataJsonArray();
+                    JSONArray jsonArray_geo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + sfCode).getMasterSyncDataJsonArray();
+                    HashMap<String, JSONObject> masterMap = new HashMap<>();
                     for (int i = 0; i < jsonArray_master.length(); i++) {
-                        JSONObject jsonObject = jsonArray_master.getJSONObject(i);
-                        String code = jsonObject.optString("Code");
-
+                        JSONObject masterObj = jsonArray_master.getJSONObject(i);
+                        String code = masterObj.optString("Code");
                         if (!code.isEmpty()) {
-                            chemistBaseMap.put(code, jsonObject);
-                        } else {
-                            Log.d("Merge", "Skipping CHEMIST_MAS object with empty 'Code': " + jsonObject);
+                            masterMap.put(code, masterObj);
                         }
                     }
-
-                    // Step 2: Merge each GEO entry as a separate chemist-location
-                    List<JSONObject> mergedChemistList = new ArrayList<>();
-
                     for (int i = 0; i < jsonArray_geo.length(); i++) {
-                        JSONObject geoObject = jsonArray_geo.getJSONObject(i);
-                        String code = geoObject.optString("Code");
+                        JSONObject geoObj = jsonArray_geo.getJSONObject(i);
+                        String code = geoObj.optString("Code");
+                        if (!code.isEmpty() && masterMap.containsKey(code)) {
+                            JSONObject chemMaster = masterMap.get(code);
+                            String lat = geoObj.optString("lat").trim();
+                            String lng = geoObj.optString("long").trim();
+                            String addr = geoObj.optString("addr").trim();
+                            if (!lat.isEmpty() && !lng.isEmpty()) {
+                                if (addr.isEmpty()) {
+                                    if (lat.equals("0.0") || lng.equals("0.0")) {
+                                        addr = "No Address Found";
+                                    } else {
+                                        addr = CommonUtilsMethods.gettingAddress(MapsActivity.this,
+                                                Double.parseDouble(lat), Double.parseDouble(lng), false);
+                                    }
+                                }
 
-                        if (code.isEmpty()) {
-                            Log.w("Merge", "Skipping GEO object with empty 'Code': " + geoObject);
-                            continue;
-                        }
-
-                        if (!chemistBaseMap.containsKey(code)) continue;
-
-                        try {
-                            // Clone base chemist
-                            JSONObject mergedChemist = new JSONObject(chemistBaseMap.get(code).toString());
-
-                            // Merge GEO fields
-                            Iterator<String> keys = geoObject.keys();
-                            while (keys.hasNext()) {
-                                String key = keys.next();
-                                mergedChemist.put(key, geoObject.get(key));
-                            }
-
-                            mergedChemistList.add(mergedChemist);
-
-                        } catch (JSONException e) {
-                            Log.e("MergeError", "Error merging GEO for chemist code " + code + ": " + e.getMessage());
-                        }
-                    }
-
-                    // Step 3: Build map/tag list
-                    for (JSONObject jsonObject : mergedChemistList) {
-
-                        if (!jsonObject.has("addr")) continue;
-
-                        String lat = jsonObject.optString("lat").trim();
-                        String lng = jsonObject.optString("long").trim();
-                        cust_address = jsonObject.optString("addr").trim();
-
-                        // Require BOTH latitude and longitude
-                        if (lat.isEmpty() || lng.isEmpty()) continue;
-
-                        // Handle missing address
-                        if (cust_address.isEmpty()) {
-                            if (lat.equals("0.0") || lng.equals("0.0")) {
-                                cust_address = "No Address Found";
-                            } else {
-                                cust_address = CommonUtilsMethods.gettingAddress(
-                                        MapsActivity.this,
-                                        Double.parseDouble(lat),
-                                        Double.parseDouble(lng),
-                                        false
-                                );
+                                list.add(new ViewTagModel(
+                                        code,
+                                        chemMaster.optString("Name"),
+                                        "2",
+                                        lat,
+                                        lng,
+                                        addr,
+                                        geoObj.optString("img_name"),
+                                        geoObj.optString("Town_Name"),
+                                        geoObj.optString("Town_Code")));
                             }
                         }
-
-                        list.add(new ViewTagModel(jsonObject.optString("Code"), jsonObject.optString("Name"), "2", lat, lng, cust_address, jsonObject.optString("img_name"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")
-                        ));
                     }
-
                 } catch (Exception e) {
-                    Log.v("map_camera_tt_C", "error---che-" + e);
+                    Log.e("map_camera_tt_C", "error---che-" + e.getMessage());
                 }
                 break;
 
-
             case "S":
-               /* try {
+                try {
                     JSONArray jsonArrayStk_mas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + sfCode).getMasterSyncDataJsonArray();
                     JSONArray jsonArrayStk_geo = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + sfCode).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj_stk = new HashMap<>();
@@ -2707,13 +2669,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         cust_address = jsonObject.optString("addrs");
                         if (!jsonObject.optString("lat").trim().isEmpty() || !jsonObject.optString("long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
-                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "3", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                list.add(new ViewTagModel(jsonObject.optString("Code"), jsonObject.optString("Name"), "3", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.optString("img_name"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")));
                             } else {
                                 if (jsonObject.optString("lat").equalsIgnoreCase("0.0") || jsonObject.optString("long").equalsIgnoreCase("0.0")) {
                                     cust_address = "No Address Found";
                                 } else {
-                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "3", jsonObject.optString("lat"), jsonObject.optString("long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.optString("lat")), parseDouble(jsonObject.optString("long")), false);
+                                    list.add(new ViewTagModel(jsonObject.optString("Code"), jsonObject.optString("Name"), "3", jsonObject.optString("lat"), jsonObject.optString("long"), cust_address, jsonObject.optString("img_name"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")));
                                 }
                             }
                         }
@@ -2721,8 +2683,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } catch (Exception e) {
                     Log.v("map_camera_tt_S", "error---stk-" + e);
                 }
-                break;*/
-                try {
+                break;
+               /* try {
                     JSONArray jsonArrayStk_mas = masterDataDao
                             .getMasterDataTableOrNew(Constants.STOCKIEST_MAS + sfCode)
                             .getMasterSyncDataJsonArray();
@@ -2810,10 +2772,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } catch (Exception e) {
                     Log.v("map_camera_tt_S", "error---stk-" + e);
                 }
-                break;
+                break;*/
 
             case "U":
-                /*try {
+                try {
                     JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + sfCode).getMasterSyncDataJsonArray();
                     JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + sfCode).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj_Unlist = new HashMap<>();
@@ -2852,13 +2814,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         cust_address = jsonObject.optString("Addrs");
                         if (!jsonObject.optString("lat").trim().isEmpty() || !jsonObject.optString("long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
-                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "4", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                list.add(new ViewTagModel(jsonObject.optString("Code"), jsonObject.optString("Name"), "4", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), jsonObject.optString("img_name"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")));
                             } else {
-                                if (jsonObject.getString("lat").equalsIgnoreCase("0.0") || jsonObject.getString("long").equalsIgnoreCase("0.0")) {
+                                if (jsonObject.optString("lat").equalsIgnoreCase("0.0") || jsonObject.optString("long").equalsIgnoreCase("0.0")) {
                                     cust_address = "No Address Found";
                                 } else {
-                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "4", jsonObject.getString("lat"), jsonObject.getString("long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.optString("lat")), parseDouble(jsonObject.optString("long")), false);
+                                    list.add(new ViewTagModel(jsonObject.optString("Code"), jsonObject.optString("Name"), "4", jsonObject.optString("lat"), jsonObject.optString("long"), cust_address, jsonObject.optString("img_name"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")));
                                 }
                             }
                         }
@@ -2866,8 +2828,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } catch (Exception e) {
                     Log.v("map_camera_tt_U", "error---UnDr-" + e);
                 }
-                break;*/
-                try {
+                break;
+               /* try {
                     JSONArray jsonArrayMas = masterDataDao
                             .getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + sfCode)
                             .getMasterSyncDataJsonArray();
@@ -2956,7 +2918,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } catch (Exception e) {
                     Log.v("map_camera_tt_U", "error---UnDr-" + e);
                 }
-                break;
+                break;*/
 
 //                try {
 //                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + sfCode).getMasterSyncDataJsonArray();

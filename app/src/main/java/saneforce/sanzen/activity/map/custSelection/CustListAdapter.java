@@ -78,7 +78,13 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 holder.tv_verified.setVisibility(View.GONE);
             }
         } else {
-            holder.tv_verified.setVisibility(View.GONE);
+            if (custListArrayList.get(position).getGeoTagStatus().equalsIgnoreCase("1")) {
+                holder.tv_verified.setVisibility(View.VISIBLE);
+                holder.tv_verified.setText(context.getResources().getText(R.string.pending));
+            } else {
+                holder.tv_verified.setVisibility(View.GONE);
+            }
+//            holder.tv_verified.setVisibility(View.GONE);
         }
 
      /*   if (GeoTagApprovalNeed.equalsIgnoreCase("0") && custListArrayList.get(position).getGeoTagStatus().equalsIgnoreCase("1")) {
