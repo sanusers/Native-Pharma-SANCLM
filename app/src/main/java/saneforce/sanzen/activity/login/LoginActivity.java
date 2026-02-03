@@ -1,10 +1,5 @@
 package saneforce.sanzen.activity.login;
 
-import static android.view.View.TEXT_ALIGNMENT_TEXT_END;
-import static android.view.View.TEXT_ALIGNMENT_TEXT_START;
-import static android.view.View.TEXT_ALIGNMENT_VIEW_END;
-import static android.view.View.TEXT_ALIGNMENT_VIEW_START;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -24,7 +19,6 @@ import android.provider.Settings;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,7 +31,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -54,7 +47,6 @@ import java.util.Objects;
 import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.homeScreen.notification.NotificationViewModel;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -69,7 +61,6 @@ import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
-import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
 import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -114,6 +105,12 @@ public class LoginActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
+
+        if (SharedPref.getClearDataNeed(LoginActivity.this).equalsIgnoreCase("0")) {
+            binding.clearData.setVisibility(View.VISIBLE);
+        } else {
+            binding.clearData.setVisibility(View.GONE);
+        }
 
         outboxUtil = new OutboxUtil(this);
 
@@ -310,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     String timeLeftFormatted = TimeUtils.getMillisToFormattedTime(millisUntilFinished, TimeUtils.FORMAT_40);
-                    binding.rejectedReason.setText(getString(R.string.please_try_again_after)  + timeLeftFormatted + getString(R.string.minutes));
+                    binding.rejectedReason.setText(getString(R.string.please_try_again_after) + timeLeftFormatted + getString(R.string.minutes));
                     remainingTime = millisUntilFinished;
                 }
 
@@ -388,7 +385,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPref.saveLoginState(getApplicationContext(), false);
         SharedPref.saveSettingState(getApplicationContext(), false);
 
-      SharedPref.setDataCleared(this, true);
+        SharedPref.setDataCleared(this, true);
 
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
         commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.data_cleared_successfully));

@@ -535,6 +535,10 @@ public class SharedPref {
     private static final String TodayPopupShown = "TodayPopupShown";
     public static final String LAST_KNOWN_VERSION = "last_known_version";
 
+    public static final String SCREEN_ACCESS = "screen_access";
+    public static final String SEND_LOGS_NEED = "send_logs_need";
+    public static final String CLEAR_DATA_NEED = "clear_data_need";
+
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
@@ -927,6 +931,9 @@ public class SharedPref {
             editor.putString(ZOOM_FLAG,jsonObject.optString("Zoomflag"));
             editor.putString(LEAVE_ATTACHMENT_NEED,jsonObject.optString("leave_attachment_need"));
             editor.putString(JW_AUTO_SELECTION_NEED, jsonObject.optString("jw_auto_selection_need"));
+            editor.putString(SCREEN_ACCESS, jsonObject.optString("Screen_Access"));
+            editor.putString(CLEAR_DATA_NEED, jsonObject.optString("Clear_Data_Need"));
+            editor.putString(SEND_LOGS_NEED, jsonObject.optString("Send_Logs_Need"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3445,6 +3452,18 @@ public static void addVisitedDoctor(Context context, String custCode) {
 
     public static boolean getIsWorkingToday(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(IS_WORKING_TODAY, false);
+    }
+
+    public static String getScreenAccess(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SCREEN_ACCESS, "1");
+    }
+
+    public static String getClearDataNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(CLEAR_DATA_NEED, "1");
+    }
+
+    public static String getSendLogsNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SEND_LOGS_NEED, "1");
     }
 
 }
