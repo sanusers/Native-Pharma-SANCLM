@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.myresource.profile;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,13 @@ import com.google.gson.JsonArray;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.Constants;
@@ -117,6 +125,54 @@ public class ProfileViewScreen extends AppCompatActivity {
                 activityProfileViewScreenBinding.email.setText(this.getString(R.string.email) + " : " );
                 activityProfileViewScreenBinding.dob.setText(this.getString(R.string.Dateofbirth) + " : " );
                 activityProfileViewScreenBinding.dow.setText(this.getString(R.string.Dateofwedding) + " : " );
+
+                activityProfileViewScreenBinding.profileContainer.removeAllViews();
+
+                List<String> skipKeys = Arrays.asList(
+                        "SfName", "Designation", "SfCode_Static", "HQName",
+                        "DivisionName", "SubdivisionNames", "EmployeeCode",
+                        "StateName", "ReportingMgrName", "SF_JoiningDate",
+                        "DOB", "DOW", "Mobile", "Email"
+                );
+
+                Iterator<String> keys = profileObject.keys();
+                List<String> dynamicKeys = new ArrayList<>();
+
+                while (keys.hasNext()) {
+                    String k = keys.next();
+                    if (!skipKeys.contains(k)) dynamicKeys.add(k);
+                }
+
+                for (int i = 0; i < dynamicKeys.size(); i += 2) {
+                    View row = getLayoutInflater().inflate(R.layout.activity_profile_rows, activityProfileViewScreenBinding.profileContainer, false);
+
+                    //  Column 1 (Left Side)
+                    String key1 = dynamicKeys.get(i);
+                    TextView tvKey1 = row.findViewById(R.id.key);
+                    TextView tvValue1 = row.findViewById(R.id.keys_name);
+
+                    tvKey1.setText(key1.replaceAll("([a-z])([A-Z])", "$1 $2").replace("_", " ") + " :");
+                    tvValue1.setText(profileObject.optString(key1));
+
+                    //  Column 2 (Right Side)
+
+                    TextView tvKey2 = row.findViewById(R.id.values);
+                    TextView tvValue2 = row.findViewById(R.id.values_txt);
+
+                    if (i + 1 < dynamicKeys.size()) {
+                        String key2 = dynamicKeys.get(i + 1);
+
+
+                        tvKey2.setText(key2.replaceAll("([a-z])([A-Z])", "$1 $2").replace("_", " ") + " :");
+                        tvValue2.setText(profileObject.optString(key2));
+                    } else {
+                        // Oru row-la single data mattum irundha, 2nd side-ai empty-ah vaiyunga
+                        tvKey2.setText("");
+                        tvValue2.setText("");
+                    }
+
+                    activityProfileViewScreenBinding.profileContainer.addView(row);
+                }
 
 
                 /* String tp_rpt = profileObject.optString("TpMgrName");
