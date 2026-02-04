@@ -472,7 +472,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
             }
         });
-//        checkAndShowDoctorPopup();
+        checkAndShowDoctorPopup();
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
         //checkAndShow5PMDoctorPopup();
@@ -783,7 +783,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
             checkUserStatus();
         }
-//        checkAndShowDoctorPopup();
+        checkAndShowDoctorPopup();
     }
 
     private void checkAndShowDoctorPopup() {
@@ -804,17 +804,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     JSONObject sessionObj = tpArray.getJSONObject(i);
                     if (sessionObj.optString("FWFlg", "").equalsIgnoreCase("F")) {
                         targetSession = sessionObj;
-                        break; // Stop at the first session found with "F"
+                        break;
                     }
                 }
 
-                // 2. If no session with "F" was found in the array, exit
                 if (targetSession == null) {
                     Log.d("PopupCheck", "No session in the TP data has FWFlg = 'F'.");
                     return;
                 }
 
-                // 3. Extract data from the identified target session
                 String tpDoctorCodes = targetSession.optString("TP_Doctor", "").trim();
 
                 if (tpDoctorCodes.isEmpty()) {
@@ -822,7 +820,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     return;
                 }
 
-                // --- Now proceed with your existing logic using targetSession ---
                 SharedPref.setTodayTPDoctor(this, tpDoctorCodes);
 
                 JSONArray doctorMasArray = masterDataDao
@@ -3414,7 +3411,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (tpDoctorCodes == null || tpDoctorCodes.isEmpty()) return;
 
             // ✅ Skip normal reminder check if immediate
-            if (!isImmediatePopup) {
+          /*  if (!isImmediatePopup) {
                 String remainderTime = SharedPref.getDoctorRemainingShownDate(this);
                 if (remainderTime != null && !remainderTime.isEmpty()) {
                     String[] parts = remainderTime.split(":");
@@ -3427,7 +3424,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         return;
                     }
                 }
-            }
+            }*/
 
             // ✅ Prepare planned doctors
             List<String> plannedDoctorCodes = new ArrayList<>();
