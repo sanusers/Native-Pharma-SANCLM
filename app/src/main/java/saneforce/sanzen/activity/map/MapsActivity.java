@@ -1444,7 +1444,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
             if (!custJsonObjects.isEmpty()) {
-                String tagCount = custJsonObjects.get(0).optString("GEOTagCnt");
+                String tagCount = custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt");
                 int taggedCount = 0, taggedSize = custJsonObjects.size();
                 if (!tagCount.isEmpty()) {
                     taggedCount = Integer.parseInt(tagCount);
@@ -1462,11 +1462,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 switch (selectedTab) {
                     case "D":
-                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+//                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
                             jsonObject.put("GEOTagedCnt", "0");
-                        }else{
-                            jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
-                        }
+//                        }else{
+//                            for(int i = 0; i < taggedSize; i++){
+//                                Log.d(TAG, "updateMasterData: "+ (++taggedCount));
+//                                jsonObject.put("GEOTagedCnt", String.valueOf(taggedCount));
+//                            }
+//                            jsonObject.put("GEOTagedCnt", taggedSize);
+//                        }
                         jsonObject.put("lat", latitude);
                         jsonObject.put("long", longitude);
                         jsonObject.put("addrs", address);
@@ -1486,21 +1490,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         jsonObject.put("StatFlag","0");
                         break;
                     case "S":
-                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
+                        jsonObject.put("GEOTagedCnt", "1");
                         jsonObject.put("lat", latitude);
                         jsonObject.put("long", longitude);
                         jsonObject.put("addrs", address);
-                        jsonObject.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
+                        jsonObject.put("Geototal", "1");
                         jsonObject.put("Town_Code",town_code);
                         jsonObject.put("Town_Name",town_name);
                         jsonObject.put("StatFlag","0");
                         break;
                     case "U":
-                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
+                        jsonObject.put("GEOTagedCnt", "1");
                         jsonObject.put("lat", latitude);
                         jsonObject.put("long", longitude);
                         jsonObject.put("addr", address);
-                        jsonObject.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
+                        jsonObject.put("Geototal", "1");
                         jsonObject.put("Town_Code",town_code);
                         jsonObject.put("Town_Name",town_name);
                         jsonObject.put("StatFlag","0");
@@ -1552,11 +1556,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 switch (selectedTab) {
                     case "D":
-                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-                            createGeoJson.put("GEOTagedCnt", "0");
-                        }else{
-                            jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
-                        }
+//                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                            createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt"));
+//                        }else{
+//                            for(int i = 0; i < taggedSize; i++){
+//                                Log.d(TAG, "updateMasterData: "+taggedCount++);
+//                                createGeoJson.put("GEOTagedCnt", String.valueOf(taggedCount));
+//                            }
+//                        }
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addrs", address);
@@ -1566,21 +1573,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
                         break;
                     case "U":
-                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-                            createGeoJson.put("GEOTagedCnt", "0");
-                        }else{
-                            jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
-                        }
+                        createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt"));
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addr", address);
                         createGeoJson.put("Town_Code",town_code);
                         createGeoJson.put("Town_Name",town_name);
                         createGeoJson.put("StatFlag","0");
-                        createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
+                        createGeoJson.put("Geototal","1");
                         break;
                     case "C":
-                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
+                                                createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt"));
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addr", address);
@@ -1590,14 +1593,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
                         break;
                     case "S":
-                        jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
+                                               createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt"));
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addrs", address);
                         createGeoJson.put("Town_Code",town_code);
                         createGeoJson.put("Town_Name",town_name);
                         createGeoJson.put("StatFlag","0");
-                        createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
+                        createGeoJson.put("Geototal","1");
                         break;
                     case "H":
                     case "CIP":
@@ -1637,6 +1640,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         for (int i = 0; i < existingGeoArrayDr.length(); i++) {
                             JSONObject obj = existingGeoArrayDr.optJSONObject(i);
                             if (obj != null) {
+                                if(obj.optString("Code").equalsIgnoreCase(createGeoJson.optString("Code"))){
+                                    obj.put("GEOTagedCnt",createGeoJson.optString("GEOTagedCnt"));
+                                }
                                 updatedGeoArrayDr.put(obj);
                             }
                         }
@@ -1782,7 +1788,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 int rowID = 1, count = jsonObjects.size();
                 for (JSONObject jsonObject : jsonObjects) {
                     try {
-                        jsonObject.put("GEOTagCnt", String.valueOf(count));
+                        jsonObject.put("GEOTagedCnt", String.valueOf(count));
                         jsonObject.put("uRwID", String.valueOf(rowID));
                         rowID++;
                         resultJsonArray.put(jsonObject);
