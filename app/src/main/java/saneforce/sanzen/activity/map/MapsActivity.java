@@ -823,7 +823,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void DisplayDialog() {
-
         dialogTagCust = new Dialog(this);
         dialogTagCust.setContentView(R.layout.dialog_confirmtag_alert);
         dialogTagCust.setCancelable(false);

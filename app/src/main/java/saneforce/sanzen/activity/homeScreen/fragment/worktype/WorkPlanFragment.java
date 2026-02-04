@@ -178,7 +178,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         String savedDate = SharedPref.getLastKnownDate(requireContext());
         String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
-        if (!savedDate.equals(today)) {
+        if (!savedDate.isEmpty() && !savedDate.equals(today)) {
             SharedPref.setLastKnownDate(requireContext(), today);
             onDateChanged();
         }

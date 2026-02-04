@@ -303,6 +303,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     e.printStackTrace();
                 }
                 previousDate = currentDate;
+
+                String remainderTime = SharedPref.getDoctorRemainingShownDate(HomeDashBoard.this);
+                String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_29);
+
+                int currentTimeInt = Integer.parseInt(time.replace(":", ""));
+                int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
+
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
+                String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
+
+                if (!today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
+                    checkAndShowDoctorPopup();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -793,7 +806,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             String tpData = masterDataDao.getDataByKey(Constants.WORK_PLAN);
 
-
             try {
                 JSONArray tpArray = new JSONArray(tpData);
                 if (tpArray.length() == 0) return;
@@ -822,9 +834,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 SharedPref.setTodayTPDoctor(this, tpDoctorCodes);
 
-                JSONArray doctorMasArray = masterDataDao
-                        .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
-                        .getMasterSyncDataJsonArray();
+                JSONArray doctorMasArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
 
                 if (doctorMasArray == null || doctorMasArray.length() == 0) {
                     new Handler(Looper.getMainLooper()).postDelayed(this::checkAndShowDoctorPopup, 2000);
@@ -845,7 +855,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
 
                 String remainderTime = SharedPref.getDoctorRemainingShownDate(this);
-                String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_32);
+                String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_29);
 
                 int currentTimeInt = Integer.parseInt(time.replace(":", ""));
                 int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
@@ -854,12 +864,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
                     SharedPref.setTodayPopupShown(this, today);
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e("TAG", "Error in Popup Logic: " + e.getMessage());
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -3499,7 +3507,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CommonAlertBox.DoctorPlanPopup(this, msg);
 
             // ✅ Mark popup shown today (for normal flow)
-            if (!isImmediatePopup) SharedPref.setDoctorRemainingShownDate(this, " ");
+//            if (!isImmediatePopup) SharedPref.setDoctorRemainingShownDate(this, " ");
 
         } catch (Exception e) {
             e.printStackTrace();
