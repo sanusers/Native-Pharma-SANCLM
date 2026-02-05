@@ -179,7 +179,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         String savedDate = SharedPref.getLastKnownDate(requireContext());
         String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
         if (!savedDate.isEmpty() && !savedDate.equals(today)) {
-            SharedPref.setLastKnownDate(requireContext(), today);
+            SharedPref.setLastKnownDate(requireContext(), "");
             onDateChanged();
         }
     }
@@ -2635,6 +2635,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if (!HomeDashBoard.binding.textDate.getText().toString().trim().isEmpty()
                     && HomeDashBoard.binding.textDate.getText().toString().trim().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_27))) {
                 SharedPref.setIsWorkingToday(requireContext(), true);
+                SharedPref.setLastKnownDate(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
             } else if (!SharedPref.getIsWorkingToday(requireContext())){
                 SharedPref.setIsWorkingToday(requireContext(), false);
             }
@@ -4150,6 +4151,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if (!HomeDashBoard.binding.textDate.getText().toString().trim().isEmpty()
                             && HomeDashBoard.binding.textDate.getText().toString().trim().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_27))) {
                         SharedPref.setIsWorkingToday(requireContext(), true);
+                        SharedPref.setLastKnownDate(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                     } else if (!SharedPref.getIsWorkingToday(requireContext())){
                         SharedPref.setIsWorkingToday(requireContext(), false);
                     }

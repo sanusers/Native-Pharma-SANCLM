@@ -804,10 +804,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             RoomDB roomDB = RoomDB.getDatabase(this);
             MasterDataDao masterDataDao = roomDB.masterDataDao();
 
-            String tpData = masterDataDao.getDataByKey(Constants.WORK_PLAN);
-
             try {
-                JSONArray tpArray = new JSONArray(tpData);
+                JSONArray tpArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                 if (tpArray.length() == 0) return;
 
                 JSONObject targetSession = null;
@@ -821,14 +819,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
 
                 if (targetSession == null) {
-                    Log.d("PopupCheck", "No session in the TP data has FWFlg = 'F'.");
+//                    Log.d("PopupCheck", "No session in the TP data has FWFlg = 'F'.");
                     return;
                 }
 
                 String tpDoctorCodes = targetSession.optString("TP_Doctor", "").trim();
 
                 if (tpDoctorCodes.isEmpty()) {
-                    Log.e("PopupCheck", "Field Work session found, but TP_Doctor codes are empty.");
+//                    Log.e("PopupCheck", "Field Work session found, but TP_Doctor codes are empty.");
                     return;
                 }
 
@@ -850,7 +848,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 String lastShownDate = SharedPref.getTodayPopupShown(this);
 
                 if (today.equals(lastShownDate) && !forceImmediate) {
-                    Log.d("PopupCheck", "Popup already shown for today.");
+//                    Log.d("PopupCheck", "Popup already shown for today.");
                     return;
                 }
 
