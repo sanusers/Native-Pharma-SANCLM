@@ -324,70 +324,144 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String dayID = jsonObject.optString("Day_Plan_ShortName");
-                    String dayCaption = jsonObject.optString("Day_Plan_Name");
-                    String dayPlanCode = jsonObject.optString("Day_Plan_Code");
-                    String clusterCode = jsonObject.optString("Patch_Code");
-                    String clusterName = jsonObject.optString("Patch_Name");
-                    String doctorCode = jsonObject.optString("Dr_Code");
-                    String doctorName = jsonObject.optString("Dr_Name");
-                    String chemistCode = jsonObject.optString("Chem_Code");
-                    String chemistName = jsonObject.optString("Chem_Name");
-                    String dateTime = jsonObject.optString("Created_Date");
-                    String activeFlag = jsonObject.optString("Active_Flag");
-                    Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+                    if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String doctorSize = String.valueOf(jsonObject.optString("Dr_Code").length());
+                        String chemistSize = String.valueOf(jsonObject.optString("Chem_Code").length());
+                        String clusterSize = String.valueOf(jsonObject.optString("Patch_Code").length());
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
 
-                    if (stpFlag == null || !stpFlag.isEmpty()) {
-                        stpFlag = jsonObject.optString("Active_Flag", "3");
-                        rejectReason = jsonObject.optString("Stp_Reject_Reason");
-                        if (stpFlag.equalsIgnoreCase("1")) {
-                            activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
-                            activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
-                            SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
-                            activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
-                        } else {
-                            activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
-                            if (stpFlag.equalsIgnoreCase("0")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
-                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
-                                activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                            } else if (stpFlag.equalsIgnoreCase("2")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
-                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
-                                activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                            } else if (stpFlag.equalsIgnoreCase("3")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
-                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                        if (stpFlag == null || !stpFlag.isEmpty()) {
+                            stpFlag = jsonObject.optString("Active_Flag", "3");
+                            rejectReason = jsonObject.optString("Stp_Reject_Reason");
+                            if (stpFlag.equalsIgnoreCase("1")) {
+                                activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                                activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
+                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+                            } else {
+                                activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                                if (stpFlag.equalsIgnoreCase("0")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                } else if (stpFlag.equalsIgnoreCase("2")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                } else if (stpFlag.equalsIgnoreCase("3")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                                }
                             }
                         }
-                    }
 
-                    JSONObject jsonSave = new JSONObject();
-                    jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
-                    jsonSave.put("sfcode", SharedPref.getSfCode(this));
-                    jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
-                    jsonSave.put("Rsf", SharedPref.getHqCode(this));
-                    jsonSave.put("town_code", clusterCode);
-                    jsonSave.put("town_name", clusterName);
-                    jsonSave.put("Doctor_Id", doctorCode);
-                    jsonSave.put("Doctor_Name", doctorName);
-                    jsonSave.put("Chemist_Id", chemistCode);
-                    jsonSave.put("Chemist_Name", chemistName);
-                    jsonSave.put("Plan_Name", dayCaption);
-                    jsonSave.put("Plan_SName", dayID);
-                    jsonSave.put("Plan_Code", dayPlanCode);
-                    jsonSave.put("StpFlag", activeFlag);
-                    jsonSave.put("tableName", "save_stp");
-                    jsonSave.put("ReqDt", dateTime);
-                    Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
-                    int stpFlag = 3;
-                    try {
-                        stpFlag = Integer.parseInt(activeFlag);
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Planned_Territory_Count", clusterSize);
+                        jsonSave.put("Planned_Doctor_Count", doctorSize);
+                        jsonSave.put("Planned_Chemist_Count", chemistSize);
+                        jsonSave.put("Planned_Hospital_Count", "0");
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                    }else {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                        if (stpFlag == null || !stpFlag.isEmpty()) {
+                            stpFlag = jsonObject.optString("Active_Flag", "3");
+                            rejectReason = jsonObject.optString("Stp_Reject_Reason");
+                            if (stpFlag.equalsIgnoreCase("1")) {
+                                activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                                activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
+                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+                            } else {
+                                activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                                if (stpFlag.equalsIgnoreCase("0")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                } else if (stpFlag.equalsIgnoreCase("2")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                } else if (stpFlag.equalsIgnoreCase("3")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                                }
+                            }
+                        }
+
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                     }
-                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                 }
             }
         } catch (Exception e) {
@@ -703,11 +777,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void populateDocDataAdapter() {
-        activityStandardTourPlanBinding.tvDdDocCategory.setText(drCap + " "+R.string.category);
-        activityStandardTourPlanBinding.tvDdTotalDoctors.setText(getString(R.string.total)+ " " + drCap);
-        activityStandardTourPlanBinding.tvDdPlannedDoctors.setText(getString(R.string.planned)+ " " + drCap);
-        activityStandardTourPlanBinding.tvDdTotalVisits.setText(getString(R.string.total)+ " "+ getString(R.string.visit));
-        activityStandardTourPlanBinding.tvDdPlannedVisits.setText(getString(R.string.planned)+ " "+getString(R.string.visit));
+        activityStandardTourPlanBinding.tvDdDocCategory.setText(drCap + " " + R.string.category);
+        activityStandardTourPlanBinding.tvDdTotalDoctors.setText(getString(R.string.total) + " " + drCap);
+        activityStandardTourPlanBinding.tvDdPlannedDoctors.setText(getString(R.string.planned) + " " + drCap);
+        activityStandardTourPlanBinding.tvDdTotalVisits.setText(getString(R.string.total) + " " + getString(R.string.visit));
+        activityStandardTourPlanBinding.tvDdPlannedVisits.setText(getString(R.string.planned) + " " + getString(R.string.visit));
         docDataModelList = new ArrayList<>();
         for (String key : docCategoryModelMap.keySet()) {
             DocCategoryModel docCategoryModel = docCategoryModelMap.get(key);
@@ -989,7 +1063,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
             activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
         } else {
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.sync) + getString(R.string.standard_tour_plan) + getString(R.string. from_master_sync));
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.sync) + getString(R.string.standard_tour_plan) + getString(R.string.from_master_sync));
         }
     }
 
@@ -1624,7 +1698,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|FSD|AMS")) {
+            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|FSD|AMS")) {
                 startActivity(new Intent(StandardTourPlanActivity.this, StandardTourPlanActivity.class));
                 finish();
             }
