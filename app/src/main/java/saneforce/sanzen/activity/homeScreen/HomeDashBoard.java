@@ -485,7 +485,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
             }
         });
-        checkAndShowDoctorPopup();
+//        checkAndShowDoctorPopup();
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
         //checkAndShow5PMDoctorPopup();
@@ -858,9 +858,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int currentTimeInt = Integer.parseInt(time.replace(":", ""));
                 int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
 
-                if (currentTimeInt >= remainderTimeInt) {
-                    showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
-                    SharedPref.setTodayPopupShown(this, today);
+                if(!tpDoctorCodes.equals("null") && !tpDoctorCodes.isEmpty()) {
+                    if (!today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
+                        showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
+                        SharedPref.setTodayPopupShown(this, today);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
