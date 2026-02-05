@@ -22,10 +22,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import saneforce.sanzen.activity.presentation.createPresentation.BrandMatrixModelClass;
+import saneforce.sanzen.activity.presentation.createPresentation.brand.BrandMatrixAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.brand.SpecialityNameAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.SpecialityModelClass;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
@@ -127,41 +133,24 @@ public class CustomPresentationFragment extends Fragment {
         // changed 24/1== BRAND MATRIX
         binding.brandMatrix.setOnClickListener(view -> {
             if (isBrandMatrixExpanded) {
+                // Collapse
                 binding.tvNoBrandMatrix.setVisibility(View.GONE);
                 binding.imgBrandMatrixArrow.setRotation(0);
                 binding.slideImageRecView.setVisibility(View.VISIBLE);
             } else {
-                binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
+                // Expand: Load the 14 filtered slides directly
+                loadBrandMatrixData(); // 🚀 Pudhu logic trigger aagum
+
                 binding.imgBrandMatrixArrow.setRotation(180);
-                binding.slideImageRecView.setVisibility(View.GONE);
 
-//                binding.brandMatrixRecView.post(() -> {
-//                    if (binding.brandMatrixRecView.getChildAt(0) != null) {
-//                        binding.brandMatrixRecView.getChildAt(0).performClick();
-//                    }
-//                });
-                binding.brandMatrixRecView.post(() -> {
-                    binding.brandMatrixRecView.scrollToPosition(0);
-                    binding.brandMatrixRecView.postDelayed(() -> {
-                        RecyclerView.ViewHolder viewHolder =
-                                binding.brandMatrixRecView.findViewHolderForAdapterPosition(0);
-
-                        if (viewHolder != null) {
-                            viewHolder.itemView.performClick();
-                        }
-                    }, 100);
-                });
-
-                //  AUTO-CLOSE ALL BRANDS
+                // AUTO-CLOSE logic
                 if (isAllBrandsExpanded) {
                     binding.brandNameRecView.setVisibility(View.GONE);
                     binding.imgAllBrandArrow.setRotation(0);
                     isAllBrandsExpanded = false;
                 }
-
-                // AUTO-CLOSE SPECIALITY
                 if (isSpecialityExpanded) {
-                    binding.specialityRecView.setVisibility(View.GONE); // Mukkiyam
+                    binding.specialityRecView.setVisibility(View.GONE);
                     binding.tvNospeciality.setVisibility(View.GONE);
                     binding.imgspecialityArrow.setRotation(0);
                     isSpecialityExpanded = false;
@@ -169,6 +158,45 @@ public class CustomPresentationFragment extends Fragment {
             }
             isBrandMatrixExpanded = !isBrandMatrixExpanded;
         });
+//        binding.brandMatrix.setOnClickListener(view -> {
+//            if (isBrandMatrixExpanded) {
+//                binding.tvNoBrandMatrix.setVisibility(View.GONE);
+//                binding.imgBrandMatrixArrow.setRotation(0);
+//                binding.slideImageRecView.setVisibility(View.VISIBLE);
+//            } else {
+//                binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
+//                binding.imgBrandMatrixArrow.setRotation(180);
+//                binding.slideImageRecView.setVisibility(View.GONE);
+//
+//                binding.brandMatrixRecView.post(() -> {
+//                    binding.brandMatrixRecView.scrollToPosition(0);
+//                    binding.brandMatrixRecView.postDelayed(() -> {
+//                        RecyclerView.ViewHolder viewHolder =
+//                                binding.brandMatrixRecView.findViewHolderForAdapterPosition(0);
+//
+//                        if (viewHolder != null) {
+//                            viewHolder.itemView.performClick();
+//                        }
+//                    }, 100);
+//                });
+//
+//                //  AUTO-CLOSE ALL BRANDS
+//                if (isAllBrandsExpanded) {
+//                    binding.brandNameRecView.setVisibility(View.GONE);
+//                    binding.imgAllBrandArrow.setRotation(0);
+//                    isAllBrandsExpanded = false;
+//                }
+//
+//                // AUTO-CLOSE SPECIALITY
+//                if (isSpecialityExpanded) {
+//                    binding.specialityRecView.setVisibility(View.GONE); // Mukkiyam
+//                    binding.tvNospeciality.setVisibility(View.GONE);
+//                    binding.imgspecialityArrow.setRotation(0);
+//                    isSpecialityExpanded = false;
+//                }
+//            }
+//            isBrandMatrixExpanded = !isBrandMatrixExpanded;
+//        });
 
         // changed 24/1== SPECIALITY
         binding.speciality.setOnClickListener(view -> {
@@ -828,4 +856,175 @@ public class CustomPresentationFragment extends Fragment {
         populateSlideImageAdapter(slidesForSpeciality);
     }
 
+    private void loadBrandMatrixData() {
+        try {
+
+            String currentDocMappedSlides = saneforce.sanzen.activity.previewPresentation.PreviewActivity.SlideCode;
+
+            Log.d("Matrix_Check", "Current Doctor Mapped Codes: " + currentDocMappedSlides);
+
+            if (currentDocMappedSlides == null || currentDocMappedSlides.isEmpty()) {
+                binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            // Comma-ah vachu split panni list-ah mathurom for easy comparison
+            List<String> selectedCodesList = Arrays.asList(currentDocMappedSlides.split(","));
+
+            JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+            JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
+
+            // 2. Priority Map (IDs and Brand check)
+            HashMap<String, String[]> priorityMap = new HashMap<>();
+            for (int i = 0; i < brandSlide.length(); i++) {
+                JSONObject bObj = brandSlide.getJSONObject(i);
+                String brdCode = bObj.optString("Product_Brd_Code", "");
+                if (brdCode.equals("9") || brdCode.equals("4")) {
+                    priorityMap.put(bObj.getString("ID"), new String[]{bObj.getString("Priority"), brdCode});
+                }
+            }
+
+            ArrayList<BrandModelClass.Product> matrixSlides = new ArrayList<>();
+            HashSet<String> uniqueChecker = new HashSet<>();
+
+            // 3. Loop Master - Strictly match with Current Doctor's codes
+            for (int j = 0; j < prodSlide.length(); j++) {
+                JSONObject pObj = prodSlide.getJSONObject(j);
+                String sId = pObj.optString("SlideId", "");
+                String pDetailCode = pObj.optString("Product_Detail_Code", ""); // Inga dhaan multiple codes irukum
+
+                if (priorityMap.containsKey(sId) && !uniqueChecker.contains(sId)) {
+
+                    // MAPPED DOCTOR CHECK:
+                    // Oru slide-oda Product_Detail_Code, namma select panna doctor-oda code-la match aaganum
+                    boolean isMatchFound = false;
+                    for (String codeInSlide : pDetailCode.split(",")) {
+                        if (selectedCodesList.contains(codeInSlide.trim())) {
+                            isMatchFound = true;
+                            break;
+                        }
+                    }
+
+                    if (isMatchFound) {
+                        String[] mapData = priorityMap.get(sId);
+                        BrandModelClass.Product product = getProductData(pObj, mapData[0]);
+                        if (product != null) {
+                            matrixSlides.add(product);
+                            uniqueChecker.add(sId);
+                            Log.d("Matrix_Matched", "Adding Slide for Selected Doc: " + sId);
+                        }
+                    }
+                }
+            }
+
+            // 4. Sort by Priority
+            Collections.sort(matrixSlides, (p1, p2) -> {
+                try {
+                    return Integer.compare(Integer.parseInt(p1.getPriority()), Integer.parseInt(p2.getPriority()));
+                } catch (Exception e) {
+                    return 0;
+                }
+            });
+
+            // 5. UI Update
+            if (!matrixSlides.isEmpty()) {
+                binding.tvNoBrandMatrix.setVisibility(View.GONE);
+                binding.slideImageRecView.setVisibility(View.VISIBLE);
+                populateSlideImageAdapter(matrixSlides);
+            } else {
+                binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
+                binding.slideImageRecView.setVisibility(View.GONE);
+                Log.d("Matrix_Empty", "No slides found for this specific doctor selection.");
+            }
+
+        } catch (Exception e) {
+            Log.e("Matrix_Error", "Exception: " + e.getMessage());
+        }
+    }
+//    private void loadBrandMatrixData() {
+//        try {
+//            Log.d("Matrix_Filter", "Starting Strict 7+7 Filter...");
+//
+//            // 1. Master Data Fetching
+//            JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+//            JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
+//
+//            // 2. ID vs Priority Map (Strictly for Code 9 and 4)
+//            HashMap<String, String> priorityMap = new HashMap<>();
+//            for (int i = 0; i < brandSlide.length(); i++) {
+//                JSONObject bObj = brandSlide.getJSONObject(i);
+//                String brdCode = bObj.optString("Product_Brd_Code", "");
+//
+//                // Priority list-layum brand match panni, andha IDs mattum edukirom
+//                if (brdCode.equals("9") || brdCode.equals("4")) {
+//                    priorityMap.put(bObj.getString("ID"), bObj.getString("Priority"));
+//                }
+//            }
+//
+//            // 3. Separate Buckets for Filtering
+//            ArrayList<BrandModelClass.Product> blackSquardList = new ArrayList<>(); // Code 9
+//            ArrayList<BrandModelClass.Product> dermDocList = new ArrayList<>();     // Code 4
+//            HashSet<String> uniqueChecker = new HashSet<>();
+//
+//            for (int j = 0; j < prodSlide.length(); j++) {
+//                JSONObject pObj = prodSlide.getJSONObject(j);
+//                String bCode = pObj.getString("Code");
+//                String sId = pObj.getString("SlideId");
+//
+//                // Priority table-la intha ID irundha mattum dhaan ulla varum
+//                if (priorityMap.containsKey(sId) && !uniqueChecker.contains(sId)) {
+//                    String finalPriority = priorityMap.get(sId);
+//                    BrandModelClass.Product product = getProductData(pObj, finalPriority);
+//
+//                    if (product != null) {
+//                        if (bCode.equals("9")) {
+//                            blackSquardList.add(product);
+//                        } else if (bCode.equals("4")) {
+//                            dermDocList.add(product);
+//                        }
+//                        uniqueChecker.add(sId);
+//                    }
+//                }
+//            }
+//
+//            // 4. Individual Sorting by Priority
+//            Comparator<BrandModelClass.Product> prioritySorter = (p1, p2) -> {
+//                try {
+//                    return Integer.compare(Integer.parseInt(p1.getPriority()), Integer.parseInt(p2.getPriority()));
+//                } catch (Exception e) {
+//                    return 0;
+//                }
+//            };
+//            Collections.sort(blackSquardList, prioritySorter);
+//            Collections.sort(dermDocList, prioritySorter);
+//
+//            // 5. Final Compilation: Strictly Take Top 7 Mapped Items from each
+//            ArrayList<BrandModelClass.Product> final14Slides = new ArrayList<>();
+//
+//            // Take 7 from Black Squard (Strictly Mapped)
+//            for (int i = 0; i < Math.min(7, blackSquardList.size()); i++) {
+//                final14Slides.add(blackSquardList.get(i));
+//            }
+//
+//            // Take 7 from DermDoc (Strictly Mapped)
+//            for (int i = 0; i < Math.min(7, dermDocList.size()); i++) {
+//                final14Slides.add(dermDocList.get(i));
+//            }
+//
+//            Log.d("Matrix_Final", "Strict Filtered Count: " + final14Slides.size());
+//
+//            // 6. UI Update
+//            if (!final14Slides.isEmpty()) {
+//                binding.tvNoBrandMatrix.setVisibility(View.GONE);
+//                binding.slideImageRecView.setVisibility(View.VISIBLE);
+//                populateSlideImageAdapter(final14Slides);
+//            } else {
+//                binding.tvNoBrandMatrix.setVisibility(View.VISIBLE);
+//                binding.slideImageRecView.setVisibility(View.GONE);
+//            }
+//
+//        } catch (Exception e) {
+//            Log.e("Matrix_Exception", "Error: " + e.getMessage());
+//        }
+//    }
 }
