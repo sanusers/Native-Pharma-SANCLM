@@ -206,6 +206,21 @@
 <!--            android:layout_weight="0.7"-->
 <!--            android:scrollbars="vertical" />-->
 
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginStart="@dimen/_3sdp"-->
+<!--            android:layout_weight="1.4"-->
+<!--            app:cardCornerRadius="@dimen/_3sdp"-->
+<!--            app:cardElevation="0dp">-->
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/slideImageRecView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="@dimen/_4sdp" />-->
+
+<!--        </androidx.cardview.widget.CardView>-->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -214,11 +229,56 @@
             app:cardCornerRadius="@dimen/_3sdp"
             app:cardElevation="0dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/slideImageRecView"
+            <!-- 🔥 RecyclerView + Empty Image overlay -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_4sdp" />
+                android:layout_height="match_parent">
+
+                <!-- SLIDES GRID -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/slideImageRecView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_4sdp" />
+
+                <!-- EMPTY STATE IMAGE -->
+                <LinearLayout
+                    android:id="@+id/imgEmptyRight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/EmptyRight"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:src="@drawable/no_data_folder"
+                        android:scaleType="centerInside" />
+
+                    <TextView
+                        android:id="@+id/tvEmptyRight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:text="No Slide Available"
+                        android:textColor="@color/Evening_Blue_60"
+                        android:textSize="@dimen/_8ssp" />
+
+                </LinearLayout>
+
+                <!--                <ImageView-->
+<!--                    android:id="@+id/imgEmptyRight"-->
+<!--                    android:layout_width="@dimen/_100sdp"-->
+<!--                    android:layout_height="@dimen/_100sdp"-->
+<!--                    android:src="@drawable/no_data_folder"-->
+<!--                    android:scaleType="centerInside"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:visibility="gone" />-->
+
+
+            </FrameLayout>
 
         </androidx.cardview.widget.CardView>
 
