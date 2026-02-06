@@ -80,7 +80,7 @@ public class AddListActivity extends AppCompatActivity {
     private HashMap<String, List<DCRModel>> selectedDCRMap;
     private List<Object> selectedDataList;
     private SelectedDCRAdapter selectedDCRAdapter;
-    private StringBuilder selectedClusterName, selectedClusterCode, selectedDoctorName, selectedDoctorCode, selectedChemistName, selectedChemistCode;
+    private StringBuilder selectedClusterName, selectedClusterCode, selectedDoctorName, selectedDoctorCode, selectedChemistName, selectedChemistCode,selectedDocSpeciality,selectedDocCategory,selectedDocClass,selectedDocCategoryCode;
     private JSONObject jsonObject;
     private List<String> localDocCodeList, localChmCodeList;
     private Set<String> populatedDCRList;
@@ -425,6 +425,10 @@ public class AddListActivity extends AppCompatActivity {
         selectedDoctorCode = new StringBuilder();
         selectedChemistName = new StringBuilder();
         selectedChemistCode = new StringBuilder();
+        selectedDocSpeciality = new StringBuilder();
+        selectedDocCategory = new StringBuilder();
+        selectedDocClass = new StringBuilder();
+        selectedDocCategoryCode = new StringBuilder();
     }
 
     private void getLocalData() {
@@ -909,7 +913,15 @@ public class AddListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    private int getCountFromCommaString(String value) {
+        if (value == null || value.trim().isEmpty()) return 0;
 
+        int count = 0;
+        for (String s : value.split(",")) {
+            if (!s.trim().isEmpty()) count++;
+        }
+        return count;
+    }
     private void saveSelectedDCR() {
         if(selectedDCRMap != null && !selectedDCRMap.isEmpty()) {
             selectedClusterName = new StringBuilder();
@@ -918,6 +930,10 @@ public class AddListActivity extends AppCompatActivity {
             selectedDoctorCode = new StringBuilder();
             selectedChemistName = new StringBuilder();
             selectedChemistCode = new StringBuilder();
+            selectedDocSpeciality = new StringBuilder();
+            selectedDocCategory = new StringBuilder();
+            selectedDocClass = new StringBuilder();
+            selectedDocCategoryCode = new StringBuilder();
             for (String selectedDCR : selectedDCRMap.keySet()) {
                 List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
                 List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
@@ -933,8 +949,18 @@ public class AddListActivity extends AppCompatActivity {
                                 switch (selectedDCR){
 //                                    case Constants.DOCTOR:
                                     case Constants.DOCTOR_MAS:
-                                        selectedDoctorCode.append(selectedDcrModel.getCode()).append(",");
-                                        selectedDoctorName.append(selectedDcrModel.getName()).append(",");
+                                        if (SharedPref.getOneBuild(AddListActivity.this).equalsIgnoreCase("0")){
+                                            selectedDoctorCode.append(selectedDcrModel.getCode()).append(",");
+                                            selectedDoctorName.append(selectedDcrModel.getName()).append(",");
+                                            selectedDocSpeciality.append(selectedDcrModel.getSpeciality()).append(",");
+                                            selectedDocCategory.append(selectedDcrModel.getCategory()).append(",");
+                                            selectedDocClass.append(selectedDcrModel.getClass()).append(",");
+                                            selectedDocCategoryCode.append(selectedDcrModel.getCode()).append(",");
+
+                                        }else {
+                                            selectedDoctorCode.append(selectedDcrModel.getCode()).append(",");
+                                            selectedDoctorName.append(selectedDcrModel.getName()).append(",");
+                                        }
                                         break;
 //                                    case Constants.CHEMIST:
                                     case Constants.CHEMIST_MAS:
@@ -962,30 +988,73 @@ public class AddListActivity extends AppCompatActivity {
                     }
                 }
             }
-            try {
-                jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-                jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                jsonObject.put("DivCode", SharedPref.getDivisionCode(this));
-                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                jsonObject.put("Rsf", SharedPref.getHqCode(this));
-                jsonObject.put("town_code", strClusterID);
-                jsonObject.put("town_name", strClusterName);
-                jsonObject.put("Doctor_Id", selectedDoctorCode.toString());
-                jsonObject.put("Doctor_Name", selectedDoctorName.toString());
-                jsonObject.put("Chemist_Id", selectedChemistCode.toString());
-                jsonObject.put("Chemist_Name", selectedChemistName.toString());
-                jsonObject.put("Plan_Name", dayCaption);
-                jsonObject.put("Plan_SName", dayID);
-                jsonObject.put("Plan_Code", "" + dayID.charAt(dayID.length() - 1));
-                jsonObject.put("StpFlag", "3");
-                jsonObject.put("tableName", "save_stp");
-                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
-                Log.v("json_save_stp", jsonObject.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
+            if(SharedPref.getOneBuild(AddListActivity.this).equalsIgnoreCase("0")){
+                JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(AddListActivity.this)).getMasterSyncDataJsonArray();
+                JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(AddListActivity.this)).getMasterSyncDataJsonArray();
+                JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(AddListActivity.this)).getMasterSyncDataJsonArray();
+                String plannedDoctorCount  = String.valueOf(getCountFromCommaString(String.valueOf(selectedDoctorCode)));
+                String plannedChemistCount = String.valueOf(getCountFromCommaString(String.valueOf(selectedChemistCode)));
+                String plannedClusterCount = String.valueOf(getCountFromCommaString(String.valueOf(selectedClusterCode)));
+                try {
+                    jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                    jsonObject.put("DivCode", SharedPref.getDivisionCode(this));
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                    jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                    jsonObject.put("town_code", strClusterID);
+                    jsonObject.put("town_name", strClusterName);
+                    jsonObject.put("Doctor_Id", selectedDoctorCode.toString());
+                    jsonObject.put("Doctor_Name", selectedDoctorName.toString());
+                    jsonObject.put("Chemist_Id", selectedChemistCode.toString());
+                    jsonObject.put("Chemist_Name", selectedChemistName.toString());
+                    jsonObject.put("Planned_Doctor_Count",plannedDoctorCount + " ("+jsonDoc.length()+")");
+                    jsonObject.put("Planned_Chemist_Count",plannedChemistCount+" ("+jsonChm.length()+")");
+                    jsonObject.put("Planned_Cluster_Count",plannedClusterCount+" ("+jsonCluster.length()+")");
+                    jsonObject.put("Planned_Hospital_Count","0"+" ("+"0"+")");
+                    jsonObject.put("Speciality_Name",selectedDocSpeciality.toString());
+                    jsonObject.put("Category_Name",selectedDocCategory.toString());
+                    jsonObject.put("Class_Name",selectedDocCategory.toString());
+                    jsonObject.put("Plan_Name", dayCaption);
+                    jsonObject.put("Plan_SName", dayID);
+                    jsonObject.put("Plan_Code", "" + dayID.charAt(dayID.length() - 1));
+                    jsonObject.put("StpFlag", "3");
+                    jsonObject.put("tableName", "save_stp");
+                    jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                    Log.v("json_save_stp", jsonObject.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                try {
+                    jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                    jsonObject.put("DivCode", SharedPref.getDivisionCode(this));
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                    jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                    jsonObject.put("town_code", strClusterID);
+                    jsonObject.put("town_name", strClusterName);
+                    jsonObject.put("Doctor_Id", selectedDoctorCode.toString());
+                    jsonObject.put("Doctor_Name", selectedDoctorName.toString());
+                    jsonObject.put("Chemist_Id", selectedChemistCode.toString());
+                    jsonObject.put("Chemist_Name", selectedChemistName.toString());
+                    jsonObject.put("Plan_Name", dayCaption);
+                    jsonObject.put("Plan_SName", dayID);
+                    jsonObject.put("Plan_Code", "" + dayID.charAt(dayID.length() - 1));
+                    jsonObject.put("StpFlag", "3");
+                    jsonObject.put("tableName", "save_stp");
+                    jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                    Log.v("json_save_stp", jsonObject.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
-            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "1"));
+            if(SharedPref.getOneBuild(AddListActivity.this).equalsIgnoreCase("0")){
+                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(),selectedDocSpeciality.toString(),selectedDocCategory.toString(),selectedDocClass.toString(),selectedDocCategoryCode.toString(), jsonObject.toString(), 3, "1"));
+            }else{
+                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(),jsonObject.toString(), 3, "1"));
+
+            }
 
             if(UtilityClass.isNetworkAvailable(this)) {
                 APICallSaveSTP();
@@ -1012,7 +1081,13 @@ public class AddListActivity extends AppCompatActivity {
                             JSONObject jsonObject1 = new JSONObject(response.body().toString());
                             if(jsonObject1.optString("success").equals("true")) {
                                 commonUtilsMethods.showToastMessage(AddListActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
-                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "0"));
+                                if (SharedPref.getOneBuild(AddListActivity.this).equalsIgnoreCase("0")){
+                                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(),selectedDocSpeciality.toString(),selectedDocCategory.toString(),selectedDocClass.toString(),selectedDocCategoryCode.toString(), jsonObject.toString(), 3, "0"));
+
+                                }else{
+                                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "0"));
+
+                                }
                             }else {
                                 commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
                             }

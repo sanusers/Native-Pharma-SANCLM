@@ -101,6 +101,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private List<String> allSelectedDocList;
     private Set<String> totalCategoryCodeList, totalClusterCodeList, totalDocCodeList, totalChmCodeList, totalStkCodeList, totalUnDrCodeList, totalCipCodeList, totalHosCodeList;
     private Set<String> selectedCategoryCodeList, selectedClusterCodeList, selectedDocCodeList, selectedChmCodeList, selectedStkCodeList, selectedUnDrCodeList, selectedCipCodeList, selectedHosCodeList;
+    private Set<String> selectedDocCodeListSize,selectedChmCodeListSize,selectedClusterCodeListSize;
     private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, dayCaptions, dayIDs, stpFlag, rejectReason;
     private RoomDB roomDB;
     public static String stpCap;
@@ -247,6 +248,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         selectedUnDrCodeList = new HashSet<>();
         selectedCipCodeList = new HashSet<>();
         selectedHosCodeList = new HashSet<>();
+        selectedDocCodeListSize = new HashSet<>();
+        selectedChmCodeListSize = new HashSet<>();
+        selectedClusterCodeListSize = new HashSet<>();
         selectedDcrMap = new HashMap<>();
         allSelectedDocXCatMap = new HashMap<>();
         allSelectedDocList = new ArrayList<>();
@@ -318,10 +322,22 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    private int getCountFromCommaString(String value) {
+        if (value == null || value.trim().isEmpty()) return 0;
+
+        int count = 0;
+        for (String s : value.split(",")) {
+            if (!s.trim().isEmpty()) count++;
+        }
+        return count;
+    }
 
     private void saveSTPDataToLocal() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+            JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
@@ -335,12 +351,16 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         String doctorName = jsonObject.optString("Dr_Name");
                         String chemistCode = jsonObject.optString("Chem_Code");
                         String chemistName = jsonObject.optString("Chem_Name");
-                        String doctorSize = String.valueOf(jsonObject.optString("Dr_Code").length());
-                        String chemistSize = String.valueOf(jsonObject.optString("Chem_Code").length());
-                        String clusterSize = String.valueOf(jsonObject.optString("Patch_Code").length());
+                        String doctorSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Dr_Code")));
+                        String chemistSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Chem_Code")));
+                        String clusterSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Patch_Code")));
+                        String doctorSpeciality = jsonObject.optString("Speciality_Name");
+                        String doctorCategory = jsonObject.optString("CategoryName");
+                        String doctorCategoryCode = jsonObject.optString("CategoryCode");
+                        String doctorClass = jsonObject.optString("Class_Name");
                         String dateTime = jsonObject.optString("Created_Date");
                         String activeFlag = jsonObject.optString("Active_Flag");
-                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+                        Log.d("STP master data", "saveSTPDataToLocal1: " + jsonObject);
 
                         if (stpFlag == null || !stpFlag.isEmpty()) {
                             stpFlag = jsonObject.optString("Active_Flag", "3");
@@ -378,24 +398,27 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         jsonSave.put("Doctor_Name", doctorName);
                         jsonSave.put("Chemist_Id", chemistCode);
                         jsonSave.put("Chemist_Name", chemistName);
-                        jsonSave.put("Planned_Territory_Count", clusterSize);
-                        jsonSave.put("Planned_Doctor_Count", doctorSize);
-                        jsonSave.put("Planned_Chemist_Count", chemistSize);
-                        jsonSave.put("Planned_Hospital_Count", "0");
+                        jsonSave.put("Planned_Territory_Count", clusterSize+" ("+jsonCluster.length()+")");
+                        jsonSave.put("Planned_Doctor_Count", doctorSize+" ("+jsonDoc_mas.length()+")");
+                        jsonSave.put("Planned_Chemist_Count", chemistSize+" ("+jsonChm_mas.length()+")");
+                        jsonSave.put("Planned_Hospital_Count", "0"+" ("+"0"+")");
+                        jsonSave.put("Speciality_Name",doctorSpeciality);
+                        jsonSave.put("Category_Name",doctorCategory);
+                        jsonSave.put("Class_Name",doctorClass);
                         jsonSave.put("Plan_Name", dayCaption);
                         jsonSave.put("Plan_SName", dayID);
                         jsonSave.put("Plan_Code", dayPlanCode);
                         jsonSave.put("StpFlag", activeFlag);
                         jsonSave.put("tableName", "save_stp");
                         jsonSave.put("ReqDt", dateTime);
-                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        Log.d("STP save data", "saveSTPDataToLocal2: " + jsonSave);
                         int stpFlag = 3;
                         try {
                             stpFlag = Integer.parseInt(activeFlag);
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName,doctorSpeciality,doctorCategory,doctorClass,doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));
                     }else {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String dayID = jsonObject.optString("Day_Plan_ShortName");
@@ -473,24 +496,54 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         try {
             List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllSTPData();
             for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
-                String clusterCode = stpOfflineDataTable.getClusterCode();
-                String doctorCode = stpOfflineDataTable.getDoctorCode();
-                String chemistCode = stpOfflineDataTable.getChemistCode();
-                JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
-                stpFlag = jsonObject.optString("Active_Flag", "3");
-                rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
-                selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
-                selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
-                allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
-                selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
-                selectedClusterCodeList.remove("");
-                selectedDocCodeList.remove("");
-                allSelectedDocList.remove("");
-                selectedChmCodeList.remove("");
-                selectedClusterCodeList.remove(null);
-                selectedDocCodeList.remove(null);
-                allSelectedDocList.remove(null);
-                selectedChmCodeList.remove(null);
+                if(SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")){
+                    String clusterCode = stpOfflineDataTable.getClusterCode();
+                    String doctorCode = stpOfflineDataTable.getDoctorCode();
+                    String chemistCode = stpOfflineDataTable.getChemistCode();
+                    JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
+                    stpFlag = jsonObject.optString("Active_Flag", "3");
+                    rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
+                    selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
+                    selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                    allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                    selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
+                    selectedDocCodeListSize.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(String.valueOf(doctorCode.length()))).split(",")));
+                    selectedChmCodeListSize.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(String.valueOf(chemistCode.length()))).split(",")));
+                    selectedClusterCodeListSize.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(String.valueOf(clusterCode.length()))).split(",")));
+                    selectedClusterCodeList.remove("");
+                    selectedDocCodeList.remove("");
+                    allSelectedDocList.remove("");
+                    selectedChmCodeList.remove("");
+                    selectedDocCodeListSize.remove("");
+                    selectedChmCodeListSize.remove("");
+                    selectedClusterCodeListSize.remove("");
+                    selectedClusterCodeList.remove(null);
+                    selectedDocCodeList.remove(null);
+                    allSelectedDocList.remove(null);
+                    selectedChmCodeList.remove(null);
+                    selectedDocCodeListSize.remove(null);
+                    selectedChmCodeListSize.remove(null);
+                    selectedClusterCodeListSize.remove(null);
+                }else {
+                    String clusterCode = stpOfflineDataTable.getClusterCode();
+                    String doctorCode = stpOfflineDataTable.getDoctorCode();
+                    String chemistCode = stpOfflineDataTable.getChemistCode();
+                    JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
+                    stpFlag = jsonObject.optString("Active_Flag", "3");
+                    rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
+                    selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
+                    selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                    allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                    selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
+                    selectedClusterCodeList.remove("");
+                    selectedDocCodeList.remove("");
+                    allSelectedDocList.remove("");
+                    selectedChmCodeList.remove("");
+                    selectedClusterCodeList.remove(null);
+                    selectedDocCodeList.remove(null);
+                    allSelectedDocList.remove(null);
+                    selectedChmCodeList.remove(null);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -719,8 +772,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
             if (jsonArray != null && jsonArray.length() > 0) {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
-                dayCaptions = jsonObject.optString("Plan_Name", "");
-                dayIDs = jsonObject.optString("Plan_SName", "");
+                if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")){
+                    dayCaptions = jsonObject.optString("Plan_Name", "");
+                    dayIDs = jsonObject.optString("Plan_Short_Name", "");
+                }else {
+                    dayCaptions = jsonObject.optString("Plan_Name", "");
+                    dayIDs = jsonObject.optString("Plan_SName", "");
+                }
 //                stpCap = jsonObject.optString("STP_Name", StandardTourPlanActivity.this.getString(R.string.standard_tour_plan));
 //                if(!stpCap.isEmpty()) {
 //                    activityStandardTourPlanBinding.title.setText(stpCap);
@@ -1575,7 +1633,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     activityStandardTourPlanBinding.tvProgressTitle.setText("Syncing Offline Data...");
                     final int[] apiCount = {0};
                     for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
-                        String dayID = stpOfflineDataTable.getDayID(), dayCaption = stpOfflineDataTable.getDayCaption(), strClusterID = stpOfflineDataTable.getClusterCode(), strClusterName = stpOfflineDataTable.getClusterName(), docCodes = stpOfflineDataTable.getDoctorCode(), docNames = stpOfflineDataTable.getDoctorName(), chmCodes = stpOfflineDataTable.getChemistCode(), chmNames = stpOfflineDataTable.getChemistName(), jsonObject = stpOfflineDataTable.getStpData();
+                        String dayID = stpOfflineDataTable.getDayID(), dayCaption = stpOfflineDataTable.getDayCaption(), strClusterID = stpOfflineDataTable.getClusterCode(), strClusterName = stpOfflineDataTable.getClusterName(), docCodes = stpOfflineDataTable.getDoctorCode(), docNames = stpOfflineDataTable.getDoctorName(), chmCodes = stpOfflineDataTable.getChemistCode(), chmNames = stpOfflineDataTable.getChemistName(),docSpeciality = stpOfflineDataTable.getDoctorSpeciality(),docCategory = stpOfflineDataTable.getDoctorCategory(),docCategoryCode = stpOfflineDataTable.getDoctorCategoryCode(),docClass = stpOfflineDataTable.getDoctorClass(), jsonObject = stpOfflineDataTable.getStpData();
                         int stpFlag = stpOfflineDataTable.getStatus();
                         apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
                         Map<String, String> mapString = new HashMap<>();
@@ -1591,7 +1649,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
                                         if (jsonObject1.optString("success").equals("true")) {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
-                                            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
+                                            if(SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")){
+                                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames,docSpeciality,docCategory,docClass,docCategoryCode, jsonObject, stpFlag, "0"));
+                                            }else {
+                                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
+                                            }
                                         } else {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
                                         }

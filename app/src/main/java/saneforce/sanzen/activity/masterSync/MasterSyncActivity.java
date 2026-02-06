@@ -64,6 +64,7 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideAdapter;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideService;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlidesViewModel;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
@@ -2231,8 +2232,88 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    private int getCountFromCommaString(String value) {
+        if (value == null || value.trim().isEmpty()) return 0;
 
+        int count = 0;
+        for (String s : value.split(",")) {
+            if (!s.trim().isEmpty()) count++;
+        }
+        return count;
+    }
     private void saveSTPDataToLocal() {
+        if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")){
+            try {
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+                JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(MasterSyncActivity.this)).getMasterSyncDataJsonArray();
+                JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(MasterSyncActivity.this)).getMasterSyncDataJsonArray();
+                JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(MasterSyncActivity.this)).getMasterSyncDataJsonArray();
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String doctorSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Dr_Code")));
+                        String chemistSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Chem_Code")));
+                        String clusterSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Patch_Code")));
+                        String doctorSpeciality = jsonObject.optString("Speciality_Name");
+                        String doctorCategory = jsonObject.optString("CategoryName");
+                        String doctorCategoryCode = jsonObject.optString("CategoryCode");
+                        String doctorClass = jsonObject.optString("Class_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                        if (activeFlag.equalsIgnoreCase("0")) {
+                            SharedPref.setStpStatus(MasterSyncActivity.this, "Approved");
+                        }
+
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Planned_Territory_Count", clusterSize+" ("+jsonCluster.length()+")");
+                        jsonSave.put("Planned_Doctor_Count", doctorSize+" ("+jsonDoc_mas.length()+")");
+                        jsonSave.put("Planned_Chemist_Count", chemistSize+" ("+jsonChm_mas.length()+")");
+                        jsonSave.put("Planned_Hospital_Count", "0"+" ("+"0"+")");
+                        jsonSave.put("Speciality_Name",doctorSpeciality);
+                        jsonSave.put("Category_Name",doctorCategory);
+                        jsonSave.put("Category_Code",doctorCategoryCode);
+                        jsonSave.put("Class_Name",doctorClass);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
             if (jsonArray.length() > 0) {
@@ -2284,6 +2365,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
         }
     }
 

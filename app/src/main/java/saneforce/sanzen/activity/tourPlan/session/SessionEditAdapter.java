@@ -407,7 +407,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 if (inputDataArrayOneBuild.getSTP_Code().isEmpty()) {
                     holder.workDayField.setText(R.string.select);
                 } else {
-                    holder.workDayField.setText(inputDataArray.getSTP_Name());
+                    holder.workDayField.setText(inputDataArrayOneBuild.getSTP_Name());
                 }
             } else {
                 holder.workDayLayout.setVisibility(View.GONE);
