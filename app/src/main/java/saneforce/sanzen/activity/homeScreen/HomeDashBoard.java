@@ -859,7 +859,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
 
                 if(!tpDoctorCodes.equals("null") && !tpDoctorCodes.isEmpty()) {
-                    if (!today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
+                    if (/*!today.equals(lastShownDate) &&*/ currentTimeInt >= remainderTimeInt) {
                         showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
                         SharedPref.setTodayPopupShown(this, today);
                     }
