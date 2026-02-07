@@ -446,9 +446,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.hqField.setText(holder.sessionDataOneBuild.getHeadquarters().getName());
                             holder.selectedHq = holder.sessionDataOneBuild.getHeadquarters().getCode();
                         }
-                        if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
-                            holder.hqLayout.setVisibility(View.GONE);
-                        }
+//                        if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+//                            holder.hqLayout.setVisibility(View.GONE);
+//                        }
                     }
             }
 
@@ -734,7 +734,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
-            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/)) {
                 holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1734,7 +1734,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
-            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/)) {
                 holder.drLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1795,7 +1795,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 });
             }
 
-            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/)) {
                 holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -2374,7 +2374,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 else
                     holder.hospLayout.setVisibility(View.GONE);
 
-                if (SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1") || SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("2")) {
+                if (SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/) {
                     holder.workDayLayout.setVisibility(View.VISIBLE);
                 } else {
                     holder.workDayLayout.setVisibility(View.GONE);
@@ -2475,7 +2475,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 else
                     holder.hospLayout.setVisibility(View.GONE);
 
-                if (SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1") || SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("2")) {
+                if (SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/) {
                     holder.workDayLayout.setVisibility(View.VISIBLE);
                 } else {
                     holder.workDayLayout.setVisibility(View.GONE);
