@@ -1013,7 +1013,7 @@ public class AddListActivity extends AppCompatActivity {
                     jsonObject.put("Planned_Hospital_Count","0"+" ("+"0"+")");
                     jsonObject.put("Speciality_Name",selectedDocSpeciality.toString());
                     jsonObject.put("Category_Name",selectedDocCategory.toString());
-                    jsonObject.put("Class_Name",selectedDocCategory.toString());
+                    jsonObject.put("Class_Name",selectedDocClass.toString());
                     jsonObject.put("Plan_Name", dayCaption);
                     jsonObject.put("Plan_SName", dayID);
                     jsonObject.put("Plan_Code", "" + dayID.charAt(dayID.length() - 1));
