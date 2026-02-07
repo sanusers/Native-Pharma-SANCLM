@@ -342,9 +342,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
             JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
             if (jsonArray.length() > 0) {
-                for (int i = 0; i < jsonArray.length(); i++) {
+
                     if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        /*JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String dayID = jsonObject.optString("Day_Plan_ShortName");
                         String dayCaption = jsonObject.optString("Day_Plan_Name");
                         String dayPlanCode = jsonObject.optString("Day_Plan_Code");
@@ -421,8 +421,137 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, doctorSpeciality, doctorCategory, doctorClass, doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, doctorSpeciality, doctorCategory, doctorClass, doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));*/
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                                Map<String, JsonObject> planMap = new LinkedHashMap<>();
+
+                                for (int a = 0; a < jsonArray.length(); a++) {
+
+                                    JSONObject row = jsonArray.getJSONObject(a);
+
+                                    String dayShort = row.optString("Day_Plan_ShortName");
+                                    String dayName  = row.optString("Day_Plan_Name");
+
+                                    String key = dayShort;
+
+                                    JsonObject planObj;
+                                    if (!planMap.containsKey(key)) {
+                                        planObj = new JsonObject();
+                                        planObj.addProperty("Plan_Code", dayShort);
+                                        planObj.addProperty("Plan_Name", dayName);
+                                        planObj.addProperty("Plan_SName",dayShort);
+                                        planObj.add("Territory", new JsonArray());
+                                        planObj.add("Doctor", new JsonArray());
+                                        planObj.add("Chemist", new JsonArray());
+                                        planObj.add("Hospital", new JsonArray());
+                                        planMap.put(key, planObj);
+                                    } else {
+                                        planObj = planMap.get(key);
+                                    }
+
+                                    String[] terrCodes = row.optString("Patch_Code").split(",");
+                                    String[] terrNames = row.optString("Patch_Name").split(",");
+
+                                    for (int t = 0; t < terrCodes.length; t++) {
+                                        if (terrCodes[t].trim().isEmpty()) continue;
+
+                                        JsonObject terrObj = new JsonObject();
+                                        terrObj.addProperty("Code", terrCodes[t].trim());
+                                        terrObj.addProperty("Name", terrNames.length > t ? terrNames[t].trim() : "");
+                                        terrObj.addProperty("Speciality_Name", "");
+                                        terrObj.addProperty("Category_Name", "");
+                                        terrObj.addProperty("Class_Name", "");
+
+                                        planObj.getAsJsonArray("Territory").add(terrObj);
+                                    }
+
+                                    String[] drCodes = row.optString("Dr_Code").split(",");
+                                    String[] drNames = row.optString("Dr_Name").split(",");
+
+
+                                    for (int d = 0; d < drCodes.length; d++) {
+                                        if (drCodes[d].trim().isEmpty()) continue;
+
+                                        JsonObject docObj = new JsonObject();
+                                        docObj.addProperty("Code", drCodes[d].trim());
+                                        docObj.addProperty("Name", drNames.length > d ? drNames[d].trim() : "");
+
+                                        docObj.addProperty("Territory_Name", terrNames.length > d ? terrNames[d].trim() : "");
+
+                                        docObj.addProperty("Territory_Code", terrCodes.length > d ? terrCodes[d].trim() : "");
+
+                                        docObj.addProperty("Speciality_Name", row.optString("Speciality_Name"));
+                                        docObj.addProperty("Category_Name", row.optString("CategoryName"));
+                                        docObj.addProperty("Class_Name", "Class_Name");
+
+                                        planObj.getAsJsonArray("Doctor").add(docObj);
+                                    }
+
+
+                                    String[] chCodes = row.optString("Chem_Code").split(",");
+                                    String[] chNames = row.optString("Chem_Name").split(",");
+
+                                    for (int c = 0; c < chCodes.length; c++) {
+                                        if (chCodes[c].trim().isEmpty()) continue;
+
+                                        JsonObject chmObj = new JsonObject();
+                                        chmObj.addProperty("Code", chCodes[c].trim());
+                                        chmObj.addProperty("Name", chNames.length > c ? chNames[c].trim() : "");
+                                        chmObj.addProperty("Territory_Name", terrNames.length > 0 ? terrNames[0].trim() : "");
+                                        chmObj.addProperty("Speciality_Name", "");
+                                        chmObj.addProperty("Category_Name", "");
+                                        chmObj.addProperty("Class_Name", "");
+                                        chmObj.addProperty("Territory_Code", terrCodes.length > 0 ? terrCodes[0].trim() : "");
+
+                                        planObj.getAsJsonArray("Chemist").add(chmObj);
+                                    }
+                                }
+
+                                JsonArray stpDetailsArr = new JsonArray();
+                                for (JsonObject obj : planMap.values()) {
+                                    stpDetailsArr.add(obj);
+                                }
+                                JsonArray categorySummaryArr = new JsonArray();
+
+                                for (DocCategoryModel cat : docCategoryModelMap.values()) {
+
+                                    JsonObject catObj = new JsonObject();
+                                    catObj.addProperty("Category_Code", String.valueOf(cat.getCategoryID()));
+                                    catObj.addProperty("Category_Name", cat.getCategoryName());
+                                    catObj.addProperty("No_of_Visit", String.valueOf(cat.getVisitCount()));
+                                    catObj.addProperty("Planned", selectedCategoryCodeList.size()+" ("+totalCategoryCodeList.size()+")");
+                                    catObj.addProperty("Total", selectedCategoryCodeList.size()+" ("+totalCategoryCodeList.size()+")");
+
+                                    categorySummaryArr.add(catObj);
+                                }
+
+                                jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                                jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
+                                jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
+                                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                                jsonObject.put("Planned_Territory_Count",selectedClusterCodeList.size()+" ("+jsonCluster.length()+")");
+                                jsonObject.put("Planned_Doctor_Count",selectedDocCodeList.size()+" ("+jsonDoc_mas.length()+")");
+                                jsonObject.put("Planned_Chemist_Count",selectedChmCodeList.size()+" ("+jsonChm_mas.length()+")");
+                                jsonObject.put("Planned_Hospital_Count","0"/*+" ("+"0"+")"*/);
+                                jsonObject.put("tableName", "save_stp");
+                                JSONArray categorySummaryJsonArr = new JSONArray(categorySummaryArr.toString());
+
+                                jsonObject.put("STP_Category_Summary", categorySummaryJsonArr);
+
+                                JSONArray stpDetailsJsonArr = new JSONArray(stpDetailsArr.toString());
+
+                                jsonObject.put("STP_Details", stpDetailsJsonArr);
+
+                                Log.d("STP_JSON", jsonObject.toString());
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } else {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String dayID = jsonObject.optString("Day_Plan_ShortName");
                         String dayCaption = jsonObject.optString("Day_Plan_Name");
@@ -1708,108 +1837,165 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void sendToApproval() {
         JSONObject jsonObject = new JSONObject();
-        String doctorSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Dr_Code")));
-        String chemistSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Chem_Code")));
-        String clusterSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Patch_Code")));
-        JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
-        JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
-        JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+
         try {
             if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
-                try {
 
-                    jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-                    jsonObject.put("sfcode", SharedPref.getSfCode(StandardTourPlanActivity.this));
-                    jsonObject.put("DivCode",SharedPref.getDivisionCode(StandardTourPlanActivity.this).replace(",", ""));
-                    jsonObject.put("Planned_Territory_Count", clusterSize + "(" + jsonCluster.length() + ")");
-                    jsonObject.put("Planned_Doctor_Count", doctorSize + "(" + jsonDoc_mas.length() + ")");
-                    jsonObject.put("Planned_Chemist_Count", chemistSize + "(" + jsonChm_mas.length() + ")");
-                    jsonObject.put("Planned_Hospital_Count", "0(0)");
-                    jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "1");
-                    jsonObject.put("ReqDt", TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_37));
+       /*         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+                String doctorSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Dr_Code")));
+                String chemistSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Chem_Code")));
+                String clusterSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Patch_Code")));
+                JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+                JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+                JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+                Map<String, JsonObject> planMap = new LinkedHashMap<>();
 
-                    JsonArray stpDetailsArr = new JsonArray();
-                    HashMap<String, List<DCRModel>> planMap = new HashMap<>();
-                    for (Map.Entry<String, List<DCRModel>> entry : planMap.entrySet()) {
+                for (int i = 0; i < jsonArray.length(); i++) {
 
-                        List<DCRModel> planModels = entry.getValue();
-                        if (planModels == null || planModels.isEmpty()) continue;
+                    JSONObject row = jsonArray.getJSONObject(i);
 
-                        // Use first record as header
-                        DCRModel header = planModels.get(0);
-                        if (header == null) continue;
+                    String dayShort = row.optString("Day_Plan_ShortName");
+                    String dayName  = row.optString("Day_Plan_Name");
 
-                        JsonObject planObj = new JsonObject();
+                    String key = dayShort;
 
-                        planObj.addProperty("Plan_Code", header.getPlannedForCode());
-                        planObj.addProperty("Plan_Name", header.getPlannedForName());
+                    JsonObject planObj;
+                    if (!planMap.containsKey(key)) {
+                        planObj = new JsonObject();
+                        planObj.addProperty("Plan_Code", dayShort);
+                        planObj.addProperty("Plan_Name", dayName);
+                        planObj.addProperty("Plan_SName",dayShort);
+                        planObj.add("Territory", new JsonArray());
+                        planObj.add("Doctor", new JsonArray());
+                        planObj.add("Chemist", new JsonArray());
+                        planObj.add("Hospital", new JsonArray());
+                        planMap.put(key, planObj);
+                    } else {
+                        planObj = planMap.get(key);
+                    }
 
-                        JsonArray territoryArr = new JsonArray();
+                    String[] terrCodes = row.optString("Patch_Code").split(",");
+                    String[] terrNames = row.optString("Patch_Name").split(",");
+
+                    for (int t = 0; t < terrCodes.length; t++) {
+                        if (terrCodes[t].trim().isEmpty()) continue;
+
                         JsonObject terrObj = new JsonObject();
-                        terrObj.addProperty("Code", header.getTownCode());
-                        terrObj.addProperty("Name", header.getTownName());
+                        terrObj.addProperty("Code", terrCodes[t].trim());
+                        terrObj.addProperty("Name", terrNames.length > t ? terrNames[t].trim() : "");
                         terrObj.addProperty("Speciality_Name", "");
                         terrObj.addProperty("Category_Name", "");
                         terrObj.addProperty("Class_Name", "");
-                        territoryArr.add(terrObj);
 
-                        planObj.add("Territory", territoryArr);
-
-                        JsonArray doctorArr = new JsonArray();
-                        for (DCRModel doc : planModels) {
-                            if (doc == null) continue;
-
-                            JsonObject docObj = new JsonObject();
-                            docObj.addProperty("Code", doc.getCode());
-                            docObj.addProperty("Name", doc.getName());
-                            docObj.addProperty("Territory_Name", doc.getTownName());
-                            docObj.addProperty("Speciality_Name", doc.getSpeciality());
-                            docObj.addProperty("Category_Name", doc.getCategory());
-                            docObj.addProperty("Class_Name", "Nil");
-                            docObj.addProperty("Territory_Code", doc.getTownCode());
-
-                            doctorArr.add(docObj);
-                        }
-                        planObj.add("Doctor", doctorArr);
-                        JsonArray chemistArr = new JsonArray();
-                        for (DCRModel chm : planModels) {
-                            if (chm == null) continue;
-
-                            JsonObject chmObj = new JsonObject();
-                            chmObj.addProperty("Code", chm.getCode());
-                            chmObj.addProperty("Name", chm.getName());
-                            chmObj.addProperty("Territory_Name", chm.getTownName());
-                            chmObj.addProperty("Speciality_Name", "");
-                            chmObj.addProperty("Category_Name", "");
-                            chmObj.addProperty("Class_Name", "");
-                            chmObj.addProperty("Territory_Code", chm.getTownCode());
-
-                            chemistArr.add(chmObj);
-                        }
-
-                        planObj.add("Chemist", chemistArr);
-
-                        JsonArray hospArr = new JsonArray();
-                        JsonObject hospObj = new JsonObject();
-                        hospObj.addProperty("Code", "");
-                        hospObj.addProperty("Name", "");
-
-                        hospArr.add(hospObj);
-
-
-                        planObj.add("Hospital", hospArr);
-
-                        stpDetailsArr.add(planObj);
+                        planObj.getAsJsonArray("Territory").add(terrObj);
                     }
 
-                    jsonObject.put("STP_Details", new org.json.JSONArray(stpDetailsArr.toString()));
+                    String[] drCodes = row.optString("Dr_Code").split(",");
+                    String[] drNames = row.optString("Dr_Name").split(",");
 
-                    Log.d("STP_JSON", jsonObject.toString());
+                 *//*   for (int d = 0; d < drCodes.length; d++) {
+                        if (drCodes[d].trim().isEmpty()) continue;
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        JsonObject docObj = new JsonObject();
+                        docObj.addProperty("Code", drCodes[d].trim());
+                        docObj.addProperty("Name", drNames.length > d ? drNames[d].trim() : "");
+                        docObj.addProperty("Territory_Name", terrNames.length > 0 ? terrNames[0].trim() : "");
+                        docObj.addProperty("Speciality_Name", row.optString("Speciality_Name"));
+                        docObj.addProperty("Category_Name", row.optString("CategoryName"));
+                        docObj.addProperty("Class_Name", "Nil");
+                        docObj.addProperty("Territory_Code", terrCodes.length > 0 ? terrCodes[0].trim() : "");
+
+                        planObj.getAsJsonArray("Doctor").add(docObj);
+                    }*//*
+                    for (int d = 0; d < drCodes.length; d++) {
+                        if (drCodes[d].trim().isEmpty()) continue;
+
+                        JsonObject docObj = new JsonObject();
+                        docObj.addProperty("Code", drCodes[d].trim());
+                        docObj.addProperty("Name", drNames.length > d ? drNames[d].trim() : "");
+
+                        docObj.addProperty(
+                                "Territory_Name",
+                                terrNames.length > d ? terrNames[d].trim() : ""
+                        );
+
+                        docObj.addProperty(
+                                "Territory_Code",
+                                terrCodes.length > d ? terrCodes[d].trim() : ""
+                        );
+
+                        docObj.addProperty("Speciality_Name", row.optString("Speciality_Name"));
+                        docObj.addProperty("Category_Name", row.optString("CategoryName"));
+                        docObj.addProperty("Class_Name", "Class_Name");
+
+                        planObj.getAsJsonArray("Doctor").add(docObj);
+                    }
+
+
+                    String[] chCodes = row.optString("Chem_Code").split(",");
+                    String[] chNames = row.optString("Chem_Name").split(",");
+
+                    for (int c = 0; c < chCodes.length; c++) {
+                        if (chCodes[c].trim().isEmpty()) continue;
+
+                        JsonObject chmObj = new JsonObject();
+                        chmObj.addProperty("Code", chCodes[c].trim());
+                        chmObj.addProperty("Name", chNames.length > c ? chNames[c].trim() : "");
+                        chmObj.addProperty("Territory_Name", terrNames.length > 0 ? terrNames[0].trim() : "");
+                        chmObj.addProperty("Speciality_Name", "");
+                        chmObj.addProperty("Category_Name", "");
+                        chmObj.addProperty("Class_Name", "");
+                        chmObj.addProperty("Territory_Code", terrCodes.length > 0 ? terrCodes[0].trim() : "");
+
+                        planObj.getAsJsonArray("Chemist").add(chmObj);
+                    }
                 }
 
+                JsonArray stpDetailsArr = new JsonArray();
+                for (JsonObject obj : planMap.values()) {
+                    stpDetailsArr.add(obj);
+                }
+                JsonArray categorySummaryArr = new JsonArray();
+
+                for (DocCategoryModel cat : docCategoryModelMap.values()) {
+
+                    JsonObject catObj = new JsonObject();
+                    catObj.addProperty("Category_Code", String.valueOf(cat.getCategoryID()));
+                    catObj.addProperty("Category_Name", cat.getCategoryName());
+                    catObj.addProperty("No_of_Visit", String.valueOf(cat.getVisitCount()));
+                    catObj.addProperty("Planned", selectedCategoryCodeList.size()+" ("+totalCategoryCodeList.size()+")");
+                    catObj.addProperty("Total", selectedCategoryCodeList.size()+" ("+totalCategoryCodeList.size()+")");
+
+                    categorySummaryArr.add(catObj);
+                }
+
+                jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
+                jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                jsonObject.put("Planned_Territory_Count",selectedClusterCodeList.size()+" ("+jsonCluster.length()+")");
+                jsonObject.put("Planned_Doctor_Count",selectedDocCodeList.size()+" ("+jsonDoc_mas.length()+")");
+                jsonObject.put("Planned_Chemist_Count",selectedChmCodeList.size()+" ("+jsonChm_mas.length()+")");
+                jsonObject.put("Planned_Hospital_Count","0"+" ("+"0"+")");
+                jsonObject.put("tableName", "submit_stp");
+                JSONArray categorySummaryJsonArr = new JSONArray(categorySummaryArr.toString());
+
+                jsonObject.put("STP_Category_Summary", categorySummaryJsonArr);
+
+                JSONArray stpDetailsJsonArr = new JSONArray(stpDetailsArr.toString());
+
+                jsonObject.put("STP_Details", stpDetailsJsonArr);
+
+                Log.d("STP_JSON", jsonObject.toString());*/
+                jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
+                jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
+                jsonObject.put("tableName", "submit_stp");
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                Log.v("json_save_stp", jsonObject.toString());
 
             } else {
                 jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
