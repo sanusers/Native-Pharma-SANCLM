@@ -772,13 +772,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
             if (jsonArray != null && jsonArray.length() > 0) {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
-                if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")){
-                    dayCaptions = jsonObject.optString("Plan_Name", "");
-                    dayIDs = jsonObject.optString("Plan_Short_Name", "");
-                }else {
+//                if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")){
+//                    dayCaptions = jsonObject.optString("Plan_Name", "");
+//                    dayIDs = jsonObject.optString("Plan_Short_Name", "");
+//                }else {
                     dayCaptions = jsonObject.optString("Plan_Name", "");
                     dayIDs = jsonObject.optString("Plan_SName", "");
-                }
+//                }
 //                stpCap = jsonObject.optString("STP_Name", StandardTourPlanActivity.this.getString(R.string.standard_tour_plan));
 //                if(!stpCap.isEmpty()) {
 //                    activityStandardTourPlanBinding.title.setText(stpCap);

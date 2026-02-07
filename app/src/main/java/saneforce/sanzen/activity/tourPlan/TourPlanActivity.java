@@ -2443,7 +2443,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     private OneBuildModelClass prepareAndSaveSTPModelClassOneBuild(String day, String date, String dayName, String dayOfWeek, LocalDate localDate2) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+
         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayOfWeek);
         String monthYear = monthYearFromDate(localDate2);
         String month = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
@@ -2491,7 +2491,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     private List<OneBuildModelClass.SessionList.SubClass> prepareListOneBuild(String codes, String names) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         List<OneBuildModelClass.SessionList.SubClass> list = new ArrayList<>();
         try {
             String[] codeArray = CommonUtilsMethods.removeLastComma(codes).split(",");
