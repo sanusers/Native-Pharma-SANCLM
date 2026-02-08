@@ -1104,8 +1104,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                    List<SelectedDCRModel> selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(0).getCaption());
-                    calendarModelList.get(0).setDcrModelList(selectedDcrModelList);
+                    List<SelectedDCRModel> selectedDcrModelList = getSelectedDCRDataList(dayID, dayCaptionValues[index]);
+                    calendarModelList.get((int) (index % 4)).setDcrModelList(selectedDcrModelList);
                     calendarMap.put(String.valueOf((int) (index / 4)), calendarModelList);
                 }
             }

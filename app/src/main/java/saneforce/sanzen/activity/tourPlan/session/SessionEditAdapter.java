@@ -2558,6 +2558,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR_MAS);
             holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST_MAS);
             holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
+            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+                MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP);
+                sync(STPSetup, hqCode, holder);
+            }
         }
     }
 
@@ -2686,7 +2690,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                 jsonObject.put("Rsf", hqCode);
 
-
 //                Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
@@ -2696,6 +2699,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.SUBORDINATE)) {
                     mapString.put("axn", "table/subordinates");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                    jsonObject.put("sfcode", hqCode);
+                    mapString.put("axn", "get/stp");
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                 }
 

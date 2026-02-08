@@ -356,12 +356,16 @@ public class AddListActivity extends AppCompatActivity {
         selectedDCRMap = new HashMap<>();
 
         storedSelectedDcrMap = new HashMap<>();
-        for (Map.Entry<String, List<DCRModel>> entry : StandardTourPlanActivity.selectedDcrMap.entrySet()) {
-            List<DCRModel> newList = new ArrayList<>();
-            for (DCRModel model : entry.getValue()) {
-                newList.add(new DCRModel(model));
+        if (StandardTourPlanActivity.selectedDcrMap != null) {
+            for (Map.Entry<String, List<DCRModel>> entry : StandardTourPlanActivity.selectedDcrMap.entrySet()) {
+                if (entry != null && entry.getValue() != null) {
+                    List<DCRModel> newList = new ArrayList<>();
+                    for (DCRModel model : entry.getValue()) {
+                        newList.add(new DCRModel(model));
+                    }
+                    storedSelectedDcrMap.put(entry.getKey(), newList);
+                }
             }
-            storedSelectedDcrMap.put(entry.getKey(), newList);
         }
 
         Bundle bundle = getIntent().getExtras();
