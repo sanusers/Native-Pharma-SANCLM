@@ -327,7 +327,11 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonSTP.put("approvedby", SharedPref.getSfCode(this));
             jsonSTP.put("approvedbyname", SharedPref.getSfName(this));
             jsonSTP.put("division_code", SharedPref.getDivisionCode(this));
-            jsonSTP.put("StpFlag", "0");
+            if (SharedPref.getOneBuild(STPApprovalActivity.this).equalsIgnoreCase("0")) {
+                jsonSTP.put("StpFlag", "2");
+            } else {
+                jsonSTP.put("StpFlag", "0");
+            }
             jsonSTP.put("rejectreason", "");
             jsonSTP.put("actionDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
             Log.v("json_stp_Approved", jsonSTP.toString());
@@ -417,7 +421,11 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonSTP.put("approvedby", SharedPref.getSfCode(this));
             jsonSTP.put("approvedbyname", SharedPref.getSfName(this));
             jsonSTP.put("division_code", SharedPref.getDivisionCode(this));
-            jsonSTP.put("StpFlag", "1");
+            if (SharedPref.getOneBuild(STPApprovalActivity.this).equalsIgnoreCase("0")) {
+                jsonSTP.put("StpFlag", "3");
+            } else {
+                jsonSTP.put("StpFlag", "1");
+            }
             jsonSTP.put("rejectreason", reason);
             jsonSTP.put("actionDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
             Log.v("json_stp_Reject", jsonSTP.toString());
