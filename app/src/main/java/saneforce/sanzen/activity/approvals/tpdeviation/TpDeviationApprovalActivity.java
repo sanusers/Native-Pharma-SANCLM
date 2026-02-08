@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.approvals.tpdeviation;
 
-
 import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapter;
 import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapterOneBuild;
 

@@ -3708,7 +3708,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                 String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
                                 String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
                                 String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
-
+                                String STPCode = "", STPName = "";
+                                STPCode = oneBuildModelClass.getSTP_Code();
+                                STPName = oneBuildModelClass.getSTP_Name();
+                                if (STPCode == null) STPCode = "";
+                                if (STPName == null) STPName = "";
                                 for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
                                     OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
 
@@ -3807,6 +3811,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
                                                 SessionsObj.addProperty("WorkTypeName", WorkTypeName);
                                                 SessionsObj.addProperty("Id", i);
+                                                SessionsObj.addProperty("ObjectiveId", STPCode);
+                                                SessionsObj.addProperty("ObjectiveName", STPName);
                                                 SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
                                                 SessionsObj.addProperty("Remark", Remarks);
                                             }
@@ -3815,6 +3821,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
                                                 SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
                                                 SessionsObj.addProperty("Id", i);
+                                                SessionsObj.addProperty("ObjectiveId", STPCode);
+                                                SessionsObj.addProperty("ObjectiveName", STPName);
                                                 SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
                                                 SessionsObj.addProperty("Remark", Remarks2);
                                             }
@@ -3823,6 +3831,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
                                                 SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
                                                 SessionsObj.addProperty("Id", i);
+                                                SessionsObj.addProperty("ObjectiveId", STPCode);
+                                                SessionsObj.addProperty("ObjectiveName", STPName);
                                                 SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
                                                 SessionsObj.addProperty("Remark", Remarks3);
                                             }
