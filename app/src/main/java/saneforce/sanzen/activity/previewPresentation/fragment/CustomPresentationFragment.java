@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandMatrixModelClass;
 import saneforce.sanzen.activity.presentation.createPresentation.brand.BrandMatrixAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.brand.SpecialityNameAdapter;
@@ -86,6 +87,11 @@ public class CustomPresentationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCustomPresentationBinding.inflate(inflater);
+
+        // ✅ Brand Matrix arrow – always >
+        binding.imgBrandMatrixArrow.setImageResource(R.drawable.greater_than_black);
+        binding.imgBrandMatrixArrow.setRotation(0);
+
         uiInitialisation();
         loadSpecialitiesFromMaster();
         // changed 24/1== ALL BRANDS
@@ -141,7 +147,7 @@ public class CustomPresentationFragment extends Fragment {
                 // Expand: Load the 14 filtered slides directly
                 loadBrandMatrixData(); // 🚀 Pudhu logic trigger aagum
 
-                binding.imgBrandMatrixArrow.setRotation(180);
+                //binding.imgBrandMatrixArrow.setRotation(180);
 
                 // AUTO-CLOSE logic
                 if (isAllBrandsExpanded) {

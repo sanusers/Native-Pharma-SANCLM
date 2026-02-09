@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/_2sdp"
     android:layout_marginBottom="@dimen/_2sdp"
     android:layout_marginEnd="@dimen/_2sdp"
-    android:background="@drawable/selector_box">
+    android:background="@drawable/selector_box_2">
 
     <LinearLayout
         android:layout_width="match_parent"

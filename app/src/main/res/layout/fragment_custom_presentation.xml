@@ -74,8 +74,10 @@
                 android:id="@+id/clAllBrands"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/selector_box"
+                app:backgroundTint="@null"
+                android:background="@drawable/clear_btn_stroke"
                 android:padding="@dimen/_8sdp">
+<!--                android:background="@drawable/selector_box"-->
 
                 <TextView
                     android:id="@+id/tvAllBrands"
@@ -84,6 +86,7 @@
                     android:text="All Brands"
                     android:textStyle="bold"
                     android:textSize="@dimen/_6sdp"
+                    android:textColor="@color/dark_purple"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/imgAllBrandArrow"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -111,8 +114,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:background="@drawable/selector_box"
+                app:backgroundTint="@null"
+                android:background="@drawable/clear_btn_stroke"
                 android:padding="@dimen/_8sdp">
+<!--                android:background="@drawable/selector_box"-->
 
                 <TextView
                     android:id="@+id/tvBrandMatrix"
@@ -121,6 +126,7 @@
                     android:text="Brand Matrix"
                     android:textStyle="bold"
                     android:textSize="@dimen/_6sdp"
+                    android:textColor="@color/dark_purple"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/imgBrandMatrixArrow"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -157,8 +163,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:background="@drawable/selector_box"
+                app:backgroundTint="@null"
+                android:background="@drawable/clear_btn_stroke"
                 android:padding="@dimen/_8sdp">
+<!--                android:background="@drawable/selector_box"-->
 
                 <TextView
                     android:id="@+id/tvspeciality"
@@ -167,6 +175,7 @@
                     android:text="Speciality"
                     android:textStyle="bold"
                     android:textSize="@dimen/_6sdp"
+                    android:textColor="@color/dark_purple"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/imgspecialityArrow"
                     app:layout_constraintTop_toTopOf="parent"/>
