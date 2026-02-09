@@ -936,7 +936,7 @@ public class AddListActivity extends AppCompatActivity {
         }
     }
 
-    private void addDoctors(JsonObject planObj, JSONObject row) {
+    private void addDoctors(JsonObject planObj) {
 
         // --- Selected values ---
         String[] drCodes = selectedDoctorCode.toString().split(",");
@@ -1201,21 +1201,21 @@ public class AddListActivity extends AppCompatActivity {
             }
             if (SharedPref.getOneBuild(AddListActivity.this).equalsIgnoreCase("0")) {
 
-                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+//                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
                 JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(AddListActivity.this)).getMasterSyncDataJsonArray();
                 JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(AddListActivity.this)).getMasterSyncDataJsonArray();
                 JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(AddListActivity.this)).getMasterSyncDataJsonArray();
                 JSONArray jsonCate = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
 
+//                JSONObject jsonObject = new JSONObject();
+//                if (jsonObject.length() > 0) {
 
-                if (jsonArray.length() > 0) {
-                    //JSONObject jsonObject = new JSONObject();
                     try {
                         Map<String, JsonObject> planMap = new LinkedHashMap<>();
 
-                        for (int a = 0; a < jsonArray.length(); a++) {
-
-                            JSONObject row = jsonArray.getJSONObject(a);
+//                        for (int a = 0; a < jsonObject.length(); a++) {
+//
+//                            JSONObject row = jsonObject.getJSONObject(String.valueOf(a));
 
                             String key = dayID;
                             JsonObject planObj;
@@ -1231,11 +1231,11 @@ public class AddListActivity extends AppCompatActivity {
                                 planObj.add("Hospital", new JsonArray());
                                 planMap.put(key, planObj);
                                 addTerritories(planObj);
-                                addDoctors(planObj, row);
+                                addDoctors(planObj);
                                 addChemists(planObj);
                                 addHospitals(planObj);
                             }
-                        }
+//                        }
 
                         JsonArray stpDetailsArr = new JsonArray();
                         for (JsonObject obj : planMap.values()) {
@@ -1283,7 +1283,7 @@ public class AddListActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
+//                }
             } else {
                 try {
                     jsonObject = CommonUtilsMethods.CommonObjectParameter(this);

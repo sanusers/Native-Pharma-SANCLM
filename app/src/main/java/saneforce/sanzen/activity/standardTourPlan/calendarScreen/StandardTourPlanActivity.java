@@ -366,25 +366,22 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         }
     }
 
-    private int getCountFromCommaString(String value) {
-        if (value == null || value.trim().isEmpty()) return 0;
+    private int getSelectedCount(String codes) {
+
+        if (codes == null || codes.trim().isEmpty())
+            return 0;
+
+        String[] arr = codes.split(",");
 
         int count = 0;
-        for (String s : value.split(",")) {
+        for (String s : arr) {
             if (!s.trim().isEmpty()) count++;
         }
         return count;
     }
 
     private void saveSTPDataToLocal() {
-        try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
-            JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
-            JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
-            JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
-            if (jsonArray.length() > 0) {
-                if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
+         /*for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String dayID = jsonObject.optString("Day_Plan_ShortName");
                         String dayCaption = jsonObject.optString("Day_Plan_Name");
@@ -463,8 +460,15 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, doctorSpeciality, doctorCategory, doctorClass, doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));
-                    }
-                       /* JSONObject jsonObject = new JSONObject();
+                    }*/
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+            JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+            if (jsonArray.length() > 0) {
+                if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                        JSONObject jsonObject;
                         try {
                                 Map<String, JsonObject> planMap = new LinkedHashMap<>();
 
@@ -548,6 +552,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
                                         planObj.getAsJsonArray("Chemist").add(chmObj);
                                     }
+
+
                                 }
 
                                 JsonArray stpDetailsArr = new JsonArray();
@@ -573,10 +579,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
                                 jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
                                 jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
-                                jsonObject.put("Planned_Territory_Count",selectedClusterCodeList.size()+" ("+jsonCluster.length()+")");
-                                jsonObject.put("Planned_Doctor_Count",selectedDocCodeList.size()+" ("+jsonDoc_mas.length()+")");
-                                jsonObject.put("Planned_Chemist_Count",selectedChmCodeList.size()+" ("+jsonChm_mas.length()+")");
-                                jsonObject.put("Planned_Hospital_Count","0"*//*+" ("+"0"+")"*//*);
+                                jsonObject.put("Planned_Territory_Count",getSelectedCount(selectedClusterCodeList.toString())+" ("+jsonCluster.length()+")");
+                                jsonObject.put("Planned_Doctor_Count",getSelectedCount(selectedDocCodeList.toString())+" ("+jsonDoc_mas.length()+")");
+                                jsonObject.put("Planned_Chemist_Count",getSelectedCount(selectedChmCodeList.toString())+" ("+jsonChm_mas.length()+")");
+                                jsonObject.put("Planned_Hospital_Count","0"+" ("+"0"+")");
                                 jsonObject.put("tableName", "save_stp");
                                 JSONArray categorySummaryJsonArr = new JSONArray(categorySummaryArr.toString());
 
@@ -588,10 +594,34 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
                                 Log.d("STP_JSON", jsonObject.toString());
 
+                            if (stpFlag == null || !stpFlag.isEmpty()) {
+                                stpFlag = jsonObject.optString("Active_Flag", "0");
+                                rejectReason = jsonObject.optString("Stp_Reject_Reason");
+                                if (stpFlag.equalsIgnoreCase("3")) {
+                                    activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                                    activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+                                } else {
+                                    activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                                    if (stpFlag.equalsIgnoreCase("2")) {
+                                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
+                                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                                        activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                    } else if (stpFlag.equalsIgnoreCase("1")) {
+                                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                                        activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                    } else if (stpFlag.equalsIgnoreCase("0")) {
+                                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                                    }
+                                }
+                            }
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }*/
+                        }
 
                 } else {
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -634,7 +664,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                             }
                         }
 
-                        JSONObject jsonSave = new JSONObject();
+                        new JSONObject();
+                        JSONObject jsonSave;
                         jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
                         jsonSave.put("sfcode", SharedPref.getSfCode(this));
                         jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
