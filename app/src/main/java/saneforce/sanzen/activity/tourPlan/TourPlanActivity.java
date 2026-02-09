@@ -237,12 +237,17 @@ public class TourPlanActivity extends AppCompatActivity {
         tourPlanOnlineDataDao = roomDB.tourPlanOnlineDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
         masterDataDao = roomDB.masterDataDao();
-
+        String status;
+        if (SharedPref.getOneBuild(this).equalsIgnoreCase("0")) {
+            status = "2";
+        } else {
+            status = "0";
+        }
 //        if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Planning...") || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Rejected"))) {
         if (SharedPref.getSfType(this).equalsIgnoreCase("1")
                 && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0")
                 && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0")
-                && (stpOfflineDataDao.isNotApproved() || masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() == 0)
+                && (stpOfflineDataDao.isNotApproved(status) || masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() == 0)
                 && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpNeed(this).equalsIgnoreCase("0")
                 && !SharedPref.getTpStartDate(this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(this).equalsIgnoreCase("-1")
                 && !SharedPref.getTpEndDate(this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(this).equalsIgnoreCase("-1")) {
