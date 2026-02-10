@@ -3368,9 +3368,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     public void showDoctorPlanPopup(String tpDoctor, boolean isFromTP) {
         try {
-            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") ||  || tpDoctor == null){
-
-
+            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")  || tpDoctor == null){
                 Log.d("Tag","No Popup for MGR(Show doc popup");
                 return;
             }
