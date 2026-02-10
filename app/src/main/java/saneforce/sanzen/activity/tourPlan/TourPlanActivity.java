@@ -251,7 +251,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpNeed(this).equalsIgnoreCase("0")
                 && !SharedPref.getTpStartDate(this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(this).equalsIgnoreCase("-1")
                 && !SharedPref.getTpEndDate(this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(this).equalsIgnoreCase("-1")) {
-            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare) + SharedPref.getStpCaption(this) + getString(R.string.and_get_approved_to_prepare_tour_plan));
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare)+" " + SharedPref.getStpCaption(this)+" " + getString(R.string.and_get_approved_to_prepare_tour_plan));
             Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
             startActivity(intent);
             finish();

@@ -449,7 +449,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+""+R.string.already_exist);
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+" "+UnlistedDoctorAddition.this.getString(R.string.already_exist));
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         return; // stop saving further
                     }
