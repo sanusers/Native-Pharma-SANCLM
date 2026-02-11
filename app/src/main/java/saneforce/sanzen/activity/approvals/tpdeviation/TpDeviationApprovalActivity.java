@@ -465,7 +465,10 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
             sessionList.setDoctors(doctorList);
             sessionList.setChemists(chemistList);
             sessionList.setStockists(stockistList);
-//            sessionList.setHeadquarters(hqs);
+
+            if (SharedPref.getSfType(TpDeviationApprovalActivity.this).equalsIgnoreCase("2")) {
+                sessionList.setHeadquarters(new OneBuildModelClass.SessionList.SubClass(jsonObject.optString("HQNames"), jsonObject.optString("HQCodes")));
+            }
 //            sessionList.setHeadquarters(hqs);
            /* sessionList.setTerritories(clusters);
             sessionList.setJCs(JCs);
@@ -502,6 +505,9 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                 sessionList.setDoctors(doctorList);
                 sessionList.setChemists(chemistList);
                 sessionList.setStockists(stockistList);
+                if (SharedPref.getSfType(TpDeviationApprovalActivity.this).equalsIgnoreCase("2")) {
+                    sessionList.setHeadquarters(new OneBuildModelClass.SessionList.SubClass(jsonObject.optString("HQNames2"), jsonObject.optString("HQCodes2")));
+                }
        /*         sessionList.setHQs(hqs);
                 sessionList.setClusters(clusters);
                 sessionList.setJCs(JCs);
@@ -523,7 +529,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                 doctorList = prepareListOneBuild(jsonObject.optString("Dr_three_code"), jsonObject.optString("Dr_three_name"));
                 chemistList = prepareListOneBuild(jsonObject.optString("Chem_three_code"), jsonObject.optString("Chem_three_name"));
                 stockistList = prepareListOneBuild(jsonObject.optString("Stockist_three_code"), jsonObject.optString("Stockist_three_name"));
-                hqs = prepareListOneBuild(jsonObject.optString("HQCodes2"), jsonObject.optString("HQNames2"));
+                hqs = prepareListOneBuild(jsonObject.optString("HQCodes3"), jsonObject.optString("HQNames3"));
                /* clusters = prepareList(hqs, jsonObject.optString("ClusterCode3"), jsonObject.optString("ClusterName3"));
                 JCs = prepareList(hqs, jsonObject.optString("JWCodes3"), jsonObject.optString("JWNames3"));
                 listedDrs = prepareList(hqs, jsonObject.optString("Dr_three_code"), jsonObject.optString("Dr_three_name"));
@@ -534,6 +540,9 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                 sessionList.setDoctors(doctorList);
                 sessionList.setChemists(chemistList);
                 sessionList.setStockists(stockistList);
+                if (SharedPref.getSfType(TpDeviationApprovalActivity.this).equalsIgnoreCase("2")) {
+                    sessionList.setHeadquarters(new OneBuildModelClass.SessionList.SubClass(jsonObject.optString("HQNames3"), jsonObject.optString("HQCodes3")));
+                }
               /*  sessionList.setHQs(hqs);
                 sessionList.setClusters(clusters);
                 sessionList.setJCs(JCs);
@@ -544,7 +553,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                 sessionLists.add(sessionList);
             }
 
-            OneBuildModelClass oneBuildModelClass = new OneBuildModelClass(jsonObject.optString("Day"), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_19, jsonObject.optString("TPDt")), jsonObject.optString("tpday"), jsonObject.optString("Tour_Month"), jsonObject.optString("Tour_Year"), false, sessionLists);
+            OneBuildModelClass oneBuildModelClass = new OneBuildModelClass(jsonObject.optString("Day"), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_19, jsonObject.optString("TPDt")), jsonObject.optString("tpday"), jsonObject.optString("Tour_Month"), jsonObject.optString("Tour_Year"), false, sessionLists, jsonObject.optString("STP_Code"), jsonObject.optString("STP_Name"));
             populateSessionViewAdapterOneBuild(oneBuildModelClass);
         }
     }

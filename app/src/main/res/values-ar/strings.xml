@@ -547,6 +547,7 @@
     <string name="standard_tour_plan">خطة الجولة القياسية</string>
     <string name="send_to_approval">إرسال للموافقة</string>
     <string name="check_unplanned_visits">تحقق من الزيارات غير المخطط لها</string>
+    <string name="check_unplanned_doctors">تحقق من الأطباء غير المخطط لهم</string>
     <string name="cip">CIP</string>
     <string name="selected">تم الاختيار</string>
     <string name="plan_for">خطة لـ</string>

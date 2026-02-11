@@ -793,16 +793,16 @@ public class ListedDoctorFragment extends Fragment {
             if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
                     || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/) && !stpOfflineDataDao.isNotApproved(status)))
                     && !deviation.equalsIgnoreCase("1")) {
-//                List<String> drList = null;
-                if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/ && !stpOfflineDataDao.isNotApproved(status))) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
+                    List<String> drList = null;
                     STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workDayCode);
-//                    drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
-//                    Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
-//                    if (!drList.isEmpty()) {
-//                        if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
-//                            prepareData(jsonObject, i, brands, false);
-//                        }
-//                    }
+                    drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
+                    Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
+                    if (!drList.isEmpty()) {
+                        if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
+                            prepareData(jsonObject, i, brands, false);
+                        }
+                    }
                 } else if (tpDataObj != null ) {
                     if(SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")){
                         Type type = new TypeToken<OneBuildModelClass>() {

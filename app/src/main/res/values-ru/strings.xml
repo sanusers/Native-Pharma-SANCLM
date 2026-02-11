@@ -551,6 +551,7 @@
     <string name="standard_tour_plan">Стандартный план визитов</string>
     <string name="send_to_approval">Отправить на одобрение</string>
     <string name="check_unplanned_visits">Проверить незапланированные визиты</string>
+    <string name="check_unplanned_doctors">проверить незапланированных врачей</string>
     <string name="cip">CIP</string>
     <string name="selected">Выбрано</string>
     <string name="plan_for">План для</string>

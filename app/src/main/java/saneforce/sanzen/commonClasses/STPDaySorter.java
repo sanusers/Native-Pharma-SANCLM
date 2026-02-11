@@ -47,12 +47,12 @@ public class STPDaySorter {
     }
 
     public static <T> void sortDays(List<T> unsortedData, Function<T, String> codeExtractor) {
+        Map<String, Integer> DAY_OF_WEEK_MAP = new HashMap<>();
+        List<String> DAYS_OF_WEEK = Arrays.asList("MO", "TU", "WE", "TH", "FR", "SA", "SU");
+        for (int i = 0; i<DAYS_OF_WEEK.size(); i++) {
+            DAY_OF_WEEK_MAP.put(DAYS_OF_WEEK.get(i), i + 1);
+        }
         try {
-            Map<String, Integer> DAY_OF_WEEK_MAP = new HashMap<>();
-            List<String> DAYS_OF_WEEK = Arrays.asList("MO", "TU", "WE", "TH", "FR", "SA", "SU");
-            for (int i = 0; i < DAYS_OF_WEEK.size(); i++) {
-                DAY_OF_WEEK_MAP.put(DAYS_OF_WEEK.get(i), i + 1);
-            }
             unsortedData.sort((obj1, obj2) -> {
                 String day1 = codeExtractor.apply(obj1);
                 String day2 = codeExtractor.apply(obj2);
@@ -81,7 +81,7 @@ public class STPDaySorter {
                     return Integer.compare(day1Suffix, day2Suffix);
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

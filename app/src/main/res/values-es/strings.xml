@@ -547,6 +547,7 @@
     <string name="standard_tour_plan">Plan de tour estándar</string>
     <string name="send_to_approval">Enviar para aprobación</string>
     <string name="check_unplanned_visits">Verificar visitas no planificadas</string>
+    <string name="check_unplanned_doctors">verificar médicos no programados</string>
     <string name="cip">CIP</string>
     <string name="selected">Seleccionado</string>
     <string name="plan_for">Plan para</string>

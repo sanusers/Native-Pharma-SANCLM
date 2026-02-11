@@ -32,7 +32,6 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.storage.SharedPref;
 
 public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
     private Context context;
     private List<Object> filtereddcrModelList;
     private List<Object> dcrModelList;
@@ -40,17 +39,15 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_TYPE_DCR = 1;
     private static final int VIEW_TYPE_NO_DATA = 2;
     private CheckBoxClickListener checkBoxClickListener;
-    private String selectedDCR, mode, dayCaption, dayID;
+    private String selectedDCR, mode, dayCaption, dayID, stpType;
     private CommonUtilsMethods commonUtilsMethods;
 
     public interface CheckBoxClickListener {
-
         void onSelected(DCRModel dcrModel, String selectedDCR);
-
         void onDeSelected(DCRModel dcrModel, String selectedDCR);
     }
 
-    public DCRSelectionAdapter(Context context, List<Object> filtereddcrModelList, CheckBoxClickListener checkBoxClickListener, String selectedDCR, String mode, String dayCaption, String dayID) {
+    public DCRSelectionAdapter(Context context, List<Object> filtereddcrModelList, CheckBoxClickListener checkBoxClickListener, String selectedDCR, String mode, String dayCaption, String dayID, String stpType) {
         this.context = context;
         this.filtereddcrModelList = filtereddcrModelList;
         this.dcrModelList = filtereddcrModelList;
@@ -59,14 +56,16 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mode = mode;
         this.dayCaption = dayCaption;
         this.dayID = dayID;
+        this.stpType = stpType;
         commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
-    public DCRSelectionAdapter(Context context, List<Object> filtereddcrModelList, String selectedDCR) {
+    public DCRSelectionAdapter(Context context, List<Object> filtereddcrModelList, String selectedDCR, String stpType) {
         this.context = context;
         this.filtereddcrModelList = filtereddcrModelList;
         this.dcrModelList = filtereddcrModelList;
         this.selectedDCR = selectedDCR;
+        this.stpType = stpType;
         commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
@@ -118,6 +117,11 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             try {
                 if(context instanceof AddListActivity) {
+                    if (stpType.equalsIgnoreCase("1")) {
+                        dcrViewHolder.categoryXVisitFreq.setText(dcrModel.getCategory());
+                    } else {
+                        dcrViewHolder.categoryXVisitFreq.setText(dcrModel.getCategory() + " (" + dcrModel.getVisitFrequency() + ")");
+                    }
                     dcrViewHolder.checkBox.setVisibility(View.VISIBLE);
                     dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForName()));
                     if(dcrModel.isSelected() && !dcrModel.getPlannedForName().toLowerCase().contains(dayCaption.toLowerCase())) {
@@ -149,6 +153,13 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 //                    if(!selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
                     if(!selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                         dcrViewHolder.plannedFor.setVisibility(View.GONE);
+                    }
+                    if (stpType.equalsIgnoreCase("1")) {
+                        dcrViewHolder.plannedFor.setVisibility(View.GONE);
+                        dcrViewHolder.categoryXVisitFreq.setText(dcrModel.getCategory());
+                    } else {
+                        dcrViewHolder.plannedFor.setVisibility(View.VISIBLE);
+                        dcrViewHolder.categoryXVisitFreq.setText(dcrModel.getCategory() + " (" + dcrModel.getVisitFrequency() + ")");
                     }
 
                     ViewGroup.MarginLayoutParams dcrNameParams = (ViewGroup.MarginLayoutParams) dcrViewHolder.name.getLayoutParams();
@@ -187,10 +198,10 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
                     docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
 //                    if (dcrViewHolder.checkBox.isChecked() && docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
-                    if (dcrViewHolder.checkBox.isChecked() && docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                    if (dcrViewHolder.checkBox.isChecked() && docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && !stpType.equalsIgnoreCase("1")) {
                         updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
 //                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length >= dcrModel.getVisitFrequency()) {
-                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && docList.length >= dcrModel.getVisitFrequency()) {
+                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && docList.length >= dcrModel.getVisitFrequency() && !stpType.equalsIgnoreCase("1")) {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.visit_frequency_already_met));
                         dcrViewHolder.checkBox.setChecked(false);
                     } else {
@@ -309,7 +320,6 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public static class DCRViewHolder extends RecyclerView.ViewHolder {
-
         TextView name, speciality, categoryXVisitFreq, plannedFor;
         CheckBox checkBox;
 
@@ -324,7 +334,6 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public static class ClusterViewHolder extends RecyclerView.ViewHolder {
-
         TextView name;
 
         public ClusterViewHolder(@NonNull View itemView) {
@@ -334,7 +343,6 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public static class NoDataViewHolder extends RecyclerView.ViewHolder {
-
         TextView noData;
 
         public NoDataViewHolder(@NonNull View itemView) {

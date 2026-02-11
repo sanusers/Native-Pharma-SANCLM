@@ -551,6 +551,7 @@
     <string name="standard_tour_plan">标准行程计划</string>
     <string name="send_to_approval">发送审批</string>
     <string name="check_unplanned_visits">检查未计划拜访</string>
+    <string name="check_unplanned_doctors">查看非计划内医生</string>
     <string name="cip">CIP</string>
     <string name="selected">已选择</string>
     <string name="plan_for">计划用于</string>

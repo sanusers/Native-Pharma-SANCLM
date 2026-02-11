@@ -39,7 +39,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,8 +53,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.sanzen.activity.call.dcrCallSelection.MapsAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
@@ -71,7 +68,6 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DoctorCat
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.PlanForModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.SelectedDCRModel;
 import saneforce.sanzen.activity.standardTourPlan.unplannedVisitScreen.UnplannedVisitActivity;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -231,6 +227,19 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         setContentView(activityStandardTourPlanBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getRequiredData();
+
+        if (!stpType.equalsIgnoreCase("1")) {
+            activityStandardTourPlanBinding.visitDetails.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.tvDdTotalVisits.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.tvDdPlannedVisits.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.checkUnplannedVisits.setText(getString(R.string.check_unplanned_visits));
+        } else {
+            activityStandardTourPlanBinding.visitDetails.setVisibility(View.GONE);
+            activityStandardTourPlanBinding.tvDdTotalVisits.setVisibility(View.GONE);
+            activityStandardTourPlanBinding.tvDdPlannedVisits.setVisibility(View.GONE);
+            activityStandardTourPlanBinding.checkUnplannedVisits.setText(getString(R.string.check_unplanned_doctors));
+        }
+
         populateAdapters();
         activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
         activityStandardTourPlanBinding.backArrow.setOnClickListener(view -> {
@@ -277,6 +286,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         cipNeed = SharedPref.getCipNeed(this);
         hosNeed = SharedPref.getHospNeed(this);
         stpCap = SharedPref.getStpCaption(this);
+        stpType = SharedPref.getStpType(this); // 0 -> divisionwise, 1 -> userwise
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
@@ -367,7 +377,6 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private int getSelectedCount(String codes) {
-
         if (codes == null || codes.trim().isEmpty())
             return 0;
 
@@ -381,7 +390,6 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void saveSTPDataToLocal() {
-
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
             JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
@@ -618,9 +626,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //                            }
 //                        }
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                 } else {
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -977,14 +985,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
             if (jsonArray != null && jsonArray.length() > 0) {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
-//                if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")){
-//                    dayCaptions = jsonObject.optString("Plan_Name", "");
-//                    dayIDs = jsonObject.optString("Plan_Short_Name", "");
-//                }else {
                 dayCaptions = jsonObject.optString("Plan_Name", "");
                 dayIDs = jsonObject.optString("Plan_SName", "");
-                stpType = jsonObject.optString("STP_Type", ""); // 0 -> divisionwise, 1 -> userwise
-//                }
 //                stpCap = jsonObject.optString("STP_Name", StandardTourPlanActivity.this.getString(R.string.standard_tour_plan));
 //                if(!stpCap.isEmpty()) {
 //                    activityStandardTourPlanBinding.title.setText(stpCap);
@@ -1012,7 +1014,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         planForModelList = new ArrayList<>();
         planForModelList.add(new PlanForModel(clusterCap, R.drawable.tp_cluster_location_ic, totalClusterCodeList.size(), selectedClusterCodeList.size()));
         planForModelList.add(new PlanForModel(drCap, R.drawable.doctor_img, totalDocCodeList.size(), selectedDocCodeList.size()));
-        planForModelList.add(new PlanForModel(chmCap, R.drawable.chemist_img, totalChmCodeList.size(), selectedChmCodeList.size()));
+        if (!stpType.equalsIgnoreCase("1")) {
+            planForModelList.add(new PlanForModel(chmCap, R.drawable.chemist_img, totalChmCodeList.size(), selectedChmCodeList.size()));
+        }
 //        planForModelList.add(new PlanForModel(stkCap, R.drawable.map_stockist_img, totalStkCodeList.size(), selectedStkCodeList.size()));
 //        planForModelList.add(new PlanForModel(unDrCap, R.drawable.map_unlistdr_img, totalUnDrCodeList.size(), selectedUnDrCodeList.size()));
 //        planForModelList.add(new PlanForModel(cipCap, R.drawable.cip_img, totalCipCodeList.size(), selectedCipCodeList.size()));
@@ -1057,7 +1061,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
         }
 
-        docDataAdapter = new DocDataAdapter(this, docDataModelList);
+        docDataAdapter = new DocDataAdapter(this, docDataModelList, stpType);
         RecyclerView.LayoutManager docDataLayoutManager = new LinearLayoutManager(this);
         activityStandardTourPlanBinding.rvDocData.setLayoutManager(docDataLayoutManager);
         activityStandardTourPlanBinding.rvDocData.setAdapter(docDataAdapter);
@@ -1371,11 +1375,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         if (isDayAvailable) {
             STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(dayID);
             String[] docList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",");
-            String[] chmList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",");
             docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-            chmList = Arrays.stream(chmList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
             selectedDCRModels.add(new SelectedDCRModel(R.drawable.doctor_img, 1, Arrays.toString(docList), docList.length));
-            selectedDCRModels.add(new SelectedDCRModel(R.drawable.chemist_img, 2, Arrays.toString(chmList), chmList.length));
 //            List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR);
             List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR_MAS);
             if (selectedDocList != null && !selectedDocList.isEmpty()) {
@@ -1392,22 +1393,27 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
 //            selectedDcrMap.put(Constants.DOCTOR, selectedDocList);
             selectedDcrMap.put(Constants.DOCTOR_MAS, selectedDocList);
+            if (!stpType.equalsIgnoreCase("1")) {
+                String[] chmList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",");
+                chmList = Arrays.stream(chmList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+                selectedDCRModels.add(new SelectedDCRModel(R.drawable.chemist_img, 2, Arrays.toString(chmList), chmList.length));
 //            List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST);
-            List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST_MAS);
-            if (selectedChmList != null && !selectedChmList.isEmpty()) {
-                for (int index = 0; index < selectedChmList.size(); index++) {
-                    DCRModel dcrModel = selectedChmList.get(index);
-                    if (stpOfflineDataTable.getChemistCode().contains(dcrModel.getCode())) {
-                        String plannedForName = dcrModel.getPlannedForName().replace("-", "") + caption + ",";
-                        String plannedForCode = dcrModel.getPlannedForCode().replace("-", "") + dayID + ",";
-                        dcrModel.setPlannedForName(plannedForName);
-                        dcrModel.setPlannedForCode(plannedForCode);
-                        selectedChmList.set(index, dcrModel);
+                List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST_MAS);
+                if (selectedChmList != null && !selectedChmList.isEmpty()) {
+                    for (int index = 0; index < selectedChmList.size(); index++) {
+                        DCRModel dcrModel = selectedChmList.get(index);
+                        if (stpOfflineDataTable.getChemistCode().contains(dcrModel.getCode())) {
+                            String plannedForName = dcrModel.getPlannedForName().replace("-", "") + caption + ",";
+                            String plannedForCode = dcrModel.getPlannedForCode().replace("-", "") + dayID + ",";
+                            dcrModel.setPlannedForName(plannedForName);
+                            dcrModel.setPlannedForCode(plannedForCode);
+                            selectedChmList.set(index, dcrModel);
+                        }
                     }
                 }
-            }
 //            selectedDcrMap.put(Constants.CHEMIST, selectedChmList);
-            selectedDcrMap.put(Constants.CHEMIST_MAS, selectedChmList);
+                selectedDcrMap.put(Constants.CHEMIST_MAS, selectedChmList);
+            }
         }
         return selectedDCRModels;
     }
@@ -1865,9 +1871,15 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         if (selectedDocList != null && !selectedDocList.isEmpty()) {
             for (DCRModel dcrModel : selectedDocList) {
                 String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
-                docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-                if (docList.length < dcrModel.getVisitFrequency()) {
-                    return false;
+                if (stpType.equalsIgnoreCase("1")) {
+                    if (docList.length == 0) {
+                        return false;
+                    }
+                } else {
+                    docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+                    if (docList.length < dcrModel.getVisitFrequency()) {
+                        return false;
+                    }
                 }
             }
         }

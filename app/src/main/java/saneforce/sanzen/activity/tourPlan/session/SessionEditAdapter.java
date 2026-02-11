@@ -768,6 +768,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
                 });
+            } else {
+                holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!holder.clusterField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.displayPopupWindow(context, holder.clusterLayout, holder.clusterField.getText().toString().trim());
+                        }
+                    }
+                });
             }
 
             holder.jcLayout.setOnClickListener(new View.OnClickListener() {
@@ -840,9 +849,18 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
                 });
+            } else {
+                holder.drLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!holder.drField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.displayPopupWindow(context, holder.drLayout, holder.drField.getText().toString().trim());
+                        }
+                    }
+                });
             }
 
-            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0"))) {
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) || (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && SharedPref.getStpType(context).equalsIgnoreCase("1"))) {
                 holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -876,6 +894,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
                                 onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");//change
                             }
+                        }
+                    }
+                });
+            } else {
+                holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!holder.chemistField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.displayPopupWindow(context, holder.chemistLayout, holder.chemistField.getText().toString().trim());
                         }
                     }
                 });
@@ -2559,8 +2586,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST_MAS);
             holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
             if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-                MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP);
-                sync(STPSetup, hqCode, holder);
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP);
+                    sync(STPSetup, hqCode, holder);
+                } else {
+                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                }
             }
         }
     }
@@ -2676,7 +2707,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode, MyViewHolder holder) {
-
         if (UtilityClass.isNetworkAvailable(context)) {
             try {
                 String baseUrl = SharedPref.getBaseWebUrl(context);

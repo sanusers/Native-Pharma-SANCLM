@@ -553,6 +553,7 @@ Khuyến nghị đồng bộ các cuộc gọi Outbox</string>
     <string name="standard_tour_plan">Kế hoạch tham quan tiêu chuẩn</string>
     <string name="send_to_approval">Gửi để phê duyệt</string>
     <string name="check_unplanned_visits">Kiểm tra chuyến thăm không theo kế hoạch</string>
+    <string name="check_unplanned_doctors">Kiểm tra các bác sĩ không có lịch trình</string>
     <string name="cip">CIP</string>
     <string name="selected">Đã chọn</string>
     <string name="plan_for">Kế hoạch cho</string>

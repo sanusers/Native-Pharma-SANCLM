@@ -71,7 +71,7 @@ public class AddListActivity extends AppCompatActivity {
     private ActivityAddListBinding activityAddListBinding;
     private final ArrayList<Multicheckclass_clust> selectedClusterList = new ArrayList<>();
     private final ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
-    private String hqCode, strClusterName, strClusterID, mode, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, selectedDCRCap;
+    private String hqCode, strClusterName, strClusterID, mode, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, selectedDCRCap, stpType;
     private ApiInterface apiInterface;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
@@ -112,6 +112,12 @@ public class AddListActivity extends AppCompatActivity {
         setContentView(activityAddListBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getRequiredData();
+
+        if (stpType.equalsIgnoreCase("1")) {
+            activityAddListBinding.scrollView.setVisibility(View.GONE);
+        } else {
+            activityAddListBinding.scrollView.setVisibility(View.VISIBLE);
+        }
 
         activityAddListBinding.backArrow.setOnClickListener(view -> {
             strClusterID = "";
@@ -324,6 +330,7 @@ public class AddListActivity extends AppCompatActivity {
         unDrNeed = SharedPref.getUnlNeed(this);
         cipNeed = SharedPref.getCipNeed(this);
         hosNeed = SharedPref.getHospNeed(this);
+        stpType = SharedPref.getStpType(this);
         stpCap = StandardTourPlanActivity.stpCap;
 
         if (stpCap == null || stpCap.isEmpty()) {
@@ -609,7 +616,7 @@ public class AddListActivity extends AppCompatActivity {
             activityAddListBinding.noData.setVisibility(View.GONE);
             activityAddListBinding.llDcrSelection.setVisibility(View.VISIBLE);
             activityAddListBinding.cvRightPane.setVisibility(View.VISIBLE);
-            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener, selectedDCR, mode, dayCaption, dayID);
+            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener, selectedDCR, mode, dayCaption, dayID, stpType);
             RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
             activityAddListBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
             activityAddListBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
@@ -741,7 +748,6 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private final SelectedDCRAdapter.DeleteClickListener deleteClickListener = (dcrModel, selectedDCR) -> {
-
         if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
             //  commonUtilsMethods.showToastMessage(this, "Cannot Delete, Already Approved");
             commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_already_approved));
@@ -775,7 +781,6 @@ public class AddListActivity extends AppCompatActivity {
                 activityAddListBinding.etSearch.setText("");
             }
         }
-
     };
 
     private void clusterChangeClearDCRSelection() {
@@ -918,7 +923,6 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private void addTerritories(JsonObject planObj) {
-
         String[] terrCodes = selectedClusterCode.toString().split(",");
         String[] terrNames = selectedClusterName.toString().split(",");
 
@@ -937,7 +941,6 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private void addDoctors(JsonObject planObj) {
-
         // --- Selected values ---
         String[] drCodes = selectedDoctorCode.toString().split(",");
         String[] drNames = selectedDoctorName.toString().split(",");
@@ -1030,7 +1033,6 @@ public class AddListActivity extends AppCompatActivity {
 //        }
 //    }
     private void addChemists(JsonObject planObj) {
-
         if (selectedChemistCode == null || selectedChemistName == null) return;
 
         String[] chCodes = selectedChemistCode.toString().split(",");
@@ -1075,7 +1077,6 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private void addHospitals(JsonObject planObj) {
-
         if (!planObj.has("Hospital")) {
             planObj.add("Hospital", new JsonArray());
         }
@@ -1083,7 +1084,6 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private String getCategoryCodeFromDocMaster(JSONArray jsonDocMas, String doctorCode) {
-
         if (jsonDocMas == null || doctorCode == null) return "";
 
         for (int i = 0; i < jsonDocMas.length(); i++) {
@@ -1101,7 +1101,6 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private String getNoOfVisitFromCategory(JSONArray jsonCate, String categoryCode) {
-
         if (jsonCate == null || categoryCode == null) return "0";
 
         for (int i = 0; i < jsonCate.length(); i++) {
@@ -1120,7 +1119,6 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private int getSelectedCount(String codes) {
-
         if (codes == null || codes.trim().isEmpty())
             return 0;
 

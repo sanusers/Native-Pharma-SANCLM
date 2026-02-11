@@ -80,7 +80,12 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 } else {
                     holder.workDayLayout.setVisibility(View.GONE);
                 }
-                holder.hqLayout.setVisibility(View.GONE);
+                if (SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+                    holder.hqLayout.setVisibility(View.GONE);
+                } else {
+                    holder.hqLayout.setVisibility(View.VISIBLE);
+                    holder.hqTV.setText(holder.dataOneBuild.getHeadquarters().getName());
+                }
                 if (inputDataModelOneBuild.getSTP_Code().isEmpty()) {
                     holder.workDayTV.setText(context.getString(R.string.select));
                 } else {

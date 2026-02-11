@@ -2717,7 +2717,6 @@ public class TourPlanActivity extends AppCompatActivity {
         }
     }
 
-
     private List<ModelClass.SessionList.SubClass> prepareList(String codes, String names) {
         List<ModelClass.SessionList.SubClass> list = new ArrayList<>();
         try {
@@ -2983,6 +2982,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     arrayListOneBuild.getSessionList().get(i).setVisible(true);
                     arrayListOneBuild.getSessionList().get(i).setLayoutVisible("");
                 }
+                arrayListOneBuild.setSTP_Code("");
+                arrayListOneBuild.setSTP_Name("");
                 populateSessionEditAdapterOneBuild(arrayListOneBuild);
                 scrollToPosition(position, false);
             }
@@ -3014,7 +3015,11 @@ public class TourPlanActivity extends AppCompatActivity {
                             break;
                         }
                     }
-                    getSTPMGR(arrayListOneBuild, position, selectedHQCode, selectedHQName, oneBuildModelClass.getDayNo(), oneBuildModelClass.getDate(), oneBuildModelClass.getDay(), oneBuildModelClass.getSTP_Code(), localDate);
+                    if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
+                        getSTPMGR(arrayListOneBuild, position, selectedHQCode, selectedHQName, oneBuildModelClass.getDayNo(), oneBuildModelClass.getDate(), oneBuildModelClass.getDay(), oneBuildModelClass.getSTP_Code(), localDate);
+                    } else {
+                        CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+                    }
                 }
                 scrollToPosition(position, false);
             }

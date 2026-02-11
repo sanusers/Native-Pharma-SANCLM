@@ -832,7 +832,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
-    public void showHQ(TextView TextHQ, TextView TextCL) {
+    public void showHQ(TextView TextHQ, TextView TextCL, TextView TextWorkDay) {
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
         HomeDashBoard.binding.llNav.txtClDone.setVisibility(View.GONE);
         HomeDashBoard.binding.llNav.wkRecyelerView.setVisibility(View.GONE);
@@ -866,9 +866,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
                         clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
                 Log.e("Work plan", "showHQ: " + docAvailability + " " + chemAvailability + " " + stkAvailability + " " + ulDocAvailability + " " + clusterAvailability);
+
+                if (SharedPref.getSfType(context).equalsIgnoreCase("2") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")) {
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP);
+                        syncMaster(STPSetup.getMasterOf(), STPSetup.getRemoteTableName(), STPSetup.getLocalTableKeyName(), hqCode, false);
+                    } else {
+                        CommonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    }
+                }
 //                if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && hosAvailability && cipAvailability && clusterAvailability){
                 if (docAvailability && chemAvailability && stkAvailability && ulDocAvailability && clusterAvailability) {
                     TextCL.setText("");
+                    TextWorkDay.setText("");
                     TextHQ.setText(SelectedHQ.getString("name"));
                     if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
                         mHQCode1 = SelectedHQ.getString("id");
@@ -882,6 +892,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     getDatabaseHeadQuarters(hqCode);
                 } else if (UtilityClass.isNetworkAvailable(requireContext())) {
                     TextCL.setText("");
+                    TextWorkDay.setText("");
                     TextHQ.setText(SelectedHQ.getString("name"));
                     if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
                         mHQCode1 = SelectedHQ.getString("id");
@@ -894,6 +905,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 } else {
                     TextHQ.setText("");
+                    TextWorkDay.setText("");
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                 }
             } catch (JSONException e) {
@@ -923,7 +935,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
-    public void showHQMGR(TextView TextHQ, TextView TextCL) {
+    public void showHQMGR(TextView TextHQ, TextView TextCL, TextView TextWorkDay) {
         listSelectedHQ.clear();
         updateHQList();
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
@@ -1097,22 +1109,49 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void updateWorkDayList() {
         try {
-            if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/ && (!stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0)) {
-                List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllSTPData();
-                List<STPModelList> stpModelList = new ArrayList<>();
-                for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
-                    stpModelList.add(new STPModelList(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID(), ""));
-                }
-                STPDaySorter.sortDays(stpModelList, STPModelList::getCode);
-                this.stpModelList = new ArrayList<>();
-                for (STPModelList stpModel : stpModelList) {
-                    try {
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("name", stpModel.getName());
-                        jsonObject.put("code", stpModel.getCode());
-                        this.stpModelList.add(jsonObject);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (!stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0)) {
+                    List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllSTPData();
+                    List<STPModelList> stpModelList = new ArrayList<>();
+                    for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
+                        stpModelList.add(new STPModelList(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID(), ""));
+                    }
+                    STPDaySorter.sortDays(stpModelList, STPModelList::getCode);
+                    this.stpModelList = new ArrayList<>();
+                    for (STPModelList stpModel : stpModelList) {
+                        try {
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("name", stpModel.getName());
+                            jsonObject.put("code", stpModel.getCode());
+                            this.stpModelList.add(jsonObject);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
+                    List<STPModelList> stpModelList = new ArrayList<>();
+                    if (jsonArray != null && jsonArray.length() > 0) {
+                        JSONObject jsonObject = jsonArray.optJSONObject(0);
+                        String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
+                        String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
+                        for (int index = 0; index < dayIDs.length; index++) {
+                            if (!dayIDs[index].isEmpty()) {
+                                stpModelList.add(new STPModelList(dayCaptions[index], dayIDs[index], ""));
+                            }
+                        }
+                    }
+                    STPDaySorter.sortDays(stpModelList, STPModelList::getCode);
+                    this.stpModelList = new ArrayList<>();
+                    for (STPModelList stpModel : stpModelList) {
+                        try {
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("name", stpModel.getName());
+                            jsonObject.put("code", stpModel.getCode());
+                            this.stpModelList.add(jsonObject);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -1435,9 +1474,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                     } else {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
-                            showHQ(binding.txtheadquaters1, binding.txtCluster1);
+                            showHQ(binding.txtheadquaters1, binding.txtCluster1, binding.txtworkday1);
                         } else {
-                            showHQMGR(binding.txtheadquaters1, binding.txtCluster1);
+                            showHQMGR(binding.txtheadquaters1, binding.txtCluster1, binding.txtworkday1);
                         }
                     }
                     break;
@@ -1447,9 +1486,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                     } else {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
-                            showHQ(binding.txtheadquaters2, binding.txtCluster2);
+                            showHQ(binding.txtheadquaters2, binding.txtCluster2, binding.txtworkday2);
                         } else {
-                            showHQMGR(binding.txtheadquaters2, binding.txtCluster2);
+                            showHQMGR(binding.txtheadquaters2, binding.txtCluster2, binding.txtworkday2);
                         }
                     }
                     break;
@@ -1900,22 +1939,32 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
             try {
                 Log.d("work Day", "showWD: " + SelectedWorkDay);
-                STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(SelectedWorkDay.optString("code"));
-                txtWorkDay.setText(stpOfflineDataTable.getDayCaption());
-                workDayCode = stpOfflineDataTable.getDayID();
-                workDayName = stpOfflineDataTable.getDayCaption();
-                strClusterName = stpOfflineDataTable.getClusterName();
-                strClusterID = stpOfflineDataTable.getClusterCode();
-                if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
-                    mTowncode1 = strClusterID;
-                    mTownname1 = strClusterName;
-                    binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
-                    chk_cluster = mTowncode1;
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                    STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(SelectedWorkDay.optString("code"));
+                    txtWorkDay.setText(stpOfflineDataTable.getDayCaption());
+                    workDayCode = stpOfflineDataTable.getDayID();
+                    workDayName = stpOfflineDataTable.getDayCaption();
+                    strClusterName = stpOfflineDataTable.getClusterName();
+                    strClusterID = stpOfflineDataTable.getClusterCode();
+                    if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
+                        mTowncode1 = strClusterID;
+                        mTownname1 = strClusterName;
+                        binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
+                        chk_cluster = mTowncode1;
+                    } else {
+                        mTowncode2 = strClusterID;
+                        mTownname2 = strClusterName;
+                        binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
+                        chk_cluster = mTowncode2;
+                    }
                 } else {
-                    mTowncode2 = strClusterID;
-                    mTownname2 = strClusterName;
-                    binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
-                    chk_cluster = mTowncode2;
+                    String hqCode = "";
+                    if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
+                        hqCode = mHQCode1;
+                    } else {
+                        hqCode = mHQCode2;
+                    }
+                    getSTPMGR(hqCode, SelectedWorkDay.optString("code"), txtWorkDay);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1941,6 +1990,224 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             }
         });
+    }
+
+    private void getSTPMGR(String hqCode, String dayOfWeek, TextView txtWorkDay) {
+        if (UtilityClass.isNetworkAvailable(requireContext())) {
+            try {
+                binding.progress.setVisibility(View.VISIBLE);
+                api_interface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
+                jsonObject.put("tableName", "getstp_details_mgr");
+                jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
+                jsonObject.put("Rsf", hqCode);
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonObject.put("workday", dayOfWeek);
+
+                Log.v("STP", "--json-- " + jsonObject);
+
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "get/stp");
+                Call<JsonElement> call = api_interface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+
+                        boolean success = false;
+                        JSONArray jsonArray = new JSONArray();
+
+                        if (response.isSuccessful()) {
+                            Log.e("test STP MGR", "response : " + Objects.requireNonNull(response.body()));
+                            try {
+                                JsonElement jsonElement = response.body();
+                                if (!jsonElement.isJsonNull()) {
+                                    if (jsonElement.isJsonArray()) {
+                                        JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                        jsonArray = new JSONArray(jsonArray1.toString());
+                                        success = true;
+                                    } else if (jsonElement.isJsonObject()) {
+                                        JsonObject jsonObject1 = jsonElement.getAsJsonObject();
+                                        JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
+                                        if (!jsonObject2.has("success")) {
+                                            jsonArray.put(jsonObject2);
+                                            success = true;
+                                        } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                            masterDataDao.saveMasterSyncStatus(Constants.STANDARD_TOUR_PLAN, 1);
+                                        }
+                                    }
+
+                                    if (success) {
+                                        if (jsonArray.length() == 0) {
+                                            CommonUtilsMethods.showToastMessage(requireContext(), "No STP plan available");
+                                        } else {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STANDARD_TOUR_PLAN, jsonArray.toString(), 2));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+//                        stpOfflineDataDao.deleteAllData("0");
+                            if (jsonArray.length() == 0) {
+                                CommonUtilsMethods.showToastMessage(requireContext(), "No STP plan available");
+                            } else {
+                                saveSTPDataToLocal();
+
+                                STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(SelectedWorkDay.optString("code"));
+                                txtWorkDay.setText(stpOfflineDataTable.getDayCaption());
+                                workDayCode = stpOfflineDataTable.getDayID();
+                                workDayName = stpOfflineDataTable.getDayCaption();
+                                strClusterName = stpOfflineDataTable.getClusterName();
+                                strClusterID = stpOfflineDataTable.getClusterCode();
+                                if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
+                                    mTowncode1 = strClusterID;
+                                    mTownname1 = strClusterName;
+                                    binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
+                                    chk_cluster = mTowncode1;
+                                } else {
+                                    mTowncode2 = strClusterID;
+                                    mTownname2 = strClusterName;
+                                    binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
+                                    chk_cluster = mTowncode2;
+                                }
+                            }
+                        }
+                        binding.progress.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        Log.e("STP", "onFailure: ");
+                        binding.progress.setVisibility(View.GONE);
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                        t.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void saveSTPDataToLocal() {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+            JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(requireContext())).getMasterSyncDataJsonArray();
+            JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(requireContext())).getMasterSyncDataJsonArray();
+            JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(requireContext())).getMasterSyncDataJsonArray();
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String doctorSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Dr_Code")));
+                        String chemistSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Chem_Code")));
+                        String clusterSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Patch_Code")));
+                        String doctorSpeciality = jsonObject.optString("Speciality_Name");
+                        String doctorCategory = jsonObject.optString("CategoryName");
+                        String doctorCategoryCode = jsonObject.optString("CategoryCode");
+                        String doctorClass = jsonObject.optString("Class_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal1: " + jsonObject);
+
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(requireContext());
+                        jsonSave.put("sfcode", SharedPref.getSfCode(requireContext()));
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(requireContext()));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(requireContext()));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Planned_Territory_Count", clusterSize + " (" + jsonCluster.length() + ")");
+                        jsonSave.put("Planned_Doctor_Count", doctorSize + " (" + jsonDoc_mas.length() + ")");
+                        jsonSave.put("Planned_Chemist_Count", chemistSize + " (" + jsonChm_mas.length() + ")");
+                        jsonSave.put("Planned_Hospital_Count", "0" + " (" + "0" + ")");
+                        jsonSave.put("Speciality_Name", doctorSpeciality);
+                        jsonSave.put("Category_Name", doctorCategory);
+                        jsonSave.put("Class_Name", doctorClass);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal2: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, doctorSpeciality, doctorCategory, doctorClass, doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));
+                    } else {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(requireContext());
+                        jsonSave.put("sfcode", SharedPref.getSfCode(requireContext()));
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(requireContext()));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(requireContext()));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getCountFromCommaString(String value) {
+        if (value == null || value.trim().isEmpty()) return 0;
+
+        int count = 0;
+        for (String s : value.split(",")) {
+            if (!s.trim().isEmpty()) count++;
+        }
+        return count;
     }
 
     private void showDeviationAlert() {
@@ -3833,6 +4100,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if (masterFor.equalsIgnoreCase(Constants.SUBORDINATE)) {
                     mapString.put("axn", "table/subordinates");
                     call = api_interface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
+                } else if (masterFor.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                    jsonObject.put("sfcode", hqCode);
+                    mapString.put("axn", "get/stp");
+                    call = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                 }
 
                 if (call != null) {
