@@ -113,18 +113,18 @@ public class ProfileViewScreen extends AppCompatActivity {
                 activityProfileViewScreenBinding.dowTxt.setText(dow);
 
 
-                activityProfileViewScreenBinding.txtDr.setText(this.getString(R.string.division) + " : " );
-                activityProfileViewScreenBinding.txtHq.setText(this.getString(R.string.sub_division) + " : " );
-                activityProfileViewScreenBinding.txtTerritory.setText(this.getString(R.string.territory) + " : " );
-                activityProfileViewScreenBinding.desig.setText(this.getString(R.string.designation) + " : " );
-                activityProfileViewScreenBinding.state.setText(this.getString(R.string.state) + " : " );
-                activityProfileViewScreenBinding.empCode.setText(this.getString(R.string.employe_code) + " : " );
-                activityProfileViewScreenBinding.rptMgr.setText(this.getString(R.string.rpt_mgr) + " : " );
-                activityProfileViewScreenBinding.joinDt.setText(this.getString(R.string.join_dt) + " : " );
-                activityProfileViewScreenBinding.phone.setText(this.getString(R.string.mobile) + " : " );
-                activityProfileViewScreenBinding.email.setText(this.getString(R.string.email) + " : " );
-                activityProfileViewScreenBinding.dob.setText(this.getString(R.string.Dateofbirth) + " : " );
-                activityProfileViewScreenBinding.dow.setText(this.getString(R.string.Dateofwedding) + " : " );
+                activityProfileViewScreenBinding.txtDr.setText(this.getString(R.string.division) + " :" );
+                activityProfileViewScreenBinding.txtHq.setText(this.getString(R.string.sub_division) + " :" );
+                activityProfileViewScreenBinding.txtTerritory.setText(this.getString(R.string.territory) + " :" );
+                activityProfileViewScreenBinding.desig.setText(this.getString(R.string.designation) + " :" );
+                activityProfileViewScreenBinding.state.setText(this.getString(R.string.state) + " :" );
+                activityProfileViewScreenBinding.empCode.setText(this.getString(R.string.employe_code) + " :" );
+                activityProfileViewScreenBinding.rptMgr.setText(this.getString(R.string.rpt_mgr) + " :" );
+                activityProfileViewScreenBinding.joinDt.setText(this.getString(R.string.join_dt) + " :" );
+                activityProfileViewScreenBinding.phone.setText(this.getString(R.string.mobile) + " :" );
+                activityProfileViewScreenBinding.email.setText(this.getString(R.string.email) + " :" );
+                activityProfileViewScreenBinding.dob.setText(this.getString(R.string.Dateofbirth) + " :" );
+                activityProfileViewScreenBinding.dow.setText(this.getString(R.string.Dateofwedding) + " :" );
 
                 activityProfileViewScreenBinding.profileContainer.removeAllViews();
 

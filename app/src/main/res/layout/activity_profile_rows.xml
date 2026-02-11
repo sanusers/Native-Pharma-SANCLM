@@ -22,7 +22,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_1sdp"
-            android:layout_marginTop="15dp"
             android:text="keys"
             android:textColor="#000000" />
 
@@ -31,15 +30,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_1sdp"
-            android:layout_marginTop="15dp"
             android:layout_marginBottom="@dimen/_1sdp"
 
             android:drawablePadding="@dimen/_5sdp"
             android:imeOptions="actionDone"
             android:maxLines="1"
-            android:padding="13dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:ellipsize="end"
-            android:paddingHorizontal="@dimen/_5sdp"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="@dimen/_6ssp" />
@@ -58,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_1sdp"
-            android:layout_marginTop="15dp"
+
             android:text="values"
             android:textColor="#000000" />
 
@@ -67,7 +65,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_1sdp"
-            android:layout_marginTop="15dp"
             android:layout_marginBottom="@dimen/_1sdp"
             android:clickable="false"
             android:focusable="false"
@@ -75,8 +72,8 @@
             android:maxLines="1"
             android:singleLine="true"
             android:ellipsize="end"
-            android:padding="13dp"
-            android:paddingHorizontal="@dimen/_5sdp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:textColor="@color/black"
             android:textSize="@dimen/_6ssp" />
     </LinearLayout>
