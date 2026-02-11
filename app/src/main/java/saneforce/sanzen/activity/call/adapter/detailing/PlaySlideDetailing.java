@@ -16,6 +16,7 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.WelcomePres
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,6 +61,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.Constants;
@@ -519,6 +521,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         StrictMode.setVmPolicy(builder.build());
 
         Bundle bundle = getIntent().getBundleExtra("bundle");
+        boolean isWelcome = false;
         if (bundle != null) {
             if (!Objects.requireNonNull(bundle.getString("position")).isEmpty()) {
                 SelectedPos = Integer.parseInt(Objects.requireNonNull(bundle.getString("position")));
@@ -526,6 +529,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 SelectedPos = 0;
             }
             String data = bundle.getString("slideBundle");
+
+            isWelcome = bundle.getBoolean("isWelcomeOnly", false);
 
             try {
                 JSONArray jsonArray = new JSONArray(data);
@@ -543,6 +548,33 @@ public class PlaySlideDetailing extends AppCompatActivity {
         LinearLayoutManager layoutManager11 = new LinearLayoutManager(PlaySlideDetailing.this, LinearLayoutManager.HORIZONTAL, false);
         binding.recViewHead.setLayoutManager(layoutManager11);
         binding.recViewHead.setAdapter(bottomPreviewDetailedHeadAdapter);
+
+        if (isWelcome) {
+
+            binding.upArrow.setVisibility(View.GONE);
+            binding.rightArrow.setVisibility(View.GONE);
+            binding.btnProceed.setVisibility(View.VISIBLE);
+
+
+            binding.btnProceed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(PlaySlideDetailing.this, PreviewActivity.class);
+                    intent.putExtra("from", "call");
+                    intent.putExtra("hideWelcomeTab", true);
+                    intent.putExtra("CusType", "1");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        } else {
+            // Normal slides-ku eppovum pola arrows irukanum
+            binding.btnProceed.setVisibility(View.GONE);
+            binding.upArrow.setVisibility(View.VISIBLE);
+            // Binding-la rightArrow visibility check pannunga
+            if(binding.rightArrow != null) binding.rightArrow.setVisibility(View.VISIBLE);
+        }
 
         if (arrayList != null && !arrayList.isEmpty()) {
             switch (SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName())) {

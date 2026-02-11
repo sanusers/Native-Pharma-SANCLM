@@ -22,6 +22,11 @@ public class PreviewTabAdapter extends FragmentPagerAdapter {
         fragmentTitle.add(title);
     }
 
+    public void clear() {
+        fragments.clear();
+        fragmentTitle.clear();
+        notifyDataSetChanged();
+    }
     @Override
     public int getCount() {
         return fragments.size();

@@ -29,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,6 +97,7 @@ public class PreviewActivity extends AppCompatActivity {
     private SideScreenAdapter sideScreenAdapter;
     private JSONObject checkInJsonObject = new JSONObject();
     public static boolean isTimerEnd = false;
+    String mandatorySlide ="0";
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -121,7 +123,7 @@ public class PreviewActivity extends AppCompatActivity {
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         TextView titte = dialog.findViewById(R.id.ed_alert_msg);
-        titte.setText(getString(R.string.idle_time)+ " " + SharedPref.getDetailingIdleDuration(this) + " " +getString(R.string.minutes)+ " " +getString(R.string.for_detailing_has_been_exceeded));
+        titte.setText(getString(R.string.idle_time) + " " + SharedPref.getDetailingIdleDuration(this) + " " + getString(R.string.minutes) + " " + getString(R.string.for_detailing_has_been_exceeded));
         btn_no.setVisibility(View.GONE);
         btn_yes.setText(getString(R.string.ok));
         btn_yes.setOnClickListener(new SafeClickListener() {
@@ -170,6 +172,59 @@ public class PreviewActivity extends AppCompatActivity {
                 BrandCode = extra.getString("MappedProdCode");
                 SlideCode = extra.getString("MappedSlideCode");
                 CusType = extra.getString("CusType", "");
+                // 🔥 DIRECT OPEN WELCOME FOR DOCTOR
+                if ("1".equalsIgnoreCase(CusType)) {
+
+                    try {
+
+                        JSONArray welcomeSlideArray =
+                                masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE)
+                                        .getMasterSyncDataJsonArray();
+
+                        if (welcomeSlideArray != null && welcomeSlideArray.length() > 0) {
+
+                            ArrayList<BrandModelClass.Product> productList = new ArrayList<>();
+
+                            for (int i = 0; i < welcomeSlideArray.length(); i++) {
+
+                                JSONObject obj = welcomeSlideArray.optJSONObject(i);
+
+                                if (obj != null) {
+
+                                    String fileName = obj.optString("Name", "");
+
+                                    if (fileName.contains("/")) {
+                                        fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                                    }
+
+                                    productList.add(new BrandModelClass.Product("", "Welcome", "", fileName, obj.optString("orderby"), false, "", ""));
+                                }
+                            }
+
+                            if (!productList.isEmpty()) {
+
+                                Intent intent = new Intent(this, PlaySlideDetailing.class);
+
+                                String data = new Gson().toJson(productList);
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("slideBundle", data);
+                                bundle.putString("position", "0");
+
+                                intent.putExtra("bundle", bundle);
+                                bundle.putBoolean("isWelcomeOnly", true);
+
+                                startActivity(intent);
+                                //finish();
+                                //return;  // 🔥 STOP ACTIVITY HERE
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 switch (CusType) {
                     case "1":
                         caption = SharedPref.getDrCap(PreviewActivity.this);
@@ -211,62 +266,151 @@ public class PreviewActivity extends AppCompatActivity {
         viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
 
         if (from_where.equalsIgnoreCase("call")) {
+            // 1️⃣ Clear old fragments
             headingData.clear();
-            if (CusType.equalsIgnoreCase("1")) {
-                viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
-                headingData.add("A");
-                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
-                headingData.add("B");
-                viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-                headingData.add("C");
-                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                headingData.add("D");
-                if (therapticNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-                    headingData.add("E");
+            viewPagerAdapter.clear();
+
+// 2️⃣ Get hideWelcomeTab
+            boolean hideWelcomeTab = getIntent().getBooleanExtra("hideWelcomeTab", false);
+            Log.d("PreviewActivity", "hideWelcomeTab = " + hideWelcomeTab);
+
+// 3️⃣ Add fragments conditionally
+            if (from_where.equalsIgnoreCase("call")) {
+
+                if (CusType.equalsIgnoreCase("1")) {
+
+                    if (hideWelcomeTab) {
+                        viewPagerAdapter.add(new WelcomePresentation(), getString(R.string.welcome));
+                        headingData.add("A");
+                    }
+
+                    viewPagerAdapter.add(new HomeBrands(), getString(R.string.all_brands));
+                    headingData.add("B");
+                    viewPagerAdapter.add(new BrandMatrix(), getString(R.string.brand_matrix));
+                    headingData.add("C");
+                    viewPagerAdapter.add(new Speciality(), getString(R.string.speciality));
+                    headingData.add("D");
+
+                    if (therapticNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+                        headingData.add("E");
+                    }
+
+                    if (presentationNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new MyPresentation(), getString(R.string.my_presentation));
+                        headingData.add("F");
+                    }
+
+                    viewPagerAdapter.add(new CustomizedPresentationFragment(), getString(R.string.customized_presentation));
+                    headingData.add("G");
+                    viewPagerAdapter.add(new CustomPresentationFragment(), getString(R.string.custom_presentation));
+                    headingData.add("H");
+
+                } else {
+                    // CusType != 1
+                    if (hideWelcomeTab) {
+                        viewPagerAdapter.add(new WelcomePresentation(), getString(R.string.welcome));
+                        headingData.add("A");
+                    }
+
+                    viewPagerAdapter.add(new HomeBrands(), getString(R.string.all_brands));
+                    headingData.add("B");
+                    viewPagerAdapter.add(new Speciality(), getString(R.string.speciality));
+                    headingData.add("D");
+
+                    if (therapticNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+                        headingData.add("E");
+                    }
+
+                    if (presentationNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new MyPresentation(), getString(R.string.my_presentation));
+                        headingData.add("F");
+                    }
+
+                    viewPagerAdapter.add(new CustomizedPresentationFragment(), getString(R.string.customized_presentation));
+                    headingData.add("G");
+                    viewPagerAdapter.add(new CustomPresentationFragment(), getString(R.string.custom_presentation));
+                    headingData.add("H");
                 }
-                if (presentationNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                    headingData.add("F");
-                }
-                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
-                headingData.add("G");
-                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-                headingData.add("H");
+
             } else {
-                viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
-                headingData.add("A");
-                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
-                headingData.add("B");
-                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                headingData.add("D");
+                // from_where != call
+                viewPagerAdapter.add(new HomeBrands(), getString(R.string.all_brands));
+                viewPagerAdapter.add(new BrandMatrix(), getString(R.string.brand_matrix));
+                viewPagerAdapter.add(new Speciality(), getString(R.string.speciality));
+
                 if (therapticNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-                    headingData.add("E");
+                    viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
                 }
+
                 if (presentationNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                    headingData.add("F");
+                    viewPagerAdapter.add(new CustomPreviewFragment(this::viewSideScreen), getString(R.string.my_presentation));
                 }
-                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
-                headingData.add("G");
-                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-                headingData.add("H");
             }
-        } else {
-            viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
-            viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-            viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-            if (therapticNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
-            }
-            if (presentationNeed.equalsIgnoreCase("0"))
-//                viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                viewPagerAdapter.add(new CustomPreviewFragment(this::viewSideScreen), getResources().getString(R.string.my_presentation));
+
+// 4️⃣ Set adapter fresh
+            previewBinding.viewPager.setAdapter(viewPagerAdapter);
+            previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
+            previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+
         }
-        previewBinding.viewPager.setAdapter(viewPagerAdapter);
-        previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
-        previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+//            headingData.clear();
+//            if (CusType.equalsIgnoreCase("1")) {
+//                viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
+//                headingData.add("A");
+//                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+//                headingData.add("B");
+//                viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+//                headingData.add("C");
+//                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+//                headingData.add("D");
+//                if (therapticNeed.equalsIgnoreCase("0")) {
+//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+//                    headingData.add("E");
+//                }
+//                if (presentationNeed.equalsIgnoreCase("0")) {
+//                    viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
+//                    headingData.add("F");
+//                }
+//                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
+//                headingData.add("G");
+//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+//                headingData.add("H");
+//            } else {
+//                viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
+//                headingData.add("A");
+//                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+//                headingData.add("B");
+//                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+//                headingData.add("D");
+//                if (therapticNeed.equalsIgnoreCase("0")) {
+//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+//                    headingData.add("E");
+//                }
+//                if (presentationNeed.equalsIgnoreCase("0")) {
+//                    viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
+//                    headingData.add("F");
+//                }
+//                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
+//                headingData.add("G");
+//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+//                headingData.add("H");
+//            }
+//        } else {
+//            viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+//            viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+//            viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+//            if (therapticNeed.equalsIgnoreCase("0")) {
+//                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+//            }
+//            if (presentationNeed.equalsIgnoreCase("0"))
+////                viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
+//                viewPagerAdapter.add(new CustomPreviewFragment(this::viewSideScreen), getResources().getString(R.string.my_presentation));
+//        }
+//        previewBinding.viewPager.setAdapter(viewPagerAdapter);
+//        previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
+//        previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
         previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -310,26 +454,26 @@ public class PreviewActivity extends AppCompatActivity {
                     pendingSlides.add(p.getSlideName());
                 }
             }
-
-            if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
-                Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
-                return;
+            if (mandatorySlide.equalsIgnoreCase("1")) {
+                if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
+                    Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
-
             if (!pendingSlides.isEmpty()) {
                 Toast.makeText(this, "Mandatory slides pending: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
                 return;
             }
 
             previewBinding.rlThankYou.setVisibility(View.VISIBLE);
-            previewBinding.docName.setText("Thank You\n"+ caption + " " + CallActivityCustDetails.get(0).getName());
+            previewBinding.docName.setText("Thank You\n" + caption + " " + CallActivityCustDetails.get(0).getName());
             previewBinding.btnFinishDet.setVisibility(View.GONE);
 //            @Override
 //            public void onSafeClick(View view) {
 //            }
         });
 
-        previewBinding.proceed.setOnClickListener( view -> {
+        previewBinding.proceed.setOnClickListener(view -> {
             Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
             String totalDuration = "";
             for (int j = 0; j < arrayStore.size(); j++) {
@@ -380,7 +524,7 @@ public class PreviewActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
-                if (time != null && !time.isEmpty() && !time.equalsIgnoreCase("null")) {
+                if (time != null && !time.isEmpty() && !time.equalsIgnoreCase("null")&& (!time.equalsIgnoreCase(" " ))) {
                     callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
                 }
             }
@@ -566,7 +710,7 @@ public class PreviewActivity extends AppCompatActivity {
         try {
             for (int i = 0; i < arrayStore.size(); i++) {
                 if (arrayStore.get(i).getBrdName().equalsIgnoreCase(BrandName)) {
-                    dummyArr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming(),arrayStore.get(i).getFlag()));
+                    dummyArr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming(), arrayStore.get(i).getFlag()));
                 }
             }
             ArrayList<String> timesMax = new ArrayList<>();
