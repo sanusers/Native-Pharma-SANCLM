@@ -19,7 +19,23 @@ android {
         versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        def props = new Properties()
+        def localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            props.load(new FileInputStream(localPropertiesFile))
+        } else {
+            throw new GradleException("local.properties not found!")
 
+        }
+        def aesKey = props.getProperty("AES_KEY") ?: ""
+        def aesIv = props.getProperty("AES_IV") ?: ""
+
+        if (aesKey.isEmpty() || aesIv.isEmpty() ) {
+            throw new GradleException("AES_KEY, AES_IV or BASE_URL is missing in local.properties!")
+        }
+
+        buildConfigField "String", "AES_KEY", "\"${aesKey}\""
+        buildConfigField "String", "AES_IV", "\"${aesIv}\""
         //To use java Local(Date) library below api level 26
         multiDexEnabled = true
     }

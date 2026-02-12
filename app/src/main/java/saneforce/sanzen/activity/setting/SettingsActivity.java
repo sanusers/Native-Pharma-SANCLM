@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +41,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.ConfigEncryptDecrypt;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -421,8 +423,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         try {
             if (enteredUrl.contains("saneforce.com")) {
-                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), "https://mapi.san.one");
-                Call<JsonElement> call = apiInterface.getOneBuildConfig("/api/Configuration/Detail-Config");
+//                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), "https://mapi.san.one");
+//                Call<JsonElement> call = apiInterface.getOneBuildConfig("/api/Configuration/Detail-Config");
+                JsonObject jsonObject = new JsonObject();
+                String encrypt = ConfigEncryptDecrypt.encrypt(licenseKey);
+                jsonObject.addProperty("request",encrypt);
+
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), "https://appapi.saneforce.com");
+                Call<JsonElement> call = apiInterface.getOneBuildConfig("/api/Configurations",jsonObject);
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -434,7 +442,8 @@ public class SettingsActivity extends AppCompatActivity {
                             Log.e("test", "success : " + response.body().toString());
                             JSONArray jsonArray = null;
                             try {
-                                jsonArray = new JSONArray(response.body().toString());
+                                String decrypt = ConfigEncryptDecrypt.decrypt(response.body().toString());
+                                jsonArray = new JSONArray(decrypt);
                                 boolean licenseKeyValid = false;
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObj = jsonArray.getJSONObject(i);
@@ -475,6 +484,8 @@ public class SettingsActivity extends AppCompatActivity {
                                     CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));
                                 }
                             } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             SharedPref.Loginsite(getApplicationContext(), url);

@@ -6,6 +6,7 @@ import androidx.annotation.RawRes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 
 import java.util.Dictionary;
@@ -39,7 +40,7 @@ public interface ApiInterface {
 
     @Headers("Content-Type: application/json")
     @POST()
-    Call<JsonElement> getOneBuildConfig(@Url String url);
+    Call<JsonElement> getOneBuildConfig(@Url String url, @Body JsonObject jsonObject);
 
     @Headers("Content-Type: application/json")
     @POST()
