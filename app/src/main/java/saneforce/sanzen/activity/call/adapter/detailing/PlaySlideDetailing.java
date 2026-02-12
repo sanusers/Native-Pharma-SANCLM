@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.adapter.detailing;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.isWelcome;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.mandatoryProductList;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.mandatoryProductList;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.slideScribble;
@@ -96,7 +97,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
     String defaultTime = "00:00:00";
 
     public static void populateViewPagerAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
-        itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList,mandatoryProductList);
+        itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList,mandatoryProductList,isWelcome);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
         if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
@@ -619,7 +620,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 binding.playBtn.setVisibility(View.VISIBLE);
             }
         }
-        itemsPagerAdapter = new PlaySlideDetailedAdapter(this, arrayList,mandatoryProductList);
+        itemsPagerAdapter = new PlaySlideDetailedAdapter(this, arrayList,mandatoryProductList,isWelcome);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         binding.viewPager.setCurrentItem(SelectedPos);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
