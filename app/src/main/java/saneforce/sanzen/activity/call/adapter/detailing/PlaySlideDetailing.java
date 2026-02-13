@@ -163,7 +163,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         mCommonSharedPreference = new CommonSharedPreference(this);
         context = this;
         initialisation();
-
+        binding.btnProceed.setVisibility(View.GONE);
         binding.rightArrow.setOnClickListener(view -> {
             DialogPopUp();
         });
@@ -177,6 +177,14 @@ public class PlaySlideDetailing extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onPageSelected(int position) {
+                int last = itemsPagerAdapter.getCount() - 1;
+
+                if (position == last) {
+                    binding.btnProceed.setVisibility(View.VISIBLE);
+                } else {
+                    binding.btnProceed.setVisibility(View.GONE);
+                }
+
                 if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
                     bottomPreviewDetailedAdapter.notifyDataSetChanged();
                 }
@@ -552,7 +560,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
         if (isWelcome) {
 
-            binding.upArrow.setVisibility(View.GONE);
+         //   binding.upArrow.setVisibility(View.GONE);
             binding.rightArrow.setVisibility(View.GONE);
             binding.btnProceed.setVisibility(View.VISIBLE);
 
@@ -572,7 +580,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         } else {
             // Normal slides-ku eppovum pola arrows irukanum
             binding.btnProceed.setVisibility(View.GONE);
-            binding.upArrow.setVisibility(View.VISIBLE);
+           // binding.upArrow.setVisibility(View.VISIBLE);
             // Binding-la rightArrow visibility check pannunga
             if(binding.rightArrow != null) binding.rightArrow.setVisibility(View.VISIBLE);
         }
