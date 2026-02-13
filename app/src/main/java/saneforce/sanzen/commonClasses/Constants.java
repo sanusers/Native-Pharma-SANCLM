@@ -2,9 +2,15 @@ package saneforce.sanzen.commonClasses;
 
 public class Constants {
 
+    //Configs
     public static final String BASE_URL = "https://";
     public static final String APP_VERSION = "V2.0.8";
     public static final String APP_MODE = "Android-ZEN";
+
+    public static final String REPORT_URL = "iOSServer/DetailingReport/";
+    public static final String SLIDE_URL = "Edetailing_files/SPZ/download/";
+    public static final String OPTION_FILES = "/MasterFiles/Options/Files/";
+    public static final String DET_URL = "iOSServer/db_api.php?axn=";
 
     //Intent Key
     public static final String NAVIGATE_FROM = "NavigateFrom";

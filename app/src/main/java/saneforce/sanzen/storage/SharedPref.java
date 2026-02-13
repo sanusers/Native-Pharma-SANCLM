@@ -46,6 +46,7 @@ public class SharedPref {
 
     public static final String TAG_IMAGE_URL = "tag_image_url";
     public static final String TAG_API_IMAGE_URL = "tag_api_image_url";
+    
 
 // LogIN Data
 
@@ -2221,6 +2222,20 @@ public class SharedPref {
         editor.putString(LICENSE_KEY, licenseKey);
         editor.putString(BASE_WEB_URL, baseWebUrl);
         editor.putString(PHP_PATH_URL, PhpPathUrl);
+        editor.putString(REPORTS_URL, reportsUrl);
+        editor.putString(LOGO_URL, logoUrl);
+        editor.putString(OPTION_FILES_URL, optionFiles);
+        editor.putBoolean(SETTING_STATE, settingState);
+        editor.apply();
+    }
+
+    public static void saveUrlsOneBuild(Context context, String baseUrl, String licenseKey, String baseWebUrl, String detPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(BASE_URL, baseUrl);
+        editor.putString(LICENSE_KEY, licenseKey);
+        editor.putString(BASE_WEB_URL, baseWebUrl);
+        editor.putString(PHP_PATH_URL, detPathUrl);
         editor.putString(REPORTS_URL, reportsUrl);
         editor.putString(LOGO_URL, logoUrl);
         editor.putString(OPTION_FILES_URL, optionFiles);

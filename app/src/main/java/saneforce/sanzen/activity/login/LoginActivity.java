@@ -106,11 +106,11 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
-        if (SharedPref.getClearDataNeed(LoginActivity.this).equalsIgnoreCase("0")) {
-            binding.clearData.setVisibility(View.VISIBLE);
-        } else {
-            binding.clearData.setVisibility(View.GONE);
-        }
+//        if (SharedPref.getClearDataNeed(LoginActivity.this).equalsIgnoreCase("0")) {
+//            binding.clearData.setVisibility(View.VISIBLE);
+//        } else {
+//            binding.clearData.setVisibility(View.GONE);
+//        }
 
         outboxUtil = new OutboxUtil(this);
 

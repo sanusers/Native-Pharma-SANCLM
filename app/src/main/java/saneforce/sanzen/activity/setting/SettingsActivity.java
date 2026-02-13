@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
@@ -60,7 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
     AsyncInterface asyncInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
-    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logoUrl = "", optionFiles = "";
+    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logo = "",senderID = "",logoUrl = "", optionFiles = "",aBKey = "",aBSKey = "",detPathUrl = "";
     int hitCount = 0;
     CommonUtilsMethods commonUtilsMethods;
     Resources resources;
@@ -442,35 +443,43 @@ public class SettingsActivity extends AppCompatActivity {
                             Log.e("test", "success : " + response.body().toString());
                             JSONArray jsonArray = null;
                             try {
-                                String decrypt = ConfigEncryptDecrypt.decrypt(response.body().toString());
+                                String raw = response.body().toString();
+                                JSONObject jsonObject = new JSONObject(raw);
+                                String encrypted = jsonObject.getString("response");
+                                String decrypt = ConfigEncryptDecrypt.decrypt(encrypted);
+                                Log.d("TAG", "decrypt: "+decrypt);
                                 jsonArray = new JSONArray(decrypt);
                                 boolean licenseKeyValid = false;
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObj = jsonArray.getJSONObject(i);
                                     if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
                                         JSONObject config = new JSONObject(jsonObj.getString("config"));
-                                        divisionCode = config.getString("division");
-                                        baseWebUrl = config.getString("weburl");
-                                        phpPathUrl = config.getString("appurl");
-                                        reportsUrl = config.getString("reportUrl");
-                                        slidesUrl = config.getString("slideurl");
-                                        logoUrl = config.getString("logoimg");
-                                        optionFiles = config.getString("optionFiles");
+//                                        divisionCode = config.getString("division");
+                                        baseWebUrl = config.getString("deturl");
+                                        detPathUrl = Constants.DET_URL;
+                                        logo = config.getString("logo");
+                                        senderID = config.optString("senderID");
+                                        logoUrl = config.optString("aws_bucket_url");
+                                        aBKey = config.optString("aws_bucket_key");
+                                        aBSKey = config.optString("aws_bucket_secret_key");
+                                        reportsUrl = Constants.REPORT_URL;
+                                        slidesUrl = Constants.SLIDE_URL;
+                                        optionFiles = Constants.OPTION_FILES;
 
                                         String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
                                         if (binding.etWebUrl.getText().toString().contains("saneforce.com")) {
                                             web_url_getText = web_url_getText.replace("http", "https");
                                         }
-                                        String urlData = web_url_getText + phpPathUrl;
+                                        String urlData = web_url_getText + detPathUrl;
                                         String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
 
                                         SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
                                         SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
-                                        String[] splitUrl = logoUrl.split("/");
-                                        SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, logoUrl, optionFiles, true);
-                                        SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
-                                        downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
+//                                        String[] splitUrl = logoUrl.split("/");
+                                        SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, detPathUrl, reportsUrl, logoUrl, optionFiles, true);
+                                        SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + detPathUrl.replaceAll("\\?.*", "/"));
+                                        downloadImageS3(logoUrl);
                                         licenseKeyValid = true;
                                         SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
                                         SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
@@ -621,6 +630,28 @@ public class SettingsActivity extends AppCompatActivity {
             navigate();
         }
 
+    }
+    public void downloadImageS3(String url) {
+
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        String fileDirectory = packageInfo.applicationInfo.dataDir;
+        String imageName = url.substring(url.lastIndexOf('/') + 1);
+        Log.e("test", "filepath name : " + fileDirectory + "/" + imageName);
+        asyncInterface = status -> {
+            downloaderClass.cancel(true);navigate();
+        };
+        if (!ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
+            Log.e("test", "image not exists");
+            downloaderClass = (DownloaderClass) new DownloaderClass(url, fileDirectory, imageName, asyncInterface).execute();
+        } else {
+            Log.e("test", "image exists");
+            navigate();
+        }
     }
 
     public void navigate() {
