@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -474,6 +476,23 @@ public class CommonUtilsMethods {
         popup.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         TextView tv_name = layout.findViewById(R.id.tv_name);
         tv_name.setText(name);
+       //tv_name.setText(activity.getString(R.string.name));
+        popup.setOutsideTouchable(true);
+        popup.showAsDropDown(view);
+    }
+
+    public void displayPopupWindowEnd(Context context, View view, String name) {
+        PopupWindow popup = new PopupWindow(context);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.popup_text, null);
+        popup.setContentView(layout);
+        popup.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        TextView tv_name = layout.findViewById(R.id.tv_name);
+        tv_name.setText(name);
+        ImageView iv_arrow = layout.findViewById(R.id.img_plygon);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) iv_arrow.getLayoutParams();
+        params.horizontalBias = 0.8f;
+        iv_arrow.setLayoutParams(params);
        //tv_name.setText(activity.getString(R.string.name));
         popup.setOutsideTouchable(true);
         popup.showAsDropDown(view);

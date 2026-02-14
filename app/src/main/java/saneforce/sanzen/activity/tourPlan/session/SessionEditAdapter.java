@@ -484,9 +484,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
             //Joint Work
             StringBuilder jcName = new StringBuilder();
-            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-                holder.jcLayout.setVisibility(View.GONE);
-            } else {
+//            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+//                holder.jcLayout.setVisibility(View.GONE);
+//            } else {
 //            holder.jcLayout.setVisibility(View.VISIBLE);
                 for (int i = 0; i < holder.jcModelArrayOneBuild.size(); i++) {
                     if (jcName.length() == 0) {
@@ -499,7 +499,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     holder.jcField.setText(jcName);
                 }
                 prepareInputDataOneBuild(holder.jcModelArrayOneBuild, holder.jointCallArray);
-            }
+//            }
 
             //Dr
             StringBuilder drName = new StringBuilder();
@@ -773,7 +773,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     @Override
                     public void onClick(View view) {
                         if (!holder.clusterField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                            commonUtilsMethods.displayPopupWindow(context, holder.clusterLayout, holder.clusterField.getText().toString().trim());
+                            commonUtilsMethods.displayPopupWindowEnd(context, holder.clusterLayout, holder.clusterField.getText().toString().trim());
                         }
                     }
                 });
@@ -854,7 +854,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     @Override
                     public void onClick(View view) {
                         if (!holder.drField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                            commonUtilsMethods.displayPopupWindow(context, holder.drLayout, holder.drField.getText().toString().trim());
+                            commonUtilsMethods.displayPopupWindowEnd(context, holder.drLayout, holder.drField.getText().toString().trim());
                         }
                     }
                 });
@@ -902,7 +902,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     @Override
                     public void onClick(View view) {
                         if (!holder.chemistField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                            commonUtilsMethods.displayPopupWindow(context, holder.chemistLayout, holder.chemistField.getText().toString().trim());
+                            commonUtilsMethods.displayPopupWindowEnd(context, holder.chemistLayout, holder.chemistField.getText().toString().trim());
                         }
                     }
                 });

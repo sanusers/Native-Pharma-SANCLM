@@ -20,10 +20,12 @@ import saneforce.sanzen.storage.SharedPref;
 public class STPClickViewDetailsAdapter extends RecyclerView.Adapter<STPClickViewDetailsAdapter.ViewHolder> {
     private final Context context;
     private final ArrayList<STPDetailedModel> stpDetailedModels;
+    private String stpType;
 
     public STPClickViewDetailsAdapter(Context context, ArrayList<STPDetailedModel> stpDetailedModels) {
         this.context = context;
         this.stpDetailedModels = stpDetailedModels;
+        this.stpType = SharedPref.getStpType(context);
     }
 
     @NonNull
@@ -58,7 +60,7 @@ public class STPClickViewDetailsAdapter extends RecyclerView.Adapter<STPClickVie
             }
         }
 
-        if(SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
+        if(SharedPref.getChmNeed(context).equalsIgnoreCase("0") && !stpType.equalsIgnoreCase("1")) {
             holder.constraint_chemist.setVisibility(View.VISIBLE);
             holder.tv_chemistList.setText(stpDetailedModels.get(position).getChemistName());
             holder.tag_chemist.setText(SharedPref.getChmCap(context));
