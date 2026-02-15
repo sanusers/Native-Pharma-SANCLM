@@ -2508,92 +2508,95 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     private void getSTPMGR(OneBuildModelClass arrayListOneBuild, int position, String hqCode, String hqName, String day, String date, String dayName, String dayOfWeek, LocalDate localDate2) {
-        try {
-            binding.progressBar.setVisibility(View.VISIBLE);
-            apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-            jsonObject.put("tableName", "getstp_details_mgr");
-            jsonObject.put("sfcode", SharedPref.getSfCode(this));
-            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-            jsonObject.put("Rsf", hqCode);
-            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-            jsonObject.put("workday", dayOfWeek);
+        if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
+            try {
+                binding.progressBar.setVisibility(View.VISIBLE);
+                apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("tableName", "getstp_details_mgr");
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                jsonObject.put("Rsf", hqCode);
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonObject.put("workday", dayOfWeek);
 
-            Log.v("STP", "--json-- " + jsonObject);
+                Log.v("STP", "--json-- " + jsonObject);
 
-            Map<String, String> mapString = new HashMap<>();
-            mapString.put("axn", "get/stp");
-            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
-            call.enqueue(new Callback<JsonElement>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "get/stp");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        boolean success = false;
+                        JSONArray jsonArray = new JSONArray();
 
-                    boolean success = false;
-                    JSONArray jsonArray = new JSONArray();
-
-                    if (response.isSuccessful()) {
-                        Log.e("test STP MGR", "response : " + Objects.requireNonNull(response.body()));
-                        try {
-                            JsonElement jsonElement = response.body();
-                            if (!jsonElement.isJsonNull()) {
-                                if (jsonElement.isJsonArray()) {
-                                    JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                    jsonArray = new JSONArray(jsonArray1.toString());
-                                    success = true;
-                                } else if (jsonElement.isJsonObject()) {
-                                    JsonObject jsonObject1 = jsonElement.getAsJsonObject();
-                                    JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
-                                    if (!jsonObject2.has("success")) {
-                                        jsonArray.put(jsonObject2);
+                        if (response.isSuccessful()) {
+                            Log.e("test STP MGR", "response : " + Objects.requireNonNull(response.body()));
+                            try {
+                                JsonElement jsonElement = response.body();
+                                if (!jsonElement.isJsonNull()) {
+                                    if (jsonElement.isJsonArray()) {
+                                        JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                        jsonArray = new JSONArray(jsonArray1.toString());
                                         success = true;
-                                    } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
-                                        masterDataDao.saveMasterSyncStatus(Constants.STANDARD_TOUR_PLAN, 1);
+                                    } else if (jsonElement.isJsonObject()) {
+                                        JsonObject jsonObject1 = jsonElement.getAsJsonObject();
+                                        JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
+                                        if (!jsonObject2.has("success")) {
+                                            jsonArray.put(jsonObject2);
+                                            success = true;
+                                        } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                            masterDataDao.saveMasterSyncStatus(Constants.STANDARD_TOUR_PLAN, 1);
+                                        }
                                     }
-                                }
 
-                                if (success) {
-                                    if (jsonArray.length() == 0) {
-                                        CommonUtilsMethods.showToastMessage(TourPlanActivity.this, "No STP plan available");
-                                    } else {
-                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STANDARD_TOUR_PLAN, jsonArray.toString(), 2));
+                                    if (success) {
+                                        if (jsonArray.length() == 0) {
+                                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, "No STP plan available");
+                                        } else {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STANDARD_TOUR_PLAN, jsonArray.toString(), 2));
+                                        }
                                     }
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
 //                        stpOfflineDataDao.deleteAllData("0");
-                        if (jsonArray.length() == 0) {
-                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, "No STP plan available");
-                        } else {
-                            saveSTPDataToLocal();
-                            OneBuildModelClass modelClass1 = prepareAndSaveSTPModelClassOneBuildMGR(day, date, dayName, dayOfWeek, localDate2, hqCode, hqName);
-                            if (modelClass1 == null) {
-
+                            if (jsonArray.length() == 0) {
+                                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, "No STP plan available");
                             } else {
-                                arrayListOneBuild.getSessionList().remove(position);
-                                arrayListOneBuild.getSessionList().add(position, modelClass1.getSessionList().get(0));
-                            }
-                            for (int i = 0; i < arrayListOneBuild.getSessionList().size(); i++) {
-                                arrayListOneBuild.getSessionList().get(i).setVisible(true);
-                            }
+                                saveSTPDataToLocal();
+                                OneBuildModelClass modelClass1 = prepareAndSaveSTPModelClassOneBuildMGR(day, date, dayName, dayOfWeek, localDate2, hqCode, hqName);
+                                if (modelClass1 == null) {
 
-                            populateSessionEditAdapterOneBuild(modelClass1);
+                                } else {
+                                    arrayListOneBuild.getSessionList().remove(position);
+                                    arrayListOneBuild.getSessionList().add(position, modelClass1.getSessionList().get(0));
+                                }
+                                for (int i = 0; i < arrayListOneBuild.getSessionList().size(); i++) {
+                                    arrayListOneBuild.getSessionList().get(i).setVisible(true);
+                                }
+
+                                populateSessionEditAdapterOneBuild(modelClass1);
+                            }
                         }
+                        binding.progressBar.setVisibility(View.GONE);
                     }
-                    binding.progressBar.setVisibility(View.GONE);
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    Log.e("STP", "onFailure: ");
-                    binding.progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
-                    t.printStackTrace();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        Log.e("STP", "onFailure: ");
+                        binding.progressBar.setVisibility(View.GONE);
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+                        t.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
         }
     }
 
