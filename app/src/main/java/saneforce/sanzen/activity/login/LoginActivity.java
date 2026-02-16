@@ -307,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     String timeLeftFormatted = TimeUtils.getMillisToFormattedTime(millisUntilFinished, TimeUtils.FORMAT_40);
-                    binding.rejectedReason.setText(getString(R.string.please_try_again_after)  + timeLeftFormatted + getString(R.string.minutes));
+                    binding.rejectedReason.setText(getString(R.string.please_try_again_after) + timeLeftFormatted + getString(R.string.minutes));
                     remainingTime = millisUntilFinished;
                 }
 
@@ -385,7 +385,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPref.saveLoginState(getApplicationContext(), false);
         SharedPref.saveSettingState(getApplicationContext(), false);
 
-      SharedPref.setDataCleared(this, true);
+        SharedPref.setDataCleared(this, true);
 
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
         commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.data_cleared_successfully));

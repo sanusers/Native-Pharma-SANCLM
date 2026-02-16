@@ -178,8 +178,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         String savedDate = SharedPref.getLastKnownDate(requireContext());
         String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
-        if (!savedDate.equals(today)) {
-            SharedPref.setLastKnownDate(requireContext(), today);
+        if (!savedDate.isEmpty() && !savedDate.equals(today)) {
+            SharedPref.setLastKnownDate(requireContext(), "");
             onDateChanged();
         }
     }
@@ -188,6 +188,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
                 && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
             return;
+        } else {
+            if (!SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0")
+                    && (!SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1")
+                    && !SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")
+                    && !SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1")
+                    && !SharedPref.getGeotagNeedUnlst(requireContext()).equalsIgnoreCase("1"))) {
+                return;
+            }
         }
         if (SharedPref.getIsWorkingToday(requireContext())) {
 //        JSONArray callSync = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
@@ -197,7 +205,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                    && jsonObject.optString("CustCode").equalsIgnoreCase("0")
 //                    && jsonObject.optString("day_status").equalsIgnoreCase("0")) {
             if (finalSubmitDialog != null) {
-                finalSubmitDialog.show();
+//                finalSubmitDialog.show();
             }
             finalSubmit("Auto Submitted", true);
 //                break;
@@ -2627,6 +2635,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if (!HomeDashBoard.binding.textDate.getText().toString().trim().isEmpty()
                     && HomeDashBoard.binding.textDate.getText().toString().trim().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_27))) {
                 SharedPref.setIsWorkingToday(requireContext(), true);
+                SharedPref.setLastKnownDate(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
             } else if (!SharedPref.getIsWorkingToday(requireContext())){
                 SharedPref.setIsWorkingToday(requireContext(), false);
             }
@@ -4142,6 +4151,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if (!HomeDashBoard.binding.textDate.getText().toString().trim().isEmpty()
                             && HomeDashBoard.binding.textDate.getText().toString().trim().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_27))) {
                         SharedPref.setIsWorkingToday(requireContext(), true);
+                        SharedPref.setLastKnownDate(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                     } else if (!SharedPref.getIsWorkingToday(requireContext())){
                         SharedPref.setIsWorkingToday(requireContext(), false);
                     }

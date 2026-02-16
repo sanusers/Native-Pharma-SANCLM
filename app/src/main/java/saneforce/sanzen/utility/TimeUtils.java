@@ -135,7 +135,7 @@ public class TimeUtils {
         long timestampMilliseconds = System.currentTimeMillis();
 
         Locale deviceLocale = Locale.getDefault();
-        boolean isArabic  = deviceLocale.getLanguage().equals("ar");
+        boolean isArabic = deviceLocale.getLanguage().equals("ar");
         boolean isBurmese = deviceLocale.getLanguage().equals("my");
 
         // If Arabic OR Burmese → force English digits
@@ -149,7 +149,6 @@ public class TimeUtils {
         return Str_Date;
     }
 
-
     public static String GetNextDateTime() {
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_MONTH) + 1;
@@ -160,22 +159,21 @@ public class TimeUtils {
         return Str_Date;
     }
 
-      public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
 
 
-          SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.ENGLISH);
-          SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat,Locale.ENGLISH);
-          String outputDate = null;
-          try {
-              Date ConvertedDate = currentDateFormat.parse(mDate);
-              outputDate = requiredDateFormat.format(Objects.requireNonNull(ConvertedDate));
-          } catch (ParseException e) {
-              e.printStackTrace();
-          }
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.ENGLISH);
+        SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat, Locale.ENGLISH);
+        String outputDate = null;
+        try {
+            Date ConvertedDate = currentDateFormat.parse(mDate);
+            outputDate = requiredDateFormat.format(Objects.requireNonNull(ConvertedDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-          return outputDate;
-      }
-
+        return outputDate;
+    }
 
 //    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
 //
@@ -188,7 +186,8 @@ public class TimeUtils {
 //        boolean isBurmese = deviceLocale.getLanguage().equals("my");
 //
 //        // If Arabic OR Burmese → force English digits
-////        Locale formatLocale = (isArabic || isBurmese) ? Locale.ENGLISH : deviceLocale;
+
+    /// /        Locale formatLocale = (isArabic || isBurmese) ? Locale.ENGLISH : deviceLocale;
 //
 //        try {
 //            SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, deviceLocale);
@@ -247,21 +246,16 @@ public class TimeUtils {
             // Burmese/Myanmar (၀-၉)
             else if (ch >= '\u1040' && ch <= '\u1049') {
                 sb.append((char) ('0' + (ch - '\u1040')));
-            }
-            else {
+            } else {
                 sb.append(ch);
             }
         }
         return sb.toString();
     }
 
-
-
     public static String GetConvertedDateTP(String currentFormat, String requiredFormat, String mDate) {
-
-
         SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.ENGLISH);
-        SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat,Locale.ENGLISH);
+        SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat, Locale.ENGLISH);
         String outputDate = null;
         try {
             Date ConvertedDate = currentDateFormat.parse(mDate);
@@ -272,7 +266,6 @@ public class TimeUtils {
 
         return outputDate;
     }
-
 
 /*    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
         Locale[] supportedLocales = {Locale.ENGLISH, Locale.FRENCH};
@@ -475,8 +468,6 @@ public class TimeUtils {
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 
-
-
     public static boolean isBeforeOrToday(String date, String givenFormat) {
         String parsedDate = GetConvertedDate(givenFormat, FORMAT_4, date);
         LocalDate givenDate = LocalDate.parse(parsedDate);
@@ -502,10 +493,14 @@ public class TimeUtils {
             return day + "th";
         }
         switch (day % 10) {
-            case 1: return day + "st";
-            case 2: return day + "nd";
-            case 3: return day + "rd";
-            default: return day + "th";
+            case 1:
+                return day + "st";
+            case 2:
+                return day + "nd";
+            case 3:
+                return day + "rd";
+            default:
+                return day + "th";
         }
     }
 

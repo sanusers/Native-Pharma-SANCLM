@@ -49,7 +49,7 @@ public class SharedPref {
 
     public static final String TAG_IMAGE_URL = "tag_image_url";
     public static final String TAG_API_IMAGE_URL = "tag_api_image_url";
-    
+
 
 // LogIN Data
 
@@ -939,6 +939,7 @@ public class SharedPref {
             editor.putString(ZOOM_FLAG,jsonObject.optString("Zoomflag"));
             editor.putString(LEAVE_ATTACHMENT_NEED,jsonObject.optString("leave_attachment_need"));
             editor.putString(JW_AUTO_SELECTION_NEED, jsonObject.optString("jw_auto_selection_need"));
+            editor.putString(RemainderTime, jsonObject.optString("Remainder_Time"));
             editor.putString(SCREEN_ACCESS, jsonObject.optString("Screen_Access"));
             editor.putString(CLEAR_DATA_NEED, jsonObject.optString("Clear_Data_Need"));
             editor.putString(SEND_LOGS_NEED, jsonObject.optString("Send_Logs_Need"));
@@ -3211,6 +3212,20 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(TpIdNext, 0);
     }
 
+    public static void saveTpId(Context context, String monthYear, int retrievedIdNm) {
+        try {
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt(monthYear, retrievedIdNm);
+            editor.apply();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int getTpId(Context context, String monthYear) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(monthYear, 0);
+    }
 
     public static void saveKeys(Context context, String aKey, String sKey) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);

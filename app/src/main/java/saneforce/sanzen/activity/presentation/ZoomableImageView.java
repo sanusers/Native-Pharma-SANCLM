@@ -2,12 +2,14 @@
 package saneforce.sanzen.activity.presentation;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
 public class ZoomableImageView extends AppCompatImageView {
@@ -15,7 +17,8 @@ public class ZoomableImageView extends AppCompatImageView {
     private final Matrix matrix = new Matrix();
     private final float[] matrixValues = new float[9];
 
-    private float scale = 1f;
+    private float scale = 1f;      // User zoom level
+    private float baseScale = 1f;  // Initial fit scale
     private final float minScale = 1f;
     private final float maxScale = 5f;
 
@@ -23,6 +26,7 @@ public class ZoomableImageView extends AppCompatImageView {
     private GestureDetector gestureDetector;
 
     private float lastX, lastY;
+    private boolean isDragging = false;
 
     public ZoomableImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,9 +34,55 @@ public class ZoomableImageView extends AppCompatImageView {
     }
 
     private void init(Context context) {
-        setScaleType(ScaleType.FIT_XY);
+        setScaleType(ScaleType.MATRIX);
         scaleDetector = new ScaleGestureDetector(context, new ScaleListener());
         gestureDetector = new GestureDetector(context, new GestureListener());
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        fitImageToView();
+    }
+
+    @Override
+    public void setImageDrawable(@Nullable Drawable drawable) {
+        super.setImageDrawable(drawable);
+        post(this::fitImageToView);
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap bm) {
+        super.setImageBitmap(bm);
+        post(this::fitImageToView);
+    }
+
+    private void fitImageToView() {
+        Drawable d = getDrawable();
+        if (d == null) return;
+
+        float viewWidth = getWidth();
+        float viewHeight = getHeight();
+        float dw = d.getIntrinsicWidth();
+        float dh = d.getIntrinsicHeight();
+
+        if (dw == 0 || dh == 0 || viewWidth == 0 || viewHeight == 0) return;
+
+        float scaleX = viewWidth / dw;
+        float scaleY = viewHeight / dh;
+
+        // FIT_CENTER behavior
+        baseScale = Math.max(scaleX, scaleY);
+
+        matrix.reset();
+        matrix.postScale(baseScale, baseScale);
+        matrix.postTranslate(
+                (viewWidth - dw * baseScale) / 2f,
+                (viewHeight - dh * baseScale) / 2f
+        );
+
+        scale = 1f;
+        setImageMatrix(matrix);
     }
 
     @Override
@@ -40,28 +90,25 @@ public class ZoomableImageView extends AppCompatImageView {
         scaleDetector.onTouchEvent(event);
         gestureDetector.onTouchEvent(event);
 
-        // Allow dragging if we are zoomed in
         if (scale > minScale) {
             handleDrag(event);
         }
+
         return true;
     }
 
     private void handleDrag(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-
-                if (getParent() != null) {
-                    getParent().requestDisallowInterceptTouchEvent(true);
-                }
                 lastX = event.getX();
                 lastY = event.getY();
+                isDragging = true;
+                getParent().requestDisallowInterceptTouchEvent(true);
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (getParent() != null) {
-                    getParent().requestDisallowInterceptTouchEvent(true);
-                }
+                if (!isDragging) break;
+
                 float dx = event.getX() - lastX;
                 float dy = event.getY() - lastY;
 
@@ -75,120 +122,73 @@ public class ZoomableImageView extends AppCompatImageView {
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (getParent() != null) {
-                    getParent().requestDisallowInterceptTouchEvent(false);
-                }
+                isDragging = false;
+                getParent().requestDisallowInterceptTouchEvent(false);
                 break;
         }
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-
-            if (getScaleType() != ScaleType.MATRIX) {
-                setupMatrix();
-                setScaleType(ScaleType.MATRIX);
-            }
-            return true;
-        }
-
-        @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactor = detector.getScaleFactor();
-            float nextScale = scale * scaleFactor;
+            float newScale = scale * scaleFactor;
 
-            if (nextScale > maxScale) {
+            if (newScale > maxScale) {
                 scaleFactor = maxScale / scale;
                 scale = maxScale;
-            } else if (nextScale < minScale) {
+            } else if (newScale < minScale) {
                 scaleFactor = minScale / scale;
                 scale = minScale;
             } else {
-                scale = nextScale;
+                scale = newScale;
             }
 
             matrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
             fixTranslation();
             setImageMatrix(matrix);
-
-            if (scale <= minScale) {
-                resetToFit();
-            }
             return true;
         }
     }
 
-    private void setupMatrix() {
-        // Initialize matrix based on current FIT_CENTER position
-        Drawable drawable = getDrawable();
-        if (drawable == null) return;
-
-        float viewWidth = getWidth();
-        float viewHeight = getHeight();
-        float drawableWidth = drawable.getIntrinsicWidth();
-        float drawableHeight = drawable.getIntrinsicHeight();
-
-        float scaleW = viewWidth / drawableWidth;
-        float scaleH = viewHeight / drawableHeight;
-        float initScale = Math.min(scaleW, scaleH);
-
-        matrix.reset();
-        matrix.postScale(initScale, initScale);
-        matrix.postTranslate((viewWidth - drawableWidth * initScale) / 2f,
-                (viewHeight - drawableHeight * initScale) / 2f);
-    }
-
+    // DOUBLE TAP → RESET ONLY
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            if (scale > minScale) resetToFit();
-            else {
-                // Optional: Zoom in on double tap
-                scale = 2f;
-                setupMatrix();
-                matrix.postScale(2f, 2f, e.getX(), e.getY());
-                setScaleType(ScaleType.MATRIX);
-                fixTranslation();
-                setImageMatrix(matrix);
-            }
+            resetZoom();
             return true;
         }
     }
 
-    private void resetToFit() {
-        scale = 1f;
-        matrix.reset();
-        setImageMatrix(null);
-        setScaleType(ScaleType.FIT_XY);
+    private void resetZoom() {
+        fitImageToView();
     }
 
     private void fixTranslation() {
         matrix.getValues(matrixValues);
         float transX = matrixValues[Matrix.MTRANS_X];
         float transY = matrixValues[Matrix.MTRANS_Y];
+        float currentScale = matrixValues[Matrix.MSCALE_X];
 
         Drawable d = getDrawable();
         if (d == null) return;
 
-        float width = d.getIntrinsicWidth() * matrixValues[Matrix.MSCALE_X];
-        float height = d.getIntrinsicHeight() * matrixValues[Matrix.MSCALE_Y];
+        float width = d.getIntrinsicWidth() * currentScale;
+        float height = d.getIntrinsicHeight() * currentScale;
 
         float viewWidth = getWidth();
         float viewHeight = getHeight();
 
-        // Fix X translation
         if (width < viewWidth) {
             transX = (viewWidth - width) / 2;
         } else {
-            transX = Math.min(0, Math.max(transX, viewWidth - width));
+            transX = Math.max(viewWidth - width, Math.min(transX, 0));
         }
 
-        // Fix Y translation
         if (height < viewHeight) {
             transY = (viewHeight - height) / 2;
         } else {
-            transY = Math.min(0, Math.max(transY, viewHeight - height));
+            transY = Math.max(viewHeight - height, Math.min(transY, 0));
         }
 
         matrixValues[Matrix.MTRANS_X] = transX;

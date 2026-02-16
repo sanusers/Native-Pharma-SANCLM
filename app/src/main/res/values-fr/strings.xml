@@ -117,7 +117,7 @@
     <string name="ok">Ok</string>
     <string name="toast_do_master_sync">Veuillez effectuer la synchronisation principale</string>
     <string name="leave_approvals">Approbations de congé</string>
-    <string name="tp_approvals">Approbations du plan de tournée</string>
+    <string name="tp_approvals">Approbations du plan de visite</string>
     <string name="emp_code">Code Employé</string>
     <string name="designation">Désignation</string>
     <string name="leave_type">Type de congé</string>
@@ -165,8 +165,8 @@
     <string name="enter_homeadd">Entrer l\'adresse personnelle</string>
     <string name="enter_hospadd"><![CDATA[Entrer l\'adresse de l\'hôpital]]></string>
     <string name="ent_brand_name">Entrer le nom de la marque</string>
-    <string name="tour_plan_approvals">Approbations du plan de tournée</string>
-    <string name="tp_planed_for">Tournée planifiée pour</string>
+    <string name="tour_plan_approvals">Approbations du plan de visite</string>
+    <string name="tp_planed_for">Visite planifiée pour</string>
     <string name="total_planed_days">Nombre total de jours planifiés</string>
     <string name="week_off_days_holidays">Jours de repos / Vacances</string>
     <string name="total">Total</string>
@@ -218,8 +218,8 @@
     <string name="report">Rapport</string>
     <string name="analysis">Analyse</string>
     <string name="all_brands">Toutes les marques</string>
-    <string name="refresh_location">Actualiser la localisation</string>
-    <string name="tour_plan">Plan de tournée</string>
+    <string name="refresh_location">Actualiser l\'emplacement</string>
+    <string name="tour_plan">Plan de visite</string>
     <string name="faq">FAQ</string>
     <string name="leave_application">Demande de congé</string>
     <string name="reports">Rapports</string>
@@ -233,7 +233,7 @@
     <string name="clear_slides">Effacer toutes les diapositives</string>
     <string name="date_time"><![CDATA[Date & Heure]]></string>
     <!--<string name="date_time">Date &amp; Heure</string>-->
-    <string name="sync">Sync</string>
+    <string name="sync">Synchronisation</string>
     <string name="select_hq">Sélectionnez  HQ</string>
     <string name="no_input_available">Aucune entrée disponible</string>
     <string name="finish_detailing">Terminer le détail</string>
@@ -436,7 +436,7 @@
     <string name="are_you_sure_you_want_to_clear">Êtes-vous sûr de vouloir effacer !</string>
     <string name="jointcall">Appel conjoint</string>
     <string name="no_content_to_view">Aucun contenu à afficher</string>
-    <string name="tp_ap_not_available">Approbations du plan de tournée non disponibles</string>
+    <string name="tp_ap_not_available">Approbations du plan de visite non disponibles</string>
     <string name="leave_ap_not_available">Approbations de congé non disponibles</string>
     <string name="dcr_ap_not_available">Approbations DCR non disponibles</string>
     <string name="tpdevication_ap_not_available">Approbations de déviation TP non disponibles</string>
@@ -456,7 +456,7 @@
     <string name="install">Installer</string>
     <string name="permission_change_content"><![CDATA[Vous avez tenté de changer la permission, nous bloquons donc la procédure. Vous serez redirigé vers l\'écran d\'accueil.Veuillez cliquer sur CONTINUER pour continuer.]]></string>
     <string name="clear_all_approvals_content">Les approbations de l\'équipe sont toujours en attente. Veuillez valider toutes les approbations</string>
-    <string name="tp_alert_content">"La plage de planification du tournage a été dépassée. Veuillez préparer votre plan de tournée"</string>
+    <string name="tp_alert_content">"La plage de planification du tournage a été dépassée. Veuillez préparer votre plan de visite"</string>
     <string name="outboxAlertContent"><![CDATA[Vous avez déjà 3 appels ou plus dans la boîte d\'envoi.
         Il est recommandé de synchroniser les appels de la boîte d\'envoi]]></string>
     <string name="please_check_your_internet_connection">Veuillez vérifier votre connexion Internet</string>
@@ -547,7 +547,7 @@
     <string name="enter_email"><![CDATA[Entrer l\'e-mail]]></string>
     <string name="gender_selction">Sélection du genre</string>
     <string name="triple_dot">...</string>
-    <string name="standard_tour_plan">Plan de tournée standard</string>
+    <string name="standard_tour_plan">Plan de visite standard</string>
     <string name="send_to_approval">Envoyer pour approbation</string>
     <string name="check_unplanned_visits">Vérifier les visites non planifiées</string>
     <string name="cip">CIP</string>
@@ -563,9 +563,9 @@
     <string name="waiting_for_approval">En attente d\'approbation</string>
     <string name="planning">Planification...</string>
     <string name="already_approved">Déjà approuvé</string>
-    <string name="stp_ap_not_available">Les approbations du plan de tournée standard ne sont pas disponibles</string>
-    <string name="standard_tour_plan_approvals">Approbations du plan de tournée standard</string>
-    <string name="standard_tour_planned_for">Plan de tournée standard prévu pour</string>
+    <string name="stp_ap_not_available">Les approbations du plan de visite standard ne sont pas disponibles</string>
+    <string name="standard_tour_plan_approvals">Approbations du plan de visite standard</string>
+    <string name="standard_tour_planned_for">Plan de visite standard prévu pour</string>
     <string name="no_welcome_presentation_found">Aucune présentation de bienvenue trouvée</string>
     <string name="welcome">Bienvenue</string>
     <string name="sync_failed">Échec de la synchronisation</string>
@@ -637,7 +637,7 @@
     <string name="fwd">FWD</string>
     <string name="avg">Moyenne</string>
     <string name="cvg">Couverture</string>
-    <string name="draft_save">Données du plan de tournée enregistrées avec succès</string>
+    <string name="draft_save">Données du plan de visite enregistrées avec succès</string>
 
 
     <string name="need_remarks"> Saisir des remarques dans la session </string>
@@ -647,11 +647,11 @@
     <string name="division">Division</string>
     <string name="sub_division">Sous-division</string>
     <string name="dcr_start_dt">Date de début DCR</string>
-    <string name="tp_start_dt">Date de début du plan de tournée</string>
+    <string name="tp_start_dt">Date de début du plan de visite</string>
     <string name="rpt_mgr"> Responsable hiérarchique </string>
-    <string name="tp_rpt">Responsable du plan de tournée</string>
+    <string name="tp_rpt">Responsable du plan de visite</string>
     <string name="lev_rpt">Responsable des congés</string>
-    <string name="tp_mand_range">Plage obligatoire du plan de tournée</string>
+    <string name="tp_mand_range">Plage obligatoire du plan de visite</string>
     <string name="already_exist"> Existe déjà </string>
     <string name="state"> État </string>
     <string name="employe_code"> Code employé </string>
@@ -679,14 +679,14 @@
     <string name="reason_for_leave"> Raison du congé </string>
     <string name="address_on_leave"> Adresse pendant le congé </string>
     <string name="your_lv_req_inc"> Votre demande de congé comprend </string>
-    <string name="master_sync"> Sync principale </string>
-    <string name="master_note"> Touchez chacun pour sync individuellement </string>
+    <string name="master_sync"> Synchronisation principale </string>
+    <string name="master_note"> Touchez chacun pour Synchronisation individuellement </string>
     <string name="slide"> Diapositive </string>
     <string name="subordinate"> Subordonné </string>
     <string name="other"> Autre </string>
     <string name="setup"> Configuration </string>
-    <string name="sync_all"> Tout sync </string>
-    <string name="last_sync"> Dernière Sync : </string>
+    <string name="sync_all"> Tout Synchronisation </string>
+    <string name="last_sync"> Dernière Synchronisation : </string>
     <string name="presentation_name"> Nom de la présentation </string>
     <string name="slides"> Diapositives </string>
     <string name="brand_wise"> Par marque </string>
@@ -696,8 +696,8 @@
     <string name="welcome_slide_downloader">Bienvenue dans le téléchargeur</string>
     <string name="brand">Marque</string>
     <string name="mapped_competitor_prod">Produit concurrent mappé</string>
-    <string name="call_sync">Sync des appels</string>
-    <string name="date_sync">Sync de la date</string>
+    <string name="call_sync">Synchronisation des appels</string>
+    <string name="date_sync">Synchronisation de la date</string>
     <string name="work_plan">Plan de travail</string>
     <string name="visit_control">Contrôle des visites</string>
     <string name="work_type">Type de travail</string>
@@ -709,7 +709,7 @@
     <string name="therapeutic_slide">Diapositive Thérapeutique</string>
     <string name="welcome_slide">Diapositive d accueil</string>
     <string name="hierarchy">Hiérarchie</string>
-    <string name="sync_listed_doctor">Sync les médecins listés</string>
+    <string name="sync_listed_doctor">Synchronisation les médecins listés</string>
     <string name="no_item_found">Aucun trouvé</string>
     <string name="warning_label">Avertissement !</string>
     <string name="call_count">Nombre d appels :</string>
@@ -737,7 +737,7 @@
     <string name="cannot_clear_already_approved">Impossible de supprimer, déjà approuvé</string>
     <string name="cannot_clear_waiting_for_approval">Impossible de supprimer, en attente d approbation</string>
     <string name="nothing_selected_to_clear">Rien de sélectionné à supprimer</string>
-    <string name="kindly_sync_standard_tour_plan_setup">Veuillez synchroniser la configuration du Plan de Tour Standard!</string>
+    <string name="kindly_sync_standard_tour_plan_setup">Veuillez synchroniser la configuration du Plan de Visite Standard!</string>
     <string name="no_update_available">Aucune mise à jour disponible</string>
     <string name="cannot_delete_already_approved">Impossible de supprimer, déjà approuvé</string>
     <string name="cannot_delete_waiting_for_approval">Impossible de supprimer, en attente d approbation</string>
@@ -760,11 +760,11 @@
     <string name="qty_cannot_be_empty">La quantité ne peut pas être vide</string>
     <string name="kindly_sync_subordinate">Veuillez synchroniser les subordonnés</string>
     <string name="deviate_to_add_plan">Dévier pour ajouter un plan</string>
-    <string name="cannot_add_plan_in_tour_plan_based_dcr">Impossible d ajouter un plan dans un DCR basé sur le Plan de tournée</string>
+    <string name="cannot_add_plan_in_tour_plan_based_dcr">Impossible d ajouter un plan dans un DCR basé sur le Plan de visite</string>
     <string name="deviate_to_edit_work_plan">Dévier pour modifier le Plan de travail</string>
     <string name="please_update_session_2">Veuillez mettre à jour la session 2</string>
     <string name="please_update_session_1">Veuillez mettre à jour la session 1</string>
-    <string name="standard_tour_plan_must_be_approved_to_enter_tour_plan">Le plan de tournée standard doit être approuvé pour accéder au plan de tournée</string>
+    <string name="standard_tour_plan_must_be_approved_to_enter_tour_plan">Le plan de visite standard doit être approuvé pour accéder au plan de visite</string>
     <string name="file_does_not_exist">Le fichier n\'existe pas</string>
     <string name="please_fill_atleast_any_one_question">Veuillez remplir au moins une question</string>
     <string name="slide_updated">Diapositive mise à jour</string>
@@ -787,10 +787,10 @@
     <string name="please_complete">Veuillez compléter</string>
     <string name="submitted_successfully">Soumis avec succès</string>
     <string name="please_try_after_sometime">Veuillez réessayer plus tard</string>
-    <string name="from_master_sync">Depuis la sync principale</string>
+    <string name="from_master_sync">Depuis la Synchronisation principale</string>
     <string name="complete">Terminé</string>
-    <string name="prepare_your_tourplan">Préparez votre plan de tournée</string>
-    <string name="sync_completed">Sync terminée</string>
+    <string name="prepare_your_tourplan">Préparez votre plan de visite</string>
+    <string name="sync_completed">Synchronisation terminée</string>
     <string name="details">Détails</string>
     <string name="wait_for_location">Attendez la localisation</string>
     <string name="fill_the_from">Remplissez le champ "De"</string>
@@ -799,9 +799,9 @@
     <string name="fill_the">Remplissez le/la</string>
     <string name="checked_out_successfully">Sortie effectuée avec succès</string>
     <string name="gathering_location_information_failed_please_try_again">Échec de la récupération des informations de localisation, veuillez réessayer</string>
-    <string name="offline_tourplan_uploading">Téléversement du plan de tournée hors ligne</string>
+    <string name="offline_tourplan_uploading">Téléversement du plan de visite hors ligne</string>
     <string name="prepare">Préparer</string>
-    <string name="and_get_approved_to_prepare_tour_plan">et obtenir l\'approbation pour préparer le plan de tournée</string>
+    <string name="and_get_approved_to_prepare_tour_plan">et obtenir l\'approbation pour préparer le plan de visite</string>
     <string name="no_rcpa_values">Aucune valeur RCPA</string>
     <string name="call_deleted">Appel supprimé</string>
     <string name="weekly_off_auto_post_is_enabled">La publication automatique du jour de repos hebdomadaire est activée</string>
@@ -822,10 +822,10 @@
     <string name="rcpa_details_not_available">Les détails RCPA ne sont pas disponibles</string>
     <string name="please_deselect_the_selected_inputs">Veuillez désélectionner les entrées sélectionnées</string>
     <string name="cannot_deselect_no_input">Impossible de désélectionner, aucune entrée sélectionnée</string>
-    <string name="please_sync_previous_dates">Veuillez sync les dates précédentes</string>
-    <string name="sync_work_plan">Sync le plan de travail</string>
-    <string name="sync_check_in_out">Sync l\’enregistrement/déconnexion</string>
-    <string name="sync_work_plan_and_calls">Sync le plan de travail et les appels</string>
+    <string name="please_sync_previous_dates">Veuillez Synchronisation les dates précédentes</string>
+    <string name="sync_work_plan">Synchronisation le plan de travail</string>
+    <string name="sync_check_in_out">Synchronisation l\’enregistrement/déconnexion</string>
+    <string name="sync_work_plan_and_calls">Synchronisation le plan de travail et les appels</string>
     <string name="deviation_not_approved">Déviation non approuvée</string>
     <string name="cannot_edit_already_approved">Impossible de modifier, déjà approuvé</string>
     <string name="cannot_edit_waiting_for_approval">Impossible de modifier, en attente d’approbation</string>
@@ -894,7 +894,7 @@
     <string name="sort_by_visit_time">Trier par heure de visite</string>
     <string name="as_on_calls">Selon les appels</string>
     <string name="approved_calls">Appels validés</string>
-    <string name="sync_to_get_live_data">Sync pour obtenir les données en direct</string>
+    <string name="sync_to_get_live_data">Synchronisation pour obtenir les données en direct</string>
     <string name="you_are_live_select_month_to_get_data">Vous êtes en direct! sélectionnez le mois pour obtenir les données</string>
     <string name="no_report_found">Aucun rapport trouvé!</string>
     <string name="please_select_month">Veuillez sélectionner le mois</string>
@@ -972,7 +972,7 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="no_data_to_view">Aucune donnée à afficher</string>
     <string name="to_view_list">Aucune donnée à afficher</string>
     <string name="clear_selected">Effacer la sélection</string>
-    <string name="syncing_offline_data">Sync des données hors ligne</string>
+    <string name="syncing_offline_data">Synchronisation des données hors ligne</string>
     <string name="planned">Planifié</string>
     <string name="select_cluster_to_view_list">Sélectionnez un cluster pour voir la liste</string>
     <string name="you_have_tagged">Vous avez tagué</string>
@@ -982,7 +982,7 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="downloading">Téléchargement</string>
     <string name="unplanned_visit_count">Nombre de visites non prévues</string>
     <string name="planned_everything">Tout planifié</string>
-    <string name="tour_plan_not_sync_properly_once_sync_again">Le plan de tournée n\'a pas été synchronisé correctement, veuillez synchroniser à nouveau...</string>
+    <string name="tour_plan_not_sync_properly_once_sync_again">Le plan de visite n\'a pas été synchronisé correctement, veuillez synchroniser à nouveau...</string>
     <string name="activity_mandatory">Activité obligatoire</string>
     <string name="location_permission_needed">Autorisation de localisation requise !</string>
     <string name="available">Disponible :</string>
@@ -1008,7 +1008,7 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="at_least_one_time"> au moins une fois</string>
     <string name="not_planned">Non planifié</string>
     <string name="plan_overview">Aperçu du plan</string>
-    <string name="tour_plan_overview">Aperçu du plan de tournée</string>
+    <string name="tour_plan_overview">Aperçu du plan de visite</string>
     <string name="total_planned_days">Total des jours planifiés : </string>
     <string name="planned_">Planifié : </string>
     <string name="total_">Total : </string>
@@ -1043,6 +1043,7 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="jfw">Travail conjoint</string>
     <string name="others">Autres</string>
     <string name="location">Emplacement</string>
+    <string name="failed_to_save_image">Échec de l’enregistrement de l’image</string>
 
     <string name="address_format">Adresse : %1$s</string>
     <string name="distance_format">Distance : %1$.2f mètres</string>

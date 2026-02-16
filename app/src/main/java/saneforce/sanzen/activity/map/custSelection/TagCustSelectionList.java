@@ -39,6 +39,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -116,8 +118,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                 if (MapsActivity.GeoTagApprovalNeed.equalsIgnoreCase("0")) {
                     mm.setGeoTagStatus("1");
                 }
-                mm.setLatitude(String.valueOf(MapsActivity.TaggedLat).replace(",","."));
-                mm.setLongitude(String.valueOf(MapsActivity.TaggedLng).replace(",","."));
+                mm.setLatitude(String.valueOf(MapsActivity.TaggedLat).replace(",", "."));
+                mm.setLongitude(String.valueOf(MapsActivity.TaggedLng).replace(",", "."));
                 mm.setAddress(String.valueOf(MapsActivity.TaggedAdd));
                 custListAdapter.notifyDataSetChanged();
                 MapsActivity.isTagged = false;
@@ -397,13 +399,13 @@ public class TagCustSelectionList extends AppCompatActivity {
         masterSyncArray.add(unListModel_geo);
         for (int i = 0; i < masterSyncArray.size(); i++) {
             String syncedUserData = "";
-            if (masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.DOCTOR_MAS) || masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.DOCTOR_GEO)){
+            if (masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.DOCTOR_MAS) || masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.DOCTOR_GEO)) {
                 syncedUserData = "D";
-            } else if (masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.CHEMIST_MAS) || masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.CHEMIST_GEO)){
+            } else if (masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.CHEMIST_MAS) || masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.CHEMIST_GEO)) {
                 syncedUserData = "C";
-            } else if (masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.STOCKIEST_MAS) || masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.STOCKIEST_GEO)){
+            } else if (masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.STOCKIEST_MAS) || masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.STOCKIEST_GEO)) {
                 syncedUserData = "S";
-            } else if (masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.UNLISTED_DOCTOR_MAS) || masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.UNLISTED_DOCTOR_GEO)){
+            } else if (masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.UNLISTED_DOCTOR_MAS) || masterSyncArray.get(i).getLocalTableKeyName().contains(Constants.UNLISTED_DOCTOR_GEO)) {
                 syncedUserData = "U";
             }
             sync(masterSyncArray.get(i), hqCode, syncedUserData);
@@ -539,7 +541,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         Log.v("selected_hq", "---" + selectedHqCode);
         binding.rvCustList.setVisibility(View.VISIBLE);
         switch (SelectedTab) {
-            case "D":
+          /*  case "D":
                 try {
                     binding.tagSelection.setText(SharedPref.getDrCap(this));
                     JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHqCode).getMasterSyncDataJsonArray();
@@ -612,9 +614,92 @@ public class TagCustSelectionList extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.v("dr_tag", "---error--" + e);
                 }
+                break;*/
+            case "D":
+                try {
+                    binding.tagSelection.setText(SharedPref.getDrCap(this));
+                    JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHqCode).getMasterSyncDataJsonArray();
+                    JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + selectedHqCode).getMasterSyncDataJsonArray();
+
+                    // 1. Group Geo Tags by Code so we can find multiple locations quickly
+                    HashMap<String, List<JSONObject>> geoMap = new HashMap<>();
+                    for (int i = 0; i < masterJsonArray2.length(); i++) {
+                        JSONObject geoObj = masterJsonArray2.getJSONObject(i);
+                        String code = geoObj.optString("Code");
+                        if (!geoMap.containsKey(code)) {
+                            geoMap.put(code, new ArrayList<>());
+                        }
+                        geoMap.get(code).add(geoObj);
+                    }
+
+                    // 2. This list will hold the final combined data
+                    List<JSONObject> finalDisplayList = new ArrayList<>();
+
+                    // 3. Loop through EVERY doctor in the Master List
+                    for (int i = 0; i < masterJsonArray1.length(); i++) {
+                        JSONObject masterObj = masterJsonArray1.getJSONObject(i);
+                        String code = masterObj.optString("Code");
+
+                        if (geoMap.containsKey(code)) {
+
+                            List<JSONObject> tags = geoMap.get(code);
+                            for (JSONObject specificTag : tags) {
+                                // Create a copy of master info and merge this specific tag's data
+                                JSONObject combined = new JSONObject(masterObj.toString());
+                                java.util.Iterator<String> it = specificTag.keys();
+                                while (it.hasNext()) {
+                                    String key = it.next();
+                                    combined.put(key, specificTag.get(key));
+                                }
+                                finalDisplayList.add(combined);
+                            }
+                        } else {
+                            finalDisplayList.add(masterObj);
+                        }
+                    }
+
+                    // 4. Sort the final list alphabetically
+                    Collections.sort(finalDisplayList, (o1, o2) ->
+                            o1.optString("Name").compareToIgnoreCase(o2.optString("Name")));
+
+                    // 5. Populate your ArrayLists
+                    custListArrayList.clear();
+                    custListArrayNew.clear();
+                    for (int i = 0; i < finalDisplayList.size(); i++) {
+                        JSONObject obj = finalDisplayList.get(i);
+
+                        // Use optString with defaults to prevent "null" showing on UI
+                        String lat = obj.optString("lat", "0.0");
+                        String lon = obj.optString("long", "0.0");
+                        String addr = obj.optString("addrs", "No Address Found");
+                        String status = obj.optString("cust_status", "0");
+
+                        CustList item = new CustList(
+                                obj.optString("Name"),
+                                obj.optString("Code"),
+                                SelectedTab,
+                                obj.optString("Category"),
+                                obj.optString("Specialty"),
+                                lat, lon, addr,
+                                obj.optString("Town_Name"),
+                                obj.optString("Town_Code"),
+                                obj.optString("GEOTagedCnt", "0"),
+                                obj.optString("Geototal", "0"),
+                                String.valueOf(i),
+                                status
+                        );
+
+                        custListArrayList.add(item);
+                        custListArrayNew.add(item);
+                    }
+
+                } catch (Exception e) {
+                    Log.e("dr_tag", "Error in combined logic: ", e);
+                }
                 break;
 
-            case "C":
+
+            /*case "C":
                 try {
                     binding.tagSelection.setText(SharedPref.getChmCap(this));
                     JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + selectedHqCode).getMasterSyncDataJsonArray();
@@ -696,6 +781,130 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     Log.e("TAG", "AddCustList: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                break;*/
+            case "C":
+                try {
+                    binding.tagSelection.setText(SharedPref.getChmCap(this));
+
+                    // Load Master Data and Geo (Tag) Data
+                    JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + selectedHqCode).getMasterSyncDataJsonArray();
+                    JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + selectedHqCode).getMasterSyncDataJsonArray();
+
+                    // 1. Create a Lookup Map for Master details (Name, Town, etc.)
+                    HashMap<String, JSONObject> masterLookup = new HashMap<>();
+                    for (int i = 0; i < masterJsonArrayChe.length(); i++) {
+                        JSONObject masterObj = masterJsonArrayChe.getJSONObject(i);
+                        String code = masterObj.optString("Code");
+                        if (!code.isEmpty()) {
+                            masterLookup.put(code, masterObj);
+                        }
+                    }
+
+                    // 2. This list will hold every row we want to show in the UI
+                    List<JSONObject> consolidatedList = new ArrayList<>();
+                    // This set tracks which chemists have at least one tag
+                    HashSet<String> taggedCodes = new HashSet<>();
+
+                    // 3. STEP 1: Add all tagged locations from the GEO array
+                    for (int i = 0; i < masterJsonArrayGeo.length(); i++) {
+                        JSONObject geoObj = masterJsonArrayGeo.getJSONObject(i);
+                        String code = geoObj.optString("Code");
+
+                        if (!code.isEmpty() && masterLookup.containsKey(code)) {
+                            JSONObject masterInfo = masterLookup.get(code);
+
+                            // Create a NEW object combining Master Info + this specific Geo location
+                            JSONObject combinedInstance = new JSONObject(masterInfo.toString());
+                            java.util.Iterator<String> it = geoObj.keys();
+                            while (it.hasNext()) {
+                                String key = it.next();
+                                combinedInstance.put(key, geoObj.get(key));
+                            }
+
+                            consolidatedList.add(combinedInstance);
+                            taggedCodes.add(code); // Mark that this chemist has been added at least once
+                        }
+                    }
+
+                    // 4. STEP 2: Add Chemists who have NO tags at all
+                    for (int i = 0; i < masterJsonArrayChe.length(); i++) {
+                        JSONObject masterObj = masterJsonArrayChe.getJSONObject(i);
+                        String code = masterObj.optString("Code");
+
+                        // If the code is NOT in our taggedCodes set, they haven't been added yet
+                        if (!code.isEmpty() && !taggedCodes.contains(code)) {
+                            consolidatedList.add(masterObj);
+                        }
+                    }
+
+                    // 5. Sorting by Name
+                    Collections.sort(consolidatedList, (o1, o2) -> {
+                        String name1 = o1.optString("Name", "");
+                        String name2 = o2.optString("Name", "");
+                        return name1.compareToIgnoreCase(name2);
+                    });
+
+                    // 6. Process the final List for the UI
+                    if (consolidatedList.isEmpty()) {
+                        prepareMasterToSync(selectedHqCode);
+                    } else {
+                        jsonArray = new JSONArray(consolidatedList);
+
+                        // Fetch Category Names for Chemists
+                        JSONArray catJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
+                        Map<String, String> categoryMap = new HashMap<>();
+                        for (int i = 0; i < catJsonArray.length(); i++) {
+                            JSONObject catObj = catJsonArray.getJSONObject(i);
+                            categoryMap.put(catObj.optString("Code"), catObj.optString("Chem_Cat_Name"));
+                        }
+
+                        // Populate your ArrayLists for the Adapter
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            String catName = categoryMap.get(obj.optString("Chm_cat"));
+                            if (catName == null) catName = "";
+
+                            // Safely extract coordinates/address
+                            String lat = obj.optString("lat", "0.0");
+                            String lng = obj.optString("long", "0.0");
+                            String addr = obj.optString("addr", "");
+
+                            // Handle different possible key names for tag counts
+                            String taggedCount = obj.has("GEOTagedCnt") ? obj.optString("GEOTagedCnt") : obj.optString("GEOTagCnt", "0");
+                            String totalAllowed = obj.optString("Geototal", "0");
+                            String status = obj.optString("cust_status", "0");
+
+                            CustList item = new CustList(
+                                    obj.optString("Name"),
+                                    obj.optString("Code"),
+                                    SelectedTab,
+                                    catName,
+                                    "Specialty",
+                                    lat,
+                                    lng,
+                                    addr,
+                                    obj.optString("Town_Name"),
+                                    obj.optString("Town_Code"),
+                                    taggedCount,
+                                    totalAllowed,
+                                    String.valueOf(i),
+                                    status
+                            );
+
+                            custListArrayList.add(item);
+                            custListArrayNew.add(item);
+                        }
+                    }
+
+                    if (custListArrayList.isEmpty()) {
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this,
+                                getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
+                    }
+
+                } catch (Exception e) {
+                    Log.e("TAG_Selection", "Error in Case C: " + e.getMessage());
                     e.printStackTrace();
                 }
                 break;
@@ -848,6 +1057,259 @@ public class TagCustSelectionList extends AppCompatActivity {
                     ignored.printStackTrace();
                 }
                 break;
+           /* case "C":
+                try {
+                    binding.tagSelection.setText(SharedPref.getChmCap(this));
+
+                    JSONArray masArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + selectedHqCode).getMasterSyncDataJsonArray();
+                    JSONArray geoArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + selectedHqCode).getMasterSyncDataJsonArray();
+
+                    HashMap<String, JSONObject> masMap = new HashMap<>();
+                    for (int i = 0; i < masArray.length(); i++) {
+                        JSONObject obj = masArray.getJSONObject(i);
+                        String code = obj.optString("Code");
+                        if (!code.isEmpty()) masMap.put(code, obj);
+                    }
+
+                    HashMap<String, List<JSONObject>> geoMap = new HashMap<>();
+                    for (int i = 0; i < geoArray.length(); i++) {
+                        JSONObject geoObj = geoArray.getJSONObject(i);
+                        String code = geoObj.optString("Code");
+                        if (!code.isEmpty())
+                            geoMap.computeIfAbsent(code, k -> new ArrayList<>()).add(geoObj);
+                    }
+
+                    List<JSONObject> finalList = new ArrayList<>();
+
+                    for (String code : masMap.keySet()) {
+                        JSONObject mas = masMap.get(code);
+
+                        if (geoMap.containsKey(code)) {
+                            for (JSONObject geo : geoMap.get(code)) {
+                                JSONObject merged = new JSONObject(mas.toString());
+                                Iterator<String> keys = geo.keys();
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    merged.put(key, geo.opt(key));
+                                }
+                                finalList.add(merged);
+                            }
+                        } else {
+                            JSONObject notTagged = new JSONObject(mas.toString());
+                            notTagged.put("lat", "");
+                            notTagged.put("long", "");
+                            notTagged.put("addr", "");
+                            notTagged.put("GEOTagedCnt", "0");
+                            finalList.add(notTagged);
+                        }
+                    }
+
+                    Collections.sort(finalList, (o1, o2) -> o1.optString("Name").compareToIgnoreCase(o2.optString("Name")));
+
+                    jsonArray = new JSONArray();
+                    for (JSONObject obj : finalList) jsonArray.put(obj);
+
+                    // Category mapping
+                    JSONArray catArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
+                    Map<String, String> catMap = new HashMap<>();
+                    for (int i = 0; i < catArray.length(); i++) {
+                        JSONObject c = catArray.getJSONObject(i);
+                        catMap.put(c.optString("Code"), c.optString("Chem_Cat_Name"));
+                    }
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject j = jsonArray.getJSONObject(i);
+                        String catName = catMap.getOrDefault(j.optString("Chm_cat"), "");
+
+                        custListArrayList.add(new CustList(
+                                j.optString("Name"), j.optString("Code"), SelectedTab,
+                                catName, "Specialty",
+                                j.optString("lat"), j.optString("long"),
+                                j.optString("addr"),
+                                j.optString("Town_Name"), j.optString("Town_Code"),
+                                j.optString("GEOTagedCnt", "0"),
+                                j.optString("Geototal"),
+                                String.valueOf(i),
+                                j.optString("cust_status", "0")
+                        ));
+
+                        custListArrayNew.add(custListArrayList.get(custListArrayList.size() - 1));
+                    }
+
+                } catch (Exception e) {
+                    Log.e("CHEMIST", "Error", e);
+                }
+                break;
+
+            case "S":
+                try {
+                    binding.tagSelection.setText(SharedPref.getStkCap(this));
+
+                    JSONArray masArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + selectedHqCode).getMasterSyncDataJsonArray();
+                    JSONArray geoArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + selectedHqCode).getMasterSyncDataJsonArray();
+
+                    HashMap<String, JSONObject> masMap = new HashMap<>();
+                    for (int i = 0; i < masArray.length(); i++) {
+                        JSONObject obj = masArray.getJSONObject(i);
+                        String code = obj.optString("Code");
+                        if (!code.isEmpty()) masMap.put(code, obj);
+                    }
+
+                    HashMap<String, List<JSONObject>> geoMap = new HashMap<>();
+                    for (int i = 0; i < geoArray.length(); i++) {
+                        JSONObject geoObj = geoArray.getJSONObject(i);
+                        String code = geoObj.optString("Code");
+                        if (!code.isEmpty())
+                            geoMap.computeIfAbsent(code, k -> new ArrayList<>()).add(geoObj);
+                    }
+
+                    List<JSONObject> finalList = new ArrayList<>();
+
+                    for (String code : masMap.keySet()) {
+                        JSONObject mas = masMap.get(code);
+
+                        if (geoMap.containsKey(code)) {
+                            for (JSONObject geo : geoMap.get(code)) {
+                                JSONObject merged = new JSONObject(mas.toString());
+                                Iterator<String> keys = geo.keys();
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    merged.put(key, geo.opt(key));
+                                }
+                                finalList.add(merged);
+                            }
+                    *//*        for (JSONObject geo : geoMap.get(code)) {
+                                JSONObject merged = new JSONObject(mas.toString());
+                                Iterator<String> keys = geo.keys();
+                                *//**//*while (keys.hasNext())
+                                    merged.put(keys.next(), geo.opt(keys.next()));
+                                finalList.add(merged);*//**//*
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    Object value = geo.opt(key);
+                                    if (value != null) {
+                                        merged.put(key, value);
+                                    }
+                                }
+                            }*//*
+                        } else {
+                            JSONObject notTagged = new JSONObject(mas.toString());
+                            notTagged.put("lat", "");
+                            notTagged.put("long", "");
+                            notTagged.put("addrs", "");
+                            notTagged.put("GEOTagedCnt", "0");
+                            finalList.add(notTagged);
+                        }
+                    }
+
+                    Collections.sort(finalList, (o1, o2) -> o1.optString("Name").compareToIgnoreCase(o2.optString("Name")));
+
+                    jsonArray = new JSONArray(finalList);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject j = jsonArray.getJSONObject(i);
+
+                        custListArrayList.add(new CustList(
+                                j.optString("Name"), j.optString("Code"), SelectedTab,
+                                "Category", "Specialty",
+                                j.optString("lat"), j.optString("long"),
+                                j.optString("addrs"),
+                                j.optString("Town_Name"), j.optString("Town_Code"),
+                                j.optString("GEOTagedCnt", "0"),
+                                j.optString("Geototal"),
+                                String.valueOf(i),
+                                j.optString("cust_status", "0")
+                        ));
+
+                        custListArrayNew.add(custListArrayList.get(custListArrayList.size() - 1));
+                    }
+
+                } catch (Exception e) {
+                    Log.e("STOCKIST", "Error", e);
+                }
+                break;
+
+            case "U":
+                try {
+                    binding.tagSelection.setText(SharedPref.getUNLcap(this));
+
+                    JSONArray masArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + selectedHqCode).getMasterSyncDataJsonArray();
+                    JSONArray geoArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + selectedHqCode).getMasterSyncDataJsonArray();
+
+                    HashMap<String, JSONObject> masMap = new HashMap<>();
+                    for (int i = 0; i < masArray.length(); i++) {
+                        JSONObject obj = masArray.getJSONObject(i);
+                        String code = obj.optString("Code");
+                        if (!code.isEmpty()) masMap.put(code, obj);
+                    }
+
+                    HashMap<String, List<JSONObject>> geoMap = new HashMap<>();
+                    for (int i = 0; i < geoArray.length(); i++) {
+                        JSONObject geoObj = geoArray.getJSONObject(i);
+                        String code = geoObj.optString("Code");
+                        if (!code.isEmpty())
+                            geoMap.computeIfAbsent(code, k -> new ArrayList<>()).add(geoObj);
+                    }
+
+                    List<JSONObject> finalList = new ArrayList<>();
+
+                    for (String code : masMap.keySet()) {
+                        JSONObject mas = masMap.get(code);
+
+                        if (geoMap.containsKey(code)) {
+                            for (JSONObject geo : geoMap.get(code)) {
+                                JSONObject merged = new JSONObject(mas.toString());
+                                Iterator<String> keys = geo.keys();
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    merged.put(key, geo.opt(key));
+                                }
+                                finalList.add(merged);
+                            }
+                     *//*       for (JSONObject geo : geoMap.get(code)) {
+                                JSONObject merged = new JSONObject(mas.toString());
+                                Iterator<String> keys = geo.keys();
+                                while (keys.hasNext())
+                                    merged.put(keys.next(), geo.opt(keys.next()));
+                                finalList.add(merged);
+                            }*//*
+                        } else {
+                            JSONObject notTagged = new JSONObject(mas.toString());
+                            notTagged.put("lat", "");
+                            notTagged.put("long", "");
+                            notTagged.put("addr", "");
+                            notTagged.put("GEOTagedCnt", "0");
+                            finalList.add(notTagged);
+                        }
+                    }
+
+                    Collections.sort(finalList, (o1, o2) -> o1.optString("Name").compareToIgnoreCase(o2.optString("Name")));
+
+                    jsonArray = new JSONArray(finalList);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject j = jsonArray.getJSONObject(i);
+
+                        custListArrayList.add(new CustList(
+                                j.optString("Name"), j.optString("Code"), SelectedTab,
+                                j.optString("CategoryName"), j.optString("SpecialtyName"),
+                                j.optString("lat"), j.optString("long"),
+                                j.optString("addr"),
+                                j.optString("Town_Name"), j.optString("Town_Code"),
+                                j.optString("GEOTagedCnt", "0"),
+                                j.optString("Geototal"),
+                                String.valueOf(i),
+                                j.optString("cust_status", "0")
+                        ));
+
+                        custListArrayNew.add(custListArrayList.get(custListArrayList.size() - 1));
+                    }
+
+                } catch (Exception e) {
+                    Log.e("UNLISTED", "Error", e);
+                }
+                break;*/
+
         }
 
         int count = custListArrayList.size();
@@ -922,10 +1384,10 @@ public class TagCustSelectionList extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|FSD|AMS")) {
+            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|FSD|AMS")) {
                 Intent intent1 = new Intent(TagCustSelectionList.this, MapsActivity.class);
                 Bundle bundle = MapsActivity.bundle;
-                if(bundle != null) {
+                if (bundle != null) {
                     intent1.putExtras(bundle);
                 }
                 startActivity(intent1);

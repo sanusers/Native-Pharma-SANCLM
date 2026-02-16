@@ -44,8 +44,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
@@ -226,14 +229,14 @@ public class UnlistedDoctorFragment extends Fragment {
                         }
                     }
                 }
-/*        List<JSONObject> sortedList = new ArrayList<>(docObj_UnList.values());
+                List<JSONObject> sortedList = new ArrayList<>(docObj_UnList.values());
 
 
                 Collections.sort(sortedList, (o1, o2) -> {
                     String name1 = o1.optString("Name", "");
                     String name2 = o2.optString("Name", "");
                     return name1.compareToIgnoreCase(name2);
-                });*/
+                });
 
 
                 jsonArray = new JSONArray(docObj_UnList.values());
@@ -293,6 +296,115 @@ public class UnlistedDoctorFragment extends Fragment {
             } catch (Exception e) {
                 Log.v("UNDRCALL", "-UnDr--error--" + e);
             }
+           /* try {
+                JSONArray masterMas = masterDataDao
+                        .getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode)
+                        .getMasterSyncDataJsonArray();
+
+                JSONArray masterGeo = masterDataDao
+                        .getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode)
+                        .getMasterSyncDataJsonArray();
+
+                // 🔥 Store MULTIPLE entries per doctor code
+                HashMap<String, List<JSONObject>> doctorMap = new HashMap<>();
+
+                // -------------------- LOAD MAS --------------------
+                for (int i = 0; i < masterMas.length(); i++) {
+                    JSONObject masObj = masterMas.getJSONObject(i);
+                    String code = masObj.optString("Code");
+                    if (code.isEmpty()) continue;
+
+                    doctorMap.putIfAbsent(code, new ArrayList<>());
+                    doctorMap.get(code).add(new JSONObject(masObj.toString())); // clone
+                }
+
+                // -------------------- MERGE GEO --------------------
+                for (int i = 0; i < masterGeo.length(); i++) {
+                    JSONObject geoObj = masterGeo.getJSONObject(i);
+                    String code = geoObj.optString("Code");
+                    if (code.isEmpty()) continue;
+
+                    if (doctorMap.containsKey(code)) {
+                        for (JSONObject masObj : doctorMap.get(code)) {
+                            Iterator<String> keys = geoObj.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                try {
+                                    masObj.put(key, geoObj.get(key));
+                                } catch (JSONException ignored) {
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // -------------------- FLATTEN TO ARRAY --------------------
+                jsonArray = new JSONArray();
+                for (List<JSONObject> list : doctorMap.values()) {
+                    for (JSONObject obj : list) {
+                        jsonArray.put(obj);
+                    }
+                }
+
+                Log.v("UNDRCALL", "Merged Unlisted Doctor count: " + jsonArray.length());
+
+                custListArrayList = new ArrayList<>();
+
+                // -------------------- DISTANCE FILTER --------------------
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    try {
+                        boolean withinDistance = true;
+
+                        if (SharedPref.getGeotagNeedUnlst(requireContext()).equalsIgnoreCase("1")
+                                && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+
+                            if (!jsonObject.optString("lat").isEmpty() &&
+                                    !jsonObject.optString("long").isEmpty()) {
+
+                                float[] distance = new float[1];
+                                Location.distanceBetween(
+                                        Double.parseDouble(jsonObject.optString("lat")),
+                                        Double.parseDouble(jsonObject.optString("long")),
+                                        DcrCallTabLayoutActivity.lat,
+                                        DcrCallTabLayoutActivity.lng,
+                                        distance
+                                );
+
+                                withinDistance = distance[0] < (DcrCallTabLayoutActivity.limitKm * 1000.0);
+                            }
+                        }
+
+                        if (withinDistance) {
+                            custListArrayList = SaveData(jsonObject, i, true);
+                        }
+
+                    } catch (Exception e) {
+                        Log.e("UNDRCALL", "Distance filter error: " + e.getMessage());
+                    }
+                }
+
+                Set<String> uniqueKeys = new HashSet<>();
+                Iterator<CustList> iterator = custListArrayList.iterator();
+
+                while (iterator.hasNext()) {
+                    CustList c = iterator.next();
+                    String key = c.getCode() + "_" + c.getLatitude() + "_" + c.getLongitude();
+
+                    if (uniqueKeys.contains(key)) {
+                        iterator.remove(); // remove only same code + same location
+                    } else {
+                        uniqueKeys.add(key);
+                    }
+                }
+
+                Log.v("UNDRCALL", "Final Unlisted Doctor count: " + custListArrayList.size());
+
+            } catch (Exception e) {
+                Log.e("UNDRCALL", "Unlisted Doctor error: " + e.getMessage());
+                e.printStackTrace();
+            }*/
 
         } else {
             try {

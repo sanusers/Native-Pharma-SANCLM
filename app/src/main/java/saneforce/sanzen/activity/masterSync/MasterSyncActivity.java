@@ -704,7 +704,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     public void uiInitialization() {
         if (SharedPref.getWrkAreaName(this).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
-            binding.cluster.setText("Cluster");
+            binding.cluster.setText(SharedPref.getClusterCap(MasterSyncActivity.this));
         } else {
             binding.cluster.setText(SharedPref.getWrkAreaName(this));
         }

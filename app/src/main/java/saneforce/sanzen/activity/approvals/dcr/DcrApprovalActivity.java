@@ -125,6 +125,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         dcrCallApprovalBinding.rvSelectionList.setAdapter(adapterSelectionList);
         if (!ClusterNames.toString().isEmpty()) {
             dcrCallApprovalBinding.tvCluster1.setText(removeLastChar(ClusterNames.toString()));
+        }else{
+            dcrCallApprovalBinding.tvCluster1.setText("");
         }
 
     }

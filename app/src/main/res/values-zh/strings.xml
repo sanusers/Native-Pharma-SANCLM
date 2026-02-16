@@ -1051,6 +1051,7 @@
     <string name="jfw">联合工作</string>
     <string name="others">其他</string>
     <string name="location">位置</string>
+    <string name="failed_to_save_image">保存图片失败</string>
 
 
 </resources>

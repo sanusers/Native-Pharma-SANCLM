@@ -260,7 +260,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private boolean isLocationPermissionRequested = false;
     private android.app.AlertDialog locationDialog;
     private ConnectivityManager.NetworkCallback networkCallback;
-
+    int position;
     private final Runnable updateClock = new Runnable() {
         @Override
         public void run() {
@@ -303,6 +303,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     e.printStackTrace();
                 }
                 previousDate = currentDate;
+
+                String remainderTime = SharedPref.getDoctorRemainingShownDate(HomeDashBoard.this);
+                String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_29);
+
+                int currentTimeInt = Integer.parseInt(time.replace(":", ""));
+                int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
+
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
+                String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
+
+                if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
+                    checkAndShowDoctorPopup();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -472,7 +485,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
             }
         });
-        checkAndShowDoctorPopup();
+//        checkAndShowDoctorPopup();
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
         //checkAndShow5PMDoctorPopup();
@@ -783,78 +796,93 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
             checkUserStatus();
         }
+        if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
+            checkAndShowDoctorPopup();
+        }
     }
 
     private void checkAndShowDoctorPopup() {
         try {
-            RoomDB roomDB = RoomDB.getDatabase(this);
+            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")){
+                Log.d("Tag","No Popup for MGR (check and show)");
+                return;
+            }
+                RoomDB roomDB = RoomDB.getDatabase(this);
             MasterDataDao masterDataDao = roomDB.masterDataDao();
 
-            // ✅ 1️⃣ Check TP / Work Plan
-            String tpData = masterDataDao.getDataByKey(Constants.WORK_PLAN);
-            if (tpData == null || tpData.isEmpty()) return;
+            try {
+                JSONArray tpArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
+                if (tpArray.length() == 0) return;
 
-            JSONArray tpArray = new JSONArray(tpData);
-            if (tpArray.length() == 0) return;
+                JSONObject targetSession = null;
 
-            JSONObject todayTP = tpArray.getJSONObject(0);
-            String tpDoctorCodes = todayTP.optString("TP_Doctor", "").trim();
-            if (tpDoctorCodes.isEmpty()) {
-                Log.e("PopupCheck", "TP Doctor empty, cannot show popup");
-                return;
+                for (int i = 0; i < tpArray.length(); i++) {
+                    JSONObject sessionObj = tpArray.getJSONObject(i);
+                    if (sessionObj.optString("FWFlg", "").equalsIgnoreCase("F")) {
+                        targetSession = sessionObj;
+                        break;
+                    }
+                }
+
+                if (targetSession == null) {
+//                    Log.d("PopupCheck", "No session in the TP data has FWFlg = 'F'.");
+                    return;
+                }
+
+                String tpDoctorCodes = targetSession.optString("TP_Doctor", "").trim();
+
+                if (tpDoctorCodes.isEmpty()) {
+//                    Log.e("PopupCheck", "Field Work session found, but TP_Doctor codes are empty.");
+                    return;
+                }
+
+                SharedPref.setTodayTPDoctor(this, tpDoctorCodes);
+
+                JSONArray doctorMasArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+
+                if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && doctorMasArray == null || doctorMasArray.length() == 0) {
+                    new Handler(Looper.getMainLooper()).postDelayed(this::checkAndShowDoctorPopup, 2000);
+                    return;
+                }
+
+                boolean forceImmediate = SharedPref.isDataCleared(this);
+                if (forceImmediate) {
+                    SharedPref.clearCumulativeVisitedDoctors(this);
+                }
+
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
+                String lastShownDate = SharedPref.getTodayPopupShown(this);
+
+                if (today.equals(lastShownDate) && !forceImmediate) {
+//                    Log.d("PopupCheck", "Popup already shown for today.");
+                    return;
+                }
+
+                String remainderTime = SharedPref.getDoctorRemainingShownDate(this);
+                String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_29);
+
+                int currentTimeInt = Integer.parseInt(time.replace(":", ""));
+                int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
+
+                if (!tpDoctorCodes.equals("null") && !tpDoctorCodes.isEmpty()) {
+                    if (!today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
+                        showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
+                        SharedPref.setTodayPopupShown(this, today);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("TAG", "Error in Popup Logic: " + e.getMessage());
             }
 
-            // ✅ Save TP doctor codes
-            SharedPref.setTodayTPDoctor(this, tpDoctorCodes);
 
-            // ✅ Fetch doctor master
-            JSONArray doctorMasArray = masterDataDao
-                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
-                    .getMasterSyncDataJsonArray();
-
-            if (doctorMasArray == null || doctorMasArray.length() == 0) {
-                Log.e("PopupCheck", "Doctor master not yet synced. Retrying in 2s...");
-                new Handler(Looper.getMainLooper()).postDelayed(this::checkAndShowDoctorPopup, 2000);
-                return;
-            }
-
-            // ✅ Clear data & force immediate popup if first login / data cleared
-            boolean forceImmediate = false;
-            if (SharedPref.isDataCleared(this)) {
-                SharedPref.clearCumulativeVisitedDoctors(this);
-                Log.e("PopupCheck", "🧹 Cleared cumulative visited doctors on fresh login.");
-                forceImmediate = true;
-            }
-
-// ✅ Prevent popup if already shown today (unless forced)
-            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
-            String lastShownDate = SharedPref.getTodayPopupShown(this);
-            if (today.equals(lastShownDate) && !forceImmediate) {
-                Log.d("PopupCheck", "Popup already shown today, skipping.");
-                return;
-            }
-// ✅ Show popup
-            showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
-// ✅ Mark popup as shown today
-            SharedPref.setTodayPopupShown(this, today);
-//        boolean forceImmediate = false;
-//        if (SharedPref.isDataCleared(this)) {
-//            SharedPref.clearCumulativeVisitedDoctors(this);
-//            Log.e("PopupCheck", "🧹 Cleared cumulative visited doctors on fresh login.");
-//            forceImmediate = true;
-//        }
-//
-//        // ✅ Show popup
-//        showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
-
-            // ✅ Prevent next popup automatically
-            SharedPref.setDataCleared(this, false);
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("PopupError", e.getMessage());
+            Log.e("TAG", "Error in Popup Logic: " + e.getMessage());
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -1162,6 +1190,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
+        if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
+            checkAndShowDoctorPopup();
+        }
     }
 
     private void registerNetworkCallback() {
@@ -1415,8 +1446,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         leftViewPagerAdapter = new TabLayoutAdapter(fragmentManager);
         leftViewPagerAdapter.add(new WorkPlanFragment(), homeDashBoardActivity.getString(R.string.work_plan));
         leftViewPagerAdapter.add(new CallsFragment(), homeDashBoardActivity.getString(R.string.calls));
-        leftViewPagerAdapter.add(new OutboxFragment(),homeDashBoardActivity.getString(R.string.outbox));
-       // leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
+        leftViewPagerAdapter.add(new OutboxFragment(), homeDashBoardActivity.getString(R.string.outbox));
+        // leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
         binding.viewPager.setAdapter(leftViewPagerAdapter);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
@@ -2739,7 +2770,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private String monthYearFromDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.ENGLISH);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
         return date.format(formatter);
     }
 
@@ -3337,55 +3368,56 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     public void showDoctorPlanPopup(String tpDoctor, boolean isFromTP) {
         try {
-           /* if (!selectedDate.isEqual(LocalDate.now())){
-                Log.e("DoctorPopup", "Popup skipped because selected date is not today");
-                return;
-            }*/
-            if (!isFromTP) {
-                Log.e("DoctorPopup", "Popup skipped because isFromTP=false");
+            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")  || tpDoctor == null){
+                Log.d("Tag","No Popup for MGR(Show doc popup");
                 return;
             }
+                if (!isFromTP) {
+                    Log.e("DoctorPopup", "Popup skipped because isFromTP=false");
+                    return;
+                }
 
-            RoomDB roomDB = RoomDB.getDatabase(this);
-            MasterDataDao masterDataDao = roomDB.masterDataDao();
-            JSONArray doctorMasArray = masterDataDao
-                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
-                    .getMasterSyncDataJsonArray();
+                RoomDB roomDB = RoomDB.getDatabase(this);
+                MasterDataDao masterDataDao = roomDB.masterDataDao();
+                JSONArray doctorMasArray = masterDataDao
+                        .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
+                        .getMasterSyncDataJsonArray();
 
-            Log.e("DoctorPopup", "Doctor Master count: " + doctorMasArray.length());
-            List<String> plannedDoctorCodes = new ArrayList<>();
-            if (tpDoctor != null && !tpDoctor.isEmpty()) {
-                for (String code : tpDoctor.split(",")) {
-                    if (!code.trim().isEmpty()) {
-                        plannedDoctorCodes.add(code.trim());
+                Log.e("DoctorPopup", "Doctor Master count: " + doctorMasArray.length());
+                List<String> plannedDoctorCodes = new ArrayList<>();
+                if (tpDoctor != null && !tpDoctor.isEmpty()) {
+                    for (String code : tpDoctor.split(",")) {
+                        if (!code.trim().isEmpty()) {
+                            plannedDoctorCodes.add(code.trim());
+                        }
                     }
                 }
-            }
-            Log.e("DoctorPopup", "PlannedDoctorCodes => " + plannedDoctorCodes);
-            List<String> matchedDoctors = new ArrayList<>();
-            for (int i = 0; i < doctorMasArray.length(); i++) {
-                JSONObject doc = doctorMasArray.getJSONObject(i);
-                String docCode = doc.optString("Code", "").trim();
+                Log.e("DoctorPopup", "PlannedDoctorCodes => " + plannedDoctorCodes);
+                List<String> matchedDoctors = new ArrayList<>();
+                for (int i = 0; i < doctorMasArray.length(); i++) {
+                    JSONObject doc = doctorMasArray.getJSONObject(i);
+                    String docCode = doc.optString("Code", "").trim();
 
-                if (plannedDoctorCodes.contains(docCode)) {
-                    String docName = doc.optString("Name", "Unknown Doctor");
-                    matchedDoctors.add("Dr. " + docName);
-                    Log.e("DoctorPopup", "Matched Doctor: " + docName + " (" + docCode + ")");
+                    if (plannedDoctorCodes.contains(docCode)) {
+                        String docName = doc.optString("Name", "Unknown Doctor");
+                        matchedDoctors.add("Dr. " + docName);
+                        Log.e("DoctorPopup", "Matched Doctor: " + docName + " (" + docCode + ")");
+                    }
                 }
-            }
-            if (!matchedDoctors.isEmpty()) {
-                StringBuilder message = new StringBuilder();
-                for (int i = 0; i < matchedDoctors.size(); i++) {
-                    message.append(i + 1).append(". ").append(matchedDoctors.get(i)).append("\n");
-                }
+                if (!matchedDoctors.isEmpty()) {
+                    StringBuilder message = new StringBuilder();
+                    for (int i = 0; i < matchedDoctors.size(); i++) {
+                        message.append(i + 1).append(". ").append(matchedDoctors.get(i)).append("\n");
+                    }
 //            for (String entry : matchedDoctors) {
 //                message.append(entry).append("\n");
 //            }
-                CommonAlertBox.DoctorPlanPopup(this, message.toString().trim());
+                    CommonAlertBox.DoctorPlanPopup(this, message.toString().trim());
 
-            } else {
-                Log.e("DoctorPopup", "No matching doctors found for today.");
-            }
+                } else {
+                    Log.e("DoctorPopup", "No matching doctors found for today.");
+                }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -3395,10 +3427,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void showNotVisitedDoctorsPopup(String tpDoctorCodes, boolean isImmediatePopup, JSONArray doctorMasArray) {
         try {
-            if (tpDoctorCodes == null || tpDoctorCodes.isEmpty()) return;
+            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") || tpDoctorCodes == null || tpDoctorCodes.isEmpty()) return;
 
             // ✅ Skip normal reminder check if immediate
-            if (!isImmediatePopup) {
+          /*  if (!isImmediatePopup) {
                 String remainderTime = SharedPref.getDoctorRemainingShownDate(this);
                 if (remainderTime != null && !remainderTime.isEmpty()) {
                     String[] parts = remainderTime.split(":");
@@ -3411,7 +3443,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         return;
                     }
                 }
-            }
+            }*/
 
             // ✅ Prepare planned doctors
             List<String> plannedDoctorCodes = new ArrayList<>();
@@ -3486,7 +3518,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CommonAlertBox.DoctorPlanPopup(this, msg);
 
             // ✅ Mark popup shown today (for normal flow)
-            if (!isImmediatePopup) SharedPref.setDoctorRemainingShownDate(this," ");
+//            if (!isImmediatePopup) SharedPref.setDoctorRemainingShownDate(this, " ");
 
         } catch (Exception e) {
             e.printStackTrace();
