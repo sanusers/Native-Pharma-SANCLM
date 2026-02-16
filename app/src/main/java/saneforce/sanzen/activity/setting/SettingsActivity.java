@@ -477,7 +477,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
 //                                        String[] splitUrl = logoUrl.split("/");
-                                        SharedPref.saveUrlsOneBuild(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, detPathUrl, reportsUrl, s3logoUrl, optionFiles, true);
+                                        SharedPref.saveUrlsOneBuild(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, detPathUrl, reportsUrl, s3logoUrl, optionFiles, true,aBKey,aBSKey);
                                         SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + detPathUrl.replaceAll("\\?.*", "/"));
                                         downloadImageS3(s3logoUrl);
                                         licenseKeyValid = true;

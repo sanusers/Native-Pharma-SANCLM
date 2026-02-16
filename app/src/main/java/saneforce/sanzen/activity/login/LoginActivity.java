@@ -652,7 +652,7 @@ public class LoginActivity extends AppCompatActivity {
             });
             SharedPref.InsertLogInData(LoginActivity.this, jsonObject);
             SharedPref.setLastKnownVersion(LoginActivity.this, BuildConfig.VERSION_CODE);
-            SharedPref.saveKeys(LoginActivity.this, jsonObject.optString("zakey"), jsonObject.optString("zskey"));
+//            SharedPref.saveKeys(LoginActivity.this, jsonObject.optString("zakey"), jsonObject.optString("zskey"));
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.setLogoutReason(LoginActivity.this, "");

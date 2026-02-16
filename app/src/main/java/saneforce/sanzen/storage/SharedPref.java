@@ -38,6 +38,8 @@ public class SharedPref {
     public static final String LOGI_SITE = "log_site";
     public static final String SAVE_URL_SETTING = "save_url_setting";
     public static final String SAVE_LICENSE_SETTING = "save_url_license";
+    public static final String A_B_AKEY = "aws_bucket_key";
+    public static final String A_B_SKEY = "aws_bucket_secret_key";
     //Login
     public static final String LOGIN_USER_ID = "login_userId";
     public static final String LOGIN_USER_PWD = "login_userPwd";
@@ -2230,7 +2232,7 @@ public class SharedPref {
         editor.apply();
     }
 
-    public static void saveUrlsOneBuild(Context context, String baseUrl, String licenseKey, String baseWebUrl, String detPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState) {
+    public static void saveUrlsOneBuild(Context context, String baseUrl, String licenseKey, String baseWebUrl, String detPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState,String aBKey,String aBSKey) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(BASE_URL, baseUrl);
@@ -2241,6 +2243,8 @@ public class SharedPref {
         editor.putString(S3_LOGO_URL, logoUrl);
         editor.putString(OPTION_FILES_URL, optionFiles);
         editor.putBoolean(SETTING_STATE, settingState);
+        editor.putString(A_B_AKEY,aBKey);
+        editor.putString(A_B_SKEY,aBSKey);
         editor.apply();
     }
 
@@ -2300,6 +2304,13 @@ public class SharedPref {
 
     public static boolean getSettingState(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETTING_STATE, false);
+    }
+
+    public static String getABKey(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(A_B_AKEY, "");
+    }
+    public static String getABSKey(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(A_B_SKEY, "");
     }
 
     public static void saveLoginId(Context context, String id, String pwd) {

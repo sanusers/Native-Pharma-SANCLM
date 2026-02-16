@@ -107,10 +107,12 @@ public class Util {
             }*/
             String accessKey = "", secretKey = "";
             try {
-                String[] keys = SharedPref.getKeys(context).split("\\^\\^");
-                String aKey = keys[0], sKey = keys[1];
-                accessKey = SimpleDecrypt.decrypt(aKey, "zenaccess_san");
-                secretKey = SimpleDecrypt.decrypt(sKey, "zensecret_san");
+//                String[] keys = SharedPref.getKeys(context).split("\\^\\^");
+//                String aKey = keys[0], sKey = keys[1];
+//                accessKey = SimpleDecrypt.decrypt(aKey, "zenaccess_san");
+//                secretKey = SimpleDecrypt.decrypt(sKey, "zensecret_san");
+                accessKey = SharedPref.getABKey(context);
+                secretKey = SharedPref.getABSKey(context);
             } catch (Exception e) {
                 e.printStackTrace();
             }
