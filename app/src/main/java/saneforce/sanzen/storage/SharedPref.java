@@ -32,6 +32,7 @@ public class SharedPref {
     public static final String SLIDES_PATH = "SLIDES_PATH";
     public static final String WELCOME_SLIDES_PATH = "WELCOME_SLIDES_PATH";
     public static final String LOGO_URL = "logo_url";
+    public static final String S3_LOGO_URL = "aws_bucket_url";
     public static final String OPTION_FILES_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
     public static final String LOGI_SITE = "log_site";
@@ -2237,7 +2238,7 @@ public class SharedPref {
         editor.putString(BASE_WEB_URL, baseWebUrl);
         editor.putString(PHP_PATH_URL, detPathUrl);
         editor.putString(REPORTS_URL, reportsUrl);
-        editor.putString(LOGO_URL, logoUrl);
+        editor.putString(S3_LOGO_URL, logoUrl);
         editor.putString(OPTION_FILES_URL, optionFiles);
         editor.putBoolean(SETTING_STATE, settingState);
         editor.apply();
@@ -2282,7 +2283,9 @@ public class SharedPref {
     public static String getLogoUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGO_URL, "");
     }
-
+    public static String getS3LogoUrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_LOGO_URL, "");
+    }
     public static void saveSettingState(Context context, boolean state) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();

@@ -106,11 +106,11 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
-//        if (SharedPref.getClearDataNeed(LoginActivity.this).equalsIgnoreCase("0")) {
-//            binding.clearData.setVisibility(View.VISIBLE);
-//        } else {
-//            binding.clearData.setVisibility(View.GONE);
-//        }
+        if (SharedPref.getClearDataNeed(LoginActivity.this).equalsIgnoreCase("0")) {
+            binding.clearData.setVisibility(View.VISIBLE);
+        } else {
+            binding.clearData.setVisibility(View.GONE);
+        }
 
         outboxUtil = new OutboxUtil(this);
 
@@ -396,9 +396,16 @@ public class LoginActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
-        String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
-        String[] splitLogoUrl = logoUrl.split("/");
-        getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
+        String baseUrl = SharedPref.getBaseUrl(LoginActivity.this);
+        if(baseUrl.contains("saneforce.com")){
+            String logoUrl = SharedPref.getS3LogoUrl(LoginActivity.this);
+            String[] splitLogoUrl = logoUrl.split("/");
+            getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
+        }else {
+            String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
+            String[] splitLogoUrl = logoUrl.split("/");
+            getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
+        }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);

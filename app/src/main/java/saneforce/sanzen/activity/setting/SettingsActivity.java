@@ -61,7 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
     AsyncInterface asyncInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
-    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logo = "",senderID = "",logoUrl = "", optionFiles = "",aBKey = "",aBSKey = "",detPathUrl = "";
+    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logo = "",senderID = "",logoUrl = "", optionFiles = "",aBKey = "",aBSKey = "",detPathUrl = "",s3logoUrl = "";
     int hitCount = 0;
     CommonUtilsMethods commonUtilsMethods;
     Resources resources;
@@ -459,7 +459,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         detPathUrl = Constants.DET_URL;
                                         logo = config.getString("logo");
                                         senderID = config.optString("senderID");
-                                        logoUrl = config.optString("aws_bucket_url");
+                                        s3logoUrl = config.optString("aws_bucket_url");
                                         aBKey = config.optString("aws_bucket_key");
                                         aBSKey = config.optString("aws_bucket_secret_key");
                                         reportsUrl = Constants.REPORT_URL;
@@ -477,9 +477,9 @@ public class SettingsActivity extends AppCompatActivity {
                                         SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
 //                                        String[] splitUrl = logoUrl.split("/");
-                                        SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, detPathUrl, reportsUrl, logoUrl, optionFiles, true);
+                                        SharedPref.saveUrlsOneBuild(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, detPathUrl, reportsUrl, s3logoUrl, optionFiles, true);
                                         SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + detPathUrl.replaceAll("\\?.*", "/"));
-                                        downloadImageS3(logoUrl);
+                                        downloadImageS3(s3logoUrl);
                                         licenseKeyValid = true;
                                         SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
                                         SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
