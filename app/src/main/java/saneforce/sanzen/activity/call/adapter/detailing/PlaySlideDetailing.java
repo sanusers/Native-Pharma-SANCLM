@@ -97,7 +97,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
     String defaultTime = "00:00:00";
 
     public static void populateViewPagerAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
-        itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList,mandatoryProductList,isWelcome);
+        itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList, mandatoryProductList, isWelcome);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
         if (SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")) {
@@ -179,7 +179,16 @@ public class PlaySlideDetailing extends AppCompatActivity {
             public void onPageSelected(int position) {
                 int last = itemsPagerAdapter.getCount() - 1;
 
-                if (position == last) {
+
+                Bundle bundle = getIntent().getBundleExtra("bundle");
+                boolean isWelcomeOnly = false;
+                if (bundle != null) {
+                    isWelcomeOnly = bundle.getBoolean("isWelcomeOnly", false);
+                }
+
+                // 🚩 Correction: Bottom Layout GONE-ah irundha mattum theriyaum (Arrow UP state)
+                // Bottom Layout VISIBLE-ah irundha automatic-ah ELSE block poyi GONE aayidum (Arrow DOWN state)
+                if (isWelcomeOnly && position == last && binding.bottomLayout.getVisibility() == View.GONE) {
                     binding.btnProceed.setVisibility(View.VISIBLE);
                 } else {
                     binding.btnProceed.setVisibility(View.GONE);
@@ -217,21 +226,62 @@ public class PlaySlideDetailing extends AppCompatActivity {
             }
         });
 
+//        binding.upArrow.setOnClickListener(view -> {
+//            if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
+//                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_up_white));
+//                binding.upArrow.setVisibility(View.VISIBLE);
+//                binding.bottomLayout.setVisibility(View.GONE);
+//                binding.closeBtn.setVisibility(View.GONE);
+//            } else {
+//                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_down_white));
+//                binding.upArrow.setVisibility(View.VISIBLE);
+//                binding.bottomLayout.setVisibility(View.VISIBLE);
+//                binding.closeBtn.setVisibility(View.GONE);
+//            }
+//            bottomPreviewDetailedAdapter.notifyDataSetChanged();
+//        });
         binding.upArrow.setOnClickListener(view -> {
             if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
                 binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_up_white));
                 binding.upArrow.setVisibility(View.VISIBLE);
                 binding.bottomLayout.setVisibility(View.GONE);
                 binding.closeBtn.setVisibility(View.GONE);
+                Bundle bundle = getIntent().getBundleExtra("bundle");
+                boolean isWelcomeOnly = (bundle != null) && bundle.getBoolean("isWelcomeOnly", false);
+                int last = itemsPagerAdapter.getCount() - 1;
+
+                if (isWelcomeOnly && binding.viewPager.getCurrentItem() == last) {
+                    binding.btnProceed.setVisibility(View.VISIBLE);
+                }
             } else {
                 binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_down_white));
                 binding.upArrow.setVisibility(View.VISIBLE);
                 binding.bottomLayout.setVisibility(View.VISIBLE);
                 binding.closeBtn.setVisibility(View.GONE);
+                binding.btnProceed.setVisibility(View.GONE);
             }
             bottomPreviewDetailedAdapter.notifyDataSetChanged();
         });
-
+//        binding.upArrow.setOnClickListener(view -> {
+//            if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
+//                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_up_white));
+//                binding.bottomLayout.setVisibility(View.GONE);
+//                int last = itemsPagerAdapter.getCount() - 1;
+//                Bundle bundle = getIntent().getBundleExtra("bundle");
+//                boolean isWelcomeOnly = (bundle != null) && bundle.getBoolean("isWelcomeOnly", false);
+//
+//                if (isWelcomeOnly && binding.viewPager.getCurrentItem() == last) {
+//                    binding.btnProceed.setVisibility(View.VISIBLE);
+//                }
+//
+//            } else {
+//
+//                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_down_white));
+//                binding.bottomLayout.setVisibility(View.VISIBLE);
+//                binding.btnProceed.setVisibility(View.GONE);
+//            }
+//            bottomPreviewDetailedAdapter.notifyDataSetChanged();
+//        });
         binding.closeBtn.setOnClickListener(view -> {
             getOnBackPressedDispatcher().onBackPressed();
         });
@@ -521,6 +571,89 @@ public class PlaySlideDetailing extends AppCompatActivity {
 //        }
     }
 
+    //    public void initialisation() {
+//
+//        mediaController = new MediaController(this);
+//        mediaController.setAnchorView(binding.videoView);
+//
+//        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//        StrictMode.setVmPolicy(builder.build());
+//
+//        Bundle bundle = getIntent().getBundleExtra("bundle");
+//        boolean isWelcome = false;
+//        if (bundle != null) {
+//            if (!Objects.requireNonNull(bundle.getString("position")).isEmpty()) {
+//                SelectedPos = Integer.parseInt(Objects.requireNonNull(bundle.getString("position")));
+//            } else {
+//                SelectedPos = 0;
+//            }
+//            String data = bundle.getString("slideBundle");
+//
+//            isWelcome = bundle.getBoolean("isWelcomeOnly", false);
+//
+//            try {
+//                JSONArray jsonArray = new JSONArray(data);
+//                Type type = new TypeToken<ArrayList<BrandModelClass.Product>>() {
+//                }.getType();
+//                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        binding.bottomLayout.setVisibility(View.GONE);
+//
+//        bottomPreviewDetailedHeadAdapter = new BottomLayoutHeadAdapter(PlaySlideDetailing.this, headingData);
+//        LinearLayoutManager layoutManager11 = new LinearLayoutManager(PlaySlideDetailing.this, LinearLayoutManager.HORIZONTAL, false);
+//        binding.recViewHead.setLayoutManager(layoutManager11);
+//        binding.recViewHead.setAdapter(bottomPreviewDetailedHeadAdapter);
+//
+//        if (isWelcome) {
+//
+//         //   binding.upArrow.setVisibility(View.GONE);
+//            binding.rightArrow.setVisibility(View.GONE);
+//            binding.btnProceed.setVisibility(View.VISIBLE);
+//
+//
+//            binding.btnProceed.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(PlaySlideDetailing.this, PreviewActivity.class);
+//                    intent.putExtra("from", "call");
+//                    intent.putExtra("hideWelcomeTab", true);
+//                    intent.putExtra("CusType", "1");
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            });
+//        } else {
+//            // Normal slides-ku eppovum pola arrows irukanum
+//            binding.btnProceed.setVisibility(View.GONE);
+//           // binding.upArrow.setVisibility(View.VISIBLE);
+//            // Binding-la rightArrow visibility check pannunga
+//            if(binding.rightArrow != null) binding.rightArrow.setVisibility(View.VISIBLE);
+//        }
+//
+//        if (arrayList != null && !arrayList.isEmpty()) {
+//            switch (SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName())) {
+//                case "pdf":
+//                case "mp4":
+//                case "avi":
+//                case "zip":
+//                case "htm":
+//                case "html": {
+//                    binding.playBtn.setVisibility(View.VISIBLE);
+//                    break;
+//                }
+//                default: {
+//                    binding.playBtn.setVisibility(View.GONE);
+//                }
+//            }
+//        }
+//        populateViewPagerAdapter();
+//        populateBottomViewAdapter();
+//    }
     public void initialisation() {
 
         mediaController = new MediaController(this);
@@ -531,14 +664,16 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
         Bundle bundle = getIntent().getBundleExtra("bundle");
         boolean isWelcome = false;
+
         if (bundle != null) {
+
             if (!Objects.requireNonNull(bundle.getString("position")).isEmpty()) {
-                SelectedPos = Integer.parseInt(Objects.requireNonNull(bundle.getString("position")));
+                SelectedPos = Integer.parseInt(bundle.getString("position"));
             } else {
                 SelectedPos = 0;
             }
-            String data = bundle.getString("slideBundle");
 
+            String data = bundle.getString("slideBundle");
             isWelcome = bundle.getBoolean("isWelcomeOnly", false);
 
             try {
@@ -551,58 +686,66 @@ public class PlaySlideDetailing extends AppCompatActivity {
             }
         }
 
-        binding.bottomLayout.setVisibility(View.GONE);
-
         bottomPreviewDetailedHeadAdapter = new BottomLayoutHeadAdapter(PlaySlideDetailing.this, headingData);
-        LinearLayoutManager layoutManager11 = new LinearLayoutManager(PlaySlideDetailing.this, LinearLayoutManager.HORIZONTAL, false);
-        binding.recViewHead.setLayoutManager(layoutManager11);
+
+        binding.recViewHead.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.recViewHead.setAdapter(bottomPreviewDetailedHeadAdapter);
-
+        populateViewPagerAdapter();
+        populateBottomViewAdapter();
         if (isWelcome) {
-
-         //   binding.upArrow.setVisibility(View.GONE);
-            binding.rightArrow.setVisibility(View.GONE);
+            binding.playBtn.setVisibility(View.GONE);
             binding.btnProceed.setVisibility(View.VISIBLE);
+            binding.bottomLayout.setVisibility(View.GONE);
+            if (binding.rightArrow != null) {
+                binding.rightArrow.setVisibility(View.GONE);
+            }
 
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                ArrayList<String> welcomeOnlyList = new ArrayList<>();
+                welcomeOnlyList.add("A");   // A → maps to Welcome
 
-            binding.btnProceed.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(PlaySlideDetailing.this, PreviewActivity.class);
-                    intent.putExtra("from", "call");
-                    intent.putExtra("hideWelcomeTab", true);
-                    intent.putExtra("CusType", "1");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent);
-                    finish();
-                }
+                bottomPreviewDetailedHeadAdapter = new BottomLayoutHeadAdapter(PlaySlideDetailing.this, welcomeOnlyList);
+                binding.recViewHead.setAdapter(bottomPreviewDetailedHeadAdapter);
+                binding.upArrow.setVisibility(View.VISIBLE);
+                binding.viewPager.setCurrentItem(0, false);
+                }, 300);
+
+            binding.btnProceed.setOnClickListener(v -> {
+
+                Intent intent =
+
+                        new Intent(PlaySlideDetailing.this, PreviewActivity.class);
+
+                intent.putExtra("from", "call");
+                intent.putExtra("hideWelcomeTab", true);
+                intent.putExtra("CusType", "1");
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                startActivity(intent);
+                finish();
             });
-        } else {
-            // Normal slides-ku eppovum pola arrows irukanum
-            binding.btnProceed.setVisibility(View.GONE);
-           // binding.upArrow.setVisibility(View.VISIBLE);
-            // Binding-la rightArrow visibility check pannunga
-            if(binding.rightArrow != null) binding.rightArrow.setVisibility(View.VISIBLE);
-        }
 
-        if (arrayList != null && !arrayList.isEmpty()) {
-            switch (SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName())) {
-                case "pdf":
-                case "mp4":
-                case "avi":
-                case "zip":
-                case "htm":
-                case "html": {
+        } else {
+
+            binding.btnProceed.setVisibility(View.GONE);
+            binding.bottomLayout.setVisibility(View.VISIBLE);
+            binding.upArrow.setVisibility(View.VISIBLE);
+
+            if (binding.rightArrow != null) {
+                binding.rightArrow.setVisibility(View.VISIBLE);
+            }
+
+            if (arrayList != null && !arrayList.isEmpty()) {
+
+                String ext = SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName());
+
+                if (ext.matches("pdf|mp4|avi|zip|htm|html")) {
                     binding.playBtn.setVisibility(View.VISIBLE);
-                    break;
-                }
-                default: {
+                } else {
                     binding.playBtn.setVisibility(View.GONE);
                 }
             }
         }
-        populateViewPagerAdapter();
-        populateBottomViewAdapter();
     }
 
     public void populateViewPagerAdapter() {
@@ -628,7 +771,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 binding.playBtn.setVisibility(View.VISIBLE);
             }
         }
-        itemsPagerAdapter = new PlaySlideDetailedAdapter(this, arrayList,mandatoryProductList,isWelcome);
+        itemsPagerAdapter = new PlaySlideDetailedAdapter(this, arrayList, mandatoryProductList, isWelcome);
         binding.viewPager.setAdapter(itemsPagerAdapter);
         binding.viewPager.setCurrentItem(SelectedPos);
         itemsPagerAdapter.onPageChanged(binding.viewPager.getCurrentItem());
@@ -767,7 +910,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
             ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
             for (int i = 0; i < brandProductArrayList.size(); i++) {
                 for (int j = 0; j < brandProductArrayList.get(i).getProductArrayList().size(); j++) {
-                    productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected(), brandProductArrayList.get(i).getProductArrayList().get(j).getProductCode(),brandProductArrayList.get(i).getProductArrayList().get(j).getMandatorySlide()));
+                    productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected(), brandProductArrayList.get(i).getProductArrayList().get(j).getProductCode(), brandProductArrayList.get(i).getProductArrayList().get(j).getMandatorySlide()));
                 }
             }
 
@@ -788,7 +931,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                 for (int i = 0; i < savedPresentation.size(); i++) {
                     for (int j = 0; j < savedPresentation.get(i).getProducts().size(); j++) {
-                        productsList.add(new BrandModelClass.Product(savedPresentation.get(i).getPresentationName(), savedPresentation.get(i).getProducts().get(j).getBrandName(), savedPresentation.get(i).getProducts().get(j).getBrandCode(), savedPresentation.get(i).getProducts().get(j).getSlideId(), savedPresentation.get(i).getProducts().get(j).getSlideName(), savedPresentation.get(i).getProducts().get(j).getPriority(), savedPresentation.get(i).getProducts().get(j).isImageSelected(),savedPresentation.get(i).getProducts().get(j).getMandatorySlide()));
+                        productsList.add(new BrandModelClass.Product(savedPresentation.get(i).getPresentationName(), savedPresentation.get(i).getProducts().get(j).getBrandName(), savedPresentation.get(i).getProducts().get(j).getBrandCode(), savedPresentation.get(i).getProducts().get(j).getSlideId(), savedPresentation.get(i).getProducts().get(j).getSlideName(), savedPresentation.get(i).getProducts().get(j).getPriority(), savedPresentation.get(i).getProducts().get(j).isImageSelected(), savedPresentation.get(i).getProducts().get(j).getMandatorySlide()));
                     }
                 }
 
@@ -814,7 +957,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
                 for (int i = 0; i < brandSlide.length(); i++) {
                     JSONObject brandObject = brandSlide.getJSONObject(i);
-                    String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", productDetailCode = "",mandatorySlide="";
+                    String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", productDetailCode = "", mandatorySlide = "";
                     String brandCode = brandObject.optString("Product_Brd_Code");
                     String priority = brandObject.optString("Priority");
 
@@ -831,8 +974,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                     fileName = productObject.optString("FilePath");
                                     slidePriority = productObject.optString("Priority");
                                     productDetailCode = productObject.optString("Product_Detail_Code");
-                                    mandatorySlide=productObject.optString("Mandatory_slide");
-                                    product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,mandatorySlide);
+                                    mandatorySlide = productObject.optString("Mandatory_slide");
+                                    product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode, mandatorySlide);
                                     productArrayList.add(product);
                                     break;
                                 case "B":
@@ -843,8 +986,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                         fileName = productObject.optString("FilePath");
                                         slidePriority = productObject.optString("Priority");
                                         productDetailCode = productObject.optString("Product_Detail_Code");
-                                        mandatorySlide=productObject.optString("Mandatory_slide");
-                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,mandatorySlide);
+                                        mandatorySlide = productObject.optString("Mandatory_slide");
+                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode, mandatorySlide);
                                         productArrayList.add(product);
                                     }
                                     break;
@@ -856,8 +999,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                         fileName = productObject.optString("FilePath");
                                         slidePriority = productObject.optString("Priority");
                                         productDetailCode = productObject.optString("Product_Detail_Code");
-                                        mandatorySlide=productObject.optString("Mandatory_slide");
-                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode,mandatorySlide);
+                                        mandatorySlide = productObject.optString("Mandatory_slide");
+                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false, productDetailCode, mandatorySlide);
                                         productArrayList.add(product);
                                     }
                                     break;
@@ -886,7 +1029,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                 for (int i = 0; i < brandProductArrayList.size(); i++) {
                     for (int j = 0; j < brandProductArrayList.get(i).getProductArrayList().size(); j++) {
-                        productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected(), brandProductArrayList.get(i).getProductArrayList().get(j).getProductCode(),brandProductArrayList.get(i).getProductArrayList().get(j).getMandatorySlide()));
+                        productsList.add(new BrandModelClass.Product(brandProductArrayList.get(i).getBrandCode(), brandProductArrayList.get(i).getBrandName(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideId(), brandProductArrayList.get(i).getProductArrayList().get(j).getSlideName(), brandProductArrayList.get(i).getProductArrayList().get(j).getPriority(), brandProductArrayList.get(i).getProductArrayList().get(j).isImageSelected(), brandProductArrayList.get(i).getProductArrayList().get(j).getProductCode(), brandProductArrayList.get(i).getProductArrayList().get(j).getMandatorySlide()));
                     }
                 }
 

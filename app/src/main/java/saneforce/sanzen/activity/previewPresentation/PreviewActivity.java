@@ -266,15 +266,13 @@ public class PreviewActivity extends AppCompatActivity {
         viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
 
         if (from_where.equalsIgnoreCase("call")) {
-            // 1️⃣ Clear old fragments
+
             headingData.clear();
             viewPagerAdapter.clear();
 
-// 2️⃣ Get hideWelcomeTab
             boolean hideWelcomeTab = getIntent().getBooleanExtra("hideWelcomeTab", false);
             Log.d("PreviewActivity", "hideWelcomeTab = " + hideWelcomeTab);
 
-// 3️⃣ Add fragments conditionally
             if (from_where.equalsIgnoreCase("call")) {
 
                 if (CusType.equalsIgnoreCase("1")) {
@@ -355,62 +353,6 @@ public class PreviewActivity extends AppCompatActivity {
             previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
         }
-//            headingData.clear();
-//            if (CusType.equalsIgnoreCase("1")) {
-//                viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
-//                headingData.add("A");
-//                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
-//                headingData.add("B");
-//                viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-//                headingData.add("C");
-//                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-//                headingData.add("D");
-//                if (therapticNeed.equalsIgnoreCase("0")) {
-//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-//                    headingData.add("E");
-//                }
-//                if (presentationNeed.equalsIgnoreCase("0")) {
-//                    viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-//                    headingData.add("F");
-//                }
-//                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
-//                headingData.add("G");
-//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-//                headingData.add("H");
-//            } else {
-//                viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
-//                headingData.add("A");
-//                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
-//                headingData.add("B");
-//                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-//                headingData.add("D");
-//                if (therapticNeed.equalsIgnoreCase("0")) {
-//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-//                    headingData.add("E");
-//                }
-//                if (presentationNeed.equalsIgnoreCase("0")) {
-//                    viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-//                    headingData.add("F");
-//                }
-//                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
-//                headingData.add("G");
-//                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
-//                headingData.add("H");
-//            }
-//        } else {
-//            viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
-//            viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-//            viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-//            if (therapticNeed.equalsIgnoreCase("0")) {
-//                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
-//            }
-//            if (presentationNeed.equalsIgnoreCase("0"))
-////                viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-//                viewPagerAdapter.add(new CustomPreviewFragment(this::viewSideScreen), getResources().getString(R.string.my_presentation));
-//        }
-//        previewBinding.viewPager.setAdapter(viewPagerAdapter);
-//        previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
-//        previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
         previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
