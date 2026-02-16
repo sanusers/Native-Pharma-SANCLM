@@ -2585,14 +2585,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR_MAS);
             holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST_MAS);
             holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
-            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP);
-                    sync(STPSetup, hqCode, holder);
-                } else {
-                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
-                }
-            }
         }
     }
 
@@ -2789,6 +2781,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                                     jointWorkJsonArray.put(jointWorkJsonObject);
                                                 }
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jointWorkJsonArray.toString(), 2));
+                                            } else if (masterSyncItemModel.getMasterOf().equals(Constants.STANDARD_TOUR_PLAN)) {
+                                                holder.workDayLayout.setEnabled(true);
                                             }
                                         }
                                     } else {
@@ -3229,6 +3223,19 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         holder.hq_code = jsonObject.getCode();
                         if (!holder.selectedHq.equalsIgnoreCase(holder.hq_code)) {
                             holder.selectedHq = holder.hq_code;
+                            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+                                if (UtilityClass.isNetworkAvailable(context)) {
+                                    holder.progress_hq.setVisibility(View.VISIBLE);
+                                    MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP);
+                                    masterSyncArray.clear();
+                                    masterSyncArray.add(STPSetup);
+                                    holder.workDayLayout.setEnabled(false);
+                                    Log.d("SYNC STP SETUP", "itemClicked: HQ");
+                                    sync(STPSetup, holder.selectedHq, holder);
+                                } else {
+                                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                }
+                            }
                             sessionInterfaceOneBuild.hqChangedOneBuild(inputDataArrayOneBuild, itemPosition, true);
                         } else {
                             sessionInterfaceOneBuild.hqChangedOneBuild(inputDataArrayOneBuild, itemPosition, false);

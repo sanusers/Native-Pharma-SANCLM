@@ -2762,7 +2762,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
     }
 
-
     private void SaveLocalOnlineTable(LocalDate localDate, JSONArray listArray) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.ENGLISH);
@@ -2976,31 +2975,31 @@ public class MasterSyncActivity extends AppCompatActivity {
                         String dayName = formatter.format(new Date(date));
                         isDataAvailable = false;
 
-                        if (modelClassLocal.size() > 0) {
-                            for (int j = 0; j < modelClassLocal.size(); j++) {
-                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
-
-                                    for (int i = 0; i < arrayList.size(); i++) {
-                                        ReceiveModel receiveModel = arrayList.get(i);
-                                        if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
-                                            SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
-                                        }
-                                    }
-                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
-                                    isDataAvailable = true;
-                                    OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
-                                    modelClasses.add(modelClass);
-                                    saveTpLocalOne(modelClasses, day, monthName, "1");  // need to do
-                                }
-                            }
-                        } else {
+//                        if (modelClassLocal.size() > 0) {
+//                            for (int j = 0; j < modelClassLocal.size(); j++) {
+//                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) /*&& modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")*/) {
+//                                    for (int i = 0; i < arrayList.size(); i++) {
+//                                        ReceiveModel receiveModel = arrayList.get(i);
+//                                        if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
+//                                            SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
+//                                        }
+//                                    }
+//                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
+//                                    isDataAvailable = true;
+//                                    OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
+//                                    modelClasses.add(modelClass);
+//                                    saveTpLocalOne(modelClasses, day, monthName, "1");  // need to do
+//                                }
+//                            }
+//                        } else {
                             for (int i = 0; i < arrayList.size(); i++) {
                                 ReceiveModel receiveModel = arrayList.get(i);
                                 if (day.equalsIgnoreCase(receiveModel.getDayno())) {
                                     SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
+                                    break;
                                 }
                             }
-                        }
+//                        }
 
                         if (!isDataAvailable) {
                             OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
@@ -3099,7 +3098,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             }
         } catch (Exception ignored) {
-
+            ignored.printStackTrace();
         }
     }
 

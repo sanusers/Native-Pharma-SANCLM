@@ -2593,9 +2593,11 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 });
             } catch (Exception e) {
+                binding.progressBar.setVisibility(View.GONE);
                 e.printStackTrace();
             }
         } else {
+            binding.progressBar.setVisibility(View.GONE);
             CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
         }
     }

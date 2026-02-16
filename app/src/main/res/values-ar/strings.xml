@@ -170,6 +170,7 @@
     <string name="tour_plan_approvals">موافقات خطة الرحلة</string>
     <string name="tp_planed_for">خطة الرحلة لـ</string>
     <string name="total_planed_days">إجمالي الأيام المخطط لها</string>
+    <string name="total_planed_count">إجمالي العدد المخطط</string>
     <string name="week_off_days_holidays">أيام العطلة / العطل الرسمية</string>
     <string name="total">الإجمالي</string>
     <string name="view_actual_plan">عرض الخطة الفعلية</string>

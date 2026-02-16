@@ -168,6 +168,7 @@
     <string name="tour_plan_approvals">Approbations du plan de visite</string>
     <string name="tp_planed_for">Visite planifiée pour</string>
     <string name="total_planed_days">Nombre total de jours planifiés</string>
+    <string name="total_planed_count">Nombre total planifié</string>
     <string name="week_off_days_holidays">Jours de repos / Vacances</string>
     <string name="total">Total</string>
     <string name="view_actual_plan">Voir le plan réel</string>

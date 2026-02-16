@@ -59,7 +59,7 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class STPApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
-    public String SelectedSfCode, stpDrNeed, stpChemNeed, planName, planSName;
+    public String SelectedSfCode, stpDrNeed, stpChemNeed, planName, planSName, stpType;
     public ActivityStpApprovalBinding stpApprovalBinding;
     public int SelectedPosition;
     ArrayList<STPDetailedModel> stpDetailedModels = new ArrayList<>();
@@ -108,6 +108,13 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         getRequiredData();
+
+        if (stpType.equalsIgnoreCase("1")) {
+            stpApprovalBinding.tagTotalPlannedDays.setText(getString(R.string.total_planed_count));
+        } else {
+            stpApprovalBinding.tagTotalPlannedDays.setText(getString(R.string.total_planed_days));
+        }
+
         CallSTPListApi();
         stpApprovalBinding.ivBack.setOnClickListener(new SafeClickListener() {
             @Override
@@ -253,6 +260,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             }
             stpDrNeed = SharedPref.getDrNeed(this);
             stpChemNeed = SharedPref.getChmNeed(this);
+            stpType = SharedPref.getStpType(this);
         } catch (Exception e) {
             e.printStackTrace();
         }

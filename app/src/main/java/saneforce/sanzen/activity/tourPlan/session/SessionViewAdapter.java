@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
@@ -24,7 +21,6 @@ import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.storage.SharedPref;
 
 public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.MyViewHolder> {
-
     public ModelClass inputDataModel = new ModelClass();
     public OneBuildModelClass inputDataModelOneBuild = new OneBuildModelClass();
     Context context;
@@ -39,7 +35,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
         isMGR = SharedPref.getSfType(context).equals("2");
     }
 
-    public SessionViewAdapter (OneBuildModelClass inputDataModelOneBuild, Context context){
+    public SessionViewAdapter(OneBuildModelClass inputDataModelOneBuild, Context context) {
         this.inputDataModelOneBuild = inputDataModelOneBuild;
         this.context = context;
     }
@@ -52,8 +48,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
     }
 
     @Override
-    public void onBindViewHolder (@NonNull SessionViewAdapter.MyViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull SessionViewAdapter.MyViewHolder holder, int position) {
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             holder.dataOneBuild = inputDataModelOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition());
             holder.clusterModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getTerritories());
@@ -83,8 +78,12 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 if (SharedPref.getSfType(context).equalsIgnoreCase("1")) {
                     holder.hqLayout.setVisibility(View.GONE);
                 } else {
-                    holder.hqLayout.setVisibility(View.VISIBLE);
-                    holder.hqTV.setText(holder.dataOneBuild.getHeadquarters().getName());
+                    if (!holder.dataOneBuild.getHeadquarters().getName().isEmpty()) {
+                        holder.hqLayout.setVisibility(View.VISIBLE);
+                        holder.hqTV.setText(holder.dataOneBuild.getHeadquarters().getName());
+                    } else {
+                        holder.hqLayout.setVisibility(View.GONE);
+                    }
                 }
                 if (inputDataModelOneBuild.getSTP_Code().isEmpty()) {
                     holder.workDayTV.setText(context.getString(R.string.select));
@@ -188,7 +187,6 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 holder.stockiestLayout.setVisibility(View.GONE);
             }
 
-
             //Unlisted Dr
             if (holder.dataOneBuild.getUnlistedDoctors().size() > 0) {
                 StringBuilder unListedDrName = new StringBuilder();
@@ -205,7 +203,6 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             } else {
                 holder.unListedDrLayout.setVisibility(View.GONE);
             }
-
 
             //Cip
             if (holder.dataOneBuild.getCip().size() > 0) {
@@ -224,7 +221,6 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 holder.cipLayout.setVisibility(View.GONE);
             }
 
-
             //Hospital
             if (holder.dataOneBuild.getHospitals().size() > 0) {
                 StringBuilder hospName = new StringBuilder();
@@ -241,9 +237,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             } else {
                 holder.hospLayout.setVisibility(View.GONE);
             }
-
         } else {
-
             holder.data = inputDataModel.getSessionList().get(holder.getAbsoluteAdapterPosition());
             holder.clusterModelArray = new ArrayList<>(holder.data.getCluster());
             holder.jcModelArray = new ArrayList<>(holder.data.getJC());
@@ -347,42 +341,42 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 holder.clusterLayout.setVisibility(View.GONE);
             }
 
-        //Joint Work
-        if (!holder.data.getJC().isEmpty() && !isMGR) {
-            StringBuilder jcName = new StringBuilder();
-            for (int i = 0; i < holder.jcModelArray.size(); i++) {
-                if (jcName.length() == 0) {
-                    jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
-                } else {
-                    jcName.append(", ").append(holder.jcModelArray.get(i).getName());
-                }
-            }
-            if (jcName.length() > 0) {
-                holder.jcTV.setText(jcName);
-            }
-        } else if(!holder.data.getJCs().isEmpty() && isMGR) {
-            holder.jcLayout.setVisibility(View.VISIBLE);
-            StringBuilder jcName = new StringBuilder();
-            for (int i = 0; i < holder.jcsModelArray.size(); i++) {
-                MultiHQHeaderModelClass multiHQHeaderModelClass = holder.jcsModelArray.get(i);
-                ArrayList<MultiHQItemModelClass> list = multiHQHeaderModelClass.getItemsList();
-                for (int j = 0; j < list.size(); j++) {
-                    MultiHQItemModelClass multiHQItemModelClass = list.get(j);
+            //Joint Work
+            if (!holder.data.getJC().isEmpty() && !isMGR) {
+                StringBuilder jcName = new StringBuilder();
+                for (int i = 0; i < holder.jcModelArray.size(); i++) {
                     if (jcName.length() == 0) {
-                        jcName = new StringBuilder(multiHQItemModelClass.getName());
+                        jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
                     } else {
-                        jcName.append(", ").append(multiHQItemModelClass.getName());
+                        jcName.append(", ").append(holder.jcModelArray.get(i).getName());
                     }
                 }
-            }
-            if (jcName.length() > 0) {
-                holder.jcTV.setText(jcName);
+                if (jcName.length() > 0) {
+                    holder.jcTV.setText(jcName);
+                }
+            } else if (!holder.data.getJCs().isEmpty() && isMGR) {
+                holder.jcLayout.setVisibility(View.VISIBLE);
+                StringBuilder jcName = new StringBuilder();
+                for (int i = 0; i < holder.jcsModelArray.size(); i++) {
+                    MultiHQHeaderModelClass multiHQHeaderModelClass = holder.jcsModelArray.get(i);
+                    ArrayList<MultiHQItemModelClass> list = multiHQHeaderModelClass.getItemsList();
+                    for (int j = 0; j < list.size(); j++) {
+                        MultiHQItemModelClass multiHQItemModelClass = list.get(j);
+                        if (jcName.length() == 0) {
+                            jcName = new StringBuilder(multiHQItemModelClass.getName());
+                        } else {
+                            jcName.append(", ").append(multiHQItemModelClass.getName());
+                        }
+                    }
+                }
+                if (jcName.length() > 0) {
+                    holder.jcTV.setText(jcName);
+                } else {
+                    holder.jcLayout.setVisibility(View.GONE);
+                }
             } else {
                 holder.jcLayout.setVisibility(View.GONE);
             }
-        } else {
-            holder.jcLayout.setVisibility(View.GONE);
-        }
 
             //Listed Dr
             if (!holder.data.getListedDr().isEmpty() && !isMGR) {
@@ -545,24 +539,23 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             } else {
                 holder.hospLayout.setVisibility(View.GONE);
             }
-
         }
     }
 
     @Override
-    public int getItemCount () {
+    public int getItemCount() {
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             return inputDataModelOneBuild.getSessionList().size();
-        } else{ return inputDataModel.getSessionList().size();}
+        } else {
+            return inputDataModel.getSessionList().size();
+        }
     }
 
-
-
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-
         TextView sessionNoTxt;
         public TextView workTypeTV, hqTV, clusterTV, jcTV, drTV, chemistTV, stockiestTV, unListedDrTV, cipTV, hospTV, remarksTV, workDayTV;
-        public LinearLayout sessionDelete, workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout, workDayLayout;
+        public LinearLayout workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout, workDayLayout;
+        public RelativeLayout sessionDelete;
 
         //Input data
         ArrayList<ModelClass.SessionList.SubClass> clusterModelArray;
@@ -594,7 +587,6 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
         ArrayList<OneBuildModelClass.SessionList.SubClass> cipModelArrayOneBuild;
         ArrayList<OneBuildModelClass.SessionList.SubClass> hospitalModelArrayOneBuild;
         public OneBuildModelClass.SessionList dataOneBuild = new OneBuildModelClass.SessionList();
-
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

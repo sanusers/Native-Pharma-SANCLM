@@ -169,6 +169,7 @@
     <string name="tour_plan_approvals">行程审批</string>
     <string name="tp_planed_for">计划行程给</string>
     <string name="total_planed_days">计划总天数</string>
+    <string name="total_planed_count">计划总数</string>
     <string name="week_off_days_holidays">休息日 / 节假日</string>
     <string name="total">总计</string>
     <string name="view_actual_plan">查看实际行程</string>
