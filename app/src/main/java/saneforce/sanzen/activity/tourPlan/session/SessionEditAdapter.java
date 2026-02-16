@@ -667,35 +667,39 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     public void onClick(View view) {
                         itemPosition = holder.getLayoutPosition();
                         holder.relativeLayout.setSelected(false);
-                        if (!holder.fieldSelected) {
-                            ArrayList<EditModelClass> workDayArray = new ArrayList<>();
-                            if (holder.workDayArray.isEmpty()) {
-                                try {
-                                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
-                                    if (jsonArray != null && jsonArray.length() > 0) {
-                                        JSONObject jsonObject = jsonArray.optJSONObject(0);
-                                        String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
-                                        String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
-                                        for (int index = 0; index < dayIDs.length; index++) {
-                                            if (!dayIDs[index].isEmpty()) {
-                                                workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                        if (holder.workTypeField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                        } else {
+                            if (!holder.fieldSelected) {
+                                ArrayList<EditModelClass> workDayArray = new ArrayList<>();
+                                if (holder.workDayArray.isEmpty()) {
+                                    try {
+                                        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
+                                        if (jsonArray != null && jsonArray.length() > 0) {
+                                            JSONObject jsonObject = jsonArray.optJSONObject(0);
+                                            String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
+                                            String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
+                                            for (int index = 0; index < dayIDs.length; index++) {
+                                                if (!dayIDs[index].isEmpty()) {
+                                                    workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                                                }
                                             }
                                         }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
 //                                new STPDaySorter().sortDaysTP(workDayArray);
-                                holder.workDayArray = workDayArray;
+                                    holder.workDayArray = workDayArray;
+                                }
+                                holder.sessionItemAdapterArray = holder.workDayArray;
+                                populateSessionItemAdapterOneBuild(holder, false, false, false);
+                                holder.fieldSelected = true;
+                                onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
+                            } else {
+                                changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
+                                holder.fieldSelected = false;
+                                onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");  // change it
                             }
-                            holder.sessionItemAdapterArray = holder.workDayArray;
-                            populateSessionItemAdapterOneBuild(holder, false, false, false);
-                            holder.fieldSelected = true;
-                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
-                        } else {
-                            changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
-                            holder.fieldSelected = false;
-                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");  // change it
                         }
                         TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
                     }

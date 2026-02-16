@@ -517,7 +517,7 @@ public class ChemistFragment extends Fragment {
             if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
                     || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") /*&& SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/) && !stpOfflineDataDao.isNotApproved(status)))
                     && !deviation.equalsIgnoreCase("1")) {
-                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !SharedPref.getStpType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
                     STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workDayCode);
                     List<String> chmList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(","));
                     Log.i("STP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
@@ -650,7 +650,7 @@ public class ChemistFragment extends Fragment {
 //                    }
 //                }
                 if (isFenced) {
-                    if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") /*&& SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/ && !stpOfflineDataDao.isNotApproved(status))) {
+                    if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getStpType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status))) {
                         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workDayCode);
                         List<String> chmList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(","));
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
