@@ -399,6 +399,14 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+
+        <activity
+            android:name=".activity.myresource.doctorprofile.DoctorProfileView"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".activity.myresource.callstatusview.Callsstatus_screenview"
             android:exported="false"

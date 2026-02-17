@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.myresource.doctorprofile.DoctorProfileView;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.sanzen.commonClasses.Constants;
@@ -210,8 +211,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_category.setVisibility(View.VISIBLE);
 
-                holder.Res_category.setText(context.getString(R.string.from)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
-                holder.Res_rx.setText(context.getString(R.string.to)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                holder.Res_category.setText(context.getString(R.string.from) + " :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                holder.Res_rx.setText(context.getString(R.string.to) + " :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
             }
 
             //        input filter_add
@@ -220,8 +221,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     holder.Res_Table1.setVisibility(View.VISIBLE);
                     holder.Res_category.setVisibility(View.VISIBLE);
 
-                    holder.Res_category.setText(context.getString(R.string.from)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
-                    holder.Res_rx.setText(context.getString(R.string.to)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                    holder.Res_category.setText(context.getString(R.string.from) + " :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                    holder.Res_rx.setText(context.getString(R.string.to) + " :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
                 }
             }
             //workType
@@ -239,7 +240,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_Name.setText(context.getString(R.string.leave_type) + " " + app_adapt.getLeaveTypes());
                 holder.Res_category.setText(context.getString(R.string.eligible) + " " + app_adapt.getEligible());
                 holder.available.setText(context.getString(R.string.available) + " " + app_adapt.getAvailable());
-                holder.Res_rx.setText(context.getString(R.string.taken)+ " " + app_adapt.getTaken());
+                holder.Res_rx.setText(context.getString(R.string.taken) + " " + app_adapt.getTaken());
             }
 
             holder.listcount.setText(count + " )");
@@ -355,6 +356,20 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 }
             });
 
+            if (SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+               holder.Res_Profile.setVisibility(View.VISIBLE);
+            }else{
+                holder.Res_Profile.setVisibility(View.GONE);
+            }
+
+            holder.Res_Profile.setOnClickListener(view -> {
+                int pos = holder.getBindingAdapterPosition();
+                Intent intent = new Intent(context, DoctorProfileView.class);
+                intent.putExtra("position", pos);
+                context.startActivity(intent);
+            });
+
+
             holder.Res_View.setOnClickListener(new SafeClickListener() {
                 @Override
                 public void onSafeClick(View view) {
@@ -428,7 +443,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                         }
                     }
 
-                    holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-"+ context.getString(R.string.visit));
+                    holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-" + context.getString(R.string.visit));
 
                 } catch (Exception a) {
                     a.printStackTrace();
@@ -453,7 +468,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView Res_Name, Res_category, Res_specialty, Res_rx, Res_culter, listcount;
-        public LinearLayout Res_Edit, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
+        public LinearLayout Res_Edit, Res_Profile, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
 
         public TextView visit_dt, available;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
         public RecyclerView tertry_list;
@@ -470,6 +485,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             listcount = itemView.findViewById(R.id.listcount);
 
             Res_Edit = itemView.findViewById(R.id.Res_Edit);
+            Res_Profile = itemView.findViewById(R.id.Res_Profile);
             Res_View = itemView.findViewById(R.id.Res_View);
             Res_Table1 = itemView.findViewById(R.id.Res_Table1);
             Res_Table2 = itemView.findViewById(R.id.Res_Table2);

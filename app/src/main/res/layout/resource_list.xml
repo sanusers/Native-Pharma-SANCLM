@@ -68,12 +68,12 @@
 
                     <LinearLayout
                         android:id="@+id/Res_Edit"
-                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.3"
                         android:gravity="right"
-                        android:padding="@dimen/_3sdp">
+                        android:padding="@dimen/_3sdp"
+                        android:visibility="gone">
 
                         <ImageView
                             android:layout_width="@dimen/_7sdp"
@@ -99,8 +99,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1.3"
                         android:gravity="right"
-                        android:visibility="gone"
-                        android:padding="@dimen/_3sdp">
+                        android:padding="@dimen/_3sdp"
+                        android:visibility="gone">
+
                         <TextView
                             android:id="@+id/visit_dt"
                             android:layout_width="match_parent"
@@ -121,11 +122,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/Res_Table"
-                    android:weightSum="3">
+                    android:orientation="horizontal"
+                    android:weightSum="4">
 
                     <TextView
                         android:id="@+id/Res_category"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:layout_weight="1"
@@ -138,20 +140,7 @@
 
                     <TextView
                         android:id="@+id/Res_specialty"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:padding="@dimen/_3sdp"
-                        android:text="@string/speciality"
-                        android:textColor="#808B96"
-                        android:textSize="@dimen/_6sdp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:visibility="gone"
-                        android:id="@+id/textAvailablity"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:layout_weight="1"
@@ -163,8 +152,23 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/Res_rx"
+                        android:id="@+id/textAvailablity"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_3sdp"
+                        android:text="@string/speciality"
+                        android:textColor="#808B96"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+
+                    <TextView
+                        android:id="@+id/Res_rx"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:layout_weight="1"
@@ -174,7 +178,93 @@
                         android:textColor="#808B96"
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/Res_Profile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:gravity="end|center_vertical"
+                        android:padding="@dimen/_3sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_8sdp"
+                            android:layout_height="@dimen/_7sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:src="@drawable/doctor_img" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="Profile"
+                            android:textColor="#FF03DAC5"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
                 </LinearLayout>
+
+                <!--                <LinearLayout-->
+                <!--                    android:id="@+id/Res_Table1"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_below="@+id/Res_Table"-->
+                <!--                    android:weightSum="3">-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/Res_category"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginTop="@dimen/_3sdp"-->
+                <!--                        android:layout_weight="1"-->
+                <!--                        android:fontFamily="@font/satoshi_medium"-->
+                <!--                        android:padding="@dimen/_3sdp"-->
+                <!--                        android:text="@string/category"-->
+                <!--                        android:textColor="#808B96"-->
+                <!--                        android:textSize="@dimen/_6sdp"-->
+                <!--                        android:textStyle="bold" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/Res_specialty"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginTop="@dimen/_3sdp"-->
+                <!--                        android:layout_weight="1"-->
+                <!--                        android:fontFamily="@font/satoshi_medium"-->
+                <!--                        android:padding="@dimen/_3sdp"-->
+                <!--                        android:text="@string/speciality"-->
+                <!--                        android:textColor="#808B96"-->
+                <!--                        android:textSize="@dimen/_6sdp"-->
+                <!--                        android:textStyle="bold" />-->
+                <!--                    <TextView-->
+                <!--                        android:visibility="gone"-->
+                <!--                        android:id="@+id/textAvailablity"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginTop="@dimen/_3sdp"-->
+                <!--                        android:layout_weight="1"-->
+                <!--                        android:fontFamily="@font/satoshi_medium"-->
+                <!--                        android:padding="@dimen/_3sdp"-->
+                <!--                        android:text="@string/speciality"-->
+                <!--                        android:textColor="#808B96"-->
+                <!--                        android:textSize="@dimen/_6sdp"-->
+                <!--                        android:textStyle="bold" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/Res_rx"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginTop="@dimen/_3sdp"-->
+                <!--                        android:layout_weight="1"-->
+                <!--                        android:fontFamily="@font/satoshi_medium"-->
+                <!--                        android:padding="@dimen/_3sdp"-->
+                <!--                        android:text="@string/rx"-->
+                <!--                        android:textColor="#808B96"-->
+                <!--                        android:textSize="@dimen/_6sdp"-->
+                <!--                        android:textStyle="bold" />-->
+                <!--                </LinearLayout>-->
 
 
                 <LinearLayout
@@ -255,8 +345,8 @@
         android:layout_marginRight="@dimen/_3sdp"
         android:background="#d7dbdd"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:padding=".3dp" />
+        android:padding=".3dp"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tertry_list"
@@ -272,6 +362,6 @@
         android:layout_marginTop="@dimen/_5sdp"
         android:background="#abb2b9"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:padding=".3dp" />
+        android:padding=".3dp"
+        android:visibility="gone" />
 </LinearLayout>
