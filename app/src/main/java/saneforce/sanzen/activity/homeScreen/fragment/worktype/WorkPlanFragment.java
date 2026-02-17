@@ -66,6 +66,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.approvals.stp.STPApprovalActivity;
+import saneforce.sanzen.activity.approvals.stp.model.STPDetailedModel;
 import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -1116,7 +1118,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
                         stpModelList.add(new STPModelList(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID(), ""));
                     }
-                    STPDaySorter.sortDays(stpModelList, STPModelList::getCode);
+                    if (!SharedPref.getStpType(requireContext()).equalsIgnoreCase("1")) {
+                        STPDaySorter.sortDays(stpModelList, STPModelList::getCode);
+                    }
                     this.stpModelList = new ArrayList<>();
                     for (STPModelList stpModel : stpModelList) {
                         try {
@@ -1141,7 +1145,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                     }
-                    STPDaySorter.sortDays(stpModelList, STPModelList::getCode);
+                    if (!SharedPref.getStpType(requireContext()).equalsIgnoreCase("1")) {
+                        STPDaySorter.sortDays(stpModelList, STPModelList::getCode);
+                    }
                     this.stpModelList = new ArrayList<>();
                     for (STPModelList stpModel : stpModelList) {
                         try {

@@ -52,6 +52,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
@@ -1764,7 +1765,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
                 }
             }
-            STPDaySorter.sortDays(stpDataModels, DCRFillteredModelClass::getCode);
+            if (!SharedPref.getStpType(StandardTourPlanActivity.this).equalsIgnoreCase("1")) {
+                STPDaySorter.sortDays(stpDataModels, DCRFillteredModelClass::getCode);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

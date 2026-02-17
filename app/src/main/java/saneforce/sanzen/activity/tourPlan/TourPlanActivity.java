@@ -2578,7 +2578,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     arrayListOneBuild.getSessionList().get(i).setVisible(true);
                                 }
 
-                                populateSessionEditAdapterOneBuild(modelClass1);
+                                populateSessionEditAdapterOneBuild(arrayListOneBuild);
                             }
                         }
                         binding.progressBar.setVisibility(View.GONE);
@@ -2855,6 +2855,9 @@ public class TourPlanActivity extends AppCompatActivity {
                 arrayList.getSessionList().remove(position);
                 arrayList.getSessionList().add(position, modelClass);
 
+                arrayList.setSTP_Code("");
+                arrayList.setSTP_Name("");
+
                 for (int i = 0; i < arrayList.getSessionList().size(); i++) {
                     arrayList.getSessionList().get(i).setVisible(true);
                 }
@@ -2957,6 +2960,9 @@ public class TourPlanActivity extends AppCompatActivity {
                 arrayListOneBuild.getSessionList().remove(position);
                 arrayListOneBuild.getSessionList().add(position, oneBuildModelClasses);
 
+                arrayListOneBuild.setSTP_Code("");
+                arrayListOneBuild.setSTP_Name("");
+
                 for (int i = 0; i < arrayListOneBuild.getSessionList().size(); i++) {
                     arrayListOneBuild.getSessionList().get(i).setVisible(true);
                 }
@@ -3010,7 +3016,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         arrayListOneBuild.getSessionList().get(i).setVisible(true);
                     }
 
-                    populateSessionEditAdapterOneBuild(modelClass1);
+                    populateSessionEditAdapterOneBuild(arrayListOneBuild);
                 } else {
                     String selectedHQCode = "", selectedHQName = "";
                     for (OneBuildModelClass.SessionList sessionList : oneBuildModelClass.getSessionList()) {

@@ -299,7 +299,9 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 stpDetailedModels.add(new STPDetailedModel(json.getString("Trans_No"), json.getString("sf_code"), json.getString("Division_Code"), json.getString("Day_Plan_Name"), json.getString("Day_Plan_ShortName"), json.getString("Day_Plan_Code"), json.getString("Patch_Code"), json.getString("Patch_Name"), json.getString("Dr_Code"), json.getString("Dr_Name"), json.getString("Chem_Code"), json.getString("Chem_Name"), json.getString("Active_Flag"), json.getString("Created_Date")));
                             }
-                            STPDaySorter.sortDays(stpDetailedModels, STPDetailedModel::getDayPlanShortName);
+                            if (!SharedPref.getStpType(STPApprovalActivity.this).equalsIgnoreCase("1")) {
+                                STPDaySorter.sortDays(stpDetailedModels, STPDetailedModel::getDayPlanShortName);
+                            }
                             stpApprovalBinding.constraintSelectedDetails.setVisibility(View.VISIBLE);
                             stpApprovalBinding.tvTotalPlannedDays.setText(String.valueOf(totalPlannedDays));
                             stpApprovalDetailedAdapter = new STPApprovalDetailedAdapter(STPApprovalActivity.this, stpDetailedModels);

@@ -51,7 +51,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -1588,7 +1590,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                    STPDaySorter.sortDays(workDayArray, EditModelClass::getCode);
+                                    if (!SharedPref.getStpType(context).equalsIgnoreCase("1")) {
+                                        STPDaySorter.sortDays(workDayArray, EditModelClass::getCode);
+                                    }
                                     holder.workDayArray = workDayArray;
                                 }
                                 holder.sessionItemAdapterArray = holder.workDayArray;
