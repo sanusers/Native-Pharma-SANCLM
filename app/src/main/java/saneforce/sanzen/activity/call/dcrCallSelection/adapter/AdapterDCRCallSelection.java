@@ -373,6 +373,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 public void onSafeClick(View view) {
                     stopClock();
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.check_in_successfully));
+                    dialogCheckIn.dismiss();
                     changeActivity(position);
                 }
             });

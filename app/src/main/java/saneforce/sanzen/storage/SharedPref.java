@@ -544,7 +544,8 @@ public class SharedPref {
     public static final String SEND_LOGS_NEED = "send_logs_need";
     public static final String CLEAR_DATA_NEED = "clear_data_need";
     public static final String STP_TYPE = "STP_Type";
-
+    public static final String DET_DR_CAP = "Detailing_Dr_Caption";
+    public static final String DET_ULDR_CAP = "Detailing_UnlstDr_Caption";
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
@@ -945,6 +946,8 @@ public class SharedPref {
             editor.putString(CLEAR_DATA_NEED, jsonObject.optString("Clear_Data_Need"));
             editor.putString(SEND_LOGS_NEED, jsonObject.optString("Send_Logs_Need"));
             editor.putString(STP_TYPE, jsonObject.optString("STP_Type"));
+            editor.putString(DET_DR_CAP,jsonObject.optString("Detailing_Dr_Caption"));
+            editor.putString(DET_ULDR_CAP,jsonObject.optString("Detailing_UnlstDr_Caption"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3508,6 +3511,13 @@ public static void addVisitedDoctor(Context context, String custCode) {
 
     public static String getStpType(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(STP_TYPE, "0");
+    }
+
+    public static String getDetDrCap(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_DR_CAP,"");
+    }
+    public static String getDetUldrCap(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_ULDR_CAP,"");
     }
 
 }

@@ -96,7 +96,7 @@ public class PreviewActivity extends AppCompatActivity {
     private SideScreenAdapter sideScreenAdapter;
     private JSONObject checkInJsonObject = new JSONObject();
     public static boolean isTimerEnd = false;
-
+    String mandatorySlide ="0";
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
@@ -311,9 +311,11 @@ public class PreviewActivity extends AppCompatActivity {
                 }
             }
 
-            if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
-                Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
-                return;
+            if (mandatorySlide.equalsIgnoreCase("1")) {
+                if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
+                    Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
 
             if (!pendingSlides.isEmpty()) {
@@ -322,7 +324,19 @@ public class PreviewActivity extends AppCompatActivity {
             }
 
             previewBinding.rlThankYou.setVisibility(View.VISIBLE);
-            previewBinding.docName.setText("Thank You\n"+ caption + " " + CallActivityCustDetails.get(0).getName());
+            String DrDetCap = SharedPref.getDetDrCap(PreviewActivity.this);
+            String UlDrDetCap = SharedPref.getDetUldrCap(PreviewActivity.this);
+            if(CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
+                if (CusType.equalsIgnoreCase("1") && !DrDetCap.isEmpty() || !DrDetCap.equalsIgnoreCase("null")) {
+                    previewBinding.docName.setText("Thank You\n" + DrDetCap + " " + CallActivityCustDetails.get(0).getName());
+                } else if (CusType.equalsIgnoreCase("4") && !UlDrDetCap.isEmpty() || !UlDrDetCap.equalsIgnoreCase("null")){
+                    previewBinding.docName.setText("Thank You\n" + UlDrDetCap + " " + CallActivityCustDetails.get(0).getName());
+                }else {
+                    previewBinding.docName.setText("Thank You\n" + "Dr." + " " + CallActivityCustDetails.get(0).getName());
+                }
+            }else{
+                previewBinding.docName.setText("Thank You\n"+ " " + CallActivityCustDetails.get(0).getName());
+            }
             previewBinding.btnFinishDet.setVisibility(View.GONE);
 //            @Override
 //            public void onSafeClick(View view) {
