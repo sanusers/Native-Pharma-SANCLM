@@ -858,7 +858,6 @@
     <string name="no_anniversarys_belated">Aucun anniversaire en retard !! !!</string>
     <string name="no_anniversarys_upcoming">Aucun anniversaire à venir !!</string>
     <string name="no_anniversarys_today">Aucun anniversair aujourd\'hui !!</string>
-    <string name="select_headquarters_text">Sélectionner le siège</string>
     <string name="no_birthdays_today">Aucun anniversaire aujourd\'hui !!</string>
     <string name="no_birthdays_upcoming">Aucun anniversaire à venir !!</string>
     <string name="no_birthdays_belated">Aucun anniversaire en retard !!</string>
@@ -927,9 +926,6 @@
     <string name="for_detailing_has_been_exceeded">pour le detailing a été dépassée</string>
     <string name="please_select_month_headquarters">Veuillez sélectionner le mois et le siège</string>
     <string name="location_to_be_shown">Emplacement à afficher</string>
-    <string name="latitude">Latitude</string>
-    <string name="time">Heure</string>
-    <string name="longitude">Longitude</string>
     <string name="address_label">Adresse :</string>
     <string name="date_label">Date :</string>
     <string name="add_condition">Ajouter une condition</string>

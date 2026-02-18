@@ -972,7 +972,7 @@ public class OutboxFragment extends Fragment {
                     Log.d("fileToUploadSignObFrag", "not exists: " + signModelClass.getFilePath());
                 } else {
 //                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
-                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "signature" + "/" + fileToUpload.getName();
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                     TransferNetworkLossHandler.getInstance(context);
@@ -1692,7 +1692,7 @@ public class OutboxFragment extends Fragment {
                     Log.d("fileToUploadSignObFrag", "not exists: " + filePath);
                 } else {
 //                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
-                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "signature" + "/" + fileToUpload.getName();
 
 
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);

@@ -498,7 +498,6 @@ Khuyến nghị đồng bộ các cuộc gọi Outbox</string>
     <string name="deleting_field_work_with_calls">Xóa công việc thực địa cũng sẽ xóa tất cả cuộc gọi</string>
     <string name="select_workday">Chọn Ngày làm việc</string>
     <string name="refresh">Làm mới</string>
-    <string name="Signature">Chữ ký</string>
     <string name="fill">Vui lòng điền </string>
     <string name="select_headquater">CHỌN TRỤ SỞ</string>
     <string name="location_add">Đã đánh dấu thành công</string>
@@ -628,7 +627,6 @@ Khuyến nghị đồng bộ các cuộc gọi Outbox</string>
     <string name="Business">Số lượng kinh doanh</string>
     <string name="Business_value">Giá trị kinh doanh</string>
     <string name="no_of_product">Số sản phẩm:</string>
-    <string name="Available">Có sẵn:</string>
     <string name="enter_crct_email">Vui lòng nhập email đúng trước khi lưu</string>
     <string name="work_plan_updated_successfully">Kế hoạch công tác đã được cập nhật thành công</string>
     <string name="work_day">Ngày làm việc</string>

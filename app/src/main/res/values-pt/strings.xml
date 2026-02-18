@@ -497,7 +497,6 @@
     <string name="deleting_field_work_with_calls">Excluir trabalho de campo também excluirá todas as chamadas</string>
     <string name="select_workday">Selecionar Dia de Trabalho</string>
     <string name="refresh">Atualizar</string>
-    <string name="Signature">Assinatura</string>
     <string name="fill">Por favor, preencha </string>
     <string name="select_headquater">SELECIONAR SEDE</string>
     <string name="location_add">Marcado com sucesso</string>
@@ -626,7 +625,6 @@
     <string name="Business">Quantidade de Negócios</string>
     <string name="Business_value">Valor de Negócios</string>
     <string name="no_of_product">Número de Produtos:</string>
-    <string name="Available">Disponível:</string>
     <string name="enter_crct_email">Por favor, insira o e-mail correto antes de salvar</string>
     <string name="work_plan_updated_successfully">Plano de Trabalho atualizado com sucesso</string>
     <string name="work_day">Dia de Trabalho</string>

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">V.1.4</string>
+    <string name="app_version" translatable="false">V.1.3</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -1022,9 +1022,9 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="tour_plan_overview">Tour Plan Overview</string>
     <string name="total_planned_days">"Total Planned Days: "</string>
     <string name="planned">Planned</string>
-    <string name="os">OS</string>
-    <string name="ex">EX</string>
-    <string name="os_ex">OS-EX</string>
+    <string name="os" translatable="false">OS</string>
+    <string name="ex" translatable="false">EX</string>
+    <string name="os_ex" translatable="false">OS-EX</string>
     <string name="planned_">Planned: </string>
     <string name="total_">Total: </string>
     <string name="planned_days">"Planned Days: "</string>

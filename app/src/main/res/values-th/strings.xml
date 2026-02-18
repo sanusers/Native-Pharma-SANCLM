@@ -497,7 +497,6 @@
     <string name="deleting_field_work_with_calls">การลบงานภาคสนามจะลบการโทรทั้งหมดด้วย</string>
     <string name="select_workday">เลือกวันทำงาน</string>
     <string name="refresh">รีเฟรช</string>
-    <string name="Signature">ลายเซ็น</string>
     <string name="fill">กรุณากรอก </string>
     <string name="select_headquater">เลือกสำนักงานใหญ่</string>
     <string name="location_add">ติดแท็กสำเร็จ</string>
@@ -627,7 +626,6 @@
     <string name="Business">จำนวนธุรกิจ</string>
     <string name="Business_value">มูลค่าธุรกิจ</string>
     <string name="no_of_product">จำนวนผลิตภัณฑ์ :</string>
-    <string name="Available">มีอยู่ :</string>
     <string name="enter_crct_email">กรุณากรอกอีเมลที่ถูกต้องก่อนบันทึก</string>
     <string name="work_plan_updated_successfully">อัปเดตแผนงานสำเร็จ</string>
     <string name="work_day">วันทำงาน</string>
