@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -183,7 +185,9 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             }
 
             if (app_adapt.getRes_Category().equals("") && app_adapt.getRes_rx().equals("") && app_adapt.getRes_Specialty().equals("")) {
-                holder.Res_Table1.setVisibility(View.GONE);
+                holder.Res_Table1.setVisibility(View.VISIBLE);
+
+
                 if (split_val.equals("1") || split_val.equals("2")) {
 //                    if (SharedPref.getProfilingNeed(context).equalsIgnoreCase("0")) {
 //                        holder.Res_Edit.setVisibility(View.VISIBLE);
@@ -356,17 +360,49 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 }
             });
 
-            if (SharedPref.getSfType(context).equalsIgnoreCase("1")) {
-               holder.Res_Profile.setVisibility(View.VISIBLE);
-            }else{
+//            if (SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+//               holder.Res_Profile.setVisibility(View.VISIBLE);
+//            }else{
+//                holder.Res_Profile.setVisibility(View.GONE);
+//            }
+            String posName = app_adapt.getPos_name();
+
+            if (posName.equalsIgnoreCase("D")) {
+                holder.ivProfileIcon.setImageResource(R.drawable.doctor_img);
+                holder.txt_profile.setTextColor(ContextCompat.getColor(context, R.color.green_60));
+
+
+            } else if (posName.equalsIgnoreCase("C")) {
+                holder.ivProfileIcon.setImageResource(R.drawable.chemist_img);
+                holder.txt_profile.setTextColor(ContextCompat.getColor(context, R.color.blue_60));
+
+            } else if (posName.equalsIgnoreCase("S")) {
+                holder.ivProfileIcon.setImageResource(R.drawable.imgstock);
+                holder.txt_profile.setTextColor(ContextCompat.getColor(context, R.color.red_60));
+
+            } else if (posName.equalsIgnoreCase("U")) {
+                holder.ivProfileIcon.setImageResource(R.drawable.imgunlisted);
+                holder.txt_profile.setTextColor(ContextCompat.getColor(context, R.color.gray_45));
+            }
+            if (SharedPref.getSfType(context).equalsIgnoreCase("1") &&
+                    (app_adapt.getPos_name().equalsIgnoreCase("D") ||
+                            app_adapt.getPos_name().equalsIgnoreCase("C") ||
+                            app_adapt.getPos_name().equalsIgnoreCase("S") ||
+                            app_adapt.getPos_name().equalsIgnoreCase("U"))) {
+
+                holder.Res_Profile.setVisibility(View.VISIBLE);
+            } else {
                 holder.Res_Profile.setVisibility(View.GONE);
             }
-
             holder.Res_Profile.setOnClickListener(view -> {
-                int pos = holder.getBindingAdapterPosition();
                 Intent intent = new Intent(context, DoctorProfileView.class);
-                intent.putExtra("position", pos);
-                context.startActivity(intent);
+                if (app_adapt.getPos_name().equalsIgnoreCase("D") || app_adapt.getPos_name().equalsIgnoreCase("C")
+                        || app_adapt.getPos_name().equalsIgnoreCase("S") || app_adapt.getPos_name().equalsIgnoreCase("U") ) {
+                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
+                    int pos = holder.getBindingAdapterPosition();
+                    intent.putExtra("position", pos);
+                    context.startActivity(intent);
+                }
             });
 
 
@@ -384,7 +420,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
         } else {
             if (split_val.equals("2")) {
-                holder.Res_Table1.setVisibility(View.GONE);
+                holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_Table2.setVisibility(View.GONE);
 //                if (SharedPref.getProfilingNeed(context).equalsIgnoreCase("0")) {
 //                    holder.Res_Edit.setVisibility(View.VISIBLE);
@@ -470,9 +506,10 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         public TextView Res_Name, Res_category, Res_specialty, Res_rx, Res_culter, listcount;
         public LinearLayout Res_Edit, Res_Profile, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
 
-        public TextView visit_dt, available;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
+        public TextView visit_dt, available,txt_profile;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
         public RecyclerView tertry_list;
 
+        public ImageView  ivProfileIcon;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -486,6 +523,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
             Res_Edit = itemView.findViewById(R.id.Res_Edit);
             Res_Profile = itemView.findViewById(R.id.Res_Profile);
+            ivProfileIcon = itemView.findViewById(R.id.ivProfileIcon);
+            txt_profile = itemView.findViewById(R.id.txt_profile);
             Res_View = itemView.findViewById(R.id.Res_View);
             Res_Table1 = itemView.findViewById(R.id.Res_Table1);
             Res_Table2 = itemView.findViewById(R.id.Res_Table2);
