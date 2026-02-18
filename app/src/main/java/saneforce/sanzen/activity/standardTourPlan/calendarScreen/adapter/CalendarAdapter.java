@@ -6,7 +6,6 @@ import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.CalendarModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.SelectedDCRModel;
 
@@ -239,6 +237,27 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                         break;
 
                 }
+            }
+            if (calendarModelList.size() == 1) {
+                holder.cell1.setVisibility(View.VISIBLE);
+                holder.cell2.setVisibility(View.INVISIBLE);
+                holder.cell3.setVisibility(View.INVISIBLE);
+                holder.cell4.setVisibility(View.INVISIBLE);
+            } else if (calendarModelList.size() == 2) {
+                holder.cell1.setVisibility(View.VISIBLE);
+                holder.cell2.setVisibility(View.VISIBLE);
+                holder.cell3.setVisibility(View.INVISIBLE);
+                holder.cell4.setVisibility(View.INVISIBLE);
+            } else if (calendarModelList.size() == 3) {
+                holder.cell1.setVisibility(View.VISIBLE);
+                holder.cell2.setVisibility(View.VISIBLE);
+                holder.cell3.setVisibility(View.VISIBLE);
+                holder.cell4.setVisibility(View.INVISIBLE);
+            } else if (calendarModelList.size() == 4) {
+                holder.cell1.setVisibility(View.VISIBLE);
+                holder.cell2.setVisibility(View.VISIBLE);
+                holder.cell3.setVisibility(View.VISIBLE);
+                holder.cell4.setVisibility(View.VISIBLE);
             }
         }
     }

@@ -173,6 +173,7 @@
     <string name="tour_plan_approvals">Aprovações do Plano de Viagem</string>
     <string name="tp_planed_for">Plano de Viagem para</string>
     <string name="total_planed_days">Total de Dias Planejados</string>
+    <string name="total_planed_count">Contagem total planejada</string>
     <string name="week_off_days_holidays">Folgas / Feriados</string>
     <string name="total">Total</string>
     <string name="view_actual_plan">Ver Plano Real</string>
@@ -551,6 +552,7 @@
     <string name="standard_tour_plan">Plano de Visita Padrão</string>
     <string name="send_to_approval">Enviar para aprovação</string>
     <string name="check_unplanned_visits">Verificar Visitas Não Planejadas</string>
+    <string name="check_unplanned_doctors">verificar médicos não planeados</string>
     <string name="cip">CIP</string>
     <string name="selected">Selecionado</string>
     <string name="plan_for">Plano para</string>

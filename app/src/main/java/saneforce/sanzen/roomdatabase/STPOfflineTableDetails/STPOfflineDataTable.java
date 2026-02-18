@@ -38,6 +38,16 @@ public class STPOfflineDataTable {
     @ColumnInfo(name = "chemist_name")
     private String chemistName = "";
 
+    @ColumnInfo(name = "Speciality_Name")
+    private String doctorSpeciality = "";
+    @ColumnInfo(name = "Category_Name")
+    private String doctorCategory = "";
+    @ColumnInfo(name = "Class_Name")
+    private String doctorClass = "";
+
+    @ColumnInfo(name = "Category_Code")
+    private String doctorCategoryCode = "";
+
     @ColumnInfo(name = "stp_data")
     private String stpData = "";
 
@@ -63,6 +73,24 @@ public class STPOfflineDataTable {
         this.status = status;
         this.syncStatus = syncStatus;
     }
+    @Ignore
+    public STPOfflineDataTable(@NonNull String dayID, String dayCaption, String clusterCode, String clusterName, String doctorCode, String doctorName, String chemistCode, String chemistName,String doctorSpeciality,String doctorCategory,String doctorClass,String doctorCategoryCode,String stpData, int status, String syncStatus) {
+        this.dayID = dayID;
+        this.dayCaption = dayCaption;
+        this.clusterCode = clusterCode;
+        this.clusterName = clusterName;
+        this.doctorCode = doctorCode;
+        this.doctorName = doctorName;
+        this.chemistCode = chemistCode;
+        this.chemistName = chemistName;
+        this.doctorSpeciality = doctorSpeciality;
+        this.doctorCategory = doctorCategory;
+        this.doctorCategoryCode = doctorCategoryCode;
+        this.doctorClass = doctorClass;
+        this.stpData = stpData;
+        this.status = status;
+        this.syncStatus = syncStatus;
+    }
 
     @NonNull
     public String getDayID() {
@@ -83,6 +111,38 @@ public class STPOfflineDataTable {
 
     public String getClusterCode() {
         return clusterCode;
+    }
+
+    public String getDoctorSpeciality() {
+        return doctorSpeciality;
+    }
+
+    public void setDoctorSpeciality(String doctorSpeciality) {
+        this.doctorSpeciality = doctorSpeciality;
+    }
+
+    public String getDoctorCategory() {
+        return doctorCategory;
+    }
+
+    public void setDoctorCategory(String doctorCategory) {
+        this.doctorCategory = doctorCategory;
+    }
+
+    public String getDoctorClass() {
+        return doctorClass;
+    }
+
+    public void setDoctorClass(String doctorClass) {
+        this.doctorClass = doctorClass;
+    }
+
+    public String getDoctorCategoryCode() {
+        return doctorCategoryCode;
+    }
+
+    public void setDoctorCategoryCode(String doctorCategoryCode) {
+        this.doctorCategoryCode = doctorCategoryCode;
     }
 
     public void setClusterCode(String clusterCode) {

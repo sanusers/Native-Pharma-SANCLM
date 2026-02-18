@@ -52,9 +52,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.sanzen.activity.call.dcrCallSelection.MapsAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
@@ -101,7 +100,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private List<String> allSelectedDocList;
     private Set<String> totalCategoryCodeList, totalClusterCodeList, totalDocCodeList, totalChmCodeList, totalStkCodeList, totalUnDrCodeList, totalCipCodeList, totalHosCodeList;
     private Set<String> selectedCategoryCodeList, selectedClusterCodeList, selectedDocCodeList, selectedChmCodeList, selectedStkCodeList, selectedUnDrCodeList, selectedCipCodeList, selectedHosCodeList;
-    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, dayCaptions, dayIDs, stpFlag, rejectReason;
+    private Set<String> selectedDocCodeListSize, selectedChmCodeListSize, selectedClusterCodeListSize;
+    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, dayCaptions, dayIDs, stpFlag, rejectReason, stpType;
     private RoomDB roomDB;
     public static String stpCap;
     private MasterDataDao masterDataDao;
@@ -136,39 +136,76 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         super.onResume();
         if (stpFlag == null || stpFlag.isEmpty()) {
             stpFlag = "3";
+            if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                stpFlag = "0";
+            }
         }
         checkApprovalButtonStatus();
 
         if (stpFlag != null && !stpFlag.isEmpty()) {
-            if (stpFlag.equalsIgnoreCase("1")) {
-                activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
-                activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
-                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
-                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
-                activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.rejected));
+            if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                if (stpFlag.equalsIgnoreCase("3")) {
+                    activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                    activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
+                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.rejected));
+                } else {
+                    activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                    if (stpFlag.equalsIgnoreCase("2")) {
+                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
+                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                        activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.approved));
+                        activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                    } else if (stpFlag.equalsIgnoreCase("1")) {
+                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                        activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
+                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                        activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                    } else if (stpFlag.equalsIgnoreCase("0")) {
+                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                        activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
+                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                    }
+                }
             } else {
-                activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
-                if (stpFlag.equalsIgnoreCase("0")) {
-                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
-                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
-                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.approved));
-                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                } else if (stpFlag.equalsIgnoreCase("2")) {
-                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
-                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
-                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
-                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                } else if (stpFlag.equalsIgnoreCase("3")) {
-                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
-                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
-                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                if (stpFlag.equalsIgnoreCase("1")) {
+                    activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                    activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
+                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.rejected));
+                } else {
+                    activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                    if (stpFlag.equalsIgnoreCase("0")) {
+                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
+                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                        activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.approved));
+                        activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                    } else if (stpFlag.equalsIgnoreCase("2")) {
+                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                        activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
+                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                        activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                    } else if (stpFlag.equalsIgnoreCase("3")) {
+                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                        activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
+                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                    }
                 }
             }
         } else {
-            stpFlag = "3";
-            SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
-            activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
-            activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+            if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                stpFlag = "0";
+                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
+                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+            } else {
+                stpFlag = "3";
+                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
+                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+            }
         }
 
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
@@ -177,7 +214,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void checkApprovalButtonStatus() {
-        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
+        if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+            activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (stpFlag.equalsIgnoreCase("0") || stpFlag.equalsIgnoreCase("3")));
+        } else {
+            activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
+        }
     }
 
     @Override
@@ -187,6 +228,19 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         setContentView(activityStandardTourPlanBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getRequiredData();
+
+        if (!stpType.equalsIgnoreCase("1")) {
+            activityStandardTourPlanBinding.visitDetails.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.tvDdTotalVisits.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.tvDdPlannedVisits.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.checkUnplannedVisits.setText(getString(R.string.check_unplanned_visits));
+        } else {
+            activityStandardTourPlanBinding.visitDetails.setVisibility(View.GONE);
+            activityStandardTourPlanBinding.tvDdTotalVisits.setVisibility(View.GONE);
+            activityStandardTourPlanBinding.tvDdPlannedVisits.setVisibility(View.GONE);
+            activityStandardTourPlanBinding.checkUnplannedVisits.setText(getString(R.string.check_unplanned_doctors));
+        }
+
         populateAdapters();
         activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
         activityStandardTourPlanBinding.backArrow.setOnClickListener(view -> {
@@ -233,6 +287,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         cipNeed = SharedPref.getCipNeed(this);
         hosNeed = SharedPref.getHospNeed(this);
         stpCap = SharedPref.getStpCaption(this);
+        stpType = SharedPref.getStpType(this); // 0 -> divisionwise, 1 -> userwise
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
@@ -247,6 +302,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         selectedUnDrCodeList = new HashSet<>();
         selectedCipCodeList = new HashSet<>();
         selectedHosCodeList = new HashSet<>();
+        selectedDocCodeListSize = new HashSet<>();
+        selectedChmCodeListSize = new HashSet<>();
+        selectedClusterCodeListSize = new HashSet<>();
         selectedDcrMap = new HashMap<>();
         allSelectedDocXCatMap = new HashMap<>();
         allSelectedDocList = new ArrayList<>();
@@ -319,75 +377,328 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         }
     }
 
+    private int getSelectedCount(String codes) {
+        if (codes == null || codes.trim().isEmpty())
+            return 0;
+
+        String[] arr = codes.split(",");
+
+        int count = 0;
+        for (String s : arr) {
+            if (!s.trim().isEmpty()) count++;
+        }
+        return count;
+    }
+
     private void saveSTPDataToLocal() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+            JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
             if (jsonArray.length() > 0) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String dayID = jsonObject.optString("Day_Plan_ShortName");
-                    String dayCaption = jsonObject.optString("Day_Plan_Name");
-                    String dayPlanCode = jsonObject.optString("Day_Plan_Code");
-                    String clusterCode = jsonObject.optString("Patch_Code");
-                    String clusterName = jsonObject.optString("Patch_Name");
-                    String doctorCode = jsonObject.optString("Dr_Code");
-                    String doctorName = jsonObject.optString("Dr_Name");
-                    String chemistCode = jsonObject.optString("Chem_Code");
-                    String chemistName = jsonObject.optString("Chem_Name");
-                    String dateTime = jsonObject.optString("Created_Date");
-                    String activeFlag = jsonObject.optString("Active_Flag");
-                    Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+                if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
 
-                    if (stpFlag == null || !stpFlag.isEmpty()) {
-                        stpFlag = jsonObject.optString("Active_Flag", "3");
-                        rejectReason = jsonObject.optString("Stp_Reject_Reason");
-                        if (stpFlag.equalsIgnoreCase("1")) {
-                            activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
-                            activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
-                            SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
-                            activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
-                        } else {
-                            activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
-                            if (stpFlag.equalsIgnoreCase("0")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
-                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
-                                activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                            } else if (stpFlag.equalsIgnoreCase("2")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
-                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
-                                activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-                            } else if (stpFlag.equalsIgnoreCase("3")) {
-                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
-                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
-                            }
-                        }
-                    }
-
-                    JSONObject jsonSave = new JSONObject();
-                    jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
-                    jsonSave.put("sfcode", SharedPref.getSfCode(this));
-                    jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
-                    jsonSave.put("Rsf", SharedPref.getHqCode(this));
-                    jsonSave.put("town_code", clusterCode);
-                    jsonSave.put("town_name", clusterName);
-                    jsonSave.put("Doctor_Id", doctorCode);
-                    jsonSave.put("Doctor_Name", doctorName);
-                    jsonSave.put("Chemist_Id", chemistCode);
-                    jsonSave.put("Chemist_Name", chemistName);
-                    jsonSave.put("Plan_Name", dayCaption);
-                    jsonSave.put("Plan_SName", dayID);
-                    jsonSave.put("Plan_Code", dayPlanCode);
-                    jsonSave.put("StpFlag", activeFlag);
-                    jsonSave.put("tableName", "save_stp");
-                    jsonSave.put("ReqDt", dateTime);
-                    Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
-                    int stpFlag = 3;
                     try {
-                        stpFlag = Integer.parseInt(activeFlag);
-                    } catch (NumberFormatException e) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String dayID = jsonObject.optString("Day_Plan_ShortName");
+                            String dayCaption = jsonObject.optString("Day_Plan_Name");
+                            String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                            String clusterCode = jsonObject.optString("Patch_Code");
+                            String clusterName = jsonObject.optString("Patch_Name");
+                            String doctorCode = jsonObject.optString("Dr_Code");
+                            String doctorName = jsonObject.optString("Dr_Name");
+                            String chemistCode = jsonObject.optString("Chem_Code");
+                            String chemistName = jsonObject.optString("Chem_Name");
+                            String doctorSize = String.valueOf(getSelectedCount(jsonObject.optString("Dr_Code")));
+                            String chemistSize = String.valueOf(getSelectedCount(jsonObject.optString("Chem_Code")));
+                            String clusterSize = String.valueOf(getSelectedCount(jsonObject.optString("Patch_Code")));
+                            String doctorSpeciality = jsonObject.optString("Speciality_Name");
+                            String doctorCategory = jsonObject.optString("CategoryName");
+                            String doctorCategoryCode = jsonObject.optString("CategoryCode");
+                            String doctorClass = jsonObject.optString("Class_Name");
+                            String dateTime = jsonObject.optString("Created_Date");
+                            String activeFlag = jsonObject.optString("Active_Flag");
+                            Log.d("STP master data", "saveSTPDataToLocal1: " + jsonObject);
+
+                            if (stpFlag == null || !stpFlag.isEmpty()) {
+                                stpFlag = jsonObject.optString("Active_Flag", "0");
+                                rejectReason = jsonObject.optString("Stp_Reject_Reason");
+                                if (stpFlag.equalsIgnoreCase("3")) {
+                                    activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                                    activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+                                } else {
+                                    activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                                    if (stpFlag.equalsIgnoreCase("2")) {
+                                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
+                                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                                        activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                    } else if (stpFlag.equalsIgnoreCase("1")) {
+                                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                                        activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                    } else if (stpFlag.equalsIgnoreCase("0")) {
+                                        SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                                        activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                                    }
+                                }
+                            }
+
+                            JSONObject jsonSave = new JSONObject();
+                            jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                            jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                            jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                            jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                            jsonSave.put("town_code", clusterCode);
+                            jsonSave.put("town_name", clusterName);
+                            jsonSave.put("Doctor_Id", doctorCode);
+                            jsonSave.put("Doctor_Name", doctorName);
+                            jsonSave.put("Chemist_Id", chemistCode);
+                            jsonSave.put("Chemist_Name", chemistName);
+                            jsonSave.put("Planned_Territory_Count", clusterSize + " (" + jsonCluster.length() + ")");
+                            jsonSave.put("Planned_Doctor_Count", doctorSize + " (" + jsonDoc_mas.length() + ")");
+                            jsonSave.put("Planned_Chemist_Count", chemistSize + " (" + jsonChm_mas.length() + ")");
+                            jsonSave.put("Planned_Hospital_Count", "0" + " (" + "0" + ")");
+                            jsonSave.put("Speciality_Name", doctorSpeciality);
+                            jsonSave.put("Category_Name", doctorCategory);
+                            jsonSave.put("Class_Name", doctorClass);
+                            jsonSave.put("Plan_Name", dayCaption);
+                            jsonSave.put("Plan_SName", dayID);
+                            jsonSave.put("Plan_Code", dayPlanCode);
+                            jsonSave.put("StpFlag", activeFlag);
+                            jsonSave.put("tableName", "save_stp");
+                            jsonSave.put("ReqDt", dateTime);
+                            Log.d("STP save data", "saveSTPDataToLocal2: " + jsonSave);
+                            int stpFlag = 0;
+                            try {
+                                stpFlag = Integer.parseInt(activeFlag);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }
+                            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, doctorSpeciality, doctorCategory, doctorClass, doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));
+                        }
+                      /*  for (int a = 0; a < jsonArray.length(); a++) {
+
+                            JSONObject row = jsonArray.getJSONObject(a);
+
+                            String dayShort = row.optString("Day_Plan_ShortName");
+                            String dayName = row.optString("Day_Plan_Name");
+
+                            String key = dayShort;
+
+                            JsonObject planObj;
+                            if (!planMap.containsKey(key)) {
+                                planObj = new JsonObject();
+                                planObj.addProperty("Plan_Code", dayShort);
+                                planObj.addProperty("Plan_Name", dayName);
+                                planObj.addProperty("Plan_SName", dayShort);
+                                planObj.add("Territory", new JsonArray());
+                                planObj.add("Doctor", new JsonArray());
+                                planObj.add("Chemist", new JsonArray());
+                                planObj.add("Hospital", new JsonArray());
+                                planMap.put(key, planObj);
+                            } else {
+                                planObj = planMap.get(key);
+                            }
+
+                            String[] terrCodes = row.optString("Patch_Code").split(",");
+                            String[] terrNames = row.optString("Patch_Name").split(",");
+
+                            for (int t = 0; t < terrCodes.length; t++) {
+                                if (terrCodes[t].trim().isEmpty()) continue;
+
+                                JsonObject terrObj = new JsonObject();
+                                terrObj.addProperty("Code", terrCodes[t].trim());
+                                terrObj.addProperty("Name", terrNames.length > t ? terrNames[t].trim() : "");
+                                terrObj.addProperty("Speciality_Name", "");
+                                terrObj.addProperty("Category_Name", "");
+                                terrObj.addProperty("Class_Name", "");
+
+                                planObj.getAsJsonArray("Territory").add(terrObj);
+                            }
+
+                            String[] drCodes = row.optString("Dr_Code").split(",");
+                            String[] drNames = row.optString("Dr_Name").split(",");
+
+
+                            for (int d = 0; d < drCodes.length; d++) {
+                                if (drCodes[d].trim().isEmpty()) continue;
+
+                                JsonObject docObj = new JsonObject();
+                                docObj.addProperty("Code", drCodes[d].trim());
+                                docObj.addProperty("Name", drNames.length > d ? drNames[d].trim() : "");
+
+                                docObj.addProperty("Territory_Name", terrNames.length > d ? terrNames[d].trim() : "");
+
+                                docObj.addProperty("Territory_Code", terrCodes.length > d ? terrCodes[d].trim() : "");
+
+                                docObj.addProperty("Speciality_Name", row.optString("Speciality_Name"));
+                                docObj.addProperty("Category_Name", row.optString("CategoryName"));
+                                docObj.addProperty("Class_Name", "Class_Name");
+
+                                planObj.getAsJsonArray("Doctor").add(docObj);
+                            }
+
+
+                            String[] chCodes = row.optString("Chem_Code").split(",");
+                            String[] chNames = row.optString("Chem_Name").split(",");
+
+                            for (int c = 0; c < chCodes.length; c++) {
+                                if (chCodes[c].trim().isEmpty()) continue;
+
+                                JsonObject chmObj = new JsonObject();
+                                chmObj.addProperty("Code", chCodes[c].trim());
+                                chmObj.addProperty("Name", chNames.length > c ? chNames[c].trim() : "");
+                                chmObj.addProperty("Territory_Name", terrNames.length > 0 ? terrNames[0].trim() : "");
+                                chmObj.addProperty("Speciality_Name", "");
+                                chmObj.addProperty("Category_Name", "");
+                                chmObj.addProperty("Class_Name", "");
+                                chmObj.addProperty("Territory_Code", terrCodes.length > 0 ? terrCodes[0].trim() : "");
+
+                                planObj.getAsJsonArray("Chemist").add(chmObj);
+                            }
+
+
+                        }
+
+                        JsonArray stpDetailsArr = new JsonArray();
+                        for (JsonObject obj : planMap.values()) {
+                            stpDetailsArr.add(obj);
+                        }
+                        JsonArray categorySummaryArr = new JsonArray();
+
+                        for (DocCategoryModel cat : docCategoryModelMap.values()) {
+
+                            JsonObject catObj = new JsonObject();
+                            catObj.addProperty("Category_Code", String.valueOf(cat.getCategoryID()));
+                            catObj.addProperty("Category_Name", cat.getCategoryName());
+                            catObj.addProperty("No_of_Visit", String.valueOf(cat.getVisitCount()));
+                            catObj.addProperty("Planned", selectedCategoryCodeList.size() + " (" + totalCategoryCodeList.size() + ")");
+                            catObj.addProperty("Total", selectedCategoryCodeList.size() + " (" + totalCategoryCodeList.size() + ")");
+
+                            categorySummaryArr.add(catObj);
+                        }
+
+                        jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                        jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
+                        jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
+                        jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                        jsonObject.put("Planned_Territory_Count", getSelectedCount(selectedClusterCodeList.toString()) + " (" + jsonCluster.length() + ")");
+                        jsonObject.put("Planned_Doctor_Count", getSelectedCount(selectedDocCodeList.toString()) + " (" + jsonDoc_mas.length() + ")");
+                        jsonObject.put("Planned_Chemist_Count", getSelectedCount(selectedChmCodeList.toString()) + " (" + jsonChm_mas.length() + ")");
+                        jsonObject.put("Planned_Hospital_Count", "0" + " (" + "0" + ")");
+                        jsonObject.put("tableName", "save_stp");
+                        JSONArray categorySummaryJsonArr = new JSONArray(categorySummaryArr.toString());
+
+                        jsonObject.put("STP_Category_Summary", categorySummaryJsonArr);
+
+                        JSONArray stpDetailsJsonArr = new JSONArray(stpDetailsArr.toString());
+
+                        jsonObject.put("STP_Details", stpDetailsJsonArr);
+
+                        Log.d("STP_JSON", jsonObject.toString());*/
+
+//                        if (stpFlag == null || !stpFlag.isEmpty()) {
+//                            stpFlag = jsonObject.optString("Active_Flag", "0");
+//                            rejectReason = jsonObject.optString("Stp_Reject_Reason");
+//                            if (stpFlag.equalsIgnoreCase("3")) {
+//                                activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+//                                activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+//                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
+//                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+//                            } else {
+//                                activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+//                                if (stpFlag.equalsIgnoreCase("2")) {
+//                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
+//                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+//                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+//                                } else if (stpFlag.equalsIgnoreCase("1")) {
+//                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+//                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+//                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+//                                } else if (stpFlag.equalsIgnoreCase("0")) {
+//                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+//                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+//                                }
+//                            }
+//                        }
+
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+
+                } else {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                        if (stpFlag == null || !stpFlag.isEmpty()) {
+                            stpFlag = jsonObject.optString("Active_Flag", "3");
+                            rejectReason = jsonObject.optString("Stp_Reject_Reason");
+                            if (stpFlag.equalsIgnoreCase("1")) {
+                                activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                                activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.rejected));
+                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+                            } else {
+                                activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                                if (stpFlag.equalsIgnoreCase("0")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.approved));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                } else if (stpFlag.equalsIgnoreCase("2")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                } else if (stpFlag.equalsIgnoreCase("3")) {
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.planning));
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                                }
+                            }
+                        }
+
+                        new JSONObject();
+                        JSONObject jsonSave;
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -399,24 +710,54 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         try {
             List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllSTPData();
             for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
-                String clusterCode = stpOfflineDataTable.getClusterCode();
-                String doctorCode = stpOfflineDataTable.getDoctorCode();
-                String chemistCode = stpOfflineDataTable.getChemistCode();
-                JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
-                stpFlag = jsonObject.optString("Active_Flag", "3");
-                rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
-                selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
-                selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
-                allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
-                selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
-                selectedClusterCodeList.remove("");
-                selectedDocCodeList.remove("");
-                allSelectedDocList.remove("");
-                selectedChmCodeList.remove("");
-                selectedClusterCodeList.remove(null);
-                selectedDocCodeList.remove(null);
-                allSelectedDocList.remove(null);
-                selectedChmCodeList.remove(null);
+                if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                    String clusterCode = stpOfflineDataTable.getClusterCode();
+                    String doctorCode = stpOfflineDataTable.getDoctorCode();
+                    String chemistCode = stpOfflineDataTable.getChemistCode();
+                    JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
+                    stpFlag = jsonObject.optString("Active_Flag", "0");
+                    rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
+                    selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
+                    selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                    allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                    selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
+                    selectedDocCodeListSize.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(String.valueOf(doctorCode.length()))).split(",")));
+                    selectedChmCodeListSize.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(String.valueOf(chemistCode.length()))).split(",")));
+                    selectedClusterCodeListSize.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(String.valueOf(clusterCode.length()))).split(",")));
+                    selectedClusterCodeList.remove("");
+                    selectedDocCodeList.remove("");
+                    allSelectedDocList.remove("");
+                    selectedChmCodeList.remove("");
+                    selectedDocCodeListSize.remove("");
+                    selectedChmCodeListSize.remove("");
+                    selectedClusterCodeListSize.remove("");
+                    selectedClusterCodeList.remove(null);
+                    selectedDocCodeList.remove(null);
+                    allSelectedDocList.remove(null);
+                    selectedChmCodeList.remove(null);
+                    selectedDocCodeListSize.remove(null);
+                    selectedChmCodeListSize.remove(null);
+                    selectedClusterCodeListSize.remove(null);
+                } else {
+                    String clusterCode = stpOfflineDataTable.getClusterCode();
+                    String doctorCode = stpOfflineDataTable.getDoctorCode();
+                    String chemistCode = stpOfflineDataTable.getChemistCode();
+                    JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
+                    stpFlag = jsonObject.optString("Active_Flag", "3");
+                    rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
+                    selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
+                    selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                    allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                    selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
+                    selectedClusterCodeList.remove("");
+                    selectedDocCodeList.remove("");
+                    allSelectedDocList.remove("");
+                    selectedChmCodeList.remove("");
+                    selectedClusterCodeList.remove(null);
+                    selectedDocCodeList.remove(null);
+                    allSelectedDocList.remove(null);
+                    selectedChmCodeList.remove(null);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -674,7 +1015,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         planForModelList = new ArrayList<>();
         planForModelList.add(new PlanForModel(clusterCap, R.drawable.tp_cluster_location_ic, totalClusterCodeList.size(), selectedClusterCodeList.size()));
         planForModelList.add(new PlanForModel(drCap, R.drawable.doctor_img, totalDocCodeList.size(), selectedDocCodeList.size()));
-        planForModelList.add(new PlanForModel(chmCap, R.drawable.chemist_img, totalChmCodeList.size(), selectedChmCodeList.size()));
+        if (!stpType.equalsIgnoreCase("1")) {
+            planForModelList.add(new PlanForModel(chmCap, R.drawable.chemist_img, totalChmCodeList.size(), selectedChmCodeList.size()));
+        }
 //        planForModelList.add(new PlanForModel(stkCap, R.drawable.map_stockist_img, totalStkCodeList.size(), selectedStkCodeList.size()));
 //        planForModelList.add(new PlanForModel(unDrCap, R.drawable.map_unlistdr_img, totalUnDrCodeList.size(), selectedUnDrCodeList.size()));
 //        planForModelList.add(new PlanForModel(cipCap, R.drawable.cip_img, totalCipCodeList.size(), selectedCipCodeList.size()));
@@ -687,7 +1030,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void populateDocCatXVisitAdapter() {
-        activityStandardTourPlanBinding.tvDocCategory.setText(drCap + " Category");
+        activityStandardTourPlanBinding.tvDocCategory.setText(drCap + " " + getString(R.string.category));
         doctorCategoryXVisitFrequencyModelList = new ArrayList<>();
         for (String key : docCategoryModelMap.keySet()) {
             DocCategoryModel docCategoryModel = docCategoryModelMap.get(key);
@@ -703,11 +1046,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void populateDocDataAdapter() {
-        activityStandardTourPlanBinding.tvDdDocCategory.setText(drCap + " "+R.string.category);
-        activityStandardTourPlanBinding.tvDdTotalDoctors.setText(getString(R.string.total)+ " " + drCap);
-        activityStandardTourPlanBinding.tvDdPlannedDoctors.setText(getString(R.string.planned)+ " " + drCap);
-        activityStandardTourPlanBinding.tvDdTotalVisits.setText(getString(R.string.total)+ " "+ getString(R.string.visit));
-        activityStandardTourPlanBinding.tvDdPlannedVisits.setText(getString(R.string.planned)+ " "+getString(R.string.visit));
+        activityStandardTourPlanBinding.tvDdDocCategory.setText(drCap + " " + getString(R.string.category));
+        activityStandardTourPlanBinding.tvDdTotalDoctors.setText(getString(R.string.total) + " " + drCap);
+        activityStandardTourPlanBinding.tvDdPlannedDoctors.setText(getString(R.string.planned) + " " + drCap);
+        activityStandardTourPlanBinding.tvDdTotalVisits.setText(getString(R.string.total) + " " + getString(R.string.visit));
+        activityStandardTourPlanBinding.tvDdPlannedVisits.setText(getString(R.string.planned) + " " + getString(R.string.visit));
         docDataModelList = new ArrayList<>();
         for (String key : docCategoryModelMap.keySet()) {
             DocCategoryModel docCategoryModel = docCategoryModelMap.get(key);
@@ -719,7 +1062,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
         }
 
-        docDataAdapter = new DocDataAdapter(this, docDataModelList);
+        docDataAdapter = new DocDataAdapter(this, docDataModelList, stpType);
         RecyclerView.LayoutManager docDataLayoutManager = new LinearLayoutManager(this);
         activityStandardTourPlanBinding.rvDocData.setLayoutManager(docDataLayoutManager);
         activityStandardTourPlanBinding.rvDocData.setAdapter(docDataAdapter);
@@ -739,247 +1082,260 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 if (!dayID.isEmpty()) {
                     totalDaysCount++;
                 }
-                if (dayID.toLowerCase().contains("mo")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("monday");
+                if (!stpType.equalsIgnoreCase("1")) {
+                    if (dayID.toLowerCase().contains("mo")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("monday");
+                        if (calendarModelList == null) {
+                            calendarModelList = new ArrayList<>();
+                        }
+                        calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
+                        calendarMap.put("monday", calendarModelList);
+                    } else if (dayID.toLowerCase().contains("tu")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
+                        if (calendarModelList == null) {
+                            calendarModelList = new ArrayList<>();
+                        }
+                        calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
+                        calendarMap.put("tuesday", calendarModelList);
+                    } else if (dayID.toLowerCase().contains("we")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
+                        if (calendarModelList == null) {
+                            calendarModelList = new ArrayList<>();
+                        }
+                        calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
+                        calendarMap.put("wednesday", calendarModelList);
+                    } else if (dayID.toLowerCase().contains("th")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("thursday");
+                        if (calendarModelList == null) {
+                            calendarModelList = new ArrayList<>();
+                        }
+                        calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
+                        calendarMap.put("thursday", calendarModelList);
+                    } else if (dayID.toLowerCase().contains("fr")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("friday");
+                        if (calendarModelList == null) {
+                            calendarModelList = new ArrayList<>();
+                        }
+                        calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
+                        calendarMap.put("friday", calendarModelList);
+                    } else if (dayID.toLowerCase().contains("sa")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("saturday");
+                        if (calendarModelList == null) {
+                            calendarModelList = new ArrayList<>();
+                        }
+                        calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
+                        calendarMap.put("saturday", calendarModelList);
+                    } else if (dayID.toLowerCase().contains("su")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("sunday");
+                        if (calendarModelList == null) {
+                            calendarModelList = new ArrayList<>();
+                        }
+                        calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
+                        calendarMap.put("sunday", calendarModelList);
+                    }
+                } else {
+                    List<CalendarModel> calendarModelList = calendarMap.get(String.valueOf((int) (index / 4)));
                     if (calendarModelList == null) {
                         calendarModelList = new ArrayList<>();
                     }
                     calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                    calendarMap.put("monday", calendarModelList);
-                } else if (dayID.toLowerCase().contains("tu")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
-                    if (calendarModelList == null) {
-                        calendarModelList = new ArrayList<>();
-                    }
-                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                    calendarMap.put("tuesday", calendarModelList);
-                } else if (dayID.toLowerCase().contains("we")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
-                    if (calendarModelList == null) {
-                        calendarModelList = new ArrayList<>();
-                    }
-                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                    calendarMap.put("wednesday", calendarModelList);
-                } else if (dayID.toLowerCase().contains("th")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("thursday");
-                    if (calendarModelList == null) {
-                        calendarModelList = new ArrayList<>();
-                    }
-                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                    calendarMap.put("thursday", calendarModelList);
-                } else if (dayID.toLowerCase().contains("fr")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("friday");
-                    if (calendarModelList == null) {
-                        calendarModelList = new ArrayList<>();
-                    }
-                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                    calendarMap.put("friday", calendarModelList);
-                } else if (dayID.toLowerCase().contains("sa")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("saturday");
-                    if (calendarModelList == null) {
-                        calendarModelList = new ArrayList<>();
-                    }
-                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                    calendarMap.put("saturday", calendarModelList);
-                } else if (dayID.toLowerCase().contains("su")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("sunday");
-                    if (calendarModelList == null) {
-                        calendarModelList = new ArrayList<>();
-                    }
-                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                    calendarMap.put("sunday", calendarModelList);
+                    List<SelectedDCRModel> selectedDcrModelList = getSelectedDCRDataList(dayID, dayCaptionValues[index]);
+                    calendarModelList.get((int) (index % 4)).setDcrModelList(selectedDcrModelList);
+                    calendarMap.put(String.valueOf((int) (index / 4)), calendarModelList);
                 }
             }
 
-            for (String key : calendarMap.keySet()) {
-                if (key.equalsIgnoreCase("monday")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("monday");
-                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
-                        String caption = "";
-                        for (int index = 1; index < 5; index++) {
-                            String dayID = "MO" + index;
-                            boolean isDayFound = false;
-                            for (CalendarModel calendarModel : calendarModelList) {
-                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                    isDayFound = true;
-                                    if (caption.isEmpty()) {
-                                        caption = calendarModel.getCaption();
+            if (!stpType.equalsIgnoreCase("1")) {
+                for (String key : calendarMap.keySet()) {
+                    if (key.equalsIgnoreCase("monday")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("monday");
+                        if (calendarModelList != null && !calendarModelList.isEmpty()) {
+                            String caption = "";
+                            for (int index = 1; index < 5; index++) {
+                                String dayID = "MO" + index;
+                                boolean isDayFound = false;
+                                for (CalendarModel calendarModel : calendarModelList) {
+                                    if (dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                        isDayFound = true;
+                                        if (caption.isEmpty()) {
+                                            caption = calendarModel.getCaption();
+                                        }
+                                        break;
                                     }
-                                    break;
+                                }
+                                if (!isDayFound) {
+                                    String newCaption = changeCaptionNumber(caption, index);
+                                    calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                                } else {
+                                    List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                    selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                    calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                                 }
                             }
-                            if (!isDayFound) {
-                                String newCaption = changeCaptionNumber(caption, index);
-                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            } else {
-                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                            }
+                            calendarMap.put("monday", calendarModelList);
                         }
-                        calendarMap.put("monday", calendarModelList);
-                    }
-                } else if (key.equalsIgnoreCase("tuesday")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
-                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
-                        String caption = "";
-                        for (int index = 1; index < 5; index++) {
-                            String dayID = "TU" + index;
-                            boolean isDayFound = false;
-                            for (CalendarModel calendarModel : calendarModelList) {
-                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                    isDayFound = true;
-                                    if (caption.isEmpty()) {
-                                        caption = calendarModel.getCaption();
+                    } else if (key.equalsIgnoreCase("tuesday")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
+                        if (calendarModelList != null && !calendarModelList.isEmpty()) {
+                            String caption = "";
+                            for (int index = 1; index < 5; index++) {
+                                String dayID = "TU" + index;
+                                boolean isDayFound = false;
+                                for (CalendarModel calendarModel : calendarModelList) {
+                                    if (dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                        isDayFound = true;
+                                        if (caption.isEmpty()) {
+                                            caption = calendarModel.getCaption();
+                                        }
+                                        break;
                                     }
-                                    break;
+                                }
+                                if (!isDayFound) {
+                                    String newCaption = changeCaptionNumber(caption, index);
+                                    calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                                } else {
+                                    List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                    selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                    calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                                 }
                             }
-                            if (!isDayFound) {
-                                String newCaption = changeCaptionNumber(caption, index);
-                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            } else {
-                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                            }
+                            calendarMap.put("tuesday", calendarModelList);
                         }
-                        calendarMap.put("tuesday", calendarModelList);
-                    }
-                } else if (key.equalsIgnoreCase("wednesday")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
-                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
-                        String caption = "";
-                        for (int index = 1; index < 5; index++) {
-                            String dayID = "WE" + index;
-                            boolean isDayFound = false;
-                            for (CalendarModel calendarModel : calendarModelList) {
-                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                    isDayFound = true;
-                                    if (caption.isEmpty()) {
-                                        caption = calendarModel.getCaption();
+                    } else if (key.equalsIgnoreCase("wednesday")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
+                        if (calendarModelList != null && !calendarModelList.isEmpty()) {
+                            String caption = "";
+                            for (int index = 1; index < 5; index++) {
+                                String dayID = "WE" + index;
+                                boolean isDayFound = false;
+                                for (CalendarModel calendarModel : calendarModelList) {
+                                    if (dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                        isDayFound = true;
+                                        if (caption.isEmpty()) {
+                                            caption = calendarModel.getCaption();
+                                        }
+                                        break;
                                     }
-                                    break;
+                                }
+                                if (!isDayFound) {
+                                    String newCaption = changeCaptionNumber(caption, index);
+                                    calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                                } else {
+                                    List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                    selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                    calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                                 }
                             }
-                            if (!isDayFound) {
-                                String newCaption = changeCaptionNumber(caption, index);
-                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            } else {
-                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                            }
+                            calendarMap.put("wednesday", calendarModelList);
                         }
-                        calendarMap.put("wednesday", calendarModelList);
-                    }
-                } else if (key.equalsIgnoreCase("thursday")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("thursday");
-                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
-                        String caption = "";
-                        for (int index = 1; index < 5; index++) {
-                            String dayID = "TH" + index;
-                            boolean isDayFound = false;
-                            for (CalendarModel calendarModel : calendarModelList) {
-                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                    isDayFound = true;
-                                    if (caption.isEmpty()) {
-                                        caption = calendarModel.getCaption();
+                    } else if (key.equalsIgnoreCase("thursday")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("thursday");
+                        if (calendarModelList != null && !calendarModelList.isEmpty()) {
+                            String caption = "";
+                            for (int index = 1; index < 5; index++) {
+                                String dayID = "TH" + index;
+                                boolean isDayFound = false;
+                                for (CalendarModel calendarModel : calendarModelList) {
+                                    if (dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                        isDayFound = true;
+                                        if (caption.isEmpty()) {
+                                            caption = calendarModel.getCaption();
+                                        }
+                                        break;
                                     }
-                                    break;
+                                }
+                                if (!isDayFound) {
+                                    String newCaption = changeCaptionNumber(caption, index);
+                                    calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                                } else {
+                                    List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                    selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                    calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                                 }
                             }
-                            if (!isDayFound) {
-                                String newCaption = changeCaptionNumber(caption, index);
-                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            } else {
-                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                            }
+                            calendarMap.put("thursday", calendarModelList);
                         }
-                        calendarMap.put("thursday", calendarModelList);
-                    }
-                } else if (key.equalsIgnoreCase("friday")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("friday");
-                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
-                        String caption = "";
-                        for (int index = 1; index < 5; index++) {
-                            String dayID = "FR" + index;
-                            boolean isDayFound = false;
-                            for (CalendarModel calendarModel : calendarModelList) {
-                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                    isDayFound = true;
-                                    if (caption.isEmpty()) {
-                                        caption = calendarModel.getCaption();
+                    } else if (key.equalsIgnoreCase("friday")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("friday");
+                        if (calendarModelList != null && !calendarModelList.isEmpty()) {
+                            String caption = "";
+                            for (int index = 1; index < 5; index++) {
+                                String dayID = "FR" + index;
+                                boolean isDayFound = false;
+                                for (CalendarModel calendarModel : calendarModelList) {
+                                    if (dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                        isDayFound = true;
+                                        if (caption.isEmpty()) {
+                                            caption = calendarModel.getCaption();
+                                        }
+                                        break;
                                     }
-                                    break;
+                                }
+                                if (!isDayFound) {
+                                    String newCaption = changeCaptionNumber(caption, index);
+                                    calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                                } else {
+                                    List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                    selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                    calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                                 }
                             }
-                            if (!isDayFound) {
-                                String newCaption = changeCaptionNumber(caption, index);
-                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            } else {
-                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                            }
+                            calendarMap.put("friday", calendarModelList);
                         }
-                        calendarMap.put("friday", calendarModelList);
-                    }
-                } else if (key.equalsIgnoreCase("saturday")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("saturday");
-                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
-                        String caption = "";
-                        for (int index = 1; index < 5; index++) {
-                            String dayID = "SA" + index;
-                            boolean isDayFound = false;
-                            for (CalendarModel calendarModel : calendarModelList) {
-                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                    isDayFound = true;
-                                    if (caption.isEmpty()) {
-                                        caption = calendarModel.getCaption();
+                    } else if (key.equalsIgnoreCase("saturday")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("saturday");
+                        if (calendarModelList != null && !calendarModelList.isEmpty()) {
+                            String caption = "";
+                            for (int index = 1; index < 5; index++) {
+                                String dayID = "SA" + index;
+                                boolean isDayFound = false;
+                                for (CalendarModel calendarModel : calendarModelList) {
+                                    if (dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                        isDayFound = true;
+                                        if (caption.isEmpty()) {
+                                            caption = calendarModel.getCaption();
+                                        }
+                                        break;
                                     }
-                                    break;
+                                }
+                                if (!isDayFound) {
+                                    String newCaption = changeCaptionNumber(caption, index);
+                                    calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                                } else {
+                                    List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                    selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                    calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                                 }
                             }
-                            if (!isDayFound) {
-                                String newCaption = changeCaptionNumber(caption, index);
-                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            } else {
-                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                            }
+                            calendarMap.put("saturday", calendarModelList);
                         }
-                        calendarMap.put("saturday", calendarModelList);
-                    }
-                } else if (key.equalsIgnoreCase("sunday")) {
-                    List<CalendarModel> calendarModelList = calendarMap.get("sunday");
-                    if (calendarModelList != null && !calendarModelList.isEmpty()) {
-                        String caption = "";
-                        for (int index = 1; index < 5; index++) {
-                            String dayID = "SU" + index;
-                            boolean isDayFound = false;
-                            for (CalendarModel calendarModel : calendarModelList) {
-                                if (dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                    isDayFound = true;
-                                    if (caption.isEmpty()) {
-                                        caption = calendarModel.getCaption();
+                    } else if (key.equalsIgnoreCase("sunday")) {
+                        List<CalendarModel> calendarModelList = calendarMap.get("sunday");
+                        if (calendarModelList != null && !calendarModelList.isEmpty()) {
+                            String caption = "";
+                            for (int index = 1; index < 5; index++) {
+                                String dayID = "SU" + index;
+                                boolean isDayFound = false;
+                                for (CalendarModel calendarModel : calendarModelList) {
+                                    if (dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                        isDayFound = true;
+                                        if (caption.isEmpty()) {
+                                            caption = calendarModel.getCaption();
+                                        }
+                                        break;
                                     }
-                                    break;
+                                }
+                                if (!isDayFound) {
+                                    String newCaption = changeCaptionNumber(caption, index);
+                                    calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                                } else {
+                                    List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                    selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                    calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                                 }
                             }
-                            if (!isDayFound) {
-                                String newCaption = changeCaptionNumber(caption, index);
-                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                            } else {
-                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                            }
+                            calendarMap.put("sunday", calendarModelList);
                         }
-                        calendarMap.put("sunday", calendarModelList);
                     }
                 }
             }
@@ -989,7 +1345,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
             activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
         } else {
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.sync) + getString(R.string.standard_tour_plan) + getString(R.string. from_master_sync));
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.sync) + getString(R.string.standard_tour_plan) + getString(R.string.from_master_sync));
         }
     }
 
@@ -1020,11 +1376,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         if (isDayAvailable) {
             STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(dayID);
             String[] docList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",");
-            String[] chmList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",");
             docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-            chmList = Arrays.stream(chmList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
             selectedDCRModels.add(new SelectedDCRModel(R.drawable.doctor_img, 1, Arrays.toString(docList), docList.length));
-            selectedDCRModels.add(new SelectedDCRModel(R.drawable.chemist_img, 2, Arrays.toString(chmList), chmList.length));
 //            List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR);
             List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR_MAS);
             if (selectedDocList != null && !selectedDocList.isEmpty()) {
@@ -1041,22 +1394,27 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
 //            selectedDcrMap.put(Constants.DOCTOR, selectedDocList);
             selectedDcrMap.put(Constants.DOCTOR_MAS, selectedDocList);
+            if (!stpType.equalsIgnoreCase("1")) {
+                String[] chmList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",");
+                chmList = Arrays.stream(chmList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+                selectedDCRModels.add(new SelectedDCRModel(R.drawable.chemist_img, 2, Arrays.toString(chmList), chmList.length));
 //            List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST);
-            List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST_MAS);
-            if (selectedChmList != null && !selectedChmList.isEmpty()) {
-                for (int index = 0; index < selectedChmList.size(); index++) {
-                    DCRModel dcrModel = selectedChmList.get(index);
-                    if (stpOfflineDataTable.getChemistCode().contains(dcrModel.getCode())) {
-                        String plannedForName = dcrModel.getPlannedForName().replace("-", "") + caption + ",";
-                        String plannedForCode = dcrModel.getPlannedForCode().replace("-", "") + dayID + ",";
-                        dcrModel.setPlannedForName(plannedForName);
-                        dcrModel.setPlannedForCode(plannedForCode);
-                        selectedChmList.set(index, dcrModel);
+                List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST_MAS);
+                if (selectedChmList != null && !selectedChmList.isEmpty()) {
+                    for (int index = 0; index < selectedChmList.size(); index++) {
+                        DCRModel dcrModel = selectedChmList.get(index);
+                        if (stpOfflineDataTable.getChemistCode().contains(dcrModel.getCode())) {
+                            String plannedForName = dcrModel.getPlannedForName().replace("-", "") + caption + ",";
+                            String plannedForCode = dcrModel.getPlannedForCode().replace("-", "") + dayID + ",";
+                            dcrModel.setPlannedForName(plannedForName);
+                            dcrModel.setPlannedForCode(plannedForCode);
+                            selectedChmList.set(index, dcrModel);
+                        }
                     }
                 }
-            }
 //            selectedDcrMap.put(Constants.CHEMIST, selectedChmList);
-            selectedDcrMap.put(Constants.CHEMIST_MAS, selectedChmList);
+                selectedDcrMap.put(Constants.CHEMIST_MAS, selectedChmList);
+            }
         }
         return selectedDCRModels;
     }
@@ -1093,25 +1451,48 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     };
 
     private final CalendarAdapter.CalendarDayMenuClickListener calendarDayMenuClickListener = (calendarModel, menuItem) -> {
-        if (!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
-            if (menuItem.getItemId() == R.id.menuEdit) {
-                Log.d("STP Item", "Edit");
-                Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
-                intent.putExtra("MODE", String.valueOf(CalendarAdapter.Mode.EDIT));
-                intent.putExtra("DAY_ID", calendarModel.getId());
-                intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
-                activityResultLauncher.launch(intent);
-            } else if (menuItem.getItemId() == R.id.menuDelete) {
-                Log.d("STP Item", "Delete");
-                showDeleteDialog(calendarModel.getId(), calendarModel.getCaption());
-            } else if (menuItem.getItemId() == R.id.menuSwap) {
-                Log.d("STP Item", "Swap");
-                showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
+        if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+            if (!stpFlag.equalsIgnoreCase("1") && !stpFlag.equalsIgnoreCase("2")) {
+                if (menuItem.getItemId() == R.id.menuEdit) {
+                    Log.d("STP Item", "Edit");
+                    Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
+                    intent.putExtra("MODE", String.valueOf(CalendarAdapter.Mode.EDIT));
+                    intent.putExtra("DAY_ID", calendarModel.getId());
+                    intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
+                    activityResultLauncher.launch(intent);
+                } else if (menuItem.getItemId() == R.id.menuDelete) {
+                    Log.d("STP Item", "Delete");
+                    showDeleteDialog(calendarModel.getId(), calendarModel.getCaption());
+                } else if (menuItem.getItemId() == R.id.menuSwap) {
+                    Log.d("STP Item", "Swap");
+                    showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
+                }
+            } else if (stpFlag.equalsIgnoreCase("1")) {
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+            } else if (stpFlag.equalsIgnoreCase("2")) {
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
             }
-        } else if (stpFlag.equalsIgnoreCase("0")) {
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
-        } else if (stpFlag.equalsIgnoreCase("2")) {
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+        } else {
+            if (!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
+                if (menuItem.getItemId() == R.id.menuEdit) {
+                    Log.d("STP Item", "Edit");
+                    Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
+                    intent.putExtra("MODE", String.valueOf(CalendarAdapter.Mode.EDIT));
+                    intent.putExtra("DAY_ID", calendarModel.getId());
+                    intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
+                    activityResultLauncher.launch(intent);
+                } else if (menuItem.getItemId() == R.id.menuDelete) {
+                    Log.d("STP Item", "Delete");
+                    showDeleteDialog(calendarModel.getId(), calendarModel.getCaption());
+                } else if (menuItem.getItemId() == R.id.menuSwap) {
+                    Log.d("STP Item", "Swap");
+                    showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
+                }
+            } else if (stpFlag.equalsIgnoreCase("0")) {
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
+            } else if (stpFlag.equalsIgnoreCase("2")) {
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+            }
         }
     };
 
@@ -1342,7 +1723,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             fromObj.put("Plan_Name", toStpOfflineDataTable.getDayCaption());
             fromObj.put("Plan_SName", toStpOfflineDataTable.getDayID());
             fromObj.put("Creation_time", dateTime);
-            fromObj.put("StpFlag", "3");
+            if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                fromObj.put("StpFlag", "0");
+            } else {
+                fromObj.put("StpFlag", "3");
+            }
             JSONObject toObj = CommonUtilsMethods.CommonObjectParameter(this);
             toObj.put("tableName", "stp_swap");
             toObj.put("sfcode", SharedPref.getSfCode(this));
@@ -1358,7 +1743,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             toObj.put("Plan_Name", fromStpOfflineDataTable.getDayCaption());
             toObj.put("Plan_SName", fromStpOfflineDataTable.getDayID());
             toObj.put("Creation_time", dateTime);
-            toObj.put("StpFlag", "3");
+            if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                fromObj.put("StpFlag", "0");
+            } else {
+                fromObj.put("StpFlag", "3");
+            }
 
             swapJsonArray.put(fromObj);
             swapJsonArray.put(toObj);
@@ -1376,7 +1765,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
                 }
             }
-            STPDaySorter.sortDays(stpDataModels, DCRFillteredModelClass::getCode);
+            if (!SharedPref.getStpType(StandardTourPlanActivity.this).equalsIgnoreCase("1")) {
+                STPDaySorter.sortDays(stpDataModels, DCRFillteredModelClass::getCode);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1483,9 +1874,15 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         if (selectedDocList != null && !selectedDocList.isEmpty()) {
             for (DCRModel dcrModel : selectedDocList) {
                 String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
-                docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-                if (docList.length < dcrModel.getVisitFrequency()) {
-                    return false;
+                if (stpType.equalsIgnoreCase("1")) {
+                    if (docList.length == 0) {
+                        return false;
+                    }
+                } else {
+                    docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+                    if (docList.length < dcrModel.getVisitFrequency()) {
+                        return false;
+                    }
                 }
             }
         }
@@ -1501,7 +1898,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     activityStandardTourPlanBinding.tvProgressTitle.setText("Syncing Offline Data...");
                     final int[] apiCount = {0};
                     for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
-                        String dayID = stpOfflineDataTable.getDayID(), dayCaption = stpOfflineDataTable.getDayCaption(), strClusterID = stpOfflineDataTable.getClusterCode(), strClusterName = stpOfflineDataTable.getClusterName(), docCodes = stpOfflineDataTable.getDoctorCode(), docNames = stpOfflineDataTable.getDoctorName(), chmCodes = stpOfflineDataTable.getChemistCode(), chmNames = stpOfflineDataTable.getChemistName(), jsonObject = stpOfflineDataTable.getStpData();
+                        String dayID = stpOfflineDataTable.getDayID(), dayCaption = stpOfflineDataTable.getDayCaption(), strClusterID = stpOfflineDataTable.getClusterCode(), strClusterName = stpOfflineDataTable.getClusterName(), docCodes = stpOfflineDataTable.getDoctorCode(), docNames = stpOfflineDataTable.getDoctorName(), chmCodes = stpOfflineDataTable.getChemistCode(), chmNames = stpOfflineDataTable.getChemistName(), docSpeciality = stpOfflineDataTable.getDoctorSpeciality(), docCategory = stpOfflineDataTable.getDoctorCategory(), docCategoryCode = stpOfflineDataTable.getDoctorCategoryCode(), docClass = stpOfflineDataTable.getDoctorClass(), jsonObject = stpOfflineDataTable.getStpData();
                         int stpFlag = stpOfflineDataTable.getStatus();
                         apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
                         Map<String, String> mapString = new HashMap<>();
@@ -1517,7 +1914,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
                                         if (jsonObject1.optString("success").equals("true")) {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
-                                            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
+                                            if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, docSpeciality, docCategory, docClass, docCategoryCode, jsonObject, stpFlag, "0"));
+                                            } else {
+                                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
+                                            }
                                         } else {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
                                         }
@@ -1555,15 +1956,176 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void sendToApproval() {
         JSONObject jsonObject = new JSONObject();
+
         try {
-            jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-            jsonObject.put("sfcode", SharedPref.getSfCode(this));
-            jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
-            jsonObject.put("Rsf", SharedPref.getHqCode(this));
-            jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
-            jsonObject.put("tableName", "submit_stp");
-            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
-            Log.v("json_save_stp", jsonObject.toString());
+            if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+
+       /*         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+                String doctorSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Dr_Code")));
+                String chemistSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Chem_Code")));
+                String clusterSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Patch_Code")));
+                JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+                JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+                JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(StandardTourPlanActivity.this)).getMasterSyncDataJsonArray();
+                Map<String, JsonObject> planMap = new LinkedHashMap<>();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject row = jsonArray.getJSONObject(i);
+
+                    String dayShort = row.optString("Day_Plan_ShortName");
+                    String dayName  = row.optString("Day_Plan_Name");
+
+                    String key = dayShort;
+
+                    JsonObject planObj;
+                    if (!planMap.containsKey(key)) {
+                        planObj = new JsonObject();
+                        planObj.addProperty("Plan_Code", dayShort);
+                        planObj.addProperty("Plan_Name", dayName);
+                        planObj.addProperty("Plan_SName",dayShort);
+                        planObj.add("Territory", new JsonArray());
+                        planObj.add("Doctor", new JsonArray());
+                        planObj.add("Chemist", new JsonArray());
+                        planObj.add("Hospital", new JsonArray());
+                        planMap.put(key, planObj);
+                    } else {
+                        planObj = planMap.get(key);
+                    }
+
+                    String[] terrCodes = row.optString("Patch_Code").split(",");
+                    String[] terrNames = row.optString("Patch_Name").split(",");
+
+                    for (int t = 0; t < terrCodes.length; t++) {
+                        if (terrCodes[t].trim().isEmpty()) continue;
+
+                        JsonObject terrObj = new JsonObject();
+                        terrObj.addProperty("Code", terrCodes[t].trim());
+                        terrObj.addProperty("Name", terrNames.length > t ? terrNames[t].trim() : "");
+                        terrObj.addProperty("Speciality_Name", "");
+                        terrObj.addProperty("Category_Name", "");
+                        terrObj.addProperty("Class_Name", "");
+
+                        planObj.getAsJsonArray("Territory").add(terrObj);
+                    }
+
+                    String[] drCodes = row.optString("Dr_Code").split(",");
+                    String[] drNames = row.optString("Dr_Name").split(",");
+
+                 *//*   for (int d = 0; d < drCodes.length; d++) {
+                        if (drCodes[d].trim().isEmpty()) continue;
+
+                        JsonObject docObj = new JsonObject();
+                        docObj.addProperty("Code", drCodes[d].trim());
+                        docObj.addProperty("Name", drNames.length > d ? drNames[d].trim() : "");
+                        docObj.addProperty("Territory_Name", terrNames.length > 0 ? terrNames[0].trim() : "");
+                        docObj.addProperty("Speciality_Name", row.optString("Speciality_Name"));
+                        docObj.addProperty("Category_Name", row.optString("CategoryName"));
+                        docObj.addProperty("Class_Name", "Nil");
+                        docObj.addProperty("Territory_Code", terrCodes.length > 0 ? terrCodes[0].trim() : "");
+
+                        planObj.getAsJsonArray("Doctor").add(docObj);
+                    }*//*
+                    for (int d = 0; d < drCodes.length; d++) {
+                        if (drCodes[d].trim().isEmpty()) continue;
+
+                        JsonObject docObj = new JsonObject();
+                        docObj.addProperty("Code", drCodes[d].trim());
+                        docObj.addProperty("Name", drNames.length > d ? drNames[d].trim() : "");
+
+                        docObj.addProperty(
+                                "Territory_Name",
+                                terrNames.length > d ? terrNames[d].trim() : ""
+                        );
+
+                        docObj.addProperty(
+                                "Territory_Code",
+                                terrCodes.length > d ? terrCodes[d].trim() : ""
+                        );
+
+                        docObj.addProperty("Speciality_Name", row.optString("Speciality_Name"));
+                        docObj.addProperty("Category_Name", row.optString("CategoryName"));
+                        docObj.addProperty("Class_Name", "Class_Name");
+
+                        planObj.getAsJsonArray("Doctor").add(docObj);
+                    }
+
+
+                    String[] chCodes = row.optString("Chem_Code").split(",");
+                    String[] chNames = row.optString("Chem_Name").split(",");
+
+                    for (int c = 0; c < chCodes.length; c++) {
+                        if (chCodes[c].trim().isEmpty()) continue;
+
+                        JsonObject chmObj = new JsonObject();
+                        chmObj.addProperty("Code", chCodes[c].trim());
+                        chmObj.addProperty("Name", chNames.length > c ? chNames[c].trim() : "");
+                        chmObj.addProperty("Territory_Name", terrNames.length > 0 ? terrNames[0].trim() : "");
+                        chmObj.addProperty("Speciality_Name", "");
+                        chmObj.addProperty("Category_Name", "");
+                        chmObj.addProperty("Class_Name", "");
+                        chmObj.addProperty("Territory_Code", terrCodes.length > 0 ? terrCodes[0].trim() : "");
+
+                        planObj.getAsJsonArray("Chemist").add(chmObj);
+                    }
+                }
+
+                JsonArray stpDetailsArr = new JsonArray();
+                for (JsonObject obj : planMap.values()) {
+                    stpDetailsArr.add(obj);
+                }
+                JsonArray categorySummaryArr = new JsonArray();
+
+                for (DocCategoryModel cat : docCategoryModelMap.values()) {
+
+                    JsonObject catObj = new JsonObject();
+                    catObj.addProperty("Category_Code", String.valueOf(cat.getCategoryID()));
+                    catObj.addProperty("Category_Name", cat.getCategoryName());
+                    catObj.addProperty("No_of_Visit", String.valueOf(cat.getVisitCount()));
+                    catObj.addProperty("Planned", selectedCategoryCodeList.size()+" ("+totalCategoryCodeList.size()+")");
+                    catObj.addProperty("Total", selectedCategoryCodeList.size()+" ("+totalCategoryCodeList.size()+")");
+
+                    categorySummaryArr.add(catObj);
+                }
+
+                jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
+                jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                jsonObject.put("Planned_Territory_Count",selectedClusterCodeList.size()+" ("+jsonCluster.length()+")");
+                jsonObject.put("Planned_Doctor_Count",selectedDocCodeList.size()+" ("+jsonDoc_mas.length()+")");
+                jsonObject.put("Planned_Chemist_Count",selectedChmCodeList.size()+" ("+jsonChm_mas.length()+")");
+                jsonObject.put("Planned_Hospital_Count","0"+" ("+"0"+")");
+                jsonObject.put("tableName", "submit_stp");
+                JSONArray categorySummaryJsonArr = new JSONArray(categorySummaryArr.toString());
+
+                jsonObject.put("STP_Category_Summary", categorySummaryJsonArr);
+
+                JSONArray stpDetailsJsonArr = new JSONArray(stpDetailsArr.toString());
+
+                jsonObject.put("STP_Details", stpDetailsJsonArr);
+
+                Log.d("STP_JSON", jsonObject.toString());*/
+                jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
+                jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("0") ? "1" : "2");
+                jsonObject.put("tableName", "submit_stp");
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                Log.v("json_save_stp", jsonObject.toString());
+
+            } else {
+                jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
+                jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
+                jsonObject.put("tableName", "submit_stp");
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                Log.v("json_save_stp", jsonObject.toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1587,7 +2149,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
                                     activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
-                                    stpFlag = "2";
+                                    if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
+                                        stpFlag = "1";
+                                    } else {
+                                        stpFlag = "2";
+                                    }
                                     syncSTP();
                                 } else {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
@@ -1624,7 +2190,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|FSD|AMS")) {
+            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|FSD|AMS")) {
                 startActivity(new Intent(StandardTourPlanActivity.this, StandardTourPlanActivity.class));
                 finish();
             }

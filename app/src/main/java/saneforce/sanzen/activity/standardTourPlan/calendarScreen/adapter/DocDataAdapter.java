@@ -12,20 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DocDataModel;
 
 public class DocDataAdapter extends RecyclerView.Adapter<DocDataAdapter.MyViewHolder> {
-
     private Context context;
     private List<DocDataModel> docDataModelList;
+    private String stpType;
 
     public DocDataAdapter() {
     }
 
-    public DocDataAdapter(Context context, List<DocDataModel> docDataModelList) {
+    public DocDataAdapter(Context context, List<DocDataModel> docDataModelList, String stpType) {
         this.context = context;
         this.docDataModelList = docDataModelList;
+        this.stpType = stpType;
     }
 
     @NonNull
@@ -40,9 +40,16 @@ public class DocDataAdapter extends RecyclerView.Adapter<DocDataAdapter.MyViewHo
         DocDataModel docDataModel = docDataModelList.get(position);
         holder.category.setText(docDataModel.getCategory());
         holder.totalDoctors.setText(String.valueOf(docDataModel.getTotalDoctors()));
-        holder.totalVisits.setText(String.valueOf(docDataModel.getTotalVisits()));
         holder.plannedDoctors.setText(String.valueOf(docDataModel.getPlannedDoctors()));
-        holder.plannedVisits.setText(String.valueOf(docDataModel.getPlannedVisits()));
+        if (!stpType.equalsIgnoreCase("1")) {
+            holder.totalVisits.setVisibility(View.VISIBLE);
+            holder.plannedVisits.setVisibility(View.VISIBLE);
+            holder.totalVisits.setText(String.valueOf(docDataModel.getTotalVisits()));
+            holder.plannedVisits.setText(String.valueOf(docDataModel.getPlannedVisits()));
+        } else {
+            holder.totalVisits.setVisibility(View.GONE);
+            holder.plannedVisits.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -51,7 +58,6 @@ public class DocDataAdapter extends RecyclerView.Adapter<DocDataAdapter.MyViewHo
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-
         TextView category, totalDoctors, totalVisits, plannedVisits, plannedDoctors;
 
         public MyViewHolder(@NonNull View itemView) {

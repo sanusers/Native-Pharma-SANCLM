@@ -57,8 +57,8 @@ public interface STPOfflineDataDao {
     @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `SYNC_STATUS` = '1'")
     boolean isNonSyncAvailable();
 
-    @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `STATUS` != '0'")
-    boolean isNotApproved();
+    @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `STATUS` != :status")
+    boolean isNotApproved(String status);
 
     default STPOfflineDataTable getSTPDataOfDayOrNew(String dayID) {
         STPOfflineDataTable stpOfflineDataTable = getSTPDataOfDay(dayID);

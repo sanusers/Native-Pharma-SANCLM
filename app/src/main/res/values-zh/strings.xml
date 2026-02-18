@@ -169,6 +169,7 @@
     <string name="tour_plan_approvals">行程审批</string>
     <string name="tp_planed_for">计划行程给</string>
     <string name="total_planed_days">计划总天数</string>
+    <string name="total_planed_count">计划总数</string>
     <string name="week_off_days_holidays">休息日 / 节假日</string>
     <string name="total">总计</string>
     <string name="view_actual_plan">查看实际行程</string>
@@ -551,6 +552,7 @@
     <string name="standard_tour_plan">标准行程计划</string>
     <string name="send_to_approval">发送审批</string>
     <string name="check_unplanned_visits">检查未计划拜访</string>
+    <string name="check_unplanned_doctors">查看非计划内医生</string>
     <string name="cip">CIP</string>
     <string name="selected">已选择</string>
     <string name="plan_for">计划用于</string>

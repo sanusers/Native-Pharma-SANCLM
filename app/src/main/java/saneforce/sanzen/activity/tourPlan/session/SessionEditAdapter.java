@@ -51,7 +51,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -402,12 +404,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     holder.sessionDelete.setVisibility(View.GONE);
             }
             //Work Day
-            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1") || SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("2") ) {
                 holder.workDayLayout.setVisibility(View.VISIBLE);
                 if (inputDataArrayOneBuild.getSTP_Code().isEmpty()) {
                     holder.workDayField.setText(R.string.select);
                 } else {
-                    holder.workDayField.setText(inputDataArray.getSTP_Name());
+                    holder.workDayField.setText(inputDataArrayOneBuild.getSTP_Name());
                 }
             } else {
                 holder.workDayLayout.setVisibility(View.GONE);
@@ -446,9 +448,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.hqField.setText(holder.sessionDataOneBuild.getHeadquarters().getName());
                             holder.selectedHq = holder.sessionDataOneBuild.getHeadquarters().getCode();
                         }
-                        if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
-                            holder.hqLayout.setVisibility(View.GONE);
-                        }
+//                        if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+//                            holder.hqLayout.setVisibility(View.GONE);
+//                        }
                     }
             }
 
@@ -484,9 +486,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
             //Joint Work
             StringBuilder jcName = new StringBuilder();
-            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-                holder.jcLayout.setVisibility(View.GONE);
-            } else {
+//            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+//                holder.jcLayout.setVisibility(View.GONE);
+//            } else {
 //            holder.jcLayout.setVisibility(View.VISIBLE);
                 for (int i = 0; i < holder.jcModelArrayOneBuild.size(); i++) {
                     if (jcName.length() == 0) {
@@ -499,7 +501,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     holder.jcField.setText(jcName);
                 }
                 prepareInputDataOneBuild(holder.jcModelArrayOneBuild, holder.jointCallArray);
-            }
+//            }
 
             //Dr
             StringBuilder drName = new StringBuilder();
@@ -661,41 +663,45 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
-            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1") */) {
                 holder.workDayLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         itemPosition = holder.getLayoutPosition();
                         holder.relativeLayout.setSelected(false);
-                        if (!holder.fieldSelected) {
-                            ArrayList<EditModelClass> workDayArray = new ArrayList<>();
-                            if (holder.workDayArray.isEmpty()) {
-                                try {
-                                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
-                                    if (jsonArray != null && jsonArray.length() > 0) {
-                                        JSONObject jsonObject = jsonArray.optJSONObject(0);
-                                        String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
-                                        String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
-                                        for (int index = 0; index < dayIDs.length; index++) {
-                                            if (!dayIDs[index].isEmpty()) {
-                                                workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                        if (holder.workTypeField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                        } else {
+                            if (!holder.fieldSelected) {
+                                ArrayList<EditModelClass> workDayArray = new ArrayList<>();
+                                if (holder.workDayArray.isEmpty()) {
+                                    try {
+                                        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
+                                        if (jsonArray != null && jsonArray.length() > 0) {
+                                            JSONObject jsonObject = jsonArray.optJSONObject(0);
+                                            String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
+                                            String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
+                                            for (int index = 0; index < dayIDs.length; index++) {
+                                                if (!dayIDs[index].isEmpty()) {
+                                                    workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                                                }
                                             }
                                         }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
 //                                new STPDaySorter().sortDaysTP(workDayArray);
-                                holder.workDayArray = workDayArray;
+                                    holder.workDayArray = workDayArray;
+                                }
+                                holder.sessionItemAdapterArray = holder.workDayArray;
+                                populateSessionItemAdapterOneBuild(holder, false, false, false);
+                                holder.fieldSelected = true;
+                                onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
+                            } else {
+                                changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
+                                holder.fieldSelected = false;
+                                onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");  // change it
                             }
-                            holder.sessionItemAdapterArray = holder.workDayArray;
-                            populateSessionItemAdapterOneBuild(holder, false, false, false);
-                            holder.fieldSelected = true;
-                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
-                        } else {
-                            changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
-                            holder.fieldSelected = false;
-                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");  // change it
                         }
                         TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
                     }
@@ -734,7 +740,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
-            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/)) {
                 holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -765,6 +771,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");       // change
                                 }
                             }
+                        }
+                    }
+                });
+            } else {
+                holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!holder.clusterField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.displayPopupWindowEnd(context, holder.clusterLayout, holder.clusterField.getText().toString().trim());
                         }
                     }
                 });
@@ -805,77 +820,99 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                 }
             });
-            holder.drLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.searchET.setText("");
-                    itemPosition = holder.getLayoutPosition();
-                    holder.relativeLayout.setSelected(false);
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0"))) {
+                holder.drLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        holder.searchET.setText("");
+                        itemPosition = holder.getLayoutPosition();
+                        holder.relativeLayout.setSelected(false);
 
-                    if (holder.workTypeField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                    } else {
-                        if (!holder.fieldSelected) {
-                            if (holder.listedDrArray.size() == 0) {
-                                holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + holder.selectedHq).getMasterSyncDataJsonArray());
-                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                            } else {
-                                setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
-                            }
-                            holder.fieldSelected = true;
-                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
-                            populateSessionItemAdapterOneBuild(holder, true, true, true);
-                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR_MAS);  //change
+                        if (holder.workTypeField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                        } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                        } else if (holder.clusterField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                         } else {
-                            holder.fieldSelected = false;
-                            setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
-                            changeUIState(holder, holder.drLayout, holder.drArrow, true);
-                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");//change
+                            if (!holder.fieldSelected) {
+                                if (holder.listedDrArray.size() == 0) {
+                                    holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + holder.selectedHq).getMasterSyncDataJsonArray());
+                                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                                } else {
+                                    setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
+                                }
+                                holder.fieldSelected = true;
+                                holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
+                                populateSessionItemAdapterOneBuild(holder, true, true, true);
+                                onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR_MAS);  //change
+                            } else {
+                                holder.fieldSelected = false;
+                                setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
+                                changeUIState(holder, holder.drLayout, holder.drArrow, true);
+                                onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");//change
+                            }
                         }
                     }
-                }
-            });
-
-            holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.searchET.setText("");
-                    itemPosition = holder.getLayoutPosition();
-                    holder.relativeLayout.setSelected(false);
-
-                    if (holder.workTypeField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                    } else {
-
-                        if (!holder.fieldSelected) {
-                            if (holder.chemistArray.size() == 0) {
-                                holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + holder.selectedHq).getMasterSyncDataJsonArray());
-                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                            } else {
-                                setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
-                            }
-
-                            holder.fieldSelected = true;
-                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
-                            populateSessionItemAdapterOneBuild(holder, true, true, false);
-                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST_MAS);   //change
-                        } else {
-                            holder.fieldSelected = false;
-                            setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
-                            changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
-                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");//change
+                });
+            } else {
+                holder.drLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!holder.drField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.displayPopupWindowEnd(context, holder.drLayout, holder.drField.getText().toString().trim());
                         }
                     }
-                }
-            });
+                });
+            }
+
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) || (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && SharedPref.getStpType(context).equalsIgnoreCase("1"))) {
+                holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        holder.searchET.setText("");
+                        itemPosition = holder.getLayoutPosition();
+                        holder.relativeLayout.setSelected(false);
+
+                        if (holder.workTypeField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                        } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                        } else if (holder.clusterField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                        } else {
+
+                            if (!holder.fieldSelected) {
+                                if (holder.chemistArray.size() == 0) {
+                                    holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + holder.selectedHq).getMasterSyncDataJsonArray());
+                                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                                } else {
+                                    setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
+                                }
+
+                                holder.fieldSelected = true;
+                                holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
+                                populateSessionItemAdapterOneBuild(holder, true, true, false);
+                                onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST_MAS);   //change
+                            } else {
+                                holder.fieldSelected = false;
+                                setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
+                                changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
+                                onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");//change
+                            }
+                        }
+                    }
+                });
+            } else {
+                holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!holder.chemistField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            commonUtilsMethods.displayPopupWindowEnd(context, holder.chemistLayout, holder.chemistField.getText().toString().trim());
+                        }
+                    }
+                });
+            }
 
             holder.stockiestLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1553,7 +1590,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                    STPDaySorter.sortDays(workDayArray, EditModelClass::getCode);
+                                    if (!SharedPref.getStpType(context).equalsIgnoreCase("1")) {
+                                        STPDaySorter.sortDays(workDayArray, EditModelClass::getCode);
+                                    }
                                     holder.workDayArray = workDayArray;
                                 }
                                 holder.sessionItemAdapterArray = holder.workDayArray;
@@ -1734,7 +1773,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
-            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/)) {
                 holder.drLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1795,7 +1834,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 });
             }
 
-            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/)) {
                 holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -2374,7 +2413,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 else
                     holder.hospLayout.setVisibility(View.GONE);
 
-                if (SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                if (SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/) {
                     holder.workDayLayout.setVisibility(View.VISIBLE);
                 } else {
                     holder.workDayLayout.setVisibility(View.GONE);
@@ -2475,7 +2514,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 else
                     holder.hospLayout.setVisibility(View.GONE);
 
-                if (SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                if (SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/) {
                     holder.workDayLayout.setVisibility(View.VISIBLE);
                 } else {
                     holder.workDayLayout.setVisibility(View.GONE);
@@ -2668,7 +2707,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode, MyViewHolder holder) {
-
         if (UtilityClass.isNetworkAvailable(context)) {
             try {
                 String baseUrl = SharedPref.getBaseWebUrl(context);
@@ -2682,7 +2720,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                 jsonObject.put("Rsf", hqCode);
 
-
 //                Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
@@ -2692,6 +2729,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.SUBORDINATE)) {
                     mapString.put("axn", "table/subordinates");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                    jsonObject.put("sfcode", hqCode);
+                    mapString.put("axn", "get/stp");
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                 }
 
@@ -2748,6 +2789,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                                     jointWorkJsonArray.put(jointWorkJsonObject);
                                                 }
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jointWorkJsonArray.toString(), 2));
+                                            } else if (masterSyncItemModel.getMasterOf().equals(Constants.STANDARD_TOUR_PLAN)) {
+                                                holder.workDayLayout.setEnabled(true);
                                             }
                                         }
                                     } else {
@@ -3188,6 +3231,19 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         holder.hq_code = jsonObject.getCode();
                         if (!holder.selectedHq.equalsIgnoreCase(holder.hq_code)) {
                             holder.selectedHq = holder.hq_code;
+                            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+                                if (UtilityClass.isNetworkAvailable(context)) {
+                                    holder.progress_hq.setVisibility(View.VISIBLE);
+                                    MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP);
+                                    masterSyncArray.clear();
+                                    masterSyncArray.add(STPSetup);
+                                    holder.workDayLayout.setEnabled(false);
+                                    Log.d("SYNC STP SETUP", "itemClicked: HQ");
+                                    sync(STPSetup, holder.selectedHq, holder);
+                                } else {
+                                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                }
+                            }
                             sessionInterfaceOneBuild.hqChangedOneBuild(inputDataArrayOneBuild, itemPosition, true);
                         } else {
                             sessionInterfaceOneBuild.hqChangedOneBuild(inputDataArrayOneBuild, itemPosition, false);
