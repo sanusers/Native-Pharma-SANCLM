@@ -399,6 +399,28 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 if (app_adapt.getPos_name().equalsIgnoreCase("D") || app_adapt.getPos_name().equalsIgnoreCase("C")
                         || app_adapt.getPos_name().equalsIgnoreCase("S") || app_adapt.getPos_name().equalsIgnoreCase("U") ) {
                     intent.putExtra("PosDCRname", app_adapt.getPos_name());
+                    intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
+                    intent.putExtra("Doc_name", app_adapt.getDcr_name());
+                    intent.putExtra("Doc_code", app_adapt.getDcr_code());
+                    intent.putExtra("Towncode", app_adapt.getTown_code());
+                    intent.putExtra("Town", app_adapt.getTown_name());
+                    intent.putExtra("ListedDrSex", app_adapt.getRes_listeddoc_sex());
+                    intent.putExtra("Qual_values", app_adapt.getRes_Qualifiey());
+                    intent.putExtra("Qual_code", app_adapt.getQuacode());
+                    intent.putExtra("Spec_values", app_adapt.getRes_Specialty());
+                    intent.putExtra("Spec_code", app_adapt.getRes_Specialtycode());
+                    intent.putExtra("cate_values", app_adapt.getRes_Category());
+                    intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
+                    intent.putExtra("EMAIL", app_adapt.getRes_Email());
+                    intent.putExtra("MOB", app_adapt.getRes_mob());
+                    intent.putExtra("PHN", app_adapt.getRes_phn());
+                    intent.putExtra("DOB", app_adapt.getRes_Dob());
+                    intent.putExtra("DOW", app_adapt.getRes_Dow());
+                    intent.putExtra("ADDRESS", app_adapt.getRes_adds());
+                    intent.putExtra("lat", app_adapt.getLatitude());
+                    intent.putExtra("long", app_adapt.getLongtitude());
+                    intent.putExtra("tagcount", app_adapt.getTagcount());
+                    intent.putExtra("maxcount", app_adapt.getMaxcount());
                     int pos = holder.getBindingAdapterPosition();
                     intent.putExtra("position", pos);
                     context.startActivity(intent);

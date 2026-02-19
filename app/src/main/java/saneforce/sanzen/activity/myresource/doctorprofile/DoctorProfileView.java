@@ -1,7 +1,9 @@
 package saneforce.sanzen.activity.myresource.doctorprofile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,9 +13,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.myresource.MapView;
+import saneforce.sanzen.activity.myresource.MyResource_Activity;
+import saneforce.sanzen.activity.myresource.MyResource_mapview;
+import saneforce.sanzen.activity.myresource.ProfilingActivity;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityDoctorProfileViewBinding;
 import saneforce.sanzen.databinding.ActivityProfileViewBinding;
+import saneforce.sanzen.databinding.MapDcrSelectionBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -21,7 +28,10 @@ import saneforce.sanzen.utility.TimeUtils;
 
 public class DoctorProfileView extends AppCompatActivity {
     public ActivityDoctorProfileViewBinding activityDoctorProfileViewBinding;
-    String CusType = "";
+    String CusType = "", HQ_CODE = "", DCR_CODE = "", CUST_FLAG = "",docLatitude="",docLongitude="";
+    String fullobject = "", DocName = "", Doc_code = " ", Towncode = " ", Town = " ", ListedDrSex = " ", Qual_values = " ",
+            Qual_code = "", Spec_values = "", Spec_code = "", cate_values = "", cate_code = "", EMAIL = "", MOB = "", PHN = "", DOB = "", DOW = "", ADDRESS = "",
+            lat = "", longitude = "", tagcount = "", maxcount = "";
     MasterDataDao masterDataDao;
     private RoomDB roomDB;
     int position;
@@ -35,10 +45,90 @@ public class DoctorProfileView extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(this);
         position = getIntent().getIntExtra("position", 0);
         masterDataDao = roomDB.masterDataDao();
+//        DCR_CODE = getIntent().getStringExtra("DCR_CODE");
+//        HQ_CODE = getIntent().getStringExtra("HQ_CODE");
+//        CUST_FLAG = getIntent().getStringExtra("CUST_FLAG");
+
+        Button btnView = findViewById(R.id.btn_view);
+
+        btnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent click = new Intent(DoctorProfileView.this, MyResource_mapview.class);
+                click.putExtra("HQ_CODE", HQ_CODE);
+                click.putExtra("DCR_CODE", DCR_CODE);
+                click.putExtra("CUST_FLAG", CUST_FLAG);
+                click.putExtra("lat", docLatitude);  // Doctor-oda latitude
+                click.putExtra("lon", docLongitude); // Doctor-oda longitude
+                startActivity(click);
+            }
+
+        });
+
+
+        Button btnEdit = findViewById(R.id.btn_edit);
+
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DoctorProfileView.this, ProfilingActivity.class);
+
+                intent.putExtra("PosDCRname", CusType);
+                intent.putExtra("position", position);
+                intent.putExtra("Doc_obj", fullobject);
+                intent.putExtra("Doc_name", DocName);
+                intent.putExtra("Doc_code", Doc_code);
+                intent.putExtra("Towncode", Towncode);
+                intent.putExtra("Town", Town);
+                intent.putExtra("ListedDrSex", ListedDrSex);
+                intent.putExtra("Qual_values", Qual_values);
+                intent.putExtra("Qual_code", Qual_code);
+                intent.putExtra("Spec_values", Spec_values);
+                intent.putExtra("Spec_code", Spec_code);
+                intent.putExtra("cate_values", cate_values);
+                intent.putExtra("cate_code", cate_code);
+                intent.putExtra("EMAIL", EMAIL);
+                intent.putExtra("MOB", MOB);
+                intent.putExtra("PHN", PHN);
+                intent.putExtra("DOB", DOB);
+                intent.putExtra("DOW", DOW);
+                intent.putExtra("ADDRESS", ADDRESS);
+
+                intent.putExtra("lat", lat);
+                intent.putExtra("long", longitude);
+                intent.putExtra("tagcount", tagcount);
+                intent.putExtra("maxcount", maxcount);
+                startActivity(intent);
+            }
+        });
+
+
         Bundle extra = getIntent().getExtras();
 
         if (extra != null) {
-            CusType = extra.getString("PosDCRname", "");
+            CusType = extra.getString("PosDCRname", " ");
+            DocName = extra.getString("Doc_name", " ");
+            fullobject = extra.getString("Doc_obj");
+            Doc_code = extra.getString("Doc_code", " ");
+            Towncode = extra.getString("Towncode", " ");
+            Town = extra.getString("Town", " ");
+            ListedDrSex = extra.getString("ListedDrSex", " ");
+            Qual_values = extra.getString("Qual_values", " ");
+            Qual_code = extra.getString("Qual_code", " ");
+            Spec_values = extra.getString("Spec_values", " ");
+            Spec_code = extra.getString("Spec_code", " ");
+            cate_values = extra.getString("cate_values", " ");
+            cate_code = extra.getString("cate_code", " ");
+            EMAIL = extra.getString("EMAIL", " ");
+            MOB = extra.getString("MOB", " ");
+            PHN = extra.getString("PHN", " ");
+            DOB = extra.getString("DOB", " ");
+            DOW = extra.getString("DOW", " ");
+            lat = extra.getString("lat", " ");
+            longitude = extra.getString("longitude", " ");
+            tagcount = extra.getString("tagcount", " ");
+            maxcount = extra.getString("maxcount", " ");
+
             switch (CusType) {
                 case "D":
                     if (SharedPref.getDrCap(this).isEmpty() || SharedPref.getDrCap(this) == null) {
@@ -253,7 +343,6 @@ public class DoctorProfileView extends AppCompatActivity {
                             }
 
 
-
                             activityDoctorProfileViewBinding.tvName.setText(setValue(stkName));
                             activityDoctorProfileViewBinding.tvGender.setText(setValue(stkGender));
                             activityDoctorProfileViewBinding.tvQualify.setText(setValue(stkQualification));
@@ -266,7 +355,6 @@ public class DoctorProfileView extends AppCompatActivity {
                             activityDoctorProfileViewBinding.tvAddress.setText(setValue(stkAddress));
                             activityDoctorProfileViewBinding.tvDob.setText(setValue(stkDob));
                             activityDoctorProfileViewBinding.tvWedDate.setText(setValue(stkDow));
-
 
 
                         } catch (JSONException e) {
@@ -318,7 +406,7 @@ public class DoctorProfileView extends AppCompatActivity {
                                 try {
                                     String fullDate = stkDowObj.optString("date");
                                     if (fullDate.contains("1900")) {
-                                       unlistDow = "";
+                                        unlistDow = "";
                                     } else {
                                         unlistDow = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, fullDate);
                                     }
@@ -326,7 +414,6 @@ public class DoctorProfileView extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                             }
-
 
 
                             activityDoctorProfileViewBinding.tvName.setText(setValue(unlistName));
@@ -343,7 +430,6 @@ public class DoctorProfileView extends AppCompatActivity {
                             activityDoctorProfileViewBinding.tvWedDate.setText(setValue(unlistDow));
 
 
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -354,12 +440,13 @@ public class DoctorProfileView extends AppCompatActivity {
 
         }
 
-            activityDoctorProfileViewBinding.ivBack.setOnClickListener(v -> {
+        activityDoctorProfileViewBinding.ivBack.setOnClickListener(v -> {
 
-                finish();
-            });
+            finish();
+        });
 
     }
+
     private String setValue(String value) {
         if (value == null || value.trim().isEmpty() || value.equalsIgnoreCase("null")) {
             return "--";
