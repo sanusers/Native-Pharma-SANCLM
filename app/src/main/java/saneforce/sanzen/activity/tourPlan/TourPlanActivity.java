@@ -3662,7 +3662,7 @@ public class TourPlanActivity extends AppCompatActivity {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
             if (status) {
                 try {
-                    int id = 0;
+                 /*   int id = 0;
                     int previous = SharedPref.getTpIdPreviousMonth(TourPlanActivity.this), current = SharedPref.getTpIdCurrentMonth(TourPlanActivity.this), next = SharedPref.getTpIdNextMonth(TourPlanActivity.this);
                     switch (isClickedName) {
                         case "previous":
@@ -3688,11 +3688,13 @@ public class TourPlanActivity extends AppCompatActivity {
                     Log.d("tp", "getDraftSaveOneBuild: " + id + " --> " + tpID);
                     if (tpID != 0) {
                         id = tpID;
-                    }
+                    }*/
 
                     JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("mode", "AndroidDetailing");
-                    jsonObject.addProperty("tpId", id);
+                    jsonObject.addProperty("Mod", "AndroidDetailing");
+                    jsonObject.addProperty("Status",0 );
+                    jsonObject.addProperty("SubmissionDate", TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_37));
+                    jsonObject.addProperty("tableName","savetpzen");
 
                   /*  JsonObject tourPlan = new JsonObject();
                     OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
@@ -3718,6 +3720,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             tourPlan.addProperty("Month", oneBuildModelClassTp.getMonth());
                             tourPlan.addProperty("Year", oneBuildModelClassTp.getYear());
                             tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(TourPlanActivity.this).replace(",", ""));
+                            tourPlan.addProperty("SFType",SharedPref.getSfType(TourPlanActivity.this));
                         }
                     }
                     JsonArray detailsArray = new JsonArray();
@@ -4141,8 +4144,11 @@ public class TourPlanActivity extends AppCompatActivity {
                     changeStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
                     if (Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2")) {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
+                      /*  Map<String, String> mapString = new HashMap<>();*/
+                      /*  Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);*/
                         Map<String, String> mapString = new HashMap<>();
-                        Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
+                        mapString.put("axn", "save/tp");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(TourPlanActivity.this), mapString, jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
