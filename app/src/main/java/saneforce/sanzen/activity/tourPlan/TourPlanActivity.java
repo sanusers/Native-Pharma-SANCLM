@@ -4,13 +4,9 @@ import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inpu
 import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inputDataArrayOneBuild;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,7 +63,6 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
-import saneforce.sanzen.activity.standardTourPlan.unplannedVisitScreen.UnplannedVisitActivity;
 import saneforce.sanzen.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanzen.activity.tourPlan.model.DoctorDataModel;
 import saneforce.sanzen.activity.tourPlan.model.DoctorVisitModel;
@@ -189,7 +184,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public static OneBuildModelClass.SessionList prepareSessionListForAdapterOneBuild(ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray, ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray, ArrayList<OneBuildModelClass.SessionList.SubClass> drArray, ArrayList<OneBuildModelClass.SessionList.SubClass> chemistArray, ArrayList<OneBuildModelClass.SessionList.SubClass> stockArray, ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray, ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray, ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray, OneBuildModelClass.SessionList.WorkType workType, OneBuildModelClass.SessionList.SubClass headquarters, String remarks) {
-        return new OneBuildModelClass.SessionList("", true, remarks, "", workType, headquarters, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        return new OneBuildModelClass.SessionList("", true, remarks, "", "", "", workType, headquarters, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
     public static OneBuildModelClass.SessionList prepareSessionListForAdapterOneBuild() {
@@ -204,7 +199,7 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-        return new OneBuildModelClass.SessionList("", true, "", "", workType, headquarters, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        return new OneBuildModelClass.SessionList("", true, "", "", "", "", workType, headquarters, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
     public static ModelClass.SessionList prepareSessionListForAdapter1(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq) {
@@ -242,16 +237,21 @@ public class TourPlanActivity extends AppCompatActivity {
         tourPlanOnlineDataDao = roomDB.tourPlanOnlineDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
         masterDataDao = roomDB.masterDataDao();
-
+        String status;
+        if (SharedPref.getOneBuild(this).equalsIgnoreCase("0")) {
+            status = "2";
+        } else {
+            status = "0";
+        }
 //        if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Planning...") || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Rejected"))) {
         if (SharedPref.getSfType(this).equalsIgnoreCase("1")
                 && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0")
                 && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0")
-                && (stpOfflineDataDao.isNotApproved() || masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() == 0)
+                && (stpOfflineDataDao.isNotApproved(status) || masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() == 0)
                 && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpNeed(this).equalsIgnoreCase("0")
                 && !SharedPref.getTpStartDate(this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(this).equalsIgnoreCase("-1")
                 && !SharedPref.getTpEndDate(this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(this).equalsIgnoreCase("-1")) {
-            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare)  + SharedPref.getStpCaption(this) + getString(R.string.and_get_approved_to_prepare_tour_plan));
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare)+" " + SharedPref.getStpCaption(this)+" " + getString(R.string.and_get_approved_to_prepare_tour_plan));
             Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
             startActivity(intent);
             finish();
@@ -1458,7 +1458,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.updated_successfully));
                         isEdited = false;
                     } else {
-                        commonUtilsMethods.showToastMessage(TourPlanActivity.this,  getString(R.string.saved_successfully));
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.saved_successfully));
                     }
                     calendarAdapter.notifyDataSetChanged();
                 } else {
@@ -1693,7 +1693,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(TourPlanActivity.this), dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                     }
                 }
             }
@@ -1771,7 +1771,7 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-        return new OneBuildModelClass.SessionList("", true, "", "", workType, headquarters, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        return new OneBuildModelClass.SessionList("", true, "", "", "", "", workType, headquarters, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
     public void uiInitializationOneBuild() {
@@ -2042,12 +2042,13 @@ public class TourPlanActivity extends AppCompatActivity {
 
     private String monthYearFromDateUI(LocalDate date) {
         DateTimeFormatter formatter = null;
-        formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.ENGLISH);
+        formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
         return date.format(formatter);
     }
+
     private String monthYearFromDate(LocalDate date) {
         DateTimeFormatter formatter = null;
-        formatter = DateTimeFormatter.ofPattern("MMMM yyyy",Locale.ENGLISH);
+        formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
         return date.format(formatter);
     }
 
@@ -2077,7 +2078,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     prepareDoctorVisitData(modelClasses);
                 }
             } else { //If tour plan table has no data
-                SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
+                SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.ENGLISH);
                 ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate1));
                 String monthYear = monthYearFromDate(localDate1);
                 String month = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
@@ -2174,7 +2175,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public ArrayList<OneBuildModelClass> prepareModelClassForMonthOneBuild(LocalDate localDate2) {
-
         ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
         try {
             Log.v("getTp", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate2)));
@@ -2187,7 +2187,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     prepareDoctorVisitDataOneBuild(oneBuildModelClasses);
                 }
             } else {//If tour plan table has no data
-                SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
+                SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.ENGLISH);
                 ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate2));
                 String monthYear = monthYearFromDate(localDate2);
                 String month = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
@@ -2206,13 +2206,13 @@ public class TourPlanActivity extends AppCompatActivity {
 //                        String date = day + " " + monthYear;
 //                        String dayName = formatter.format(new Date(date));
 
-                            String date = day + " " + monthYear;
+                        String date = day + " " + monthYear;
 
-                            SimpleDateFormat parser = new SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH);
-                            Date parsedDate = parser.parse(date);
-                            String dayName = formatter.format(parsedDate);
+                        SimpleDateFormat parser = new SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH);
+                        Date parsedDate = parser.parse(date);
+                        String dayName = formatter.format(parsedDate);
 
-                            OneBuildModelClass.SessionList sessionListOneBuild = new OneBuildModelClass.SessionList();
+                        OneBuildModelClass.SessionList sessionListOneBuild = new OneBuildModelClass.SessionList();
                         sessionListOneBuild = prepareSessionListForAdapterOneBuild();
 
                         if (Integer.valueOf(month) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
@@ -2411,7 +2411,7 @@ public class TourPlanActivity extends AppCompatActivity {
 //    }
 
     private ModelClass prepareAndSaveSTPModelClass(String day, String date, String dayName, String dayOfWeek, LocalDate localDate1) {
-        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayOfWeek);
+        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayOfWeek, SharedPref.getHqCode(TourPlanActivity.this));
         String monthYear = monthYearFromDate(localDate1);
         String month = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
         String year = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
@@ -2443,8 +2443,8 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     private OneBuildModelClass prepareAndSaveSTPModelClassOneBuild(String day, String date, String dayName, String dayOfWeek, LocalDate localDate2) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
-        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayOfWeek);
+//        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayOfWeek, SharedPref.getHqCode(TourPlanActivity.this));
         String monthYear = monthYearFromDate(localDate2);
         String month = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
         String year = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
@@ -2463,6 +2463,9 @@ public class TourPlanActivity extends AppCompatActivity {
             sessionListOneBuild.setDoctors(doctorList);
             sessionListOneBuild.setChemists(chemistList);
 
+            sessionListOneBuild.setSTPCode(stpOfflineDataTable.getDayID());
+            sessionListOneBuild.setSTPName(stpOfflineDataTable.getDayCaption());
+
             ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
             sessionLists.add(sessionListOneBuild);
 
@@ -2472,6 +2475,276 @@ public class TourPlanActivity extends AppCompatActivity {
             return oneBuildModelClass;
         }
         return new OneBuildModelClass();
+    }
+
+    private OneBuildModelClass.SessionList prepareAndSaveSTP(String hqCode, String hqName, String dayOfWeek) {
+        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayOfWeek, hqCode);
+        OneBuildModelClass.SessionList sessionListOneBuild = prepareSessionListForAdapterOneBuild();
+        if (stpOfflineDataTable != null) {
+            sessionListOneBuild.setHeadquarters(new OneBuildModelClass.SessionList.SubClass(hqName, hqCode));
+
+            OneBuildModelClass.SessionList.WorkType workType = getWorkTypeOneBuild("F");
+            sessionListOneBuild.setWorkType(workType);
+
+            List<OneBuildModelClass.SessionList.SubClass> clusterList = prepareListOneBuild(stpOfflineDataTable.getClusterCode(), stpOfflineDataTable.getClusterName());
+            List<OneBuildModelClass.SessionList.SubClass> doctorList = prepareListOneBuild(stpOfflineDataTable.getDoctorCode(), stpOfflineDataTable.getDoctorName());
+            List<OneBuildModelClass.SessionList.SubClass> chemistList = prepareListOneBuild(stpOfflineDataTable.getChemistCode(), stpOfflineDataTable.getChemistName());
+            sessionListOneBuild.setTerritories(clusterList);
+            sessionListOneBuild.setDoctors(doctorList);
+            sessionListOneBuild.setChemists(chemistList);
+
+            sessionListOneBuild.setSTPCode(stpOfflineDataTable.getDayID());
+            sessionListOneBuild.setSTPName(stpOfflineDataTable.getDayCaption());
+
+            return sessionListOneBuild;
+        }
+        return new OneBuildModelClass.SessionList();
+    }
+
+    private OneBuildModelClass prepareAndSaveSTPModelClassOneBuildMGR(String day, String date, String dayName, String dayOfWeek, LocalDate localDate2, String hqCode, String hqName) {
+//        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayOfWeek, SharedPref.getHqCode(TourPlanActivity.this));
+        String monthYear = monthYearFromDate(localDate2);
+        String month = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
+        String year = TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
+//        ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
+        OneBuildModelClass.SessionList sessionListOneBuild = prepareSessionListForAdapterOneBuild();
+        if (stpOfflineDataTable != null) {
+            sessionListOneBuild.setHeadquarters(new OneBuildModelClass.SessionList.SubClass(hqName, hqCode));
+
+            OneBuildModelClass.SessionList.WorkType workType = getWorkTypeOneBuild("F");
+            sessionListOneBuild.setWorkType(workType);
+
+            List<OneBuildModelClass.SessionList.SubClass> clusterList = prepareListOneBuild(stpOfflineDataTable.getClusterCode(), stpOfflineDataTable.getClusterName());
+            List<OneBuildModelClass.SessionList.SubClass> doctorList = prepareListOneBuild(stpOfflineDataTable.getDoctorCode(), stpOfflineDataTable.getDoctorName());
+            List<OneBuildModelClass.SessionList.SubClass> chemistList = prepareListOneBuild(stpOfflineDataTable.getChemistCode(), stpOfflineDataTable.getChemistName());
+            sessionListOneBuild.setTerritories(clusterList);
+            sessionListOneBuild.setDoctors(doctorList);
+            sessionListOneBuild.setChemists(chemistList);
+
+            sessionListOneBuild.setSTPCode(stpOfflineDataTable.getDayID());
+            sessionListOneBuild.setSTPName(stpOfflineDataTable.getDayCaption());
+
+            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+            sessionLists.add(sessionListOneBuild);
+
+            OneBuildModelClass oneBuildModelClass = new OneBuildModelClass(day, date, dayName, month, year, false, sessionLists, stpOfflineDataTable.getDayID(), stpOfflineDataTable.getDayCaption());
+//            modelClasses.add(modelClass);
+//            saveTpLocal(modelClasses, day, monthYear, "0");
+            return oneBuildModelClass;
+        }
+        return new OneBuildModelClass();
+    }
+
+    private void getSTPMGR(OneBuildModelClass arrayListOneBuild, int position, String hqCode, String hqName, String dayOfWeek, String dayName) {
+        if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
+            try {
+                binding.progressBar.setVisibility(View.VISIBLE);
+                apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("tableName", "getstp_details_mgr");
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                jsonObject.put("Rsf", hqCode);
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonObject.put("workday", dayOfWeek);
+
+                Log.v("STP", "--json-- " + jsonObject);
+
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "get/stp");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        boolean success = false;
+                        JSONArray jsonArray = new JSONArray();
+
+                        if (response.isSuccessful()) {
+                            Log.e("test STP MGR", "response : " + Objects.requireNonNull(response.body()));
+                            try {
+                                JsonElement jsonElement = response.body();
+                                if (!jsonElement.isJsonNull()) {
+                                    if (jsonElement.isJsonArray()) {
+                                        JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                        jsonArray = new JSONArray(jsonArray1.toString());
+                                        success = true;
+                                    } else if (jsonElement.isJsonObject()) {
+                                        JsonObject jsonObject1 = jsonElement.getAsJsonObject();
+                                        JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
+                                        if (!jsonObject2.has("success")) {
+                                            jsonArray.put(jsonObject2);
+                                            success = true;
+                                        } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                            masterDataDao.saveMasterSyncStatus(Constants.STANDARD_TOUR_PLAN, 1);
+                                        }
+                                    }
+
+                                    if (success) {
+                                        if (jsonArray.length() == 0) {
+                                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, "No STP plan available");
+                                        } else {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STANDARD_TOUR_PLAN, jsonArray.toString(), 2));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+//                        stpOfflineDataDao.deleteAllData("0");
+                            if (jsonArray.length() == 0) {
+                                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, "No STP plan available");
+                            } else {
+                                saveSTPDataToLocal(hqCode);
+                                OneBuildModelClass.SessionList sessionList = prepareAndSaveSTP(hqCode, hqName, dayOfWeek);
+                                arrayListOneBuild.getSessionList().remove(position);
+                                arrayListOneBuild.getSessionList().add(position, sessionList);
+                                for (int i = 0; i < arrayListOneBuild.getSessionList().size(); i++) {
+                                    arrayListOneBuild.getSessionList().get(i).setVisible(true);
+                                }
+
+                                populateSessionEditAdapterOneBuild(arrayListOneBuild);
+                            }
+                        }
+                        binding.progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        Log.e("STP", "onFailure: ");
+                        binding.progressBar.setVisibility(View.GONE);
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+                        t.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+                binding.progressBar.setVisibility(View.GONE);
+                e.printStackTrace();
+            }
+        } else {
+            binding.progressBar.setVisibility(View.GONE);
+            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+        }
+    }
+
+    private int getCountFromCommaString(String value) {
+        if (value == null || value.trim().isEmpty()) return 0;
+
+        int count = 0;
+        for (String s : value.split(",")) {
+            if (!s.trim().isEmpty()) count++;
+        }
+        return count;
+    }
+
+    private void saveSTPDataToLocal(String hqCode) {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+            JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(TourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(TourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(TourPlanActivity.this)).getMasterSyncDataJsonArray();
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    if (SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String doctorSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Dr_Code")));
+                        String chemistSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Chem_Code")));
+                        String clusterSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Patch_Code")));
+                        String doctorSpeciality = jsonObject.optString("Speciality_Name");
+                        String doctorCategory = jsonObject.optString("CategoryName");
+                        String doctorCategoryCode = jsonObject.optString("CategoryCode");
+                        String doctorClass = jsonObject.optString("Class_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal1: " + jsonObject);
+
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonSave.put("sfcode", hqCode);
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Planned_Territory_Count", clusterSize + " (" + jsonCluster.length() + ")");
+                        jsonSave.put("Planned_Doctor_Count", doctorSize + " (" + jsonDoc_mas.length() + ")");
+                        jsonSave.put("Planned_Chemist_Count", chemistSize + " (" + jsonChm_mas.length() + ")");
+                        jsonSave.put("Planned_Hospital_Count", "0" + " (" + "0" + ")");
+                        jsonSave.put("Speciality_Name", doctorSpeciality);
+                        jsonSave.put("Category_Name", doctorCategory);
+                        jsonSave.put("Class_Name", doctorClass);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal2: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, hqCode, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, doctorSpeciality, doctorCategory, doctorClass, doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));
+                    } else {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonSave.put("sfcode", hqCode);
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, hqCode, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private List<ModelClass.SessionList.SubClass> prepareList(String codes, String names) {
@@ -2491,7 +2764,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     private List<OneBuildModelClass.SessionList.SubClass> prepareListOneBuild(String codes, String names) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         List<OneBuildModelClass.SessionList.SubClass> list = new ArrayList<>();
         try {
             String[] codeArray = CommonUtilsMethods.removeLastComma(codes).split(",");
@@ -2608,6 +2880,9 @@ public class TourPlanActivity extends AppCompatActivity {
                 arrayList.getSessionList().remove(position);
                 arrayList.getSessionList().add(position, modelClass);
 
+                arrayList.setSTP_Code("");
+                arrayList.setSTP_Name("");
+
                 for (int i = 0; i < arrayList.getSessionList().size(); i++) {
                     arrayList.getSessionList().get(i).setVisible(true);
                 }
@@ -2706,9 +2981,12 @@ public class TourPlanActivity extends AppCompatActivity {
                 ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                 ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                OneBuildModelClass.SessionList oneBuildModelClasses = new OneBuildModelClass.SessionList("", true, "", "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                OneBuildModelClass.SessionList oneBuildModelClasses = new OneBuildModelClass.SessionList("", true, "", "", "", "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
                 arrayListOneBuild.getSessionList().remove(position);
                 arrayListOneBuild.getSessionList().add(position, oneBuildModelClasses);
+
+                arrayListOneBuild.setSTP_Code("");
+                arrayListOneBuild.setSTP_Name("");
 
                 for (int i = 0; i < arrayListOneBuild.getSessionList().size(); i++) {
                     arrayListOneBuild.getSessionList().get(i).setVisible(true);
@@ -2732,7 +3010,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                     ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                    OneBuildModelClass.SessionList modelClass = new OneBuildModelClass.SessionList("", true, "", "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                    OneBuildModelClass.SessionList modelClass = new OneBuildModelClass.SessionList("", true, "", "", "", "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
                     arrayListOneBuild.getSessionList().remove(position);
                     arrayListOneBuild.getSessionList().add(modelClass);
                 }
@@ -2740,6 +3018,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     arrayListOneBuild.getSessionList().get(i).setVisible(true);
                     arrayListOneBuild.getSessionList().get(i).setLayoutVisible("");
                 }
+                arrayListOneBuild.setSTP_Code("");
+                arrayListOneBuild.setSTP_Name("");
                 populateSessionEditAdapterOneBuild(arrayListOneBuild);
                 scrollToPosition(position, false);
             }
@@ -2751,16 +3031,34 @@ public class TourPlanActivity extends AppCompatActivity {
             }
 
             @Override
-            public void workDayChangedOneBuild(OneBuildModelClass oneBuildModelClass, int position) {
-                OneBuildModelClass modelClass1 = prepareAndSaveSTPModelClassOneBuild(oneBuildModelClass.getDayNo(), oneBuildModelClass.getDate(), oneBuildModelClass.getDay(), oneBuildModelClass.getSTP_Code(), localDate);
-                arrayListOneBuild.getSessionList().remove(position);
-                arrayListOneBuild.getSessionList().add(position, modelClass1.getSessionList().get(0));
+            public void workDayChangedOneBuild(OneBuildModelClass oneBuildModelClass, String stpCode, String stpName, int position) {
+                if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+//                    OneBuildModelClass modelClass1 = prepareAndSaveSTPModelClassOneBuild(oneBuildModelClass.getDayNo(), oneBuildModelClass.getDate(), oneBuildModelClass.getDay(), oneBuildModelClass.getSTP_Code(), localDate);
+                    OneBuildModelClass.SessionList sessionList = prepareAndSaveSTP(SharedPref.getHqCode(TourPlanActivity.this), SharedPref.getHqName(TourPlanActivity.this), stpCode);
+                    arrayListOneBuild.getSessionList().remove(position);
+                    arrayListOneBuild.getSessionList().add(position, sessionList);
 
-                for (int i = 0; i < arrayListOneBuild.getSessionList().size(); i++) {
-                    arrayListOneBuild.getSessionList().get(i).setVisible(true);
+                    for (int i = 0; i < arrayListOneBuild.getSessionList().size(); i++) {
+                        arrayListOneBuild.getSessionList().get(i).setVisible(true);
+                    }
+
+                    populateSessionEditAdapterOneBuild(arrayListOneBuild);
+                } else {
+                    String selectedHQCode = "", selectedHQName = "";
+//                    for (OneBuildModelClass.SessionList sessionList : oneBuildModelClass.getSessionList()) {
+                    OneBuildModelClass.SessionList sessionList = oneBuildModelClass.getSessionList().get(position);
+                        if (sessionList.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                            selectedHQCode = sessionList.getHeadquarters().getCode();
+                            selectedHQName = sessionList.getHeadquarters().getName();
+//                            break;
+                        }
+//                    }
+                    if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
+                        getSTPMGR(arrayListOneBuild, position, selectedHQCode, selectedHQName, stpCode, stpName);
+                    } else {
+                        CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+                    }
                 }
-
-                populateSessionEditAdapterOneBuild(modelClass1);
                 scrollToPosition(position, false);
             }
         });
@@ -3458,7 +3756,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                 String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
                                 String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
                                 String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
-
+                                String STPCode = "", STPName = "", STPCode2 = "", STPName2 = "", STPCode3 = "", STPName3 = "";
+                                STPCode = oneBuildModelClass.getSTP_Code();
+                                STPName = oneBuildModelClass.getSTP_Name();
+                                if (STPCode == null) STPCode = "";
+                                if (STPName == null) STPName = "";
                                 for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
                                     OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
 
@@ -3490,7 +3792,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                         CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
                                         HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
                                         HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
+                                        STPCode = sessionList_OneBuild.getSTPCode();
+                                        STPName = sessionList_OneBuild.getSTPName();
                                     } else if (i == 1) {
                                         WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
                                         WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
@@ -3517,6 +3820,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                         CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
                                         HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
                                         HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+                                        STPCode2 = sessionList_OneBuild.getSTPCode();
+                                        STPName2 = sessionList_OneBuild.getSTPName();
 
                                     } else if (i == 2) {
                                         WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
@@ -3544,6 +3849,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                         CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
                                         HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
                                         HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+                                        STPCode3 = sessionList_OneBuild.getSTPCode();
+                                        STPName3 = sessionList_OneBuild.getSTPName();
                                     }
                                 }
 
@@ -3557,6 +3864,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
                                                 SessionsObj.addProperty("WorkTypeName", WorkTypeName);
                                                 SessionsObj.addProperty("Id", i);
+                                                SessionsObj.addProperty("ObjectiveId", STPCode);
+                                                SessionsObj.addProperty("ObjectiveName", STPName);
                                                 SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
                                                 SessionsObj.addProperty("Remark", Remarks);
                                             }
@@ -3565,6 +3874,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
                                                 SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
                                                 SessionsObj.addProperty("Id", i);
+                                                SessionsObj.addProperty("ObjectiveId", STPCode2);
+                                                SessionsObj.addProperty("ObjectiveName", STPName2);
                                                 SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
                                                 SessionsObj.addProperty("Remark", Remarks2);
                                             }
@@ -3573,6 +3884,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
                                                 SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
                                                 SessionsObj.addProperty("Id", i);
+                                                SessionsObj.addProperty("ObjectiveId", STPCode3);
+                                                SessionsObj.addProperty("ObjectiveName", STPName3);
                                                 SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
                                                 SessionsObj.addProperty("Remark", Remarks3);
                                             }
@@ -4031,7 +4344,7 @@ public class TourPlanActivity extends AppCompatActivity {
     private void SaveLocalOnlineTable(LocalDate localDate, JSONArray listArray, ArrayList<ModelClass> dayWiseSaveTp) {
         try { // check this method
             dayWiseSaveTp = new ArrayList<>();
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.ENGLISH);
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
             String monthYear = monthYearFromDate(localDate);
@@ -4208,7 +4521,7 @@ public class TourPlanActivity extends AppCompatActivity {
             listArray, ArrayList<OneBuildModelClass> dayWiseSaveTp) {
         try { // check this method
             dayWiseSaveTp = new ArrayList<>();
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.ENGLISH);
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.ENGLISH);
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
             String monthYear = monthYearFromDate(localDate);

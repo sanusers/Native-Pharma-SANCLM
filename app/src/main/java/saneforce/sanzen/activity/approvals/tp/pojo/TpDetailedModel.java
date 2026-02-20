@@ -42,6 +42,11 @@ public class TpDetailedModel {
     String jwName3;
     String STPCode;
     String STPName;
+    String STPCode2;
+    String STPName2;
+    String STPCode3;
+    String STPName3;
+
     public TpDetailedModel(String dayNo, String wtName,String hqName, String clusterName, String FWFlg, String dayRemarks, String drName,String chemName,String StockiestName,String jwName, String  STPCode, String  STPName) {
         DayNo = dayNo;
         WtName = wtName;
@@ -57,7 +62,8 @@ public class TpDetailedModel {
         this.STPCode = STPCode;
         this.STPName = STPName;
     }
-    public TpDetailedModel(String dayNo, String status, String reasonForRejection, String wtCode, String wtCode2, String wtCode3, String wtName, String wtName2, String wtName3, String hqCode ,String hqCode2, String hqCode3,String hqName,String hqName2,String hqName3,String clusterCode, String clusterCode2, String clusterCode3, String clusterName, String clusterName2, String clusterName3, String FWFlg, String FWFlg2, String FWFlg3, String dayRemarks, String dayRemarks2, String dayRemarks3, String drName, String drName2, String drName3, String chemistName, String chemistName2, String chemistName3, String stockiestName, String stockiestName2, String stockiestName3, String jwName, String jwName2, String jwName3, String  STPCode, String  STPName) {
+
+    public TpDetailedModel(String dayNo, String status, String reasonForRejection, String wtCode, String wtCode2, String wtCode3, String wtName, String wtName2, String wtName3, String hqCode ,String hqCode2, String hqCode3,String hqName,String hqName2,String hqName3,String clusterCode, String clusterCode2, String clusterCode3, String clusterName, String clusterName2, String clusterName3, String FWFlg, String FWFlg2, String FWFlg3, String dayRemarks, String dayRemarks2, String dayRemarks3, String drName, String drName2, String drName3, String chemistName, String chemistName2, String chemistName3, String stockiestName, String stockiestName2, String stockiestName3, String jwName, String jwName2, String jwName3, String  STPCode, String  STPName, String  STPCode2, String  STPName2, String  STPCode3, String  STPName3) {
         DayNo = dayNo;
         Status = status;
         this.reasonForRejection = reasonForRejection;
@@ -99,6 +105,10 @@ public class TpDetailedModel {
         this.jwName3 = jwName3;
         this.STPCode = STPCode;
         this.STPName = STPName;
+        this.STPCode2 = STPCode2;
+        this.STPName2 = STPName2;
+        this.STPCode3 = STPCode3;
+        this.STPName3 = STPName3;
     }
 
     public String getDrName() {
@@ -427,5 +437,37 @@ public class TpDetailedModel {
 
     public void setSTPName(String STPName) {
         this.STPName = STPName;
+    }
+
+    public String getSTPCode2() {
+        return STPCode2;
+    }
+
+    public void setSTPCode2(String STPCode2) {
+        this.STPCode2 = STPCode2;
+    }
+
+    public String getSTPName2() {
+        return STPName2;
+    }
+
+    public void setSTPName2(String STPName2) {
+        this.STPName2 = STPName2;
+    }
+
+    public String getSTPCode3() {
+        return STPCode3;
+    }
+
+    public void setSTPCode3(String STPCode3) {
+        this.STPCode3 = STPCode3;
+    }
+
+    public String getSTPName3() {
+        return STPName3;
+    }
+
+    public void setSTPName3(String STPName3) {
+        this.STPName3 = STPName3;
     }
 }

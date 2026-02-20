@@ -59,7 +59,7 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class STPApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
-    public String SelectedSfCode, stpDrNeed, stpChemNeed, planName, planSName;
+    public String SelectedSfCode, stpDrNeed, stpChemNeed, planName, planSName, stpType;
     public ActivityStpApprovalBinding stpApprovalBinding;
     public int SelectedPosition;
     ArrayList<STPDetailedModel> stpDetailedModels = new ArrayList<>();
@@ -108,6 +108,13 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         getRequiredData();
+
+        if (stpType.equalsIgnoreCase("1")) {
+            stpApprovalBinding.tagTotalPlannedDays.setText(getString(R.string.total_planed_count));
+        } else {
+            stpApprovalBinding.tagTotalPlannedDays.setText(getString(R.string.total_planed_days));
+        }
+
         CallSTPListApi();
         stpApprovalBinding.ivBack.setOnClickListener(new SafeClickListener() {
             @Override
@@ -253,6 +260,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             }
             stpDrNeed = SharedPref.getDrNeed(this);
             stpChemNeed = SharedPref.getChmNeed(this);
+            stpType = SharedPref.getStpType(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -291,7 +299,9 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 stpDetailedModels.add(new STPDetailedModel(json.getString("Trans_No"), json.getString("sf_code"), json.getString("Division_Code"), json.getString("Day_Plan_Name"), json.getString("Day_Plan_ShortName"), json.getString("Day_Plan_Code"), json.getString("Patch_Code"), json.getString("Patch_Name"), json.getString("Dr_Code"), json.getString("Dr_Name"), json.getString("Chem_Code"), json.getString("Chem_Name"), json.getString("Active_Flag"), json.getString("Created_Date")));
                             }
-                            STPDaySorter.sortDays(stpDetailedModels, STPDetailedModel::getDayPlanShortName);
+                            if (!SharedPref.getStpType(STPApprovalActivity.this).equalsIgnoreCase("1")) {
+                                STPDaySorter.sortDays(stpDetailedModels, STPDetailedModel::getDayPlanShortName);
+                            }
                             stpApprovalBinding.constraintSelectedDetails.setVisibility(View.VISIBLE);
                             stpApprovalBinding.tvTotalPlannedDays.setText(String.valueOf(totalPlannedDays));
                             stpApprovalDetailedAdapter = new STPApprovalDetailedAdapter(STPApprovalActivity.this, stpDetailedModels);
@@ -327,7 +337,11 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonSTP.put("approvedby", SharedPref.getSfCode(this));
             jsonSTP.put("approvedbyname", SharedPref.getSfName(this));
             jsonSTP.put("division_code", SharedPref.getDivisionCode(this));
-            jsonSTP.put("StpFlag", "0");
+            if (SharedPref.getOneBuild(STPApprovalActivity.this).equalsIgnoreCase("0")) {
+                jsonSTP.put("StpFlag", "2");
+            } else {
+                jsonSTP.put("StpFlag", "0");
+            }
             jsonSTP.put("rejectreason", "");
             jsonSTP.put("actionDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
             Log.v("json_stp_Approved", jsonSTP.toString());
@@ -417,7 +431,11 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonSTP.put("approvedby", SharedPref.getSfCode(this));
             jsonSTP.put("approvedbyname", SharedPref.getSfName(this));
             jsonSTP.put("division_code", SharedPref.getDivisionCode(this));
-            jsonSTP.put("StpFlag", "1");
+            if (SharedPref.getOneBuild(STPApprovalActivity.this).equalsIgnoreCase("0")) {
+                jsonSTP.put("StpFlag", "3");
+            } else {
+                jsonSTP.put("StpFlag", "1");
+            }
             jsonSTP.put("rejectreason", reason);
             jsonSTP.put("actionDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
             Log.v("json_stp_Reject", jsonSTP.toString());

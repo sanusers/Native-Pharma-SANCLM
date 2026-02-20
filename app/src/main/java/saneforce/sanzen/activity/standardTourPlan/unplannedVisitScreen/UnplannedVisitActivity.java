@@ -16,6 +16,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
@@ -43,9 +47,8 @@ import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.storage.SharedPref;
 
 public class UnplannedVisitActivity extends AppCompatActivity {
-
     private ActivityUnplannedVisitBinding activityUnplannedVisitBinding;
-    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, selectedDCR;
+    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, selectedDCR, stpType;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private STPOfflineDataDao stpOfflineDataDao;
@@ -144,6 +147,7 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         unDrNeed = SharedPref.getUnlNeed(this);
         cipNeed = SharedPref.getCipNeed(this);
         hosNeed = SharedPref.getHospNeed(this);
+        stpType = SharedPref.getStpType(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
@@ -238,82 +242,102 @@ public class UnplannedVisitActivity extends AppCompatActivity {
     }
 
     private void populateDcrData() {
-        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
-        HashMap<String, List<DCRModel>> clusterXDcrMap = new HashMap<>();
-        HashMap<String, String> clusterMap = new HashMap<>();
-        dataList = new ArrayList<>();
+        try {
+            List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+            HashMap<String, List<DCRModel>> clusterXDcrMap = new HashMap<>();
+            HashMap<String, String> clusterMap = new HashMap<>();
+            dataList = new ArrayList<>();
 
-        if(dcrModelList != null) {
-            for (DCRModel dcrModel : dcrModelList) {
-                if(!clusterXDcrMap.containsKey(dcrModel.getTownCode())) {
-                    clusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
-                    clusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
-                }
-                List<DCRModel> dcrModels = clusterXDcrMap.get(dcrModel.getTownCode());
-                if(dcrModels == null) {
-                    dcrModels = new ArrayList<>();
-                }
-                Set<String> plannedFor = new HashSet<>(Arrays.asList(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",")));
-                plannedFor.remove("");
-                plannedFor.remove(null);
+            if (dcrModelList != null) {
+                for (DCRModel dcrModel : dcrModelList) {
+                    if (!clusterXDcrMap.containsKey(dcrModel.getTownCode())) {
+                        clusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
+                        clusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
+                    }
+                    List<DCRModel> dcrModels = clusterXDcrMap.get(dcrModel.getTownCode());
+                    if (dcrModels == null) {
+                        dcrModels = new ArrayList<>();
+                    }
+                    Set<String> plannedFor = new HashSet<>(Arrays.asList(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",")));
+                    plannedFor.remove("");
+                    plannedFor.remove(null);
 //                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && dcrModel.getVisitFrequency() != plannedFor.size()) {
-                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && dcrModel.getVisitFrequency() != plannedFor.size()) {
-                    dcrModels.add(dcrModel);
+                    if (selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                        if (stpType.equalsIgnoreCase("1") && plannedFor.isEmpty()) {
+                            dcrModels.add(dcrModel);
+                        } else if (!stpType.equalsIgnoreCase("1") && dcrModel.getVisitFrequency() != plannedFor.size()) {
+                            dcrModels.add(dcrModel);
+                        }
 //                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))){
-                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))){
-                    dcrModels.add(dcrModel);
+                    } else if (selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))) {
+                        dcrModels.add(dcrModel);
+                    }
+                    clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
                 }
-                clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
             }
-        }
 
-        List<Map.Entry<String, String>> clusterEntries = new ArrayList<>(clusterMap.entrySet());
-        Collections.sort(clusterEntries, Map.Entry.comparingByValue());
+            List<Map.Entry<String, String>> clusterEntries = new ArrayList<>(clusterMap.entrySet());
+            Collections.sort(clusterEntries, Map.Entry.comparingByValue());
 
-        for (Map.Entry<String, String> entry : clusterEntries) {
-            String clusterCode = entry.getKey();
-            dataList.add(new ClusterModel(clusterCode, clusterMap.get(clusterCode)));
-            List<DCRModel> dcrModels = clusterXDcrMap.get(clusterCode);
-            if(dcrModels != null && !dcrModels.isEmpty()) {
-                dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
-                dataList.addAll(dcrModels);
-            }else {
+            for (Map.Entry<String, String> entry : clusterEntries) {
+                String clusterCode = entry.getKey();
+                dataList.add(new ClusterModel(clusterCode, clusterMap.get(clusterCode)));
+                List<DCRModel> dcrModels = clusterXDcrMap.get(clusterCode);
+                if (dcrModels != null && !dcrModels.isEmpty()) {
+                    dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+                    dataList.addAll(dcrModels);
+                } else {
 //                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
-                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
-                    dataList.add(new NoDataModel("All " + drCap + " are selected"));
+                    if (selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                        dataList.add(new NoDataModel("All " + drCap + " are selected"));
 //                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST)) {
-                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS)) {
-                    dataList.add(new NoDataModel("All " + chmCap + " are selected"));
+                    } else if (selectedDCR.equalsIgnoreCase(Constants.CHEMIST_MAS)) {
+                        dataList.add(new NoDataModel("All " + chmCap + " are selected"));
+                    }
                 }
             }
+
+            if (dataList.isEmpty()) {
+                activityUnplannedVisitBinding.tvNoData.setText(getString(R.string.no_data_to_view));
+                activityUnplannedVisitBinding.noData.setVisibility(View.VISIBLE);
+                activityUnplannedVisitBinding.llDcrSelection.setVisibility(View.GONE);
+            } else {
+                activityUnplannedVisitBinding.noData.setVisibility(View.GONE);
+                activityUnplannedVisitBinding.llDcrSelection.setVisibility(View.VISIBLE);
+                dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, selectedDCR, stpType);
+                RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
+                activityUnplannedVisitBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
+                activityUnplannedVisitBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
+
+                switch (selectedDCR) {
+//                case Constants.DOCTOR:
+                    case Constants.DOCTOR_MAS:
+                        activityUnplannedVisitBinding.tvDcrSpec.setVisibility(View.VISIBLE);
+                        activityUnplannedVisitBinding.tvDcrCatXVisit.setVisibility(View.VISIBLE);
+                        activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.VISIBLE);
+                        break;
+//                case Constants.CHEMIST:
+                    case Constants.CHEMIST_MAS:
+                        activityUnplannedVisitBinding.tvDcrSpec.setVisibility(View.GONE);
+                        activityUnplannedVisitBinding.tvDcrCatXVisit.setVisibility(View.GONE);
+                        activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.GONE);
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if(dataList.isEmpty()) {
-            activityUnplannedVisitBinding.tvNoData.setText(getString(R.string.no_data_to_view));
-            activityUnplannedVisitBinding.noData.setVisibility(View.VISIBLE);
-            activityUnplannedVisitBinding.llDcrSelection.setVisibility(View.GONE);
-        }else {
-            activityUnplannedVisitBinding.noData.setVisibility(View.GONE);
-            activityUnplannedVisitBinding.llDcrSelection.setVisibility(View.VISIBLE);
-            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, selectedDCR);
-            RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
-            activityUnplannedVisitBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
-            activityUnplannedVisitBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
-
-            switch (selectedDCR){
-//                case Constants.DOCTOR:
-                case Constants.DOCTOR_MAS:
-                    activityUnplannedVisitBinding.tvDcrSpec.setVisibility(View.VISIBLE);
-                    activityUnplannedVisitBinding.tvDcrCatXVisit.setVisibility(View.VISIBLE);
-                    activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.VISIBLE);
-                    break;
-//                case Constants.CHEMIST:
-                case Constants.CHEMIST_MAS:
-                    activityUnplannedVisitBinding.tvDcrSpec.setVisibility(View.GONE);
-                    activityUnplannedVisitBinding.tvDcrCatXVisit.setVisibility(View.GONE);
-                    activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.GONE);
-                    break;
-            }
+        if (stpType.equalsIgnoreCase("1")) {
+            activityUnplannedVisitBinding.scrollView.setVisibility(View.GONE);
+            activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.GONE);
+            activityUnplannedVisitBinding.tvDcrCatXVisit.setText(R.string.category);
+            activityUnplannedVisitBinding.title.setText(getString(R.string.check_unplanned_doctors));
+        } else {
+            activityUnplannedVisitBinding.scrollView.setVisibility(View.VISIBLE);
+            activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.VISIBLE);
+            activityUnplannedVisitBinding.tvDcrCatXVisit.setText(R.string.category_visit_freq_label);
+            activityUnplannedVisitBinding.title.setText(getString(R.string.check_unplanned_visits));
         }
     }
 

@@ -33,8 +33,8 @@ public interface STPOfflineDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveSTPData(STPOfflineDataTable stpOfflineDataTable);
 
-    @Query("SELECT * FROM `STP_OFFLINE_TABLE` WHERE `DAY_ID` = :dayID")
-    STPOfflineDataTable getSTPDataOfDay(String dayID);
+    @Query("SELECT * FROM `STP_OFFLINE_TABLE` WHERE `DAY_ID` = :dayID AND `SF_CODE` = :sfCode")
+    STPOfflineDataTable getSTPDataOfDay(String dayID, String sfCode);
 
     @Query("UPDATE `STP_OFFLINE_TABLE` SET `SYNC_STATUS` = :status WHERE `DAY_ID` = :dayID")
     void saveDaySyncStatus(String dayID, String status);
@@ -57,12 +57,15 @@ public interface STPOfflineDataDao {
     @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `SYNC_STATUS` = '1'")
     boolean isNonSyncAvailable();
 
-    @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `STATUS` != '0'")
-    boolean isNotApproved();
+    @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `STATUS` != :status")
+    boolean isNotApproved(String status);
 
-    default STPOfflineDataTable getSTPDataOfDayOrNew(String dayID) {
-        STPOfflineDataTable stpOfflineDataTable = getSTPDataOfDay(dayID);
+    default STPOfflineDataTable getSTPDataOfDayOrNew(String dayID, String sfCode) {
+        STPOfflineDataTable stpOfflineDataTable = getSTPDataOfDay(dayID, sfCode);
         if(stpOfflineDataTable == null) stpOfflineDataTable = new STPOfflineDataTable();
         return stpOfflineDataTable;
     }
+
+    @Query("UPDATE `STP_OFFLINE_TABLE` SET `SF_CODE` = :sfCode")
+    void setSFCode(String sfCode);
 }

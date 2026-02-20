@@ -170,6 +170,7 @@
     <string name="tour_plan_approvals">موافقات خطة الرحلة</string>
     <string name="tp_planed_for">خطة الرحلة لـ</string>
     <string name="total_planed_days">إجمالي الأيام المخطط لها</string>
+    <string name="total_planed_count">إجمالي العدد المخطط</string>
     <string name="week_off_days_holidays">أيام العطلة / العطل الرسمية</string>
     <string name="total">الإجمالي</string>
     <string name="view_actual_plan">عرض الخطة الفعلية</string>
@@ -547,6 +548,7 @@
     <string name="standard_tour_plan">خطة الجولة القياسية</string>
     <string name="send_to_approval">إرسال للموافقة</string>
     <string name="check_unplanned_visits">تحقق من الزيارات غير المخطط لها</string>
+    <string name="check_unplanned_doctors">تحقق من الأطباء غير المخطط لهم</string>
     <string name="cip">CIP</string>
     <string name="selected">تم الاختيار</string>
     <string name="plan_for">خطة لـ</string>
