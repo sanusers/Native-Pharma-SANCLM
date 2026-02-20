@@ -13,5 +13,7 @@ public interface SessionInterfaceOneBuild {
 
     void clusterChangedOneBuild(OneBuildModelClass oneBuildModelClass,int position);
 
-    void workDayChangedOneBuild(OneBuildModelClass oneBuildModelClass, int position);
+//    void workDayChangedOneBuild(OneBuildModelClass oneBuildModelClass, int position);
+
+    void workDayChangedOneBuild(OneBuildModelClass oneBuildModelClass, String code, String name, int position);
 }

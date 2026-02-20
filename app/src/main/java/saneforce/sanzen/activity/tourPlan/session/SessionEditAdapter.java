@@ -379,6 +379,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
             holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
             holder.sessionDataOneBuild = inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition());
+            holder.stpCode = holder.sessionDataOneBuild.getSTPCode();
+            holder.stpName = holder.sessionDataOneBuild.getSTPName();
             holder.clusterModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getTerritories());
             holder.jcModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getJointWorks());
             holder.listedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getDoctors());
@@ -406,10 +408,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             //Work Day
             if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1") || SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("2") ) {
                 holder.workDayLayout.setVisibility(View.VISIBLE);
-                if (inputDataArrayOneBuild.getSTP_Code().isEmpty()) {
+                if (holder.sessionDataOneBuild.getSTPCode().isEmpty()) {
                     holder.workDayField.setText(R.string.select);
                 } else {
-                    holder.workDayField.setText(inputDataArrayOneBuild.getSTP_Name());
+                    holder.workDayField.setText(holder.sessionDataOneBuild.getSTPName());
                 }
             } else {
                 holder.workDayLayout.setVisibility(View.GONE);
@@ -670,7 +672,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         itemPosition = holder.getLayoutPosition();
                         holder.relativeLayout.setSelected(false);
                         if (holder.workTypeField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                            CommonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                        } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase(context.getString(R.string.select))) {
+                            CommonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                         } else {
                             if (!holder.fieldSelected) {
                                 ArrayList<EditModelClass> workDayArray = new ArrayList<>();
@@ -740,7 +744,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
 
-            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/)) {
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")/* && sfType.equalsIgnoreCase("1")*/) || (!holder.sessionDataOneBuild.getWorkType().getFWFlg().equalsIgnoreCase("F"))) {
                 holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -3373,9 +3377,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }
                 } else if (holder.workDayLayout.getVisibility() == View.VISIBLE) {
                     holder.workDayField.setText(jsonObject.getName());
-                    inputDataArrayOneBuild.setSTP_Name(jsonObject.getName());
-                    inputDataArrayOneBuild.setSTP_Code(jsonObject.getCode());
-                    sessionInterfaceOneBuild.workDayChangedOneBuild(inputDataArrayOneBuild, itemPosition);
+                    holder.sessionDataOneBuild.setSTPCode(jsonObject.getCode());
+                    holder.sessionDataOneBuild.setSTPName(jsonObject.getName());
+                    sessionInterfaceOneBuild.workDayChangedOneBuild(inputDataArrayOneBuild, jsonObject.getCode(), jsonObject.getName(), itemPosition);
                 }
             }
         });
@@ -4174,7 +4178,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         ArrayList<OneBuildModelClass.SessionList.SubClass> cipModelArrayOneBuild;
         ArrayList<OneBuildModelClass.SessionList.SubClass> hospitalModelArrayOneBuild;
 
-        String hq_code = "", selectedHq = "", hqNeed = "", clusterNeed = "";
+        String hq_code = "", selectedHq = "", hqNeed = "", clusterNeed = "", stpCode = "", stpName = "";
         ArrayList<String> selectedHQCode = new ArrayList<>();
         ArrayList<String> selectedClusterCode = new ArrayList<>();
         HashMap<String, ArrayList<String>> selectedClusterCodeMap = new HashMap<>();

@@ -157,6 +157,14 @@ public class ReceiveModel implements Serializable {
 
   private String STP_Name = "";
 
+  private String STP_Code2 = "";
+
+  private String STP_Name2 = "";
+
+  private String STP_Code3 = "";
+
+  private String STP_Name3 = "";
+
   public String getJWNames() {
     return this.JWNames;
   }
@@ -765,7 +773,39 @@ public class ReceiveModel implements Serializable {
     this.STP_Name = STP_Name;
   }
 
-  public static class TPDt implements Serializable {
+    public String getSTP_Code2() {
+        return STP_Code2;
+    }
+
+    public void setSTP_Code2(String STP_Code2) {
+        this.STP_Code2 = STP_Code2;
+    }
+
+    public String getSTP_Name2() {
+        return STP_Name2;
+    }
+
+    public void setSTP_Name2(String STP_Name2) {
+        this.STP_Name2 = STP_Name2;
+    }
+
+    public String getSTP_Code3() {
+        return STP_Code3;
+    }
+
+    public void setSTP_Code3(String STP_Code3) {
+        this.STP_Code3 = STP_Code3;
+    }
+
+    public String getSTP_Name3() {
+        return STP_Name3;
+    }
+
+    public void setSTP_Name3(String STP_Name3) {
+        this.STP_Name3 = STP_Name3;
+    }
+
+    public static class TPDt implements Serializable {
     private String date = "";
 
     private String timezone = "";

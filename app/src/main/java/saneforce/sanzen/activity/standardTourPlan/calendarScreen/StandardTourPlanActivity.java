@@ -52,7 +52,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
@@ -478,7 +477,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                             } catch (NumberFormatException e) {
                                 e.printStackTrace();
                             }
-                            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, doctorSpeciality, doctorCategory, doctorClass, doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));
+                            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(StandardTourPlanActivity.this), dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, doctorSpeciality, doctorCategory, doctorClass, doctorCategoryCode, jsonObject.toString(), stpFlag, "0"));
                         }
                       /*  for (int a = 0; a < jsonArray.length(); a++) {
 
@@ -697,7 +696,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(StandardTourPlanActivity.this), dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                     }
                 }
             }
@@ -1374,7 +1373,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         List<SelectedDCRModel> selectedDCRModels = new ArrayList<>();
         boolean isDayAvailable = stpOfflineDataDao.isDayAvailable(dayID);
         if (isDayAvailable) {
-            STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(dayID);
+            STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(dayID, SharedPref.getSfCode(StandardTourPlanActivity.this));
             String[] docList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",");
             docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
             selectedDCRModels.add(new SelectedDCRModel(R.drawable.doctor_img, 1, Arrays.toString(docList), docList.length));
@@ -1703,8 +1702,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void createSwapJson(String fromID, String fromName, String toID, String toName) {
         try {
-            STPOfflineDataTable fromStpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(fromID);
-            STPOfflineDataTable toStpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(toID);
+            STPOfflineDataTable fromStpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(fromID, SharedPref.getSfCode(StandardTourPlanActivity.this));
+            STPOfflineDataTable toStpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(toID, SharedPref.getSfCode(StandardTourPlanActivity.this));
 
             String dateTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1);
             swapJsonArray = new JSONArray();
@@ -1915,9 +1914,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                         if (jsonObject1.optString("success").equals("true")) {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
                                             if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
-                                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, docSpeciality, docCategory, docClass, docCategoryCode, jsonObject, stpFlag, "0"));
+                                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(StandardTourPlanActivity.this), dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, docSpeciality, docCategory, docClass, docCategoryCode, jsonObject, stpFlag, "0"));
                                             } else {
-                                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
+                                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(StandardTourPlanActivity.this), dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
                                             }
                                         } else {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));

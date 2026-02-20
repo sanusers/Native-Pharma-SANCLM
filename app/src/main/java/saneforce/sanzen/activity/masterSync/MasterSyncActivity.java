@@ -5,11 +5,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -27,9 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -64,7 +60,6 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideAdapter;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideService;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlidesViewModel;
-import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
@@ -176,8 +171,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         return new ModelClass.SessionList("", true, remarks, workType, hq, hqs, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals);
     }
 
-    public static OneBuildModelClass.SessionList prepareSessionListForAdapterOne(ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray, ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray, ArrayList<OneBuildModelClass.SessionList.SubClass> drArray, ArrayList<OneBuildModelClass.SessionList.SubClass> chemistArray, ArrayList<OneBuildModelClass.SessionList.SubClass> stockArray, ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray, ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray, ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray, OneBuildModelClass.SessionList.WorkType workType, OneBuildModelClass.SessionList.SubClass hq, String remarks) {
-        return new OneBuildModelClass.SessionList("", true, remarks, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+    public static OneBuildModelClass.SessionList prepareSessionListForAdapterOne(ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray, ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray, ArrayList<OneBuildModelClass.SessionList.SubClass> drArray, ArrayList<OneBuildModelClass.SessionList.SubClass> chemistArray, ArrayList<OneBuildModelClass.SessionList.SubClass> stockArray, ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray, ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray, ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray, OneBuildModelClass.SessionList.WorkType workType, OneBuildModelClass.SessionList.SubClass hq, String stpCode, String stpName, String remarks) {
+        return new OneBuildModelClass.SessionList("", true, remarks, "", stpCode, stpName, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
     @Override
@@ -1401,7 +1396,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         String stpSetupLabel = context.getString(R.string.stp_setup);
         String standardTourPlanLabel = context.getString(R.string.standard_tour_plan);
 
-        boolean tpNeed = SharedPref.getTpNeed(this).equalsIgnoreCase("0"), stpNeed = SharedPref.getStpNeed(this).equalsIgnoreCase("0") && !SharedPref.getSfType(this).equalsIgnoreCase("2");
+        boolean tpNeed = SharedPref.getTpNeed(this).equalsIgnoreCase("0"), stpNeed = SharedPref.getStpNeed(this).equalsIgnoreCase("0") /*&& !SharedPref.getSfType(this).equalsIgnoreCase("2")*/;
         if (tpNeed) {
             if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                 MasterSyncItemModel tpSetup = new MasterSyncItemModel(tpSetupLabel, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
@@ -1895,6 +1890,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 mapString.put("axn", "get/tp");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2")) {
+                    jsonObject.put("sfcode", rsf);
+                }
                 mapString.put("axn", "get/stp");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.ACTIVITY)) {
@@ -2028,8 +2026,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 }
                                             }
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
-                                            stpOfflineDataDao.deleteAllData("0");
-                                            saveSTPDataToLocal();
+                                            if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+                                                stpOfflineDataDao.deleteAllData("0");
+                                            }
+                                            saveSTPDataToLocal(rsf);
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
                                             activityDetailsDataDao.deleteAllData();
 //                                            syncIndividualActivityDetails();
@@ -2241,7 +2241,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         return count;
     }
 
-    private void saveSTPDataToLocal() {
+    private void saveSTPDataToLocal(String hqCode) {
         if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
             try {
                 JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
@@ -2278,7 +2278,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                         JSONObject jsonSave = new JSONObject();
                         jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
-                        jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                        jsonSave.put("sfcode", hqCode);
                         jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
                         jsonSave.put("Rsf", SharedPref.getHqCode(this));
                         jsonSave.put("town_code", clusterCode);
@@ -2308,7 +2308,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, hqCode, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                     }
                 }
             } catch (Exception e) {
@@ -2340,7 +2340,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                         JSONObject jsonSave = new JSONObject();
                         jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
-                        jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                        jsonSave.put("sfcode", hqCode);
                         jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
                         jsonSave.put("Rsf", SharedPref.getHqCode(this));
                         jsonSave.put("town_code", clusterCode);
@@ -2362,7 +2362,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, hqCode, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                     }
                 }
             } catch (Exception e) {
@@ -2974,7 +2974,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                         String date = day + " " + monthYear;
                         String dayName = formatter.format(new Date(date));
                         isDataAvailable = false;
-
 //                        if (modelClassLocal.size() > 0) {
 //                            for (int j = 0; j < modelClassLocal.size(); j++) {
 //                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) /*&& modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")*/) {
@@ -3028,7 +3027,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 sessionLists.add(sessionList);
                                 OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists);
                                 modelClasses.add(modelClass);
-
                             }
 
                             if (LocalWeelyHolidayFlag) {
@@ -3044,20 +3042,15 @@ public class MasterSyncActivity extends AppCompatActivity {
                         saveTpLocalOne(modelClasses, day, monthName, "");  // need to do
                     }
                 }
-
                 tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-
             } else {  //If tour plan table has no data
-
                 boolean LocalWeelyHolidayFlag;
-
                 for (String day : days) {
                     if (!day.isEmpty()) {
                         String date = day + " " + monthYear;
                         String dayName = formatter.format(new Date(date));
                         OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
                         sessionList = prepareSessionListForAdapterEmptyOne();   // need to do
-
 
                         if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
                             ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
@@ -3317,7 +3310,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     private void SaveTpLocalFullOne(ReceiveModel receiveModel, ArrayList<OneBuildModelClass> modelClasses, String day, String monthName, String date, String dayName, String monthNo, String year) {
-
         OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
         OneBuildModelClass.SessionList sessionList2 = new OneBuildModelClass.SessionList();
         OneBuildModelClass.SessionList sessionList3 = new OneBuildModelClass.SessionList();
@@ -3328,7 +3320,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
         String remarks = receiveModel.getDayRemarks();
         String submittedTime = receiveModel.getSubmitted_time_dt();
-
 
         ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
         ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
@@ -3341,6 +3332,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
         OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
+        String stpCode = receiveModel.getSTP_Code(), stpName = receiveModel.getSTP_Name();
 
         //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
         if (!receiveModel.getClusterName().isEmpty())
@@ -3354,12 +3346,13 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (!receiveModel.getStockist_Name().isEmpty())
             stkArray = addExtraDataOneBuild(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
         //     }
-        sessionList = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+        sessionList = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, stpCode, stpName, remarks);
 
         if (!receiveModel.getWTName2().isEmpty()) {
             session2 = true;
             String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
             String remarks2 = receiveModel.getDayRemarks2();
+            String stpCode2 = receiveModel.getSTP_Code2(), stpName2 = receiveModel.getSTP_Name2();
             workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
             hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
             clusterArray = new ArrayList<>();
@@ -3382,13 +3375,14 @@ public class MasterSyncActivity extends AppCompatActivity {
             if (!receiveModel.getStockist_two_name().isEmpty())
                 stkArray = addExtraDataOneBuild(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
 
-            sessionList2 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
+            sessionList2 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, stpCode2, stpName2, remarks2);
 
         }
         if (!receiveModel.getWTName3().isEmpty()) {
             session3 = true;
             String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
             String remarks3 = receiveModel.getDayRemarks2();
+            String stpCode3 = receiveModel.getSTP_Code2(), stpName3 = receiveModel.getSTP_Name2();
             workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
             hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
             clusterArray = new ArrayList<>();
@@ -3410,7 +3404,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 chemArray = addExtraDataOneBuild(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
             if (!receiveModel.getStockist_three_name().isEmpty())
                 stkArray = addExtraDataOneBuild(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-            sessionList3 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
+            sessionList3 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, stpCode3, stpName3, remarks3);
         }
         ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
         sessionLists.add(sessionList);
@@ -3420,11 +3414,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         modelClass.setSubmittedTime(submittedTime);
         modelClasses.add(modelClass);
         saveTpLocalOne(modelClasses, day, monthName, "0");
-
     }
 
-    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String
-            month, String status) {
+    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String month, String status) {
         for (ModelClass modelClass : arrayList) {
             if (modelClass.getDayNo().equals(date)) {
                 modelClass.setSyncStatus(status);
@@ -3483,7 +3475,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-        return new OneBuildModelClass.SessionList("", true, "", "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        return new OneBuildModelClass.SessionList("", true, "", "", "", "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
     public void setHq(JSONArray jsonArray) {

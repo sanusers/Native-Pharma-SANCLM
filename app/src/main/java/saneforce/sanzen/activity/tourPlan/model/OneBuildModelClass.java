@@ -189,6 +189,7 @@ public class OneBuildModelClass implements Serializable {
         private Boolean isVisible = false;
         private String remarks = "";
         private String sessionId = "";
+        private String STPCode = "", STPName = "";
 
         private OneBuildModelClass.SessionList.WorkType workType = new WorkType();
         private OneBuildModelClass.SessionList.SubClass Headquarters = new SubClass();
@@ -204,7 +205,7 @@ public class OneBuildModelClass implements Serializable {
         public SessionList() {
         }
 
-        public SessionList(String layoutVisible, Boolean isVisible, String remarks, String sessionId, OneBuildModelClass.SessionList.WorkType workType,
+        public SessionList(String layoutVisible, Boolean isVisible, String remarks, String sessionId, String STPCode, String STPName, OneBuildModelClass.SessionList.WorkType workType,
                            OneBuildModelClass.SessionList.SubClass Headquarters, List<OneBuildModelClass.SessionList.SubClass> Territories , List<OneBuildModelClass.SessionList.SubClass> JointWorks ,
                            List<OneBuildModelClass.SessionList.SubClass> Doctors, List<OneBuildModelClass.SessionList.SubClass> Chemists, List<OneBuildModelClass.SessionList.SubClass> StockLists,
                            List<OneBuildModelClass.SessionList.SubClass> UnlistedDoctors, List<OneBuildModelClass.SessionList.SubClass> cip, List<OneBuildModelClass.SessionList.SubClass> Hospitals) {
@@ -212,6 +213,8 @@ public class OneBuildModelClass implements Serializable {
             this.isVisible = isVisible;
             this.remarks = remarks;
             this.sessionId = sessionId;
+            this.STPCode = STPCode;
+            this.STPName = STPName;
             this.workType = workType;
             this.Headquarters = Headquarters;
             this.Territories  = Territories ;
@@ -229,6 +232,8 @@ public class OneBuildModelClass implements Serializable {
             this.isVisible = sessionList.getVisible();
             this.remarks = sessionList.getRemarks();
             this.sessionId = sessionList.getSessionId();
+            this.STPCode = sessionList.getSTPCode();
+            this.STPName = sessionList.getSTPName();
             this.workType = new WorkType(sessionList.getWorkType());
             this.Headquarters = new SubClass(sessionList.getHeadquarters());
             this.Territories  = new ArrayList<>();
@@ -417,6 +422,22 @@ public class OneBuildModelClass implements Serializable {
 
         public void setHospitals(List<OneBuildModelClass.SessionList.SubClass> Hospitals) {
             this.Hospitals = Hospitals;
+        }
+
+        public String getSTPCode() {
+            return STPCode;
+        }
+
+        public void setSTPCode(String STPCode) {
+            this.STPCode = STPCode;
+        }
+
+        public String getSTPName() {
+            return STPName;
+        }
+
+        public void setSTPName(String STPName) {
+            this.STPName = STPName;
         }
 
         //SUB CLASS
