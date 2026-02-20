@@ -123,6 +123,7 @@
                     android:id="@+id/Res_Table1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:weightSum="3"
                     android:layout_below="@+id/Res_Table"
                     android:orientation="horizontal">
 
@@ -180,33 +181,33 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:id="@+id/Res_Edit"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:gravity="right"
-                        android:padding="@dimen/_2sdp"
-                        android:visibility="visible">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/Res_Edit"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:layout_marginTop="@dimen/_3sdp"-->
+<!--                        android:gravity="right"-->
+<!--                        android:padding="@dimen/_2sdp"-->
+<!--                        android:visibility="visible">-->
 
-                        <ImageView
-                            android:layout_width="@dimen/_7sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_2sdp"
-                            android:layout_marginBottom="2.5sp"
-                            android:src="@drawable/pencil" />
+<!--                        <ImageView-->
+<!--                            android:layout_width="@dimen/_7sdp"-->
+<!--                            android:layout_height="@dimen/_6sdp"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:layout_marginRight="@dimen/_2sdp"-->
+<!--                            android:layout_marginBottom="2.5sp"-->
+<!--                            android:src="@drawable/pencil" />-->
 
-                        <TextView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="@dimen/_10sdp"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:text="@string/edit"
-                            android:textColor="#3DA5F4"
-                            android:textSize="@dimen/_6sdp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+<!--                        <TextView-->
+<!--                            android:layout_width="@dimen/_20sdp"-->
+<!--                            android:layout_height="@dimen/_10sdp"-->
+<!--                            android:fontFamily="@font/satoshi_medium"-->
+<!--                            android:text="@string/edit"-->
+<!--                            android:textColor="#3DA5F4"-->
+<!--                            android:textSize="@dimen/_6sdp"-->
+<!--                            android:textStyle="bold" />-->
+<!--                    </LinearLayout>-->
 
 
                 </LinearLayout>
