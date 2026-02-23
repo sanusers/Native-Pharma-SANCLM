@@ -4678,7 +4678,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.txtCluster2.setText("");
                     binding.txtheadquaters2.setText("");
 
-                    if (workPlanData.length() == 2 && !workPlanData.getJSONObject(1).getString("WT").isEmpty()) {
+                    if (workPlanData.length() >= 2 && !workPlanData.getJSONObject(1).getString("WT").isEmpty()) {
                         JSONObject SecondSeasonDayPlanObject = workPlanData.getJSONObject(1);
                         String TPDt2 = SecondSeasonDayPlanObject.getString("TPDt");
                         JSONObject jsonObject12 = new JSONObject(TPDt2);
