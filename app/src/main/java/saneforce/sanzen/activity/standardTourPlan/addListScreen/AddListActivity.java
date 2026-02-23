@@ -41,8 +41,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DocCategoryModel;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.MultiClusterAdapter;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.OnClusterClicklistener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
@@ -53,6 +51,7 @@ import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.NoDataMode
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.CalendarAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -442,7 +441,7 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private void getLocalData() {
-        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayID);
+        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayID, SharedPref.getHqCode(AddListActivity.this));
         strClusterID = stpOfflineDataTable.getClusterCode();
         strClusterName = stpOfflineDataTable.getClusterName();
 
@@ -1308,9 +1307,9 @@ public class AddListActivity extends AppCompatActivity {
             }
 
             if (SharedPref.getOneBuild(AddListActivity.this).equalsIgnoreCase("0")) {
-                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), selectedDocSpeciality.toString(), selectedDocCategory.toString(), selectedDocClass.toString(), selectedDocCategoryCode.toString(), jsonObject.toString(), 3, "1"));
+                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(AddListActivity.this), dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), selectedDocSpeciality.toString(), selectedDocCategory.toString(), selectedDocClass.toString(), selectedDocCategoryCode.toString(), jsonObject.toString(), 3, "1"));
             } else {
-                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "1"));
+                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(AddListActivity.this), dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "1"));
 
             }
 
@@ -1340,10 +1339,10 @@ public class AddListActivity extends AppCompatActivity {
                             if (jsonObject1.optString("success").equals("true")) {
                                 commonUtilsMethods.showToastMessage(AddListActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
                                 if (SharedPref.getOneBuild(AddListActivity.this).equalsIgnoreCase("0")) {
-                                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), selectedDocSpeciality.toString(), selectedDocCategory.toString(), selectedDocClass.toString(), selectedDocCategoryCode.toString(), jsonObject.toString(), 3, "0"));
+                                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(AddListActivity.this), dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), selectedDocSpeciality.toString(), selectedDocCategory.toString(), selectedDocClass.toString(), selectedDocCategoryCode.toString(), jsonObject.toString(), 3, "0"));
 
                                 } else {
-                                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "0"));
+                                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(AddListActivity.this), dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "0"));
 
                                 }
                             } else {

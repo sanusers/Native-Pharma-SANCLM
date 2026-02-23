@@ -171,6 +171,7 @@ import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTa
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.sanzen.services.NotificationDialog;
@@ -220,6 +221,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     static MasterDataDao masterDataDao;
     OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     TourPlanOfflineDataDao tourPlanOfflineDataDao;
+    STPOfflineDataDao stpOfflineDataDao;
     public static boolean tpRangeCheck;
 
     private static FragmentManager fragmentManager;
@@ -1012,11 +1014,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         inAppUpdate = new InAppUpdate(this);
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
+        stpOfflineDataDao = roomDB.stpOfflineDataDao();
         commonUtilsMethods = new CommonUtilsMethods(HomeDashBoard.this);
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
         binding.subDivision.setText(SharedPref.getSubDivisionNames(this));
         isDateSelectionClicked = false;
+        setSTPsfCode();
 
         if (SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")) {
             if (!CheckLocPermission()) {
@@ -1192,6 +1196,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
         if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
             checkAndShowDoctorPopup();
+        }
+    }
+
+    private void setSTPsfCode() {
+        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
+            stpOfflineDataDao.setSFCode(SharedPref.getSfCode(HomeDashBoard.this));
         }
     }
 

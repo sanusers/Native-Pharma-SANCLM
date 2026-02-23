@@ -231,9 +231,50 @@ public abstract class RoomDB extends RoomDatabase {
     public static final Migration MIGRATION_10_11 = new Migration(10, 11) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS `stp_offline_table` (`day_id` TEXT NOT NULL PRIMARY KEY, `day_caption` TEXT, `cluste_code` TEXT, `cluster_name` TEXT, `doctor_code` TEXT, `doctor_name` TEXT, `chemist_code` TEXT, `chemist_name` TEXT, `Speciality_Name` TEXT, `Category_Name` TEXT, `Class_Name` TEXT, `stp_data` TEXT, `status` INTEGER NOT NULL, `sync_status` TEXT)");
+//            database.execSQL("CREATE TABLE IF NOT EXISTS `stp_offline_table` (`day_id` TEXT NOT NULL PRIMARY KEY, `day_caption` TEXT, `cluste_code` TEXT, `cluster_name` TEXT, `doctor_code` TEXT, `doctor_name` TEXT, `chemist_code` TEXT, `chemist_name` TEXT, `Speciality_Name` TEXT, `Category_Name` TEXT, `Class_Name` TEXT, `stp_data` TEXT, `status` INTEGER NOT NULL, `sync_status` TEXT)");
+//            database.execSQL("ALTER TABLE stp_offline_table ADD COLUMN Speciality_Name TEXT");
+//            database.execSQL("ALTER TABLE stp_offline_table ADD COLUMN Category_Name TEXT");
+//            database.execSQL("ALTER TABLE stp_offline_table ADD COLUMN Class_Name TEXT");
+
+            database.execSQL(
+                    "CREATE TABLE stp_offline_table_new (" +
+                            "day_id TEXT NOT NULL, " +
+                            "sf_code TEXT NOT NULL, " +
+                            "day_caption TEXT, " +
+                            "cluste_code TEXT, " +
+                            "cluster_name TEXT, " +
+                            "doctor_code TEXT, " +
+                            "doctor_name TEXT, " +
+                            "chemist_code TEXT, " +
+                            "chemist_name TEXT, " +
+                            "stp_data TEXT, " +
+                            "status INTEGER NOT NULL, " +
+                            "sync_status TEXT, " +
+                            "Speciality_Name TEXT, " +
+                            "Category_Name TEXT, " +
+                            "Category_Code TEXT, " +
+                            "Class_Name TEXT, " +
+                            "PRIMARY KEY(day_id, sf_code))"
+            );
+
+            database.execSQL(
+                    "INSERT INTO stp_offline_table_new (" +
+                            "day_id, sf_code, day_caption, cluste_code, cluster_name, " +
+                            "doctor_code, doctor_name, chemist_code, chemist_name, " +
+                            "stp_data, status, sync_status) " +
+                            "SELECT day_id, '', day_caption, cluste_code, cluster_name, " +
+                            "doctor_code, doctor_name, chemist_code, chemist_name, " +
+                            "stp_data, status, sync_status " +
+                            "FROM stp_offline_table"
+            );
+
+            database.execSQL("DROP TABLE stp_offline_table");
+
+            database.execSQL("ALTER TABLE stp_offline_table_new RENAME TO stp_offline_table");
+
         }
     };
+
     public static final Migration MIGRATION_1_3 = new Migration(1, 3) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {

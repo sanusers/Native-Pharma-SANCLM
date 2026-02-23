@@ -41,7 +41,7 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 //import saneforce.sanzen.commonClasses.Keys;
-import saneforce.sanzen.commonClasses.SimpleDecrypt;
+//import saneforce.sanzen.commonClasses.SimpleDecrypt;
 import saneforce.sanzen.storage.SharedPref;
 
 /**

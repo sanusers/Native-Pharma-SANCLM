@@ -9,13 +9,16 @@ import androidx.room.PrimaryKey;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-@Entity(tableName = "stp_offline_table")
+@Entity(tableName = "stp_offline_table", primaryKeys = {"day_id", "sf_code"})
 public class STPOfflineDataTable {
 
-    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "day_id")
     private String dayID = "";
+
+    @NonNull
+    @ColumnInfo(name = "sf_code")
+    private String sfCode = "";
 
     @ColumnInfo(name = "day_caption")
     private String dayCaption = "";
@@ -60,8 +63,9 @@ public class STPOfflineDataTable {
     public STPOfflineDataTable() {}
 
     @Ignore
-    public STPOfflineDataTable(@NonNull String dayID, String dayCaption, String clusterCode, String clusterName, String doctorCode, String doctorName, String chemistCode, String chemistName, String stpData, int status, String syncStatus) {
+    public STPOfflineDataTable(@NonNull String dayID, @NonNull String sfCode, String dayCaption, String clusterCode, String clusterName, String doctorCode, String doctorName, String chemistCode, String chemistName, String stpData, int status, String syncStatus) {
         this.dayID = dayID;
+        this.sfCode = sfCode;
         this.dayCaption = dayCaption;
         this.clusterCode = clusterCode;
         this.clusterName = clusterName;
@@ -73,9 +77,11 @@ public class STPOfflineDataTable {
         this.status = status;
         this.syncStatus = syncStatus;
     }
+
     @Ignore
-    public STPOfflineDataTable(@NonNull String dayID, String dayCaption, String clusterCode, String clusterName, String doctorCode, String doctorName, String chemistCode, String chemistName,String doctorSpeciality,String doctorCategory,String doctorClass,String doctorCategoryCode,String stpData, int status, String syncStatus) {
+    public STPOfflineDataTable(@NonNull String dayID, @NonNull String sfCode, String dayCaption, String clusterCode, String clusterName, String doctorCode, String doctorName, String chemistCode, String chemistName,String doctorSpeciality,String doctorCategory,String doctorClass,String doctorCategoryCode,String stpData, int status, String syncStatus) {
         this.dayID = dayID;
+        this.sfCode = sfCode;
         this.dayCaption = dayCaption;
         this.clusterCode = clusterCode;
         this.clusterName = clusterName;
@@ -99,6 +105,15 @@ public class STPOfflineDataTable {
 
     public void setDayID(@NonNull String dayID) {
         this.dayID = dayID;
+    }
+
+    @NonNull
+    public String getSfCode() {
+        return sfCode;
+    }
+
+    public void setSfCode(@NonNull String sfCode) {
+        this.sfCode = sfCode;
     }
 
     public String getDayCaption() {
