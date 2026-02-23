@@ -465,6 +465,8 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
             sessionList.setDoctors(doctorList);
             sessionList.setChemists(chemistList);
             sessionList.setStockists(stockistList);
+            sessionList.setSTPCode(jsonObject.optString("STP_Code"));
+            sessionList.setSTPName(jsonObject.optString("STP_Name"));
 
             if (SharedPref.getSfType(TpDeviationApprovalActivity.this).equalsIgnoreCase("2")) {
                 sessionList.setHeadquarters(new OneBuildModelClass.SessionList.SubClass(jsonObject.optString("HQNames"), jsonObject.optString("HQCodes")));
@@ -505,6 +507,8 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                 sessionList.setDoctors(doctorList);
                 sessionList.setChemists(chemistList);
                 sessionList.setStockists(stockistList);
+                sessionList.setSTPCode(jsonObject.optString("STP_Code2"));
+                sessionList.setSTPName(jsonObject.optString("STP_Name2"));
                 if (SharedPref.getSfType(TpDeviationApprovalActivity.this).equalsIgnoreCase("2")) {
                     sessionList.setHeadquarters(new OneBuildModelClass.SessionList.SubClass(jsonObject.optString("HQNames2"), jsonObject.optString("HQCodes2")));
                 }
@@ -540,6 +544,8 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                 sessionList.setDoctors(doctorList);
                 sessionList.setChemists(chemistList);
                 sessionList.setStockists(stockistList);
+                sessionList.setSTPCode(jsonObject.optString("STP_Code3"));
+                sessionList.setSTPName(jsonObject.optString("STP_Name3"));
                 if (SharedPref.getSfType(TpDeviationApprovalActivity.this).equalsIgnoreCase("2")) {
                     sessionList.setHeadquarters(new OneBuildModelClass.SessionList.SubClass(jsonObject.optString("HQNames3"), jsonObject.optString("HQCodes3")));
                 }

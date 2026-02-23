@@ -382,9 +382,11 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
                 if (WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F") && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()) {
                     SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode1);
                     SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname1);
+                    workdayCode = WorkPlanFragment.workDayCode;
                 } else if (WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F") && WorkPlanFragment.mTowncode2 != null && !WorkPlanFragment.mTowncode2.isEmpty()) {
                     SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode2);
                     SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname2);
+                    workdayCode = WorkPlanFragment.workDayCode2;
                 }
             } else {
                 String clusterCodes = "", clusterNames = "";
