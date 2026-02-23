@@ -3689,7 +3689,7 @@ public class TourPlanActivity extends AppCompatActivity {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
             if (status) {
                 try {
-                    int id = 0;
+                   /* int id = 0;
                     int previous = SharedPref.getTpIdPreviousMonth(TourPlanActivity.this), current = SharedPref.getTpIdCurrentMonth(TourPlanActivity.this), next = SharedPref.getTpIdNextMonth(TourPlanActivity.this);
                     switch (isClickedName) {
                         case "previous":
@@ -3715,11 +3715,13 @@ public class TourPlanActivity extends AppCompatActivity {
                     Log.d("tp", "getDraftSaveOneBuild: " + id + " --> " + tpID);
                     if (tpID != 0) {
                         id = tpID;
-                    }
+                    }*/
 
                     JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("mode", "AndroidDetailing");
-                    jsonObject.addProperty("tpId", id);
+                    jsonObject.addProperty("Mod", "AndroidDetailing");
+                    jsonObject.addProperty("Status",changeStatus );
+                    jsonObject.addProperty("SubmissionDate", TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_37));
+                    jsonObject.addProperty("tableName","savetpzen");
 
                   /*  JsonObject tourPlan = new JsonObject();
                     OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
@@ -4173,8 +4175,11 @@ public class TourPlanActivity extends AppCompatActivity {
                     changeStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
                     if (Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2")) {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
+//                        Map<String, String> mapString = new HashMap<>();
+//                        Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
                         Map<String, String> mapString = new HashMap<>();
-                        Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
+                        mapString.put("axn", "save/tp");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(TourPlanActivity.this), mapString, jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -4182,7 +4187,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 try {
                                     JSONObject json = new JSONObject(response.body().toString());
                                     Log.d("TAG", "onResponse: " + json);
-                                    JSONObject outer = new JSONObject(response.body().toString());
+                                 /*   JSONObject outer = new JSONObject(response.body().toString());
                                     String dString = outer.getString("d");
                                     JSONObject inner = new JSONObject(dString);
                                     boolean status = false;
@@ -4190,9 +4195,9 @@ public class TourPlanActivity extends AppCompatActivity {
                                         status = inner.getBoolean("Status");
                                     }
 //                                    status = true;
-                                    /*int data = inner.getInt("Data");*/
+                                    *//*int data = inner.getInt("Data");*//*
                                     String message = inner.optString("Message", "");
-                                    Log.d("TP", "onResponse: " + message);
+                                    Log.d("TP", "onResponse: " + message);*/
                                     if (response.body() != null && !response.body().isJsonNull() && status) {
                                         try {
                                             //JsonObject jsonObject = new JsonObject(response.body().toString());
@@ -4203,7 +4208,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             try {
                                                 JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
                                                 if (!isFrom.equalsIgnoreCase("sendToApproval")) {
-                                                    if (outerJsonObject.has("d")) {
+                                                 /*   if (outerJsonObject.has("d")) {
                                                         String innerJsonString = outerJsonObject.getString("d");
                                                         JSONObject innerJsonObject = new JSONObject(innerJsonString);
                                                         if (innerJsonObject.has("Data")) {
@@ -4232,7 +4237,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                                         }
                                                     } else {
                                                         Log.e("outerJsonObject", "'d' key not found in the response body.");
-                                                    }
+                                                    }*/
                                                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
                                                     binding.progressBar.setVisibility(View.GONE);
                                                     binding.tvSync.setEnabled(true);
@@ -5356,7 +5361,7 @@ public class TourPlanActivity extends AppCompatActivity {
         networkStatusTask.execute();
     }
 
-/*    public void sendWholeMonthStatusOneBuild(LocalDate localDate1, String isClickedName) {
+    public void sendWholeMonthStatusOneBuild(LocalDate localDate1, String isClickedName) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
             @Override
@@ -5393,7 +5398,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                                             switch (isClickedName) {
                                                 case "previous":
-                                                    changeApprovalBtnStateOneBuild(dayWiseArrayPrevMonthOneBuild);
+                                                    changeApprovalBtnStateOneBuild(dayWiseArrayPreviousMonthOneBuild);
                                                     break;
                                                 case "current":
                                                     changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
@@ -5435,7 +5440,7 @@ public class TourPlanActivity extends AppCompatActivity {
             }
         });
         networkStatusTask.execute();
-    }*/
+    }
 
     public String findTerrSlFlag(String code) {
         try {
@@ -5854,7 +5859,10 @@ public class TourPlanActivity extends AppCompatActivity {
         Log.v("tpApproval", "--json--" + jsonObject.toString());
         System.out.println(jsonObject);
 
-        Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/SaveTourPlan", jsonObject);
+//        Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/SaveTourPlan", jsonObject);
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/tp");
+        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(TourPlanActivity.this), mapString, jsonObject.toString());
         call.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -5887,6 +5895,10 @@ public class TourPlanActivity extends AppCompatActivity {
                                 get1MonthRemoteTPDataOneBuild(localDate);
                             } catch (Exception e) {
                                 e.printStackTrace();
+                            }
+                            if (dummy.size() == 0) {
+                                binding.progressBar.setVisibility(View.VISIBLE);
+                                sendWholeMonthStatusOneBuild(localDate,isClickedName);
                             }
                         }
 
