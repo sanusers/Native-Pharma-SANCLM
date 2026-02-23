@@ -2,7 +2,6 @@
 <resources>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
-
     <string name="txt_tagging">标记</string>
     <string name="txt_doctor">医生</string>
     <string name="txt_chemist">药师</string>

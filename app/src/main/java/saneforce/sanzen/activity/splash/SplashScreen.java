@@ -72,7 +72,7 @@ public class SplashScreen extends AppCompatActivity {
                     int savedVersion = SharedPref.getLastKnownVersion(SplashScreen.this);
                     int currentVersion = BuildConfig.VERSION_CODE;
                     Log.d("Versions", "onCreate: " + savedVersion + " -> " + currentVersion);
-                    if (savedVersion != currentVersion) {
+                    if (savedVersion == 0 || ((savedVersion != currentVersion) && savedVersion < 79)) {
                         SharedPref.setLogoutReason(SplashScreen.this, "App has been updated, Kindly Re-Login when online.");
                         SharedPref.saveLoginState(SplashScreen.this, false);
                         SharedPref.saveLoginPwd(SplashScreen.this, "");
