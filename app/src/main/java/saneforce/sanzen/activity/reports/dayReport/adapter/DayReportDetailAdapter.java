@@ -148,21 +148,33 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         }
         if(isRcpaRequested) {
             holder.rcpaLayoutitle.setVisibility(View.VISIBLE);
+        } else {
+            holder.rcpaLayoutitle.setVisibility(View.GONE);
         }
         if(isCaptureRequested) {
             holder.EventLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.EventLayout.setVisibility(View.GONE);
         }
         if(isPobRequested) {
             holder.pobLayOut.setVisibility(View.VISIBLE);
+        } else {
+            holder.pobLayOut.setVisibility(View.GONE);
         }
         if(isFeedBackRequested) {
             holder.feedBackLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.feedBackLayout.setVisibility(View.GONE);
         }
         if(isInputRequested && !dataModel.getGifts().isEmpty()) {
             holder.InpLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.InpLayout.setVisibility(View.GONE);
         }
         if(isProductRequested && !dataModel.getProducts().isEmpty()) {
             holder.PrdLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.PrdLayout.setVisibility(View.GONE);
         }
         if(SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
             holder.clusterText.setText("Cluster");
