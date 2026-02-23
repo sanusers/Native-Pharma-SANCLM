@@ -130,6 +130,37 @@ public class DoctorProfileView extends AppCompatActivity {
             tagcount = extra.getString("tagcount", " ");
             maxcount = extra.getString("maxcount", " ");
 
+            activityDoctorProfileViewBinding.tvTagSpeciality.setVisibility(View.VISIBLE);
+            activityDoctorProfileViewBinding.tvSpeciality.setVisibility(View.VISIBLE);
+            activityDoctorProfileViewBinding.tvTagClass.setVisibility(View.VISIBLE);
+            activityDoctorProfileViewBinding.tvClass.setVisibility(View.VISIBLE);
+            activityDoctorProfileViewBinding.tvTagQualify.setVisibility(View.VISIBLE);
+            activityDoctorProfileViewBinding.tvQualify.setVisibility(View.VISIBLE);
+            activityDoctorProfileViewBinding.tvTagCategory.setVisibility(View.VISIBLE);
+            activityDoctorProfileViewBinding.tvCategory.setVisibility(View.VISIBLE);
+
+// 2. Ippo condition-padi hide pannuvom
+            if (CusType.equals("C")) {
+                // Chemist-ku Category mattum ON, mathathellam OFF
+                activityDoctorProfileViewBinding.tvTagSpeciality.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvSpeciality.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvTagClass.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvClass.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvTagQualify.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvQualify.setVisibility(View.GONE);
+            } else if (CusType.equals("S")) {
+                // Stockist-ku Category-um OFF
+                activityDoctorProfileViewBinding.tvTagCategory.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvCategory.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvTagSpeciality.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvSpeciality.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvTagClass.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvClass.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvTagQualify.setVisibility(View.GONE);
+                activityDoctorProfileViewBinding.tvQualify.setVisibility(View.GONE);
+            }
+
+
             switch (CusType) {
                 case "D":
                     if (SharedPref.getDrCap(this).isEmpty() || SharedPref.getDrCap(this) == null) {
@@ -385,6 +416,24 @@ public class DoctorProfileView extends AppCompatActivity {
                             String unlistPhone = unlistJsonArrayJSONObject.optString("Phone");
                             String unlistEmail = unlistJsonArrayJSONObject.optString("Email");
                             String unlistAddress = unlistJsonArrayJSONObject.optString("cus_addr");
+                            String unlistClassCode = unlistJsonArrayJSONObject.optString("Doc_ClsCode");
+                            String unlistedClassName = "";
+
+                            JSONArray classArray = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray();
+                            if (classArray != null) {
+                                for (int i = 0; i < classArray.length(); i++) {
+                                    JSONObject clsObj = classArray.getJSONObject(i);
+                                    String masterCode = clsObj.optString("Code");
+                                    if (masterCode.equals(unlistClassCode)) {
+                                        unlistedClassName = clsObj.optString("Doc_ClsName");
+                                        break;
+                                    }
+                                }
+                            }
+
+
+
+
 
 
                             JSONObject unlistDobObj = unlistJsonArrayJSONObject.optJSONObject("UnlstDOB");
@@ -429,6 +478,7 @@ public class DoctorProfileView extends AppCompatActivity {
                             activityDoctorProfileViewBinding.tvAddress.setText(setValue(unlistAddress));
                             activityDoctorProfileViewBinding.tvDob.setText(setValue(unlistDob));
                             activityDoctorProfileViewBinding.tvWedDate.setText(setValue(unlistDow));
+                            activityDoctorProfileViewBinding.tvClass.setText(setValue(unlistedClassName));
 
 
                         } catch (JSONException e) {

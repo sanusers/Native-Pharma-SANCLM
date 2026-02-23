@@ -185,7 +185,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             }
 
             if (app_adapt.getRes_Category().equals("") && app_adapt.getRes_rx().equals("") && app_adapt.getRes_Specialty().equals("")) {
-                holder.Res_Table1.setVisibility(View.VISIBLE);
+                holder.Res_Table1.setVisibility(View.GONE);
 
 
                 if (split_val.equals("1") || split_val.equals("2")) {
@@ -442,7 +442,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
         } else {
             if (split_val.equals("2")) {
-                holder.Res_Table1.setVisibility(View.VISIBLE);
+                holder.Res_Table1.setVisibility(View.GONE);
                 holder.Res_Table2.setVisibility(View.GONE);
 //                if (SharedPref.getProfilingNeed(context).equalsIgnoreCase("0")) {
 //                    holder.Res_Edit.setVisibility(View.VISIBLE);
