@@ -97,6 +97,7 @@ public class PreviewActivity extends AppCompatActivity {
     private JSONObject checkInJsonObject = new JSONObject();
     public static boolean isTimerEnd = false;
     String mandatorySlide ="0";
+
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
@@ -317,7 +318,6 @@ public class PreviewActivity extends AppCompatActivity {
                     return;
                 }
             }
-
             if (!pendingSlides.isEmpty()) {
                 Toast.makeText(this, "Mandatory slides pending: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
                 return;
