@@ -48,8 +48,53 @@
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_7ssp" />
 
+
+
+
+                <LinearLayout
+                    android:id="@+id/linear1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/textViewLabel1">
+
+                    <TextView
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:id="@+id/cluster"
+                        android:layout_width="wrap_content"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:layout_height="wrap_content"
+                        android:text="Cluster"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:textSize="@dimen/_6ssp" />
+
+                    <TextView
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:id="@+id/Class"
+                        android:layout_width="wrap_content"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:layout_height="wrap_content"
+                        android:text="Class"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:textSize="@dimen/_6ssp" />
+
+                    <TextView
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:id="@+id/Category"
+                        android:layout_width="wrap_content"
+                        android:layout_marginEnd=""
+                        android:fontFamily="@font/satoshi_regular"
+                        android:layout_height="wrap_content"
+                        android:text="Category"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:textSize="@dimen/_6ssp" />
+
+
+
+
+                </LinearLayout>
                 <TextView
-                    android:layout_below="@+id/textViewLabel1"
+                    android:layout_below="@+id/linear1"
                     android:layout_marginTop="@dimen/_3sdp"
                     android:layout_alignParentStart="true"
                     android:id="@+id/textViewLabel2"
@@ -57,7 +102,7 @@
                     android:layout_width="wrap_content"
                     android:fontFamily="@font/satoshi_regular"
                     android:layout_height="wrap_content"
-                    android:text="Label 2"
+                    android:text="Label 3"
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:textSize="@dimen/_6ssp" />
                 <TextView
@@ -68,6 +113,7 @@
                     android:paddingVertical="@dimen/_2sdp"
                     android:paddingHorizontal="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/_10sdp"
                     android:textStyle="bold"
