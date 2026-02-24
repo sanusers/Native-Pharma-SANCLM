@@ -3428,8 +3428,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            for (String entry : matchedDoctors) {
 //                message.append(entry).append("\n");
 //            }
-                CommonAlertBox.DoctorPlanPopup(this, message.toString().trim());
-                   // CommonAlertBox.DoctorPlanPopup(this, visitedSb.toString().trim(), notVisitedSb.toString().trim());
+                //CommonAlertBox.DoctorPlanPopup(this, message.toString().trim());
+                    CommonAlertBox.DoctorPlanPopup(this, visitedSb.toString().trim(), notVisitedSb.toString().trim());
                 } else {
                     Log.e("DoctorPopup", "No matching doctors found for today.");
                 }
@@ -3488,11 +3488,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             // ✅ Map codes → names
             Map<String, String> doctorNameMap = new HashMap<>();
+            Map<String, String> doctorClusterMap = new HashMap<>();
             for (int i = 0; i < doctorMasArray.length(); i++) {
                 JSONObject obj = doctorMasArray.getJSONObject(i);
                 String code = obj.optString("Code", "").trim();
                 String name = obj.optString("Name", "").trim();
-                if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
+                String cluster = obj.optString("Town_Name", "").trim(); // 🔥 from your JSON
+
+                if (!code.isEmpty()) {
+                    doctorNameMap.put(code, name);
+                    doctorClusterMap.put(code, cluster);
+                }
+                //if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
             }
 
             // ✅ Not visited doctors
@@ -3502,36 +3509,85 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
 
             // ✅ Build popup message
-            SpannableStringBuilder msg = new SpannableStringBuilder();
-            msg.append(new SpannableString("Visited Doctors:\n") {{
-                setSpan(new StyleSpan(Typeface.BOLD), 0, length(), 0);
-                setSpan(new ForegroundColorSpan(Color.BLACK), 0, length(), 0);
-            }});
-            if (visitedDoctors.isEmpty()) msg.append("None\n");
-            else {
+//            SpannableStringBuilder msg = new SpannableStringBuilder();
+//            msg.append(new SpannableString("Visited Doctors:\n") {{
+//                setSpan(new StyleSpan(Typeface.BOLD), 0, length(), 0);
+//                setSpan(new ForegroundColorSpan(Color.BLACK), 0, length(), 0);
+//            }});
+//            if (visitedDoctors.isEmpty()) msg.append("None\n");
+//            else {
+//                int i = 1;
+//                for (String code : visitedDoctors) {
+//                    String name = doctorNameMap.getOrDefault(code, code);
+//                    msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
+//                }
+//            }
+//
+//            msg.append("\n");
+//            msg.append(new SpannableString("Not Visited Doctors:\n") {{
+//                setSpan(new StyleSpan(Typeface.BOLD), 0, length(), 0);
+//                setSpan(new ForegroundColorSpan(Color.BLACK), 0, length(), 0);
+//            }});
+//            if (notVisitedCodes.isEmpty()) msg.append("None\n");
+//            else {
+//                int i = 1;
+//                for (String code : notVisitedCodes) {
+//                    String name = doctorNameMap.getOrDefault(code, code);
+//                    msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
+//                }
+            String header = String.format("%-8s  %-18s  %-24s\n", "S.No", "Cluster", "Doctor");
+            String line = "--------------------------------------\n";
+
+            StringBuilder visitedSb = new StringBuilder();
+            StringBuilder notVisitedSb = new StringBuilder();
+
+// VISITED SIDE
+            visitedSb.append(header);
+            visitedSb.append(line);
+
+            if (visitedDoctors.isEmpty()) {
+                visitedSb.append("None");
+            } else {
                 int i = 1;
                 for (String code : visitedDoctors) {
+
                     String name = doctorNameMap.getOrDefault(code, code);
-                    msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
+                    String cluster = doctorClusterMap.getOrDefault(code, "-");
+
+                    visitedSb.append(
+                            String.format("%-8d  %-18s  %-24s\n",
+                                    i++,
+                                    String.format("%-18s", cluster.length() > 18 ? cluster.substring(0,18) : cluster),
+                                    name.length() > 24 ? name.substring(0,24) : name
+                            )
+                    );
                 }
             }
 
-            msg.append("\n");
-            msg.append(new SpannableString("Not Visited Doctors:\n") {{
-                setSpan(new StyleSpan(Typeface.BOLD), 0, length(), 0);
-                setSpan(new ForegroundColorSpan(Color.BLACK), 0, length(), 0);
-            }});
-            if (notVisitedCodes.isEmpty()) msg.append("None\n");
-            else {
+// NOT VISITED SIDE
+            notVisitedSb.append(header);
+            notVisitedSb.append(line);
+
+            if (notVisitedCodes.isEmpty()) {
+                notVisitedSb.append("None");
+            } else {
                 int i = 1;
                 for (String code : notVisitedCodes) {
+
                     String name = doctorNameMap.getOrDefault(code, code);
-                    msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
+                    String cluster = doctorClusterMap.getOrDefault(code, "-");
+
+                    notVisitedSb.append(
+                            String.format("%-8d  %-18s  %-24s\n",
+                                    i++,
+                                    cluster.length() > 18 ? cluster.substring(0,18) : cluster,
+                                    name.length() > 24 ? name.substring(0,24) : name
+                            )
+                    );
                 }
             }
+
 // ✅ Build TWO separate strings instead of one
-
-
 //            int vCount = 1;
 //            if (visitedDoctors.isEmpty()) {
 //                visitedSb.append("None");
@@ -3551,11 +3607,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                    notVisitedSb.append(nvCount++).append(". Dr. ").append(name).append("\n");
 //                }
 //            }
-//
-//            // ✅ Pass BOTH strings to the popup method
-//            CommonAlertBox.DoctorPlanPopup(this, visitedSb.toString(), notVisitedSb.toString());
+
+            // ✅ Pass BOTH strings to the popup method
+            CommonAlertBox.DoctorPlanPopup(this, visitedSb.toString(), notVisitedSb.toString());
+
             // ✅ Show popup
-            CommonAlertBox.DoctorPlanPopup(this, msg);
+           // CommonAlertBox.DoctorPlanPopup(this, msg);
 
             // ✅ Mark popup shown today (for normal flow)
 //            if (!isImmediatePopup) SharedPref.setDoctorRemainingShownDate(this, " ");
