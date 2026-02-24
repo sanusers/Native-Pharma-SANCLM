@@ -165,7 +165,9 @@ public class ApprovalsActivity extends AppCompatActivity {
                 assert response.body() != null;
                 Log.v("counts", "-0-" + response.body());
                 if (response.isSuccessful()) {
-                    progressDialog.dismiss();
+                    if (progressDialog != null && progressDialog.isShowing() && !isFinishing() && !isDestroyed()) {
+                        progressDialog.dismiss();
+                    }
                     try {
                         SharedPref.setApprovalsCounts(ApprovalsActivity.this, "true");
                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
@@ -188,6 +190,9 @@ public class ApprovalsActivity extends AppCompatActivity {
                         }
                         AssignCountValues();
                     } catch (Exception e) {
+                        if (progressDialog != null && progressDialog.isShowing() && !isFinishing() && !isDestroyed()) {
+                            progressDialog.dismiss();
+                        }
                         commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.something_wrong));
                         Log.v("counts", "-error-" + e);
                     }
@@ -197,7 +202,9 @@ public class ApprovalsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.no_network));
-                progressDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing() && !isFinishing() && !isDestroyed()) {
+                    progressDialog.dismiss();
+                }
             }
         });
     }
