@@ -263,6 +263,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private android.app.AlertDialog locationDialog;
     private ConnectivityManager.NetworkCallback networkCallback;
     int position;
+    StringBuilder visitedSb = new StringBuilder();
+    StringBuilder notVisitedSb = new StringBuilder();
     private final Runnable updateClock = new Runnable() {
         @Override
         public void run() {
@@ -3426,8 +3428,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            for (String entry : matchedDoctors) {
 //                message.append(entry).append("\n");
 //            }
-                    CommonAlertBox.DoctorPlanPopup(this, message.toString().trim());
-
+                CommonAlertBox.DoctorPlanPopup(this, message.toString().trim());
+                   // CommonAlertBox.DoctorPlanPopup(this, visitedSb.toString().trim(), notVisitedSb.toString().trim());
                 } else {
                     Log.e("DoctorPopup", "No matching doctors found for today.");
                 }
@@ -3527,7 +3529,31 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
                 }
             }
+// ✅ Build TWO separate strings instead of one
 
+
+//            int vCount = 1;
+//            if (visitedDoctors.isEmpty()) {
+//                visitedSb.append("None");
+//            } else {
+//                for (String code : visitedDoctors) {
+//                    String name = doctorNameMap.getOrDefault(code, code);
+//                    visitedSb.append(vCount++).append(". Dr. ").append(name).append("\n");
+//                }
+//            }
+//
+//            int nvCount = 1;
+//            if (notVisitedCodes.isEmpty()) {
+//                notVisitedSb.append("None");
+//            } else {
+//                for (String code : notVisitedCodes) {
+//                    String name = doctorNameMap.getOrDefault(code, code);
+//                    notVisitedSb.append(nvCount++).append(". Dr. ").append(name).append("\n");
+//                }
+//            }
+//
+//            // ✅ Pass BOTH strings to the popup method
+//            CommonAlertBox.DoctorPlanPopup(this, visitedSb.toString(), notVisitedSb.toString());
             // ✅ Show popup
             CommonAlertBox.DoctorPlanPopup(this, msg);
 

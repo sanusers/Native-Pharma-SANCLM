@@ -40,7 +40,7 @@ public class CommonAlertBox {
     public static AlertDialog dialog;
 
     public static void CheckLocationStatus(Activity activity, GPSTrack gpsTrack) {
-        if(SharedPref.getGeoChk(activity).equalsIgnoreCase("0")){
+        if (SharedPref.getGeoChk(activity).equalsIgnoreCase("0")) {
             if (isMockLocation(activity) || (gpsTrack != null && gpsTrack.isFakeLocation())) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(activity);
                 alert.setCancelable(false);
@@ -482,8 +482,9 @@ public class CommonAlertBox {
 //
 //        btnOk2.setOnClickListener(view -> {
 //            // Optional: open BirthdayListActivity or just dismiss
-////            Intent intent = new Intent(activity, birthdayAnniversary_viewscreen.class);
-////            activity.startActivity(intent);
+
+    /// /            Intent intent = new Intent(activity, birthdayAnniversary_viewscreen.class);
+    /// /            activity.startActivity(intent);
 //            dialog.dismiss();
 //        });
 //    }
@@ -533,6 +534,31 @@ public class CommonAlertBox {
 
         okButton.setOnClickListener(view -> dialog.dismiss());
     }
+//    public static void DoctorPlanPopup(Activity activity, String visitedMsg, String notVisitedMsg) {
+//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+//        alert.setCancelable(false);
+//
+//        LayoutInflater inflater = activity.getLayoutInflater();
+//        View alertLayout = inflater.inflate(R.layout.popup_doctor_count, null);
+//
+//        TextView heading = alertLayout.findViewById(R.id.heading);
+//        // Find the two NEW IDs from your XML
+//        TextView tvVisitedList = alertLayout.findViewById(R.id.messagePopup);
+//        TextView tvNotVisitedList = alertLayout.findViewById(R.id.messagePopup2);
+//        Button okButton = alertLayout.findViewById(R.id.okButton);
+//
+//        heading.setText(" Today's Planned " + SharedPref.getDrCap(activity));
+//
+//        // Set text to the specific columns
+//        tvVisitedList.setText(visitedMsg);
+//        tvNotVisitedList.setText(notVisitedMsg);
+//
+//        alert.setView(alertLayout);
+//        AlertDialog dialog = alert.create();
+//        dialog.show();
+//
+//        okButton.setOnClickListener(view -> dialog.dismiss());
+//    }
 
     public static void ApprovalAlert(Activity activity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
@@ -575,7 +601,7 @@ public class CommonAlertBox {
                         try {
                             boolean isMock = false;
                             isMock = location.isFromMockProvider();
-                            if(isMock) {
+                            if (isMock) {
                                 AlertDialog.Builder alert = new AlertDialog.Builder(activity);
                                 alert.setCancelable(false);
                                 LayoutInflater inflater = activity.getLayoutInflater();
@@ -597,7 +623,7 @@ public class CommonAlertBox {
                             e.printStackTrace();
                         }
                     } else {
-                        Log.e("Location CAB", "OnLocationReceived: Location null" );
+                        Log.e("Location CAB", "OnLocationReceived: Location null");
                     }
                 }
             });
