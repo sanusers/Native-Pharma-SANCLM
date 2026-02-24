@@ -3719,7 +3719,10 @@ public class TourPlanActivity extends AppCompatActivity {
 
                     JsonObject jsonObject = new JsonObject();
                     jsonObject.addProperty("Mod", "AndroidDetailing");
-                    jsonObject.addProperty("Status",changeStatus );
+                    TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                    if (tourPlanOfflineDataTable != null) {
+                            jsonObject.addProperty("Status", tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty());
+                    }
                     jsonObject.addProperty("SubmissionDate", TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_37));
                     jsonObject.addProperty("tableName","savetpzen");
 
@@ -4172,8 +4175,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
 
                     Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
-                    TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-                    changeStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                    TourPlanOfflineDataTable tourPlanOfflineDataTable1 = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                    changeStatus = tourPlanOfflineDataTable1.getTpMonthSyncedOrEmpty();
                     if (Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2")) {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
 //                        Map<String, String> mapString = new HashMap<>();
@@ -4212,7 +4215,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                                  /*   if (outerJsonObject.has("d")) {
                                                         String innerJsonString = outerJsonObject.getString("d");
                                                         JSONObject innerJsonObject = new JSONObject(innerJsonString);
-                                                        if (innerJsonObject.has("Data")) {
+                                                     /*   if (innerJsonObject.has("Data")) {
                                                             switch (isClickedName) {
                                                                 case "previous":
                                                                     int retrievedIdPm = innerJsonObject.getInt("Data");
@@ -4254,6 +4257,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                         arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
                                                         sendTpForApprovalOneBuild(jbonj, arrayList, localDate.toString(), monthYearFromDateUI(localDate), statusOffline, isClickedName);
                                                     }
+                                                }else {
+                                                    get1MonthRemoteTPDataOneBuild(localDate);
                                                 }
 
 
@@ -4264,7 +4269,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                        get1MonthRemoteTPDataOneBuild(localDate);
+
                                     } else {
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                                         SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
@@ -5413,6 +5418,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                         }
+                                        get1MonthRemoteTPDataOneBuild(localDate);
                                     } catch (JSONException e) {
                                         binding.progressBar.setVisibility(View.GONE);
                                         e.printStackTrace();
@@ -5856,7 +5862,18 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void sendTpForApprovalOneBuild(JsonObject jsonObject, ArrayList<OneBuildModelClass> oneBuildModelClassArrayList, String date, String month, Boolean statusOffline, String isClickedName) {
         localDate = localDate;
-        apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
+        JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+        ArrayList<OneBuildModelClass> arrayList;
+        ArrayList<String> dummy = new ArrayList<>();
+        Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
+        }.getType();
+        if (jsonArray.length() >= 0) {
+            binding.progressBar.setVisibility(View.VISIBLE);
+            sendWholeMonthStatusOneBuild(localDate,isClickedName);
+        }else{
+            get1MonthRemoteTPDataOneBuild(localDate);
+        }
+       /* apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
         Log.v("tpApproval", "--json--" + jsonObject.toString());
         System.out.println(jsonObject);
 
@@ -5874,38 +5891,20 @@ public class TourPlanActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.send_approved_successfully));
 
                         binding.progressBar.setVisibility(View.GONE);
-                        /*if (statusOffline) {*/
+                        *//*if (statusOffline) {*//*
                         JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
                         ArrayList<OneBuildModelClass> arrayList;
                         ArrayList<String> dummy = new ArrayList<>();
                         Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
                         }.getType();
                         if (jsonArray.length() >= 0) {
-                            try {
-                                switch (isClickedName) {
-                                    case "previous":
-                                        changeApprovalBtnStateOneBuild(dayWiseArrayPreviousMonthOneBuild);
-                                        break;
-                                    case "current":
-                                        changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
-                                        break;
-                                    case "next":
-                                        changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
-                                        break;
-                                }
-                                get1MonthRemoteTPDataOneBuild(localDate);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            if (dummy.size() == 0) {
-                                binding.progressBar.setVisibility(View.VISIBLE);
-                                sendWholeMonthStatusOneBuild(localDate,isClickedName);
-                            }
+                            binding.progressBar.setVisibility(View.VISIBLE);
+                            sendWholeMonthStatusOneBuild(localDate,isClickedName);
                         }
 
-                        /*}else{
+                        *//*}else{
                             get3MonthRemoteTPData(isClickedName);
-                        }*/
+                        }*//*
 
                     } else {
                         binding.progressBar.setVisibility(View.GONE);
@@ -5929,7 +5928,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 saveTpLocalOneBuild(oneBuildModelClassArrayList, date, month, "1"); // Sync Failed
                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
             }
-        });
+        });*/
 
     }
 
