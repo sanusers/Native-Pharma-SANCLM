@@ -498,7 +498,6 @@
     <string name="deleting_field_work_with_calls">Удаление работы в поле также удалит все звонки</string>
     <string name="select_workday">Выберите рабочий день</string>
     <string name="refresh">Обновить</string>
-    <string name="Signature">Подпись</string>
     <string name="fill">Пожалуйста, заполните </string>
     <string name="select_headquater">ВЫБЕРИТЕ ШТАБ-КВАРТИРУ</string>
     <string name="location_add">Тег добавлен успешно</string>
@@ -629,7 +628,6 @@
     <string name="Business">Количество бизнеса</string>
     <string name="Business_value">Стоимость бизнеса</string>
     <string name="no_of_product">Количество продуктов:</string>
-    <string name="Available">Доступно:</string>
     <string name="enter_crct_email">Пожалуйста, введите корректный email перед сохранением</string>
     <string name="work_plan_updated_successfully">План работы успешно обновлён</string>
     <string name="work_day">Рабочий день</string>

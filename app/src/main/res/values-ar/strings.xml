@@ -493,7 +493,7 @@
     <string name="deleting_field_work_with_calls">سيؤدي حذف العمل الميداني أيضًا إلى حذف جميع المكالمات</string>
     <string name="select_workday">اختر يوم العمل</string>
     <string name="refresh">تحديث</string>
-    <string name="Signature">التوقيع</string>
+    <string name="signature">التوقيع</string>
     <string name="fill">يرجى ملء </string>
     <string name="select_headquater">اختر المقر الرئيسي</string>
     <string name="location_add">تم التحديد بنجاح</string>
@@ -624,7 +624,6 @@
     <string name="Business">كمية الأعمال</string>
     <string name="Business_value">قيمة الأعمال</string>
     <string name="no_of_product">عدد المنتجات :</string>
-    <string name="Available">متاح :</string>
     <string name="enter_crct_email">يرجى إدخال البريد الإلكتروني الصحيح قبل الحفظ</string>
     <string name="work_plan_updated_successfully">تم تحديث خطة العمل بنجاح</string>
     <string name="work_day">يوم العمل</string>
@@ -975,7 +974,6 @@
 </string>
     <string name="activity_mandatory">النشاط إلزامي</string>
     <string name="location_permission_needed">مطلوب إذن الموقع!</string>
-    <string name="signature">التوقيع</string>
     <string name="available">متاح:</string>
     <string name="need_remarks">يرجى إدخال الملاحظات في الجلسة</string>
     <string name="reset_password">إعادة تعيين كلمة المرور</string>
