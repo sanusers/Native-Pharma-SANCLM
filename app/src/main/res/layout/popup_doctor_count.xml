@@ -1,165 +1,116 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="@dimen/_5sdp">
-
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_gravity="top">
 
         <ImageView
             android:id="@+id/imgdr"
+            android:layout_marginStart="@dimen/_5sdp"
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"
-            android:src="@drawable/doctor_img"
-            android:layout_marginEnd="@dimen/_5sdp" />
+            android:layout_marginTop="@dimen/_4sdp"
+            android:src="@drawable/doctor_img">
+        </ImageView>
 
-        <TextView
-            android:id="@+id/heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/satoshi_bold"
-            android:text="Today's Doctor Plan !!"
-            android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_8sdp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imgdr"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:padding="@dimen/_2sdp"
+                android:text="Today's Doctor Plan !!"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
     </LinearLayout>
-
     <View
         android:id="@+id/view_dummy"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginHorizontal="@dimen/_2sdp"
+        android:layout_above="@id/rl_btns"
+        android:layout_marginStart="@dimen/_2sdp"
         android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
         android:layout_marginBottom="@dimen/_2sdp"
-        android:background="#9e9ea5" />
+        android:background="#9e9ea5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-        <LinearLayout
-            android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/messagePopup"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/_4sdp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:fontFamily="@font/satoshi_bold"
-                android:text="Visited"
-                android:textColor="@color/dark_purple"
-                android:textSize="@dimen/_7sdp" />
-            <View
-                android:id="@+id/view_dummy1"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="@dimen/_2sdp"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:layout_marginBottom="@dimen/_2sdp"
-                android:background="#9e9ea5" />
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="@dimen/_150sdp">
-
-                <TextView
-                    android:id="@+id/messagePopup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/satoshi_medium"
-                    android:padding="@dimen/_2sdp"
-                    android:textColor="@color/black"
-                    android:typeface="monospace"
-                    android:gravity="start"
-                    android:lineSpacingExtra="2dp"
-                    android:paddingStart="8dp"
-                    android:includeFontPadding="false"
-                    android:textSize="14sp" />
-            </ScrollView>
-        </LinearLayout>
-
-        <View
-            android:id="@+id/dividerView"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="@dimen/_5sdp"
-            android:background="#9e9ea5" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/_4sdp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:fontFamily="@font/satoshi_bold"
-                android:text="Not Visited"
-                android:textColor="@color/dark_purple"
-                android:textSize="@dimen/_7sdp" />
-            <View
-                android:id="@+id/view_dummy2"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="@dimen/_2sdp"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:layout_marginBottom="@dimen/_2sdp"
-                android:background="#9e9ea5" />
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="@dimen/_150sdp">
-
-                <TextView
-                    android:id="@+id/messagePopup2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/satoshi_medium"
-                    android:padding="@dimen/_2sdp"
-                    android:textColor="@color/black"
-                    android:typeface="monospace"
-                    android:gravity="start"
-                    android:lineSpacingExtra="2dp"
-                    android:paddingStart="8dp"
-                    android:includeFontPadding="false"
-                    android:textSize="14sp" />
-            </ScrollView>
-        </LinearLayout>
-    </LinearLayout>
+            android:layout_below="@id/tv_head"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:hint=""
+            android:padding="@dimen/_4sdp"
+            android:textSize="@dimen/_7sdp"
+            android:textStyle="bold" />
+    </ScrollView>
 
     <RelativeLayout
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp">
+        android:layout_below="@id/ed_alert_msg"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:orientation="horizontal">
+
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/btnNo"-->
+<!--            android:layout_width="@dimen/_40sdp"-->
+<!--            android:layout_height="@dimen/_20sdp"-->
+<!--            android:layout_marginVertical="@dimen/_2sdp"-->
+<!--            android:layout_marginEnd="@dimen/_10sdp"-->
+<!--            android:layout_toLeftOf="@id/btnYes"-->
+<!--            android:background="@drawable/bg_border_with_pink"-->
+<!--            android:fontFamily="@font/satoshi_bold"-->
+<!--            android:text="Cancel"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:textColor="@color/dark_purple"-->
+<!--            android:textSize="@dimen/_6ssp"-->
+<!--            android:textStyle="bold" />-->
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/okButton"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_20sdp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="@dimen/_8sdp"
             android:layout_marginVertical="@dimen/_3sdp"
+            android:paddingHorizontal="@dimen/_10sdp"
             android:background="@drawable/backround_button"
             android:fontFamily="@font/satoshi_bold"
             android:singleLine="true"
@@ -167,136 +118,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/_6ssp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="NotSibling" />
     </RelativeLayout>
 </LinearLayout>
-
-
-
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-
-
-<!--<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:orientation="vertical"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="wrap_content">-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:layout_gravity="top">-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/imgdr"-->
-<!--            android:layout_marginStart="@dimen/_5sdp"-->
-<!--            android:layout_width="@dimen/_15sdp"-->
-<!--            android:layout_height="@dimen/_15sdp"-->
-<!--            android:layout_marginTop="@dimen/_4sdp"-->
-<!--            android:src="@drawable/doctor_img">-->
-<!--        </ImageView>-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:orientation="vertical"-->
-<!--            android:layout_marginHorizontal="@dimen/_2sdp"-->
-<!--            android:layout_height="wrap_content">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/heading"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/imgdr"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:layout_marginHorizontal="@dimen/_3sdp"-->
-<!--                android:layout_marginVertical="@dimen/_4sdp"-->
-<!--                android:fontFamily="@font/satoshi_bold"-->
-<!--                android:gravity="center"-->
-<!--                android:padding="@dimen/_2sdp"-->
-<!--                android:text="Today's Doctor Plan !!"-->
-<!--                android:textColor="@color/dark_purple"-->
-<!--                android:textSize="@dimen/_8sdp"-->
-<!--                android:textStyle="bold"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--        </LinearLayout>-->
-<!--    </LinearLayout>-->
-<!--    <View-->
-<!--        android:id="@+id/view_dummy"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0.5dp"-->
-<!--        android:layout_above="@id/rl_btns"-->
-<!--        android:layout_marginStart="@dimen/_2sdp"-->
-<!--        android:layout_marginTop="@dimen/_4sdp"-->
-<!--        android:layout_marginEnd="@dimen/_2sdp"-->
-<!--        android:layout_marginBottom="@dimen/_2sdp"-->
-<!--        android:background="#9e9ea5"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.0" />-->
-
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_weight="1"-->
-<!--        android:orientation="horizontal">-->
-<!--        <TextView-->
-<!--            android:id="@+id/messagePopup"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/tv_head"-->
-<!--            android:layout_marginStart="@dimen/_2sdp"-->
-<!--            android:fontFamily="@font/satoshi_medium"-->
-<!--            android:hint=""-->
-<!--            android:padding="@dimen/_4sdp"-->
-<!--            android:textSize="@dimen/_7sdp"-->
-<!--            android:textStyle="bold" />-->
-<!--    </ScrollView>-->
-
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/button"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/ed_alert_msg"-->
-<!--        android:layout_marginTop="@dimen/_25sdp"-->
-<!--        android:orientation="horizontal">-->
-
-<!--&lt;!&ndash;        <androidx.appcompat.widget.AppCompatButton&ndash;&gt;-->
-<!--&lt;!&ndash;            android:id="@+id/btnNo"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_width="@dimen/_40sdp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_height="@dimen/_20sdp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginVertical="@dimen/_2sdp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginEnd="@dimen/_10sdp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_toLeftOf="@id/btnYes"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:background="@drawable/bg_border_with_pink"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:fontFamily="@font/satoshi_bold"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:text="Cancel"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textAllCaps="false"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textColor="@color/dark_purple"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textSize="@dimen/_6ssp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textStyle="bold" />&ndash;&gt;-->
-
-<!--        <androidx.appcompat.widget.AppCompatButton-->
-<!--            android:id="@+id/okButton"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="@dimen/_20sdp"-->
-<!--            android:layout_alignParentTop="true"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_marginHorizontal="@dimen/_8sdp"-->
-<!--            android:layout_marginVertical="@dimen/_3sdp"-->
-<!--            android:paddingHorizontal="@dimen/_10sdp"-->
-<!--            android:background="@drawable/backround_button"-->
-<!--            android:fontFamily="@font/satoshi_bold"-->
-<!--            android:singleLine="true"-->
-<!--            android:text="OK"-->
-<!--            android:textAllCaps="false"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="@dimen/_6ssp"-->
-<!--            android:textStyle="bold"-->
-<!--            tools:ignore="NotSibling" />-->
-<!--    </RelativeLayout>-->
-<!--</LinearLayout>-->
