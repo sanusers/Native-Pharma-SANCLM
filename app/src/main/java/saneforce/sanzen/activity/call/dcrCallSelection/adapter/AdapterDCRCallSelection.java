@@ -118,7 +118,11 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     @Override
     public void onBindViewHolder(@NonNull AdapterDCRCallSelection.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
-        holder.tv_name.setText(cusListArrayList.get(position).getName());
+        if (cusListArrayList.get(position).getType().equalsIgnoreCase("1") || cusListArrayList.get(position).getType().equalsIgnoreCase("4")){
+            holder.tv_name.setText("Dr. "+cusListArrayList.get(position).getName());
+        }else {
+            holder.tv_name.setText(cusListArrayList.get(position).getName());
+        }
         if (cusListArrayList.get(position).getCategory().isEmpty())
             holder.tv_category.setText("");
         else

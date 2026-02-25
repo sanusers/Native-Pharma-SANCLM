@@ -49,8 +49,11 @@ public class CustomerListSelectionAdapter extends RecyclerView.Adapter<CustomerL
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CustomerDataModel customerDataModel = customerDataList.get(position);
-
-        holder.tv_name.setText(customerDataModel.getName());
+        if(customerType.equalsIgnoreCase(Constants.DOCTOR_MAS) || customerType.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)) {
+            holder.tv_name.setText("Dr. "+customerDataModel.getName());
+        }else{
+            holder.tv_name.setText(customerDataModel.getName());
+        }
         holder.tv_category.setText(customerDataModel.getCategoryName());
         holder.tv_specialist.setText(customerDataModel.getSpecialityName());
         holder.tv_class.setText(customerDataModel.getClassName());

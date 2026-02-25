@@ -48,7 +48,12 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tv_name.setText(custListArrayList.get(position).getName());
+        if(custListArrayList.get(position).getType().equalsIgnoreCase("D") || custListArrayList.get(position).getType().equalsIgnoreCase("U")){
+            holder.tv_name.setText("Dr. "+custListArrayList.get(position).getName());
+        }else{
+            holder.tv_name.setText(custListArrayList.get(position).getName());
+        }
+
         holder.tv_specialist.setText(custListArrayList.get(position).getSpecialist());
         holder.tv_area.setText(custListArrayList.get(position).getTown_name());
         String selectedTap = custListArrayList.get(position).getType();
@@ -153,7 +158,11 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                         }
                     }
                     intent.putExtra("from", "view_tagged");
-                    intent.putExtra("cus_name", custListArrayList.get(position).getName());
+                    if(custListArrayList.get(position).getType().equalsIgnoreCase("D") || custListArrayList.get(position).getType().equalsIgnoreCase("U")){
+                        intent.putExtra("cus_name", "Dr. "+custListArrayList.get(position).getName());
+                    }else{
+                        intent.putExtra("cus_name", custListArrayList.get(position).getName());
+                    }
                     intent.putExtra("cus_add", custListArrayList.get(position).getAddress());
                     intent.putExtra("geoTagStatus", custListArrayList.get(position).getGeoTagStatus());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

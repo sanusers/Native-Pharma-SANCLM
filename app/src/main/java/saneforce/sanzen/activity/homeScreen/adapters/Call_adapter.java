@@ -42,9 +42,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanzen.activity.map.custSelection.CustList;
+import saneforce.sanzen.activity.myresource.doctorprofile.DoctorProfileView;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -70,6 +72,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     private static CallTableDao callTableDao;
+    String docCluster,docCls,docCategory,chmCluster,chmCls,chmCategory,stkCluster,stkCls,stkCategory,undrCluster,undrCls,undrCategory;
 
     public Call_adapter(Context context, ArrayList<CallsModalClass> list, ApiInterface apiInterface) {
         this.context = context;
@@ -95,9 +98,60 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
     @Override
     public void onBindViewHolder(@NonNull listDataViewholider holder, int position) {
+        JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        JSONArray masterJsonArray3 = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        JSONArray masterJsonArray4 = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
 
         CallsModalClass callslist = list.get(position);
-        holder.DocName.setText(callslist.getCustName());
+        String listName = callslist.getCustName();
+        String docName = listName.split(" ---")[0];
+        if(callslist.getCustType().equalsIgnoreCase("1") || callslist.getCustType().equalsIgnoreCase("4")){
+            holder.DocName.setText("Dr. "+ docName);
+        }else {
+            holder.DocName.setText(docName);
+        }
+        for (int i = 0; i < masterJsonArray1.length(); i++) {
+            JSONObject obj = masterJsonArray1.optJSONObject(i);
+            if (obj == null) continue;
+
+            if (callslist.getCustCode().equalsIgnoreCase(obj.optString("Code"))) {
+                docCluster = obj.optString("Town_Name");
+                docCls = obj.optString("Doc_Class_ShortName");
+                docCategory = obj.optString("Category");
+                break;
+            }
+        }
+
+        holder.cluster.setText(docCluster);
+        final String popupDocCluster = docCluster;
+        final String popupDocClass = docCls;
+        final String popupDocCategory = docCategory;
+        holder.cluster.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.displayPopupWindow(context,view,popupDocCluster);
+            }
+        });
+        if(callslist.getCustType().equalsIgnoreCase("1")) {
+            holder.cls.setText(docCls);
+            holder.cls.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    commonUtilsMethods.displayPopupWindow(context,view,popupDocClass);
+                }
+            });
+            holder.category.setText(docCategory);
+            holder.category.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    commonUtilsMethods.displayPopupWindow(context,view,popupDocCategory);
+                }
+            });
+        }else{
+            holder.cls.setVisibility(View.GONE);
+            holder.category.setVisibility(View.GONE);
+        }
         String dateTime = callslist.getCallsDateTime();
         dateTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_36, dateTime);
         holder.datetime.setText(dateTime);
@@ -106,6 +160,16 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
         if (type.equalsIgnoreCase("1")) {
             holder.imageView.setImageResource(R.drawable.map_dr_img);
+            holder.imageView.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    Intent dr = new Intent(context, DoctorProfileView.class);
+
+                    int pos = holder.getBindingAdapterPosition();
+                    dr.putExtra("position",pos);
+                    context.startActivity(dr);
+                }
+            });
         } else if (type.equalsIgnoreCase("2")) {
             holder.imageView.setImageResource(R.drawable.map_chemist_img);
         } else if (type.equalsIgnoreCase("3")) {
@@ -496,13 +560,16 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     }
 
     public static class listDataViewholider extends RecyclerView.ViewHolder {
-        TextView DocName, datetime, menu;
+        TextView DocName, datetime, menu,cluster,cls,category;
         CircleImageView imageView;
 
         public listDataViewholider(@NonNull View itemView) {
             super(itemView);
             DocName = itemView.findViewById(R.id.textViewLabel1);
             datetime = itemView.findViewById(R.id.textViewLabel2);
+            cluster = itemView.findViewById(R.id.cluster);
+            cls = itemView.findViewById(R.id.Class);
+            category = itemView.findViewById(R.id.Category);
             imageView = itemView.findViewById(R.id.profile_icon);
             menu = itemView.findViewById(R.id.optionview);
         }

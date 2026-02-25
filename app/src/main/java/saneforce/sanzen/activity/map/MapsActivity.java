@@ -833,7 +833,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView tv_address = dialogTagCust.findViewById(R.id.txt_address);
         ProgressBar progressBar = dialogTagCust.findViewById(R.id.progressBar);
 
-        tv_cust_name.setText(cust_name);
+        if(SelectedTab.equalsIgnoreCase("D") || SelectedTab.equalsIgnoreCase("U")){
+            tv_cust_name.setText("Dr. "+cust_name);
+        }else{
+            tv_cust_name.setText(cust_name);
+        }
         tv_lat.setText(String.format("Latitude : %s", lat));
         tv_lng.setText(String.format("Longitude : %s", lng));
         tv_address.setText(mapsBinding.tvTaggedAddress.getText().toString());
@@ -1995,7 +1999,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.imgRvRight.setVisibility(View.GONE);
             mapsBinding.tagginglistlayout.setVisibility(View.GONE);
 
-            mapsBinding.tvCustName.setText(cust_name);
+            if(SelectedTab.equalsIgnoreCase("D") || SelectedTab.equalsIgnoreCase("U")){
+                mapsBinding.tvCustName.setText("Dr. "+cust_name);
+            }else{
+                mapsBinding.tvCustName.setText(cust_name);
+            }
             mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
 
             LatLng latLng = new LatLng(lat, lng);

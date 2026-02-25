@@ -216,7 +216,7 @@ public class DoctorProfileView extends AppCompatActivity {
                             }
 
 
-                            activityDoctorProfileViewBinding.tvName.setText(setValue(name));
+                            activityDoctorProfileViewBinding.tvName.setText(setValue("Dr. "+name));
                             activityDoctorProfileViewBinding.tvGender.setText(setValue(gender));
                             activityDoctorProfileViewBinding.tvQualify.setText(setValue(qualification));
                             activityDoctorProfileViewBinding.tvCategory.setText(setValue(category));
@@ -466,7 +466,7 @@ public class DoctorProfileView extends AppCompatActivity {
                             }
 
 
-                            activityDoctorProfileViewBinding.tvName.setText(setValue(unlistName));
+                            activityDoctorProfileViewBinding.tvName.setText(setValue("Dr. "+unlistName));
                             activityDoctorProfileViewBinding.tvGender.setText(setValue(unlistGender));
                             activityDoctorProfileViewBinding.tvQualify.setText(setValue(unlistQualification));
                             activityDoctorProfileViewBinding.tvCategory.setText(setValue(unlistCategory));

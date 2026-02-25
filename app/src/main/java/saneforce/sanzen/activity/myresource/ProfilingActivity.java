@@ -225,7 +225,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             } else {
                 activityProfilingBinding.drtagname.setText(SharedPref.getDrCap(this) + " " + "Details");
             }
-            activityProfilingBinding.edtDctr.setText(docname);
+            activityProfilingBinding.edtDctr.setText("Dr. "+docname);
             activityProfilingBinding.edtCluster.setText(town);
             activityProfilingBinding.edtDob.setText(dob);
             activityProfilingBinding.edtDow.setText(dow);
@@ -455,7 +455,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             } else {
                 activityProfilingBinding.drtagname.setText(SharedPref.getUNLcap(this) + " " + "Details");
             }
-            activityProfilingBinding.edtDctr.setText(docname);
+            activityProfilingBinding.edtDctr.setText("Dr. "+docname);
             activityProfilingBinding.edtCluster.setText(town);
             activityProfilingBinding.edtDob.setText(dob);
             activityProfilingBinding.edtDow.setText(dow);

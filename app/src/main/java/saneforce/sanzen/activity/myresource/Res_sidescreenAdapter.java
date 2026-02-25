@@ -125,7 +125,11 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 //holder.Res_Edit.setVisibility(View.GONE);
             }
             if (!app_adapt.getDcr_name().equals("") && !app_adapt.getDcr_name().equals("null")) {
-                holder.Res_Name.setText(app_adapt.getDcr_name());
+                if(app_adapt.getPos_name().equalsIgnoreCase("D") || app_adapt.getPos_name().equalsIgnoreCase("U")){
+                    holder.Res_Name.setText("Dr. "+app_adapt.getDcr_name());
+                }else{
+                    holder.Res_Name.setText(app_adapt.getDcr_name());
+                }
                 holder.Res_rx.setText(app_adapt.getRes_rx());
             }
 
