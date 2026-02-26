@@ -404,6 +404,8 @@ public class OutboxFragment extends Fragment {
     private void sendingOfflineCalls() {
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
+        listDates = outboxUtil.getOutBoxDatesWithData(context);
+
         if (callSyncCount > 0) {
             CallsFragment.syncCalls();
             callSyncCount = 0;
@@ -2462,7 +2464,6 @@ public class OutboxFragment extends Fragment {
 
 //        new Handler().postDelayed(this::refreshPendingFunction, 200);
     }
-
 
     public static void notifyedmethod() {
         outBoxHeaderAdapter.notifyDataSetChanged();
