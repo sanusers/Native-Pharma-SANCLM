@@ -425,6 +425,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     intent.putExtra("long", app_adapt.getLongtitude());
                     intent.putExtra("tagcount", app_adapt.getTagcount());
                     intent.putExtra("maxcount", app_adapt.getMaxcount());
+                    intent.putExtra("source",Res_sidescreenAdapter.class);
                     int pos = holder.getBindingAdapterPosition();
                     intent.putExtra("position", pos);
                     context.startActivity(intent);

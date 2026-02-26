@@ -46,6 +46,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanzen.activity.map.custSelection.CustList;
+import saneforce.sanzen.activity.myresource.Res_sidescreenAdapter;
 import saneforce.sanzen.activity.myresource.doctorprofile.DoctorProfileView;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -72,7 +73,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     private static CallTableDao callTableDao;
-    String docCluster,docCls,docCategory,chmCluster,chmCls,chmCategory,stkCluster,stkCls,stkCategory,undrCluster,undrCls,undrCategory;
+    String docCluster,docCls,docCategory,chmCluster,stkCluster,undrCluster,undrCls,undrCategory;
+    String docCode,Name,docGender,docDob,docDow,docMob,docPhn,docMail,docSpl,docQuil,docAddr,chmCode,chmName,chmCat,chmMob,chmMail,chmAdr,stkName,stkCode,stkMob,stkAdr,unDrName,unDrCode,unDrGender,unDrDob,unDrDow,unDrMob,unDrPhn,unDrMail,unDrQuil,unDrAdr;
 
     public Call_adapter(Context context, ArrayList<CallsModalClass> list, ApiInterface apiInterface) {
         this.context = context;
@@ -111,36 +113,49 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         }else {
             holder.DocName.setText(docName);
         }
-        for (int i = 0; i < masterJsonArray1.length(); i++) {
-            JSONObject obj = masterJsonArray1.optJSONObject(i);
-            if (obj == null) continue;
-
-            if (callslist.getCustCode().equalsIgnoreCase(obj.optString("Code"))) {
-                docCluster = obj.optString("Town_Name");
-                docCls = obj.optString("Doc_Class_ShortName");
-                docCategory = obj.optString("Category");
-                break;
-            }
-        }
-
-        holder.cluster.setText(docCluster);
-        final String popupDocCluster = docCluster;
-        final String popupDocClass = docCls;
-        final String popupDocCategory = docCategory;
-        holder.cluster.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                commonUtilsMethods.displayPopupWindow(context,view,popupDocCluster);
-            }
-        });
         if(callslist.getCustType().equalsIgnoreCase("1")) {
-            holder.cls.setText(docCls);
+            for (int i = 0; i < masterJsonArray1.length(); i++) {
+                JSONObject obj = masterJsonArray1.optJSONObject(i);
+                if (obj == null) continue;
+                docCode =  callslist.getCustCode();
+
+                if (callslist.getCustCode().equalsIgnoreCase(obj.optString("Code"))) {
+                    docCluster = obj.optString("Town_Name");
+                    docCls = obj.optString("Doc_Class_ShortName");
+                    docCategory = obj.optString("Category");
+                    Name = obj.optString("Name");
+                    docGender = obj.optString("ListedDr_Sex");
+                    docDob = obj.optString("DctrDOB");
+                    docDow = obj.optString("DctrDOW");
+                    docMob = obj.optString("Mobile");
+                    docPhn = obj.optString("Phone");
+                    docMail = obj.optString("DrEmail");
+                    docSpl = obj.optString("Specialty");
+                    docQuil = obj.optString("DrDesig");
+                    docAddr = obj.optString("cus_addr");
+                    docCode = obj.optString("Code");
+                    break;
+                }
+            }
+
+            holder.cluster.setText(docCluster);
+            final String popupDocCluster = docCluster;
+            final String popupDocClass = docCls;
+            final String popupDocCategory = docCategory;
+            holder.cluster.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    commonUtilsMethods.displayPopupWindow(context, view, popupDocCluster);
+                }
+            });
             holder.cls.setOnClickListener(new SafeClickListener() {
                 @Override
                 public void onSafeClick(View view) {
                     commonUtilsMethods.displayPopupWindow(context,view,popupDocClass);
                 }
             });
+            holder.cls.setText(docCls);
+
             holder.category.setText(docCategory);
             holder.category.setOnClickListener(new SafeClickListener() {
                 @Override
@@ -148,7 +163,104 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     commonUtilsMethods.displayPopupWindow(context,view,popupDocCategory);
                 }
             });
+        } else if (callslist.getCustType().equalsIgnoreCase("2")) {
+            for (int i = 0; i < masterJsonArray2.length(); i++) {
+                JSONObject obj = masterJsonArray2.optJSONObject(i);
+                if (obj == null) continue;
+                chmCode = callslist.getCustCode();
+                if (callslist.getCustCode().equalsIgnoreCase(obj.optString("Code"))) {
+                    chmCluster = obj.optString("Town_Name");
+                    chmName = obj.optString("Name");
+                    chmCat = obj.optString("Chm_cat");
+                    chmMob = obj.optString("Chemists_Mobile");
+                    chmMail = obj.optString("Chemists_Email");
+                    chmAdr = obj.optString("cus_addr");
+                    chmCode = obj.optString("Code");
+                    break;
+                }
+            }
+            holder.cluster.setText(chmCluster);
+            final String popupChmCluster = chmCluster;
+            holder.cluster.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    commonUtilsMethods.displayPopupWindow(context, view, popupChmCluster);
+                }
+            });
+        } else if (callslist.getCustType().equalsIgnoreCase("3")) {
+            for (int i = 0; i < masterJsonArray3.length(); i++) {
+                JSONObject obj = masterJsonArray3.optJSONObject(i);
+                if (obj == null) continue;
+                stkCode = callslist.getCustCode();
+                if (callslist.getCustCode().equalsIgnoreCase(obj.optString("Code"))) {
+                    stkCluster = obj.optString("Town_Name");
+                    stkName = obj.optString("Name");
+                    stkMob = obj.optString("Stockiest_Mobile");
+                    stkAdr = obj.optString("cus_addr");
+                    stkCode = obj.optString("Code");
+                    break;
+                }
+            }
+            holder.cluster.setText(stkCluster);
+            final String popupStkCluster = stkCluster;
+            holder.cluster.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    commonUtilsMethods.displayPopupWindow(context, view, popupStkCluster);
+                }
+            });
+        } else if (callslist.getCustType().equalsIgnoreCase("4")) {
+            for (int i = 0; i < masterJsonArray4.length(); i++) {
+                JSONObject obj = masterJsonArray4.optJSONObject(i);
+                if (obj == null) continue;
+                unDrCode =  callslist.getCustCode();
+                if (callslist.getCustCode().equalsIgnoreCase(obj.optString("Code"))) {
+                    undrCluster = obj.optString("Town_Name");
+                    undrCls = obj.optString("SpecialtyName");
+                    undrCategory = obj.optString("CategoryName");
+                    unDrName = obj.optString("Name");
+                    unDrDob = obj.optString("UnlstDOB");
+                    unDrDow = obj.optString("UnlstDOW");
+                    unDrMob = obj.optString("Mobile");
+                    unDrMail = obj.optString("Email");
+                    unDrQuil = obj.optString("Doc_QuaName");
+                    unDrAdr = obj.optString("cus_addr");
+                    unDrCode = obj.optString("Code");
+                    break;
+                }
+            }
+
+            holder.cluster.setText(undrCluster);
+            holder.cls.setText(undrCls);
+            holder.category.setText(undrCategory);
+            final String popupUndrCluster = undrCluster;
+            final String popupUndrClass = undrCls;
+            final String popupUndrCategory = undrCategory;
+            holder.cluster.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    commonUtilsMethods.displayPopupWindow(context, view, popupUndrCluster);
+                }
+            });
+            holder.cls.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    commonUtilsMethods.displayPopupWindow(context,view,popupUndrClass);
+                }
+            });
+            holder.category.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    commonUtilsMethods.displayPopupWindow(context,view,popupUndrCategory);
+                }
+            });
+        }
+        if(callslist.getCustType().equalsIgnoreCase("1") || callslist.getCustType().equalsIgnoreCase("4")) {
+            holder.cluster.setVisibility(View.VISIBLE);
+            holder.cls.setVisibility(View.VISIBLE);
+            holder.category.setVisibility(View.VISIBLE);
         }else{
+            holder.cluster.setVisibility(View.VISIBLE);
             holder.cls.setVisibility(View.GONE);
             holder.category.setVisibility(View.GONE);
         }
@@ -159,23 +271,103 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         String type = callslist.getDocNameID();
 
         if (type.equalsIgnoreCase("1")) {
+            String custCode = "D";
             holder.imageView.setImageResource(R.drawable.map_dr_img);
             holder.imageView.setOnClickListener(new SafeClickListener() {
                 @Override
                 public void onSafeClick(View view) {
+                    docCode =  callslist.getCustCode();
+                    if (callslist.getCustCode().equalsIgnoreCase(docCode)) {
                     Intent dr = new Intent(context, DoctorProfileView.class);
-
+                    dr.putExtra("PosDCRname",custCode);
+                    dr.putExtra("Doc_name",Name);
+                    dr.putExtra("Doc_code",docCode);
+                    dr.putExtra("Town",docCluster);
+                    dr.putExtra("ListedDrSex",docGender);
+                    dr.putExtra("Qual_values",docQuil);
+                    dr.putExtra("Spec_values",docSpl);
+                    dr.putExtra("cate_values",docCategory);
+                    dr.putExtra("EMAIL",docMail);
+                    dr.putExtra("MOB",docMob);
+                    dr.putExtra("PHN",docPhn);
+                    dr.putExtra("DOB",docDob);
+                    dr.putExtra("DOW",docDow);
+                    dr.putExtra("ADDRESS",docAddr);
                     int pos = holder.getBindingAdapterPosition();
                     dr.putExtra("position",pos);
                     context.startActivity(dr);
+                    }
                 }
             });
         } else if (type.equalsIgnoreCase("2")) {
+            String custCode = "C";
             holder.imageView.setImageResource(R.drawable.map_chemist_img);
+            holder.imageView.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    chmCode = callslist.getCustCode();
+                    if (callslist.getCustCode().equalsIgnoreCase(chmCode)) {
+                        Intent chm = new Intent(context, DoctorProfileView.class);
+                        chm.putExtra("PosDCRname", custCode);
+                        chm.putExtra("Doc_name", chmName);
+                        chm.putExtra("Doc_code", chmCode);
+                        chm.putExtra("Town", chmCluster);
+                        chm.putExtra("cate_values", chmCat);
+                        chm.putExtra("EMAIL", chmMail);
+                        chm.putExtra("ADDRESS", chmAdr);
+                        int pos = holder.getBindingAdapterPosition();
+                        chm.putExtra("position", pos);
+                        context.startActivity(chm);
+                    }
+                }
+            });
         } else if (type.equalsIgnoreCase("3")) {
+            String custCode = "S";
             holder.imageView.setImageResource(R.drawable.map_stockist_img);
+            holder.imageView.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    stkCode = callslist.getCustCode();
+                    if (callslist.getCustCode().equalsIgnoreCase(stkCode)) {
+                        Intent stk = new Intent(context, DoctorProfileView.class);
+                        stk.putExtra("PosDCRname", custCode);
+                        stk.putExtra("Doc_name", stkName);
+                        stk.putExtra("Doc_code", stkCode);
+                        stk.putExtra("Town", stkCluster);
+                        stk.putExtra("ADDRESS", stkAdr);
+                        int pos = holder.getBindingAdapterPosition();
+                        stk.putExtra("position", pos);
+                        context.startActivity(stk);
+                    }
+                }
+            });
         } else if (type.equalsIgnoreCase("4")) {
             holder.imageView.setImageResource(R.drawable.map_unlistdr_img);
+            String custCode = "U";
+            holder.imageView.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View view) {
+                    unDrCode =  callslist.getCustCode();
+                    if (callslist.getCustCode().equalsIgnoreCase(unDrCode)) {
+                        Intent dr = new Intent(context, DoctorProfileView.class);
+                        dr.putExtra("PosDCRname",custCode);
+                        dr.putExtra("Doc_name",unDrName);
+                        dr.putExtra("Doc_code",unDrCode);
+                        dr.putExtra("Town",undrCluster);
+                        dr.putExtra("Qual_values",unDrQuil);
+                        dr.putExtra("Spec_values",undrCls);
+                        dr.putExtra("cate_values",undrCategory);
+                        dr.putExtra("EMAIL",unDrMail);
+                        dr.putExtra("MOB",unDrMob);
+                        dr.putExtra("DOB",unDrDob);
+                        dr.putExtra("DOW",unDrDow);
+                        dr.putExtra("ADDRESS",unDrAdr);
+                        int pos = holder.getBindingAdapterPosition();
+                        dr.putExtra("position",pos);
+                        context.startActivity(dr);
+                    }
+                }
+            });
         } else if (type.equalsIgnoreCase("5")) {
             holder.imageView.setImageResource(R.drawable.map_cip_img);
         } else if (type.equalsIgnoreCase("6")) {

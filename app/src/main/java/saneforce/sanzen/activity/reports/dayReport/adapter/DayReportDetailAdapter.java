@@ -115,7 +115,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     public void onBindViewHolder(@NonNull DayReportDetailAdapter.MyViewHolder holder, int position) {
         holder.expandLayout.setVisibility(View.GONE);
         DayReportDetailModel dataModel = arrayList.get(holder.getAbsoluteAdapterPosition());
-        holder.name.setText(dataModel.getName());
+        if(reportOf.equalsIgnoreCase(Constants.DOCTOR_MAS) || reportOf.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)){
+            holder.name.setText("Dr. "+dataModel.getName());
+        }else{
+            holder.name.setText(dataModel.getName());
+        }
         holder.visitTime.setText(dataModel.getVisitTime());
         holder.modifiedTime.setText(dataModel.getModTime());
         holder.cluster.setText(dataModel.getTerritory());

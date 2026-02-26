@@ -66,7 +66,6 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull GeoTaggingAdapter.ViewHolder holder, int position) {
         api_interface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-        holder.tv_name.setText(geoTaggingModelLists.get(position).getName());
         holder.tv_hq.setText(geoTaggingModelLists.get(position).getHqName());
         holder.tv_cluster.setText(geoTaggingModelLists.get(position).getCluster());
         holder.tv_address.setText(geoTaggingModelLists.get(position).getAddress());
@@ -76,26 +75,32 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             case "D":
                 holder.tv_cust_mode.setText(SharedPref.getDrCap(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_dr_img));
+                holder.tv_name.setText("Dr. "+geoTaggingModelLists.get(position).getName());
                 break;
             case "C":
                 holder.tv_cust_mode.setText(SharedPref.getChmCap(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_chemist_img));
+                holder.tv_name.setText(geoTaggingModelLists.get(position).getName());
                 break;
             case "S":
                 holder.tv_cust_mode.setText(SharedPref.getStkCap(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_stockist_img));
+                holder.tv_name.setText(geoTaggingModelLists.get(position).getName());
                 break;
             case "U":
                 holder.tv_cust_mode.setText(SharedPref.getUNLcap(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_unlistdr_img));
+                holder.tv_name.setText("Dr. "+geoTaggingModelLists.get(position).getName());
                 break;
             case "H":
                 holder.tv_cust_mode.setText(SharedPref.getHospCaption(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_cip_img));
+                holder.tv_name.setText(geoTaggingModelLists.get(position).getName());
                 break;
             case "CIP":
                 holder.tv_cust_mode.setText(SharedPref.getCipCaption(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_cip_img));
+                holder.tv_name.setText(geoTaggingModelLists.get(position).getName());
                 break;
         }
         holder.tag_view.setOnClickListener(new SafeClickListener() {
