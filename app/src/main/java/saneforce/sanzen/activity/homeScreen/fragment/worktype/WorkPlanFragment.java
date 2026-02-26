@@ -5418,8 +5418,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                     obj.put("TP_cluster", clusterCode.toString());
                                                     obj.put("TP_worktype", oneBuildModelClass.getSessionList().get(0).getWorkType().getCode());
                                                     if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
-                                                        obj.put("Others_Code", oneBuildModelClass.getSTP_Code());
-                                                        obj.put("Others_Name", oneBuildModelClass.getSTP_Name());
+                                                        obj.put("Others_Code", oneBuildModelClass.getSessionList().get(0).getSTPCode());
+                                                        obj.put("Others_Name", oneBuildModelClass.getSessionList().get(0).getSTPName());
                                                     } else {
                                                         obj.put("Others_Code", "");
                                                         obj.put("Others_Name", "");
@@ -5457,8 +5457,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                         obj2.put("TP_cluster", clusterCode.toString());
                                                         obj2.put("TP_worktype", oneBuildModelClass.getSessionList().get(1).getWorkType().getCode());
                                                         if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
-                                                            obj2.put("Others_Code", oneBuildModelClass.getSTP_Code());
-                                                            obj2.put("Others_Name", oneBuildModelClass.getSTP_Name());
+                                                            obj2.put("Others_Code", oneBuildModelClass.getSessionList().get(1).getSTPCode());
+                                                            obj2.put("Others_Name", oneBuildModelClass.getSessionList().get(1).getSTPName());
                                                         } else {
                                                             obj2.put("Others_Code", "");
                                                             obj2.put("Others_Name", "");
