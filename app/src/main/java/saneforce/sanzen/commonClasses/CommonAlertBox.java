@@ -541,55 +541,107 @@ public class CommonAlertBox {
 
         okButton.setOnClickListener(view -> dialog.dismiss());
     }
-    public static void DoctorPlanPopup2(Activity activity, List<String> vList, List<String> nvList,
-                                        Map<String, String> nameMap, Map<String, String> clusterMap,
-                                        String vRatio, String nvRatio) {
+    public static void DoctorPlanPopup2(Activity activity,
+                                        List<String> vList,
+                                        List<String> nvList,
+                                        Map<String, String> nameMap,
+                                        Map<String, String> clusterMap,
+                                        String vRatio,
+                                        String nvRatio) {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        View layout = activity.getLayoutInflater().inflate(R.layout.popup_doctor_count_time, null);
+        View layout = activity.getLayoutInflater()
+                .inflate(R.layout.popup_doctor_count_time, null);
 
+        // Find Views
         LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
         LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
         TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
         TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
+        Button okButton2 = layout.findViewById(R.id.okButton2);
 
+        // Set Ratio Text
         tvVCount.setText(vRatio);
         tvNVCount.setText(nvRatio);
 
-        // Visited Rows
+        // Add Rows
         addRows(activity, vContainer, vList, nameMap, clusterMap);
-        // Not Visited Rows
         addRows(activity, nvContainer, nvList, nameMap, clusterMap);
 
         alert.setView(layout);
+
         AlertDialog dialog = alert.create();
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        layout.findViewById(R.id.okButton2).setOnClickListener(v -> dialog.dismiss());
 
-        // Inside DoctorPlanPopup2
-        dialog.setOnShowListener(d -> {
-            Window window = dialog.getWindow();
-            if (window != null) {
-                // Width 85% of screen
-                int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.65);
+        // OK Button Click
 
-                // Max height limit (60% of screen)
-                int maxHeight = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.60);
 
-                // Setting height to WRAP_CONTENT makes it small for 1 doctor
-                // But the XML layout_weight="1" will prevent it from going past the screen
-                window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                WindowManager.LayoutParams lp = window.getAttributes();
-                // If content is huge, this forces it to stay within screen limits
-                if (window.getDecorView().getHeight() > maxHeight) {
-                    window.setLayout(width, maxHeight);
-                }
-            }
-        });
+        // SHOW FIRST
         dialog.show();
+        okButton2.setOnClickListener(v -> dialog.dismiss());
+        // AFTER showing, set proper size
+        Window window = dialog.getWindow();
+        if (window != null) {
+
+            int width = (int) (activity.getResources()
+                    .getDisplayMetrics().widthPixels * 0.65);
+
+            int height = (int) (activity.getResources()
+                    .getDisplayMetrics().heightPixels * 0.55);
+
+            window.setLayout(width, height);
+        }
     }
+//    public static void DoctorPlanPopup2(Activity activity, List<String> vList, List<String> nvList,
+//                                        Map<String, String> nameMap, Map<String, String> clusterMap,
+//                                        String vRatio, String nvRatio) {
+//
+//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+//        View layout = activity.getLayoutInflater().inflate(R.layout.popup_doctor_count_time, null);
+//
+//        LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
+//        LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
+//        TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
+//        TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
+//
+//        tvVCount.setText(vRatio);
+//        tvNVCount.setText(nvRatio);
+//
+//        // Visited Rows
+//        addRows(activity, vContainer, vList, nameMap, clusterMap);
+//        // Not Visited Rows
+//        addRows(activity, nvContainer, nvList, nameMap, clusterMap);
+//
+//        alert.setView(layout);
+//        AlertDialog dialog = alert.create();
+//        dialog.setCancelable(false);
+//        dialog.setCanceledOnTouchOutside(false);
+//        layout.findViewById(R.id.okButton2).setOnClickListener(v -> dialog.dismiss());
+//
+//        // Inside DoctorPlanPopup2
+//        dialog.setOnShowListener(d -> {
+//            Window window = dialog.getWindow();
+//            if (window != null) {
+//                // Width 85% of screen
+//                int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.65);
+//
+//                // Max height limit (60% of screen)
+//                int maxHeight = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.60);
+//
+//                // Setting height to WRAP_CONTENT makes it small for 1 doctor
+//                // But the XML layout_weight="1" will prevent it from going past the screen
+//                window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+//
+//                WindowManager.LayoutParams lp = window.getAttributes();
+//                // If content is huge, this forces it to stay within screen limits
+//                if (window.getDecorView().getHeight() > maxHeight) {
+//                    window.setLayout(width, maxHeight);
+//                }
+//            }
+//        });
+//        dialog.show();
+//    }
 
     private static void addRows(Activity act, LinearLayout container, List<String> codes,
                                 Map<String, String> nMap, Map<String, String> cMap) {
