@@ -5457,13 +5457,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                         obj2.put("TP_cluster", clusterCode.toString());
                                                         obj2.put("TP_worktype", oneBuildModelClass.getSessionList().get(1).getWorkType().getCode());
                                                         if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
-                                                            obj.put("Others_Code", oneBuildModelClass.getSTP_Code());
-                                                            obj.put("Others_Name", oneBuildModelClass.getSTP_Name());
+                                                            obj2.put("Others_Code", oneBuildModelClass.getSTP_Code());
+                                                            obj2.put("Others_Name", oneBuildModelClass.getSTP_Name());
                                                         } else {
-                                                            obj.put("Others_Code", "");
-                                                            obj.put("Others_Name", "");
+                                                            obj2.put("Others_Code", "");
+                                                            obj2.put("Others_Name", "");
                                                         }
-                                                        obj.put("isFromTP", true);
+                                                        obj2.put("isFromTP", true);
                                                         jsonArray.put(obj2);
                                                     }
                                                     isFromTP = true;
