@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Map;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
@@ -532,6 +533,154 @@ public class CommonAlertBox {
         dialog.show();
 
         okButton.setOnClickListener(view -> dialog.dismiss());
+    }
+//    public static void DoctorPlanPopup2(Activity activity,
+//                                        List<String> vList,
+//                                        Map<String, String> nameMap,
+//                                        Map<String, String> clusterMap
+//                                       ) {
+//
+//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+//        View layout = activity.getLayoutInflater()
+//                .inflate(R.layout.popup_doctor_count_visited, null);
+//
+//        // Find Views
+//        LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
+////        LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
+////        TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
+////        TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
+//        Button okButton2 = layout.findViewById(R.id.okButton2);
+//
+//        // Set Ratio Text
+////        tvVCount.setText(vRatio);
+////        tvNVCount.setText(nvRatio);
+//
+//        // Add Rows
+//        addRows(activity, vContainer, vList, nameMap, clusterMap);
+//       // addRows(activity, nvContainer, nvList, nameMap, clusterMap);
+//
+//        alert.setView(layout);
+//
+//        AlertDialog dialog = alert.create();
+//        dialog.setCancelable(false);
+//        dialog.setCanceledOnTouchOutside(false);
+//
+//        // OK Button Click
+//
+//
+//        // SHOW FIRST
+//        dialog.show();
+//        okButton2.setOnClickListener(v -> dialog.dismiss());
+//        // AFTER showing, set proper size
+//        Window window = dialog.getWindow();
+//        if (window != null) {
+//
+//            int width = (int) (activity.getResources()
+//                    .getDisplayMetrics().widthPixels * 0.65);
+//
+//            int height = (int) (activity.getResources()
+//                    .getDisplayMetrics().heightPixels * 0.55);
+//
+//            window.setLayout(width, height);
+//        }
+//    }
+//    private static void addRows(Activity act, LinearLayout container, List<String> codes,
+//                                Map<String, String> nMap, Map<String, String> cMap) {
+//        container.removeAllViews(); // ஹெடரை அழிக்காமல் இருக்க, XML-ல் ஹெடரை ScrollView-க்கு வெளியே வைத்திருங்கள்.
+//
+//        int i = 1;
+//        for (String code : codes) {
+//            // ✅ ஜாவாவில் புது TextView-க்கு பதில், உங்கள் XML டிசைனைப் பயன்படுத்துகிறோம்
+//            View rowView = act.getLayoutInflater().inflate(R.layout.popup_doctor_count_visited_status, null);
+//
+//            TextView tvSno = rowView.findViewById(R.id.tvSno);
+//            TextView tvCluster = rowView.findViewById(R.id.tvCluster);
+//            TextView tvDoctor = rowView.findViewById(R.id.tvDoctor);
+//            ImageView tvDoctorStatus = rowView.findViewById(R.id.imgStatus);
+//            // ✅ டேட்டாவை செட் செய்கிறோம்
+//            tvSno.setText(String.valueOf(i++));
+//            tvCluster.setText(cMap.getOrDefault(code, "-"));
+//            tvDoctor.setText(nMap.getOrDefault(code, code));
+//
+//            // ✅ முழு Row-வையும் லிஸ்ட்டில் சேர்க்கிறோம்
+//            container.addView(rowView);
+//        }
+//    }
+public static void DoctorPlanPopup2(Activity activity,
+                                    List<String> vList,
+                                    List<String> nvList,
+                                    Map<String, String> nameMap,
+                                    Map<String, String> clusterMap) {
+
+    AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+    View layout = activity.getLayoutInflater()
+            .inflate(R.layout.popup_doctor_count_visited, null);
+
+    LinearLayout visitedContainer = layout.findViewById(R.id.visitedContainer);
+    Button okButton2 = layout.findViewById(R.id.okButton2);
+
+    // ✅ Add Visited Doctors
+    addRows(activity, visitedContainer, vList, nameMap, clusterMap, true);
+
+    // ✅ Add Not Visited Doctors
+    addRows(activity, visitedContainer, nvList, nameMap, clusterMap, false);
+
+    alert.setView(layout);
+
+    AlertDialog dialog = alert.create();
+    dialog.setCancelable(false);
+    dialog.setCanceledOnTouchOutside(false);
+
+    dialog.show();
+
+    okButton2.setOnClickListener(v -> dialog.dismiss());
+
+    // ✅ Set Dialog Size
+    Window window = dialog.getWindow();
+    if (window != null) {
+        int width = (int) (activity.getResources()
+                .getDisplayMetrics().widthPixels * 0.70);
+
+        int height = (int) (activity.getResources()
+                .getDisplayMetrics().heightPixels * 0.65);
+
+        window.setLayout(width, height);
+    }
+}
+    private static void addRows(Activity act,
+                                LinearLayout container,
+                                List<String> codes,
+                                Map<String, String> nameMap,
+                                Map<String, String> clusterMap,
+                                boolean isVisited) {
+
+        int startIndex = container.getChildCount() + 1;
+
+        for (String code : codes) {
+
+            View rowView = act.getLayoutInflater()
+                    .inflate(R.layout.popup_doctor_count_visited_status,
+                            container,
+                            false);
+
+            TextView tvSno = rowView.findViewById(R.id.tvSno);
+            TextView tvCluster = rowView.findViewById(R.id.tvCluster);
+            TextView tvDoctor = rowView.findViewById(R.id.tvDoctor);
+            ImageView imgStatus = rowView.findViewById(R.id.imgStatus);
+
+            tvSno.setText(String.valueOf(startIndex++));
+            tvCluster.setText(clusterMap.getOrDefault(code, "-"));
+            tvDoctor.setText(nameMap.getOrDefault(code, code));
+
+            // ✅ Set Status Image
+            if (isVisited) {
+                imgStatus.setImageResource(R.drawable.done);   // Visited
+            } else {
+                imgStatus.setImageResource(R.drawable.glasstimer);   // Not Visited
+            }
+
+            container.addView(rowView);
+        }
     }
 
     public static void ApprovalAlert(Activity activity) {

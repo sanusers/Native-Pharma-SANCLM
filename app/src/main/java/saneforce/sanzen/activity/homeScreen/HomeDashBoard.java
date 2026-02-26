@@ -3483,14 +3483,21 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     // SharedPref.addVisitedDoctor(this, custCode);
                 }
             }
-
+            //String countRatio = visitedDoctors.size() + "/" + plannedDoctorCodes.size();
             // ✅ Map codes → names
             Map<String, String> doctorNameMap = new HashMap<>();
+            Map<String, String> doctorClusterMap = new HashMap<>();
             for (int i = 0; i < doctorMasArray.length(); i++) {
                 JSONObject obj = doctorMasArray.getJSONObject(i);
                 String code = obj.optString("Code", "").trim();
                 String name = obj.optString("Name", "").trim();
-                if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
+                String cluster = obj.optString("Town_Name", "").trim(); // 🔥 from your JSON
+
+                if (!code.isEmpty()) {
+                    doctorNameMap.put(code, name);
+                    doctorClusterMap.put(code, cluster);
+                }
+                //if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
             }
 
             // ✅ Not visited doctors
@@ -3499,37 +3506,38 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 if (!visitedDoctors.contains(code)) notVisitedCodes.add(code);
             }
 
-            // ✅ Build popup message
-            SpannableStringBuilder msg = new SpannableStringBuilder();
-            msg.append(new SpannableString("Visited Doctors:\n") {{
-                setSpan(new StyleSpan(Typeface.BOLD), 0, length(), 0);
-                setSpan(new ForegroundColorSpan(Color.BLACK), 0, length(), 0);
-            }});
-            if (visitedDoctors.isEmpty()) msg.append("None\n");
-            else {
-                int i = 1;
-                for (String code : visitedDoctors) {
-                    String name = doctorNameMap.getOrDefault(code, code);
-                    msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
-                }
-            }
-
-            msg.append("\n");
-            msg.append(new SpannableString("Not Visited Doctors:\n") {{
-                setSpan(new StyleSpan(Typeface.BOLD), 0, length(), 0);
-                setSpan(new ForegroundColorSpan(Color.BLACK), 0, length(), 0);
-            }});
-            if (notVisitedCodes.isEmpty()) msg.append("None\n");
-            else {
-                int i = 1;
-                for (String code : notVisitedCodes) {
-                    String name = doctorNameMap.getOrDefault(code, code);
-                    msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
-                }
-            }
-
+//            // ✅ Build popup message
+//            SpannableStringBuilder msg = new SpannableStringBuilder();
+//            msg.append(new SpannableString("Visited Doctors:\n") {{
+//                setSpan(new StyleSpan(Typeface.BOLD), 0, length(), 0);
+//                setSpan(new ForegroundColorSpan(Color.BLACK), 0, length(), 0);
+//            }});
+//            if (visitedDoctors.isEmpty()) msg.append("None\n");
+//            else {
+//                int i = 1;
+//                for (String code : visitedDoctors) {
+//                    String name = doctorNameMap.getOrDefault(code, code);
+//                    msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
+//                }
+//            }
+//
+//            msg.append("\n");
+//            msg.append(new SpannableString("Not Visited Doctors:\n") {{
+//                setSpan(new StyleSpan(Typeface.BOLD), 0, length(), 0);
+//                setSpan(new ForegroundColorSpan(Color.BLACK), 0, length(), 0);
+//            }});
+//            if (notVisitedCodes.isEmpty()) msg.append("None\n");
+//            else {
+//                int i = 1;
+//                for (String code : notVisitedCodes) {
+//                    String name = doctorNameMap.getOrDefault(code, code);
+//                    msg.append(String.valueOf(i++)).append(" . Dr . ").append(name).append("\n");
+//                }
+//            }
+           // String notVisitedRatio = notVisitedCodes.size() + "/" + plannedDoctorCodes.size();
+            CommonAlertBox.DoctorPlanPopup2(this, new ArrayList<>(visitedDoctors),new ArrayList<>(notVisitedCodes), doctorNameMap, doctorClusterMap);
             // ✅ Show popup
-            CommonAlertBox.DoctorPlanPopup(this, msg);
+           // CommonAlertBox.DoctorPlanPopup(this, msg);
 
             // ✅ Mark popup shown today (for normal flow)
 //            if (!isImmediatePopup) SharedPref.setDoctorRemainingShownDate(this, " ");
