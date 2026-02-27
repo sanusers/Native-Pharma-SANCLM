@@ -3692,7 +3692,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void getDraftSaveOneBuild(String isClickedName, String monthYear, ArrayList<OneBuildModelClass> arrayList, String isFrom, boolean statusOffline) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
-            if (status) {
                 try {
                    /* int id = 0;
                     int previous = SharedPref.getTpIdPreviousMonth(TourPlanActivity.this), current = SharedPref.getTpIdCurrentMonth(TourPlanActivity.this), next = SharedPref.getTpIdNextMonth(TourPlanActivity.this);
@@ -3749,7 +3748,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     }*/
                     JsonObject tourPlan = new JsonObject();
                     for (OneBuildModelClass oneBuildModelClassTp : arrayList) {
-                        if (!oneBuildModelClassTp.getDayNo().isEmpty() && !oneBuildModelClassTp.getSessionList().get(0).getWorkType().getName().isEmpty()) {
+                        if (!oneBuildModelClassTp.getDayNo().isEmpty() /*&& !oneBuildModelClassTp.getSessionList().get(0).getWorkType().getName().isEmpty()*/) {
                             tourPlan.addProperty("SFCode", SharedPref.getSfCode(TourPlanActivity.this));
                             tourPlan.addProperty("SFName", SharedPref.getSfName(TourPlanActivity.this));
                             tourPlan.addProperty("Month", oneBuildModelClassTp.getMonth());
@@ -4194,9 +4193,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.v("tpGetPlan", "----" + response.body());
                                 try {
-                                    JSONObject json = new JSONObject(response.body().toString());
-                                    Log.d("TAG", "onResponse: " + json);
-                                 /*   JSONObject outer = new JSONObject(response.body().toString());
+                                    /*   JSONObject outer = new JSONObject(response.body().toString());
                                     String dString = outer.getString("d");
                                     JSONObject inner = new JSONObject(dString);
                                     boolean status = false;
@@ -4204,10 +4201,20 @@ public class TourPlanActivity extends AppCompatActivity {
                                         status = inner.getBoolean("Status");
                                     }
 //                                    status = true;
-                                    *//*int data = inner.getInt("Data");*//*
+                                    int data = inner.getInt("Data");
                                     String message = inner.optString("Message", "");
                                     Log.d("TP", "onResponse: " + message);*/
-                                    if (response.body() != null && !response.body().isJsonNull() && status) {
+                                    JSONObject json = new JSONObject(response.body().toString());
+                                    Log.d("TAG", "onResponse: " + json);
+                                    boolean success = json.optBoolean("success");
+                                    System.out.println(success);
+                                    if(success){
+                                        Log.d("TAG", "onResponse: "+"success TRUE");
+                                    }else{
+                                        Log.d("TAG", "onResponse: "+"success FALSE");
+                                    }
+                                    if (response.body() != null && !response.body().isJsonNull() && success) {
+
                                         try {
                                             //JsonObject jsonObject = new JsonObject(response.body().toString());
                                             JSONObject jsonObject = new JSONObject(response.body().toString());
@@ -4220,7 +4227,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                                  /*   if (outerJsonObject.has("d")) {
                                                         String innerJsonString = outerJsonObject.getString("d");
                                                         JSONObject innerJsonObject = new JSONObject(innerJsonString);
-                                                     /*   if (innerJsonObject.has("Data")) {
+                                                        if (innerJsonObject.has("Data")) {
                                                             switch (isClickedName) {
                                                                 case "previous":
                                                                     int retrievedIdPm = innerJsonObject.getInt("Data");
@@ -4301,7 +4308,6 @@ public class TourPlanActivity extends AppCompatActivity {
                     binding.tvSync.setEnabled(true);
                     Log.v("tpGetPlan", "--error--1--" + e);
                 }
-            }
         });
         networkStatusTask.execute();
     }
