@@ -1522,6 +1522,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         CommonAlertBox.TpAlert(requireActivity());
                     } else {
                         onSaveClicked();
+//                        if ("1".equalsIgnoreCase(deviation)) {
+//                            saveOrUpdateWorkPlan(false);   // Deviation → No Popup
+//                        } else {
+//                            saveOrUpdateWorkPlan(true);    // Normal → Show Popup
+//                        }
+
                         // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor);
                     }
                     break;
@@ -2990,7 +2996,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode1;
-                if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg2.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3004,7 +3011,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode2;
-                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg1.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3280,6 +3288,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
             jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             jsonObject.put("TpVwFlg", deviation);
+            System.out.println(deviation);
             jsonObject.put("TP_cluster", tpCluster);
             jsonObject.put("TP_worktype", tpWorkType);
             jsonObject.put("TP_Doctor", tpDoctor);
@@ -3290,8 +3299,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             SharedPref.setTodayTPDoctor(requireContext(), tpDoctor);
             Log.e("TPDoctorSave", "Saved TP Doctor => " + tpDoctor);
-
-            ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP);
+            if (deviation.equalsIgnoreCase("0")) {
+                ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP);
+            } else {
+                return;
+            }
 
             jsonObject.put("Others_Code", workDayCode);
             jsonObject.put("Others_Name", workDayName);
@@ -3908,7 +3920,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             String todayPlanClusterCode = mTowncode1;
-            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
             SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), true, mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"));
 
@@ -4801,7 +4813,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(mTownname2).replaceAll(",", " , ")));
                                 binding.txtheadquaters2.setText(CommonUtilsMethods.removeLastComma(mHQName2).replaceAll(",", " , "));
                                 String todayPlanClusterCode = mTowncode2;
-                                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                                if (mFwFlg1.equalsIgnoreCase("F"))
+                                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                             }
                             disableSession2();

@@ -263,6 +263,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private android.app.AlertDialog locationDialog;
     private ConnectivityManager.NetworkCallback networkCallback;
     int position;
+    String practice = "0";
+    RelativeLayout ll_slide;
     private final Runnable updateClock = new Runnable() {
         @Override
         public void run() {
@@ -1021,6 +1023,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.subDivision.setText(SharedPref.getSubDivisionNames(this));
         isDateSelectionClicked = false;
         setSTPsfCode();
+        ll_slide = findViewById(R.id.ll_slide);
+        if (ll_slide != null) {
+            if (practice.equals("1")) {
+                ll_slide.setVisibility(View.VISIBLE);
+            } else {
+                ll_slide.setVisibility(View.GONE);
+            }
+        }
+
+
 
         if (SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")) {
             if (!CheckLocPermission()) {
