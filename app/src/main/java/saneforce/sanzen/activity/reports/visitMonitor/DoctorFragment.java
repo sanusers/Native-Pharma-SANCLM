@@ -27,6 +27,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -202,7 +203,7 @@ public class DoctorFragment extends Fragment {
         barChart.invalidate();
     }
 
-    private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
+   /* private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
         if (oneVisit == 0 && twoVisit == 0 && threeVisit == 0 && threePlusVisit == 0) {
             pieChart.setCenterText("No Visits Found");
         } else {
@@ -267,7 +268,106 @@ public class DoctorFragment extends Fragment {
             pieChart.invalidate();
 
         }
-    }
+    }*/
+   private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
+
+       if (oneVisit == 0 && twoVisit == 0 && threeVisit == 0 && threePlusVisit == 0) {
+
+           pieChart.setCenterText("No Visits Found");
+           pieChart.setCenterTextSize(15f);
+           pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.gray_med));
+
+           pieChart.setHoleRadius(63f);
+           pieChart.setTransparentCircleRadius(10f);
+           pieChart.setDrawEntryLabels(false);
+           pieChart.getDescription().setEnabled(false);
+
+           ArrayList<PieEntry> entries = new ArrayList<>();
+           entries.add(new PieEntry(1f, "No Visits")); // ✅ label required for legend
+
+           PieDataSet dataSet = new PieDataSet(entries, "");
+           dataSet.setDrawValues(false);
+           dataSet.setColors(Collections.singletonList(
+                   requireContext().getResources().getColor(R.color.gray_med)
+           ));
+
+           PieData data = new PieData(dataSet);
+           pieChart.setData(data);
+
+           // ✅ LEGEND TOP (same as normal chart)
+           Legend legend = pieChart.getLegend();
+           legend.setEnabled(true);
+           legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+           legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+           legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+           legend.setDrawInside(false);
+           legend.setXEntrySpace(7f);
+           legend.setYOffset(0f);
+           legend.setWordWrapEnabled(true);
+           legend.setForm(Legend.LegendForm.CIRCLE);
+
+           pieChart.invalidate();
+           return;
+       }
+
+       pieChart.setCenterText("Visits");
+       pieChart.setCenterTextSize(15f);
+       pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
+       pieChart.setUsePercentValues(false);
+       pieChart.getDescription().setEnabled(false);
+       pieChart.setExtraOffsets(5f, 10f, 5f, 5f);
+       pieChart.setDragDecelerationFrictionCoef(0.95f);
+       pieChart.setDrawHoleEnabled(true);
+       pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
+       pieChart.setHoleRadius(63f);
+       pieChart.setTransparentCircleRadius(10f);
+       pieChart.setRotationAngle(0);
+       pieChart.setRotationEnabled(true);
+       pieChart.setHighlightPerTapEnabled(true);
+       pieChart.setDrawEntryLabels(false);
+
+       ArrayList<PieEntry> entries = new ArrayList<>();
+       entries.add(new PieEntry(oneVisit, "1 Visit"));
+       entries.add(new PieEntry(twoVisit, "2 Visits"));
+       entries.add(new PieEntry(threeVisit, "3 Visits"));
+       entries.add(new PieEntry(threePlusVisit, "3+ Visits"));
+
+       PieDataSet dataSet = new PieDataSet(entries, "");
+       dataSet.setSliceSpace(3f);
+       dataSet.setSelectionShift(5f);
+
+       ArrayList<Integer> colors = new ArrayList<>();
+       colors.add(requireContext().getResources().getColor(R.color.blue_60));
+       colors.add(requireContext().getResources().getColor(R.color.yellow_45));
+       colors.add(requireContext().getResources().getColor(R.color.red_60));
+       colors.add(requireContext().getResources().getColor(R.color.green_2));
+       dataSet.setColors(colors);
+
+       PieData data = new PieData(dataSet);
+       data.setValueFormatter(new ValueFormatter() {
+           @Override
+           public String getFormattedValue(float value) {
+               return value == 0 ? "" : String.valueOf((int) value);
+           }
+       });
+       data.setValueTextSize(20f);
+       data.setValueTextColor(requireContext().getResources().getColor(R.color.bg_lit_white));
+
+       pieChart.setData(data);
+
+       Legend legend = pieChart.getLegend();
+       legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+       legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+       legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+       legend.setDrawInside(false);
+       legend.setXEntrySpace(7f);
+       legend.setYOffset(0f);
+       legend.setWordWrapEnabled(true);
+       legend.setForm(Legend.LegendForm.CIRCLE);
+
+       pieChart.animateY(1400);
+       pieChart.invalidate();
+   }
    /* private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
         pieChart.setCenterTextSize(15f);
         pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));

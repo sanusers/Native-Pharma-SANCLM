@@ -278,16 +278,16 @@ public class AsOnCallsFragment extends Fragment {
 
 /*            callCvgCurrentMonthDoc =  (double) visitedDoctorsCurrentMonth / (fwDaysCurrentMonth * 100);
             @SuppressLint("DefaultLocale") String formattedCallCvgCurrent = String.format("%.2f", callCvgCurrentMonthDoc);*/
-            String formattedCallCvgCurrent = safeDivide(visitedDoctorsCurrentMonth, fwDaysCurrentMonth * 100, 2);
+            String formattedCallCvgCurrent = safeDivide(visitedDoctorsCurrentMonth, fwDaysCurrentMonth * 10, 1);
 
            /* callCvgPreviousMonthDoc = (double) visitedDoctorsPreviousMonth / (fwDaysPreviousMonth * 100);
             @SuppressLint("DefaultLocale") String formattedCallCvgPrevious = String.format("%.2f", callCvgPreviousMonthDoc);*/
 
-            String formattedCallCvgPrevious = safeDivide(visitedDoctorsPreviousMonth, fwDaysPreviousMonth * 100, 2);
+            String formattedCallCvgPrevious = safeDivide(visitedDoctorsPreviousMonth, fwDaysPreviousMonth * 10, 1);
 
            /* callCvgPrePrevMonthDoc = (double) visitedDoctorsPre_PrevMonth / (fwDaysPrePreviousMonth * 100);
             @SuppressLint("DefaultLocale") String formattedCallCvgPre_Previous = String.format("%.2f", callCvgPrePrevMonthDoc);*/
-            String formattedCallCvgPre_Previous = safeDivide(visitedDoctorsPre_PrevMonth, fwDaysPrePreviousMonth * 100, 2);
+            String formattedCallCvgPre_Previous = safeDivide(visitedDoctorsPre_PrevMonth, fwDaysPrePreviousMonth * 10, 1);
 
 
             //Che
