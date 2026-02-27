@@ -662,8 +662,7 @@ public class ListedDoctorFragment extends Fragment {
         FilltercustArraList.clear();
 
 // 🔥 REMOVE ALREADY VISITED DOCTORS HERE
-        ArrayList<CustList> finalList =
-                removeAlreadyVisitedDoctors(custListArrayList);
+        ArrayList<CustList> finalList = removeAlreadyVisitedDoctors(custListArrayList);
 
         FilltercustArraList.addAll(finalList);
 
@@ -1002,8 +1001,8 @@ public class ListedDoctorFragment extends Fragment {
                             && specialityCode.isEmpty()
                             && territoryCode.isEmpty()
                             && categoryCode.isEmpty()) {
-                        FilltercustArraList.add(mList);
-                    }
+                            FilltercustArraList.add(mList);
+                        }
                 }
             }
             tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));

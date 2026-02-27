@@ -353,7 +353,11 @@ public class UnlistedDoctorFragment extends Fragment {
 
         }
         FilltercustArraList.clear();
-        FilltercustArraList.addAll(custListArrayList);
+//        FilltercustArraList.addAll(custListArrayList);
+        ArrayList<CustList> finalList = removeAlreadyVisitedDoctors(custListArrayList);
+
+        FilltercustArraList.addAll(finalList);
+
         Log.v("UNDRCALL", "-UnDr--size--" + custListArrayList.size());
 
         if (FilltercustArraList.isEmpty()) {
@@ -802,6 +806,9 @@ public class UnlistedDoctorFragment extends Fragment {
                         FilltercustArraList.add(mList);
                     }
                     tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
+                    FilltercustArraList = removeAlreadyVisitedDoctors(FilltercustArraList);
+
+                    tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
                 }
             }
         }
@@ -828,5 +835,42 @@ public class UnlistedDoctorFragment extends Fragment {
                 }
             }
     );
+    private ArrayList<CustList> removeAlreadyVisitedDoctors(ArrayList<CustList> sourceList) {
 
+        ArrayList<CustList> filteredList = new ArrayList<>();
+
+        try {
+            JSONArray callSyncArray = masterDataDao
+                    .getMasterDataTableOrNew(Constants.CALL_SYNC)
+                    .getMasterSyncDataJsonArray();
+
+            for (CustList cust : sourceList) {
+
+                boolean alreadyVisited = false;
+
+                for (int i = 0; i < callSyncArray.length(); i++) {
+                    JSONObject obj = callSyncArray.getJSONObject(i);
+
+                    if (obj.optString("CustCode")
+                            .equalsIgnoreCase(cust.getCode())
+                            && obj.optString("Dcr_dt")
+                            .equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+
+                        alreadyVisited = true;
+                        break;
+                    }
+                }
+
+                // ✅ ONLY NOT VISITED DOCTORS
+                if (!alreadyVisited) {
+                    filteredList.add(cust);
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e("REMOVE_VISITED", e.toString());
+        }
+
+        return filteredList;
+    }
 }

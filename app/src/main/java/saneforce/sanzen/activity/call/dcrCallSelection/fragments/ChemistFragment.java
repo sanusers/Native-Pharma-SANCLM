@@ -357,8 +357,13 @@ public class ChemistFragment extends Fragment {
         }
 
         Log.v("CheCall", "-che--size--" + cusListArrayList.size());
+//        FilltercustArraList.clear();
+//        FilltercustArraList.addAll(cusListArrayList);
         FilltercustArraList.clear();
-        FilltercustArraList.addAll(cusListArrayList);
+        ArrayList<CustList> finalList = removeAlreadyVisitedChemist(cusListArrayList);
+
+        FilltercustArraList.addAll(finalList);
+
         if (FilltercustArraList.isEmpty()) {
             noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
             noChemist.setVisibility(View.VISIBLE);
@@ -756,7 +761,9 @@ public class ChemistFragment extends Fragment {
             }
         }
         tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
+        FilltercustArraList = removeAlreadyVisitedChemist(FilltercustArraList);
 
+        tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
         if (FilltercustArraList.isEmpty()) {
             noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
             noChemist.setVisibility(View.VISIBLE);
@@ -770,7 +777,44 @@ public class ChemistFragment extends Fragment {
         }
         dialogFilter.dismiss();
     }
+    private ArrayList<CustList> removeAlreadyVisitedChemist(ArrayList<CustList> sourceList) {
 
+        ArrayList<CustList> filteredList = new ArrayList<>();
+
+        try {
+            JSONArray callSyncArray = masterDataDao
+                    .getMasterDataTableOrNew(Constants.CALL_SYNC)
+                    .getMasterSyncDataJsonArray();
+
+            for (CustList cust : sourceList) {
+
+                boolean alreadyVisited = false;
+
+                for (int i = 0; i < callSyncArray.length(); i++) {
+                    JSONObject obj = callSyncArray.getJSONObject(i);
+
+                    if (obj.optString("CustCode")
+                            .equalsIgnoreCase(cust.getCode())
+                            && obj.optString("Dcr_dt")
+                            .equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+
+                        alreadyVisited = true;
+                        break;
+                    }
+                }
+
+                // ✅ ONLY NOT VISITED DOCTORS
+                if (!alreadyVisited) {
+                    filteredList.add(cust);
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e("REMOVE_VISITED", e.toString());
+        }
+
+        return filteredList;
+    }
     private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
