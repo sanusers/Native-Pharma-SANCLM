@@ -263,7 +263,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private android.app.AlertDialog locationDialog;
     private ConnectivityManager.NetworkCallback networkCallback;
     int position;
-    String practice = "0";
+   //String practice = "0";
+
     RelativeLayout ll_slide;
     private final Runnable updateClock = new Runnable() {
         @Override
@@ -1025,6 +1026,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         setSTPsfCode();
         ll_slide = findViewById(R.id.ll_slide);
         if (ll_slide != null) {
+            String practice=SharedPref.getPractice(HomeDashBoard.this);
             if (practice.equals("1")) {
                 ll_slide.setVisibility(View.VISIBLE);
             } else {
