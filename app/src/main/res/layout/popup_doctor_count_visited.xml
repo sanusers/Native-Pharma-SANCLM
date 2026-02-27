@@ -20,7 +20,7 @@
             android:src="@drawable/doctor_img" />
 
         <TextView
-            android:id="@+id/heading"
+            android:id="@+id/heading2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_bold"
@@ -152,6 +152,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/cluster"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -160,6 +161,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/doctorName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
