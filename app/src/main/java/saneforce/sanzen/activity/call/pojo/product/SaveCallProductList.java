@@ -159,4 +159,11 @@ public class SaveCallProductList {
         SaveCallProductList product = (SaveCallProductList) o;
         return code.equals(product.code); // Products are equal if their codes match
     }
+
+
+
+    @Override
+    public int hashCode() {
+        return code != null ? code.hashCode() : 0;
+    }
 }
