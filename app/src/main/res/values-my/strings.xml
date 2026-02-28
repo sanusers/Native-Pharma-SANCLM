@@ -1045,6 +1045,7 @@
     <string name="others">အခြား</string>
     <string name="location">တည်နေရာ</string>
     <string name="failed_to_save_image">ပုံကို သိမ်းဆည်းရန် မအောင်မြင်ပါ</string>
+    <string name="is_empty">အလွတ်ဖြစ်သည်</string>
 
 
 </resources>

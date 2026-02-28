@@ -648,7 +648,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
                                             break;
-                                        } else if (modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) {
+                                        } else if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
                                             isEmpty = true;
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -745,7 +745,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                                     for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass1.getListedDrs()) {
                                                         drsCount += multiHQHeaderModelClass.getItemsList().size();
                                                     }
-                                                    if (drsCount > Integer.parseInt(maxDrCount)) {
+                                                    if ((drsCount > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
                                                         isEmpty = true;
                                                         position = i;
                                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -792,7 +792,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass1.getListedDrs()) {
                                                     drsCount += multiHQHeaderModelClass.getItemsList().size();
                                                 }
-                                                if (drsCount > Integer.parseInt(maxDrCount)) {
+                                                if ((drsCount > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
                                                     isEmpty = true;
                                                     position = i;
                                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -871,7 +871,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
                                         break;
-                                    } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) {
+                                    } else if ((oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -900,7 +900,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
                                     break;
-                                } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
+                                } else if ((oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) { //Selected Dr count should not be more than maxDrCount setup limit
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -1175,7 +1175,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             int drsCount = 0;
                                             for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
                                                 drsCount = multiHQHeaderModelClass.getItemsList().size();
-                                                if (drsCount > Integer.parseInt(maxDrCount)) {
+                                                if ((drsCount > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
                                                     isEmpty = true;
                                                     position = i;
                                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -1305,7 +1305,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         int drsCount = 0;
                                         for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
                                             drsCount = multiHQHeaderModelClass.getItemsList().size();
-                                            if (drsCount > Integer.parseInt(maxDrCount)) {
+                                            if ((drsCount > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
                                                 isEmpty = true;
                                                 position = i;
                                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);

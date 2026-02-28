@@ -1059,5 +1059,6 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="others">Outros</string>
     <string name="location">Localização</string>
     <string name="failed_to_save_image">Falha ao salvar a imagem</string>
+    <string name="is_empty">Está vazio</string>
 
 </resources>

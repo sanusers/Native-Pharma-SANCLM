@@ -1046,5 +1046,6 @@
     <string name="others">أخرى</string>
     <string name="location">الموقع</string>
     <string name="failed_to_save_image">فشل حفظ الصورة</string>
+ <string name="is_empty">فارغ</string>
 
 </resources>

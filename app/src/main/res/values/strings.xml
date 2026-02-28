@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">V.1.4.1</string>
+    <string name="app_version" translatable="false">T.1.4.1</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -1002,7 +1002,6 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="tour_plan_not_sync_properly_once_sync_again">Tour plan did not sync properly, please sync again...</string>
     <string name="edit_plan"> Edit Plan </string>
 
-
     <string name="str_password_changed_login_with_online">Your password has been changed. Please
         login with online</string>
     <string name="str_password_changed">Your password has been changed. Please log out and log in again.</string>
@@ -1039,12 +1038,10 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="category_wise">Category Wise</string>
     <string name="plan_more">Plan More</string>
 
-
     <string name="device_not_valid">Device Not Valid..</string>
     <string name="home_address">Home Address</string>
     <string name="hospital_address">Hospital Address</string>
     <string name="choose_from_map">Choose from Map</string>
-
 
     <string name="draft">Draft</string>
     <string name="completed">Completed</string>
@@ -1061,6 +1058,5 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="jfw"> JFW </string>
     <string name="others"> Others</string>
     <string name="location"> Location</string>
-
-
+    <string name="is_empty">is empty</string>
 </resources>

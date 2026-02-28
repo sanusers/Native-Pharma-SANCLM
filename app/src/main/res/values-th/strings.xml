@@ -1057,4 +1057,5 @@
     <string name="others">อื่น ๆ</string>
     <string name="location">ตำแหน่งที่ตั้ง</string>
     <string name="failed_to_save_image">บันทึกรูปภาพไม่สำเร็จ</string>
+    <string name="is_empty">ว่างอยู่</string>
 </resources>

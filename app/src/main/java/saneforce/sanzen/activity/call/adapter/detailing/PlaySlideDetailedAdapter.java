@@ -1005,12 +1005,25 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         if (!timing.isEmpty()) {
                             for (String time : timing) {
                                 try {
+                                    JSONObject existingTime = jsonArray.optJSONObject(jsonArray.length()-1);
+                                    String existingEndTime = "";
+                                    if (existingTime != null) {
+                                        existingEndTime = existingTime.optString("eT");
+                                    }
                                     Log.v("SlideTiming", "handleStopDetailing => " + SlideName + " -> " + time);
                                     jsonObject = new JSONObject();
                                     String[] timeSplit = time.split(" \\$ ");
-                                    jsonObject.put("sT", timeSplit[0]);
-                                    jsonObject.put("eT", timeSplit[1]);
-                                    jsonArray.put(jsonObject);
+                                    if (!existingEndTime.isEmpty() && existingEndTime.equalsIgnoreCase(timeSplit[0])) {
+                                        existingTime.put("eT", timeSplit[1]);
+                                        jsonArray.remove(jsonArray.length()-1);
+                                        jsonArray.put(existingTime);
+                                        Log.e("Slide Timing", "handleStopDetailing: Clubed -> " + jsonArray);
+                                    } else {
+                                        jsonObject.put("sT", timeSplit[0]);
+                                        jsonObject.put("eT", timeSplit[1]);
+                                        jsonArray.put(jsonObject);
+                                        Log.e("Slide Timing", "handleStopDetailing: unique -> " + jsonArray);
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

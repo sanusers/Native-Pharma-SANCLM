@@ -1053,6 +1053,7 @@
     <string name="others">其他</string>
     <string name="location">位置</string>
     <string name="failed_to_save_image">保存图片失败</string>
+    <string name="is_empty">是空的</string>
 
 
 </resources>
