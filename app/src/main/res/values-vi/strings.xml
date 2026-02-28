@@ -1058,4 +1058,5 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="others">Khác</string>
     <string name="failed_to_save_image">Không thể lưu hình ảnh</string>
     <string name="location">Vị trí</string>
+    <string name="is_empty">ว่างอยู่</string>
 </resources>

@@ -1048,5 +1048,6 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="others">Otros</string>
     <string name="location">Ubicación</string>
     <string name="failed_to_save_image">Error al guardar la imagen</string>
+    <string name="is_empty">Está vacío</string>
 
 </resources>

@@ -137,8 +137,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     ModelClass.SessionList.WorkType holidayWorkTypeModel = new ModelClass.SessionList.WorkType();
     OneBuildModelClass.SessionList.WorkType weeklyOffWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
     OneBuildModelClass.SessionList.WorkType holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
-
-
     String holidayMode = "", weeklyOffCaption = "";
     boolean isDataAvailable;
     CommonUtilsMethods commonUtilsMethods;
@@ -214,7 +212,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         JoinYear = Integer.valueOf(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFTP_Date));
 
         //Initializing all the data array
-
         uiInitialization();
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
@@ -382,7 +379,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.listedDr.setOnClickListener(view -> {
-
             if (!view.isSelected()) {
                 listItemClicked(binding.listedDr);
                 binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync) + " " + SharedPref.getDrCap(MasterSyncActivity.this));
@@ -394,7 +390,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.chemist.setOnClickListener(view -> {
-
             if (!view.isSelected()) {
                 listItemClicked(binding.chemist);
                 binding.childSync.setText(MasterSyncActivity.this.getString(R.string.sync) + " " + SharedPref.getChmCap(MasterSyncActivity.this));
@@ -530,7 +525,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                 arrayForAdapter.addAll(activityModelArray);
                 populateAdapter(arrayForAdapter);
             }
-
         });
 
         binding.workType.setOnClickListener(view -> {
@@ -557,7 +551,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                 arrayForAdapter.addAll(tpModelArray);
                 populateAdapter(arrayForAdapter);
             }
-
         });
 
         binding.slide.setOnClickListener(view -> {
@@ -585,6 +578,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 populateAdapter(arrayForAdapter);
             }
         });
+
         binding.Other.setOnClickListener(view -> {
             if (!view.isSelected()) {
                 listItemClicked(binding.Other);
@@ -596,6 +590,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 populateAdapter(arrayForAdapter);
             }
         });
+
         binding.Profile.setOnClickListener(view -> {
             if (!view.isSelected()) {
                 listItemClicked(binding.Profile);

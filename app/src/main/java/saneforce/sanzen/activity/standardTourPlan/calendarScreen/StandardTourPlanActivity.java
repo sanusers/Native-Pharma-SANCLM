@@ -214,9 +214,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void checkApprovalButtonStatus() {
         if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
-            activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (stpFlag.equalsIgnoreCase("0") || stpFlag.equalsIgnoreCase("3")));
+            activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (totalDaysCount > 0) && (stpFlag.equalsIgnoreCase("0") || stpFlag.equalsIgnoreCase("3")));
         } else {
-            activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
+            activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (totalDaysCount > 0) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
         }
     }
 
@@ -994,9 +994,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
             if (dayIDs == null || dayIDs.isEmpty()) {
                 //commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
-                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.kindly_sync_standard_tour_plan_setup));
-                startActivity(new Intent(StandardTourPlanActivity.this, MasterSyncActivity.class));
-                finish();
+                CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, stpCap + " " + getString(R.string.is_empty));
+//                startActivity(new Intent(StandardTourPlanActivity.this, MasterSyncActivity.class));
+//                finish();
             } else {
                 List<String> dayIDs = stpOfflineDataDao.getAllSTPDayID();
                 for (String dayID : dayIDs) {
@@ -1344,7 +1344,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
             activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
         } else {
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.sync) + getString(R.string.standard_tour_plan) + getString(R.string.from_master_sync));
+            CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, stpCap + " " + getString(R.string.is_empty));
+            activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
         }
     }
 
@@ -1873,12 +1874,12 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         if (selectedDocList != null && !selectedDocList.isEmpty()) {
             for (DCRModel dcrModel : selectedDocList) {
                 String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
+                docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
                 if (stpType.equalsIgnoreCase("1")) {
                     if (docList.length == 0) {
                         return false;
                     }
                 } else {
-                    docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
                     if (docList.length < dcrModel.getVisitFrequency()) {
                         return false;
                     }
