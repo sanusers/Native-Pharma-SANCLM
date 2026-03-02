@@ -214,7 +214,7 @@ public class AdditionalCallDetailedSide extends Fragment {
 
                     AddSampleInputData();
                 }
-                finalAdditionalCallAdapter = new FinalAdditionalCallAdapter(getActivity(), getContext(), FinalAdditionalCallAdapter.checked_arrayList, FinalAdditionalCallAdapter.saveAdditionalCalls, FinalAdditionalCallAdapter.nestedInput, FinalAdditionalCallAdapter.nestedProduct, FinalAdditionalCallAdapter.dummyNestedInput, FinalAdditionalCallAdapter.dummyNestedSample);
+                finalAdditionalCallAdapter = new FinalAdditionalCallAdapter(getActivity(), getContext(), FinalAdditionalCallAdapter.checked_arrayList, FinalAdditionalCallAdapter.saveAdditionalCalls, FinalAdditionalCallAdapter.nestedInput, FinalAdditionalCallAdapter.nestedProduct, FinalAdditionalCallAdapter.dummyNestedInput, FinalAdditionalCallAdapter.dummyNestedSample, null, 0);
                 commonUtilsMethods.recycleTestWithoutDivider(FinalAdditionalCallAdapter.rv_nested_calls_input_data);
                 commonUtilsMethods.recycleTestWithoutDivider(FinalAdditionalCallAdapter.rv_nested_calls_sample_data);
                 AdditionalCallFragment.additionalCallBinding.rvListAdditional.setAdapter(finalAdditionalCallAdapter);
@@ -289,7 +289,7 @@ public class AdditionalCallDetailedSide extends Fragment {
                                 }
                             }
                         }
-                        finalInputCallAdapter = new FinalInputCallAdapter(requireActivity(), requireContext(), CheckInputListAdapter.saveCallInputListArrayList, InputFragment.checkedInputList);
+                        finalInputCallAdapter = new FinalInputCallAdapter(requireActivity(), requireContext(), CheckInputListAdapter.saveCallInputListArrayList, InputFragment.checkedInputList, null, 0);
                         InputFragment.fragmentInputBinding.rvListInput.setAdapter(finalInputCallAdapter);
                         finalInputCallAdapter.notifyDataSetChanged();
                     }
@@ -328,7 +328,7 @@ public class AdditionalCallDetailedSide extends Fragment {
                                 }
                             }
                         }
-                        finalProductCallAdapter = new FinalProductCallAdapter(requireActivity(), requireContext(), saveCallProductListArrayList, ProductFragment.checkedPrdList);
+                        finalProductCallAdapter = new FinalProductCallAdapter(requireActivity(), requireContext(), saveCallProductListArrayList, ProductFragment.checkedPrdList, null, 0);
                         ProductFragment.productsBinding.rvListPrd.setAdapter(finalProductCallAdapter);
                         finalProductCallAdapter.notifyDataSetChanged();
                     }

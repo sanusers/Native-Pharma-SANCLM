@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AdditionalCallFragment;
@@ -51,23 +52,30 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
     CommonUtilsMethods commonUtilsMethods;
     RoomDB roomDB;
     MasterDataDao masterDataDao;
+    private BadgeUpdateListener badgeListener;
+    private int fragmentPosition = 0;
 
-    public AdditionalCusListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList) {
+    public AdditionalCusListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
         this.checked_arrayList = checked_arrayList;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         AdditionalCusListAdapter.saveAdditionalCallArrayList = saveAdditionalCallArrayList;
+        countSelectedAdditionalCall();
         commonUtilsMethods = new CommonUtilsMethods(context);
         roomDB=RoomDB.getDatabase(context);
         masterDataDao= roomDB.masterDataDao();
     }
 
-
-    public AdditionalCusListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList) {
+    public AdditionalCusListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
         this.checked_arrayList = checked_arrayList;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         commonUtilsMethods = new CommonUtilsMethods(context);
+        countSelectedAdditionalCall();
         roomDB=RoomDB.getDatabase(context);
         masterDataDao= roomDB.masterDataDao();
     }
@@ -136,6 +144,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
                     notifyDataSetChanged();
                 }
             }
+            countSelectedAdditionalCall();
         });
     }
 
@@ -213,8 +222,20 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
         return isValid;
     }
 
+    private void countSelectedAdditionalCall() {
+        int selectedCount = 0;
+        for (CallCommonCheckedList callCommonCheckedList: checked_arrayList) {
+            if (callCommonCheckedList.isCheckedItem()) {
+                selectedCount++;
+            }
+        }
+        if (badgeListener != null) {
+            badgeListener.onBadgeCountChanged(fragmentPosition, selectedCount);
+        }
+    }
+
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList, ArrayList<CallCommonCheckedList> cusListArrayList) {
-        AdapterSaveAdditionalCall = new FinalAdditionalCallAdapter(activity, context, saveAdditionalCallArrayList, cusListArrayList);
+        AdapterSaveAdditionalCall = new FinalAdditionalCallAdapter(activity, context, saveAdditionalCallArrayList, cusListArrayList, badgeListener, fragmentPosition);
         commonUtilsMethods.recycleTestWithoutDivider(AdditionalCallFragment.additionalCallBinding.rvListAdditional);
         AdditionalCallFragment.additionalCallBinding.rvListAdditional.setAdapter(AdapterSaveAdditionalCall);
     }

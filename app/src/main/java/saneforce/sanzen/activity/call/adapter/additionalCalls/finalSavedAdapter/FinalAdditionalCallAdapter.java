@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.adapter.input.CheckInputListAdapter;
 import saneforce.sanzen.activity.call.adapter.input.FinalInputCallAdapter;
@@ -80,24 +81,27 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
     ArrayList<String> dummyNames = new ArrayList<>();
     FinalInputCallAdapter finalInputCallAdapter;
     FinalProductCallAdapter finalProductCallAdapter;
-
     RoomDB roomDB;
-
     MasterDataDao masterDataDao;
+    private BadgeUpdateListener badgeListener;
+    private int fragmentPosition = 0;
 
-    public FinalAdditionalCallAdapter(Activity activity, Context context, ArrayList<SaveAdditionalCall> saveAdditionalCalls, ArrayList<CallCommonCheckedList> CheckedCusListArrayList) {
+    public FinalAdditionalCallAdapter(Activity activity, Context context, ArrayList<SaveAdditionalCall> saveAdditionalCalls, ArrayList<CallCommonCheckedList> CheckedCusListArrayList, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         FinalAdditionalCallAdapter.saveAdditionalCalls = saveAdditionalCalls;
         checked_arrayList = CheckedCusListArrayList;
-
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
     }
 
-    public FinalAdditionalCallAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> cusListArrayList, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList, ArrayList<AddInputAdditionalCall> nestedInput, ArrayList<AddSampleAdditionalCall> nestedProduct, ArrayList<AddInputAdditionalCall> dummyNestedInput, ArrayList<AddSampleAdditionalCall> dummyNestedSample) {
+    public FinalAdditionalCallAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> cusListArrayList, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList, ArrayList<AddInputAdditionalCall> nestedInput, ArrayList<AddSampleAdditionalCall> nestedProduct, ArrayList<AddInputAdditionalCall> dummyNestedInput, ArrayList<AddSampleAdditionalCall> dummyNestedSample, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         FinalAdditionalCallAdapter.checked_arrayList = cusListArrayList;
         FinalAdditionalCallAdapter.saveAdditionalCalls = saveAdditionalCallArrayList;
         FinalAdditionalCallAdapter.nestedInput = nestedInput;
@@ -248,7 +252,7 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
             } catch (Exception ignored) {
             }
 
-            additionalCusListAdapter = new AdditionalCusListAdapter(activity, context, checked_arrayList, saveAdditionalCalls);
+            additionalCusListAdapter = new AdditionalCusListAdapter(activity, context, checked_arrayList, saveAdditionalCalls, badgeListener, fragmentPosition);
             commonUtilsMethods.recycleTestWithDivider(AdditionalCallFragment.additionalCallBinding.rvCheckDataList);
             AdditionalCallFragment.additionalCallBinding.rvCheckDataList.setAdapter(additionalCusListAdapter);
             removeAt(position);
@@ -416,7 +420,7 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
                                         saveCallProductListArrayList.set(k, new SaveCallProductList(saveCallProductListArrayList.get(k).getName(), saveCallProductListArrayList.get(k).getCode(), saveCallProductListArrayList.get(k).getCategory(), StockSample.get(i).getCurrentStock(), String.valueOf(finalBalance), saveCallProductListArrayList.get(k).getSample_qty(), saveCallProductListArrayList.get(k).getRx_qty(), saveCallProductListArrayList.get(k).getRcpa_qty(), saveCallProductListArrayList.get(k).getPromoted(), saveCallProductListArrayList.get(k).isClicked()));
                                     }
                                 }
-                                finalProductCallAdapter = new FinalProductCallAdapter(activity, context, saveCallProductListArrayList, ProductFragment.checkedPrdList);
+                                finalProductCallAdapter = new FinalProductCallAdapter(activity, context, saveCallProductListArrayList, ProductFragment.checkedPrdList, null, 0);
                                 ProductFragment.productsBinding.rvListPrd.setAdapter(finalProductCallAdapter);
                                 finalProductCallAdapter.notifyDataSetChanged();
                             }
@@ -456,7 +460,7 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
                                         CheckInputListAdapter.saveCallInputListArrayList.set(k, new SaveCallInputList(CheckInputListAdapter.saveCallInputListArrayList.get(k).getInput_name(), CheckInputListAdapter.saveCallInputListArrayList.get(k).getInp_code(), CheckInputListAdapter.saveCallInputListArrayList.get(k).getInp_qty(), StockInput.get(i).getCurrentStock(), String.valueOf(finalBalance)));
                                     }
                                 }
-                                finalInputCallAdapter = new FinalInputCallAdapter(activity, context, CheckInputListAdapter.saveCallInputListArrayList, InputFragment.checkedInputList);
+                                finalInputCallAdapter = new FinalInputCallAdapter(activity, context, CheckInputListAdapter.saveCallInputListArrayList, InputFragment.checkedInputList, null, 0);
                                 InputFragment.fragmentInputBinding.rvListInput.setAdapter(finalInputCallAdapter);
                                 finalInputCallAdapter.notifyDataSetChanged();
                             }

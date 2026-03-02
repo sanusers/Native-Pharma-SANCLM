@@ -9,13 +9,13 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class DCRCallTabLayoutAdapter extends FragmentPagerAdapter{
     private final List<Fragment> fragments = new ArrayList<>();
     private final List<String> fragmentTitle = new ArrayList<>();
 
     public DCRCallTabLayoutAdapter(@NonNull FragmentManager fm) {
-        super(fm);
+//        super(fm);
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
     public void add(Fragment fragment, String title) {

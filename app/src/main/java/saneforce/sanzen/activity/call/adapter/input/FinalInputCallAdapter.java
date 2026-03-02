@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.call.adapter.input;
 
-
 import static saneforce.sanzen.activity.call.DCRCallActivity.InpQtyRestrictValue;
 import static saneforce.sanzen.activity.call.DCRCallActivity.InpQtyRestriction;
 import static saneforce.sanzen.activity.call.DCRCallActivity.InputValidation;
@@ -27,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.fragments.input.InputFragment;
@@ -34,7 +34,6 @@ import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.InputFilterMinMax;
-
 
 public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAdapter.ViewHolder> {
     public static ArrayList<CallCommonCheckedList> checked_arraylist;
@@ -44,10 +43,14 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
     CheckInputListAdapter checkInputListAdapter;
     CommonUtilsMethods commonUtilsMethods;
     String finalValue;
+    private BadgeUpdateListener badgeListener;
+    private int fragmentPosition = 0;
 
-    public FinalInputCallAdapter(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputLists, ArrayList<CallCommonCheckedList> callCommonCheckedLists) {
+    public FinalInputCallAdapter(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputLists, ArrayList<CallCommonCheckedList> callCommonCheckedLists, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         FinalInputCallAdapter.saveCallInputLists = saveCallInputLists;
         checked_arraylist = callCommonCheckedLists;
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -274,7 +277,7 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                         }
                     }
 
-                    checkInputListAdapter = new CheckInputListAdapter(activity, context, checked_arraylist, saveCallInputLists);
+                    checkInputListAdapter = new CheckInputListAdapter(activity, context, checked_arraylist, saveCallInputLists, badgeListener, fragmentPosition);
                     commonUtilsMethods.recycleTestWithDivider(InputFragment.fragmentInputBinding.rvCheckDataList);
                     InputFragment.fragmentInputBinding.rvCheckDataList.setAdapter(checkInputListAdapter);
                     removeAt(position);

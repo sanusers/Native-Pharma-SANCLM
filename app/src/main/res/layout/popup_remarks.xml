@@ -85,7 +85,7 @@
             android:padding="@dimen/_4sdp"
             android:paddingVertical="@dimen/_3sdp"
             android:visibility="gone"
-            android:textSize="@dimen/_6ssp"
+            android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toTopOf="@id/rl_btns"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.OvershootInterpolator;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -140,7 +141,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
         return k == val - 1;
     }
 
-
     public int checkForProduct(String slidename) {
         for (int i = 0; i < arrayStore.size(); i++) {
             if (arrayStore.get(i).getSlideNam().equals(slidename)) {
@@ -225,7 +225,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
             getOnBackPressedDispatcher().onBackPressed();
         });
 
-
         binding.exitBtn.setOnClickListener(view -> {
             getOnBackPressedDispatcher().onBackPressed();
         });
@@ -265,6 +264,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                 binding.progressAnim.setVisibility(View.GONE);
                                 mp.start();
                             });
+                            binding.videoView.setZOrderOnTop(false);
+                            binding.videoView.setZOrderMediaOverlay(false);
 //                            binding.videoView.start();
                             break;
                         case "zip":
@@ -331,9 +332,11 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                     binding.progressAnim.cancelAnimation();
                                 }
                             });
-                            //break;
+                            break;
                     }
                 }
+                binding.playBtn.bringToFront();
+                binding.playBtn.setZ(100f);
             } else {
                 if (binding.videoView.isPlaying()) {
                     binding.videoView.stopPlayback();
@@ -355,6 +358,65 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 binding.upArrow.setVisibility(View.VISIBLE);
             }
         });
+
+        binding.playBtn.setOnTouchListener(new View.OnTouchListener() {
+            private float dX, dY;
+            private long clickStartTime;
+            private static final int CLICK_THRESHOLD = 200;
+            private static final int MOVE_THRESHOLD = 10;
+            private float downRawX, downRawY;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        clickStartTime = System.currentTimeMillis();
+                        downRawX = event.getRawX();
+                        downRawY = event.getRawY();
+                        dX = view.getX() - downRawX;
+                        dY = view.getY() - downRawY;
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        float moveX = event.getRawX();
+                        float moveY = event.getRawY();
+                        float deltaX = moveX - downRawX;
+                        float deltaY = moveY - downRawY;
+                        if (Math.abs(deltaX) > MOVE_THRESHOLD || Math.abs(deltaY) > MOVE_THRESHOLD) {
+                            view.setX(moveX + dX);
+                            view.setY(moveY + dY);
+                        }
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        long clickDuration = System.currentTimeMillis() - clickStartTime;
+                        float upDeltaX = event.getRawX() - downRawX;
+                        float upDeltaY = event.getRawY() - downRawY;
+                        if (clickDuration < CLICK_THRESHOLD && Math.abs(upDeltaX) < MOVE_THRESHOLD && Math.abs(upDeltaY) < MOVE_THRESHOLD) {
+                            view.performClick();
+                            return true;
+                        }
+                        snapToSide(view);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void snapToSide(View view) {
+        View parent = (View) view.getParent();
+        int parentWidth = parent.getWidth();
+        int parentHeight = parent.getHeight();
+        int margin = (int) getResources().getDimension(R.dimen._16sdp);
+//        float middle = parentWidth / 2f;
+//        float targetX;
+//        if (view.getX() + view.getWidth() / 2 >= middle) {
+//            targetX = parentWidth - view.getWidth() - margin;
+//        } else {
+//            targetX = margin;
+//        }
+        float targetX = Math.max(margin, Math.min(view.getX(), parentWidth - view.getWidth() - margin));
+        float targetY = Math.max(margin, Math.min(view.getY(), parentHeight - view.getHeight() - margin));
+        view.animate().x(targetX).y(targetY).setDuration(200).setInterpolator(new OvershootInterpolator()).start();
     }
 
     private void DialogPopUp() {
@@ -606,7 +668,17 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 .onRender((nbPages) -> {
                     binding.progressAnim.setVisibility(View.GONE);
                     binding.progressAnim.cancelAnimation();
-                }).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
+                })
+                .defaultPage(0)
+                .enableAnnotationRendering(true)
+                .scrollHandle(new DefaultScrollHandle(this))
+                .enableSwipe(true)
+                .swipeHorizontal(false)
+                .pageSnap(true)
+                .autoSpacing(false)
+                .pageFling(true)
+                .spacing(0)
+                .load();
     }
 
     @Override

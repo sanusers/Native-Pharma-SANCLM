@@ -25,6 +25,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -38,8 +39,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -80,6 +83,7 @@ import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.
 import saneforce.sanzen.activity.call.adapter.input.CheckInputListAdapter;
 import saneforce.sanzen.activity.call.adapter.product.CheckProductListAdapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.activity.call.fragments.activity.ActivityFragment;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AddCallSelectInpSide;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AddCallSelectPrdSide;
@@ -134,7 +138,7 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-public class DCRCallActivity extends AppCompatActivity {
+public class DCRCallActivity extends AppCompatActivity implements BadgeUpdateListener {
     public static ArrayList<CustList> CallActivityCustDetails;
     public static ArrayList<StoreImageTypeUrl> arrayStore;
     @SuppressLint("StaticFieldLeak")
@@ -455,7 +459,7 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
-                onSubmitClicked();
+            onSubmitClicked();
         });
 
         assert isFromActivity != null;
@@ -627,9 +631,9 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private void SetupTabLayout() {
         viewPagerAdapter = new DCRCallTabLayoutAdapter(getSupportFragmentManager());
-
+        int fragmentPosition = 0;
         if (isDetailingRequired.equalsIgnoreCase("true")) {
-            viewPagerAdapter.add(new DetailedFragment(), DCRCallActivity.this.getString(R.string.detailed));
+            viewPagerAdapter.add(DetailedFragment.newInstance(fragmentPosition++), DCRCallActivity.this.getString(R.string.detailed));
             pages.add(DCRCallActivity.this.getString(R.string.detailed));
         } else {
             DetailedFragment.callDetailingLists = new ArrayList<>();
@@ -662,116 +666,167 @@ public class DCRCallActivity extends AppCompatActivity {
 //            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
 //        }
 
-
         signatureFragment1 = new SignatureFragment1();
         if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
             if (ProductNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ProductFragment(), capPrd);
+                viewPagerAdapter.add(ProductFragment.newInstance(fragmentPosition++), capPrd);
                 pages.add(capPrd);
             }
             if (save_valid.equalsIgnoreCase("0")) {
                 if (InputNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new InputFragment(), capInp);
+                    viewPagerAdapter.add(InputFragment.newInstance(fragmentPosition++), capInp);
                     pages.add(capInp);
                 }
                 if (AdditionalCallNeed.equalsIgnoreCase("0") && !(isFromActivity.equalsIgnoreCase("edit_local") || isFromActivity.equalsIgnoreCase("edit_online"))) {
-                    viewPagerAdapter.add(new AdditionalCallFragment(), DCRCallActivity.this.getString(R.string.additional_call));
+                    viewPagerAdapter.add(AdditionalCallFragment.newInstance(fragmentPosition++), DCRCallActivity.this.getString(R.string.additional_call));
                     pages.add(DCRCallActivity.this.getString(R.string.additional_call));
                 }
                 if (RCPANeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
+                    fragmentPosition++;
                     pages.add("RCPA");
                 }
                 if (ActivityNeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                    fragmentPosition++;
                     pages.add(capActivity);
                 }
             }
-            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-
+            fragmentPosition++;
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            fragmentPosition++;
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             if (ProductNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ProductFragment(), capPrd);
+                viewPagerAdapter.add(ProductFragment.newInstance(fragmentPosition++), capPrd);
                 pages.add(capPrd);
             }
             if (save_valid.equalsIgnoreCase("0")) {
                 if (InputNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new InputFragment(), capInp);
+                    viewPagerAdapter.add(InputFragment.newInstance(fragmentPosition++), capInp);
                     pages.add(capInp);
                 }
                 if (RCPANeed.equalsIgnoreCase("0")) {
+                    fragmentPosition++;
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                     pages.add("RCPA");
                 }
                 if (ActivityNeed.equalsIgnoreCase("0")) {
+                    fragmentPosition++;
                     viewPagerAdapter.add(new ActivityFragment(), capActivity);
                     pages.add(capActivity);
                 }
             }
+            fragmentPosition++;
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
+            fragmentPosition++;
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             if (ProductNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ProductFragment(), capPrd);
+                viewPagerAdapter.add(ProductFragment.newInstance(fragmentPosition++), capPrd);
                 pages.add(capPrd);
             }
             if (InputNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new InputFragment(), capInp);
+                viewPagerAdapter.add(InputFragment.newInstance(fragmentPosition++), capInp);
                 pages.add(capInp);
             }
             if (ActivityNeed.equalsIgnoreCase("0")) {
+                fragmentPosition++;
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            fragmentPosition++;
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
 
+            fragmentPosition++;
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
             if (ProductNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ProductFragment(), capPrd);
+                viewPagerAdapter.add(ProductFragment.newInstance(fragmentPosition++), capPrd);
                 pages.add(capPrd);
             }
             if (InputNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new InputFragment(), capInp);
+                viewPagerAdapter.add(InputFragment.newInstance(fragmentPosition++), capInp);
                 pages.add(capInp);
             }
             if (ActivityNeed.equalsIgnoreCase("0")) {
+                fragmentPosition++;
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            fragmentPosition++;
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
 
+            fragmentPosition++;
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
-            viewPagerAdapter.add(new ProductFragment(), capPrd);
+            viewPagerAdapter.add(ProductFragment.newInstance(fragmentPosition++), capPrd);
             pages.add(capPrd);
-            viewPagerAdapter.add(new InputFragment(), capInp);
+            viewPagerAdapter.add(InputFragment.newInstance(fragmentPosition++), capInp);
             pages.add(capInp);
             if (ActivityNeed.equalsIgnoreCase("0")) {
+                fragmentPosition++;
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            fragmentPosition++;
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
 
+            fragmentPosition++;
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
         }
 
         dcrCallBinding.viewPager.setAdapter(viewPagerAdapter);
         dcrCallBinding.viewPager.setOffscreenPageLimit(4);
-        dcrCallBinding.tabLayout.setupWithViewPager(dcrCallBinding.viewPager);
         dcrCallBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+        dcrCallBinding.tabLayout.setupWithViewPager(dcrCallBinding.viewPager);
+        for (int i = 0; i < dcrCallBinding.tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = dcrCallBinding.tabLayout.getTabAt(i);
+            View view = LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+            TextView title = view.findViewById(R.id.tab_title);
+            title.setText(viewPagerAdapter.getPageTitle(i));
+            if (tab != null) {
+                tab.setCustomView(view);
+            }
+        }
+        dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                updateTabTextStyle(tab, true);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                updateTabTextStyle(tab, false);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+        TabLayout.Tab firstTab = dcrCallBinding.tabLayout.getTabAt(dcrCallBinding.tabLayout.getSelectedTabPosition());
+        updateTabTextStyle(firstTab, true);
+    }
+
+    private void updateTabTextStyle(TabLayout.Tab tab, boolean isSelected) {
+        if (tab == null || tab.getCustomView() == null) return;
+        TextView title = tab.getCustomView().findViewById(R.id.tab_title);
+        if (isSelected) {
+            title.setTextColor(ContextCompat.getColor(this, R.color.dark_purple));
+        } else {
+            title.setTextColor(ContextCompat.getColor(this, R.color.bg_txt_color));
+        }
     }
 
     private void prepareCheckInOutJsonObject(JSONObject jsonObject) {
@@ -2236,7 +2291,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //Additional Call
             JSONArray jsonAdditional = json.getJSONArray("AdCuss");
-            String code = "", townCode = "", townName = "",sfType = "";
+            String code = "", townCode = "", townName = "", sfType = "";
             for (int aw = 0; aw < jsonAdditional.length(); aw++) {
                 JSONObject jsAw = jsonAdditional.getJSONObject(aw);
                 if (funStringValidation(jsAw.getString("Name"))) nam = jsAw.getString("Name");
@@ -2659,9 +2714,9 @@ public class DCRCallActivity extends AppCompatActivity {
                 for (int j = 0; j < arrayStore.size(); j++) {
                     if (DetailedFragment.callDetailingLists.get(i).getBrandName().equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
                         if (!arrayStore.get(j).getScribble().isEmpty()) {
-                            arr.add(new StoreImageTypeUrl(arrayStore.get(j).getScribble(), arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), arrayStore.get(j).getSlideComments(), arrayStore.get(j).getTiming(),arrayStore.get(j).getFlag()));
+                            arr.add(new StoreImageTypeUrl(arrayStore.get(j).getScribble(), arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), arrayStore.get(j).getSlideComments(), arrayStore.get(j).getTiming(), arrayStore.get(j).getFlag()));
                         } else {
-                            arr.add(new StoreImageTypeUrl("", arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), "", arrayStore.get(j).getTiming(),arrayStore.get(j).getFlag()));
+                            arr.add(new StoreImageTypeUrl("", arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), "", arrayStore.get(j).getTiming(), arrayStore.get(j).getFlag()));
                         }
                     }
                 }
@@ -3616,13 +3671,13 @@ public class DCRCallActivity extends AppCompatActivity {
                         Log.v("chkInput", InputFragment.checkedInputList.get(i).getCode() + "---" + jsonObjectInput.getString("Code") + "--chk-----" + jsonObjectInput.getString("Code").equalsIgnoreCase(InputFragment.checkedInputList.get(i).getCode()));
                         if (jsonObjectInput.getString("Code").equalsIgnoreCase(InputFragment.checkedInputList.get(i).getCode())) {
                             InputFragment.checkedInputList.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.checkedInputList.get(i).isCheckedItem()));
-                            AddCallSelectInpSide.callInputList.set(i-1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.checkedInputList.get(i).isCheckedItem()));
-                            StockInput.set(i-1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), jsonObjectInput.getString("Balance_Stock")));
+                            AddCallSelectInpSide.callInputList.set(i - 1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.checkedInputList.get(i).isCheckedItem()));
+                            StockInput.set(i - 1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), jsonObjectInput.getString("Balance_Stock")));
                             break;
                         } else {
                             InputFragment.checkedInputList.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).isCheckedItem()));
-                            AddCallSelectInpSide.callInputList.set(i-1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).isCheckedItem()));
-                            StockInput.set(i-1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).getStock_balance()));
+                            AddCallSelectInpSide.callInputList.set(i - 1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).isCheckedItem()));
+                            StockInput.set(i - 1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).getStock_balance()));
                         }
                     }
                 }
@@ -3802,13 +3857,16 @@ public class DCRCallActivity extends AppCompatActivity {
             try {
                 if (detailedProducts != null && !detailedProducts.isEmpty()) {
                     Set<String> detailedProductsSet = new HashSet<>(Arrays.asList(detailedProducts.split(",")));
+                    int promotedProductCount = 0;
                     for (int j = 0; j < ProductFragment.checkedPrdList.size(); j++) {
                         CallCommonCheckedList PrdList = ProductFragment.checkedPrdList.get(j);
                         if (detailedProductsSet.contains(PrdList.getCode())) {
+                            promotedProductCount++;
                             CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(PrdList.getName(), PrdList.getCode(), PrdList.getCategory(), PrdList.getStock_balance(), PrdList.getStock_balance(), "", "", "", "0", true));
                             PrdList.setCheckedItem(true);
                         }
                     }
+                    CommonUtilsMethods.showToastMessage(DCRCallActivity.this, promotedProductCount + " " + capPrd + " " + getString(R.string.promoted));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -3932,7 +3990,7 @@ public class DCRCallActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|PR|GIF|TM|OTR|FSD|AMS")) {
+            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|PR|GIF|TM|OTR|FSD|AMS")) {
                 startActivity(new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class));
                 finish();
             }
@@ -3952,4 +4010,46 @@ public class DCRCallActivity extends AppCompatActivity {
             CommonUtilsMethods.showCustomDialog(this);
         }
     }
+
+    @Override
+    public void onBadgeCountChanged(int position, int count) {
+        TabLayout.Tab tab = dcrCallBinding.tabLayout.getTabAt(position);
+        if (tab == null || tab.getCustomView() == null) return;
+//        if (count >= 0) {
+//            BadgeDrawable badge = tab.getOrCreateBadge();
+//            badge.setVisible(true);
+//            badge.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_purple));
+//            badge.setBadgeTextColor(ContextCompat.getColor(this, android.R.color.white));
+//            badge.setNumber(count);
+//            badge.setHorizontalOffset(-10);
+//            badge.setVerticalOffset(-5);
+//            badge.setBadgeGravity(BadgeDrawable.TOP_END);
+//        } else {
+//            tab.removeBadge();
+//        }
+        TextView badge = tab.getCustomView().findViewById(R.id.tab_badge);
+        if (count > 0) {
+            badge.setText(String.valueOf(count));
+            badge.setVisibility(View.VISIBLE);
+            animateBadge(badge);
+        } else {
+            badge.setVisibility(View.GONE);
+        }
+    }
+
+    private void animateBadge(View badge) {
+        badge.setScaleX(0f);
+        badge.setScaleY(0f);
+        badge.animate()
+                .scaleX(1.15f)
+                .scaleY(1.15f)
+                .setDuration(150)
+                .withEndAction(() ->
+                        badge.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(100)
+                );
+    }
+
 }

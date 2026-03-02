@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
@@ -38,6 +40,8 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
     FinalProductCallAdapter finalProductCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
+    private BadgeUpdateListener badgeListener;
+    private int fragmentPosition = 0;
 //    private ViewHolder noProductHolder;
 
     public CheckProductListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
@@ -46,11 +50,24 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
         this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
     }
 
-    public CheckProductListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList, ArrayList<SaveCallProductList> saveCallProductListArrayList) {
+    public CheckProductListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
+        this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
+        countSelectedProducts();
+        checkAndSetNoProductCheckedOrUnchecked();
+    }
+
+    public CheckProductListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList, ArrayList<SaveCallProductList> saveCallProductListArrayList, BadgeUpdateListener badgeListener, int fragmentPosition) {
+        this.activity = activity;
+        this.context = context;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
         CheckProductListAdapter.saveCallProductListArrayList = saveCallProductListArrayList;
+        countSelectedProducts();
         checkAndSetNoProductCheckedOrUnchecked();
     }
 
@@ -236,10 +253,26 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                 noProductSelected = false;
             }
         }
+        countSelectedProducts();
+    }
+
+    private void countSelectedProducts() {
+        int selectedCount = 0;
+        for (CallCommonCheckedList callCommonCheckedList: callCommonCheckedListArrayList) {
+            if (callCommonCheckedList.isCheckedItem()) {
+                selectedCount++;
+            }
+//            if (isCheckedPrd && UnSelectedPrdCode.equalsIgnoreCase(callCommonCheckedList.getCode())) {
+//                selectedCount--;
+//            }
+        }
+        if (badgeListener != null) {
+            badgeListener.onBadgeCountChanged(fragmentPosition, selectedCount);
+        }
     }
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveCallProductList> saveCallProductListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
-        finalProductCallAdapter = new FinalProductCallAdapter(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
+        finalProductCallAdapter = new FinalProductCallAdapter(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList, badgeListener, fragmentPosition);
         commonUtilsMethods.recycleTestWithDivider(ProductFragment.productsBinding.rvListPrd);
         ProductFragment.productsBinding.rvListPrd.setAdapter(finalProductCallAdapter);
     }

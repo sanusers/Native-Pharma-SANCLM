@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
@@ -46,10 +47,14 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
     CommonUtilsMethods commonUtilsMethods;
     CheckProductListAdapter checkProductListAdapter;
     String finalValue;
+    private BadgeUpdateListener badgeListener;
+    private int fragmentPosition = 0;
 
-    public FinalProductCallAdapter(Activity activity, Context context, ArrayList<SaveCallProductList> productListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
+    public FinalProductCallAdapter(Activity activity, Context context, ArrayList<SaveCallProductList> productListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         FinalProductCallAdapter.productListArrayList = productListArrayList;
         this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -475,7 +480,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             }
         });
 
-        if (CheckProductListAdapter.isCheckedPrd && ! CheckProductListAdapter.UnSelectedPrdCode.isEmpty()) {
+        if (CheckProductListAdapter.isCheckedPrd && !CheckProductListAdapter.UnSelectedPrdCode.isEmpty()) {
             for (int i = 0; i < productListArrayList.size(); i++) {
                 if (CheckProductListAdapter.UnSelectedPrdCode.equalsIgnoreCase(productListArrayList.get(position).getCode())) {
                     new CountDownTimer(80, 80) {
@@ -529,7 +534,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                         }
                     }
 
-                    checkProductListAdapter = new CheckProductListAdapter(activity, context, callCommonCheckedListArrayList, productListArrayList);
+                    CheckProductListAdapter.isCheckedPrd = true;
+                    CheckProductListAdapter.UnSelectedPrdCode = productListArrayList.get(holder.getBindingAdapterPosition()).getCode();
+                    checkProductListAdapter = new CheckProductListAdapter(activity, context, callCommonCheckedListArrayList, productListArrayList, badgeListener, fragmentPosition);
                     commonUtilsMethods.recycleTestWithDivider(ProductFragment.productsBinding.rvCheckDataList);
                     ProductFragment.productsBinding.rvCheckDataList.setAdapter(checkProductListAdapter);
                     removeAt(position);

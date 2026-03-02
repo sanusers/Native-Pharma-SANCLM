@@ -184,9 +184,7 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         return !stringBuilder.toString().isEmpty() && !stringBuilder.toString().endsWith("\n");
     }
 
-    private void
-
-    showTimelinePopUp(View view, List<String> timeline) {
+    private void showTimelinePopUp(View view, List<String> timeline) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.timeline_popup, null);
         TimelineAdapter timelineAdapter = new TimelineAdapter(context, timeline);

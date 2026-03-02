@@ -1,9 +1,9 @@
 package saneforce.sanzen.activity.call.fragments.product;
 
-import static saneforce.sanzen.activity.call.DCRCallActivity.PrdMandatory;
 import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,6 +26,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.product.CheckProductListAdapter;
 import saneforce.sanzen.activity.call.adapter.product.FinalProductCallAdapter;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.WrapContentLinearLayoutManager;
@@ -39,12 +40,32 @@ public class ProductFragment extends Fragment {
     CheckProductListAdapter checkProductListAdapter;
     FinalProductCallAdapter finalProductCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
+    private BadgeUpdateListener badgeListener;
+    private static final String ARG_POSITION = "position";
+    private int position;
+
+    public static ProductFragment newInstance(int position) {
+        ProductFragment fragment = new ProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_POSITION, position);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        badgeListener = (BadgeUpdateListener) context;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         productsBinding = FragmentProductsBinding.inflate(inflater);
         View view = productsBinding.getRoot();
+        if (getArguments() != null) {
+            position = getArguments().getInt(ARG_POSITION, 0);
+        }
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         if(DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
@@ -52,7 +73,6 @@ public class ProductFragment extends Fragment {
         }else {
             productsBinding.tagStock.setVisibility(View.GONE);
         }
-
 
         HiddenVisibleFunction();
         AddProductList();
@@ -192,14 +212,14 @@ public class ProductFragment extends Fragment {
             checkedPrdList.set(noProductIndex, callCommonCheckedList);
         }
 
-        checkProductListAdapter = new CheckProductListAdapter(getActivity(), getContext(), checkedPrdList);
+        checkProductListAdapter = new CheckProductListAdapter(getActivity(), getContext(), checkedPrdList, badgeListener, position);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         productsBinding.rvCheckDataList.setLayoutManager(mLayoutManager);
         productsBinding.rvCheckDataList.setItemAnimator(new DefaultItemAnimator());
         productsBinding.rvCheckDataList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         productsBinding.rvCheckDataList.setAdapter(checkProductListAdapter);
 
-        finalProductCallAdapter = new FinalProductCallAdapter(getActivity(), getContext(), CheckProductListAdapter.saveCallProductListArrayList, checkedPrdList);
+        finalProductCallAdapter = new FinalProductCallAdapter(getActivity(), getContext(), CheckProductListAdapter.saveCallProductListArrayList, checkedPrdList, badgeListener, position);
         productsBinding.rvListPrd.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
         productsBinding.rvListPrd.setItemAnimator(new DefaultItemAnimator());
         productsBinding.rvListPrd.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));

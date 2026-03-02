@@ -1,9 +1,9 @@
 package saneforce.sanzen.activity.call.fragments.input;
 
-import static saneforce.sanzen.activity.call.DCRCallActivity.PrdMandatory;
 import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import saneforce.sanzen.activity.call.adapter.input.CheckInputListAdapter;
 import saneforce.sanzen.activity.call.adapter.input.FinalInputCallAdapter;
 import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.WrapContentLinearLayoutManager;
@@ -37,12 +38,32 @@ public class InputFragment extends Fragment {
     CheckInputListAdapter checkInputListAdapter;
     FinalInputCallAdapter finalInputCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
+    private BadgeUpdateListener badgeListener;
+    private static final String ARG_POSITION = "position";
+    private int position;
+
+    public static InputFragment newInstance(int position) {
+        InputFragment fragment = new InputFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_POSITION, position);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        badgeListener = (BadgeUpdateListener) context;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentInputBinding = FragmentInputBinding.inflate(inflater);
         View view = fragmentInputBinding.getRoot();
+        if (getArguments() != null) {
+            position = getArguments().getInt(ARG_POSITION, 0);
+        }
         dummyAdapter();
         changeCaption();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -75,29 +96,29 @@ public class InputFragment extends Fragment {
     private void dummyAdapter() {
         boolean isNoInputNotSelected = false;
         int noInputIndex = 0;
-        for (int i = 0; i<checkedInputList.size(); i++) {
-            if(checkedInputList.get(i).getCode().equalsIgnoreCase("-10")) {
+        for (int i = 0; i < checkedInputList.size(); i++) {
+            if (checkedInputList.get(i).getCode().equalsIgnoreCase("-10")) {
                 noInputIndex = i;
             }
-            if(checkedInputList.get(i).isCheckedItem() && !checkedInputList.get(i).getCode().equalsIgnoreCase("-10")) {
+            if (checkedInputList.get(i).isCheckedItem() && !checkedInputList.get(i).getCode().equalsIgnoreCase("-10")) {
                 isNoInputNotSelected = true;
                 break;
             }
         }
-        if(!isFromActivity.equalsIgnoreCase("new") && !isNoInputNotSelected) {
+        if (!isFromActivity.equalsIgnoreCase("new") && !isNoInputNotSelected) {
             CallCommonCheckedList callCommonCheckedList = checkedInputList.get(noInputIndex);
             callCommonCheckedList.setCheckedItem(true);
             checkedInputList.set(noInputIndex, callCommonCheckedList);
         }
 
-        checkInputListAdapter = new CheckInputListAdapter(getActivity(), getContext(), checkedInputList);
+        checkInputListAdapter = new CheckInputListAdapter(getActivity(), getContext(), checkedInputList, badgeListener, position);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         fragmentInputBinding.rvCheckDataList.setLayoutManager(mLayoutManager);
         fragmentInputBinding.rvCheckDataList.setItemAnimator(new DefaultItemAnimator());
         fragmentInputBinding.rvCheckDataList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         fragmentInputBinding.rvCheckDataList.setAdapter(checkInputListAdapter);
 
-        finalInputCallAdapter = new FinalInputCallAdapter(getActivity(), getContext(), CheckInputListAdapter.saveCallInputListArrayList, checkedInputList);
+        finalInputCallAdapter = new FinalInputCallAdapter(getActivity(), getContext(), CheckInputListAdapter.saveCallInputListArrayList, checkedInputList, badgeListener, position);
         fragmentInputBinding.rvListInput.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
         fragmentInputBinding.rvListInput.setItemAnimator(new DefaultItemAnimator());
         fragmentInputBinding.rvListInput.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
@@ -113,33 +134,34 @@ public class InputFragment extends Fragment {
         }
         checkInputListAdapter.filterList(filteredNames);
     }
-    private void changeCaption(){
+
+    private void changeCaption() {
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
-                if (SharedPref.getDocInputCaption(requireContext()).isEmpty() || SharedPref.getDocInputCaption(requireContext()).equalsIgnoreCase(null)){
+                if (SharedPref.getDocInputCaption(requireContext()).isEmpty() || SharedPref.getDocInputCaption(requireContext()).equalsIgnoreCase(null)) {
                     fragmentInputBinding.tagInputName.setText("Input Name");
-                }else{
+                } else {
                     fragmentInputBinding.tagInputName.setText(SharedPref.getDocInputCaption(requireContext()));
                 }
                 break;
             case "2":
-                if (SharedPref.getChmInputCaption(requireContext()).isEmpty() || SharedPref.getChmInputCaption(requireContext()).equalsIgnoreCase(null)){
+                if (SharedPref.getChmInputCaption(requireContext()).isEmpty() || SharedPref.getChmInputCaption(requireContext()).equalsIgnoreCase(null)) {
                     fragmentInputBinding.tagInputName.setText("Input Name");
-                }else{
+                } else {
                     fragmentInputBinding.tagInputName.setText(SharedPref.getChmInputCaption(requireContext()));
                 }
                 break;
             case "3":
-                if (SharedPref.getStkInputCaption(requireContext()).isEmpty() || SharedPref.getStkInputCaption(requireContext()).equalsIgnoreCase(null)){
+                if (SharedPref.getStkInputCaption(requireContext()).isEmpty() || SharedPref.getStkInputCaption(requireContext()).equalsIgnoreCase(null)) {
                     fragmentInputBinding.tagInputName.setText("Input Name");
-                }else{
+                } else {
                     fragmentInputBinding.tagInputName.setText(SharedPref.getStkInputCaption(requireContext()));
                 }
                 break;
             case "4":
-                if (SharedPref.getUlInputCaption(requireContext()).isEmpty() || SharedPref.getUlInputCaption(requireContext()).equalsIgnoreCase(null)){
+                if (SharedPref.getUlInputCaption(requireContext()).isEmpty() || SharedPref.getUlInputCaption(requireContext()).equalsIgnoreCase(null)) {
                     fragmentInputBinding.tagInputName.setText("Input Name");
-                }else{
+                } else {
                     fragmentInputBinding.tagInputName.setText(SharedPref.getUlInputCaption(requireContext()));
                 }
                 break;

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.fragments.input.InputFragment;
@@ -37,19 +38,27 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
     FinalInputCallAdapter finalInputCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
+    private BadgeUpdateListener badgeListener;
+    private int fragmentPosition = 0;
 //    private ViewHolder noInputHolder;
 
-    public CheckInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList) {
+    public CheckInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         this.checked_arrayList = checked_arrayList;
+        countSelectedInputs();
     }
 
-    public CheckInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveCallInputList> saveCallInputLists) {
+    public CheckInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveCallInputList> saveCallInputLists, BadgeUpdateListener badgeListener, int fragmentPosition) {
         this.activity = activity;
         this.context = context;
+        this.badgeListener = badgeListener;
+        this.fragmentPosition = fragmentPosition;
         this.checked_arrayList = checked_arrayList;
         saveCallInputListArrayList = saveCallInputLists;
+        countSelectedInputs();
         checkAndSetNoInputCheckedOrUnchecked();
     }
 
@@ -197,10 +206,23 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                 noInputSelected = false;
             }
         }
+        countSelectedInputs();
+    }
+
+    private void countSelectedInputs() {
+        int selectedCount = 0;
+        for (CallCommonCheckedList callCommonCheckedList: checked_arrayList) {
+            if (callCommonCheckedList.isCheckedItem()) {
+                selectedCount++;
+            }
+        }
+        if (badgeListener != null) {
+            badgeListener.onBadgeCountChanged(fragmentPosition, selectedCount);
+        }
     }
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
-        finalInputCallAdapter = new FinalInputCallAdapter(activity, context, saveCallInputListArrayList, callCommonCheckedListArrayList);
+        finalInputCallAdapter = new FinalInputCallAdapter(activity, context, saveCallInputListArrayList, callCommonCheckedListArrayList, badgeListener, fragmentPosition);
         commonUtilsMethods.recycleTestWithDivider(InputFragment.fragmentInputBinding.rvListInput);
         InputFragment.fragmentInputBinding.rvListInput.setAdapter(finalInputCallAdapter);
     }

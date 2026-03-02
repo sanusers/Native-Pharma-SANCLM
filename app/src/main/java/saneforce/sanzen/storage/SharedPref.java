@@ -546,6 +546,9 @@ public class SharedPref {
     public static final String STP_TYPE = "STP_Type";
     public static final String DET_DR_CAP = "Detailing_Dr_Caption";
     public static final String DET_ULDR_CAP = "Detailing_UnlstDr_Caption";
+    public static final String AUTO_SUBMIT_TIME  = "Auto_Submit_Time";
+
+
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
@@ -948,6 +951,7 @@ public class SharedPref {
             editor.putString(STP_TYPE, jsonObject.optString("STP_Type"));
             editor.putString(DET_DR_CAP,jsonObject.optString("Detailing_Dr_Caption"));
             editor.putString(DET_ULDR_CAP,jsonObject.optString("Detailing_UnlstDr_Caption"));
+            editor.putString(AUTO_SUBMIT_TIME,jsonObject.optString("Auto_Submit_Time"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3518,6 +3522,10 @@ public static void addVisitedDoctor(Context context, String custCode) {
     }
     public static String getDetUldrCap(Context context){
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_ULDR_CAP,"");
+    }
+
+    public static String getAutoSubmitTime(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(AUTO_SUBMIT_TIME,"00:00");
     }
 
 }

@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.call.fragments.additionalCall;
 import static saneforce.sanzen.activity.call.DCRCallActivity.PrdSamNeed;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,25 +23,46 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
+import saneforce.sanzen.activity.call.fragments.BadgeUpdateListener;
+import saneforce.sanzen.activity.call.fragments.detailing.DetailedFragment;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.sanzen.databinding.FragmentAdditionalCallBinding;
 
 public class AdditionalCallFragment extends Fragment {
-
     public static ArrayList<CallCommonCheckedList> custListArrayList;
     @SuppressLint("StaticFieldLeak")
     public static FragmentAdditionalCallBinding additionalCallBinding;
     AdditionalCusListAdapter additionalCusListAdapter;
     FinalAdditionalCallAdapter finalAdditionalCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
+    private BadgeUpdateListener badgeListener;
+    private static final String ARG_POSITION = "position";
+    private int position;
+
+    public static AdditionalCallFragment newInstance(int position) {
+        AdditionalCallFragment fragment = new AdditionalCallFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_POSITION, position);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        badgeListener = (BadgeUpdateListener) context;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         additionalCallBinding = FragmentAdditionalCallBinding.inflate(getLayoutInflater());
         View view = additionalCallBinding.getRoot();
+        if (getArguments() != null) {
+            position = getArguments().getInt(ARG_POSITION, 0);
+        }
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         dummyAdapter();
@@ -69,15 +91,14 @@ public class AdditionalCallFragment extends Fragment {
     }
 
     private void dummyAdapter() {
-
-        additionalCusListAdapter = new AdditionalCusListAdapter(getActivity(), getContext(), custListArrayList);
+        additionalCusListAdapter = new AdditionalCusListAdapter(getActivity(), getContext(), custListArrayList, badgeListener, position);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         additionalCallBinding.rvCheckDataList.setLayoutManager(mLayoutManager);
         additionalCallBinding.rvCheckDataList.setItemAnimator(new DefaultItemAnimator());
         additionalCallBinding.rvCheckDataList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         additionalCallBinding.rvCheckDataList.setAdapter(additionalCusListAdapter);
 
-        finalAdditionalCallAdapter = new FinalAdditionalCallAdapter(getActivity(), getContext(), AdditionalCusListAdapter.saveAdditionalCallArrayList, custListArrayList);
+        finalAdditionalCallAdapter = new FinalAdditionalCallAdapter(getActivity(), getContext(), AdditionalCusListAdapter.saveAdditionalCallArrayList, custListArrayList, badgeListener, position);
         additionalCallBinding.rvListAdditional.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
         additionalCallBinding.rvListAdditional.setItemAnimator(new DefaultItemAnimator());
         additionalCallBinding.rvListAdditional.setAdapter(finalAdditionalCallAdapter);
