@@ -541,7 +541,7 @@
     <string name="select_gender">Sélectionnez le genre</string>
     <string name="Res_Add">Adresse résidentielle</string>
     <string name="Hosp_Add">Adresse de l\'hôpital</string>
-    <string name="updated_successfully"><![CDATA[Maître mis à jour avec succès]]></string>
+    <string name="updated_successfully">Mise à jour réussie</string>
 <!--
     <string name="enter_email">Entrer l\'e-mail</string>
 -->

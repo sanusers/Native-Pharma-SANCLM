@@ -540,7 +540,7 @@
     <string name="select_gender">اختر الجنس</string>
     <string name="Res_Add">عنوان السكن</string>
     <string name="Hosp_Add">عنوان المستشفى</string>
-    <string name="updated_successfully">تم تحديث البيانات بنجاح</string>
+    <string name="updated_successfully">تم التحديث بنجاح</string>
     <string name="enter_email">أدخل البريد الإلكتروني</string>
     <string name="gender_selction">اختيار الجنس</string>
 
@@ -1046,10 +1046,9 @@
     <string name="others">أخرى</string>
     <string name="location">الموقع</string>
     <string name="failed_to_save_image">فشل حفظ الصورة</string>
- <string name="is_empty">فارغ</string>
+    <string name="is_empty">فارغ</string>
 
     <string name="address_format">العنوان : %1$s</string>
     <string name="distance_format">المسافة : %1$.2f متر</string>
-
 
 </resources>

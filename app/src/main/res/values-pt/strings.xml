@@ -544,7 +544,7 @@
     <string name="select_gender">Selecionar Gênero</string>
     <string name="Res_Add">Endereço Residencial</string>
     <string name="Hosp_Add">Endereço do Hospital</string>
-    <string name="updated_successfully">Mestre atualizado com sucesso</string>
+    <string name="updated_successfully">Atualizado com sucesso</string>
     <string name="enter_email">Digite o E-mail</string>
     <string name="gender_selction">Seleção de Gênero</string>
     <string name="triple_dot">...</string>

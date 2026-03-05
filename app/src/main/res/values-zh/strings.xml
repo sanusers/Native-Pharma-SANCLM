@@ -543,7 +543,7 @@
     <string name="select_gender">选择性别</string>
     <string name="Res_Add">居住地址</string>
     <string name="Hosp_Add">医院地址</string>
-    <string name="updated_successfully">主数据更新成功</string>
+    <string name="updated_successfully">更新成功</string>
     <string name="enter_email">输入邮箱</string>
     <string name="gender_selction">性别选择</string>
 

@@ -548,7 +548,7 @@
     <string name="select_gender">Select Gender</string>
     <string name="Res_Add">Resident Address</string>
     <string name="Hosp_Add">Hospital Address</string>
-    <string name="updated_successfully">Master Updated Successfully</string>
+    <string name="updated_successfully">Updated Successfully</string>
     <string name="enter_email">Enter Email</string>
     <string name="gender_selction">Gender Selection</string>
     <string name="triple_dot">...</string>

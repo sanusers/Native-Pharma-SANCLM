@@ -544,7 +544,7 @@
     <string name="select_gender">Выберите пол</string>
     <string name="Res_Add">Домашний адрес</string>
     <string name="Hosp_Add">Адрес больницы</string>
-    <string name="updated_successfully">Мастер успешно обновлён</string>
+    <string name="updated_successfully">Успешно обновлено</string>
     <string name="enter_email">Введите email</string>
     <string name="gender_selction">Выбор пола</string>
     <string name="triple_dot">...</string>
