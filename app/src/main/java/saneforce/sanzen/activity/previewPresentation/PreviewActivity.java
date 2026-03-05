@@ -308,7 +308,7 @@ public class PreviewActivity extends AppCompatActivity {
 
             for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
                 if (!PlaySlideDetailedAdapter.playedMandatorySlideIds.contains(p.getSlideId())) {
-                    pendingSlides.add(p.getSlideName());
+                    pendingSlides.add(p.getBrandName());
                 }
             }
 
