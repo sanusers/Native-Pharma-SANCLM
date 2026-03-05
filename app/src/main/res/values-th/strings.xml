@@ -544,7 +544,7 @@
     <string name="select_gender">เลือกเพศ</string>
     <string name="Res_Add">ที่อยู่บ้าน</string>
     <string name="Hosp_Add">ที่อยู่โรงพยาบาล</string>
-    <string name="updated_successfully">อัปเดต Master สำเร็จ</string>
+    <string name="updated_successfully">อัปเดตสำเร็จ</string>
     <string name="enter_email">กรอกอีเมล</string>
     <string name="gender_selction">การเลือกเพศ</string>
     <string name="triple_dot">...</string>

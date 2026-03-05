@@ -374,6 +374,36 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull SessionEditAdapter.MyViewHolder holder, int position) {
+        if (SharedPref.getClusterCap(context).isEmpty() || SharedPref.getClusterCap(context).equalsIgnoreCase(null)) {
+            holder.textCluster.setText("Cluster");
+        } else {
+            holder.textCluster.setText(SharedPref.getClusterCap(context));
+        }
+
+        if (SharedPref.getDrCap(context).isEmpty() || SharedPref.getDrCap(context).equalsIgnoreCase(null)) {
+            holder.listedDrCapTV.setText("Doctor");
+        } else {
+            holder.listedDrCapTV.setText(SharedPref.getDrCap(context));
+        }
+
+        if (SharedPref.getChmCap(context).isEmpty() || SharedPref.getChmCap(context).equalsIgnoreCase(null)) {
+            holder.cheCapTV.setText("Chemist");
+        } else {
+            holder.cheCapTV.setText(SharedPref.getChmCap(context));
+        }
+
+        if (SharedPref.getStkCap(context).isEmpty() || SharedPref.getStkCap(context).equalsIgnoreCase(null)) {
+            holder.stockCapTV.setText("Stockist");
+        } else {
+            holder.stockCapTV.setText(SharedPref.getStkCap(context));
+        }
+
+        if (SharedPref.getUNLcap(context).isEmpty() || SharedPref.getUNLcap(context).equalsIgnoreCase(null)) {
+            holder.unListedDrCapTV.setText("Unlisted Doctor");
+        } else {
+            holder.unListedDrCapTV.setText(SharedPref.getUNLcap(context));
+        }
+
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             holder.progress_hq.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
             holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -454,13 +484,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                            holder.hqLayout.setVisibility(View.GONE);
 //                        }
                     }
-            }
-
-
-            if (SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
-                holder.textCluster.setText("Cluster");
-            } else {
-                holder.textCluster.setText(SharedPref.getWrkAreaName(context));
             }
 
             if (!holder.selectedHq.equals("")) {
@@ -1253,11 +1276,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && isMGR) {
 //            holder.hqLayout.setVisibility(View.GONE);
 //        }
-            if (SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
-                holder.textCluster.setText(SharedPref.getClusterCap(context));
-            } else {
-                holder.textCluster.setText(SharedPref.getWrkAreaName(context));
-            }
 
             if (!holder.selectedHq.isEmpty()) {
                 if (isMGR) {

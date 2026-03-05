@@ -545,7 +545,7 @@ Khuyến nghị đồng bộ các cuộc gọi Outbox</string>
     <string name="select_gender">Chọn Giới tính</string>
     <string name="Res_Add">Địa chỉ Thường trú</string>
     <string name="Hosp_Add">Địa chỉ Bệnh viện</string>
-    <string name="updated_successfully">Cập nhật Master thành công</string>
+    <string name="updated_successfully">Cập nhật thành công</string>
     <string name="enter_email">Nhập Email</string>
     <string name="gender_selction">Chọn Giới tính</string>
 

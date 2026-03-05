@@ -541,7 +541,7 @@
     <string name="select_gender">ကျား/မ ရွေးချယ်ပါ</string>
     <string name="Res_Add">အိမ်လိပ်စာ</string>
     <string name="Hosp_Add">ဆေးရုံလိပ်စာ</string>
-    <string name="updated_successfully">မဟာစာရင်းကို အောင်မြင်စွာ အပ်ဒိတ်လုပ်ပြီးပါပြီ</string>
+    <string name="updated_successfully">အောင်မြင်စွာ အပ်ဒိတ်ပြီးပြီ</string>
     <string name="enter_email">အီးမေးလ် ထည့်ပါ</string>
     <string name="gender_selction">ကျား/မ ရွေးချယ်မှု</string>
     <string name="triple_dot">...</string>

@@ -540,7 +540,7 @@
     <string name="select_gender">اختر الجنس</string>
     <string name="Res_Add">عنوان السكن</string>
     <string name="Hosp_Add">عنوان المستشفى</string>
-    <string name="updated_successfully">تم تحديث البيانات بنجاح</string>
+    <string name="updated_successfully">تم التحديث بنجاح</string>
     <string name="enter_email">أدخل البريد الإلكتروني</string>
     <string name="gender_selction">اختيار الجنس</string>
 

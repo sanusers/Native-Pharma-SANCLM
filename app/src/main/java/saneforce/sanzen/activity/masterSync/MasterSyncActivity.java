@@ -508,7 +508,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                 arrayForAdapter.addAll(dcrModelArray);
                 populateAdapter(arrayForAdapter);
             }
-
         });
 
         binding.activity.setText(SharedPref.getActivityCap(this));
