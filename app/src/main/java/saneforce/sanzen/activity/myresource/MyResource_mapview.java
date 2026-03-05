@@ -116,7 +116,9 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         if (marker.getSnippet() != null) {
             String[] snippetData = marker.getSnippet().split("@");
             if (snippetData.length > 0) {
-                ImageName = snippetData[1];
+                if(!ImageName.equalsIgnoreCase("")) {
+                    ImageName = snippetData[1];
+                }//crash image = "" check and fix.
                 binding.address.setText(snippetData[0]);
                 if (getDistance > 1000) {
                     getDistance = getDistance / 1000;
