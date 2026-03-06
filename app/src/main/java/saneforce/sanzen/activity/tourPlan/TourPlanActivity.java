@@ -3725,7 +3725,11 @@ public class TourPlanActivity extends AppCompatActivity {
                     jsonObject.addProperty("Mod", "AndroidDetailing");
                     TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                     if (tourPlanOfflineDataTable != null) {
-                            jsonObject.addProperty("Status", tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty());
+                        if(tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty().equalsIgnoreCase("2")){
+                            jsonObject.addProperty("Status",3);
+                        }else {
+                            jsonObject.addProperty("Status",0);
+                        }
                     }
                     jsonObject.addProperty("SubmissionDate", TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_37));
                     jsonObject.addProperty("tableName","savetpzen");
@@ -5393,6 +5397,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
                         jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
+                        jsonObject.put("Status",1);
 
 
                         Log.v("ApprovalObject", String.valueOf(jsonObject));
