@@ -298,7 +298,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
         <activity
             android:name=".activity.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"

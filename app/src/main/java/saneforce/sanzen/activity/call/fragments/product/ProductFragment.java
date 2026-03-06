@@ -48,6 +48,10 @@ public class ProductFragment extends Fragment {
         View view = productsBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        productsBinding.rvListPrd.setOnTouchListener((v, event) -> {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        });
         if(DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
             productsBinding.tagStock.setVisibility(View.VISIBLE);
         }else {
@@ -97,37 +101,37 @@ public class ProductFragment extends Fragment {
 //            }
 //        });
 
-        View root = requireActivity().findViewById(android.R.id.content);
-
-        root.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-
-            Rect r = new Rect();
-            root.getWindowVisibleDisplayFrame(r);
-
-            int screenHeight = root.getRootView().getHeight();
-            int keypadHeight = screenHeight - r.bottom;
-
-            if (keypadHeight > screenHeight * 0.15) {
-
-                // 🔥 subtract navigation bar height
-                int navBarHeight = 0;
-                int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-
-                if (resourceId > 0) {
-                    navBarHeight = getResources().getDimensionPixelSize(resourceId);
-                }
-
-                int finalHeight = keypadHeight - navBarHeight;
-
-                if (finalHeight < 0) finalHeight = 0;
-
-                productsBinding.rvListPrd.setClipToPadding(false);
-                productsBinding.rvListPrd.setPadding(0, 0, 0, finalHeight);
-
-            } else {
-                productsBinding.rvListPrd.setPadding(0, 0, 0, 0);
-            }
-        });
+//        View root = requireActivity().findViewById(android.R.id.content);
+//
+//        root.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+//
+//            Rect r = new Rect();
+//            root.getWindowVisibleDisplayFrame(r);
+//
+//            int screenHeight = root.getRootView().getHeight();
+//            int keypadHeight = screenHeight - r.bottom;
+//
+//            if (keypadHeight > screenHeight * 0.15) {
+//
+//                // 🔥 subtract navigation bar height
+//                int navBarHeight = 0;
+//                int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+//
+//                if (resourceId > 0) {
+//                    navBarHeight = getResources().getDimensionPixelSize(resourceId);
+//                }
+//
+//                int finalHeight = keypadHeight - navBarHeight;
+//
+//                if (finalHeight < 0) finalHeight = 0;
+//
+//                productsBinding.rvListPrd.setClipToPadding(false);
+//                productsBinding.rvListPrd.setPadding(0, 0, 0, finalHeight);
+//
+//            } else {
+//                productsBinding.rvListPrd.setPadding(0, 0, 0, 0);
+//            }
+//        });
         return view;
     }
 

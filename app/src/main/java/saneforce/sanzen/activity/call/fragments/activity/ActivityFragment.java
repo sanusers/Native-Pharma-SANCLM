@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -39,6 +40,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
@@ -173,6 +175,39 @@ public class ActivityFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentActivityBinding = FragmentActivityBinding.inflate(inflater);
+        // onViewCreated method-oda last-la (bottom) ithai paste pannunga
+        View root = fragmentActivityBinding.getRoot();
+
+        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            private boolean isKeyboardVisible = false;
+
+            @Override
+            public void onGlobalLayout() {
+                if (fragmentActivityBinding == null) return; // Prevent crash if fragment is destroyed
+
+                Rect r = new Rect();
+                root.getWindowVisibleDisplayFrame(r);
+
+                int screenHeight = root.getRootView().getHeight();
+                int keypadHeight = screenHeight - r.bottom;
+
+                // Keyboard open-aaga iruntha keypadHeight screen height-la 15% vida athigama irukkum
+                boolean currentlyVisible = keypadHeight > screenHeight * 0.15;
+
+                // Status maaruna mattum visibility update pannu (This prevents infinite loops & crashes)
+                if (currentlyVisible != isKeyboardVisible) {
+                    isKeyboardVisible = currentlyVisible;
+
+                    if (isKeyboardVisible) {
+                        // Keyboard open - Hide buttons
+                        fragmentActivityBinding.llBtns.setVisibility(View.GONE);
+                    } else {
+                        // Keyboard closed - Show buttons
+                        fragmentActivityBinding.llBtns.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
         return fragmentActivityBinding.getRoot();
     }
 
