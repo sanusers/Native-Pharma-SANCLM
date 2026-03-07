@@ -27,7 +27,7 @@
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
                 android:padding="@dimen/_3sdp"
-                android:text="@string/address_label"
+                android:text="@string/address"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_5ssp"
                 android:textStyle="bold" />
