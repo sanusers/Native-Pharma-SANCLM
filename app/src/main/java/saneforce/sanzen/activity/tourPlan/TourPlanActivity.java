@@ -3700,6 +3700,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void getDraftSaveOneBuild(String isClickedName, String monthYear, ArrayList<OneBuildModelClass> arrayList, String isFrom, boolean statusOffline) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
+            String planningStatus = "1";
                 try {
                     JsonObject jsonObject = new JsonObject();
                     jsonObject.addProperty("Mod", "AndroidDetailing");
@@ -4130,7 +4131,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 //Details
                                 JsonObject DetailsObj = new JsonObject();
                                 DetailsObj.addProperty("Id", 0);
-                                String planningStatus = oneBuildModelClass.getSyncStatus();
+                                planningStatus = oneBuildModelClass.getSyncStatus();
                                 if(planningStatus == null || planningStatus.isEmpty()){
                                     planningStatus = "1";
                                 }
@@ -4151,7 +4152,14 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
 
                     Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
-                    String isSynced = inputDataArrayOneBuild.getSyncStatus();
+                    String isSynced = planningStatus;
+
+                    if(isSynced == null || isSynced.isEmpty()){
+                        isSynced = "1";
+                    }
+//                    if(isSynced.equalsIgnoreCase("") ){
+//                        isSynced = "1";
+//                    }
                     TourPlanOfflineDataTable tourPlanOfflineDataTable1 = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                     changeStatus = tourPlanOfflineDataTable1.getTpMonthSyncedOrEmpty();
                     if ((Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2")) && tourPlanOfflineDataTable1.getTpMonthSynced().equalsIgnoreCase("1") || isSynced.equalsIgnoreCase("1")){
