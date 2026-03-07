@@ -2185,6 +2185,9 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public ArrayList<OneBuildModelClass> prepareModelClassForMonthOneBuild(LocalDate localDate2) {
+        if (isSTPBasedTP) {
+            checkAndSetSTPDataAvailable(localDate2);
+        }
         ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
         try {
             Log.v("getTp", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate2)));
