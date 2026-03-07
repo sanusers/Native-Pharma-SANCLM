@@ -307,16 +307,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 previousDate = currentDate;
 
                 String remainderTime = SharedPref.getDoctorRemainingShownDate(HomeDashBoard.this);
-                String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_29);
+                if (remainderTime.contains(":")) {
+                    try {
+                        String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_29);
 
-                int currentTimeInt = Integer.parseInt(time.replace(":", ""));
-                int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
+                        int currentTimeInt = Integer.parseInt(time.replace(":", ""));
+                        int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
 
-                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
-                String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
+                        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
+                        String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
 
-                if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
-                    checkAndShowDoctorPopup();
+                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
+                            checkAndShowDoctorPopup();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

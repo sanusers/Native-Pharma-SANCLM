@@ -54,7 +54,6 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
-import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.CalendarAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.DocCategoryXVisitAdapter;
@@ -1542,8 +1541,12 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             });
 
             btn_proceed.setOnClickListener(view -> {
-                showSwapConfirmDialog(id, caption, swapCode, swapName);
-                dialogFilter.dismiss();
+                if (swapCode != null && !swapCode.isEmpty()) {
+                    showSwapConfirmDialog(id, caption, swapCode, swapName);
+                    dialogFilter.dismiss();
+                } else {
+                    CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Select Swap-To");
+                }
             });
 
         } catch (Exception e) {
@@ -1565,7 +1568,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         heading.setText(R.string.alert);
         btn_save.setText(getString(R.string.swap));
         btn_clear.setText(getString(R.string.cancel));
-        content.setText(getString(R.string.are_you_sure) + " Want to swap");
+        content.setText(getString(R.string.are_you_sure) + " " + getString(R.string.want_to_swap)  + " " + getString(R.string.from)  + " " + fromName  + " " + getString(R.string.to)  + " " + toName);
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
         btn_save.setOnClickListener(view -> {

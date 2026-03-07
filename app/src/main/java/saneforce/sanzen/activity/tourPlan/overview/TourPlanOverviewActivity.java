@@ -57,7 +57,7 @@ import saneforce.sanzen.utility.TimeUtils;
 public class TourPlanOverviewActivity extends AppCompatActivity {
     private ActivityTourPlanOverviewBinding binding;
     private String title = "", monthYear = "", hqCode = "", clusterCap, drCap, chmCap;
-    private boolean isOneBuild = false, drNeed = false, chmNeed = false;
+    private boolean isOneBuild = false, drNeed = false, chmNeed = false, visitFrequencyNeed = false;
     private ArrayList<ModelClass> modelClassList = new ArrayList<>();
     private ArrayList<OneBuildModelClass> oneBuildModelClassList = new ArrayList<>();
     private Map<String, WorkTypeModel> workTypeMaster = new HashMap<>();
@@ -134,13 +134,13 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
 
         binding.tvClusterCap.setText(clusterCap);
         binding.tvDrCluster.setText(clusterCap);
-        binding.tvDrClusterWise.setText(clusterCap + " Wise");
+        binding.tvDrClusterWise.setText(clusterCap + getString(R.string.wise));
         binding.tvChmCluster.setText(clusterCap);
         binding.tvDoctorCap.setText(drCap);
         binding.tvChemistCap.setText(chmCap);
-        binding.tvDrCategory.setText(drCap + " Category");
-        binding.tvDrTotalDoctors.setText("Total " + drCap);
-        binding.tvDrPlannedDoctors.setText("Planned " + drCap);
+        binding.tvDrCategory.setText(drCap + " " + getString(R.string.category));
+        binding.tvDrTotalDoctors.setText(getString(R.string.total) + " " + drCap);
+        binding.tvDrPlannedDoctors.setText(getString(R.string.planned) + " " + drCap);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -149,6 +149,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 title += " (" + monthYear + ")";
                 binding.tvTitle.setText(title);
                 isOneBuild = bundle.getBoolean("is_one_build");
+                visitFrequencyNeed = bundle.getBoolean("visit_frequency_need");
                 drNeed = bundle.getBoolean("dr_need");
                 chmNeed = bundle.getBoolean("chm_need");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -180,7 +181,6 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
         setData();
         setClickListeners();
     }
-
 
     public enum NavType {
         WORK_CATEGORY,
@@ -258,40 +258,40 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
             openDrawer(getString(R.string.joint_work), NavType.JOINT_WORK, dataList);
         });
 
-        binding.rlDrHead.setOnClickListener(view -> {
-            if (binding.rlDrData.getVisibility() == View.VISIBLE) {
-                binding.rlDrData.setVisibility(View.GONE);
-                binding.ivDoctorArrow.setImageResource(R.drawable.down_arrow);
-                if (binding.rlChmData.getVisibility() == View.VISIBLE) {
-                    binding.ivChemistArrow.setImageResource(R.drawable.up_arrow);
-                } else {
-                    binding.ivChemistArrow.setImageResource(R.drawable.down_arrow);
-                }
-            } else {
-                binding.rlDrData.setVisibility(View.VISIBLE);
-                binding.ivDoctorArrow.setImageResource(R.drawable.up_arrow);
-                binding.ivChemistArrow.setImageResource(R.drawable.down_arrow);
-                binding.rlChmData.setVisibility(View.GONE);
-            }
-        });
-
-        binding.rlChmHead.setOnClickListener(view -> {
-            if (binding.rlChmData.getVisibility() == View.VISIBLE) {
-                binding.rlChmData.setVisibility(View.GONE);
-                binding.ivChemistArrow.setImageResource(R.drawable.down_arrow);
-                if (binding.rlDrData.getVisibility() == View.VISIBLE) {
-                    binding.ivDoctorArrow.setImageResource(R.drawable.up_arrow);
-                } else {
-                    binding.ivDoctorArrow.setImageResource(R.drawable.down_arrow);
-                }
-            } else {
-                binding.rlChmData.setVisibility(View.VISIBLE);
-                binding.ivChemistArrow.setImageResource(R.drawable.up_arrow);
-                binding.ivDoctorArrow.setImageResource(R.drawable.down_arrow);
-                binding.rlDrData.setVisibility(View.GONE);
-                binding.rvChmClusterData.post(() -> adjustRecyclerViewHeight(binding.rvChmClusterData, binding.rvChmClusterData.getAdapter().getItemCount()));
-            }
-        });
+//        binding.rlDrHead.setOnClickListener(view -> {
+//            if (binding.rlDrData.getVisibility() == View.VISIBLE) {
+//                binding.rlDrData.setVisibility(View.GONE);
+//                binding.ivDoctorArrow.setImageResource(R.drawable.down_arrow);
+//                if (binding.rlChmData.getVisibility() == View.VISIBLE) {
+//                    binding.ivChemistArrow.setImageResource(R.drawable.up_arrow);
+//                } else {
+//                    binding.ivChemistArrow.setImageResource(R.drawable.down_arrow);
+//                }
+//            } else {
+//                binding.rlDrData.setVisibility(View.VISIBLE);
+//                binding.ivDoctorArrow.setImageResource(R.drawable.up_arrow);
+//                binding.ivChemistArrow.setImageResource(R.drawable.down_arrow);
+//                binding.rlChmData.setVisibility(View.GONE);
+//            }
+//        });
+//
+//        binding.rlChmHead.setOnClickListener(view -> {
+//            if (binding.rlChmData.getVisibility() == View.VISIBLE) {
+//                binding.rlChmData.setVisibility(View.GONE);
+//                binding.ivChemistArrow.setImageResource(R.drawable.down_arrow);
+//                if (binding.rlDrData.getVisibility() == View.VISIBLE) {
+//                    binding.ivDoctorArrow.setImageResource(R.drawable.up_arrow);
+//                } else {
+//                    binding.ivDoctorArrow.setImageResource(R.drawable.down_arrow);
+//                }
+//            } else {
+//                binding.rlChmData.setVisibility(View.VISIBLE);
+//                binding.ivChemistArrow.setImageResource(R.drawable.up_arrow);
+//                binding.ivDoctorArrow.setImageResource(R.drawable.down_arrow);
+//                binding.rlDrData.setVisibility(View.GONE);
+//                binding.rvChmClusterData.post(() -> adjustRecyclerViewHeight(binding.rvChmClusterData, binding.rvChmClusterData.getAdapter().getItemCount()));
+//            }
+//        });
 
         binding.tvDrCategoryWise.setOnClickListener(view -> {
             binding.tvDrCategoryWise.setBackground(getDrawable(R.drawable.bg_green));
@@ -325,7 +325,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 for (String date : clusterCategoryPlanned.get(flag)) {
                     count++;
                     ContentModel contentModel = new ContentModel(TimeUtils.formatFullDate(date, monthYear), "", "");
-                    if (clusterDatexCategoryPlanned.get(date) != null && clusterDatexCategoryPlanned.get(date).contains(flag)) {
+                    if ((clusterDatexCategoryPlanned.get(date) != null) && clusterDatexCategoryPlanned.get(date).contains(flag) && (clusterDatexCategoryPlanned.get(date).size() > 1)) {
                         contentModel.setSideContent("*");
                     }
                     dataList.add(contentModel);
@@ -580,16 +580,25 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                try {
-                    List<CategoryWiseModel> categoryWiseModelList = new ArrayList<>(drCategoryWisePlan.values());
-                    Collections.sort(categoryWiseModelList, Comparator.comparing(CategoryWiseModel::getName));
-                    drCategoryDataAdapter = new CategoryDataAdapter(this, categoryWiseModelList, categoryClickListener);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-                    binding.rvDrCategoryData.setLayoutManager(layoutManager);
-                    binding.rvDrCategoryData.setAdapter(drCategoryDataAdapter);
-                    binding.rvDrCategoryData.post(() -> adjustRecyclerViewHeight(binding.rvDrCategoryData, categoryWiseModelList.size()));
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (visitFrequencyNeed) {
+                    binding.llDrSelection.setVisibility(View.VISIBLE);
+                    binding.drCategoryData.setVisibility(View.VISIBLE);
+                    binding.drClusterData.setVisibility(View.GONE);
+                    try {
+                        List<CategoryWiseModel> categoryWiseModelList = new ArrayList<>(drCategoryWisePlan.values());
+                        Collections.sort(categoryWiseModelList, Comparator.comparing(CategoryWiseModel::getName));
+                        drCategoryDataAdapter = new CategoryDataAdapter(this, categoryWiseModelList, categoryClickListener);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+                        binding.rvDrCategoryData.setLayoutManager(layoutManager);
+                        binding.rvDrCategoryData.setAdapter(drCategoryDataAdapter);
+                        binding.rvDrCategoryData.post(() -> adjustRecyclerViewHeight(binding.rvDrCategoryData, categoryWiseModelList.size()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    binding.llDrSelection.setVisibility(View.GONE);
+                    binding.drCategoryData.setVisibility(View.GONE);
+                    binding.drClusterData.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1089,7 +1098,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                                 addData(workTypePlanned, "H", dayNo);
                             } else if ("L".equalsIgnoreCase(session.getWorkType().getFWFlg())) {
                                 addData(workTypePlanned, "L", dayNo);
-                            } else {
+                            } else if (!session.getWorkType().getFWFlg().isEmpty()){
                                 addData(workTypePlanned, "N", dayNo);
                             }
                         } catch (Exception e) {

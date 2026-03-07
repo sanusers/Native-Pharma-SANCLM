@@ -1507,6 +1507,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 try {
                     intent.putExtra("month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()));
                     intent.putExtra("is_one_build", SharedPref.getOneBuild(TourPlanActivity.this).equals("0"));
+                    intent.putExtra("visit_frequency_need", visitFrequencyNeed.equals("0"));
                     intent.putExtra("dr_need", drNeed.equals("0"));
                     intent.putExtra("chm_need", chemistNeed.equals("0"));
                     intent.putExtra("one_build_data", oneBuildModelClassList);

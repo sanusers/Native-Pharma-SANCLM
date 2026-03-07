@@ -49,6 +49,36 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SessionViewAdapter.MyViewHolder holder, int position) {
+        if (SharedPref.getClusterCap(context).isEmpty() || SharedPref.getClusterCap(context).equalsIgnoreCase(null)) {
+            holder.clusterCapTV.setText("Cluster");
+        } else {
+            holder.clusterCapTV.setText(SharedPref.getClusterCap(context));
+        }
+
+        if (SharedPref.getDrCap(context).isEmpty() || SharedPref.getDrCap(context).equalsIgnoreCase(null)) {
+            holder.drCapTV.setText("Doctor");
+        } else {
+            holder.drCapTV.setText(SharedPref.getDrCap(context));
+        }
+
+        if (SharedPref.getChmCap(context).isEmpty() || SharedPref.getChmCap(context).equalsIgnoreCase(null)) {
+            holder.chemistCapTV.setText("Chemist");
+        } else {
+            holder.chemistCapTV.setText(SharedPref.getChmCap(context));
+        }
+
+        if (SharedPref.getStkCap(context).isEmpty() || SharedPref.getStkCap(context).equalsIgnoreCase(null)) {
+            holder.stockiestCapTV.setText("Stockist");
+        } else {
+            holder.stockiestCapTV.setText(SharedPref.getStkCap(context));
+        }
+
+        if (SharedPref.getUNLcap(context).isEmpty() || SharedPref.getUNLcap(context).equalsIgnoreCase(null)) {
+            holder.unListedDrCapTV.setText("Unlisted Doctor");
+        } else {
+            holder.unListedDrCapTV.setText(SharedPref.getUNLcap(context));
+        }
+
         if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             holder.dataOneBuild = inputDataModelOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition());
             holder.clusterModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getTerritories());
@@ -554,6 +584,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView sessionNoTxt;
         public TextView workTypeTV, hqTV, clusterTV, jcTV, drTV, chemistTV, stockiestTV, unListedDrTV, cipTV, hospTV, remarksTV, workDayTV;
+        public TextView clusterCapTV, drCapTV, chemistCapTV, stockiestCapTV, unListedDrCapTV, cipCapTV, hospCapTV;
         public LinearLayout workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout, workDayLayout;
         public RelativeLayout sessionDelete;
 
@@ -619,6 +650,13 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             remarksTV = itemView.findViewById(R.id.remarksField);
             workDayTV = itemView.findViewById(R.id.workDayField);
 
+            clusterCapTV = itemView.findViewById(R.id.clusterLayoutTxt);
+            drCapTV = itemView.findViewById(R.id.listedDrCap);
+            chemistCapTV = itemView.findViewById(R.id.chemistCap);
+            stockiestCapTV = itemView.findViewById(R.id.stockistCap);
+            unListedDrCapTV = itemView.findViewById(R.id.unListedDrCap);
+            cipCapTV = itemView.findViewById(R.id.cipCap);
+            hospCapTV = itemView.findViewById(R.id.hospitalCap);
         }
 
     }
