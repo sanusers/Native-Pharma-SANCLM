@@ -4971,7 +4971,6 @@ public class TourPlanActivity extends AppCompatActivity {
         OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
         OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
 
-        //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
         if (!receiveModel.getClusterName().isEmpty())
             clusterArray = addExtraDataOneBuild(receiveModel.getClusterName(), receiveModel.getClusterCode());
         if (!receiveModel.getJWNames().isEmpty())
@@ -4982,8 +4981,25 @@ public class TourPlanActivity extends AppCompatActivity {
             chemArray = addExtraDataOneBuild(receiveModel.getChem_Name(), receiveModel.getChem_Code());
         if (!receiveModel.getStockist_Name().isEmpty())
             stkArray = addExtraDataOneBuild(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-        //     }
+
         sessionList = prepareSessionListForAdapterOneBuild(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+
+        // ✅ Build rawJson for session 1
+        try {
+            JSONObject rawJson1 = new JSONObject();
+            rawJson1.put("WorkTypeCode", receiveModel.getWTCode());
+            rawJson1.put("WorkTypeName", receiveModel.getWTName());
+            rawJson1.put("Plan_Work_Type", receiveModel.getFWFlg());
+            rawJson1.put("SF_HQ_Code", receiveModel.getHQCodes());
+            rawJson1.put("SF_HQ_Name", receiveModel.getHQNames());
+            rawJson1.put("Territories", receiveModel.getClusterCode() + "|" + receiveModel.getClusterName());
+            rawJson1.put("Doctors", receiveModel.getDr_Code() + "|" + receiveModel.getDr_Name());
+            rawJson1.put("Chemists", receiveModel.getChem_Code() + "|" + receiveModel.getChem_Name());
+            rawJson1.put("Stockists", receiveModel.getStockist_Code() + "|" + receiveModel.getStockist_Name());
+            rawJson1.put("JointWorks", receiveModel.getJWCodes() + "|" + receiveModel.getJWNames());
+            rawJson1.put("TP_Remarks", receiveModel.getDayRemarks());
+            sessionList.setRawResponseJson(rawJson1);
+        } catch (Exception e) { e.printStackTrace(); }
 
         if (!receiveModel.getWTName2().isEmpty()) {
             session2 = true;
@@ -5013,7 +5029,24 @@ public class TourPlanActivity extends AppCompatActivity {
 
             sessionList2 = prepareSessionListForAdapterOneBuild(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
 
+            // ✅ Build rawJson for session 2
+            try {
+                JSONObject rawJson2 = new JSONObject();
+                rawJson2.put("WorkTypeCode", receiveModel.getWTCode2());
+                rawJson2.put("WorkTypeName", receiveModel.getWTName2());
+                rawJson2.put("Plan_Work_Type", receiveModel.getFWFlg2());
+                rawJson2.put("SF_HQ_Code", receiveModel.getHQCodes2());
+                rawJson2.put("SF_HQ_Name", receiveModel.getHQNames2());
+                rawJson2.put("Territories", receiveModel.getClusterCode2() + "|" + receiveModel.getClusterName2());
+                rawJson2.put("Doctors", receiveModel.getDr_two_code() + "|" + receiveModel.getDr_two_name());
+                rawJson2.put("Chemists", receiveModel.getChem_two_code() + "|" + receiveModel.getChem_two_name());
+                rawJson2.put("Stockists", receiveModel.getStockist_two_code() + "|" + receiveModel.getStockist_two_name());
+                rawJson2.put("JointWorks", receiveModel.getJWCodes2() + "|" + receiveModel.getJWNames2());
+                rawJson2.put("TP_Remarks", receiveModel.getDayRemarks2());
+                sessionList2.setRawResponseJson(rawJson2);
+            } catch (Exception e) { e.printStackTrace(); }
         }
+
         if (!receiveModel.getWTName3().isEmpty()) {
             session3 = true;
             String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
@@ -5039,12 +5072,32 @@ public class TourPlanActivity extends AppCompatActivity {
                 chemArray = addExtraDataOneBuild(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
             if (!receiveModel.getStockist_three_name().isEmpty())
                 stkArray = addExtraDataOneBuild(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+
             sessionList3 = prepareSessionListForAdapterOneBuild(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
+
+            // ✅ Build rawJson for session 3
+            try {
+                JSONObject rawJson3 = new JSONObject();
+                rawJson3.put("WorkTypeCode", receiveModel.getWTCode3());
+                rawJson3.put("WorkTypeName", receiveModel.getWTName3());
+                rawJson3.put("Plan_Work_Type", receiveModel.getFWFlg3());
+                rawJson3.put("SF_HQ_Code", receiveModel.getHQCodes3());
+                rawJson3.put("SF_HQ_Name", receiveModel.getHQNames3());
+                rawJson3.put("Territories", receiveModel.getClusterCode3() + "|" + receiveModel.getClusterName3());
+                rawJson3.put("Doctors", receiveModel.getDr_three_code() + "|" + receiveModel.getDr_three_name());
+                rawJson3.put("Chemists", receiveModel.getChem_three_code() + "|" + receiveModel.getChem_three_name());
+                rawJson3.put("Stockists", receiveModel.getStockist_three_code() + "|" + receiveModel.getStockist_three_name());
+                rawJson3.put("JointWorks", receiveModel.getJWCodes3() + "|" + receiveModel.getJWNames3());
+                rawJson3.put("TP_Remarks", receiveModel.getDayRemarks2());
+                sessionList3.setRawResponseJson(rawJson3);
+            } catch (Exception e) { e.printStackTrace(); }
         }
+
         ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
         sessionLists.add(sessionList);
         if (session2) sessionLists.add(sessionList2);
         if (session3) sessionLists.add(sessionList3);
+
         OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
         modelClass.setSubmittedTime(submittedTime);
         oneBuildModelClasses.add(modelClass);

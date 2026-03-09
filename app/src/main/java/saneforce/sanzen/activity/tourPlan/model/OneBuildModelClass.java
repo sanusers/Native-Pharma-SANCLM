@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.tourPlan.model;
 
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -190,6 +192,7 @@ public class OneBuildModelClass implements Serializable {
         private String remarks = "";
         private String sessionId = "";
         private String STPCode = "", STPName = "";
+        private JSONObject rawResponseJson;
 
         private OneBuildModelClass.SessionList.WorkType workType = new WorkType();
         private OneBuildModelClass.SessionList.SubClass Headquarters = new SubClass();
@@ -439,7 +442,8 @@ public class OneBuildModelClass implements Serializable {
         public void setSTPName(String STPName) {
             this.STPName = STPName;
         }
-
+        public JSONObject getRawResponseJson() { return rawResponseJson; }
+        public void setRawResponseJson(JSONObject rawResponseJson) { this.rawResponseJson = rawResponseJson; }
         //SUB CLASS
 
         public static class SubClass implements Serializable {
