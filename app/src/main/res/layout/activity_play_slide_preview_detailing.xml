@@ -380,6 +380,19 @@
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/btnProceed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PROCEED"
+        android:padding="@dimen/_5sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:backgroundTint="@color/dark_purple"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <RelativeLayout
         android:id="@+id/upArrow"

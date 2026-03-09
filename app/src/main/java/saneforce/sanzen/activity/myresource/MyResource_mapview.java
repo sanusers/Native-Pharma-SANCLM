@@ -200,7 +200,11 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                         marker = mMap.addMarker(new MarkerOptions().position(sydney).draggable(false).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)).snippet(loclist.get(i).getAdds() + "@" + loclist.get(i).getImageName()));
                         marker.setTag(loclist.get(i));
                         mMap.setOnMarkerClickListener(this);
-                        binding.custname.setText(loclist.get(0).getCustname());
+                        if(CUST_FLAG.equalsIgnoreCase("D") || CUST_FLAG.equalsIgnoreCase("U")){
+                            binding.custname.setText("Dr. "+loclist.get(0).getCustname());
+                        }else{
+                            binding.custname.setText(loclist.get(0).getCustname());
+                        }
                         binding.address.setText(loclist.get(0).getAdds());
                         ImageName = loclist.get(0).getImageName();
                         mMap.setOnMarkerClickListener(this);

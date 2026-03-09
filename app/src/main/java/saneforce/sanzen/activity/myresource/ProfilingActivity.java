@@ -225,7 +225,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             } else {
                 activityProfilingBinding.drtagname.setText(SharedPref.getDrCap(this) + " " + "Details");
             }
-            activityProfilingBinding.edtDctr.setText(docname);
+            activityProfilingBinding.edtDctr.setText("Dr. "+docname);
             activityProfilingBinding.edtCluster.setText(town);
             activityProfilingBinding.edtDob.setText(dob);
             activityProfilingBinding.edtDow.setText(dow);
@@ -299,32 +299,83 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 activityProfilingBinding.secondchmlayout.setVisibility(View.GONE);
             }
             activityProfilingBinding.txtChmgeocount.setText(geotagcount + "/" + maxcount);
-            if (!geotagcount.equalsIgnoreCase("0") && !geotagcount.equalsIgnoreCase("")) {
-                if (geotagcount.equalsIgnoreCase("1")) {
-                    activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
-                    activityProfilingBinding.geochmthree.setVisibility(View.GONE);
-                    activityProfilingBinding.geochmfour.setVisibility(View.GONE);
-                    String TagAddress = Address.get(0);
-                    activityProfilingBinding.chmaddress1.setText(TagAddress);
-                } else if (geotagcount.equalsIgnoreCase("2")) {
-                    activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
-                    activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
-                    activityProfilingBinding.geochmfour.setVisibility(View.GONE);
-                    String TagAddress = Address.get(0);
-                    activityProfilingBinding.chmaddress1.setText(TagAddress);
-                    String TagAddress1 = Address.get(1);
-                    activityProfilingBinding.chmaddress2.setText(TagAddress1);
-                } else if (geotagcount.equalsIgnoreCase("3")) {
-                    activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
-                    activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
-                    activityProfilingBinding.geochmfour.setVisibility(View.VISIBLE);
-                    String TagAddress = Address.get(0);
-                    activityProfilingBinding.chmaddress1.setText(TagAddress);
-                    String TagAddress1 = Address.get(1);
-                    activityProfilingBinding.chmaddress2.setText(TagAddress1);
-                    String TagAddress2 = Address.get(2);
-                    activityProfilingBinding.chmaddress3.setText(TagAddress2);
+//            if (!geotagcount.equalsIgnoreCase("0") && !geotagcount.equalsIgnoreCase("")) {
+//                if (geotagcount.equalsIgnoreCase("1")) {
+//                    activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
+//                    activityProfilingBinding.geochmthree.setVisibility(View.GONE);
+//                    activityProfilingBinding.geochmfour.setVisibility(View.GONE);
+//                    String TagAddress = Address.get(0);
+//                    activityProfilingBinding.chmaddress1.setText(TagAddress);
+//                } else if (geotagcount.equalsIgnoreCase("2")) {
+//                    activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
+//                    activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
+//                    activityProfilingBinding.geochmfour.setVisibility(View.GONE);
+//                    String TagAddress = Address.get(0);
+//                    activityProfilingBinding.chmaddress1.setText(TagAddress);
+//                    String TagAddress1 = Address.get(1);
+//                    activityProfilingBinding.chmaddress2.setText(TagAddress1);
+//                } else if (geotagcount.equalsIgnoreCase("3")) {
+//                    activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
+//                    activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
+//                    activityProfilingBinding.geochmfour.setVisibility(View.VISIBLE);
+//                    String TagAddress = Address.get(0);
+//                    activityProfilingBinding.chmaddress1.setText(TagAddress);
+//                    String TagAddress1 = Address.get(1);
+//                    activityProfilingBinding.chmaddress2.setText(TagAddress1);
+//                    String TagAddress2 = Address.get(2);
+//                    activityProfilingBinding.chmaddress3.setText(TagAddress2);
+//                }
+//            } else {
+//                activityProfilingBinding.notagchm.setVisibility(View.VISIBLE);
+//                activityProfilingBinding.geochmtwo.setVisibility(View.GONE);
+//                activityProfilingBinding.geochmthree.setVisibility(View.GONE);
+//                activityProfilingBinding.geochmfour.setVisibility(View.GONE);
+//            }
+            activityProfilingBinding.notagchm.setVisibility(View.GONE);
+            activityProfilingBinding.geochmtwo.setVisibility(View.GONE);
+            activityProfilingBinding.geochmthree.setVisibility(View.GONE);
+            activityProfilingBinding.geochmfour.setVisibility(View.GONE);
+
+            activityProfilingBinding.chmtagaddress1.setText("");
+            activityProfilingBinding.chmtagaddress2.setText("");
+            activityProfilingBinding.chmtagaddress3.setText("");
+            if (geotagcount != null && !geotagcount.equalsIgnoreCase("0") && !geotagcount.isEmpty()) {
+                try {
+                    int count = Integer.parseInt(geotagcount);
+                    if (Address != null && !Address.isEmpty()) {
+                        // Show based on count
+                        if (count >= 1) {
+                            activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
+                            if (Address.size() > 0) {
+                                // IMPORTANT: Set to chmtagaddress1 (not chmaddress1)
+                                activityProfilingBinding.chmtagaddress1.setText(Address.get(0));
+                            }
+                        }
+
+                        if (count >= 2) {
+                            activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
+                            if (Address.size() > 1) {
+                                // IMPORTANT: Set to chmtagaddress2
+                                activityProfilingBinding.chmtagaddress2.setText(Address.get(1));
+                            }
+                        }
+
+                        if (count >= 3) {
+                            activityProfilingBinding.geochmfour.setVisibility(View.VISIBLE);
+                            if (Address.size() > 2) {
+                                // IMPORTANT: Set to chmtagaddress3
+                                activityProfilingBinding.chmtagaddress3.setText(Address.get(2));
+                            }
+                        }
+
+                    } else {
+                        activityProfilingBinding.notagchm.setVisibility(View.VISIBLE);
+                    }
+
+                } catch (NumberFormatException e) {
+                    activityProfilingBinding.notagchm.setVisibility(View.VISIBLE);
                 }
+
             } else {
                 activityProfilingBinding.notagchm.setVisibility(View.VISIBLE);
                 activityProfilingBinding.geochmtwo.setVisibility(View.GONE);
@@ -404,7 +455,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             } else {
                 activityProfilingBinding.drtagname.setText(SharedPref.getUNLcap(this) + " " + "Details");
             }
-            activityProfilingBinding.edtDctr.setText(docname);
+            activityProfilingBinding.edtDctr.setText("Dr. "+docname);
             activityProfilingBinding.edtCluster.setText(town);
             activityProfilingBinding.edtDob.setText(dob);
             activityProfilingBinding.edtDow.setText(dow);

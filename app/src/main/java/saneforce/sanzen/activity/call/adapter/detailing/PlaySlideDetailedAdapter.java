@@ -92,7 +92,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
     // 🔹 NEW LIST (mandatory slides only)
     public static ArrayList<BrandModelClass.Product> mandatoryProductList = new ArrayList<>();
-
+    public static boolean isWelcome = false;
     ArrayList<StoreImageTypeUrl> slideDescribe = new ArrayList<>();
     public static ArrayList<StoreImageTypeUrl> slideScribble = new ArrayList<>();
     Object objsd;
@@ -117,10 +117,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
     private MediaController mediaController;
 
-    public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList,ArrayList<BrandModelClass.Product>mandatoryProductList) {
+    public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList,ArrayList<BrandModelClass.Product>mandatoryProductList,boolean isWelcome) {
         this.context = context;
         this.productArrayList = productArrayList;
         this.mandatoryProductList = mandatoryProductList;
+        this.isWelcome = isWelcome;
         slideDescribe.clear();
         act = context;
         mCommonSharedPreference = new CommonSharedPreference(context);
@@ -178,8 +179,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             webViewList.put(position, webView);
             progressAnimationViewList.put(position, progressAnim);
             RelativeLayout rl_rightView = sliderLayout.findViewById(R.id.rightArrow);
-            rl_rightView.setVisibility(View.VISIBLE);
-
+            //rl_rightView.setVisibility(View.VISIBLE);
+            if (isWelcome) {
+                rl_rightView.setVisibility(View.VISIBLE);
+            } else {
+                rl_rightView.setVisibility(View.GONE);
+            }
             SupportClass.setThumbnail(context, productArrayList.get(position).getSlideName(), imageViewZoom);
             container.addView(sliderLayout);
 
@@ -208,7 +213,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             webViewList.put(position, webView);
             progressAnimationViewList.put(position, progressAnim);
             RelativeLayout rl_rightView = sliderLayout.findViewById(R.id.rightArrow);
-            rl_rightView.setVisibility(View.VISIBLE);
+            //rl_rightView.setVisibility(View.VISIBLE);
+            if (isWelcome) {
+                rl_rightView.setVisibility(View.VISIBLE);
+            } else {
+                rl_rightView.setVisibility(View.GONE);
+            }
 
             SupportClass.setThumbnail(context, productArrayList.get(position).getSlideName(), imageView);
             container.addView(sliderLayout);

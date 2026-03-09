@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,6 +28,7 @@
 
 
             <RelativeLayout
+                android:id="@+id/relativeLyt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -46,10 +48,70 @@
                     android:layout_toStartOf="@id/optionview"
                     android:fontFamily="@font/satoshi_medium"
                     android:textColor="@color/text_dark"
-                    android:textSize="@dimen/_7ssp" />
+                    android:textSize="@dimen/_6ssp" />
 
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linear1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewLabel1"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_toStartOf="@id/optionview"
+                    android:layout_alignParentStart="true">
+
+                    <TextView
+                        android:id="@+id/cluster"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:text="Tiruchirapalli"
+                        android:textAllCaps="true"
+                        android:singleLine="true"
+                        android:textSize="@dimen/_5ssp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/Class"
+                        tools:ignore="MissingConstraints" />
+
+                    <TextView
+                        android:id="@+id/Class"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:textAllCaps="true"
+                        android:singleLine="true"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:text="Class"
+                        android:textSize="@dimen/_5ssp"
+                        app:layout_constraintEnd_toStartOf="@id/Category"
+                        app:layout_constraintStart_toEndOf="@id/cluster"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        tools:ignore="MissingConstraints" />
+
+                    <TextView
+                        android:id="@+id/Category"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:singleLine="true"
+                        android:text="Category"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/_5ssp"
+                        app:layout_constraintStart_toEndOf="@id/Class"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        tools:ignore="MissingConstraints" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
                 <TextView
-                    android:layout_below="@+id/textViewLabel1"
+                    android:layout_below="@+id/linear1"
                     android:layout_marginTop="@dimen/_3sdp"
                     android:layout_alignParentStart="true"
                     android:id="@+id/textViewLabel2"
@@ -57,9 +119,9 @@
                     android:layout_width="wrap_content"
                     android:fontFamily="@font/satoshi_regular"
                     android:layout_height="wrap_content"
-                    android:text="Label 2"
+                    android:text="Label 3"
                     android:layout_marginBottom="@dimen/_3sdp"
-                    android:textSize="@dimen/_6ssp" />
+                    android:textSize="@dimen/_5ssp" />
                 <TextView
                     android:id="@+id/optionview"
                     android:layout_width="wrap_content"
@@ -68,6 +130,7 @@
                     android:paddingVertical="@dimen/_2sdp"
                     android:paddingHorizontal="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/_10sdp"
                     android:textStyle="bold"

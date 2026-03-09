@@ -48,21 +48,25 @@ public class AdapterCusMainList extends RecyclerView.Adapter<AdapterCusMainList.
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull AdapterCusMainList.ViewHolder holder, int position) {
-        holder.tv_name.setText(dcrApprovalLists.get(position).getName());
+
         holder.tv_cluster_top.setText(dcrApprovalLists.get(position).getSdp_name());
 
         switch (dcrApprovalLists.get(position).getType()) {
             case "1":
                 holder.img_cus.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.map_dr_img));
+                holder.tv_name.setText("Dr. "+dcrApprovalLists.get(position).getName());
                 break;
             case "2":
                 holder.img_cus.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.map_chemist_img));
+                holder.tv_name.setText(dcrApprovalLists.get(position).getName());
                 break;
             case "3":
                 holder.img_cus.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.map_stockist_img));
+                holder.tv_name.setText(dcrApprovalLists.get(position).getName());
                 break;
             case "4":
                 holder.img_cus.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.map_unlistdr_img));
+                holder.tv_name.setText("Dr. "+dcrApprovalLists.get(position).getName());
                 break;
         }
 

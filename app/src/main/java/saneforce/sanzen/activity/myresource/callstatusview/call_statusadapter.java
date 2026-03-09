@@ -53,7 +53,11 @@ public class call_statusadapter extends RecyclerView.Adapter<call_statusadapter.
             holder.cust_type.setVisibility(View.GONE);
             holder.calls_town.setVisibility(View.GONE);
         } else {
-            holder.CustName.setText(app_adapt.getCustName());
+            if (app_adapt.getCustType().equalsIgnoreCase("1") || app_adapt.getCustType().equalsIgnoreCase("4")){
+                holder.CustName.setText("Dr. "+app_adapt.getCustName());
+            }else{
+                holder.CustName.setText(app_adapt.getCustName());
+            }
             holder.cust_type.setText(app_adapt.getDcrname());
             holder.cust_type.setVisibility(View.VISIBLE);
             holder.calls_town.setVisibility(View.VISIBLE);

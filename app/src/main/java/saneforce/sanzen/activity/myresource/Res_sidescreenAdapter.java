@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.myresource.doctorprofile.DoctorProfileView;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.sanzen.commonClasses.Constants;
@@ -117,12 +120,16 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
             if (SharedPref.getProfilingNeed(context).equalsIgnoreCase("0")
                     && !app_adapt.getPos_name().equalsIgnoreCase("S")) {
-                holder.Res_Edit.setVisibility(View.VISIBLE);
+               // holder.Res_Edit.setVisibility(View.VISIBLE);
             } else {
-                holder.Res_Edit.setVisibility(View.GONE);
+                //holder.Res_Edit.setVisibility(View.GONE);
             }
             if (!app_adapt.getDcr_name().equals("") && !app_adapt.getDcr_name().equals("null")) {
-                holder.Res_Name.setText(app_adapt.getDcr_name());
+                if(app_adapt.getPos_name().equalsIgnoreCase("D") || app_adapt.getPos_name().equalsIgnoreCase("U")){
+                    holder.Res_Name.setText("Dr. "+app_adapt.getDcr_name());
+                }else{
+                    holder.Res_Name.setText(app_adapt.getDcr_name());
+                }
                 holder.Res_rx.setText(app_adapt.getRes_rx());
             }
 
@@ -183,13 +190,15 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
             if (app_adapt.getRes_Category().equals("") && app_adapt.getRes_rx().equals("") && app_adapt.getRes_Specialty().equals("")) {
                 holder.Res_Table1.setVisibility(View.GONE);
+
+
                 if (split_val.equals("1") || split_val.equals("2")) {
 //                    if (SharedPref.getProfilingNeed(context).equalsIgnoreCase("0")) {
 //                        holder.Res_Edit.setVisibility(View.VISIBLE);
 //                    } else {
 //                        holder.Res_Edit.setVisibility(View.GONE);
 //                    }
-                    holder.Res_Edit.setVisibility(View.GONE);
+                  //  holder.Res_Edit.setVisibility(View.GONE);
                     holder.Res_View.setVisibility(View.GONE);
                     holder.Res_Table2.setVisibility(View.GONE);
                 }
@@ -203,15 +212,15 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 //                } else {
 //                    holder.Res_Edit.setVisibility(View.GONE);
 //                }
-                holder.Res_Edit.setVisibility(View.GONE);
+                //holder.Res_Edit.setVisibility(View.GONE);
                 holder.Res_Table2.setVisibility(View.GONE);
             }
             if (split_val.equals("1") && !app_adapt.getLatitude().equals("") && !app_adapt.getLongtitude().equals("")) {
                 holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_category.setVisibility(View.VISIBLE);
 
-                holder.Res_category.setText(context.getString(R.string.from)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
-                holder.Res_rx.setText(context.getString(R.string.to)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                holder.Res_category.setText(context.getString(R.string.from) + " :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                holder.Res_rx.setText(context.getString(R.string.to) + " :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
             }
 
             //        input filter_add
@@ -220,8 +229,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     holder.Res_Table1.setVisibility(View.VISIBLE);
                     holder.Res_category.setVisibility(View.VISIBLE);
 
-                    holder.Res_category.setText(context.getString(R.string.from)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
-                    holder.Res_rx.setText(context.getString(R.string.to)+" :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                    holder.Res_category.setText(context.getString(R.string.from) + " :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                    holder.Res_rx.setText(context.getString(R.string.to) + " :" + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
                 }
             }
             //workType
@@ -239,94 +248,161 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_Name.setText(context.getString(R.string.leave_type) + " " + app_adapt.getLeaveTypes());
                 holder.Res_category.setText(context.getString(R.string.eligible) + " " + app_adapt.getEligible());
                 holder.available.setText(context.getString(R.string.available) + " " + app_adapt.getAvailable());
-                holder.Res_rx.setText(context.getString(R.string.taken)+ " " + app_adapt.getTaken());
+                holder.Res_rx.setText(context.getString(R.string.taken) + " " + app_adapt.getTaken());
             }
 
             holder.listcount.setText(count + " )");
 
-            holder.Res_Edit.setOnClickListener(view -> {
-         /*       if (app_adapt.getPos_name().equalsIgnoreCase("D")) {
-                    Intent intent = new Intent(context, ProfilingActivity.class);
-                    intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
-                    intent.putExtra("Doc_name", app_adapt.getDcr_name());
-                    intent.putExtra("Doc_code", app_adapt.getDcr_code());
-                    intent.putExtra("Towncode", app_adapt.getTown_code());
-                    intent.putExtra("Town", app_adapt.getTown_name());
-                    intent.putExtra("ListedDrSex", app_adapt.getRes_listeddoc_sex());
-                    intent.putExtra("Qual_values", app_adapt.getRes_Qualifiey());
-                    intent.putExtra("Qual_code", app_adapt.getQuacode());
-                    intent.putExtra("Spec_values", app_adapt.getRes_Specialty());
-                    intent.putExtra("Spec_code", app_adapt.getRes_Specialtycode());
-                    intent.putExtra("cate_values", app_adapt.getRes_Category());
-                    intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
-                    intent.putExtra("EMAIL", app_adapt.getRes_Email());
-                    intent.putExtra("MOB", app_adapt.getRes_mob());
-                    intent.putExtra("PHN", app_adapt.getRes_phn());
-                    intent.putExtra("DOB", app_adapt.getRes_Dob());
-                    intent.putExtra("DOW", app_adapt.getRes_Dow());
-                    intent.putExtra("ADDRESS", app_adapt.getRes_adds());
-                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
-                    intent.putExtra("lat", app_adapt.getLatitude());
-                    intent.putExtra("long", app_adapt.getLongtitude());
-                    intent.putExtra("tagcount", app_adapt.getTagcount());
-                    intent.putExtra("maxcount", app_adapt.getMaxcount());
-                    //activityResultLauncher.launch(intent);
-                    context.startActivity(intent);
-                }*/
-                if (app_adapt.getPos_name().equalsIgnoreCase("C")
-                        || app_adapt.getPos_name().equalsIgnoreCase("S")) {
-                    Intent intent = new Intent(context, ProfilingActivity.class);
-                    intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
-                    intent.putExtra("Doc_name", app_adapt.getDcr_name());
-                    intent.putExtra("Doc_code", app_adapt.getDcr_code());
-                    intent.putExtra("Towncode", app_adapt.getTown_code());
-                    intent.putExtra("Town", app_adapt.getTown_name());
-                    intent.putExtra("cate_values", app_adapt.getRes_Category());
-                    intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
-                    intent.putExtra("EMAIL", app_adapt.getRes_Email());
-                    intent.putExtra("MOB", app_adapt.getRes_mob());
-                    intent.putExtra("PHN", app_adapt.getRes_phn());
-                    intent.putExtra("DOB", app_adapt.getRes_Dob());
-                    intent.putExtra("DOW", app_adapt.getRes_Dow());
-                    intent.putExtra("ADDRESS", app_adapt.getRes_adds());
-                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
-                    intent.putExtra("lat", app_adapt.getLatitude());
-                    intent.putExtra("long", app_adapt.getLongtitude());
-                    intent.putExtra("tagcount", app_adapt.getTagcount());
-                    intent.putExtra("maxcount", app_adapt.getMaxcount());
-                    context.startActivity(intent);
-                }
-                if (app_adapt.getPos_name().equalsIgnoreCase("U")) {
-                    Intent intent = new Intent(context, ProfilingActivity.class);
-                    intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
-                    intent.putExtra("Doc_name", app_adapt.getDcr_name());
-                    intent.putExtra("Doc_code", app_adapt.getDcr_code());
-                    intent.putExtra("Towncode", app_adapt.getTown_code());
-                    intent.putExtra("Town", app_adapt.getTown_name());
-                    intent.putExtra("ListedDrSex", app_adapt.getRes_listeddoc_sex());
-                    intent.putExtra("Qual_values", app_adapt.getRes_Qualifiey());
-                    intent.putExtra("Qual_code", app_adapt.getQuacode());
-                    intent.putExtra("Spec_values", app_adapt.getRes_Specialty());
-                    intent.putExtra("Spec_code", app_adapt.getRes_Specialtycode());
-                    intent.putExtra("cate_values", app_adapt.getRes_Category());
-                    intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
-                    intent.putExtra("EMAIL", app_adapt.getRes_Email());
-                    intent.putExtra("MOB", app_adapt.getRes_mob());
-                    intent.putExtra("PHN", app_adapt.getRes_phn());
-                    intent.putExtra("DOB", app_adapt.getRes_Dob());
-                    intent.putExtra("DOW", app_adapt.getRes_Dow());
-                    intent.putExtra("ADDRESS", app_adapt.getRes_adds());
-                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
-                    intent.putExtra("lat", app_adapt.getLatitude());
-                    intent.putExtra("long", app_adapt.getLongtitude());
-                    intent.putExtra("tagcount", app_adapt.getTagcount());
-                    intent.putExtra("maxcount", app_adapt.getMaxcount());
-                    //activityResultLauncher.launch(intent);
-                    context.startActivity(intent);
-                }
+//            holder.Res_Edit.setOnClickListener(view -> {
+//         /*       if (app_adapt.getPos_name().equalsIgnoreCase("D")) {
+//                    Intent intent = new Intent(context, ProfilingActivity.class);
+//                    intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
+//                    intent.putExtra("Doc_name", app_adapt.getDcr_name());
+//                    intent.putExtra("Doc_code", app_adapt.getDcr_code());
+//                    intent.putExtra("Towncode", app_adapt.getTown_code());
+//                    intent.putExtra("Town", app_adapt.getTown_name());
+//                    intent.putExtra("ListedDrSex", app_adapt.getRes_listeddoc_sex());
+//                    intent.putExtra("Qual_values", app_adapt.getRes_Qualifiey());
+//                    intent.putExtra("Qual_code", app_adapt.getQuacode());
+//                    intent.putExtra("Spec_values", app_adapt.getRes_Specialty());
+//                    intent.putExtra("Spec_code", app_adapt.getRes_Specialtycode());
+//                    intent.putExtra("cate_values", app_adapt.getRes_Category());
+//                    intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
+//                    intent.putExtra("EMAIL", app_adapt.getRes_Email());
+//                    intent.putExtra("MOB", app_adapt.getRes_mob());
+//                    intent.putExtra("PHN", app_adapt.getRes_phn());
+//                    intent.putExtra("DOB", app_adapt.getRes_Dob());
+//                    intent.putExtra("DOW", app_adapt.getRes_Dow());
+//                    intent.putExtra("ADDRESS", app_adapt.getRes_adds());
+//                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
+//                    intent.putExtra("lat", app_adapt.getLatitude());
+//                    intent.putExtra("long", app_adapt.getLongtitude());
+//                    intent.putExtra("tagcount", app_adapt.getTagcount());
+//                    intent.putExtra("maxcount", app_adapt.getMaxcount());
+//                    //activityResultLauncher.launch(intent);
+//                    context.startActivity(intent);
+//                }*/
+//                if (app_adapt.getPos_name().equalsIgnoreCase("C")
+//                        || app_adapt.getPos_name().equalsIgnoreCase("S")) {
+//                    Intent intent = new Intent(context, ProfilingActivity.class);
+//                    intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
+//                    intent.putExtra("Doc_name", app_adapt.getDcr_name());
+//                    intent.putExtra("Doc_code", app_adapt.getDcr_code());
+//                    intent.putExtra("Towncode", app_adapt.getTown_code());
+//                    intent.putExtra("Town", app_adapt.getTown_name());
+//                    intent.putExtra("cate_values", app_adapt.getRes_Category());
+//                    intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
+//                    intent.putExtra("EMAIL", app_adapt.getRes_Email());
+//                    intent.putExtra("MOB", app_adapt.getRes_mob());
+//                    intent.putExtra("PHN", app_adapt.getRes_phn());
+//                    intent.putExtra("DOB", app_adapt.getRes_Dob());
+//                    intent.putExtra("DOW", app_adapt.getRes_Dow());
+//                    intent.putExtra("ADDRESS", app_adapt.getRes_adds());
+//                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
+//                    intent.putExtra("lat", app_adapt.getLatitude());
+//                    intent.putExtra("long", app_adapt.getLongtitude());
+//                    intent.putExtra("tagcount", app_adapt.getTagcount());
+//                    intent.putExtra("maxcount", app_adapt.getMaxcount());
+//                    context.startActivity(intent);
+//                }
+//                if (app_adapt.getPos_name().equalsIgnoreCase("U")) {
+//                    Intent intent = new Intent(context, ProfilingActivity.class);
+//                    intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
+//                    intent.putExtra("Doc_name", app_adapt.getDcr_name());
+//                    intent.putExtra("Doc_code", app_adapt.getDcr_code());
+//                    intent.putExtra("Towncode", app_adapt.getTown_code());
+//                    intent.putExtra("Town", app_adapt.getTown_name());
+//                    intent.putExtra("ListedDrSex", app_adapt.getRes_listeddoc_sex());
+//                    intent.putExtra("Qual_values", app_adapt.getRes_Qualifiey());
+//                    intent.putExtra("Qual_code", app_adapt.getQuacode());
+//                    intent.putExtra("Spec_values", app_adapt.getRes_Specialty());
+//                    intent.putExtra("Spec_code", app_adapt.getRes_Specialtycode());
+//                    intent.putExtra("cate_values", app_adapt.getRes_Category());
+//                    intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
+//                    intent.putExtra("EMAIL", app_adapt.getRes_Email());
+//                    intent.putExtra("MOB", app_adapt.getRes_mob());
+//                    intent.putExtra("PHN", app_adapt.getRes_phn());
+//                    intent.putExtra("DOB", app_adapt.getRes_Dob());
+//                    intent.putExtra("DOW", app_adapt.getRes_Dow());
+//                    intent.putExtra("ADDRESS", app_adapt.getRes_adds());
+//                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
+//                    intent.putExtra("lat", app_adapt.getLatitude());
+//                    intent.putExtra("long", app_adapt.getLongtitude());
+//                    intent.putExtra("tagcount", app_adapt.getTagcount());
+//                    intent.putExtra("maxcount", app_adapt.getMaxcount());
+//                    //activityResultLauncher.launch(intent);
+//                    context.startActivity(intent);
+//                }
+//
+//                if (app_adapt.getPos_name().equalsIgnoreCase("D")) {
+//                    Intent intent = new Intent(context, ProfilingActivity.class);
+//                    intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
+//                    intent.putExtra("Doc_name", app_adapt.getDcr_name());
+//                    intent.putExtra("Doc_code", app_adapt.getDcr_code());
+//                    intent.putExtra("Towncode", app_adapt.getTown_code());
+//                    intent.putExtra("Town", app_adapt.getTown_name());
+//                    intent.putExtra("ListedDrSex", app_adapt.getRes_listeddoc_sex());
+//                    intent.putExtra("Qual_values", app_adapt.getRes_Qualifiey());
+//                    intent.putExtra("Qual_code", app_adapt.getQuacode());
+//                    intent.putExtra("Spec_values", app_adapt.getRes_Specialty());
+//                    intent.putExtra("Spec_code", app_adapt.getRes_Specialtycode());
+//                    intent.putExtra("cate_values", app_adapt.getRes_Category());
+//                    intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
+//                    intent.putExtra("EMAIL", app_adapt.getRes_Email());
+//                    intent.putExtra("MOB", app_adapt.getRes_mob());
+//                    intent.putExtra("PHN", app_adapt.getRes_phn());
+//                    intent.putExtra("DOB", app_adapt.getRes_Dob());
+//                    intent.putExtra("DOW", app_adapt.getRes_Dow());
+//                    intent.putExtra("ADDRESS", app_adapt.getRes_adds());
+//                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
+//                    intent.putExtra("lat", app_adapt.getLatitude());
+//                    intent.putExtra("long", app_adapt.getLongtitude());
+//                    intent.putExtra("tagcount", app_adapt.getTagcount());
+//                    intent.putExtra("maxcount", app_adapt.getMaxcount());
+//                    //activityResultLauncher.launch(intent);
+//                    context.startActivity(intent);
+//                }
+//            });
 
-                if (app_adapt.getPos_name().equalsIgnoreCase("D")) {
-                    Intent intent = new Intent(context, ProfilingActivity.class);
+//            if (SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+//               holder.Res_Profile.setVisibility(View.VISIBLE);
+//            }else{
+//                holder.Res_Profile.setVisibility(View.GONE);
+//            }
+            String posName = app_adapt.getPos_name();
+
+            if (posName.equalsIgnoreCase("D")) {
+                holder.ivProfileIcon.setImageResource(R.drawable.doctor_img);
+                holder.txt_profile.setTextColor(ContextCompat.getColor(context, R.color.green_60));
+
+
+            } else if (posName.equalsIgnoreCase("C")) {
+                holder.ivProfileIcon.setImageResource(R.drawable.chemist_img);
+                holder.txt_profile.setTextColor(ContextCompat.getColor(context, R.color.blue_60));
+
+            } else if (posName.equalsIgnoreCase("S")) {
+                holder.ivProfileIcon.setImageResource(R.drawable.imgstock);
+                holder.txt_profile.setTextColor(ContextCompat.getColor(context, R.color.red_60));
+
+            } else if (posName.equalsIgnoreCase("U")) {
+                holder.ivProfileIcon.setImageResource(R.drawable.imgunlisted);
+                holder.txt_profile.setTextColor(ContextCompat.getColor(context, R.color.gray_45));
+            }
+            if (SharedPref.getSfType(context).equalsIgnoreCase("1") &&
+                    (app_adapt.getPos_name().equalsIgnoreCase("D") ||
+                            app_adapt.getPos_name().equalsIgnoreCase("C") ||
+                            app_adapt.getPos_name().equalsIgnoreCase("S") ||
+                            app_adapt.getPos_name().equalsIgnoreCase("U"))) {
+
+                holder.Res_Profile.setVisibility(View.VISIBLE);
+            } else {
+                holder.Res_Profile.setVisibility(View.GONE);
+            }
+            holder.Res_Profile.setOnClickListener(view -> {
+                Intent intent = new Intent(context, DoctorProfileView.class);
+                if (app_adapt.getPos_name().equalsIgnoreCase("D") || app_adapt.getPos_name().equalsIgnoreCase("C")
+                        || app_adapt.getPos_name().equalsIgnoreCase("S") || app_adapt.getPos_name().equalsIgnoreCase("U") ) {
+                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
                     intent.putExtra("Doc_obj", app_adapt.getCustoum_name());
                     intent.putExtra("Doc_name", app_adapt.getDcr_name());
                     intent.putExtra("Doc_code", app_adapt.getDcr_code());
@@ -345,15 +421,17 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     intent.putExtra("DOB", app_adapt.getRes_Dob());
                     intent.putExtra("DOW", app_adapt.getRes_Dow());
                     intent.putExtra("ADDRESS", app_adapt.getRes_adds());
-                    intent.putExtra("PosDCRname", app_adapt.getPos_name());
                     intent.putExtra("lat", app_adapt.getLatitude());
                     intent.putExtra("long", app_adapt.getLongtitude());
                     intent.putExtra("tagcount", app_adapt.getTagcount());
                     intent.putExtra("maxcount", app_adapt.getMaxcount());
-                    //activityResultLauncher.launch(intent);
+                    intent.putExtra("source",Res_sidescreenAdapter.class);
+                    int pos = holder.getBindingAdapterPosition();
+                    intent.putExtra("position", pos);
                     context.startActivity(intent);
                 }
             });
+
 
             holder.Res_View.setOnClickListener(new SafeClickListener() {
                 @Override
@@ -376,7 +454,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 //                } else {
 //                    holder.Res_Edit.setVisibility(View.GONE);
 //                }
-                holder.Res_Edit.setVisibility(View.GONE);
+              //  holder.Res_Edit.setVisibility(View.GONE);
                 holder.Res_visitcntl.setVisibility(View.VISIBLE);
                 holder.tertry_list.setVisibility(View.VISIBLE);
                 holder.end_line.setVisibility(View.VISIBLE);
@@ -428,7 +506,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                         }
                     }
 
-                    holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-"+ context.getString(R.string.visit));
+                    holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-" + context.getString(R.string.visit));
 
                 } catch (Exception a) {
                     a.printStackTrace();
@@ -453,11 +531,12 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView Res_Name, Res_category, Res_specialty, Res_rx, Res_culter, listcount;
-        public LinearLayout Res_Edit, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
+        public LinearLayout Res_Edit, Res_Profile, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
 
-        public TextView visit_dt, available;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
+        public TextView visit_dt, available,txt_profile;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
         public RecyclerView tertry_list;
 
+        public ImageView  ivProfileIcon;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -469,7 +548,10 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             Res_culter = itemView.findViewById(R.id.Res_culter);
             listcount = itemView.findViewById(R.id.listcount);
 
-            Res_Edit = itemView.findViewById(R.id.Res_Edit);
+          //  Res_Edit = itemView.findViewById(R.id.Res_Edit);
+            Res_Profile = itemView.findViewById(R.id.Res_Profile);
+            ivProfileIcon = itemView.findViewById(R.id.ivProfileIcon);
+            txt_profile = itemView.findViewById(R.id.txt_profile);
             Res_View = itemView.findViewById(R.id.Res_View);
             Res_Table1 = itemView.findViewById(R.id.Res_Table1);
             Res_Table2 = itemView.findViewById(R.id.Res_Table2);

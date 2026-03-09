@@ -767,8 +767,15 @@ public class ListedDoctorFragment extends Fragment {
             }
             Log.v("call", "-dr--size--" + custListArrayList.size());
         }
+//        FilltercustArraList.clear();
+//        FilltercustArraList.addAll(custListArrayList);
         FilltercustArraList.clear();
-        FilltercustArraList.addAll(custListArrayList);
+
+// 🔥 REMOVE ALREADY VISITED DOCTORS HERE
+        ArrayList<CustList> finalList = removeAlreadyVisitedDoctors(custListArrayList);
+
+        FilltercustArraList.addAll(finalList);
+
 
         if (FilltercustArraList.isEmpty()) {
             noDoctor.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getDrCap(requireContext()), getString(R.string.found)));
@@ -1104,8 +1111,8 @@ public class ListedDoctorFragment extends Fragment {
                             && specialityCode.isEmpty()
                             && territoryCode.isEmpty()
                             && categoryCode.isEmpty()) {
-                        FilltercustArraList.add(mList);
-                    }
+                            FilltercustArraList.add(mList);
+                        }
                 }
             }
             tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
@@ -1123,6 +1130,45 @@ public class ListedDoctorFragment extends Fragment {
             }
         }
         dialogFilter.dismiss();
+    }
+    private ArrayList<CustList> removeAlreadyVisitedDoctors(
+            ArrayList<CustList> sourceList) {
+
+        ArrayList<CustList> filteredList = new ArrayList<>();
+
+        try {
+            JSONArray callSyncArray = masterDataDao
+                    .getMasterDataTableOrNew(Constants.CALL_SYNC)
+                    .getMasterSyncDataJsonArray();
+
+            for (CustList cust : sourceList) {
+
+                boolean alreadyVisited = false;
+
+                for (int i = 0; i < callSyncArray.length(); i++) {
+                    JSONObject obj = callSyncArray.getJSONObject(i);
+
+                    if (obj.optString("CustCode")
+                            .equalsIgnoreCase(cust.getCode())
+                            && obj.optString("Dcr_dt")
+                            .equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+
+                        alreadyVisited = true;
+                        break;
+                    }
+                }
+
+                // ✅ ONLY NOT VISITED DOCTORS
+                if (!alreadyVisited) {
+                    filteredList.add(cust);
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e("REMOVE_VISITED", e.toString());
+        }
+
+        return filteredList;
     }
 
 }
