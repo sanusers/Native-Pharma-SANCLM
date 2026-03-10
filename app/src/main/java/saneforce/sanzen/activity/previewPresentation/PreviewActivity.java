@@ -173,57 +173,223 @@ public class PreviewActivity extends AppCompatActivity {
                 SlideCode = extra.getString("MappedSlideCode");
                 CusType = extra.getString("CusType", "");
                 // 🔥 DIRECT OPEN WELCOME FOR DOCTOR
-                if ("1".equalsIgnoreCase(CusType)) {
-
+//                if ("1".equalsIgnoreCase(CusType)) {
+//
+//                    try {
+//
+//                        JSONArray welcomeSlideArray =
+//                                masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE)
+//                                        .getMasterSyncDataJsonArray();
+//
+//                        if (welcomeSlideArray != null && welcomeSlideArray.length() > 0) {
+//
+//                            // 🔹 Welcome slides irundha PlaySlideDetailing open
+//                            ArrayList<BrandModelClass.Product> productList = new ArrayList<>();
+//
+//                            for (int i = 0; i < welcomeSlideArray.length(); i++) {
+//
+//                                JSONObject obj = welcomeSlideArray.optJSONObject(i);
+//
+//                                if (obj != null) {
+//
+//                                    String fileName = obj.optString("Name", "");
+//
+//                                    if (fileName.contains("/")) {
+//                                        fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+//                                    }
+//
+//                                    productList.add(new BrandModelClass.Product(
+//                                            "", "Welcome", "", fileName,
+//                                            obj.optString("orderby"), false, "", ""
+//                                    ));
+//                                }
+//                            }
+//
+//                            if (!productList.isEmpty()) {
+//
+//                                Intent intent = new Intent(this, PlaySlideDetailing.class);
+//
+//                                Bundle bundle = new Bundle();
+//                                bundle.putString("slideBundle", new Gson().toJson(productList));
+//                                bundle.putString("position", "0");
+//                                bundle.putBoolean("isWelcomeOnly", true);
+//
+//                                intent.putExtra("bundle", bundle);
+//
+//                                startActivity(intent);
+//                            }
+//
+//                        } else {
+//
+//                            // 🔹 Default Welcome Screen (drawable image reuse)
+//                            previewBinding.rlThankYou.setVisibility(View.VISIBLE);
+//
+//                            previewBinding.btnFinishDet.setVisibility(View.GONE);
+//                            previewBinding.proceed.setVisibility(View.VISIBLE);
+//
+//                            String DrDetCap = SharedPref.getDetDrCap(PreviewActivity.this);
+//                            String name = CallActivityCustDetails.get(0).getName();
+//
+//                            if (DrDetCap != null && !DrDetCap.isEmpty() && !DrDetCap.equalsIgnoreCase("null")) {
+//                                previewBinding.docName.setText("Welcome\n" + DrDetCap + " " + name);
+//                            } else {
+//                                previewBinding.docName.setText("Welcome\nDr. " + name);
+//                            }
+//
+//                            // 🔹 Proceed Button → PlaySlideDetailing
+//                            previewBinding.proceed.setOnClickListener(v -> {
+//
+//                                Intent intent = new Intent(PreviewActivity.this, PlaySlideDetailing.class);
+//                                startActivity(intent);
+//
+//                            });
+//                        }
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+              //  if ("1".equalsIgnoreCase(CusType)) {
+                // 🔹 Existing if line-a ippadi mathunga:
+                if (CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("2") ||
+                        CusType.equalsIgnoreCase("3") || CusType.equalsIgnoreCase("4")) {
                     try {
+                        JSONArray welcomeSlideArray = masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE)
+                                .getMasterSyncDataJsonArray();
 
-                        JSONArray welcomeSlideArray =
-                                masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE)
-                                        .getMasterSyncDataJsonArray();
-
+                        // CHECK: Master data-la slides irukka?
                         if (welcomeSlideArray != null && welcomeSlideArray.length() > 0) {
 
+                            // --- SCENARIO 1: Slides irundha 'PlaySlideDetailing' poga vendiya logic ---
                             ArrayList<BrandModelClass.Product> productList = new ArrayList<>();
-
                             for (int i = 0; i < welcomeSlideArray.length(); i++) {
-
                                 JSONObject obj = welcomeSlideArray.optJSONObject(i);
-
                                 if (obj != null) {
-
                                     String fileName = obj.optString("Name", "");
-
                                     if (fileName.contains("/")) {
                                         fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
                                     }
-
-                                    productList.add(new BrandModelClass.Product("", "Welcome", "", fileName, obj.optString("orderby"), false, "", ""));
+                                    productList.add(new BrandModelClass.Product("", "Welcome", "", fileName,
+                                            obj.optString("orderby"), false, "", ""));
                                 }
                             }
 
-                            if (!productList.isEmpty()) {
+                            Intent intent = new Intent(this, PlaySlideDetailing.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("slideBundle", new Gson().toJson(productList));
+                            bundle.putString("position", "0");
+                            bundle.putBoolean("isWelcomeOnly", true);
+                            intent.putExtra("bundle", bundle);
+                            startActivity(intent);
 
-                                Intent intent = new Intent(this, PlaySlideDetailing.class);
+                        } else {
+                            // 1. Force Hide the Finish button immediately
+                            previewBinding.btnFinishDet.setVisibility(View.GONE);
 
-                                String data = new Gson().toJson(productList);
+                            // 2. Show Welcome Slide and bring it to the top layer
+                            previewBinding.rlWelcome.setVisibility(View.VISIBLE);
+                            previewBinding.rlWelcome.bringToFront();
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("slideBundle", data);
-                                bundle.putString("position", "0");
+                            // Existing Captions
+                            String DrDetCap2 = SharedPref.getDetDrCap(PreviewActivity.this);
+                            String UlDrDetCap2 = SharedPref.getDetUldrCap(PreviewActivity.this);
 
-                                intent.putExtra("bundle", bundle);
-                                bundle.putBoolean("isWelcomeOnly", true);
+                            // 🔥 New Captions for Chemist & Stockist
+                            String ChmDetCap = SharedPref.getDetChmCap(PreviewActivity.this);
+                            String StkDetCap = SharedPref.getDetStkCap(PreviewActivity.this);
 
-                                startActivity(intent);
-                                //finish();
-                                //return;  // 🔥 STOP ACTIVITY HERE
+                            String doctorName = CallActivityCustDetails.get(0).getName();
+
+                            // Name set logic - Existing conditions preserved
+                            if (CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
+                                if (CusType.equalsIgnoreCase("1") && (DrDetCap2 != null && !DrDetCap2.isEmpty() && !DrDetCap2.equalsIgnoreCase("null"))) {
+                                    previewBinding.doctorName.setText("Welcome\n" + DrDetCap2 + " " + doctorName);
+                                } else if (CusType.equalsIgnoreCase("4") && (UlDrDetCap2 != null && !UlDrDetCap2.isEmpty() && !UlDrDetCap2.equalsIgnoreCase("null"))) {
+                                    previewBinding.doctorName.setText("Welcome\n" + UlDrDetCap2 + " " + doctorName);
+                                } else {
+                                    previewBinding.doctorName.setText("Welcome\n" + "Dr. " + doctorName);
+                                }
                             }
+                            // 🔥 Extra Logic for Chemist (2) and Stockist (3)
+                            else if (CusType.equalsIgnoreCase("2") && ChmDetCap != null && !ChmDetCap.isEmpty() && !ChmDetCap.equalsIgnoreCase("null")) {
+                                previewBinding.doctorName.setText("Welcome\n" + ChmDetCap + " " + doctorName);
+                            }
+                            else if (CusType.equalsIgnoreCase("3") && StkDetCap != null && !StkDetCap.isEmpty() && !StkDetCap.equalsIgnoreCase("null")) {
+                                previewBinding.doctorName.setText("Welcome\n" + StkDetCap + " " + doctorName);
+                            }
+                            else {
+                                // Fallback for others or if no caption exists
+                                previewBinding.doctorName.setText("Welcome\n" + doctorName);
+                            }
+
+                            // 3. PROCEED Click: Welcome slide-a hide panni, Detailing content-a show pannanum
+                            previewBinding.proceedBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    // Welcome slide-a hide pannunga
+                                    previewBinding.rlWelcome.setVisibility(View.GONE);
+
+                                    // Now show the Finish button only after Proceed is clicked
+                                    previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+                                }
+                            });
                         }
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
+//                if ("1".equalsIgnoreCase(CusType)) {
+//
+//                    try {
+//
+//                        JSONArray welcomeSlideArray =
+//                                masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE)
+//                                        .getMasterSyncDataJsonArray();
+//
+//                        if (welcomeSlideArray != null && welcomeSlideArray.length() > 0) {
+//
+//                            ArrayList<BrandModelClass.Product> productList = new ArrayList<>();
+//
+//                            for (int i = 0; i < welcomeSlideArray.length(); i++) {
+//
+//                                JSONObject obj = welcomeSlideArray.optJSONObject(i);
+//
+//                                if (obj != null) {
+//
+//                                    String fileName = obj.optString("Name", "");
+//
+//                                    if (fileName.contains("/")) {
+//                                        fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+//                                    }
+//
+//                                    productList.add(new BrandModelClass.Product("", "Welcome", "", fileName, obj.optString("orderby"), false, "", ""));
+//                                }
+//                            }
+//
+//                            if (!productList.isEmpty()) {
+//
+//                                Intent intent = new Intent(this, PlaySlideDetailing.class);
+//
+//                                String data = new Gson().toJson(productList);
+//
+//                                Bundle bundle = new Bundle();
+//                                bundle.putString("slideBundle", data);
+//                                bundle.putString("position", "0");
+//
+//                                intent.putExtra("bundle", bundle);
+//                                bundle.putBoolean("isWelcomeOnly", true);
+//
+//                                startActivity(intent);
+//                                //finish();
+//                                //return;  // 🔥 STOP ACTIVITY HERE
+//                            }
+//                        }
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
 
                 switch (CusType) {
                     case "1":
@@ -258,9 +424,11 @@ public class PreviewActivity extends AppCompatActivity {
                 PlaySlideDetailedAdapter.timer = new HashMap<>();
                 PlaySlideDetailedAdapter.pageStartTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
                 previewBinding.tagCustName.setText(cus_name);
-                previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
-            } else {
-                previewBinding.btnFinishDet.setVisibility(View.GONE);
+                if (previewBinding.rlWelcome.getVisibility() == View.VISIBLE) {
+                    previewBinding.btnFinishDet.setVisibility(View.GONE);
+                } else {
+                    previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+                }
             }
         }
         viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
