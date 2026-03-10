@@ -347,7 +347,7 @@ public class PreviewActivity extends AppCompatActivity {
                     return;
                 }
                 if (!pendingSlides.isEmpty()) {
-                    Toast.makeText(this, "Mandatory slides pending: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Mandatory Slides Pending For Brand: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
                     return;
                 }
             }
