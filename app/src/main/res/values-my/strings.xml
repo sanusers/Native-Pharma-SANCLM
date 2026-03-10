@@ -1046,6 +1046,5 @@
     <string name="location">တည်နေရာ</string>
     <string name="failed_to_save_image">ပုံကို သိမ်းဆည်းရန် မအောင်မြင်ပါ</string>
     <string name="is_empty">အလွတ်ဖြစ်သည်</string>
-
-
+    <string name="loc_dect">တည်နေရာ မတွေ့ရှိပါ၊ ကျေးဇူးပြု၍ ပြန်လည်ပြင်ဆင်ပါ</string>
 </resources>

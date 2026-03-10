@@ -1,6 +1,6 @@
 <resources>
-   <!-- <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">Set 3.2.0</string>-->
+    <!-- <string name="app_mode" translatable="false">Android-Edet</string>
+     <string name="app_version" translatable="false">Set 3.2.0</string>-->
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">وضع علامة</string>
@@ -638,7 +638,7 @@
     <string name="cvg">التغطية</string>
     <string name="draft_save">تم حفظ بيانات خطة الجولة بنجاح</string>
 
-       //need to convert ---
+    //need to convert ---
 
     <string name="leavestatus">حالة الإجازة</string>
     <string name="call_summary">ملخص المكالمات</string>
@@ -1050,5 +1050,5 @@
 
     <string name="address_format">العنوان : %1$s</string>
     <string name="distance_format">المسافة : %1$.2f متر</string>
-
+    <string name="loc_dect">لم يتم اكتشاف الموقع، يرجى التحديث</string>
 </resources>
