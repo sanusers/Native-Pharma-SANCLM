@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
+import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapterOneBuild;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -2729,20 +2731,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 apiInterface = RetrofitClient.getRetrofit(context, baseUrl + replacedUrl);
 
                 JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
-                if(!SharedPref.getStpNeed(context).equalsIgnoreCase("0") && !SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && tpMgr.equalsIgnoreCase("0")){
-                    jsonObject.put("tableName", "gettpdetail_mgr");
-                }else {
-                    jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                }
+                jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
                 jsonObject.put("sfcode", SharedPref.getSfCode(context));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                 jsonObject.put("Rsf", hqCode);
-
-//                Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
-                if(!tpMgr.equalsIgnoreCase("0") && !SharedPref.getStpNeed(context).equalsIgnoreCase("0") && !SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-//                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR)) {
                     if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                         mapString.put("axn", "table/dcrmasterdata");
                         call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
@@ -2754,14 +2748,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         mapString.put("axn", "get/stp");
                         call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                     }
-                }else {
-                    jsonObject.put("Date",TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, inputDataArrayOneBuild.getDate()));
-                    jsonObject.put("Month",inputDataArrayOneBuild.getMonth());
-                    jsonObject.put("Year",inputDataArrayOneBuild.getYear());
-                    Log.d("TAG", "MGRsync: "+jsonObject);
-                    mapString.put("axn", "get/tp");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-                }
+
 
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
@@ -2819,6 +2806,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jointWorkJsonArray.toString(), 2));
                                             } else if (masterSyncItemModel.getMasterOf().equals(Constants.STANDARD_TOUR_PLAN)) {
                                                 holder.workDayLayout.setEnabled(true);
+                                                callGetTpDetail(holder, hqCode);
                                             }
                                         }
                                     } else {
@@ -2848,44 +2836,24 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + hqCode).getMasterSyncDataJsonArray());
                                     try {
                                         JSONArray tpResponse = masterDataDao.getMasterDataTableOrNew(masterSyncItemModel.getLocalTableKeyName()).getMasterSyncDataJsonArray();
-
                                         if (tpResponse != null && tpResponse.length() > 0) {
-                                            // Find the session with WorkTypeFlag = "F"
-                                            JSONObject fieldWorkSession = null;
-                                            for (int i = 0; i < tpResponse.length(); i++) {
-                                                JSONObject obj = tpResponse.getJSONObject(i);
-                                                if (obj.optString("WorkTypeFlag").equalsIgnoreCase("F")) {
-                                                    fieldWorkSession = obj;
-                                                    break;
-                                                }
-                                            }
+                                            int pos = holder.getAbsoluteAdapterPosition();
 
-                                            // Populate only the current holder's position with the F session
-                                            if (fieldWorkSession != null) {
-                                                int pos = holder.getAbsoluteAdapterPosition();
-                                                if (pos >= 0 && pos < inputDataArrayOneBuild.getSessionList().size()) {
-                                                    populateSessionFromResponse(holder, fieldWorkSession, pos);
+                                            for (int i = 0; i < tpResponse.length(); i++) {
+                                                JSONObject sessionObject = tpResponse.getJSONObject(i);
+
+                                                if (sessionObject != null) {
+                                                    if (i >= inputDataArrayOneBuild.getSessionList().size()) {
+                                                        inputDataArrayOneBuild.getSessionList().add(prepareSessionListForAdapterOneBuild());
+                                                    }
+                                                    populateSessionFromResponse(holder, sessionObject, i);
                                                 }
                                             }
+                                            notifyDataSetChanged();
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-
-                                  /*  try {
-                                        JSONArray tpResponse = masterDataDao.getMasterDataTableOrNew(masterSyncItemModel.getLocalTableKeyName()).getMasterSyncDataJsonArray();
-                                        if (tpResponse != null && tpResponse.length() > 0) {
-                                            ArrayList<OneBuildModelClass.SessionList> sessionList = inputDataArrayOneBuild.getSessionList();
-                                            for (int i = 0; i < tpResponse.length(); i++) {
-                                                if (i < sessionList.size()) {
-                                                    JSONObject sessionJson = tpResponse.getJSONObject(i);
-                                                    populateSessionFromResponse(holder, sessionJson, i);
-                                                }
-                                            }
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }*/
                                 }
                             }
 
@@ -2927,7 +2895,87 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
         }
     }
+    private void callGetTpDetail(MyViewHolder holder, String hqCode) {
+        try {
+            String baseUrl = SharedPref.getBaseWebUrl(context);
+            String pathUrl = SharedPref.getPhpPathUrl(context);
+            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
+            apiInterface = RetrofitClient.getRetrofit(context, baseUrl + replacedUrl);
 
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+            jsonObject.put("tableName", "gettpdetail_mgr");
+            jsonObject.put("sfcode", SharedPref.getSfCode(context));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+            jsonObject.put("Date", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, inputDataArrayOneBuild.getDate()));
+            jsonObject.put("Month", inputDataArrayOneBuild.getMonth());
+            jsonObject.put("Year", inputDataArrayOneBuild.getYear());
+            jsonObject.put("Rsf", hqCode);
+
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "get/tp");
+
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+                            if (jsonElement != null && !jsonElement.isJsonNull()) {
+                                JSONArray tpResponse = null;
+
+                                if (jsonElement.isJsonArray()) {
+                                    tpResponse = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                } else if (jsonElement.isJsonObject()) {
+                                    tpResponse = new JSONArray();
+                                    tpResponse.put(new JSONObject(jsonElement.getAsJsonObject().toString()));
+                                }
+
+                                if (tpResponse != null && tpResponse.length() > 0) {
+                                    // Load all master data for the holder
+                                    holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray());
+                                    holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + hqCode).getMasterSyncDataJsonArray());
+                                    holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray());
+                                    holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + hqCode).getMasterSyncDataJsonArray());
+                                    holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + hqCode).getMasterSyncDataJsonArray());
+                                    holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray());
+                                    holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + hqCode).getMasterSyncDataJsonArray());
+
+                                    // Clear existing sessions before populating
+                                    inputDataArrayOneBuild.getSessionList().clear();
+
+                                    // Populate each session from response
+                                    for (int i = 0; i < tpResponse.length(); i++) {
+                                        JSONObject sessionObject = tpResponse.getJSONObject(i);
+                                        if (sessionObject != null) {
+                                            // Add new session slot
+                                            inputDataArrayOneBuild.getSessionList().add(prepareSessionListForAdapterOneBuild());
+                                            // Populate session with data + master values
+                                            populateSessionFromResponse(holder, sessionObject, i);
+                                        }
+                                    }
+
+                                    // Refresh adapter
+                                    notifyDataSetChanged();
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void prepareInputData(ArrayList<ModelClass.SessionList.SubClass> modelClass, ArrayList<EditModelClass> arrayList) {
         if (modelClass.size() > 0) {
             for (int i = 0; i < modelClass.size(); i++) {
