@@ -96,7 +96,7 @@ public class PreviewActivity extends AppCompatActivity {
     private SideScreenAdapter sideScreenAdapter;
     private JSONObject checkInJsonObject = new JSONObject();
     public static boolean isTimerEnd = false;
-    String mandatorySlide ="0";
+   // String mandatorySlide ="0";
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -145,7 +145,7 @@ public class PreviewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        playedMandatorySlideIds.clear();
+       // playedMandatorySlideIds.clear();
         previewBinding = saneforce.sanzen.databinding.ActivityPreviewBinding.inflate(getLayoutInflater());
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -153,6 +153,37 @@ public class PreviewActivity extends AppCompatActivity {
         masterDataDao = roomDB.masterDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
         presentationDataDao = roomDB.presentationDataDao();
+        playedMandatorySlideIds.clear();
+        mandatoryProductList.clear();
+        try {
+            JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+            JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
+            for (int i = 0; i < brandSlide.length(); i++) {
+                JSONObject brandObject = brandSlide.getJSONObject(i);
+                String brandCode = brandObject.optString("Product_Brd_Code");
+                for (int j = 0; j < prodSlide.length(); j++) {
+                    JSONObject productObject = prodSlide.getJSONObject(j);
+                    if (productObject.optString("Code").equalsIgnoreCase(brandCode)) {
+                        String mandatory = productObject.optString("Mandatory_slide");
+                        if ("0".equals(mandatory)) {
+                            mandatoryProductList.add(new BrandModelClass.Product(
+                                    productObject.optString("Code"),
+                                    productObject.optString("Name"),
+                                    productObject.optString("SlideId"),
+                                    productObject.optString("FilePath"),
+                                    productObject.optString("Priority"),
+                                    false,
+                                    productObject.optString("Product_Detail_Code"),
+                                    mandatory
+                            ));
+                        }
+                    }
+                }
+            }
+            Log.e("MANDATORY", "Populated size: " + mandatoryProductList.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         callDetailingLists = new ArrayList<>();
@@ -301,9 +332,7 @@ public class PreviewActivity extends AppCompatActivity {
                 }
             }
         });
-
         previewBinding.btnFinishDet.setOnClickListener(view -> {
-
             Set<String> pendingSlides = new LinkedHashSet<>();
 
             for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
@@ -312,16 +341,37 @@ public class PreviewActivity extends AppCompatActivity {
                 }
             }
 
-            if (mandatorySlide.equalsIgnoreCase("1")) {
+            if (!PlaySlideDetailedAdapter.mandatoryProductList.isEmpty()) {
                 if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
                     Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
                     return;
                 }
+                if (!pendingSlides.isEmpty()) {
+                    Toast.makeText(this, "Mandatory slides pending: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
-            if (!pendingSlides.isEmpty()) {
-                Toast.makeText(this, "Mandatory slides pending: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
-                return;
-            }
+//        previewBinding.btnFinishDet.setOnClickListener(view -> {
+//            Log.e("MANDATORY", "mandatoryProductList size: " + PlaySlideDetailedAdapter.mandatoryProductList.size());
+//            Log.e("MANDATORY", "playedMandatorySlideIds size: " + PlaySlideDetailedAdapter.playedMandatorySlideIds.size());
+//            Set<String> pendingSlides = new LinkedHashSet<>();
+//
+//            for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
+//                if (!PlaySlideDetailedAdapter.playedMandatorySlideIds.contains(p.getSlideId())) {
+//                    pendingSlides.add(p.getBrandName());
+//                }
+//            }
+//
+////            if (mandatorySlide.equalsIgnoreCase("1")) {
+//                if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
+//                    Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//           // }
+//            if (!pendingSlides.isEmpty()) {
+//                Toast.makeText(this, "Mandatory slides pending: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
+//                return;
+//            }
 
             previewBinding.rlThankYou.setVisibility(View.VISIBLE);
             String DrDetCap = SharedPref.getDetDrCap(PreviewActivity.this);
