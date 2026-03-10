@@ -893,17 +893,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     progressBar.setVisibility(View.VISIBLE);
                     btn_confirm.setEnabled(false);
                     btn_confirm.setBackground(ContextCompat.getDrawable(MapsActivity.this, R.drawable.tagging_disable_button));
-                    if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                        if (SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-                            CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
-                            tag_Image();
+                    if (lat != 0.0 && lng != 0.0) {
+                        if (GeoTagImageNeed.equalsIgnoreCase("0")) {
+                            if (SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                                CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
+                                tag_Image();
+                            } else {
+                                CallImageAPI(jsonImage.toString(), jsonObject.toString(), progressBar);
+                            }
                         } else {
-                            CallImageAPI(jsonImage.toString(), jsonObject.toString(), progressBar);
+                            CallAPIGeo(jsonObject.toString(), progressBar);
                         }
-                    } else {
-                        CallAPIGeo(jsonObject.toString(), progressBar);
+                    }else {
+                        commonUtilsMethods.showToastMessage(MapsActivity.this,getString(R.string.loc_dect));
+                        progressBar.setVisibility(View.GONE);
+                        dialogTagCust.dismiss();
                     }
-                } else {
+                }else {
                     commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network));
                 }
             }
