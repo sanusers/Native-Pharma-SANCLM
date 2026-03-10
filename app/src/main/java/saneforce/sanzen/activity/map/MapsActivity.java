@@ -391,7 +391,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onSafeClick(View view) {
                 if (from_tagging.equalsIgnoreCase("tagging")) {
                     mapsBinding.imgRefreshMap.setVisibility(View.GONE);
-                    if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty() || !mapsBinding.tvTaggedAddress.getText().toString().toLowerCase().contains("no address found")) {
+                    if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty() || !mapsBinding.tvTaggedAddress.getText().toString().toLowerCase().contains("no address found") || !mapsBinding.tvTaggedAddress.getText().equals(MapsActivity.this.getString(R.string.no_address_found2))) {
                         if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                             if (CheckCameraPermission()) {
                                 RequestCameraPermission();
@@ -841,6 +841,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tv_lng.setText(String.format("Longitude : %s", lng));
         tv_address.setText(mapsBinding.tvTaggedAddress.getText().toString());
 
+        ImageView refresh = dialogTagCust.findViewById(R.id.img_refresh_map);
+        refresh.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (CurrentLoc()) {
+                    lat = gpsTrack.getLatitude();
+                    lng = gpsTrack.getLongitude();
+                    LatLng latLng = new LatLng(lat, lng);
+                    Log.d("TAG", "refresh Map: " + lat + " , " + lng);
+                    if (from_tagging.equalsIgnoreCase("tagging")) {
+                        tv_lat.setText(String.format("Latitude : %s", lat));
+                        tv_lng.setText(String.format("Latitude : %s", lng));
+                        tv_cust_name.setText(cust_name);
+                        tv_address.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
+                    }
+
+                }
+            }
+        });
+
         JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jsonImage.put("tableName", "imgupload");
@@ -893,7 +913,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     progressBar.setVisibility(View.VISIBLE);
                     btn_confirm.setEnabled(false);
                     btn_confirm.setBackground(ContextCompat.getDrawable(MapsActivity.this, R.drawable.tagging_disable_button));
-                    if (lat != 0.0 && lng != 0.0) {
+                    if (lat != 0.0 && lng != 0.0 || tv_address.getText().equals(MapsActivity.this.getString(R.string.no_address_found)) || tv_address.getText().equals(MapsActivity.this.getString(R.string.no_address_found2))) {
                         if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                             if (SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")) {
                                 CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
@@ -908,6 +928,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         commonUtilsMethods.showToastMessage(MapsActivity.this,getString(R.string.loc_dect));
                         progressBar.setVisibility(View.GONE);
                         dialogTagCust.dismiss();
+                        Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
+                        startActivity(intent1);
                     }
                 }else {
                     commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network));
@@ -2304,6 +2326,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
         if (from_tagging.equalsIgnoreCase("tagging")) {
             Log.v("hhh", "-000--");
+            mapsBinding.btnTag.setEnabled(false);
             mapsBinding.btnTag.setText(R.string.tag);
             mapsBinding.constraintTaggedView.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
@@ -2327,6 +2350,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 lat = mMap.getCameraPosition().target.latitude;
                 lng = mMap.getCameraPosition().target.longitude;
                 mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
+                if(CurrentLoc()){
+                    mapsBinding.btnTag.setEnabled(true);
+                }
             });
         } else if (from_tagging.equalsIgnoreCase("view_tagged")) {
             mMap.setOnMarkerClickListener(this);
