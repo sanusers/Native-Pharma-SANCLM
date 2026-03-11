@@ -189,6 +189,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Util util;
     public static Bundle bundle;
     private ArrayList<CustList> taggedLocations;
+    boolean isRefreshClicked = false;
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
@@ -842,9 +843,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tv_address.setText(mapsBinding.tvTaggedAddress.getText().toString());
 
         ImageView refresh = dialogTagCust.findViewById(R.id.img_refresh_map);
-        refresh.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
+        refresh.setOnClickListener(view -> {
                 if (CurrentLoc()) {
                     lat = gpsTrack.getLatitude();
                     lng = gpsTrack.getLongitude();
@@ -858,7 +857,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                 }
-            }
         });
 
         JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(this);
@@ -875,7 +873,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
 
-        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+   /*     JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jsonObject.put("tableName", "save_geo");
             jsonObject.put("lat", String.valueOf(lat));
@@ -904,16 +902,46 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
         btn_confirm.setOnClickListener(new SafeClickListener() {
             @Override
-            public void onSafeClick(View view) {    // need to keep an s3 setup here check throughly
+            public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(MapsActivity.this)) {
                     progressBar.setVisibility(View.VISIBLE);
                     btn_confirm.setEnabled(false);
                     btn_confirm.setBackground(ContextCompat.getDrawable(MapsActivity.this, R.drawable.tagging_disable_button));
-                    if (lat != 0.0 && lng != 0.0 || tv_address.getText().equals(MapsActivity.this.getString(R.string.no_address_found)) || tv_address.getText().equals(MapsActivity.this.getString(R.string.no_address_found2))) {
+
+                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(MapsActivity.this);
+                    try {
+                        jsonObject.put("tableName", "save_geo");
+                        jsonObject.put("lat", String.valueOf(lat));
+                        jsonObject.put("long", String.valueOf(lng));
+                        jsonObject.put("cuscode", cust_code);
+                        jsonObject.put("divcode", DivCode.replace(",", "").trim());
+                        jsonObject.put("cust", SelectedTab);
+                        jsonObject.put("tagged_time", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
+                        jsonObject.put("image_name", imageName);
+                        jsonObject.put("sfcode", SfCode);
+                        jsonObject.put("addr", tv_address.getText().toString());
+                        if (SfType.equalsIgnoreCase("1")) {
+                            jsonObject.put("tagged_cust_HQ", SfCode);
+                        } else {
+                            jsonObject.put("tagged_cust_HQ", SelectedHqCode);
+                        }
+                        jsonObject.put("cust_name", cust_name);
+                        jsonObject.put("towncode", town_code);
+                        jsonObject.put("townname", town_name);
+                        jsonObject.put("status", GeoTagApprovalNeed.equalsIgnoreCase("0") ? "1" : "0");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
+                        btn_confirm.setEnabled(false);
+                        return;
+                    }
+
+                    if ((!tv_lat.getText().equals("0.0") && !tv_lng.getText().equals("0.0")) /*&& !tv_address.getText().equals(getString(R.string.no_address_found)) && !tv_address.getText().equals(getString(R.string.no_address_found2)) && mapsBinding.tvTaggedAddress.getText().equals(tv_address.getText())*/) {
+
                         if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                             if (SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")) {
                                 CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
@@ -924,14 +952,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         } else {
                             CallAPIGeo(jsonObject.toString(), progressBar);
                         }
-                    }else {
-                        commonUtilsMethods.showToastMessage(MapsActivity.this,getString(R.string.loc_dect));
-                        progressBar.setVisibility(View.GONE);
-                        dialogTagCust.dismiss();
-                        Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
-                        startActivity(intent1);
+                    } else {
+                        if (from_tagging.equalsIgnoreCase("tagging")) {
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.loc_dect));
+                            progressBar.setVisibility(View.GONE);
+                            dialogTagCust.dismiss();
+                            getOnBackPressedDispatcher().onBackPressed();
+                        }
                     }
-                }else {
+                } else {
                     commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network));
                 }
             }
@@ -947,6 +976,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
                 mapsBinding.imgRvRight.setVisibility(View.GONE);
                 mapsBinding.tagginglistlayout.setVisibility(View.GONE);
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
     }
@@ -2312,7 +2342,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint({"SetTextI18n", "PotentialBehaviorOverride"})
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-
+        mapsBinding.progressBar.setVisibility(View.VISIBLE);
+        mapsBinding.map.setVisibility(View.VISIBLE);
         locationCheck();
 
         mMap = googleMap;
@@ -2323,10 +2354,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
+        LatLng location = new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude());
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16.2f));
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
+//        mMap.animateCamera(CameraUpdateFactory.zoomTo( 16.2f));
         if (from_tagging.equalsIgnoreCase("tagging")) {
             Log.v("hhh", "-000--");
-            mapsBinding.btnTag.setEnabled(false);
+//            mapsBinding.btnTag.setEnabled(false);
+            if(!mapsBinding.tvTaggedAddress.getText().equals(MapsActivity.this.getString(R.string.no_address_found)) || !mapsBinding.tvTaggedAddress.getText().equals(MapsActivity.this.getString(R.string.no_address_found2))){
+                mapsBinding.progressBar.setVisibility(View.GONE);
+                mapsBinding.btnTag.setEnabled(true);
+            }else{
+                mapsBinding.progressBar.setVisibility(View.VISIBLE);
+                mapsBinding.btnTag.setEnabled(false);
+            }
             mapsBinding.btnTag.setText(R.string.tag);
             mapsBinding.constraintTaggedView.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
@@ -2418,6 +2461,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setCompassEnabled(false);
             mMap.getUiSettings().setRotateGesturesEnabled(true);
         }
+        mapsBinding.progressBar.setVisibility(View.GONE);
     }
 
 
@@ -2433,91 +2477,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         lng = gpsTrack.getLongitude();
 
         switch (selected) {
-     /*       case "D":
-                try {
-                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + sfCode).getMasterSyncDataJsonArray();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        cust_address = jsonObject.getString("Addrs");
-                        if (!jsonObject.getString("Lat").trim().isEmpty() || !jsonObject.getString("Long").trim().isEmpty()) {
-                            if (!cust_address.isEmpty()) {
-                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
-                            } else {
-                                if (jsonObject.getString("Lat").equalsIgnoreCase("0.0") || jsonObject.getString("Long").equalsIgnoreCase("0.0")) {
-                                    cust_address = "No Address Found";
-                                } else {
-                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("Lat")), parseDouble(jsonObject.getString("Long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
-                                    System.out.println("with lat: " +list.size());
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.v("map_camera_tt", "error---dr-" + e);
-                }
-                break;*/
             case "D":
-               /* try {
-                    JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + sfCode).getMasterSyncDataJsonArray();
-                    JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + sfCode).getMasterSyncDataJsonArray();
-                    HashMap<String, JSONObject> docObj = new HashMap<>();
-                    for (int i = 0; i < jsonArray1.length(); i++) {
-                        JSONObject jsonObject = jsonArray1.getJSONObject(i);
-                        String code = jsonObject.optString("Code");
-                        if (!code.isEmpty()) {
-                            docObj.put(code, jsonObject);
-                        } else {
-                            Log.d("Merge", "Skipping DOCTOR_MAS object with empty 'Code': " + jsonObject.toString());
-                        }
-                    }
-                    for (int i = 0; i < jsonArray2.length(); i++) {
-                        JSONObject jsonObject_geo = jsonArray2.getJSONObject(i);
-                        String code = jsonObject_geo.optString("Code");
-                        if (code.isEmpty()) {
-                            Log.d("Merge", "Skipping GEO object with empty 'Code': " + jsonObject_geo.toString());
-                            continue;
-                        }
-                        if (docObj.containsKey(code)) {
-                            JSONObject existingObject = docObj.get(code);
-                            for (java.util.Iterator<String> it = jsonObject_geo.keys(); it.hasNext(); ) {
-                                String key = it.next();
-                                try {
-                                    assert existingObject != null;
-                                    existingObject.put(key, jsonObject_geo.get(key));
-                                } catch (JSONException e) {
-                                    Log.e("MergeError", "Error merging key " + key + " for code " + code + ": " + e.getMessage());
-                                }
-                            }
-                        }
-                    }
-
-                    JSONArray jsonArray = new JSONArray(docObj.values());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonArray.getJSONObject(i).has("addrs")) {
-                            cust_address = jsonObject.getString("addrs");
-                            if (!jsonObject.optString("lat").trim().isEmpty() || !jsonObject.optString("long").trim().isEmpty()) {
-                                if (!cust_address.isEmpty()) {
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
-                                } else {
-                                    if (jsonObject.getString("lat").equalsIgnoreCase("0.0") || jsonObject.getString("long").equalsIgnoreCase("0.0")) {
-                                        cust_address = "No Address Found";
-                                    } else {
-                                        cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.optString("lat")), parseDouble(jsonObject.optString("long")), false);
-                                        list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
-
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.d(TAG, "AddTaggedDetails: "+"No Addrs Found");
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.v("map_camera_tt_D", "error---dr-" + e);
-                }
-                break;*/
                 try {
                     JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + sfCode).getMasterSyncDataJsonArray();
                     JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + sfCode).getMasterSyncDataJsonArray();
@@ -2558,66 +2518,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 break;
 
-
-           /* case "C":
-                try {
-                    JSONArray jsonArray_master = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + sfCode).getMasterSyncDataJsonArray();
-                    JSONArray jsonArray_geo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + sfCode).getMasterSyncDataJsonArray();
-                    HashMap<String, JSONObject> docObj_che = new HashMap<>();
-                    for (int i = 0; i < jsonArray_master.length(); i++) {
-                        JSONObject jsonObject = jsonArray_master.getJSONObject(i);
-                        String code = jsonObject.optString("Code");
-                        if (!code.isEmpty()) {
-                            docObj_che.put(code, jsonObject);
-                        } else {
-                            Log.d("Merge", "Skipping DOCTOR_MAS object with empty 'Code': " + jsonObject.toString());
-                        }
-                    }
-                    for (int i = 0; i < jsonArray_geo.length(); i++) {
-                        JSONObject jsonObject_geo = jsonArray_geo.getJSONObject(i);
-                        String code = jsonObject_geo.optString("Code");
-                        if (code.isEmpty()) {
-                            Log.w("Merge", "Skipping GEO object with empty 'Code': " + jsonObject_geo.toString());
-                            continue;
-                        }
-                        if (docObj_che.containsKey(code)) {
-                            JSONObject existingObject = docObj_che.get(code);
-                            jsonObject_geo.keys().forEachRemaining(key -> {
-//                                System.out.println("Merging keys addtagdet:" + key);
-                                try {
-                                    assert existingObject != null;
-                                    existingObject.put(key, jsonObject_geo.get(key));
-                                } catch (JSONException e) {
-                                    Log.e("MergeError", "Error merging key: " + key);
-                                }
-                            });
-                        }
-                    }
-                    JSONArray jsonArray = new JSONArray(docObj_che.values());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonArray.getJSONObject(i).has("addr")) {
-                            cust_address = jsonObject.getString("addr");
-                            if (!jsonObject.getString("lat").trim().isEmpty() || !jsonObject.getString("long").trim().isEmpty()) {
-                                if (!cust_address.isEmpty()) {
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "2", jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), jsonObject.optString("img_name"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")));
-                                } else {
-                                    if (jsonObject.getString("lat").equalsIgnoreCase("0.0") || jsonObject.getString("long").equalsIgnoreCase("0.0")) {
-                                        cust_address = "No Address Found";
-                                    } else {
-                                        cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
-                                        list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "2", jsonObject.optString("lat"), jsonObject.optString("long"), cust_address, jsonObject.optString("img_name"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code")));
-                                        System.out.println("LIST: " + list);
-                                    }
-                                }
-                            }
-                        } else {
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.v("map_camera_tt_C", "error---che-" + e);
-                }
-                break;*/
             case "C":
                 try {
                     JSONArray jsonArray_master = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + sfCode).getMasterSyncDataJsonArray();
@@ -2721,95 +2621,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.v("map_camera_tt_S", "error---stk-" + e);
                 }
                 break;
-               /* try {
-                    JSONArray jsonArrayStk_mas = masterDataDao
-                            .getMasterDataTableOrNew(Constants.STOCKIEST_MAS + sfCode)
-                            .getMasterSyncDataJsonArray();
-
-                    JSONArray jsonArrayStk_geo = masterDataDao
-                            .getMasterDataTableOrNew(Constants.STOCKIEST_GEO + sfCode)
-                            .getMasterSyncDataJsonArray();
-
-                    HashMap<String, JSONObject> stockistBaseMap = new HashMap<>();
-
-                    for (int i = 0; i < jsonArrayStk_mas.length(); i++) {
-                        JSONObject jsonObject = jsonArrayStk_mas.getJSONObject(i);
-                        String code = jsonObject.optString("Code");
-
-                        if (!code.isEmpty()) {
-                            stockistBaseMap.put(code, jsonObject);
-                        } else {
-                            Log.d("Merge", "Skipping STOCKIST_MAS object with empty 'Code': " + jsonObject);
-                        }
-                    }
-
-                    List<JSONObject> mergedStockistList = new ArrayList<>();
-
-                    for (int i = 0; i < jsonArrayStk_geo.length(); i++) {
-                        JSONObject geoObject = jsonArrayStk_geo.getJSONObject(i);
-                        String code = geoObject.optString("Code");
-
-                        if (code.isEmpty()) {
-                            Log.w("Merge", "Skipping GEO object with empty 'Code': " + geoObject);
-                            continue;
-                        }
-
-                        if (!stockistBaseMap.containsKey(code)) continue;
-
-                        try {
-                            JSONObject mergedStockist = new JSONObject(stockistBaseMap.get(code).toString());
-
-                            Iterator<String> keys = geoObject.keys();
-                            while (keys.hasNext()) {
-                                String key = keys.next();
-                                mergedStockist.put(key, geoObject.get(key));
-                            }
-
-                            mergedStockistList.add(mergedStockist);
-
-                        } catch (JSONException e) {
-                            Log.e("MergeError", "Error merging GEO for stockist code " + code + ": " + e.getMessage());
-                        }
-                    }
-
-                    for (JSONObject jsonObject : mergedStockistList) {
-
-                        String lat = jsonObject.optString("lat").trim();
-                        String lng = jsonObject.optString("long").trim();
-                        cust_address = jsonObject.optString("addrs").trim();
-
-                        if (lat.isEmpty() || lng.isEmpty()) continue;
-
-                        if (cust_address.isEmpty()) {
-                            if (lat.equals("0.0") || lng.equals("0.0")) {
-                                cust_address = "No Address Found";
-                            } else {
-                                cust_address = CommonUtilsMethods.gettingAddress(
-                                        MapsActivity.this,
-                                        Double.parseDouble(lat),
-                                        Double.parseDouble(lng),
-                                        false
-                                );
-                            }
-                        }
-
-                        list.add(new ViewTagModel(
-                                jsonObject.optString("Code"),
-                                jsonObject.optString("Name"),
-                                "3",
-                                lat,
-                                lng,
-                                cust_address,
-                                jsonObject.optString("img_name"),
-                                jsonObject.optString("Town_Name"),
-                                jsonObject.optString("Town_Code")
-                        ));
-                    }
-
-                } catch (Exception e) {
-                    Log.v("map_camera_tt_S", "error---stk-" + e);
-                }
-                break;*/
 
             case "U":
                 try {
@@ -2866,122 +2677,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.v("map_camera_tt_U", "error---UnDr-" + e);
                 }
                 break;
-               /* try {
-                    JSONArray jsonArrayMas = masterDataDao
-                            .getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + sfCode)
-                            .getMasterSyncDataJsonArray();
-
-                    JSONArray jsonArrayGeo = masterDataDao
-                            .getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + sfCode)
-                            .getMasterSyncDataJsonArray();
-
-                    HashMap<String, JSONObject> unlistedDoctorBaseMap = new HashMap<>();
-
-                    for (int i = 0; i < jsonArrayMas.length(); i++) {
-                        JSONObject obj = jsonArrayMas.getJSONObject(i);
-                        String code = obj.optString("Code");
-
-                        if (!code.isEmpty()) {
-                            unlistedDoctorBaseMap.put(code, obj);
-                        } else {
-                            Log.d("Merge", "Skipping UNLISTED_DOCTOR_MAS with empty Code: " + obj);
-                        }
-                    }
-
-                    List<JSONObject> mergedDoctorList = new ArrayList<>();
-
-                    for (int i = 0; i < jsonArrayGeo.length(); i++) {
-                        JSONObject geoObj = jsonArrayGeo.getJSONObject(i);
-                        String code = geoObj.optString("Code");
-
-                        if (code.isEmpty()) {
-                            Log.w("Merge", "Skipping GEO with empty Code: " + geoObj);
-                            continue;
-                        }
-
-                        if (!unlistedDoctorBaseMap.containsKey(code)) continue;
-
-                        try {
-                            JSONObject mergedDoctor = new JSONObject(unlistedDoctorBaseMap.get(code).toString());
-
-                            Iterator<String> keys = geoObj.keys();
-                            while (keys.hasNext()) {
-                                String key = keys.next();
-                                mergedDoctor.put(key, geoObj.get(key));
-                            }
-
-                            mergedDoctorList.add(mergedDoctor);
-
-                        } catch (JSONException e) {
-                            Log.e("MergeError", "Error merging GEO for doctor code " + code + ": " + e.getMessage());
-                        }
-                    }
-
-                    for (JSONObject jsonObject : mergedDoctorList) {
-
-                        String lat = jsonObject.optString("lat").trim();
-                        String lng = jsonObject.optString("long").trim();
-                        cust_address = jsonObject.optString("Addrs").trim(); // NOTE: capital A as per your data
-
-                        if (lat.isEmpty() || lng.isEmpty()) continue;
-
-                        // Handle missing address
-                        if (cust_address.isEmpty()) {
-                            if (lat.equals("0.0") || lng.equals("0.0")) {
-                                cust_address = "No Address Found";
-                            } else {
-                                cust_address = CommonUtilsMethods.gettingAddress(
-                                        MapsActivity.this,
-                                        Double.parseDouble(lat),
-                                        Double.parseDouble(lng),
-                                        false
-                                );
-                            }
-                        }
-
-                        list.add(new ViewTagModel(
-                                jsonObject.optString("Code"),
-                                jsonObject.optString("Name"),
-                                "4",
-                                lat,
-                                lng,
-                                cust_address,
-                                jsonObject.optString("img_name"),
-                                jsonObject.optString("Town_Name"),
-                                jsonObject.optString("Town_Code")
-                        ));
-                    }
-
-                } catch (Exception e) {
-                    Log.v("map_camera_tt_U", "error---UnDr-" + e);
-                }
-                break;*/
-
-//                try {
-//                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + sfCode).getMasterSyncDataJsonArray();
-//                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                        cust_address = jsonObject.getString("addr");
-//                        if (!jsonObject.getString("lat").trim().isEmpty() || !jsonObject.getString("long").trim().isEmpty()) {
-//                            if (!cust_address.isEmpty()) {
-//                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "4", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
-//                            } else {
-//                                if (jsonObject.getString("lat").equalsIgnoreCase("0.0") || jsonObject.getString("long").equalsIgnoreCase("0.0")) {
-//                                    cust_address = "No Address Found";
-//                                } else {
-//                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
-//                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "4", jsonObject.getString("lat"), jsonObject.getString("long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
-//                                }
-//                            }
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    Log.v("map_camera_tt_U", "error---UnDr-" + e);
-//                }
-//                break;
-
         }
-
         try {
 
             for (int i = 0; i < list.size(); i++) {

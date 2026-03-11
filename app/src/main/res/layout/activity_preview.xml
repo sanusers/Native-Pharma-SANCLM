@@ -196,9 +196,9 @@
                 android:textAlignment="textStart"
                 tools:text="Thank You\nDoctor Name more than 20 characters"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_20ssp"
+                android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
-                android:layout_marginEnd="@dimen/_300sdp"
+                android:layout_marginEnd="@dimen/_250sdp"
                 android:layout_marginStart="@dimen/_50sdp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true" />

@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -229,7 +231,7 @@ public class TourPlanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityTourPlanBinding.inflate(getLayoutInflater());
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         roomDB = RoomDB.getDatabase(getApplicationContext());
@@ -923,9 +925,9 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
 
-                dataModelOneBuild.setSyncStatus("1");
-                TourPlanOfflineDataTable tourPlanOfflineDataTable1 = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-                tourPlanOfflineDataDao.saveMonthlySyncStatus(tourPlanOfflineDataTable1.getTpMonth(), "1");
+                dataModelOneBuild.setSyncStatus("0");
+//                TourPlanOfflineDataTable tourPlanOfflineDataTable1 = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+//                tourPlanOfflineDataDao.saveMonthlySyncStatus(tourPlanOfflineDataTable1.getTpMonth(), "1");
 
 
                 if (!isEmpty) {
