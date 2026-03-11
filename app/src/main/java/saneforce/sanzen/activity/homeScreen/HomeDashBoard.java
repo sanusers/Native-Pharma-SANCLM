@@ -3489,15 +3489,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             // ✅ Map codes → names
             Map<String, String> doctorNameMap = new HashMap<>();
             Map<String, String> doctorClusterMap = new HashMap<>();
+            Map<String,String> doctorCategoryMap = new HashMap<>();
             for (int i = 0; i < doctorMasArray.length(); i++) {
                 JSONObject obj = doctorMasArray.getJSONObject(i);
                 String code = obj.optString("Code", "").trim();
                 String name = obj.optString("Name", "").trim();
                 String cluster = obj.optString("Town_Name", "").trim(); // 🔥 from your JSON
-
+                String category = obj.optString("Category"," ").trim();
                 if (!code.isEmpty()) {
                     doctorNameMap.put(code, name);
                     doctorClusterMap.put(code, cluster);
+                    doctorCategoryMap.put(code,category);
                 }
                 //if (!code.isEmpty() && !name.isEmpty()) doctorNameMap.put(code, name);
             }
@@ -3618,6 +3620,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     notVisitedCodes,       // 3. nvList (List<String>)
                     doctorNameMap,         // 4. nameMap (Map<String, String>)
                     doctorClusterMap,      // 5. clusterMap (Map<String, String>)
+                    doctorCategoryMap,
                     countRatio,            // 6. vRatio (String)
                     notVisitedRatio        // 7. nvRatio (String)
             );

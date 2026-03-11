@@ -106,6 +106,7 @@
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
                 <TextView
+                    android:id="@+id/tv_Cluster"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_4sdp"
@@ -115,12 +116,22 @@
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
                 <TextView
+                    android:id="@+id/tv_Name"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="4"
                     android:text="Doctor"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_weight="5"
+                    android:text="Category"
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -168,7 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_bold"
-                    android:text="Not Visited"
+                    android:text="To be Visited"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_7sdp" />
 
@@ -206,6 +217,7 @@
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
                 <TextView
+                    android:id="@+id/tv_Cluster2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_4sdp"
@@ -215,12 +227,22 @@
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
                 <TextView
+                    android:id="@+id/tv_Name2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="4"
                     android:text="Doctor"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_weight="5"
+                    android:text="category"
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
             </LinearLayout>

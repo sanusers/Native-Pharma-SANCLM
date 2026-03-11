@@ -39,4 +39,16 @@
         android:layout_marginEnd="@dimen/_3sdp"
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_5sdp" />
+
+    <TextView
+        android:id="@+id/tvCategory"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:padding="@dimen/_2sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:text="Category"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_5sdp" />
 </LinearLayout>

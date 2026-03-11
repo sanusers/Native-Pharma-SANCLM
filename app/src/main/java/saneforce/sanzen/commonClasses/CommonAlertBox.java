@@ -541,11 +541,13 @@ public class CommonAlertBox {
 
         okButton.setOnClickListener(view -> dialog.dismiss());
     }
+
     public static void DoctorPlanPopup2(Activity activity,
                                         List<String> vList,
                                         List<String> nvList,
                                         Map<String, String> nameMap,
                                         Map<String, String> clusterMap,
+                                        Map<String, String> categoryMap,
                                         String vRatio,
                                         String nvRatio) {
 
@@ -554,19 +556,24 @@ public class CommonAlertBox {
                 .inflate(R.layout.popup_doctor_count_time, null);
 
         // Find Views
+        TextView heading = layout.findViewById(R.id.heading);
+        TextView clusterHead = layout.findViewById(R.id.tv_Cluster);
+        TextView name = layout.findViewById(R.id.tv_Name);
         LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
         LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
         TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
         TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
         Button okButton2 = layout.findViewById(R.id.okButton2);
-
+        heading.setText(" Today's " + SharedPref.getDrCap(activity) + " Plan ");
+        clusterHead.setText(SharedPref.getClusterCap(activity));
+        name.setText(SharedPref.getDrCap(activity));
         // Set Ratio Text
         tvVCount.setText(vRatio);
         tvNVCount.setText(nvRatio);
 
         // Add Rows
-        addRows(activity, vContainer, vList, nameMap, clusterMap);
-        addRows(activity, nvContainer, nvList, nameMap, clusterMap);
+        addRows(activity, vContainer, vList, nameMap, clusterMap, categoryMap);
+        addRows(activity, nvContainer, nvList, nameMap, clusterMap, categoryMap);
 
         alert.setView(layout);
 
@@ -644,7 +651,7 @@ public class CommonAlertBox {
 //    }
 
     private static void addRows(Activity act, LinearLayout container, List<String> codes,
-                                Map<String, String> nMap, Map<String, String> cMap) {
+                                Map<String, String> nMap, Map<String, String> cMap, Map<String, String> catMap) {
         container.removeAllViews(); // ஹெடரை அழிக்காமல் இருக்க, XML-ல் ஹெடரை ScrollView-க்கு வெளியே வைத்திருங்கள்.
 
         int i = 1;
@@ -655,10 +662,12 @@ public class CommonAlertBox {
             TextView tvSno = rowView.findViewById(R.id.tvSno);
             TextView tvCluster = rowView.findViewById(R.id.tvCluster);
             TextView tvDoctor = rowView.findViewById(R.id.tvDoctor);
+            TextView tvCategory = rowView.findViewById(R.id.tvCategory);
 
             // ✅ டேட்டாவை செட் செய்கிறோம்
             tvSno.setText(String.valueOf(i++));
             tvCluster.setText(cMap.getOrDefault(code, "-"));
+            tvCategory.setText(catMap.getOrDefault(code, "-"));
             tvDoctor.setText(nMap.getOrDefault(code, code));
 
             // ✅ முழு Row-வையும் லிஸ்ட்டில் சேர்க்கிறோம்
