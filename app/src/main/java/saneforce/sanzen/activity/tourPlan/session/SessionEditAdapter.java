@@ -2806,12 +2806,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jointWorkJsonArray.toString(), 2));
                                             } else if (masterSyncItemModel.getMasterOf().equals(Constants.STANDARD_TOUR_PLAN)) {
                                                 holder.workDayLayout.setEnabled(true);
-                                                callGetTpDetail(holder, hqCode);
                                             }
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
+                                    callGetTpDetail(holder, hqCode);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -2933,7 +2933,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
 
                                 if (tpResponse != null && tpResponse.length() > 0) {
-                                    // Load all master data for the holder
                                     holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray());
                                     holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + hqCode).getMasterSyncDataJsonArray());
                                     holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray());
@@ -2942,16 +2941,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray());
                                     holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + hqCode).getMasterSyncDataJsonArray());
 
-                                    // Clear existing sessions before populating
-                                    inputDataArrayOneBuild.getSessionList().clear();
+//                                    inputDataArrayOneBuild.getSessionList().clear();
 
-                                    // Populate each session from response
                                     for (int i = 0; i < tpResponse.length(); i++) {
                                         JSONObject sessionObject = tpResponse.getJSONObject(i);
                                         if (sessionObject != null) {
-                                            // Add new session slot
                                             inputDataArrayOneBuild.getSessionList().add(prepareSessionListForAdapterOneBuild());
-                                            // Populate session with data + master values
                                             populateSessionFromResponse(holder, sessionObject, i);
                                         }
                                     }
