@@ -105,7 +105,10 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
 //            }
 //        });
 
-        holder.tv_name.setOnClickListener(new SafeClickListener() {
+
+        // Auto Joint Work For MGR Setups:
+
+  /*      holder.tv_name.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
                 if (SharedPref.getJwAutoSelectionNeed(context)
@@ -119,7 +122,7 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
 
                 }
             }
-        });
+        });*/
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
 //            if (holder.checkBox.isPressed()) {
@@ -128,12 +131,14 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
                 int pos = holder.getBindingAdapterPosition();
                 if (pos == RecyclerView.NO_POSITION) return;
                 if (holder.checkBox.isChecked()) {
-                    if ("0".equalsIgnoreCase(
-                            SharedPref.getJwAutoSelectionNeed(context)) && nameClickListener != null) {
+
+                    // Auto Joint Work Selection need for MGR
+
+                  /*  if ("0".equalsIgnoreCase(SharedPref.getJwAutoSelectionNeed(context)) && nameClickListener != null) {
                         nameClickListener.onNameClick(
                                 jwLists.get(pos).getName()
                         );
-                    }
+                    }*/
 
                     holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                     holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));

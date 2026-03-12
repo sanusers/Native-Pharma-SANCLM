@@ -3712,6 +3712,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (tourPlanOfflineDataTable != null) {
                     if (tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty().equalsIgnoreCase("2")) {
                         jsonObject.addProperty("Status", 3);
+                    } else if (tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty().equalsIgnoreCase("3")) {
+                        jsonObject.addProperty("Status", 2);
+                    } else if (tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty().equalsIgnoreCase("1")) {
+                        jsonObject.addProperty("Status", 1);
                     } else {
                         jsonObject.addProperty("Status", 0);
                     }
@@ -4029,7 +4033,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             // Details
                             JsonObject DetailsObj = new JsonObject();
                             DetailsObj.addProperty("Id", 0);
-                            DetailsObj.addProperty("Planning_Status", daySyncStatus); // ✅ per-day status
+                            DetailsObj.addProperty("Planning_Status", daySyncStatus);
                             DetailsObj.add("Others", new JsonArray());
                             DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
                             DetailsObj.add("Sessions", Sessions);
@@ -4048,14 +4052,10 @@ public class TourPlanActivity extends AppCompatActivity {
 
                 String isSynced = hasPlanning ? "1" : "0";
 
-                TourPlanOfflineDataTable tourPlanOfflineDataTable1 = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(
-                        TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-
+                TourPlanOfflineDataTable tourPlanOfflineDataTable1 = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                 changeStatus = tourPlanOfflineDataTable1.getTpMonthSyncedOrEmpty();
 
-                if ((Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2"))
-                        && tourPlanOfflineDataTable1.getTpMonthSynced().equalsIgnoreCase("1")
-                        || isSynced.equalsIgnoreCase("1")) {
+                if ((Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2")) && (tourPlanOfflineDataTable1.getTpMonthSynced().equalsIgnoreCase("1") || isSynced.equalsIgnoreCase("1"))) {
 
                     apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
                     Map<String, String> mapString = new HashMap<>();
