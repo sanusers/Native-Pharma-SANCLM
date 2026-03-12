@@ -332,25 +332,53 @@ public class PreviewActivity extends AppCompatActivity {
                 }
             }
         });
+        // 12-03- thurasday changes for 2nd condtion
+//        previewBinding.btnFinishDet.setOnClickListener(view -> {
+//            Set<String> pendingSlides = new LinkedHashSet<>();
+//
+//            for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
+//                if (!PlaySlideDetailedAdapter.playedMandatorySlideIds.contains(p.getSlideId())) {
+//                    pendingSlides.add(p.getBrandName());
+//                }
+//            }
+//
+//            if (!PlaySlideDetailedAdapter.mandatoryProductList.isEmpty()) {
+//                if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
+//                    Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//                if (!pendingSlides.isEmpty()) {
+//                    Toast.makeText(this, "Mandatory Slides Pending For Brand: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//            }
         previewBinding.btnFinishDet.setOnClickListener(view -> {
-            Set<String> pendingSlides = new LinkedHashSet<>();
+            Set<String> pendingBrands = new LinkedHashSet<>();
 
+            // 1. Pending mandatory brands-ah collect pannunga
             for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
                 if (!PlaySlideDetailedAdapter.playedMandatorySlideIds.contains(p.getSlideId())) {
-                    pendingSlides.add(p.getBrandName());
+                    pendingBrands.add(p.getBrandName());
                 }
             }
 
             if (!PlaySlideDetailedAdapter.mandatoryProductList.isEmpty()) {
-                if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty()) {
-                    Toast.makeText(this, "Please view mandatory slides", Toast.LENGTH_LONG).show();
+
+                // --- CONDITION 1: Direct Finish ---
+                // Mandatory pathuruka koodathu, vera entha slide-um (timer map) pathuruka koodathu
+                if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty() &&
+                        (PlaySlideDetailedAdapter.timer == null || PlaySlideDetailedAdapter.timer.isEmpty())) {
+
+                    Toast.makeText(this, "Please Detail Mandatory Slides", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (!pendingSlides.isEmpty()) {
-                    Toast.makeText(this, "Mandatory Slides Pending For Brand: " + TextUtils.join(", ", pendingSlides), Toast.LENGTH_LONG).show();
+
+                if (!pendingBrands.isEmpty()) {
+                    Toast.makeText(this, "Mandatory Slides Pending For Brand: " + TextUtils.join(", ", pendingBrands), Toast.LENGTH_LONG).show();
                     return;
                 }
             }
+
 //        previewBinding.btnFinishDet.setOnClickListener(view -> {
 //            Log.e("MANDATORY", "mandatoryProductList size: " + PlaySlideDetailedAdapter.mandatoryProductList.size());
 //            Log.e("MANDATORY", "playedMandatorySlideIds size: " + PlaySlideDetailedAdapter.playedMandatorySlideIds.size());
