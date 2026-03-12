@@ -3614,8 +3614,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             // ✅ Pass BOTH strings to the popup method
             String notVisitedRatio = notVisitedCodes.size() + "/" + plannedDoctorCodes.size();
             //CommonAlertBox.DoctorPlanPopup2(this, visitedSb.toString(), notVisitedSb.toString(),countRatio,notVisitedRatio);
+
+            CommonAlertBox.setChemistData(
+                    new ArrayList<>(visitedDoctors), // 2. vList (List<String>)
+                    notVisitedCodes,       // 3. nvList (List<String>)
+                    doctorNameMap,         // 4. nameMap (Map<String, String>)
+                    doctorClusterMap,      // 5. clusterMap (Map<String, String>)
+                    doctorCategoryMap,
+                    countRatio,            // 6. vRatio (String)
+                    notVisitedRatio            // "5/10"
+            );
             CommonAlertBox.DoctorPlanPopup2(
-                    this,                  // 1. activity
+                    this, true,                 // 1. activity
                     new ArrayList<>(visitedDoctors), // 2. vList (List<String>)
                     notVisitedCodes,       // 3. nvList (List<String>)
                     doctorNameMap,         // 4. nameMap (Map<String, String>)

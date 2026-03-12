@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/popup_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/_5sdp">
+    android:padding="@dimen/_5sdp"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
+        android:id="@+id/header_layout_touch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="true">
 
         <ImageView
             android:id="@+id/imgdr"
@@ -38,6 +45,12 @@
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginBottom="@dimen/_2sdp"
         android:background="#9e9ea5" />
+
+<!--    <com.google.android.material.tabs.TabLayout-->
+<!--        android:id="@+id/tabLayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/_30sdp"-->
+<!--        app:tabMode="fixed" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -108,21 +121,23 @@
                 <TextView
                     android:id="@+id/tv_Cluster"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_4sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="3"
                     android:text="Cluster"
+                    android:gravity="start"
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/tv_Name"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="4"
                     android:text="Doctor"
+                    android:gravity="center"
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
                 <TextView
@@ -132,6 +147,7 @@
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="5"
                     android:text="Category"
+                    android:gravity="center"
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -219,21 +235,23 @@
                 <TextView
                     android:id="@+id/tv_Cluster2"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_4sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="3"
                     android:text="Cluster"
+                    android:gravity="start"
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/tv_Name2"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="4"
                     android:text="Doctor"
+                    android:gravity="center"
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
                 <TextView
@@ -242,7 +260,8 @@
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="5"
-                    android:text="category"
+                    android:text="Category"
+                    android:gravity="center"
                     android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
             </LinearLayout>

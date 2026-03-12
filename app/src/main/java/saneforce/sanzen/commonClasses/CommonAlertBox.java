@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -33,6 +34,7 @@ import java.util.Map;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.reports.missedReport.OnSwipeTouchListener;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.utility.location.LocationEvents;
 import saneforce.sanzen.utility.location.LocationFinder;
@@ -43,6 +45,21 @@ public class CommonAlertBox {
 
     private static final String TAG = "LocationStatus";
     public static AlertDialog dialog;
+    // 1. INGAE THAAN PODANUM (Top of the class)
+    public static List<String> tempChmVList, tempChmNVList;
+    public static Map<String, String> tempChmNameMap, tempChmClusterMap, tempChmCatMap;
+    public static String tempChmVRatio, tempChmNVRatio;
+    public static void setChemistData(List<String> v, List<String> nv, Map<String, String> n,
+                                      Map<String, String> cl, Map<String, String> cat,
+                                      String vr, String nvr) {
+        tempChmVList = v;
+        tempChmNVList = nv;
+        tempChmNameMap = n;
+        tempChmClusterMap = cl;
+        tempChmCatMap = cat;
+        tempChmVRatio = vr;
+        tempChmNVRatio = nvr;
+    }
 
     public static void CheckLocationStatus(Activity activity, GPSTrack gpsTrack) {
         if (SharedPref.getGeoChk(activity).equalsIgnoreCase("0")) {
@@ -541,33 +558,42 @@ public class CommonAlertBox {
 
         okButton.setOnClickListener(view -> dialog.dismiss());
     }
-
     public static void DoctorPlanPopup2(Activity activity,
-                                        List<String> vList,
-                                        List<String> nvList,
-                                        Map<String, String> nameMap,
-                                        Map<String, String> clusterMap,
-                                        Map<String, String> categoryMap,
-                                        String vRatio,
-                                        String nvRatio) {
+                                     boolean isDoctor,
+                                     List<String> vList,
+                                     List<String> nvList,
+                                     Map<String, String> nameMap,
+                                     Map<String, String> clusterMap,
+                                     Map<String, String> categoryMap,
+                                     String vRatio,
+                                     String nvRatio) {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        View layout = activity.getLayoutInflater()
-                .inflate(R.layout.popup_doctor_count_time, null);
+        View layout = activity.getLayoutInflater().inflate(R.layout.popup_doctor_count_time, null);
 
-        // Find Views
+        // XML elements-ai find pannunga
         TextView heading = layout.findViewById(R.id.heading);
+        ImageView imgIcon = layout.findViewById(R.id.imgdr);
         TextView clusterHead = layout.findViewById(R.id.tv_Cluster);
         TextView name = layout.findViewById(R.id.tv_Name);
+        TextView clusterHead2 = layout.findViewById(R.id.tv_Cluster2);
+        TextView name2 = layout.findViewById(R.id.tv_Name2);
         LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
         LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
         TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
         TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
         Button okButton2 = layout.findViewById(R.id.okButton2);
-        heading.setText(" Today's " + SharedPref.getDrCap(activity) + " Plan ");
+
+        // Title and Headers Dynamic Setup
+        String cap = isDoctor ? SharedPref.getDrCap(activity) : "Chemist"; // Or get from SharedPref
+        heading.setText(" Today's " + cap + " Plan ");
+        imgIcon.setImageResource(isDoctor ? R.drawable.doctor_img : R.drawable.map_chemist_img);
+
         clusterHead.setText(SharedPref.getClusterCap(activity));
-        name.setText(SharedPref.getDrCap(activity));
-        // Set Ratio Text
+        clusterHead2.setText(SharedPref.getClusterCap(activity));
+        name.setText(cap);
+        name2.setText(cap);
+
         tvVCount.setText(vRatio);
         tvNVCount.setText(nvRatio);
 
@@ -576,30 +602,156 @@ public class CommonAlertBox {
         addRows(activity, nvContainer, nvList, nameMap, clusterMap, categoryMap);
 
         alert.setView(layout);
-
         AlertDialog dialog = alert.create();
         dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
 
-        // OK Button Click
+        // --- SWIPE LOGIC START ---
+        // Layout-la top-most view-ku ID iruntha atha find panni touch listener kudunga
+//        View rootLayout = layout.findViewById(R.id.popup_parent_layout);
+//        View headerLayout = layout.findViewById(R.id.header_layout_touch);
+//
+//        OnSwipeTouchListener swipeListener = new OnSwipeTouchListener(activity) {
+//            @Override
+//            public void onSwipeLeft() {
+//                if (isDoctor && tempChmNVList != null) {
+//                    Toast.makeText(activity, "Swiping to Chemist...", Toast.LENGTH_SHORT).show();
+//                    dialog.dismiss();
+//                    DoctorPlanPopup2(activity, false,
+//                            tempChmVList, tempChmNVList,
+//                            tempChmNameMap, tempChmClusterMap, tempChmCatMap,
+//                            tempChmVRatio, tempChmNVRatio);
+//                }
+//            }
+//            Override
+//            public void onSwipeRight() {
+//                // Ippo neenga ketta logic: Chemist-la irunthu thirumba Doctor-ku vara
+//                // Ingae data-vai namma parameter-la irunthe eduthukalaam
+//                if (!isDoctor) {
+//                    Toast.makeText(activity, "Back to Doctor Plan", Toast.LENGTH_SHORT).show();
+//                    dialog.dismiss();
+//
+//                    // Thirumba Doctor popup-ai original data-vudan call panrom
+//                    // Intha vList, nvList ellam intha method-oda starting parameters
+//                    DoctorPlanPopup2(activity, true,
+//                            vList, nvList, nameMap, clusterMap, categoryMap, vRatio, nvRatio);
+//                }
+//            }
+//        };
+//
+//// Rendu layouts-kum listener-ai attach pannunga
+//        rootLayout.setOnTouchListener(swipeListener);
+//        headerLayout.setOnTouchListener(swipeListener);
+        View rootLayout = layout.findViewById(R.id.popup_parent_layout);
+        View headerLayout = layout.findViewById(R.id.header_layout_touch);
 
+        OnSwipeTouchListener swipeListener = new OnSwipeTouchListener(activity) {
+            @Override
+            public void onSwipeLeft() {
+                // Doctor -> Chemist (Left Swipe)
+                if (isDoctor && tempChmNVList != null) {
+                    Toast.makeText(activity, "Swiping to Chemist...", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    DoctorPlanPopup2(activity, false,
+                            tempChmVList, tempChmNVList,
+                            tempChmNameMap, tempChmClusterMap, tempChmCatMap,
+                            tempChmVRatio, tempChmNVRatio);
+                }
+            }
 
-        // SHOW FIRST
+            @Override
+            public void onSwipeRight() {
+                // Chemist -> Doctor (Right Swipe / Left to Right)
+                // Ingae data-vai namma method parameters-la irunthe eduthukirom
+                if (!isDoctor) {
+                    Toast.makeText(activity, "Back to Doctor Plan", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+
+                    // Intha vList, nvList ellam Doctor-oda original data
+                    DoctorPlanPopup2(activity, true,
+                            vList, nvList, nameMap, clusterMap, categoryMap,
+                            vRatio, nvRatio);
+                }
+            }
+        };
+
+// Listener-ai rendu layout-kum attach pannunga
+        if (rootLayout != null) rootLayout.setOnTouchListener(swipeListener);
+        if (headerLayout != null) headerLayout.setOnTouchListener(swipeListener);
+        // --- SWIPE LOGIC END ---
+
         dialog.show();
         okButton2.setOnClickListener(v -> dialog.dismiss());
-        // AFTER showing, set proper size
+
+        // Window size setup
         Window window = dialog.getWindow();
         if (window != null) {
-
-            int width = (int) (activity.getResources()
-                    .getDisplayMetrics().widthPixels * 0.65);
-
-            int height = (int) (activity.getResources()
-                    .getDisplayMetrics().heightPixels * 0.55);
-
+            int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.65);
+            int height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.55);
             window.setLayout(width, height);
         }
     }
+//    public static void DoctorPlanPopup2(Activity activity,
+//                                        List<String> vList,
+//                                        List<String> nvList,
+//                                        Map<String, String> nameMap,
+//                                        Map<String, String> clusterMap,
+//                                        Map<String, String> categoryMap,
+//                                        String vRatio,
+//                                        String nvRatio) {
+//
+//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+//        View layout = activity.getLayoutInflater()
+//                .inflate(R.layout.popup_doctor_count_time, null);
+//
+//        // Find Views
+//        TextView heading = layout.findViewById(R.id.heading);
+//        TextView clusterHead = layout.findViewById(R.id.tv_Cluster);
+//        TextView name = layout.findViewById(R.id.tv_Name);
+//        TextView clusterHead2 = layout.findViewById(R.id.tv_Cluster2);
+//        TextView name2 = layout.findViewById(R.id.tv_Name2);
+//        LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
+//        LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
+//        TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
+//        TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
+//        Button okButton2 = layout.findViewById(R.id.okButton2);
+//        heading.setText(" Today's " + SharedPref.getDrCap(activity) + " Plan ");
+//        clusterHead.setText(SharedPref.getClusterCap(activity));
+//        clusterHead2.setText(SharedPref.getClusterCap(activity));
+//        name.setText(SharedPref.getDrCap(activity));
+//        name2.setText(SharedPref.getDrCap(activity));
+//        // Set Ratio Text
+//        tvVCount.setText(vRatio);
+//        tvNVCount.setText(nvRatio);
+//
+//        // Add Rows
+//        addRows(activity, vContainer, vList, nameMap, clusterMap, categoryMap);
+//        addRows(activity, nvContainer, nvList, nameMap, clusterMap, categoryMap);
+//
+//        alert.setView(layout);
+//
+//        AlertDialog dialog = alert.create();
+//        dialog.setCancelable(false);
+//        dialog.setCanceledOnTouchOutside(false);
+//
+//        // OK Button Click
+//
+//
+//        // SHOW FIRST
+//        dialog.show();
+//        okButton2.setOnClickListener(v -> dialog.dismiss());
+//        // AFTER showing, set proper size
+//        Window window = dialog.getWindow();
+//        if (window != null) {
+//
+//            int width = (int) (activity.getResources()
+//                    .getDisplayMetrics().widthPixels * 0.65);
+//
+//            int height = (int) (activity.getResources()
+//                    .getDisplayMetrics().heightPixels * 0.55);
+//
+//            window.setLayout(width, height);
+//        }
+//    }
 //    public static void DoctorPlanPopup2(Activity activity, List<String> vList, List<String> nvList,
 //                                        Map<String, String> nameMap, Map<String, String> clusterMap,
 //                                        String vRatio, String nvRatio) {
@@ -657,8 +809,14 @@ public class CommonAlertBox {
         int i = 1;
         for (String code : codes) {
             // ✅ ஜாவாவில் புது TextView-க்கு பதில், உங்கள் XML டிசைனைப் பயன்படுத்துகிறோம்
-            View rowView = act.getLayoutInflater().inflate(R.layout.popup_doctor_count_rows, null);
+            View rowView = act.getLayoutInflater()
+                    .inflate(R.layout.popup_doctor_count_rows, container, false);
+            LinearLayout.LayoutParams params =
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
 
+            rowView.setLayoutParams(params);
             TextView tvSno = rowView.findViewById(R.id.tvSno);
             TextView tvCluster = rowView.findViewById(R.id.tvCluster);
             TextView tvDoctor = rowView.findViewById(R.id.tvDoctor);
