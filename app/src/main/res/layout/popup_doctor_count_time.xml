@@ -19,19 +19,19 @@
         android:clickable="true"
         android:focusable="true">
 
-        <ImageView
-            android:id="@+id/imgdr"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
-            android:layout_marginEnd="@dimen/_5sdp"
-            android:src="@drawable/doctor_img" />
+<!--        <ImageView-->
+<!--            android:id="@+id/imgdr"-->
+<!--            android:layout_width="@dimen/_15sdp"-->
+<!--            android:layout_height="@dimen/_15sdp"-->
+<!--            android:layout_marginEnd="@dimen/_5sdp"-->
+<!--            android:src="@drawable/doctor_img" />-->
 
         <TextView
             android:id="@+id/heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_bold"
-            android:text="Today's Doctor Plan"
+            android:text="Today's Plan"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_8sdp"
             android:textStyle="bold" />
@@ -46,16 +46,27 @@
         android:layout_marginBottom="@dimen/_2sdp"
         android:background="#9e9ea5" />
 
-<!--    <com.google.android.material.tabs.TabLayout-->
-<!--        android:id="@+id/tabLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="@dimen/_30sdp"-->
-<!--        app:tabMode="fixed" />-->
+    <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabGravity="center"
+            app:tabMode="fixed"
+            app:tabInlineLabel="true"/>
+    <View
+        android:id="@+id/view_dummy2"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/bg_txt_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout"
+        app:layout_constraintVertical_bias="0.0" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginTop="@dimen/_2sdp"
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:weightSum="2">
