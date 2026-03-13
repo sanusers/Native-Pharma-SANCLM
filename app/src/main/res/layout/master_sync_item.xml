@@ -48,9 +48,8 @@
                 android:id="@+id/syncFailedImage"
                 android:layout_width="@dimen/_6sdp"
                 android:layout_height="@dimen/_6sdp"
-                android:src="@drawable/icon_sync_failed"
-                android:layout_gravity="center"
-                android:visibility="visible"
+                android:layout_gravity="end|center"
+                android:visibility="gone"
                 tools:ignore="ContentDescription" />
 
 
