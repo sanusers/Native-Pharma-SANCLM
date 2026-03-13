@@ -303,23 +303,29 @@ public class PreviewActivity extends AppCompatActivity {
                             // Name set logic - Existing conditions preserved
                             if (CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
                                 if (CusType.equalsIgnoreCase("1") && (DrDetCap2 != null && !DrDetCap2.isEmpty() && !DrDetCap2.equalsIgnoreCase("null"))) {
-                                    previewBinding.doctorName.setText("Welcome\n" + DrDetCap2 + " " + doctorName);
+                                    //previewBinding.doctorName.setText("Welcome\n" + DrDetCap2 + " " + doctorName);
+                                    previewBinding.doctorName.setText(DrDetCap2 + " " + doctorName);
                                 } else if (CusType.equalsIgnoreCase("4") && (UlDrDetCap2 != null && !UlDrDetCap2.isEmpty() && !UlDrDetCap2.equalsIgnoreCase("null"))) {
-                                    previewBinding.doctorName.setText("Welcome\n" + UlDrDetCap2 + " " + doctorName);
+                                   // previewBinding.doctorName.setText("Welcome\n" + UlDrDetCap2 + " " + doctorName);
+                                    previewBinding.doctorName.setText( UlDrDetCap2 + " " + doctorName);
                                 } else {
-                                    previewBinding.doctorName.setText("Welcome\n" + "Dr. " + doctorName);
+//                                    previewBinding.doctorName.setText("Welcome\n" + "Dr. " + doctorName);
+                                    previewBinding.doctorName.setText("Dr. " + doctorName);
                                 }
                             }
                             // 🔥 Extra Logic for Chemist (2) and Stockist (3)
                             else if (CusType.equalsIgnoreCase("2") && ChmDetCap != null && !ChmDetCap.isEmpty() && !ChmDetCap.equalsIgnoreCase("null")) {
-                                previewBinding.doctorName.setText("Welcome\n" + ChmDetCap + " " + doctorName);
+//                                previewBinding.doctorName.setText("Welcome\n" + ChmDetCap + " " + doctorName);
+                                previewBinding.doctorName.setText( ChmDetCap + " " + doctorName);
                             }
                             else if (CusType.equalsIgnoreCase("3") && StkDetCap != null && !StkDetCap.isEmpty() && !StkDetCap.equalsIgnoreCase("null")) {
-                                previewBinding.doctorName.setText("Welcome\n" + StkDetCap + " " + doctorName);
+//                                previewBinding.doctorName.setText("Welcome\n" + StkDetCap + " " + doctorName);
+                                previewBinding.doctorName.setText(StkDetCap + " " + doctorName);
                             }
                             else {
                                 // Fallback for others or if no caption exists
-                                previewBinding.doctorName.setText("Welcome\n" + doctorName);
+//                                previewBinding.doctorName.setText("Welcome\n" + doctorName);
+                                previewBinding.doctorName.setText(doctorName);
                             }
 
                             // 3. PROCEED Click: Welcome slide-a hide panni, Detailing content-a show pannanum
