@@ -1066,4 +1066,5 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="wise">-Wise</string>
     <string name="want_to_swap"> Want to swap </string>
     <string name="loc_dect"> Location Not Detected, Kindly Refresh </string>
+    <string name="overide"> Overide </string>
 </resources>

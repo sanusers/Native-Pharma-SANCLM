@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.homeScreen.fragment.worktype;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -170,6 +171,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OutboxUtil outboxUtil;
     private Handler dateHandler;
     private String status;
+    private String overrideNeed = "0";
 
     private void checkDateChange() {
         if (!isAdded()) return;
@@ -507,7 +509,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
-                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))&& mFwFlg2.equalsIgnoreCase("F")) {
+                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) && mFwFlg2.equalsIgnoreCase("F")) {
                             binding.txtworkday2.setText("");
                             binding.txtCluster2.setText("");
                             binding.rlworkday2.setVisibility(View.VISIBLE);
@@ -1661,8 +1663,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
-                            } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                            } /*else if (dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("1", mWTName1);
+                            }*/ else if (dayStatus.equalsIgnoreCase("0") && overrideNeed.equalsIgnoreCase("0")) {
+                                dayOverride("1");
                             } else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
                             }
@@ -1704,8 +1708,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
-                            } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg2.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                            } /*else if (dayStatus.equalsIgnoreCase("0") && mFwFlg2.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("2", mWTName2);
+                            }*/else if (dayStatus.equalsIgnoreCase("0") && overrideNeed.equalsIgnoreCase("0")) {
+                                dayOverride("2");
                             } else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
                             }
@@ -2990,7 +2996,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode1;
-                if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg2.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3004,7 +3011,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode2;
-                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg1.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3908,7 +3916,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             String todayPlanClusterCode = mTowncode1;
-            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
             SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), true, mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"));
 
@@ -4801,7 +4809,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(mTownname2).replaceAll(",", " , ")));
                                 binding.txtheadquaters2.setText(CommonUtilsMethods.removeLastComma(mHQName2).replaceAll(",", " , "));
                                 String todayPlanClusterCode = mTowncode2;
-                                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                                if (mFwFlg1.equalsIgnoreCase("F"))
+                                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                             }
                             disableSession2();
@@ -4822,7 +4831,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     deviation = "1";
                                 }
                                 Log.i("TP", "setUpWorkPlan: " + isFromTP);
-                                if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))&& mFwFlg2.equalsIgnoreCase("F")) {
+                                if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) && mFwFlg2.equalsIgnoreCase("F")) {
                                     binding.rlworkday2.setVisibility(View.VISIBLE);
                                     binding.txtworkday2.setText(workDayName2);
 
@@ -6076,7 +6085,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlworkday1.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.flSession1.setVisibility(View.GONE);
-        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
+        if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) || overrideNeed.equalsIgnoreCase("0")) {
             binding.rlcluster1.setEnabled(false);
             binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
         }
@@ -6198,5 +6207,115 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.txtSave.setEnabled(true);
         binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
         binding.txtAddPlan.setEnabled(false);
+    }
+
+    public void dayOverride(String sessionType) {
+        Dialog dialogOverride = new Dialog(requireActivity());
+        dialogOverride.setContentView(R.layout.popup_override);
+        Objects.requireNonNull(dialogOverride.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogOverride.setCancelable(false);
+        ImageView iv_close = dialogOverride.findViewById(R.id.img_close);
+        TextView heading = dialogOverride.findViewById(R.id.tv_head);
+        TextView content = dialogOverride.findViewById(R.id.content);
+        content.setVisibility(View.VISIBLE);
+        content.setText("Do You Want to Continue");
+        Button btn_cancel = dialogOverride.findViewById(R.id.btn_cancel);
+        Button btn_override = dialogOverride.findViewById(R.id.btn_override);
+        Button btn_halfDay = dialogOverride.findViewById(R.id.btn_halfDay);
+        btn_override.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if(sessionType.equalsIgnoreCase("1")) {
+                    overrideConfirmation("1");
+                    dialogOverride.dismiss();
+                }else {
+                    overrideConfirmation("2");
+                    dialogOverride.dismiss();
+                }
+
+            }
+        });
+        iv_close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogOverride.dismiss();
+            }
+        });
+
+        btn_cancel.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogOverride.dismiss();
+            }
+        });
+
+        btn_halfDay.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                commonUtilsMethods.showToastMessage(requireContext(), "Not Developed");
+                dialogOverride.dismiss();
+            }
+        });
+
+        dialogOverride.show();
+    }
+
+    public void overrideConfirmation(String sessionType) {
+  /*      new AlertDialog.Builder(requireContext())
+                .setTitle("Confirmation")
+                .setMessage("Do you want to Override" + " today's plan?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    if (CallsFragment.TodayCallList.isEmpty()) {
+                        if (sessionType.equals("1")) {
+//                            EditSession = "1";
+//                            enableEditSession1();
+                            deleteSession("1","Delete");
+                            dialog.dismiss();
+                        } else {
+                            deleteSession("2","Delete");
+                            dialog.dismiss();
+                        }
+
+                    } else {
+                        commonUtilsMethods.showToastMessage(requireContext(), "Please Clear all Calls to Override");
+                        dialog.dismiss();
+                    }
+
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();*/
+
+        Dialog dialogConfirm = new Dialog(requireActivity());
+        dialogConfirm.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogConfirm.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogConfirm.setCancelable(false);
+        ImageView iv_close = dialogConfirm.findViewById(R.id.img_close);
+        TextView heading = dialogConfirm.findViewById(R.id.tv_head);
+        TextView content = dialogConfirm.findViewById(R.id.content);
+        Button btn_clear = dialogConfirm.findViewById(R.id.btn_clear);
+        Button btn_save = dialogConfirm.findViewById(R.id.btn_save);
+
+        heading.setText(requireContext().getString(R.string.confirm));
+        if(sessionType.equalsIgnoreCase("1")){
+            content.setText("Do you want to Override" + " "+ mFwFlg1);
+        }else{
+            content.setText("Do you want to Override" + " "+ mFwFlg2);
+        }
+        btn_save.setText(requireContext().getString(R.string.yes));
+        btn_clear.setText(requireContext().getString(R.string.no));
+
+        if (CallsFragment.TodayCallList.isEmpty()) {
+            if (sessionType.equals("1")) {
+                deleteSession("1","Delete");
+                dialogConfirm.dismiss();
+            } else {
+                deleteSession("2","Delete");
+                dialogConfirm.dismiss();
+            }
+
+        } else {
+            commonUtilsMethods.showToastMessage(requireContext(), "Please Clear all Calls to Override");
+            dialogConfirm.dismiss();
+        }
     }
 }

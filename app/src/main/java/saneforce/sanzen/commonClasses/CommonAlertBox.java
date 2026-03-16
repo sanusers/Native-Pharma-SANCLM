@@ -110,75 +110,6 @@ public class CommonAlertBox {
         return Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION, 0) != 0;
     }
 
-//    public static void ShowCombinedWishesAlert(Activity activity, String birthdayMsg, String anniversaryMsg) {
-//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-//        alert.setCancelable(false);
-//
-//        LayoutInflater inflater = activity.getLayoutInflater();
-//        View alertLayout = inflater.inflate(R.layout.wishes_box, null);
-//
-//        // 🎉 Title
-//        TextView tvTitle = alertLayout.findViewById(R.id.tvTitle);
-//        tvTitle.setText("Today's Wishes !!!");
-//
-//        LinearLayout contentRow = alertLayout.findViewById(R.id.contentRow);
-//
-//        TextView tvBirthday = alertLayout.findViewById(R.id.imgwishes_birthday);
-//        TextView tvBirthdayTitle = alertLayout.findViewById(R.id.tvBirthdayTitle);
-//        ImageView imgBirthday = alertLayout.findViewById(R.id.imgBirthday);
-//
-//        TextView tvAnniversary = alertLayout.findViewById(R.id.imgwishes_anniversary);
-//        TextView tvAnniversaryTitle = alertLayout.findViewById(R.id.tvAnniversaryTitle);
-//        ImageView imgAnniversary = alertLayout.findViewById(R.id.imgAnniversary);
-//
-//        Button btnOk = alertLayout.findViewById(R.id.btnOk);
-//
-//        // 🎂 Birthday Section
-//        if (birthdayMsg != null && !birthdayMsg.trim().isEmpty()) {
-//            tvBirthday.setText(birthdayMsg);
-//            tvBirthday.setVisibility(View.VISIBLE);
-//            tvBirthdayTitle.setVisibility(View.VISIBLE);
-//            imgBirthday.setVisibility(View.VISIBLE);
-//        } else {
-//            tvBirthday.setVisibility(View.GONE);
-//            tvBirthdayTitle.setVisibility(View.GONE);
-//            imgBirthday.setVisibility(View.GONE);
-//        }
-//
-//        // 💐 Anniversary Section
-//        if (anniversaryMsg != null && !anniversaryMsg.trim().isEmpty()) {
-//            tvAnniversary.setText(anniversaryMsg);
-//            tvAnniversary.setVisibility(View.VISIBLE);
-//            tvAnniversaryTitle.setVisibility(View.VISIBLE);
-//            imgAnniversary.setVisibility(View.VISIBLE);
-//        } else {
-//            tvAnniversary.setVisibility(View.GONE);
-//            tvAnniversaryTitle.setVisibility(View.GONE);
-//            imgAnniversary.setVisibility(View.GONE);
-//        }
-//
-//        // 🧩 Hide divider if one section missing
-//        if ((birthdayMsg == null || birthdayMsg.trim().isEmpty()) ||
-//                (anniversaryMsg == null || anniversaryMsg.trim().isEmpty())) {
-//            View dividerView = contentRow.getChildAt(1); // middle divider
-//            if (dividerView != null) dividerView.setVisibility(View.GONE);
-//        }
-//
-//        alert.setView(alertLayout);
-//        AlertDialog dialog = alert.create();
-//        dialog.show();
-//
-//
-//
-//        if (dialog.getWindow() != null) {
-//            dialog.getWindow().setLayout(
-//                    (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.60),
-//                    ViewGroup.LayoutParams.WRAP_CONTENT
-//            );
-//        }
-//
-//        btnOk.setOnClickListener(v -> dialog.dismiss());
-//    }
 
     public static void ShowCombinedWishesAlert(Activity activity, String birthdayMsg, String anniversaryMsg) {
         Log.d("CombinedWishes", "Creating combined wishes alert...");
@@ -249,15 +180,10 @@ public class CommonAlertBox {
                 dividerView.setVisibility(View.GONE);
             }
         }
-// 🔹 Center alignment when only one section exists
         if (hasBirthday && !hasAnniversary) {
             layoutBirthday.setVisibility(View.VISIBLE);
             layoutAnniversary.setVisibility(View.GONE);
 
-            // Parent row
-//            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
-
-            // Remove weights → else center won't work
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutAnniversary.setLayoutParams(lp);
 
@@ -281,12 +207,10 @@ public class CommonAlertBox {
                     window.setLayout(Math.min(windowWidth, finalWidth), WindowManager.LayoutParams.WRAP_CONTENT);
                 }
             });
-//            tvBirthday.setPadding((int) activity.getResources().getDimension(R.dimen._60sdp), 0 , (int) activity.getResources().getDimension(R.dimen._60sdp), 0);
         } else if (!hasBirthday && hasAnniversary) {
             layoutAnniversary.setVisibility(View.VISIBLE);
             layoutBirthday.setVisibility(View.GONE);
 
-//            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutBirthday.setLayoutParams(lp);
@@ -311,7 +235,6 @@ public class CommonAlertBox {
                     window.setLayout(Math.min(windowWidth, finalWidth), WindowManager.LayoutParams.WRAP_CONTENT);
                 }
             });
-//            tvAnniversary.setPadding((int) activity.getResources().getDimension(R.dimen._60sdp), 0 , (int) activity.getResources().getDimension(R.dimen._60sdp), 0);
         } else {
             layoutBirthday.setVisibility(View.VISIBLE);
             layoutAnniversary.setVisibility(View.VISIBLE);
@@ -325,32 +248,6 @@ public class CommonAlertBox {
             contentRow.setGravity(Gravity.TOP);
         }
 
-        // 🔹 If only one section — center it vertically
-//        if (hasBirthday && !hasAnniversary) {
-//            contentRow.setOrientation(LinearLayout.VERTICAL);
-//            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
-//        } else if (!hasBirthday && hasAnniversary) {
-//            contentRow.setOrientation(LinearLayout.VERTICAL);
-//            contentRow.setGravity(Gravity.CENTER_HORIZONTAL);
-//        } else {
-//            contentRow.setOrientation(LinearLayout.HORIZONTAL);
-//            contentRow.setGravity(Gravity.CENTER_VERTICAL);
-//        }
-
-//        if (dialog.getWindow() != null) {
-//            if ((hasBirthday && !hasAnniversary) || (!hasBirthday && hasAnniversary)) {
-//                dialog.getWindow().setLayout(
-//                        ViewGroup.LayoutParams.WRAP_CONTENT,
-//                        ViewGroup.LayoutParams.WRAP_CONTENT
-//                );
-//            }
-//            else {
-//                dialog.getWindow().setLayout(
-//                        (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.60),
-//                        ViewGroup.LayoutParams.WRAP_CONTENT
-//                );
-//            }
-//        }
         dialog.setOnShowListener(d -> {
             Window window = dialog.getWindow();
             if (window != null) {
@@ -368,125 +265,6 @@ public class CommonAlertBox {
         });
     }
 
-//public static void ShowCombinedWishesAlert(Activity activity, String birthdayMsg, String anniversaryMsg) {
-//    Log.d("CombinedWishes", "Creating combined wishes alert...");
-//
-//    AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-//    alert.setCancelable(false);
-//
-//    LayoutInflater inflater = activity.getLayoutInflater();
-//    View alertLayout = inflater.inflate(R.layout.wishes_box, null);
-//
-//    TextView tvTitle = alertLayout.findViewById(R.id.tvTitle);
-//    tvTitle.setText("Today's Wishes !!!");
-//
-//    LinearLayout contentRow = alertLayout.findViewById(R.id.contentRow);
-//
-//    TextView tvBirthday = alertLayout.findViewById(R.id.imgwishes_birthday);
-//    TextView tvBirthdayTitle = alertLayout.findViewById(R.id.tvBirthdayTitle);
-//    ImageView imgBirthday = alertLayout.findViewById(R.id.imgBirthday);
-//
-//    TextView tvAnniversary = alertLayout.findViewById(R.id.imgwishes_anniversary);
-//    TextView tvAnniversaryTitle = alertLayout.findViewById(R.id.tvAnniversaryTitle);
-//    ImageView imgAnniversary = alertLayout.findViewById(R.id.imgAnniversary);
-//
-//    Button btnOk = alertLayout.findViewById(R.id.btnOk);
-//
-//    // Birthday section
-//    if (birthdayMsg != null && !birthdayMsg.trim().isEmpty()) {
-//        tvBirthday.setText(birthdayMsg);
-//        tvBirthday.setVisibility(View.VISIBLE);
-//        tvBirthdayTitle.setVisibility(View.VISIBLE);
-//        imgBirthday.setVisibility(View.VISIBLE);
-//    } else {
-//        tvBirthday.setVisibility(View.GONE);
-//        tvBirthdayTitle.setVisibility(View.GONE);
-//        imgBirthday.setVisibility(View.GONE);
-//    }
-//
-//    // Anniversary section
-//    if (anniversaryMsg != null && !anniversaryMsg.trim().isEmpty()) {
-//        tvAnniversary.setText(anniversaryMsg);
-//        tvAnniversary.setVisibility(View.VISIBLE);
-//        tvAnniversaryTitle.setVisibility(View.VISIBLE);
-//        imgAnniversary.setVisibility(View.VISIBLE);
-//    } else {
-//        tvAnniversary.setVisibility(View.GONE);
-//        tvAnniversaryTitle.setVisibility(View.GONE);
-//        imgAnniversary.setVisibility(View.GONE);
-//    }
-//
-//    // Hide divider if one missing
-//    if ((birthdayMsg == null || birthdayMsg.trim().isEmpty()) ||
-//            (anniversaryMsg == null || anniversaryMsg.trim().isEmpty())) {
-//        View dividerView = contentRow.getChildAt(1);
-//        if (dividerView != null) dividerView.setVisibility(View.GONE);
-//    }
-//
-//    alert.setView(alertLayout);
-//    AlertDialog dialog = alert.create();
-//    dialog.show();
-//
-//    if (dialog.getWindow() != null) {
-//        dialog.getWindow().setLayout(
-//                (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.60),
-//                ViewGroup.LayoutParams.WRAP_CONTENT
-//        );
-//    }
-//
-//    btnOk.setOnClickListener(v -> {
-//        v.setEnabled(false); // prevents double tap
-//        Log.d("CombinedWishes", "OK clicked, dismissing...");
-//        dialog.dismiss();
-//    });
-//}
-
-
-//    public static void BirthdayWishAlert (Activity activity, String message) {
-//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-//        alert.setCancelable(false);
-//
-//        LayoutInflater inflater = activity.getLayoutInflater();
-//        View alertLayout = inflater.inflate(R.layout.wishes_box, null);
-//
-//        Button btnOk = alertLayout.findViewById(R.id.btn_OK);
-//        TextView alertMsg = alertLayout.findViewById(R.id.imgwishes_birthday);
-//        alertMsg.setText(message);
-//
-//        alert.setView(alertLayout);
-//        AlertDialog dialog = alert.create();
-//        dialog.show();
-//
-//        btnOk.setOnClickListener(view -> {
-//            // Optional: open BirthdayListActivity or just dismiss
-////            Intent intent = new Intent(activity, birthdayAnniversary_viewscreen.class);
-////            activity.startActivity(intent);
-//            dialog.dismiss();
-//        });
-//    }
-
-//    public static void AnniversaryWishAlert (Activity activity, String message) {
-//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-//        alert.setCancelable(false);
-//
-//        LayoutInflater inflater = activity.getLayoutInflater();
-//        View alertLayout = inflater.inflate(R.layout.wishes_popup, null);
-//
-//        Button btnOk2 = alertLayout.findViewById(R.id.btn_OK2);
-//        TextView alertMsg = alertLayout.findViewById(R.id.imgwishes_anniversary);
-//        alertMsg.setText(message);
-//
-//        alert.setView(alertLayout);
-//        AlertDialog dialog = alert.create();
-//        dialog.show();
-//
-//        btnOk2.setOnClickListener(view -> {
-//            // Optional: open BirthdayListActivity or just dismiss
-////            Intent intent = new Intent(activity, birthdayAnniversary_viewscreen.class);
-////            activity.startActivity(intent);
-//            dialog.dismiss();
-//        });
-//    }
     public static void TpAlert(Activity activity) {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
