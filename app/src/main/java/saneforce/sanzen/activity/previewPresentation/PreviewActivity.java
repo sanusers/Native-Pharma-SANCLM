@@ -295,33 +295,84 @@ public class PreviewActivity extends AppCompatActivity {
                             String UlDrDetCap2 = SharedPref.getDetUldrCap(PreviewActivity.this);
 
                             // 🔥 New Captions for Chemist & Stockist
-                            String ChmDetCap = SharedPref.getDetChmCap(PreviewActivity.this);
-                            String StkDetCap = SharedPref.getDetStkCap(PreviewActivity.this);
+//                            String ChmDetCap = SharedPref.getDetChmCap(PreviewActivity.this);
+//                            String StkDetCap = SharedPref.getDetStkCap(PreviewActivity.this);
 
                             String doctorName = CallActivityCustDetails.get(0).getName();
 
                             // Name set logic - Existing conditions preserved
                             if (CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
-                                if (CusType.equalsIgnoreCase("1") && (DrDetCap2 != null && !DrDetCap2.isEmpty() && !DrDetCap2.equalsIgnoreCase("null"))) {
-                                    //previewBinding.doctorName.setText("Welcome\n" + DrDetCap2 + " " + doctorName);
-                                    previewBinding.doctorName.setText(DrDetCap2 + " " + doctorName);
-                                } else if (CusType.equalsIgnoreCase("4") && (UlDrDetCap2 != null && !UlDrDetCap2.isEmpty() && !UlDrDetCap2.equalsIgnoreCase("null"))) {
-                                   // previewBinding.doctorName.setText("Welcome\n" + UlDrDetCap2 + " " + doctorName);
-                                    previewBinding.doctorName.setText( UlDrDetCap2 + " " + doctorName);
+
+                                String prefix;
+
+                                if (CusType.equalsIgnoreCase("1") && DrDetCap2 != null && !DrDetCap2.isEmpty() && !"null".equalsIgnoreCase(DrDetCap2)) {
+                                    prefix = DrDetCap2;
+                                } else if (CusType.equalsIgnoreCase("4") && UlDrDetCap2 != null && !UlDrDetCap2.isEmpty() && !"null".equalsIgnoreCase(UlDrDetCap2)) {
+                                    prefix = UlDrDetCap2;
                                 } else {
-//                                    previewBinding.doctorName.setText("Welcome\n" + "Dr. " + doctorName);
-                                    previewBinding.doctorName.setText("Dr. " + doctorName);
+                                    prefix = "Dr.";
                                 }
+
+                                String fullName = prefix + " " + doctorName;
+
+                                // Break only if name is very long
+                                if (fullName.length() > 30) {
+                                    int breakIndex = fullName.lastIndexOf(" ", 30);
+                                    if (breakIndex == -1) breakIndex = 30;
+
+                                    fullName = fullName.substring(0, breakIndex) + "\n" + fullName.substring(breakIndex + 1);
+                                }
+
+                                previewBinding.doctorName.setText(fullName);
                             }
+//                            if (CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
+//
+//                                String fullName = "";
+//
+//                                if (CusType.equalsIgnoreCase("1") && DrDetCap2 != null && !DrDetCap2.isEmpty() && !DrDetCap2.equalsIgnoreCase("null")) {
+//                                    fullName = DrDetCap2 + " " + doctorName;
+//
+//                                } else if (CusType.equalsIgnoreCase("4") && UlDrDetCap2 != null && !UlDrDetCap2.isEmpty() && !UlDrDetCap2.equalsIgnoreCase("null")) {
+//                                    fullName = UlDrDetCap2 + " " + doctorName;
+//
+//                                } else {
+//                                    fullName = "Dr. " + doctorName;
+//                                }
+//
+//                                // Break text into next line if length > 20
+//                                if (fullName.length() > 20) {
+//
+//                                    int breakIndex = fullName.lastIndexOf(" ", 20); // break at space before 20
+//                                    if (breakIndex == -1) {
+//                                        breakIndex = 20; // if no space found
+//                                    }
+//
+//                                    fullName = fullName.substring(0, breakIndex) + "\n" + fullName.substring(breakIndex + 1);
+//                                }
+//
+//                                previewBinding.doctorName.setText(fullName);
+//                            }
+//                            if (CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
+//                                if (CusType.equalsIgnoreCase("1") && (DrDetCap2 != null && !DrDetCap2.isEmpty() && !DrDetCap2.equalsIgnoreCase("null"))) {
+//                                    //previewBinding.doctorName.setText("Welcome\n" + DrDetCap2 + " " + doctorName);
+//                                    previewBinding.doctorName.setText(DrDetCap2 + " " + doctorName);
+//                                } else if (CusType.equalsIgnoreCase("4") && (UlDrDetCap2 != null && !UlDrDetCap2.isEmpty() && !UlDrDetCap2.equalsIgnoreCase("null"))) {
+//                                   // previewBinding.doctorName.setText("Welcome\n" + UlDrDetCap2 + " " + doctorName);
+//                                    previewBinding.doctorName.setText( UlDrDetCap2 + " " + doctorName);
+//                                } else {
+////                                    previewBinding.doctorName.setText("Welcome\n" + "Dr. " + doctorName);
+//                                    previewBinding.doctorName.setText("Dr. " + doctorName);
+//                                }
+//                            }
                             // 🔥 Extra Logic for Chemist (2) and Stockist (3)
-                            else if (CusType.equalsIgnoreCase("2") && ChmDetCap != null && !ChmDetCap.isEmpty() && !ChmDetCap.equalsIgnoreCase("null")) {
-//                                previewBinding.doctorName.setText("Welcome\n" + ChmDetCap + " " + doctorName);
-                                previewBinding.doctorName.setText( ChmDetCap + " " + doctorName);
-                            }
-                            else if (CusType.equalsIgnoreCase("3") && StkDetCap != null && !StkDetCap.isEmpty() && !StkDetCap.equalsIgnoreCase("null")) {
-//                                previewBinding.doctorName.setText("Welcome\n" + StkDetCap + " " + doctorName);
-                                previewBinding.doctorName.setText(StkDetCap + " " + doctorName);
-                            }
+//                            else if (CusType.equalsIgnoreCase("2") && ChmDetCap != null && !ChmDetCap.isEmpty() && !ChmDetCap.equalsIgnoreCase("null")) {
+////                                previewBinding.doctorName.setText("Welcome\n" + ChmDetCap + " " + doctorName);
+//                                previewBinding.doctorName.setText( ChmDetCap + " " + doctorName);
+//                            }
+//                            else if (CusType.equalsIgnoreCase("3") && StkDetCap != null && !StkDetCap.isEmpty() && !StkDetCap.equalsIgnoreCase("null")) {
+////                                previewBinding.doctorName.setText("Welcome\n" + StkDetCap + " " + doctorName);
+//                                previewBinding.doctorName.setText(StkDetCap + " " + doctorName);
+//                            }
                             else {
                                 // Fallback for others or if no caption exists
 //                                previewBinding.doctorName.setText("Welcome\n" + doctorName);
@@ -581,20 +632,62 @@ public class PreviewActivity extends AppCompatActivity {
                 return;
             }
 
+//            previewBinding.rlThankYou.setVisibility(View.VISIBLE);
+//            String DrDetCap = SharedPref.getDetDrCap(PreviewActivity.this);
+//            String UlDrDetCap = SharedPref.getDetUldrCap(PreviewActivity.this);
+//            if(CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
+//                if (CusType.equalsIgnoreCase("1") && !DrDetCap.isEmpty() || !DrDetCap.equalsIgnoreCase("null")) {
+//                  //  previewBinding.docName.setText("Thank You\n" + DrDetCap + " " + CallActivityCustDetails.get(0).getName());
+//                    previewBinding.docName.setText(DrDetCap + " " + CallActivityCustDetails.get(0).getName());
+//                } else if (CusType.equalsIgnoreCase("4") && !UlDrDetCap.isEmpty() || !UlDrDetCap.equalsIgnoreCase("null")){
+////                    previewBinding.docName.setText("Thank You\n" + UlDrDetCap + " " + CallActivityCustDetails.get(0).getName());
+//                    previewBinding.docName.setText(UlDrDetCap + " " + CallActivityCustDetails.get(0).getName());
+//                }else {
+////                    previewBinding.docName.setText("Thank You\n" + "Dr." + " " + CallActivityCustDetails.get(0).getName());
+//                    previewBinding.docName.setText("Dr." + " " + CallActivityCustDetails.get(0).getName());
+//                }
+//            }else{
+////                previewBinding.docName.setText("Thank You\n"+ " " + CallActivityCustDetails.get(0).getName());
+//                previewBinding.docName.setText( " " + CallActivityCustDetails.get(0).getName());
+//            }
+//            previewBinding.btnFinishDet.setVisibility(View.GONE);
             previewBinding.rlThankYou.setVisibility(View.VISIBLE);
+
             String DrDetCap = SharedPref.getDetDrCap(PreviewActivity.this);
             String UlDrDetCap = SharedPref.getDetUldrCap(PreviewActivity.this);
-            if(CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
-                if (CusType.equalsIgnoreCase("1") && !DrDetCap.isEmpty() || !DrDetCap.equalsIgnoreCase("null")) {
-                    previewBinding.docName.setText("Thank You\n" + DrDetCap + " " + CallActivityCustDetails.get(0).getName());
-                } else if (CusType.equalsIgnoreCase("4") && !UlDrDetCap.isEmpty() || !UlDrDetCap.equalsIgnoreCase("null")){
-                    previewBinding.docName.setText("Thank You\n" + UlDrDetCap + " " + CallActivityCustDetails.get(0).getName());
-                }else {
-                    previewBinding.docName.setText("Thank You\n" + "Dr." + " " + CallActivityCustDetails.get(0).getName());
+
+            String text = "";
+
+            if (CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
+
+                if (CusType.equalsIgnoreCase("1") && !DrDetCap.isEmpty() && !DrDetCap.equalsIgnoreCase("null")) {
+                    text = DrDetCap + " " + CallActivityCustDetails.get(0).getName();
+
+                } else if (CusType.equalsIgnoreCase("4") && !UlDrDetCap.isEmpty() && !UlDrDetCap.equalsIgnoreCase("null")) {
+                    text = UlDrDetCap + " " + CallActivityCustDetails.get(0).getName();
+
+                } else {
+                    text = "Dr. " + CallActivityCustDetails.get(0).getName();
                 }
-            }else{
-                previewBinding.docName.setText("Thank You\n"+ " " + CallActivityCustDetails.get(0).getName());
+
+            } else {
+                text = CallActivityCustDetails.get(0).getName();
             }
+
+            /* break line if >20 characters */
+            if (text.length() > 25) {
+
+                int breakIndex = text.lastIndexOf(" ", 25);
+
+                if (breakIndex == -1) {
+                    breakIndex = 25;
+                }
+
+                text = text.substring(0, breakIndex) + "\n" + text.substring(breakIndex + 1);
+            }
+
+            previewBinding.docName.setText(text);
+
             previewBinding.btnFinishDet.setVisibility(View.GONE);
 //            @Override
 //            public void onSafeClick(View view) {
