@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.approvals.tpdeviation;
 
+import static saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity.SelectedSfCode;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -35,6 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
+import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.network.ApiInterface;
@@ -51,6 +54,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
     CommonUtilsMethods commonUtilsMethods;
     private ViewPlanClickListener viewPlanClickListener;
 
+    private String selectedSf;
     public interface ViewPlanClickListener {
         public void onClick(TpDeviationModelList tpDeviationModelList);
     }
@@ -123,6 +127,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
                 showRemarksAlert(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), tpDeviationModelLists.get(position).getDate(), "2");
             }
         });
+        selectedSf = DcrApprovalActivity.SelectedSfCode;
     }
 
     private void showRemarksAlert(String sfName, String sfCode, String slNo, int position, String date, String status) {
@@ -173,11 +178,11 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             jsonTpDeviation.put("tableName", "savedev_appr");
             jsonTpDeviation.put("slno", slNo);
             jsonTpDeviation.put("status", status);
-            jsonTpDeviation.put("sfcode", sfCode);
+            jsonTpDeviation.put("sfcode", SharedPref.getSfCode(context));
             jsonTpDeviation.put("sfname", sfName);
             jsonTpDeviation.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_15, date));
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
-            jsonTpDeviation.put("Rsf", SharedPref.getHqCode(context));
+            jsonTpDeviation.put("Rsf", tpDeviationModelLists.get(position).getSfCode());
             Log.v("json_approve_tpDev", jsonTpDeviation.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,12 +197,12 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             jsonTpDeviation.put("tableName", "savedev_appr");
             jsonTpDeviation.put("slno", slNo);
             jsonTpDeviation.put("status", status);
-            jsonTpDeviation.put("sfcode", sfCode);
+            jsonTpDeviation.put("sfcode", SharedPref.getSfCode(context));
             jsonTpDeviation.put("sfname", sfName);
             jsonTpDeviation.put("reason", reason);
             jsonTpDeviation.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_15, date));
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
-            jsonTpDeviation.put("Rsf", SharedPref.getHqCode(context));
+            jsonTpDeviation.put("Rsf", tpDeviationModelLists.get(position).getSfCode()/*haredPref.getHqCode(context)*/);
             Log.v("json_reject_tpDev", jsonTpDeviation.toString());
         } catch (Exception e) {
             e.printStackTrace();
