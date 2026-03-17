@@ -2752,6 +2752,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
+                        @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
 
@@ -2811,7 +2812,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
-                                    callGetTpDetail(holder, hqCode);
+//                                    callGetTpDetail(holder, hqCode);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -2824,7 +2825,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             if (synccount == masterSyncArray.size()) {
                                 holder.masterSyncDone = true;
                                 holder.progress_hq.setVisibility(View.GONE);
-
+                                callGetTpDetail(holder, hqCode);
                                 if (SharedPref.getOneBuild(context).equalsIgnoreCase("0") && tpMgr.equalsIgnoreCase("0")) {
                                     String hqCode = holder.selectedHq;
                                     holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray());
@@ -2837,21 +2838,19 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     try {
                                         JSONArray tpResponse = masterDataDao.getMasterDataTableOrNew(masterSyncItemModel.getLocalTableKeyName()).getMasterSyncDataJsonArray();
                                         if (tpResponse != null && tpResponse.length() > 0) {
-                                            int pos = holder.getAbsoluteAdapterPosition();
-
+                                            inputDataArrayOneBuild.getSessionList().clear();
                                             for (int i = 0; i < tpResponse.length(); i++) {
                                                 JSONObject sessionObject = tpResponse.getJSONObject(i);
-
                                                 if (sessionObject != null) {
                                                     if (i >= inputDataArrayOneBuild.getSessionList().size()) {
                                                         inputDataArrayOneBuild.getSessionList().add(prepareSessionListForAdapterOneBuild());
+                                                        populateSessionFromResponse(holder, sessionObject, i);
                                                     }
-                                                    populateSessionFromResponse(holder, sessionObject, i);
                                                 }
+                                                notifyDataSetChanged();
                                             }
-                                            notifyDataSetChanged();
                                         }
-                                    } catch (Exception e) {
+                                    }catch (Exception e) {
                                         e.printStackTrace();
                                     }
                                 }
@@ -2943,12 +2942,19 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
 //                                    inputDataArrayOneBuild.getSessionList().clear();
 
-                                    for (int i = 0; i < tpResponse.length(); i++) {
-                                        JSONObject sessionObject = tpResponse.getJSONObject(i);
-                                        if (sessionObject != null) {
-                                            inputDataArrayOneBuild.getSessionList().add(prepareSessionListForAdapterOneBuild());
-                                            populateSessionFromResponse(holder, sessionObject, i);
+                                    if (tpResponse != null && tpResponse.length() > 0) {
+                                        inputDataArrayOneBuild.getSessionList().clear();
+
+                                        for (int i = 0; i < tpResponse.length(); i++) {
+                                            JSONObject sessionObject = tpResponse.getJSONObject(i);
+                                            if (sessionObject != null) {
+                                                inputDataArrayOneBuild.getSessionList().add(
+                                                        prepareSessionListForAdapterOneBuild()
+                                                );
+                                                populateSessionFromResponse(holder, sessionObject, i);
+                                            }
                                         }
+                                        notifyDataSetChanged();
                                     }
 
                                     // Refresh adapter
@@ -2984,7 +2990,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public void prepareInputDataOneBuild(ArrayList<OneBuildModelClass.SessionList.SubClass> oneBuildModelClass, ArrayList<EditModelClass> arrayList) {
-        if (oneBuildModelClass.size() > 0) {
+        if (!oneBuildModelClass.isEmpty()) {
             for (int i = 0; i < oneBuildModelClass.size(); i++) {
                 for (int j = 0; j < arrayList.size(); j++) {
                     if (oneBuildModelClass.get(i).getCode().equalsIgnoreCase(arrayList.get(j).getCode())) {
@@ -4237,22 +4243,18 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         try {
             OneBuildModelClass.SessionList sessionData = inputDataArrayOneBuild.getSessionList().get(position);
             Log.d("POPULATE_DEBUG", "rawResponseJson = " + responseJson.toString());
-            // Work Type
             sessionData.getWorkType().setCode(responseJson.optString("WorkTypeCode"));
             sessionData.getWorkType().setName(responseJson.optString("WorkTypeName"));
-            // Handle both "WorkTypeFlag" (live API) and "Plan_Work_Type" (local save)
             String fwFlg = responseJson.optString("WorkTypeFlag");
             if (fwFlg.isEmpty()) fwFlg = responseJson.optString("Plan_Work_Type");
             sessionData.getWorkType().setFWFlg(fwFlg);
             holder.workTypeField.setText(responseJson.optString("WorkTypeName"));
 
-            // HQ
             sessionData.getHeadquarters().setCode(responseJson.optString("SF_HQ_Code"));
             sessionData.getHeadquarters().setName(responseJson.optString("SF_HQ_Name"));
             holder.hqField.setText(responseJson.optString("SF_HQ_Name"));
             holder.selectedHq = responseJson.optString("SF_HQ_Code");
 
-            // Territories / Clusters
             List<OneBuildModelClass.SessionList.SubClass> clusterList = parseSubClassList(responseJson.optString("Territories"));
             StringBuilder clusterNames = new StringBuilder();
             holder.selectedClusterCode.clear();
@@ -4265,7 +4267,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             sessionData.setTerritories(clusterList);
             holder.clusterField.setText(clusterNames.length() > 0 ? clusterNames.toString() : context.getString(R.string.select));
 
-            // Doctors
             List<OneBuildModelClass.SessionList.SubClass> drList = parseSubClassList(responseJson.optString("Doctors"));
             StringBuilder drNames = new StringBuilder();
             for (OneBuildModelClass.SessionList.SubClass item : drList) {
@@ -4276,7 +4277,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             sessionData.setDoctors(drList);
             holder.drField.setText(drNames.length() > 0 ? drNames.toString() : context.getString(R.string.select));
 
-            // Chemists
             List<OneBuildModelClass.SessionList.SubClass> chemistList = parseSubClassList(responseJson.optString("Chemists"));
             StringBuilder chemistNames = new StringBuilder();
             for (OneBuildModelClass.SessionList.SubClass item : chemistList) {
@@ -4287,7 +4287,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             sessionData.setChemists(chemistList);
             holder.chemistField.setText(chemistNames.length() > 0 ? chemistNames.toString() : context.getString(R.string.select));
 
-            // Stockists
             List<OneBuildModelClass.SessionList.SubClass> stockList = parseSubClassList(responseJson.optString("Stockists"));
             StringBuilder stockNames = new StringBuilder();
             for (OneBuildModelClass.SessionList.SubClass item : stockList) {
@@ -4298,7 +4297,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             sessionData.setStockists(stockList);
             holder.stockiestField.setText(stockNames.length() > 0 ? stockNames.toString() : context.getString(R.string.select));
 
-            // Joint Works
             List<OneBuildModelClass.SessionList.SubClass> jcList = parseSubClassList(responseJson.optString("JointWorks"));
             StringBuilder jcNames = new StringBuilder();
             for (OneBuildModelClass.SessionList.SubClass item : jcList) {
@@ -4309,7 +4307,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             sessionData.setJointWorks(jcList);
             holder.jcField.setText(jcNames.length() > 0 ? jcNames.toString() : context.getString(R.string.select));
 
-            // Unlisted Doctors
             List<OneBuildModelClass.SessionList.SubClass> unlistedList = parseSubClassList(responseJson.optString("UnlistedDoctors"));
             StringBuilder unlistedNames = new StringBuilder();
             for (OneBuildModelClass.SessionList.SubClass item : unlistedList) {
@@ -4320,7 +4317,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             sessionData.setUnlistedDoctors(unlistedList);
             holder.unListedDrField.setText(unlistedNames.length() > 0 ? unlistedNames.toString() : context.getString(R.string.select));
 
-            // Hospitals
             List<OneBuildModelClass.SessionList.SubClass> hospList = parseSubClassList(responseJson.optString("Hospitals"));
             StringBuilder hospNames = new StringBuilder();
             for (OneBuildModelClass.SessionList.SubClass item : hospList) {
@@ -4331,11 +4327,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             sessionData.setHospitals(hospList);
             holder.hospField.setText(hospNames.length() > 0 ? hospNames.toString() : context.getString(R.string.select));
 
-            // Remarks
             sessionData.setRemarks(responseJson.optString("TP_Remarks"));
             holder.remarks.setText(responseJson.optString("TP_Remarks"));
 
-            // Pre-check items in local arrays so checkboxes reflect correctly
             prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getTerritories(), holder.clusterArray);
             prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getDoctors(), holder.listedDrArray);
             prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getChemists(), holder.chemistArray);
@@ -4344,7 +4338,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getUnlistedDoctors(), holder.unListedDrArray);
             prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getHospitals(), holder.hospArray);
 
-//            notifyItemChanged(position);
+            notifyItemChanged(position);
             inputDataArrayOneBuild.getSessionList().set(position, sessionData);
 
         } catch (Exception e) {
