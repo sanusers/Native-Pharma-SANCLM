@@ -651,7 +651,7 @@ public class PreviewActivity extends AppCompatActivity {
 //                previewBinding.docName.setText( " " + CallActivityCustDetails.get(0).getName());
 //            }
 //            previewBinding.btnFinishDet.setVisibility(View.GONE);
-            previewBinding.rlThankYou.setVisibility(View.VISIBLE);
+            previewBinding.clThankYou.setVisibility(View.VISIBLE);
 
             String DrDetCap = SharedPref.getDetDrCap(PreviewActivity.this);
             String UlDrDetCap = SharedPref.getDetUldrCap(PreviewActivity.this);

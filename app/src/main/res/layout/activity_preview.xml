@@ -169,8 +169,9 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout="@layout/fragment_dr_selection_side" />
 
-        <RelativeLayout
-            android:id="@+id/rl_thank_you"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_thank_you"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
@@ -178,34 +179,34 @@
             android:focusable="true">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:src="@drawable/thank_you_blue" />
-
-            <View
-                android:id="@+id/center_point"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_centerVertical="true" />
+                android:scaleType="fitXY"
+                android:src="@drawable/thank_you_blue_slide"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/doc_name1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/center_point"
                 android:layout_marginStart="@dimen/_20sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:text="Thank You"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_20ssp"
-                android:textStyle="bold" />
-
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/doc_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintVertical_bias="0.48" />
             <TextView
                 android:id="@+id/doc_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/center_point"
                 android:layout_marginStart="@dimen/_20sdp"
                 android:ellipsize="end"
                 android:fontFamily="@font/satoshi_bold"
@@ -213,7 +214,67 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/doc_name1"
                 tools:text="Doctor Name more than 20 characters" />
+
+            <Button
+                android:id="@+id/proceed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_15sdp"
+                android:padding="@dimen/_5sdp"
+                android:text="PROCEED"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/rl_thank_you"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:visibility="gone"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:scaleType="fitXY"-->
+<!--                android:src="@drawable/thank_you_blue" />-->
+
+<!--            <View-->
+<!--                android:id="@+id/center_point"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_centerVertical="true" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/doc_name1"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_above="@+id/center_point"-->
+<!--                android:layout_marginStart="@dimen/_20sdp"-->
+<!--                android:fontFamily="@font/satoshi_bold"-->
+<!--                android:text="Thank You"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="@dimen/_20ssp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/doc_name"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@+id/center_point"-->
+<!--                android:layout_marginStart="@dimen/_20sdp"-->
+<!--                android:ellipsize="end"-->
+<!--                android:fontFamily="@font/satoshi_bold"-->
+<!--                android:maxLines="2"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="@dimen/_13ssp"-->
+<!--                android:textStyle="bold"-->
+<!--                tools:text="Doctor Name more than 20 characters" />-->
 
 
 <!--            <TextView-->
@@ -237,23 +298,23 @@
 <!--                app:layout_constraintTop_toTopOf="parent"-->
 <!--                app:layout_constraintVertical_bias="0.6" />&ndash;&gt;-->
 
-            <Button
-                android:id="@+id/proceed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_5sdp"
-                android:text="@string/proceed"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="@dimen/_10sdp"/>
-                <!--app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.95" />-->
+<!--            <Button-->
+<!--                android:id="@+id/proceed"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="@dimen/_5sdp"-->
+<!--                android:text="@string/proceed"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_alignParentBottom="true"-->
+<!--                android:layout_margin="@dimen/_10sdp"/>-->
+<!--                &lt;!&ndash;app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.95"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintVertical_bias="0.95" />&ndash;&gt;-->
 
-        </RelativeLayout>
+<!--        </RelativeLayout>-->
         <RelativeLayout
             android:id="@+id/rl_welcome"
             android:layout_width="match_parent"
