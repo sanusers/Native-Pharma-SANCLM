@@ -877,12 +877,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 CommonUtilsMethods.showToastMessage(context, "Detailing Resumed");
                 isPaused = false;
             }
-            rl_like.setEnabled(!isPaused);
-            rl_dislike.setEnabled(!isPaused);
-            rl_comments.setEnabled(!isPaused);
-            rl_share.setEnabled(!isPaused);
-            rl_paint.setEnabled(!isPaused);
-            rl_stop.setEnabled(!isPaused);
+//            rl_like.setEnabled(!isPaused);
+//            rl_dislike.setEnabled(!isPaused);
+//            rl_comments.setEnabled(!isPaused);
+//            rl_share.setEnabled(!isPaused);
+//            rl_paint.setEnabled(!isPaused);
+//            rl_stop.setEnabled(!isPaused);
             dialogPopUp.setCanceledOnTouchOutside(!isPaused);
             handlePausePlayDetailing(isPaused);
         });

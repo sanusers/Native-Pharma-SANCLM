@@ -5,7 +5,9 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,10 +20,8 @@ import saneforce.sanzen.databinding.ActivityTourPlanBinding;
 import saneforce.sanzen.storage.SharedPref;
 
 public class PrivacyPolicyActivity extends AppCompatActivity {
-
-
-
     ActivityPrivacypolicyBinding binding;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,17 +33,27 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         binding.submitPrivacy.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.bg_grey)));
         binding.privacyWebview.loadUrl("https://sansfe.info/sanzen_privacy.html");
         binding.submitPrivacy.setEnabled(false);
-        binding.privacyCheckBox.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                boolean checked = ((CheckBox) view).isChecked();
-                if (checked) {
-                    binding.submitPrivacy.setEnabled(true);
-                    binding.submitPrivacy.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black_45)));
-                } else {
-                    binding.submitPrivacy.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.bg_grey)));
-                    binding.submitPrivacy.setEnabled(false);
-                }
+//        binding.privacyCheckBox.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                boolean checked = ((CheckBox) view).isChecked();
+//                if (checked) {
+//                    binding.submitPrivacy.setEnabled(true);
+//                    binding.submitPrivacy.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black_45)));
+//                } else {
+//                    binding.submitPrivacy.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.bg_grey)));
+//                    binding.submitPrivacy.setEnabled(false);
+//                }
+//            }
+//        });
+
+        binding.privacyCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                binding.submitPrivacy.setEnabled(true);
+                binding.submitPrivacy.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black_45)));
+            } else {
+                binding.submitPrivacy.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.bg_grey)));
+                binding.submitPrivacy.setEnabled(false);
             }
         });
 

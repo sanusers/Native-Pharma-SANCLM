@@ -1050,5 +1050,8 @@
 
     <string name="address_format">العنوان : %1$s</string>
     <string name="distance_format">المسافة : %1$.2f متر</string>
+    <string name="want_to_swap">يريد التبديل</string>
     <string name="loc_dect">لم يتم اكتشاف الموقع، يرجى التحديث</string>
+    <string name="wise">-وايز</string>
+    <string name="kindly_replan">يرجى إعادة التخطيط</string>
 </resources>

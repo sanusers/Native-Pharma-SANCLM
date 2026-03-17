@@ -1054,6 +1054,9 @@
     <string name="location">位置</string>
     <string name="failed_to_save_image">保存图片失败</string>
     <string name="is_empty">是空的</string>
+    <string name="want_to_swap">想要交换</string>
     <string name="loc_dect">未检测到位置，请刷新</string>
+    <string name="wise">按…分类</string>
+    <string name="kindly_replan">请重新规划</string>
 
 </resources>

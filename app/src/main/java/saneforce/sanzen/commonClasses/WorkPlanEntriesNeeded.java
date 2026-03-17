@@ -196,8 +196,6 @@ public class WorkPlanEntriesNeeded {
         return LocalDate.parse(normalized, formatter);
     }
 
-
-
     private static void setupMyDayPlanEntriesNeeded(Context context) {
         datesNeeded.clear();
         lockDays = 0;

@@ -1067,4 +1067,5 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="want_to_swap"> Want to swap </string>
     <string name="loc_dect"> Location Not Detected, Kindly Refresh </string>
     <string name="for_session"> for Session </string>
+    <string name="kindly_replan">Kindly replan</string>
 </resources>

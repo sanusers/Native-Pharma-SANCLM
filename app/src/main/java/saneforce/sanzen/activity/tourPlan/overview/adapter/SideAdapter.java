@@ -4,10 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -26,18 +28,19 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Object> data;
     private TourPlanOverviewActivity.NavType navType;
     private OnAddClickListener addClickListener;
-    Boolean isDoc = false;
+    private Boolean isDoc = false;
+    private CommonUtilsMethods commonUtilsMethods;
 
     public interface OnAddClickListener {
         void onAddClick(ContentModel model, int position);
     }
-
 
     public SideAdapter(Context context, List<Object> data, TourPlanOverviewActivity.NavType navType, OnAddClickListener listener) {
         this.context = context;
         this.data = data;
         this.navType = navType;
         this.addClickListener = listener;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @Override
@@ -82,16 +85,13 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         addClickListener.onAddClick(content, holder.getAdapterPosition());
                     }
                 });
-                if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER){
-                    ((ContentVH) holder).addBtnImg.setVisibility(View.VISIBLE);
-                    ((ContentVH) holder).addBtnImg.setBackground(context.getDrawable(R.drawable.custom_background_blue));
+                if (navType == TourPlanOverviewActivity.NavType.DOCTOR || navType == TourPlanOverviewActivity.NavType.DOCTOR_CATEGORY || navType == TourPlanOverviewActivity.NavType.CHEMIST) {
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-
-                }else{
+                } else {
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
                 }
-            }
-            else {
+                ((ContentVH) holder).content.setOnClickListener(v -> commonUtilsMethods.displayPopupWindowEnd(context, v, content.getContent()));
+            } else {
                 ((ContentVH) holder).content.setVisibility(View.GONE);
             }
             if (content.getSubContent() != null && !content.getSubContent().isEmpty()) {
@@ -103,17 +103,25 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ((ContentVH) holder).subContent.setText(content.getSubContent());
                     ((ContentVH) holder).subContent.setTextColor(context.getColor(R.color.text_grey));
                 }
-                if(navType == TourPlanOverviewActivity.NavType.CUSTOMER_CLUSTER ){
-                    ((ContentVH) holder).addBtnImg.setVisibility(View.VISIBLE);
-                    ((ContentVH) holder).addBtnImg.setBackground(context.getDrawable(R.drawable.custom_background_green));
+                if (navType == TourPlanOverviewActivity.NavType.DOCTOR || navType == TourPlanOverviewActivity.NavType.DOCTOR_CATEGORY || navType == TourPlanOverviewActivity.NavType.CHEMIST) {
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                }else{
+                } else {
                     ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
                 }
+                ((ContentVH) holder).subContent.setOnClickListener(v -> commonUtilsMethods.displayPopupWindowEnd(context, v, content.getContent()));
             } else {
+                ((ContentVH) holder).addBtn.setVisibility(View.GONE);
                 ((ContentVH) holder).subContent.setVisibility(View.GONE);
             }
-            if (content.getSideContent() != null && !content.getSideContent().isEmpty()) {
+            if (content.getSpannableString() != null && !content.getSpannableString().toString().isEmpty()) {
+                ((ContentVH) holder).sideContent.setVisibility(View.VISIBLE);
+                ((ContentVH) holder).sideContent.setText(content.getSpannableString());
+                if (navType == TourPlanOverviewActivity.NavType.WORK_CATEGORY) {
+                    ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                } else {
+                    ((ContentVH) holder).sideContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                }
+            } else if (content.getSideContent() != null && !content.getSideContent().isEmpty()) {
                 ((ContentVH) holder).sideContent.setVisibility(View.VISIBLE);
                 ((ContentVH) holder).sideContent.setText(content.getSideContent());
                 if (navType == TourPlanOverviewActivity.NavType.WORK_CATEGORY) {
@@ -123,6 +131,15 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             } else {
                 ((ContentVH) holder).sideContent.setVisibility(View.GONE);
+            }
+            if ((navType == TourPlanOverviewActivity.NavType.DOCTOR || navType == TourPlanOverviewActivity.NavType.DOCTOR_CATEGORY) && !content.isNoData()) {
+                ((ContentVH) holder).addBtn.setVisibility(View.VISIBLE);
+                ((ContentVH) holder).addBtn.setBackground(AppCompatResources.getDrawable(context, R.drawable.custom_background_green));
+            } else if (navType == TourPlanOverviewActivity.NavType.CHEMIST && !content.isNoData()) {
+                ((ContentVH) holder).addBtn.setVisibility(View.VISIBLE);
+                ((ContentVH) holder).addBtn.setBackground(AppCompatResources.getDrawable(context, R.drawable.custom_background_blue));
+            } else {
+                ((ContentVH) holder).addBtn.setVisibility(View.GONE);
             }
         }
     }
@@ -142,15 +159,14 @@ public class SideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     static class ContentVH extends RecyclerView.ViewHolder {
-        TextView content, subContent, sideContent,addBtn;
-        RelativeLayout addBtnImg;
+        TextView content, subContent, sideContent;
+        ImageButton addBtn;
 
         public ContentVH(View itemView) {
             super(itemView);
             content = itemView.findViewById(R.id.tv_content);
             subContent = itemView.findViewById(R.id.tv_sub_content);
             sideContent = itemView.findViewById(R.id.tv_content_side);
-            addBtnImg = itemView.findViewById(R.id.btn_add_doc);
             addBtn = itemView.findViewById(R.id.btn_add_tp);
 
         }

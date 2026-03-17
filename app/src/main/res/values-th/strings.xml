@@ -1058,5 +1058,8 @@
     <string name="location">ตำแหน่งที่ตั้ง</string>
     <string name="failed_to_save_image">บันทึกรูปภาพไม่สำเร็จ</string>
     <string name="is_empty">ว่างอยู่</string>
+    <string name="want_to_swap">ต้องการสลับ</string>
     <string name="loc_dect">ไม่พบตำแหน่ง กรุณารีเฟรช</string>
+    <string name="wise">ตาม</string>
+    <string name="kindly_replan">กรุณาวางแผนใหม่</string>
 </resources>

@@ -1060,5 +1060,8 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="location">Localização</string>
     <string name="failed_to_save_image">Falha ao salvar a imagem</string>
     <string name="is_empty">Está vazio</string>
+    <string name="want_to_swap">quer trocar</string>
     <string name="loc_dect">Localização não detectada, por favor atualize</string>
+    <string name="wise">por</string>
+    <string name="kindly_replan">por favor replanejar</string>
 </resources>

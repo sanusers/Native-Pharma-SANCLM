@@ -80,8 +80,8 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         holder.textView.setText(editModelClass.getName());
         holder.checkBox.setChecked(editModelClass.isChecked());
 
-        if (isDr && SharedPref.getSfType(context).equalsIgnoreCase("1")) {
-            holder.infoView.setVisibility(View.GONE);
+        if (isDr && SharedPref.getSfType(context).equalsIgnoreCase("1") && visitFrequencyNeed) {
+            holder.infoView.setVisibility(View.VISIBLE);
             holder.infoView.setOnClickListener(view -> {
                 String code = arrayList.get(position).getCode();
                 DoctorVisitModel doctorVisitModel = TourPlanActivity.doctorVisitMap.get(code);

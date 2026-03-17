@@ -85,6 +85,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
         gpsTrack = new GPSTrack(activity);
+        commonUtilsMethods = new CommonUtilsMethods(context);
 
         if (needCheckInOut.equalsIgnoreCase("0")) {
             dialogCheckIn = new Dialog(context);
@@ -117,7 +118,6 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
     @Override
     public void onBindViewHolder(@NonNull AdapterDCRCallSelection.ViewHolder holder, int position) {
-        commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(cusListArrayList.get(position).getName());
         if (cusListArrayList.get(position).getCategory().isEmpty())
             holder.tv_category.setText("");

@@ -1049,5 +1049,8 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="location">Ubicación</string>
     <string name="failed_to_save_image">Error al guardar la imagen</string>
     <string name="is_empty">Está vacío</string>
+    <string name="want_to_swap">quiere intercambiar</string>
     <string name="loc_dect">Ubicación no detectada, por favor actualice</string>
+    <string name="wise">por</string>
+    <string name="kindly_replan">por favor reprograme</string>
 </resources>

@@ -622,13 +622,13 @@ public class TourPlanActivity extends AppCompatActivity {
                                 } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                                     if (FW_meetup_mandatory.equals("0")) {
                                         if (drNeed.equals("0")) {
-                                            if ((modelClass1.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                            if ((modelClass1.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                                 isEmpty = true;
                                                 position = i;
                                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
                                                 break;
                                             }
-                                            if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                            if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                                 isEmpty = true;
                                                 position = i;
                                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -652,12 +652,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
                                             break;
-                                        } else if ((modelClass1.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                        } else if ((modelClass1.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                             isEmpty = true;
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
                                             break;
-                                        } else if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                        } else if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                             isEmpty = true;
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -875,12 +875,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
                                         break;
-                                    } else if ((oneBuildModelClass.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                    } else if ((oneBuildModelClass.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
                                         break;
-                                    } else if ((oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                    } else if ((oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -904,12 +904,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + " " + (i + 1));
                                     break;
-                                } else if ((oneBuildModelClass.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0)) {
+                                } else if ((oneBuildModelClass.getDoctors().size() < Integer.parseInt(minDrCount)) && (Integer.parseInt(minDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_select_at_least) + minDrCount + " " + SharedPref.getDrCap(TourPlanActivity.this));
                                     break;
-                                } else if ((oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) { //Selected Dr count should not be more than maxDrCount setup limit
+                                } else if ((oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) { //Selected Dr count should not be more than maxDrCount setup limit
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -2079,7 +2079,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public ArrayList<ModelClass> prepareModelClassForMonth(LocalDate localDate1) {
-        if (isSTPBasedTP) {
+        if (isSTPBasedTP && SharedPref.getStpType(TourPlanActivity.this).equalsIgnoreCase("0")) {
             checkAndSetSTPDataAvailable(localDate1);
         }
         ArrayList<ModelClass> modelClasses = new ArrayList<>();
@@ -2194,7 +2194,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public ArrayList<OneBuildModelClass> prepareModelClassForMonthOneBuild(LocalDate localDate2) {
-        if (isSTPBasedTP) {
+        if (isSTPBasedTP && SharedPref.getStpType(TourPlanActivity.this).equalsIgnoreCase("0")) {
             checkAndSetSTPDataAvailable(localDate2);
         }
         ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
@@ -4087,8 +4087,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         inputDataArrayOneBuild.setSyncStatus("0");
 
                                         for (OneBuildModelClass oneBuildModelClass : arrayList) {
-                                            if (oneBuildModelClass.getSyncStatus() != null
-                                                    && oneBuildModelClass.getSyncStatus().equals("1")) {
+                                            if (oneBuildModelClass.getSyncStatus() != null && oneBuildModelClass.getSyncStatus().equals("1")) {
                                                 oneBuildModelClass.setSyncStatus("0");
                                             }
                                         }
@@ -4385,8 +4384,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
     }
 
-    private void SaveLocalOnlineTableOneBuild(LocalDate localDate, JSONArray
-            listArray, ArrayList<OneBuildModelClass> dayWiseSaveTp) {
+    private void SaveLocalOnlineTableOneBuild(LocalDate localDate, JSONArray listArray, ArrayList<OneBuildModelClass> dayWiseSaveTp) {
         try { // check this method
             dayWiseSaveTp = new ArrayList<>();
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.ENGLISH);
@@ -4405,7 +4403,6 @@ public class TourPlanActivity extends AppCompatActivity {
                     holidayNameArray.add(holidayJSONArray.getJSONObject(i).getString("Holiday_Name"));
                 }
             }
-
 
             JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<OneBuildModelClass> oneBuildModelClassLocal = new ArrayList<>();

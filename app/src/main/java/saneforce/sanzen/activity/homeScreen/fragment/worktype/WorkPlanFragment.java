@@ -2294,6 +2294,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void createDeviationJSON() {
         try {
+            if (mWTCode1 == null || mWTCode1.isEmpty() || mWTCode1.equalsIgnoreCase("0")) {
+                CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_replan));
+                setUpWorkPlan();
+                return;
+            }
             if (DayPlanCount.equalsIgnoreCase("1")) {
                 mHQCode = mHQCode1;
                 mTowncode = mTowncode1;
@@ -3173,6 +3178,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void CreateJson() {
         try {
+            if (mWTCode1 == null || mWTCode1.isEmpty() || mWTCode1.equalsIgnoreCase("0")) {
+                CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_replan));
+                setUpWorkPlan();
+                return;
+            }
             if (DayPlanCount.equalsIgnoreCase("1")) {
                 if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                     String[] clusterData = getMultiHQClusters(mHQCode1).split("\\^\\^");

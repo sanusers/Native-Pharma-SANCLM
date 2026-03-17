@@ -3,11 +3,13 @@ package saneforce.sanzen.activity.tourPlan.overview;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -333,7 +335,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 headerModel.setTitle(flag + " (" + count + " days)");
             }
             if (dataList.size() == 1) {
-                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + flag + " " + getString(R.string.planned), "", "");
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + flag + " " + getString(R.string.planned));
                 dataList.add(contentModel);
             }
         } catch (Exception e) {
@@ -379,7 +381,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 headerModel.setTitle(title + " (" + count + " days)");
             }
             if (dataList.size() == 1) {
-                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + title + " " + getString(R.string.planned), "", "");
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + title + " " + getString(R.string.planned));
                 dataList.add(contentModel);
             }
         } catch (Exception e) {
@@ -424,11 +426,11 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 }
             }
             if (plannedDataList.isEmpty()) {
-                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.planned), "", "");
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.planned));
                 plannedDataList.add(contentModel);
             }
             if (unplannedDataList.isEmpty()) {
-                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.unplanned), "", "");
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + clusterCap + " " + getString(R.string.unplanned));
                 unplannedDataList.add(contentModel);
             }
             plannedHeaderModel.setTitle(getString(R.string.planned) + " (" + plannedCount + ")");
@@ -477,7 +479,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 headerModel.setTitle(getString(R.string.planned) + " (" + count + " days)");
             }
             if (dataList.size() == 1) {
-                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + getString(R.string.joint_work) + " " + getString(R.string.planned), "", "");
+                ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + getString(R.string.joint_work) + " " + getString(R.string.planned));
                 dataList.add(contentModel);
             }
         } catch (Exception e) {
@@ -518,11 +520,15 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 break;
             case DOCTOR:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
-                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.GONE);
+                break;
+            case DOCTOR_CATEGORY:
+                binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.GONE);
                 break;
             case CHEMIST:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
-                binding.tpDataNavigation.goToTp.setVisibility(View.VISIBLE);
+                binding.tpDataNavigation.goToTp.setVisibility(View.GONE);
                 break;
             case CUSTOMER_CLUSTER:
                 binding.tpDataNavigation.rlNote.setVisibility(View.GONE);
@@ -648,15 +654,9 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
             try {
                 if (clusterPlanned.containsKey(clusterWiseModel.getCode())) {
                     List<String> dateList = clusterPlanned.get(clusterWiseModel.getCode());
-                    StringBuilder datesBuilder = new StringBuilder();
-                    if (dateList != null && !dateList.isEmpty()) {
-                        for (String date : dateList) {
-                            String formattedDate = TimeUtils.getOrdinal(Integer.parseInt(date));
-                            datesBuilder.append(formattedDate);
-                            datesBuilder.append(", ");
-                        }
-                        String dates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
-                        binding.tpDataNavigation.tvSubTitle.setText(CommonUtilsMethods.applyOrdinalSuperscript(clusterWiseModel.getName() + " - " + dates));
+                    SpannableString dates = getDatesString(dateList, clusterWiseModel.getName());
+                    if (dates != null && !dates.toString().isEmpty()) {
+                        binding.tpDataNavigation.tvSubTitle.setText(dates);
                     }
                 }
             } catch (Exception e) {
@@ -675,6 +675,11 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                             DoctorModel doctorModel = doctorMaster.get(drCode);
                             if (doctorModel != null) {
                                 ContentModel contentModel = new ContentModel(doctorModel.getName(), doctorModel.getSpecialityName(), "");
+                                List<String> drPlannedDates = doctorPlanned.get(drCode);
+                                SpannableString dates = getDatesString(drPlannedDates, "");
+                                if (dates != null && !dates.toString().isEmpty()) {
+                                    contentModel.setSpannableString(dates);
+                                }
                                 if (clusterWiseModel.getPlanned().containsKey(drCode)) {
                                     plannedCount++;
                                     plannedDataList.add(contentModel);
@@ -686,11 +691,11 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                         }
                     }
                     if (plannedDataList.isEmpty()) {
-                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned), "", "");
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned));
                         plannedDataList.add(contentModel);
                     }
                     if (unplannedDataList.isEmpty()) {
-                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned));
                         unplannedDataList.add(contentModel);
                     }
                     plannedHeaderModel.setTitle(getString(R.string.planned) + " " + drCap + " (" + plannedCount + ")");
@@ -702,7 +707,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                openDrawer(drCap, NavType.CUSTOMER_CLUSTER, dataList);
+                openDrawer(drCap, NavType.DOCTOR, dataList);
             } else {
                 try {
                     HeaderModel plannedHeaderModel = new HeaderModel(getString(R.string.planned));
@@ -715,6 +720,11 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                             DCRModel dcrModel = chemistMaster.get(chmCode);
                             if (dcrModel != null) {
                                 ContentModel contentModel = new ContentModel(dcrModel.getName(), "", "");
+                                List<String> chmPlannedDates = chemistPlanned.get(chmCode);
+                                SpannableString dates = getDatesString(chmPlannedDates, "");
+                                if (dates != null && !dates.toString().isEmpty()) {
+                                    contentModel.setSpannableString(dates);
+                                }
                                 if (clusterWiseModel.getPlanned().containsKey(chmCode)) {
                                     plannedCount++;
                                     plannedDataList.add(contentModel);
@@ -726,11 +736,11 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                         }
                     }
                     if (plannedDataList.isEmpty()) {
-                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.planned), "", "");
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.planned));
                         plannedDataList.add(contentModel);
                     }
                     if (unplannedDataList.isEmpty()) {
-                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.unplanned), "", "");
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + chmCap + " " + getString(R.string.unplanned));
                         unplannedDataList.add(contentModel);
                     }
                     plannedHeaderModel.setTitle(getString(R.string.planned) + " " + chmCap + " (" + plannedCount + ")");
@@ -742,11 +752,30 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                openDrawer(chmCap, NavType.CUSTOMER_CLUSTER, dataList);
+                openDrawer(chmCap, NavType.CHEMIST, dataList);
             }
             binding.tpDataNavigation.tvSubTitle.setVisibility(View.VISIBLE);
         }
     };
+
+    @Nullable
+    private SpannableString getDatesString(List<String> dateList, String title) {
+        StringBuilder datesBuilder = new StringBuilder();
+        if (dateList != null && !dateList.isEmpty()) {
+            for (String date : dateList) {
+                String formattedDate = TimeUtils.getOrdinal(Integer.parseInt(date));
+                datesBuilder.append(formattedDate);
+                datesBuilder.append(", ");
+            }
+            String dates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
+            if (title.isEmpty()) {
+                return CommonUtilsMethods.applyOrdinalSuperscript(dates);
+            } else {
+                return CommonUtilsMethods.applyOrdinalSuperscript(title + " - " + dates);
+            }
+        }
+        return null;
+    }
 
     private final CategoryClickListener categoryClickListener = new CategoryClickListener() {
         @Override
@@ -765,47 +794,54 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                         DoctorModel doctorModel = doctorMaster.get(drCode);
                         if (doctorModel != null) {
                             ContentModel contentModel = new ContentModel(doctorModel.getName(), doctorModel.getClusterName() + " | " + doctorModel.getSpecialityName(), "");
+                            List<String> drPlannedDates = doctorPlanned.get(drCode);
+                            SpannableString dates = getDatesString(drPlannedDates, "");
+                            if (dates != null && !dates.toString().isEmpty()) {
+                                contentModel.setSpannableString(dates);
+                            }
                             if (categoryWiseModel.getPlannedDoctors().containsKey(drCode)) {
                                 plannedCount++;
-                                if (categoryClickType != CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
-                                    VisitModel visitModel = categoryWiseModel.getPlannedVisit().get(drCode);
-                                    if (visitModel != null) {
-                                        Set<String> plannedDates = visitModel.getDates();
-                                        StringBuilder datesBuilder = new StringBuilder();
-                                        for (String date : plannedDates) {
-                                            datesBuilder.append(TimeUtils.getOrdinal(Integer.parseInt(date)));
-                                            datesBuilder.append(", ");
-                                        }
-                                        String dates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
-                                        contentModel.setSideContent(dates);
-                                        if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
-                                            int plannedDatesSize = (datesBuilder.toString().trim().split(", ").length);
-                                            if (categoryWiseModel.getFrequency() > plannedDatesSize) {
-                                                contentModel.setSideContent(plannedDatesSize + "/" + categoryWiseModel.getFrequency());
-                                                unplannedVisitsDataList.add(contentModel);
-                                            }
-                                        }
-                                    }
-                                }
+//                                if (categoryClickType != CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
+//                                    VisitModel visitModel = categoryWiseModel.getPlannedVisit().get(drCode);
+//                                    if (visitModel != null) {
+//                                        List<String> plannedDates = List.copyOf(visitModel.getDates());
+//                                        StringBuilder datesBuilder = new StringBuilder();
+//                                        for (String date : plannedDates) {
+//                                            datesBuilder.append(TimeUtils.getOrdinal(Integer.parseInt(date)));
+//                                            datesBuilder.append(", ");
+//                                        }
+//                                        String strDates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
+//                                        contentModel.setSideContent(strDates);
+//                                        if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
+////                                            int plannedDatesSize = (datesBuilder.toString().trim().split(", ").length);
+//                                            int plannedDatesSize = 0;
+//                                            if (drPlannedDates != null) plannedDatesSize = drPlannedDates.size();
+//                                            if (categoryWiseModel.getFrequency() > plannedDatesSize) {
+//                                                contentModel.setSideContent(plannedDatesSize + "/" + categoryWiseModel.getFrequency());
+//                                                unplannedVisitsDataList.add(contentModel);
+//                                            }
+//                                        }
+//                                    }
+//                                }
                                 plannedDataList.add(contentModel);
                             } else {
                                 unplannedCount++;
                                 unplannedDataList.add(contentModel);
-                                if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
+//                                if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
                                     contentModel.setSideContent("0/" + categoryWiseModel.getFrequency());
                                     unplannedVisitsDataList.add(contentModel);
-                                }
+//                                }
                             }
                         }
                     }
                 }
                 if (categoryClickType == CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
                     if (plannedDataList.isEmpty()) {
-                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned), "", "");
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned));
                         plannedDataList.add(contentModel);
                     }
                     if (unplannedDataList.isEmpty()) {
-                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned), "", "");
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned));
                         unplannedDataList.add(contentModel);
                     }
                     plannedHeaderModel.setTitle(getString(R.string.planned) + " " + drCap + " (" + plannedCount + ")");
@@ -817,7 +853,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 }
                 if (categoryClickType == CategoryDataAdapter.CategoryClickType.PLANNED_VISITS) {
                     if (plannedDataList.isEmpty()) {
-                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned_visits), "", "");
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.planned_visits));
                         plannedDataList.add(contentModel);
                     }
                     plannedHeaderModel.setTitle(getString(R.string.planned_visits) + " (" + plannedCount + ")");
@@ -826,7 +862,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                 }
                 if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
                     if (unplannedVisitsDataList.isEmpty()) {
-                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits), "", "");
+                        ContentModel contentModel = new ContentModel(getString(R.string.no) + " " + drCap + " " + getString(R.string.unplanned_visits));
                         unplannedVisitsDataList.add(contentModel);
                     }
                     unplannedHeaderModel.setTitle(getString(R.string.unplanned_visits) + " (" + unplannedCount + ")");
@@ -836,7 +872,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            openDrawer(drCap, NavType.CUSTOMER_CLUSTER, dataList);
+            openDrawer(drCap, NavType.DOCTOR_CATEGORY, dataList);
             binding.tpDataNavigation.tvSubTitle.setVisibility(View.VISIBLE);
         }
     };

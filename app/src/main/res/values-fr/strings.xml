@@ -1046,6 +1046,9 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
 
     <string name="address_format">Adresse : %1$s</string>
     <string name="distance_format">Distance : %1$.2f mètres</string>
+    <string name="want_to_swap">veut échanger</string>
     <string name="loc_dect">Emplacement non détecté, veuillez actualiser</string>
+    <string name="wise">par</string>
+    <string name="kindly_replan">veuillez replanifier</string>
 
 </resources>
