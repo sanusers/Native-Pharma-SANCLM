@@ -2361,15 +2361,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
 //        mMap.animateCamera(CameraUpdateFactory.zoomTo( 16.2f));
         if (from_tagging.equalsIgnoreCase("tagging")) {
+            mapsBinding.progressBar.setVisibility(View.VISIBLE);
+            mapsBinding.btnTag.setVisibility(View.GONE);
             Log.v("hhh", "-000--");
-//            mapsBinding.btnTag.setEnabled(false);
-            if(!mapsBinding.tvTaggedAddress.getText().equals(MapsActivity.this.getString(R.string.no_address_found)) || !mapsBinding.tvTaggedAddress.getText().equals(MapsActivity.this.getString(R.string.no_address_found2))){
-                mapsBinding.progressBar.setVisibility(View.GONE);
-                mapsBinding.btnTag.setEnabled(true);
-            }else{
-                mapsBinding.progressBar.setVisibility(View.VISIBLE);
-                mapsBinding.btnTag.setEnabled(false);
-            }
             mapsBinding.btnTag.setText(R.string.tag);
             mapsBinding.constraintTaggedView.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
@@ -2388,14 +2382,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
             mMap.getUiSettings().setCompassEnabled(false);
             mMap.getUiSettings().setRotateGesturesEnabled(false);
-
+            mMap.setOnMapLoadedCallback(() -> {
+                mapsBinding.progressBar.setVisibility(View.GONE);
+                mapsBinding.btnTag.setVisibility(View.VISIBLE);
+                String address = mapsBinding.tvTaggedAddress.getText().toString();
+                boolean isValidAddress = !address.equals(getString(R.string.no_address_found)) && !address.equals(getString(R.string.no_address_found2));
+                mapsBinding.btnTag.setEnabled(isValidAddress);
+            });
             mMap.setOnCameraMoveListener(() -> {
                 lat = mMap.getCameraPosition().target.latitude;
                 lng = mMap.getCameraPosition().target.longitude;
                 mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
-                if(CurrentLoc()){
-                    mapsBinding.btnTag.setEnabled(true);
-                }
             });
         } else if (from_tagging.equalsIgnoreCase("view_tagged")) {
             mMap.setOnMarkerClickListener(this);
@@ -2461,7 +2458,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setCompassEnabled(false);
             mMap.getUiSettings().setRotateGesturesEnabled(true);
         }
-        mapsBinding.progressBar.setVisibility(View.GONE);
     }
 
 

@@ -40,6 +40,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
@@ -392,19 +394,26 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void uiInitialisation() {
+    public void uiInitialisation()  {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
         String baseUrl = SharedPref.getBaseUrl(LoginActivity.this);
-        if(baseUrl.contains("saneforce.com")){
-            String logoUrl = SharedPref.getS3LogoUrl(LoginActivity.this);
-            String[] splitLogoUrl = logoUrl.split("/");
-            getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
-        }else {
-            String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
-            String[] splitLogoUrl = logoUrl.split("/");
-            getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
+        try {
+            String host = new URI(baseUrl).getHost();
+            String[] parts1 = host.split("\\.");
+            String rootDomain1 = parts1[parts1.length - 2] + "." + parts1[parts1.length - 1];
+            if (rootDomain1.equalsIgnoreCase("saneforce.com")) {
+                String logoUrl = SharedPref.getS3LogoUrl(LoginActivity.this);
+                String[] splitLogoUrl = logoUrl.split("/");
+                getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
+            } else {
+                String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
+                String[] splitLogoUrl = logoUrl.split("/");
+                getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {

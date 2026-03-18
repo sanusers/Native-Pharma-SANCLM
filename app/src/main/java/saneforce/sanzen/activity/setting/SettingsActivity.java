@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -423,7 +424,9 @@ public class SettingsActivity extends AppCompatActivity {
         binding.configurationPB.setVisibility(View.VISIBLE);
 
         try {
-            if (enteredUrl.contains("saneforce.com")) {
+            String[] parts = enteredUrl.split("\\.");
+            String rootDomain = parts[parts.length - 2] + "." + parts[parts.length - 1];
+            if (rootDomain.equalsIgnoreCase("saneforce.com")) {
 //                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), "https://mapi.san.one");
 //                Call<JsonElement> call = apiInterface.getOneBuildConfig("/api/Configuration/Detail-Config");
                 JsonObject jsonObject = new JsonObject();
@@ -467,7 +470,10 @@ public class SettingsActivity extends AppCompatActivity {
                                         optionFiles = Constants.OPTION_FILES;
 
                                         String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
-                                        if (binding.etWebUrl.getText().toString().contains("saneforce.com")) {
+                                        String host = new URI(web_url_getText).getHost();
+                                        String[] parts1 = host.split("\\.");
+                                        String rootDomain1 = parts1[parts1.length - 2] + "." + parts1[parts1.length - 1];
+                                        if (rootDomain1.equalsIgnoreCase("saneforce.com")) {
                                             web_url_getText = web_url_getText.replace("http", "https");
                                         }
                                         String urlData = web_url_getText + detPathUrl;
