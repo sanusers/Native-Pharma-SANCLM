@@ -1049,6 +1049,12 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="want_to_swap">veut échanger</string>
     <string name="loc_dect">Emplacement non détecté, veuillez actualiser</string>
     <string name="wise">par</string>
+    <string name="for_session">pour la session</string>
     <string name="kindly_replan">veuillez replanifier</string>
+    <string name="select_swap_to">Choisir l\'échange</string>
+    <string name="swapping">Échange en cours...</string>
+    <string name="and">et</string>
+    <string name="syncing">Synchronisation...</string>
+    <string name="deleting">Suppression...</string>
 
 </resources>

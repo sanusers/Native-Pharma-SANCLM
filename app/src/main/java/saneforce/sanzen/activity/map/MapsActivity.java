@@ -761,11 +761,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         }
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(120000);
-        locationRequest.setFastestInterval(120000);
+        try {
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
+                if (location != null) {
+                    lat = location.getLatitude();
+                    lng = location.getLongitude();
+                    gpsTrack.setLocation(location);
+                    drawCircle(mMap, lat, lng);
+                }
+            });
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+        locationRequest = new LocationRequest.Builder(LocationRequest.PRIORITY_HIGH_ACCURACY, 120000).setMinUpdateIntervalMillis(120000).build();
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -773,39 +781,90 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     lat = location.getLatitude();
                     lng = location.getLongitude();
                     gpsTrack.setLocation(location);
-                    LatLng latLng = new LatLng(lat, lng);
-                    Log.d("TAG", "addCircle: " + lat + " , " + lng);
-                   /* if (circle != null) {
-                        circle.remove();
-                    }*/
-                    int transparent = 0x12FD0B0B;
-                    CircleOptions circleOptions = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
-                    circle = mMap.addCircle(circleOptions);
-                    if (mapsBinding.progressBar.getVisibility() == View.VISIBLE) {
-                        mapsBinding.progressBar.setVisibility(View.GONE);
-                    }
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
+                    drawCircle(mMap, lat, lng);
                 }
             }
         };
-
         try {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
         } catch (SecurityException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-//        gpsTrack = new GPSTrack(this);
-//        lat = gpsTrack.getLatitude();
-//        lng = gpsTrack.getLongitude();
-//        LatLng latLng = new LatLng(lat, lng);
-//        Log.d("TAG", "addCircle: " + lat + " , " + lng);
-//        int transparent = 0x12FD0B0B;
-//        CircleOptions circle = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
-//        mMap.addCircle(circle);
-//        mapsBinding.progressBar.setVisibility(View.GONE);
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
     }
 
+    private void drawCircle(GoogleMap mMap, double lat, double lng) {
+        LatLng latLng = new LatLng(lat, lng);
+        int transparent = 0x12FD0B0B;
+        CircleOptions circleOptions = new CircleOptions()
+                .center(latLng)
+                .radius(limitKm * 1000.0)
+                .strokeWidth(4)
+                .strokeColor(Color.RED)
+                .fillColor(transparent)
+                .clickable(true);
+        Circle oldCircle = circle;
+        circle = mMap.addCircle(circleOptions);
+        if (oldCircle != null) {
+            oldCircle.remove();
+        }
+        if (mapsBinding.progressBar.getVisibility() == View.VISIBLE) {
+            mapsBinding.progressBar.setVisibility(View.GONE);
+        }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
+    }
+
+//    private void addCircle(GoogleMap mMap) {
+//        if (fusedLocationProviderClient != null && locationCallback != null) {
+//            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+//        }
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+//
+//        locationRequest = LocationRequest.create();
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        locationRequest.setInterval(120000);
+//        locationRequest.setFastestInterval(120000);
+//        locationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(@NonNull LocationResult locationResult) {
+//                for (Location location : locationResult.getLocations()) {
+//                    lat = location.getLatitude();
+//                    lng = location.getLongitude();
+//                    gpsTrack.setLocation(location);
+//                    LatLng latLng = new LatLng(lat, lng);
+//                    Log.d("TAG", "addCircle: " + lat + " , " + lng);
+//                    if (circle != null) {
+//                        circle.remove();
+//                    }
+//                    int transparent = 0x12FD0B0B;
+//                    CircleOptions circleOptions = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
+//                    circle = mMap.addCircle(circleOptions);
+//                    if (mapsBinding.progressBar.getVisibility() == View.VISIBLE) {
+//                        mapsBinding.progressBar.setVisibility(View.GONE);
+//                    }
+//                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
+//                }
+//            }
+//        };
+//
+//        try {
+//            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
+//        } catch (SecurityException e) {
+//            e.printStackTrace();
+//        }
+
+    /// /        gpsTrack = new GPSTrack(this);
+    /// /        lat = gpsTrack.getLatitude();
+    /// /        lng = gpsTrack.getLongitude();
+    /// /        LatLng latLng = new LatLng(lat, lng);
+    /// /        Log.d("TAG", "addCircle: " + lat + " , " + lng);
+    /// /        int transparent = 0x12FD0B0B;
+    /// /        CircleOptions circle = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
+    /// /        mMap.addCircle(circle);
+    /// /        mapsBinding.progressBar.setVisibility(View.GONE);
+    /// /        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
+//    }
     public boolean CurrentLoc() {
         boolean val = false;
         gpsTrack = new GPSTrack(MapsActivity.this);
@@ -844,19 +903,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         ImageView refresh = dialogTagCust.findViewById(R.id.img_refresh_map);
         refresh.setOnClickListener(view -> {
-                if (CurrentLoc()) {
-                    lat = gpsTrack.getLatitude();
-                    lng = gpsTrack.getLongitude();
-                    LatLng latLng = new LatLng(lat, lng);
-                    Log.d("TAG", "refresh Map: " + lat + " , " + lng);
-                    if (from_tagging.equalsIgnoreCase("tagging")) {
-                        tv_lat.setText(String.format("Latitude : %s", lat));
-                        tv_lng.setText(String.format("Latitude : %s", lng));
-                        tv_cust_name.setText(cust_name);
-                        tv_address.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
-                    }
-
+            if (CurrentLoc()) {
+                lat = gpsTrack.getLatitude();
+                lng = gpsTrack.getLongitude();
+                LatLng latLng = new LatLng(lat, lng);
+                Log.d("TAG", "refresh Map: " + lat + " , " + lng);
+                if (from_tagging.equalsIgnoreCase("tagging")) {
+                    tv_lat.setText(String.format("Latitude : %s", lat));
+                    tv_lng.setText(String.format("Latitude : %s", lng));
+                    tv_cust_name.setText(cust_name);
+                    tv_address.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
                 }
+
+            }
         });
 
         JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(this);
@@ -924,6 +983,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         jsonObject.put("image_name", imageName);
                         jsonObject.put("sfcode", SfCode);
                         jsonObject.put("addr", tv_address.getText().toString());
+                        jsonObject.put("addr", "6PJR+2WH - Al Mu'tarid -Oud Al Hassah - Abu Dhabi-United Arab States");
                         if (SfType.equalsIgnoreCase("1")) {
                             jsonObject.put("tagged_cust_HQ", SfCode);
                         } else {
@@ -1501,7 +1561,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
             if (!custJsonObjects.isEmpty()) {
-                String tagCount = custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt");
+                String tagCount = custJsonObjects.get(custJsonObjects.size() - 1).optString("GEOTagedCnt");
                 int taggedCount = 0, taggedSize = custJsonObjects.size();
                 if (!tagCount.isEmpty()) {
                     taggedCount = Integer.parseInt(tagCount);
@@ -1520,7 +1580,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 switch (selectedTab) {
                     case "D":
 //                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-                            jsonObject.put("GEOTagedCnt", "0");
+                        jsonObject.put("GEOTagedCnt", "0");
 //                        }else{
 //                            for(int i = 0; i < taggedSize; i++){
 //                                Log.d(TAG, "updateMasterData: "+ (++taggedCount));
@@ -1532,9 +1592,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         jsonObject.put("long", longitude);
                         jsonObject.put("addrs", address);
                         jsonObject.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
-                        jsonObject.put("Town_Code",town_code);
-                        jsonObject.put("Town_Name",town_name);
-                        jsonObject.put("StatFlag","0");
+                        jsonObject.put("Town_Code", town_code);
+                        jsonObject.put("Town_Name", town_name);
+                        jsonObject.put("StatFlag", "0");
                         break;
                     case "C":
                         jsonObject.put("GEOTagedCnt", custJsonObjects.get(0).optString("GEOTagedCnt"));
@@ -1542,9 +1602,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         jsonObject.put("long", longitude);
                         jsonObject.put("addr", address);
                         jsonObject.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
-                        jsonObject.put("Town_Code",town_code);
-                        jsonObject.put("Town_Name",town_name);
-                        jsonObject.put("StatFlag","0");
+                        jsonObject.put("Town_Code", town_code);
+                        jsonObject.put("Town_Name", town_name);
+                        jsonObject.put("StatFlag", "0");
                         break;
                     case "S":
                         jsonObject.put("GEOTagedCnt", "1");
@@ -1552,9 +1612,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         jsonObject.put("long", longitude);
                         jsonObject.put("addrs", address);
                         jsonObject.put("Geototal", "1");
-                        jsonObject.put("Town_Code",town_code);
-                        jsonObject.put("Town_Name",town_name);
-                        jsonObject.put("StatFlag","0");
+                        jsonObject.put("Town_Code", town_code);
+                        jsonObject.put("Town_Name", town_name);
+                        jsonObject.put("StatFlag", "0");
                         break;
                     case "U":
                         jsonObject.put("GEOTagedCnt", "1");
@@ -1562,9 +1622,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         jsonObject.put("long", longitude);
                         jsonObject.put("addr", address);
                         jsonObject.put("Geototal", "1");
-                        jsonObject.put("Town_Code",town_code);
-                        jsonObject.put("Town_Name",town_name);
-                        jsonObject.put("StatFlag","0");
+                        jsonObject.put("Town_Code", town_code);
+                        jsonObject.put("Town_Name", town_name);
+                        jsonObject.put("StatFlag", "0");
                         break;
                     case "H":
                         jsonObject.put("Lat", latitude);
@@ -1614,7 +1674,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 switch (selectedTab) {
                     case "D":
 //                        if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-                            createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt"));
+                        createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size() - 1).optString("GEOTagedCnt"));
 //                        }else{
 //                            for(int i = 0; i < taggedSize; i++){
 //                                Log.d(TAG, "updateMasterData: "+taggedCount++);
@@ -1624,40 +1684,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addrs", address);
-                        createGeoJson.put("Town_Code",town_code);
-                        createGeoJson.put("Town_Name",town_name);
-                        createGeoJson.put("StatFlag","0");
-                        createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
+                        createGeoJson.put("Town_Code", town_code);
+                        createGeoJson.put("Town_Name", town_name);
+                        createGeoJson.put("StatFlag", "0");
+                        createGeoJson.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
                         break;
                     case "U":
-                        createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt"));
+                        createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size() - 1).optString("GEOTagedCnt"));
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addr", address);
-                        createGeoJson.put("Town_Code",town_code);
-                        createGeoJson.put("Town_Name",town_name);
-                        createGeoJson.put("StatFlag","0");
-                        createGeoJson.put("Geototal","1");
+                        createGeoJson.put("Town_Code", town_code);
+                        createGeoJson.put("Town_Name", town_name);
+                        createGeoJson.put("StatFlag", "0");
+                        createGeoJson.put("Geototal", "1");
                         break;
                     case "C":
-                                                createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt"));
+                        createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size() - 1).optString("GEOTagedCnt"));
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addr", address);
-                        createGeoJson.put("Town_Code",town_code);
-                        createGeoJson.put("Town_Name",town_name);
-                        createGeoJson.put("StatFlag","0");
-                        createGeoJson.put("Geototal",custJsonObjects.get(0).optString("Geototal"));
+                        createGeoJson.put("Town_Code", town_code);
+                        createGeoJson.put("Town_Name", town_name);
+                        createGeoJson.put("StatFlag", "0");
+                        createGeoJson.put("Geototal", custJsonObjects.get(0).optString("Geototal"));
                         break;
                     case "S":
-                                               createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size()-1).optString("GEOTagedCnt"));
+                        createGeoJson.put("GEOTagedCnt", custJsonObjects.get(custJsonObjects.size() - 1).optString("GEOTagedCnt"));
                         createGeoJson.put("lat", latitude);
                         createGeoJson.put("long", longitude);
                         createGeoJson.put("addrs", address);
-                        createGeoJson.put("Town_Code",town_code);
-                        createGeoJson.put("Town_Name",town_name);
-                        createGeoJson.put("StatFlag","0");
-                        createGeoJson.put("Geototal","1");
+                        createGeoJson.put("Town_Code", town_code);
+                        createGeoJson.put("Town_Name", town_name);
+                        createGeoJson.put("StatFlag", "0");
+                        createGeoJson.put("Geototal", "1");
                         break;
                     case "H":
                     case "CIP":
@@ -1697,8 +1757,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         for (int i = 0; i < existingGeoArrayDr.length(); i++) {
                             JSONObject obj = existingGeoArrayDr.optJSONObject(i);
                             if (obj != null) {
-                                if(obj.optString("Code").equalsIgnoreCase(createGeoJson.optString("Code"))){
-                                    obj.put("GEOTagedCnt",createGeoJson.optString("GEOTagedCnt"));
+                                if (obj.optString("Code").equalsIgnoreCase(createGeoJson.optString("Code"))) {
+                                    obj.put("GEOTagedCnt", createGeoJson.optString("GEOTagedCnt"));
                                 }
                                 updatedGeoArrayDr.put(obj);
                             }

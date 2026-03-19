@@ -1052,5 +1052,11 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="want_to_swap">quiere intercambiar</string>
     <string name="loc_dect">Ubicación no detectada, por favor actualice</string>
     <string name="wise">por</string>
+    <string name="for_session">para la sesión</string>
     <string name="kindly_replan">por favor reprograme</string>
+    <string name="select_swap_to">Seleccionar cambio a</string>
+    <string name="swapping">Intercambiando...</string>
+    <string name="and">y</string>
+    <string name="syncing">Sincronizando...</string>
+    <string name="deleting">Eliminando...</string>
 </resources>

@@ -1061,5 +1061,11 @@
     <string name="want_to_swap">ต้องการสลับ</string>
     <string name="loc_dect">ไม่พบตำแหน่ง กรุณารีเฟรช</string>
     <string name="wise">ตาม</string>
+    <string name="for_session">สำหรับรอบ</string>
     <string name="kindly_replan">กรุณาวางแผนใหม่</string>
+    <string name="select_swap_to">เลือกที่จะสลับเป็น</string>
+    <string name="swapping">กำลังสลับ...</string>
+    <string name="and">และ</string>
+    <string name="syncing">กำลังซิงค์...</string>
+    <string name="deleting">กำลังลบ...</string>
 </resources>

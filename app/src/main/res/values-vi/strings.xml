@@ -1062,5 +1062,11 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="want_to_swap">muốn hoán đổi</string>
     <string name="loc_dect">Không phát hiện vị trí, vui lòng làm mới</string>
     <string name="wise">theo</string>
+    <string name="for_session">cho phiên</string>
     <string name="kindly_replan">vui lòng lập kế hoạch lại</string>
+    <string name="select_swap_to">Chọn mục thay thế</string>
+    <string name="swapping">Đang thay đổi...</string>
+    <string name="and">và</string>
+    <string name="syncing">Đang đồng bộ...</string>
+    <string name="deleting">Đang xóa...</string>
 </resources>

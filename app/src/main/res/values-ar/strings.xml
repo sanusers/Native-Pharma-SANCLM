@@ -1053,5 +1053,11 @@
     <string name="want_to_swap">يريد التبديل</string>
     <string name="loc_dect">لم يتم اكتشاف الموقع، يرجى التحديث</string>
     <string name="wise">-وايز</string>
+    <string name="for_session">للجلسة</string>
     <string name="kindly_replan">يرجى إعادة التخطيط</string>
+    <string name="select_swap_to">اختر التبديل إلى</string>
+    <string name="swapping">جارٍ التبديل...</string>
+    <string name="and">و</string>
+    <string name="syncing">جارٍ المزامنة...</string>
+    <string name="deleting">جارٍ الحذف...</string>
 </resources>

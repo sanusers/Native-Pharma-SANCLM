@@ -801,7 +801,7 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
                             }
                             if (categoryWiseModel.getPlannedDoctors().containsKey(drCode)) {
                                 plannedCount++;
-//                                if (categoryClickType != CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
+                                if (categoryClickType != CategoryDataAdapter.CategoryClickType.PLANNED_DOCTORS) {
 //                                    VisitModel visitModel = categoryWiseModel.getPlannedVisit().get(drCode);
 //                                    if (visitModel != null) {
 //                                        List<String> plannedDates = List.copyOf(visitModel.getDates());
@@ -812,17 +812,17 @@ public class TourPlanOverviewActivity extends AppCompatActivity {
 //                                        }
 //                                        String strDates = CommonUtilsMethods.removeLastComma(datesBuilder.toString().trim()) + getShortMonth();
 //                                        contentModel.setSideContent(strDates);
-//                                        if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
-////                                            int plannedDatesSize = (datesBuilder.toString().trim().split(", ").length);
-//                                            int plannedDatesSize = 0;
-//                                            if (drPlannedDates != null) plannedDatesSize = drPlannedDates.size();
-//                                            if (categoryWiseModel.getFrequency() > plannedDatesSize) {
+                                        if (categoryClickType == CategoryDataAdapter.CategoryClickType.UNPLANNED_VISITS) {
+//                                            int plannedDatesSize = (datesBuilder.toString().trim().split(", ").length);
+                                            int plannedDatesSize = 0;
+                                            if (drPlannedDates != null) plannedDatesSize = drPlannedDates.size();
+                                            if (categoryWiseModel.getFrequency() > plannedDatesSize) {
 //                                                contentModel.setSideContent(plannedDatesSize + "/" + categoryWiseModel.getFrequency());
-//                                                unplannedVisitsDataList.add(contentModel);
-//                                            }
-//                                        }
+                                                unplannedVisitsDataList.add(contentModel);
+                                            }
+                                        }
 //                                    }
-//                                }
+                                }
                                 plannedDataList.add(contentModel);
                             } else {
                                 unplannedCount++;

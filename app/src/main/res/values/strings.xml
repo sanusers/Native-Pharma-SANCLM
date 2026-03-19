@@ -1068,4 +1068,9 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="loc_dect"> Location Not Detected, Kindly Refresh </string>
     <string name="for_session"> for Session </string>
     <string name="kindly_replan">Kindly replan</string>
+    <string name="select_swap_to">Select Swap-To</string>
+    <string name="swapping">Swapping...</string>
+    <string name="and">and</string>
+    <string name="syncing">Syncing...</string>
+    <string name="deleting">Deleting...</string>
 </resources>

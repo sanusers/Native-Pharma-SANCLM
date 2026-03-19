@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -50,8 +52,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition;
@@ -101,6 +106,8 @@ public class ChemistFragment extends Fragment {
     private HQChangeListener hqChangeListener;
     JSONObject jsonObject;
     private String status;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public ChemistFragment() {
     }
@@ -137,6 +144,11 @@ public class ChemistFragment extends Fragment {
             status = "0";
         }
         getRequiredData();
+
+        rv_list.setHasFixedSize(true);
+        rv_list.setItemViewCacheSize(20);
+        rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
+        rv_list.setItemAnimator(null);
 
         SetupAdapter();
 
@@ -204,67 +216,68 @@ public class ChemistFragment extends Fragment {
     public void SetupAdapter() {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         cusListArrayList.clear();
-        if (SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")&& HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-            try {
-                JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + TodayPlanSfCode).getMasterSyncDataJsonArray();
-                JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + TodayPlanSfCode).getMasterSyncDataJsonArray();
-                HashMap<String, JSONObject> docObj_che = new HashMap<>();
-                for (int i = 0; i < masterJsonArrayChe.length(); i++) {
-                    JSONObject jsonObject = masterJsonArrayChe.getJSONObject(i);
-                    String code = jsonObject.optString("Code");
-                    if (!code.isEmpty()) {
-                        docObj_che.put(code, jsonObject);
-                    } else {
-                        Log.d("Merge", "Skipping DOCTOR_MAS object with empty 'Code': " + jsonObject.toString());
+        executor.execute(() -> {
+            if (SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                try {
+                    JSONArray masterJsonArrayChe = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + TodayPlanSfCode).getMasterSyncDataJsonArray();
+                    JSONArray masterJsonArrayGeo = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + TodayPlanSfCode).getMasterSyncDataJsonArray();
+                    HashMap<String, JSONObject> docObj_che = new HashMap<>();
+                    for (int i = 0; i < masterJsonArrayChe.length(); i++) {
+                        JSONObject jsonObject = masterJsonArrayChe.getJSONObject(i);
+                        String code = jsonObject.optString("Code");
+                        if (!code.isEmpty()) {
+                            docObj_che.put(code, jsonObject);
+                        } else {
+                            Log.d("Merge", "Skipping DOCTOR_MAS object with empty 'Code': " + jsonObject.toString());
+                        }
                     }
-                }
-                for (int i = 0; i < masterJsonArrayGeo.length(); i++) {
-                    JSONObject jsonObject_geo = masterJsonArrayGeo.getJSONObject(i);
-                    String code = jsonObject_geo.optString("Code");
-                    if (code.isEmpty()) {
-                        Log.w("Merge", "Skipping GEO object with empty 'Code': " + jsonObject_geo.toString());
-                        continue;
-                    }
-                    if (docObj_che.containsKey(code)) {
-                        JSONObject existingObject = docObj_che.get(code);
-                        jsonObject_geo.keys().forEachRemaining(key -> {
+                    for (int i = 0; i < masterJsonArrayGeo.length(); i++) {
+                        JSONObject jsonObject_geo = masterJsonArrayGeo.getJSONObject(i);
+                        String code = jsonObject_geo.optString("Code");
+                        if (code.isEmpty()) {
+                            Log.w("Merge", "Skipping GEO object with empty 'Code': " + jsonObject_geo.toString());
+                            continue;
+                        }
+                        if (docObj_che.containsKey(code)) {
+                            JSONObject existingObject = docObj_che.get(code);
+                            jsonObject_geo.keys().forEachRemaining(key -> {
 //                            System.out.println("Merging keys Tagcust Chm:" + key);
-                            try {
-                                assert existingObject != null;
-                                existingObject.put(key, jsonObject_geo.get(key));
-                            } catch (JSONException e) {
-                                Log.e("MergeError", "Error merging key Chm: " + key);
-                            }
-                        });
+                                try {
+                                    assert existingObject != null;
+                                    existingObject.put(key, jsonObject_geo.get(key));
+                                } catch (JSONException e) {
+                                    Log.e("MergeError", "Error merging key Chm: " + key);
+                                }
+                            });
+                        }
                     }
-                }
 
-                jsonArray = new JSONArray(docObj_che.values());
-                Log.v("CheCall", "-che_full_length-" + jsonArray.length());
+                    jsonArray = new JSONArray(docObj_che.values());
+                    Log.v("CheCall", "-che_full_length-" + jsonArray.length());
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    try {
-                        if (SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-                            if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
-                                if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
-                                    float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-                                    if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        try {
+                            if (SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                                if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
+                                    if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
+                                        float[] distance = new float[2];
+                                        Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+                                        if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
 //                                if (jsonObject.optString("cust_status").equalsIgnoreCase("0")) {
-                                        cusListArrayList = SaveData(jsonObject, i, true);
+                                            cusListArrayList = SaveData(jsonObject, i, true);
 //                                }
-                                    }
-                                } else {
-                                    float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-                                    if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                        cusListArrayList = SaveData(jsonObject, i, true);
+                                        }
+                                    } else {
+                                        float[] distance = new float[2];
+                                        Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+                                        if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
+                                            cusListArrayList = SaveData(jsonObject, i, true);
+                                        }
                                     }
                                 }
-                            }
-                        } else {
-                            // This not need TbBased DCR
+                            } else {
+                                // This not need TbBased DCR
 
 //                 if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
 //                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
@@ -273,31 +286,31 @@ public class ChemistFragment extends Fragment {
 //                    } else {
 //                        cusListArrayList = SaveData(jsonObject, i);
 //                    }
-                            cusListArrayList = SaveData(jsonObject, i, false);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.v("DrCall", "dr--error-1-" + e);
-                    }
-                }
-
-                int count = cusListArrayList.size();
-                for (int i = 0; i < count; i++) {
-                    for (int j = i + 1; j < count; j++) {
-                        if (cusListArrayList.get(i).getCode().equalsIgnoreCase(cusListArrayList.get(j).getCode())) {
-                            cusListArrayList.set(i, new CustList(cusListArrayList.get(i).getName(), cusListArrayList.get(i).getCode(), cusListArrayList.get(i).getType(), cusListArrayList.get(i).getCategory(), cusListArrayList.get(i).getCategoryCode(), cusListArrayList.get(i).getSpecialist(), cusListArrayList.get(i).getTown_name(), cusListArrayList.get(i).getTown_code(), cusListArrayList.get(i).getTag(), cusListArrayList.get(i).getMaxTag(), String.valueOf(i), cusListArrayList.get(i).getLatitude(), cusListArrayList.get(i).getLongitude(), cusListArrayList.get(i).getAddress(), cusListArrayList.get(i).getDob(), cusListArrayList.get(i).getWedding_date(), cusListArrayList.get(i).getEmail(), cusListArrayList.get(i).getMobile(), cusListArrayList.get(i).getPhone(), cusListArrayList.get(i).getQualification(), cusListArrayList.get(i).getPriorityPrdCode(), "", "", cusListArrayList.get(i).isClusterAvailable()));
-                            cusListArrayList.remove(j--);
-                            count--;
-                        } else {
-                            cusListArrayList.set(i, new CustList(cusListArrayList.get(i).getName(), cusListArrayList.get(i).getCode(), cusListArrayList.get(i).getType(), cusListArrayList.get(i).getCategory(), cusListArrayList.get(i).getCategoryCode(), cusListArrayList.get(i).getSpecialist(), cusListArrayList.get(i).getTown_name(), cusListArrayList.get(i).getTown_code(), cusListArrayList.get(i).getTag(), cusListArrayList.get(i).getMaxTag(), String.valueOf(i), cusListArrayList.get(i).getLatitude(), cusListArrayList.get(i).getLongitude(), cusListArrayList.get(i).getAddress(), cusListArrayList.get(i).getDob(), cusListArrayList.get(i).getWedding_date(), cusListArrayList.get(i).getEmail(), cusListArrayList.get(i).getMobile(), cusListArrayList.get(i).getPhone(), cusListArrayList.get(i).getQualification(), cusListArrayList.get(i).getPriorityPrdCode(), "", "", cusListArrayList.get(i).isClusterAvailable()));
+                                cusListArrayList = SaveData(jsonObject, i, false);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.v("DrCall", "dr--error-1-" + e);
                         }
                     }
-                }
 
-            } catch (Exception e) {
-                Log.v("CheCall", "-che--error--" + e);
-                e.printStackTrace();
-            }
+//                    int count = cusListArrayList.size();
+//                    for (int i = 0; i < count; i++) {
+//                        for (int j = i + 1; j < count; j++) {
+//                            if (cusListArrayList.get(i).getCode().equalsIgnoreCase(cusListArrayList.get(j).getCode())) {
+//                                cusListArrayList.set(i, new CustList(cusListArrayList.get(i).getName(), cusListArrayList.get(i).getCode(), cusListArrayList.get(i).getType(), cusListArrayList.get(i).getCategory(), cusListArrayList.get(i).getCategoryCode(), cusListArrayList.get(i).getSpecialist(), cusListArrayList.get(i).getTown_name(), cusListArrayList.get(i).getTown_code(), cusListArrayList.get(i).getTag(), cusListArrayList.get(i).getMaxTag(), String.valueOf(i), cusListArrayList.get(i).getLatitude(), cusListArrayList.get(i).getLongitude(), cusListArrayList.get(i).getAddress(), cusListArrayList.get(i).getDob(), cusListArrayList.get(i).getWedding_date(), cusListArrayList.get(i).getEmail(), cusListArrayList.get(i).getMobile(), cusListArrayList.get(i).getPhone(), cusListArrayList.get(i).getQualification(), cusListArrayList.get(i).getPriorityPrdCode(), "", "", cusListArrayList.get(i).isClusterAvailable()));
+//                                cusListArrayList.remove(j--);
+//                                count--;
+//                            } else {
+//                                cusListArrayList.set(i, new CustList(cusListArrayList.get(i).getName(), cusListArrayList.get(i).getCode(), cusListArrayList.get(i).getType(), cusListArrayList.get(i).getCategory(), cusListArrayList.get(i).getCategoryCode(), cusListArrayList.get(i).getSpecialist(), cusListArrayList.get(i).getTown_name(), cusListArrayList.get(i).getTown_code(), cusListArrayList.get(i).getTag(), cusListArrayList.get(i).getMaxTag(), String.valueOf(i), cusListArrayList.get(i).getLatitude(), cusListArrayList.get(i).getLongitude(), cusListArrayList.get(i).getAddress(), cusListArrayList.get(i).getDob(), cusListArrayList.get(i).getWedding_date(), cusListArrayList.get(i).getEmail(), cusListArrayList.get(i).getMobile(), cusListArrayList.get(i).getPhone(), cusListArrayList.get(i).getQualification(), cusListArrayList.get(i).getPriorityPrdCode(), "", "", cusListArrayList.get(i).isClusterAvailable()));
+//                            }
+//                        }
+//                    }
+
+                } catch (Exception e) {
+                    Log.v("CheCall", "-che--error--" + e);
+                    e.printStackTrace();
+                }
            /* try {
                 JSONArray masterJsonArrayChe = masterDataDao
                         .getMasterDataTableOrNew(Constants.CHEMIST_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode)
@@ -409,36 +422,36 @@ public class ChemistFragment extends Fragment {
                 e.printStackTrace();
             }*/
 
-        } else {
-            try {
-                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + TodayPlanSfCode).getMasterSyncDataJsonArray();
+            } else {
+                try {
+                    jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + TodayPlanSfCode).getMasterSyncDataJsonArray();
 
-                Log.v("CheCall", "-che_full_length-" + jsonArray.length());
+                    Log.v("CheCall", "-che_full_length-" + jsonArray.length());
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                     jsonObject = jsonArray.getJSONObject(i);
-                    try {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = jsonArray.getJSONObject(i);
+                        try {
 
-                        if (SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-                            if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
-                                if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
-                                    float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-                                    if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
+                            if (SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                                if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
+                                    if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
+                                        float[] distance = new float[2];
+                                        Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+                                        if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
 //                                if (jsonObject.optString("cust_status").equalsIgnoreCase("0")) {
-                                        cusListArrayList = SaveData(jsonObject, i, true);
+                                            cusListArrayList = SaveData(jsonObject, i, true);
 //                                }
-                                    }
-                                } else {
-                                    float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-                                    if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                        cusListArrayList = SaveData(jsonObject, i, true);
+                                        }
+                                    } else {
+                                        float[] distance = new float[2];
+                                        Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+                                        if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
+                                            cusListArrayList = SaveData(jsonObject, i, true);
+                                        }
                                     }
                                 }
-                            }
-                        } else {
-                            // This not need TbBased DCR
+                            } else {
+                                // This not need TbBased DCR
 
 //                 if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
 //                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
@@ -447,49 +460,59 @@ public class ChemistFragment extends Fragment {
 //                    } else {
 //                        cusListArrayList = SaveData(jsonObject, i);
 //                    }
-                            cusListArrayList = SaveData(jsonObject, i, false);
-                        }
-                    } catch (Exception e) {
-                        Log.v("ChmCall", "dr--error-1-" + e);
-                        e.printStackTrace();
-                    }
-                }
-
-                int count = cusListArrayList.size();
-                for (int i = 0; i < count; i++) {
-                    for (int j = i + 1; j < count; j++) {
-                        if (cusListArrayList.get(i).getCode().equalsIgnoreCase(cusListArrayList.get(j).getCode())) {
-                            cusListArrayList.set(i, new CustList(cusListArrayList.get(i).getName(), cusListArrayList.get(i).getCode(), cusListArrayList.get(i).getType(), cusListArrayList.get(i).getCategory(), cusListArrayList.get(i).getCategoryCode(), cusListArrayList.get(i).getSpecialist(), cusListArrayList.get(i).getTown_name(), cusListArrayList.get(i).getTown_code(), cusListArrayList.get(i).getTag(), cusListArrayList.get(i).getMaxTag(), String.valueOf(i), cusListArrayList.get(i).getLatitude(), cusListArrayList.get(i).getLongitude(), cusListArrayList.get(i).getAddress(), cusListArrayList.get(i).getDob(), cusListArrayList.get(i).getWedding_date(), cusListArrayList.get(i).getEmail(), cusListArrayList.get(i).getMobile(), cusListArrayList.get(i).getPhone(), cusListArrayList.get(i).getQualification(), cusListArrayList.get(i).getPriorityPrdCode(), "", "", cusListArrayList.get(i).isClusterAvailable()));
-                            cusListArrayList.remove(j--);
-                            count--;
-                        } else {
-                            cusListArrayList.set(i, new CustList(cusListArrayList.get(i).getName(), cusListArrayList.get(i).getCode(), cusListArrayList.get(i).getType(), cusListArrayList.get(i).getCategory(), cusListArrayList.get(i).getCategoryCode(), cusListArrayList.get(i).getSpecialist(), cusListArrayList.get(i).getTown_name(), cusListArrayList.get(i).getTown_code(), cusListArrayList.get(i).getTag(), cusListArrayList.get(i).getMaxTag(), String.valueOf(i), cusListArrayList.get(i).getLatitude(), cusListArrayList.get(i).getLongitude(), cusListArrayList.get(i).getAddress(), cusListArrayList.get(i).getDob(), cusListArrayList.get(i).getWedding_date(), cusListArrayList.get(i).getEmail(), cusListArrayList.get(i).getMobile(), cusListArrayList.get(i).getPhone(), cusListArrayList.get(i).getQualification(), cusListArrayList.get(i).getPriorityPrdCode(), "", "", cusListArrayList.get(i).isClusterAvailable()));
+                                cusListArrayList = SaveData(jsonObject, i, false);
+                            }
+                        } catch (Exception e) {
+                            Log.v("ChmCall", "dr--error-1-" + e);
+                            e.printStackTrace();
                         }
                     }
-                }
 
-            } catch (Exception e) {
-                Log.v("CheCall", "-che--error--" + e);
-                e.printStackTrace();
+//                    int count = cusListArrayList.size();
+//                    for (int i = 0; i < count; i++) {
+//                        for (int j = i + 1; j < count; j++) {
+//                            if (cusListArrayList.get(i).getCode().equalsIgnoreCase(cusListArrayList.get(j).getCode())) {
+//                                cusListArrayList.set(i, new CustList(cusListArrayList.get(i).getName(), cusListArrayList.get(i).getCode(), cusListArrayList.get(i).getType(), cusListArrayList.get(i).getCategory(), cusListArrayList.get(i).getCategoryCode(), cusListArrayList.get(i).getSpecialist(), cusListArrayList.get(i).getTown_name(), cusListArrayList.get(i).getTown_code(), cusListArrayList.get(i).getTag(), cusListArrayList.get(i).getMaxTag(), String.valueOf(i), cusListArrayList.get(i).getLatitude(), cusListArrayList.get(i).getLongitude(), cusListArrayList.get(i).getAddress(), cusListArrayList.get(i).getDob(), cusListArrayList.get(i).getWedding_date(), cusListArrayList.get(i).getEmail(), cusListArrayList.get(i).getMobile(), cusListArrayList.get(i).getPhone(), cusListArrayList.get(i).getQualification(), cusListArrayList.get(i).getPriorityPrdCode(), "", "", cusListArrayList.get(i).isClusterAvailable()));
+//                                cusListArrayList.remove(j--);
+//                                count--;
+//                            } else {
+//                                cusListArrayList.set(i, new CustList(cusListArrayList.get(i).getName(), cusListArrayList.get(i).getCode(), cusListArrayList.get(i).getType(), cusListArrayList.get(i).getCategory(), cusListArrayList.get(i).getCategoryCode(), cusListArrayList.get(i).getSpecialist(), cusListArrayList.get(i).getTown_name(), cusListArrayList.get(i).getTown_code(), cusListArrayList.get(i).getTag(), cusListArrayList.get(i).getMaxTag(), String.valueOf(i), cusListArrayList.get(i).getLatitude(), cusListArrayList.get(i).getLongitude(), cusListArrayList.get(i).getAddress(), cusListArrayList.get(i).getDob(), cusListArrayList.get(i).getWedding_date(), cusListArrayList.get(i).getEmail(), cusListArrayList.get(i).getMobile(), cusListArrayList.get(i).getPhone(), cusListArrayList.get(i).getQualification(), cusListArrayList.get(i).getPriorityPrdCode(), "", "", cusListArrayList.get(i).isClusterAvailable()));
+//                            }
+//                        }
+//                    }
+
+                } catch (Exception e) {
+                    Log.v("CheCall", "-che--error--" + e);
+                    e.printStackTrace();
+                }
             }
-        }
 
-        Log.v("CheCall", "-che--size--" + cusListArrayList.size());
-        FilltercustArraList.clear();
-        FilltercustArraList.addAll(cusListArrayList);
-        if (FilltercustArraList.isEmpty()) {
-            noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
-            noChemist.setVisibility(View.VISIBLE);
-            rv_list.setVisibility(View.GONE);
-        } else {
-            noChemist.setVisibility(View.GONE);
-            rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getChmSrtNd(requireContext()), SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now()), "2");
-            rv_list.setItemAnimator(new DefaultItemAnimator());
-            rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
-            rv_list.setAdapter(adapterDCRCallSelection);
-            Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
-        }
+            LinkedHashMap<String, CustList> uniqueMap = new LinkedHashMap<>();
+            for (CustList item : cusListArrayList) {
+                uniqueMap.putIfAbsent(item.getCode().toLowerCase(), item);
+            }
+            cusListArrayList = new ArrayList<>(uniqueMap.values());
+            Log.v("CheCall", "-che--size--" + cusListArrayList.size());
+
+            FilltercustArraList.clear();
+            FilltercustArraList.addAll(cusListArrayList);
+
+            mainHandler.post(() -> {
+                if (FilltercustArraList.isEmpty()) {
+                    noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
+                    noChemist.setVisibility(View.VISIBLE);
+                    rv_list.setVisibility(View.GONE);
+                } else {
+                    noChemist.setVisibility(View.GONE);
+                    rv_list.setVisibility(View.VISIBLE);
+                    adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getChmSrtNd(requireContext()), SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now()), "2");
+                    rv_list.setItemAnimator(new DefaultItemAnimator());
+                    rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
+                    rv_list.setAdapter(adapterDCRCallSelection);
+                    Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
+                }
+            });
+        });
     }
 
     private String getChemistCategory(String chmCode) {
@@ -896,5 +919,11 @@ public class ChemistFragment extends Fragment {
                 }
             }
     );
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        executor.shutdownNow();
+    }
 
 }

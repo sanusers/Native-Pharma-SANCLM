@@ -1049,5 +1049,11 @@
     <string name="want_to_swap">လဲချင်သည်</string>
     <string name="loc_dect">တည်နေရာ မတွေ့ရှိပါ၊ ကျေးဇူးပြု၍ ပြန်လည်ပြင်ဆင်ပါ</string>
     <string name="wise">အလိုက်</string>
+    <string name="for_session">အစီအစဉ်အတွက်</string>
     <string name="kindly_replan">ပြန်လည်စီစဉ်ပေးပါ</string>
+    <string name="select_swap_to">လဲလှယ်ရန် ရွေးချယ်ပါ</string>
+    <string name="swapping">လဲလှယ်နေသည်...</string>
+    <string name="and">နှင့်</string>
+    <string name="syncing">စင့်ခ်လုပ်နေသည်...</string>
+    <string name="deleting">ပယ်ဖျက်နေသည်...</string>
 </resources>

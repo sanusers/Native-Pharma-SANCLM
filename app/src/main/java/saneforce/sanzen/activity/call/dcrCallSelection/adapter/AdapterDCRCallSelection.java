@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
@@ -32,6 +33,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
@@ -73,6 +76,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     private ProgressBar progressBar;
     private RelativeLayout refreshLocation;
     private final boolean isFencing;
+    private final int colorPink;
+    private final int colorDarkPurple;
+    private HashSet<String> clusterCodeSet = new HashSet<>();
 
     public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, boolean isFencing, String isFrom) {
         this.activity = activity;
@@ -86,6 +92,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         masterDataDao = roomDB.masterDataDao();
         gpsTrack = new GPSTrack(activity);
         commonUtilsMethods = new CommonUtilsMethods(context);
+        colorPink = ContextCompat.getColor(context, R.color.pink);
+        colorDarkPurple = ContextCompat.getColor(context, R.color.dark_purple);
+        buildClusterSet();
 
         if (needCheckInOut.equalsIgnoreCase("0")) {
             dialogCheckIn = new Dialog(context);
@@ -109,6 +118,14 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
     }
 
+    private void buildClusterSet() {
+        clusterCodeSet.clear();
+        List<String> clusterList = DcrCallTabLayoutActivity.TodayPlanClusterList;
+        for (int i = 0; i < clusterList.size(); i += 2) {
+            clusterCodeSet.add(clusterList.get(i));
+        }
+    }
+
     @NonNull
     @Override
     public AdapterDCRCallSelection.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -118,13 +135,14 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
     @Override
     public void onBindViewHolder(@NonNull AdapterDCRCallSelection.ViewHolder holder, int position) {
-        holder.tv_name.setText(cusListArrayList.get(position).getName());
-        if (cusListArrayList.get(position).getCategory().isEmpty())
+        CustList custList = cusListArrayList.get(position);
+        holder.tv_name.setText(custList.getName());
+        if (custList.getCategory().isEmpty())
             holder.tv_category.setText("");
         else
-            holder.tv_category.setText(cusListArrayList.get(position).getCategory());
-        holder.tv_specialist.setText(cusListArrayList.get(position).getSpecialist());
-        holder.tv_area.setText(cusListArrayList.get(position).getTown_name());
+            holder.tv_category.setText(custList.getCategory());
+        holder.tv_specialist.setText(custList.getSpecialist());
+        holder.tv_area.setText(custList.getTown_name());
 
         if (isFrom.equalsIgnoreCase("1") || isFrom.equalsIgnoreCase("4")) {
             holder.tv_category.setVisibility(View.VISIBLE);
@@ -142,31 +160,39 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         holder.tv_name.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                commonUtilsMethods.displayPopupWindow(context, view, cusListArrayList.get(position).getName());
+                commonUtilsMethods.displayPopupWindow(context, view, custList.getName());
             }
         });
 
-        for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
-            if (cusListArrayList.get(position).getType().equalsIgnoreCase("3")) {
-                if (cusListArrayList.get(position).getTown_name().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
-                    holder.view_top.setVisibility(View.VISIBLE);
-                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
-                    break;
-                } else {
-                    holder.view_top.setVisibility(View.GONE);
-                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
-                }
-            } else {
-                if (cusListArrayList.get(position).getTown_code().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
-                    holder.view_top.setVisibility(View.VISIBLE);
-                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
-                    break;
-                } else {
-                    holder.view_top.setVisibility(View.GONE);
-                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
-                }
-            }
+//        for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
+//            if (custList.getType().equalsIgnoreCase("3")) {
+//                if (custList.getTown_name().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
+//                    holder.view_top.setVisibility(View.VISIBLE);
+//                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
+//                    break;
+//                } else {
+//                    holder.view_top.setVisibility(View.GONE);
+//                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
+//                }
+//            } else {
+//                if (custList.getTown_code().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
+//                    holder.view_top.setVisibility(View.VISIBLE);
+//                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
+//                    break;
+//                } else {
+//                    holder.view_top.setVisibility(View.GONE);
+//                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
+//                }
+//            }
+//        }
+        boolean inCluster;
+        if (custList.getType().equalsIgnoreCase("3")) {
+            inCluster = clusterCodeSet.contains(custList.getTown_name());
+        } else {
+            inCluster = clusterCodeSet.contains(custList.getTown_code());
         }
+        holder.view_top.setVisibility(inCluster ? View.VISIBLE : View.GONE);
+        holder.tv_area.setTextColor(inCluster ? colorPink : colorDarkPurple);
 
         holder.constraint_main.setOnClickListener(new SafeClickListener() {
             @Override
@@ -178,31 +204,31 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
-                                && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())
-                                && jsonObject.getString("CustType").equalsIgnoreCase(cusListArrayList.get(position).getType())) {
+                                && jsonObject.getString("CustCode").equalsIgnoreCase(custList.getCode())
+                                && jsonObject.getString("CustType").equalsIgnoreCase(custList.getType())) {
                             isVisitedToday = true;
                             break;
                         }
                     }
 
                     if (!isVisitedToday) {
-                        if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
+                        if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1") && custList.getType().equalsIgnoreCase("1")) {
                             int count = 0;
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if (jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())
-                                        && jsonObject.getString("CustType").equalsIgnoreCase(cusListArrayList.get(position).getType())
+                                if (jsonObject.getString("CustCode").equalsIgnoreCase(custList.getCode())
+                                        && jsonObject.getString("CustType").equalsIgnoreCase(custList.getType())
                                         && TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, jsonObject.getString("Dcr_dt")).equals(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, HomeDashBoard.selectedDate.toString()))) {
                                     count++;
                                 }
                             }
-                            if (count < Integer.parseInt(cusListArrayList.get(position).getTotalVisitCount())) {
-                                goNextActivity(position);
+                            if (count < Integer.parseInt(custList.getTotalVisitCount())) {
+                                goNextActivity(custList);
                             } else {
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
                             }
                         } else {
-                            goNextActivity(position);
+                            goNextActivity(custList);
                         }
                     } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited));
@@ -217,11 +243,11 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         if (isFencing) {
             holder.info.setVisibility(View.VISIBLE);
             holder.info.setOnClickListener(view -> {
-                String address = cusListArrayList.get(position).getAddress();
+                String address = custList.getAddress();
                 if (isFrom.equalsIgnoreCase("1")) {
-                    address = cusListArrayList.get(position).getGeoAddress();
+                    address = custList.getGeoAddress();
                 }
-                showTimelinePopUp(view, cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), address);
+                showTimelinePopUp(view, custList.getLatitude(), custList.getLongitude(), address);
             });
         } else {
             holder.info.setVisibility(View.GONE);
@@ -269,7 +295,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         try {
             float[] distance = new float[2];
             Location.distanceBetween(latitude, longitude, DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-           // return String.format(Locale.getDefault(), "Distance : %.2f meters", distance[0]);
+            // return String.format(Locale.getDefault(), "Distance : %.2f meters", distance[0]);
             return context.getString(R.string.distance_format, distance[0]);
 
         } catch (Exception e) {
@@ -278,7 +304,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         return "";
     }
 
-    private void goNextActivity(int position) {
+    private void goNextActivity(CustList custList) {
         try {
             gpsTrack = new GPSTrack(activity);
             latitude = gpsTrack.getLatitude();
@@ -294,13 +320,13 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         }
 
         if (needCheckInOut.equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
-            tv_cusName.setText(cusListArrayList.get(position).getName());
+            tv_cusName.setText(custList.getName());
             startClock();
 //            tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
             tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", latitude, longitude));
             tvAddress.setText(address);
             String customerCaption = SharedPref.getDrCap(context);
-            switch (cusListArrayList.get(position).getType()) {
+            switch (custList.getType()) {
                 case "1":
                     imgCustomer.setImageResource(R.drawable.doctor_img);
                     customerCaption = SharedPref.getDrCap(context);
@@ -374,11 +400,11 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     stopClock();
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.check_in_successfully));
                     dialogCheckIn.dismiss();
-                    changeActivity(position);
+                    changeActivity(custList);
                 }
             });
         } else {
-            changeActivity(position);
+            changeActivity(custList);
         }
     }
 
@@ -463,10 +489,10 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         return jsonObject;
     }
 
-    private void changeActivity(int position) {
+    private void changeActivity(CustList custList) {
         JSONObject jsonObject = prepareCheckInJsonObject();
         DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-        DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(), cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(), cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(), cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(), cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(), cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(), cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(), cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(), cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(), cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
+        DCRCallActivity.CallActivityCustDetails.add(0, new CustList(custList.getName(), custList.getCode(), custList.getType(), custList.getCategory(), custList.getCategoryCode(), custList.getSpecialist(), custList.getSpecialistCode(), custList.getTown_name(), custList.getTown_code(), custList.getMaxTag(), custList.getTag(), custList.getPosition(), custList.getLatitude(), custList.getLongitude(), custList.getAddress(), custList.getDob(), custList.getWedding_date(), custList.getEmail(), custList.getMobile(), custList.getPhone(), custList.getQualification(), custList.getPriorityPrdCode(), custList.getMappedBrands(), custList.getMappedSlides()));
         Intent intent = new Intent(context, CustomerProfile.class);
         if (needCheckInOut.equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             intent.putExtra("CheckInJsonObject", jsonObject.toString());
@@ -504,6 +530,5 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             seenDr = itemView.findViewById(R.id.seenDr);
         }
     }
-
 
 }

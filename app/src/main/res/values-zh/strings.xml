@@ -1057,6 +1057,12 @@
     <string name="want_to_swap">想要交换</string>
     <string name="loc_dect">未检测到位置，请刷新</string>
     <string name="wise">按…分类</string>
+    <string name="for_session">用于场次</string>
     <string name="kindly_replan">请重新规划</string>
+    <string name="select_swap_to">选择换至</string>
+    <string name="swapping">正在交换...</string>
+    <string name="and">和</string>
+    <string name="syncing">正在同步...</string>
+    <string name="deleting">正在删除...</string>
 
 </resources>

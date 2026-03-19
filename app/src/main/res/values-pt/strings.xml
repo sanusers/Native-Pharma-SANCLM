@@ -1063,5 +1063,11 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="want_to_swap">quer trocar</string>
     <string name="loc_dect">Localização não detectada, por favor atualize</string>
     <string name="wise">por</string>
+    <string name="for_session">para a sessão</string>
     <string name="kindly_replan">por favor replanejar</string>
+    <string name="select_swap_to">Selecionar troca para</string>
+    <string name="swapping">Trocando...</string>
+    <string name="and">e</string>
+    <string name="syncing">Sincronizando...</string>
+    <string name="deleting">Excluindo...</string>
 </resources>

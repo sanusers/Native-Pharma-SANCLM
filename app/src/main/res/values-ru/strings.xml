@@ -1058,5 +1058,11 @@
     <string name="want_to_swap">хочет поменять</string>
     <string name="loc_dect">Местоположение не обнаружено, пожалуйста обновите</string>
     <string name="wise">по</string>
+    <string name="for_session">для сессии</string>
     <string name="kindly_replan">пожалуйста перепланируйте</string>
+    <string name="select_swap_to">Выберите для обмена</string>
+    <string name="swapping">Обмен...</string>
+    <string name="and">и</string>
+    <string name="syncing">Синхронизация...</string>
+    <string name="deleting">Удаление...</string>
 </resources>
