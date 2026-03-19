@@ -3940,26 +3940,63 @@ private void showNotVisitedDoctorsPopup(
         Map<String, String> chemistNameMap     = new HashMap<>();
         Map<String, String> chemistClusterMap  = new HashMap<>();
         Map<String, String> chemistCategoryMap = new HashMap<>();
-
-        JSONArray chemistMasArray = masterDataDao
-                .getMasterDataTableOrNew(
-                        Constants.CHEMIST_MAS + SharedPref.getHqCode(this))
+// 1. First: Category Table-ai eduthu Lookup Map ready pannunga (Zero Hardcoding)
+        Map<String, String> catLookupMap = new HashMap<>();
+        JSONArray catArray = masterDataDao
+                .getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST)
                 .getMasterSyncDataJsonArray();
 
-        Log.e("POPUP_CHECK", "Chemist Master Count: " + chemistMasArray.length());
+        if (catArray != null) {
+            for (int j = 0; j < catArray.length(); j++) {
+                JSONObject catObj = catArray.getJSONObject(j);
+                // Code "2" -> Name "te" nu store panniduvom
+                catLookupMap.put(catObj.optString("Code"), catObj.optString("Chem_Cat_Name"));
+            }
+        }
+
+// 2. Second: Unga Chemist Master Loop
+        JSONArray chemistMasArray = masterDataDao
+                .getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getHqCode(this))
+                .getMasterSyncDataJsonArray();
 
         for (int i = 0; i < chemistMasArray.length(); i++) {
             JSONObject obj  = chemistMasArray.getJSONObject(i);
             String code     = obj.optString("Code",      "").trim();
             String name     = obj.optString("Name",      "").trim();
             String cluster  = obj.optString("Town_Name", "").trim();
-            String category = obj.optString("Category",  " ").trim();
+
+            // ✅ Numeric ID-ai edukrom (Example: "2")
+            String catId    = obj.optString("Chm_cat",  "").trim();
+
+            // ✅ Match check: ID "2" irundha "te" nu maarum, illana "-" varum
+            String finalCatName = catLookupMap.getOrDefault(catId, "--");
+
             if (!code.isEmpty()) {
                 chemistNameMap.put(code, name);
                 chemistClusterMap.put(code, cluster);
-                chemistCategoryMap.put(code, category);
+                // Ippo map-la Number "2"-ku badhula "te" save aagum!
+                chemistCategoryMap.put(code, finalCatName);
             }
         }
+//        JSONArray chemistMasArray = masterDataDao
+//                .getMasterDataTableOrNew(
+//                        Constants.CHEMIST_MAS + SharedPref.getHqCode(this))
+//                .getMasterSyncDataJsonArray();
+//
+//        Log.e("POPUP_CHECK", "Chemist Master Count: " + chemistMasArray.length());
+//
+//        for (int i = 0; i < chemistMasArray.length(); i++) {
+//            JSONObject obj  = chemistMasArray.getJSONObject(i);
+//            String code     = obj.optString("Code",      "").trim();
+//            String name     = obj.optString("Name",      "").trim();
+//            String cluster  = obj.optString("Town_Name", "").trim();
+//            String category = obj.optString("Category",  " ").trim();
+//            if (!code.isEmpty()) {
+//                chemistNameMap.put(code, name);
+//                chemistClusterMap.put(code, cluster);
+//                chemistCategoryMap.put(code, category);
+//            }
+//        }
 
 //        Map<String, String> chemistNameMap     = new HashMap<>();
 //        Map<String, String> chemistClusterMap  = new HashMap<>();

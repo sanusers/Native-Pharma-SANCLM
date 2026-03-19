@@ -3304,8 +3304,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             SharedPref.setTodayTPChemists(requireContext(),tpChemists);
             Log.e("TPChemistSave","Saved TP Chemist =>" + tpChemists);
-
-            ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP,tpChemists);
+            if(!deviation.equalsIgnoreCase("1")) {
+                if ("F".equalsIgnoreCase(mFwFlg1)) {
+                    ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(
+                            tpDoctor, isFromTP, tpChemists  // Session 1 data
+                    );
+                }
+                if ("F".equalsIgnoreCase(mFwFlg2)) {
+                    ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(
+                            tpDoctor2, isFromTP, tpChemists2  // Session 2 data ✅
+                    );
+                }
+            }
+           // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP,tpChemists);
 
             jsonObject.put("Others_Code", workDayCode);
             jsonObject.put("Others_Name", workDayName);

@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:text="Category"
-
+        android:gravity="center"
         android:padding="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_bold"
         android:textColor="@color/dark_purple"
