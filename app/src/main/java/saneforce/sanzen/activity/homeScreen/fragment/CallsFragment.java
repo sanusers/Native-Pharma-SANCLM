@@ -239,29 +239,30 @@ public class CallsFragment extends Fragment {
             boolean isDataAvailable = false;
             if (!SharedPref.getTodayCallList(context).isEmpty()) {
                 JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
-                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
-                    CheckDate = jsonArray.getJSONObject(0).optString("DCRdt").substring(0, 10);
-                } else {
-                    CheckDate = jsonArray.getJSONObject(0).optString("vstTime").substring(0, 10);
-                }
-
-                if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
-                    isDataAvailable = true;
-                }
-
-                if (isDataAvailable) {
+//                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+//                    CheckDate = jsonArray.getJSONObject(0).optString("DCRdt").substring(0, 10);
+//                } else {
+//                    CheckDate = jsonArray.getJSONObject(0).optString("vstTime").substring(0, 10);
+//                }
+//
+//                if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
+//                    isDataAvailable = true;
+//                }
+//
+//                if (isDataAvailable) {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject json = jsonArray.getJSONObject(i);
                         SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
                         TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                     }
-                }
+//                }
             }
             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
 
 
             adapter.notifyDataSetChanged();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
