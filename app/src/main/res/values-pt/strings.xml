@@ -1070,4 +1070,7 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="and">e</string>
     <string name="syncing">Sincronizando...</string>
     <string name="deleting">Excluindo...</string>
+
+    <string name="address_format">Endereço:</string>
+    <string name="distance_format">Distância: %1$.2f metros</string>
 </resources>

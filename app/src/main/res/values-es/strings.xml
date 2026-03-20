@@ -1059,4 +1059,9 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="and">y</string>
     <string name="syncing">Sincronizando...</string>
     <string name="deleting">Eliminando...</string>
+
+    <string name="address_format">Dirección:</string>
+    <string name="distance_format">Distancia : %1$.2f metros</string>
+
+
 </resources>

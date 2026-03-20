@@ -1065,4 +1065,8 @@
     <string name="syncing">正在同步...</string>
     <string name="deleting">正在删除...</string>
 
+
+    <string name="address_format">地址：</string>
+    <string name="distance_format">距离：%1$.2f 米</string>
+
 </resources>

@@ -1056,4 +1056,7 @@
     <string name="and">နှင့်</string>
     <string name="syncing">စင့်ခ်လုပ်နေသည်...</string>
     <string name="deleting">ပယ်ဖျက်နေသည်...</string>
+
+    <string name="address_format">လိပ်စာ:</string>
+    <string name="distance_format">အကွာအဝေး: %1$.2f မီတာ</string>
 </resources>

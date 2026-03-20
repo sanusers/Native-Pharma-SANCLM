@@ -1065,4 +1065,8 @@
     <string name="and">и</string>
     <string name="syncing">Синхронизация...</string>
     <string name="deleting">Удаление...</string>
+
+
+    <string name="address_format">Адрес:</string>
+    <string name="distance_format">Расстояние: %1$.2f метров</string>
 </resources>

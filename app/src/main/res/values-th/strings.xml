@@ -1068,4 +1068,8 @@
     <string name="and">และ</string>
     <string name="syncing">กำลังซิงค์...</string>
     <string name="deleting">กำลังลบ...</string>
+
+
+    <string name="address_format">ที่อยู่:</string>
+    <string name="distance_format">ระยะทาง: %1$.2f เมตร</string>
 </resources>

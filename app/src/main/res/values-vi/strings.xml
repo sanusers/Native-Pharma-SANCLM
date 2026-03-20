@@ -1069,4 +1069,9 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="and">và</string>
     <string name="syncing">Đang đồng bộ...</string>
     <string name="deleting">Đang xóa...</string>
+
+
+
+    <string name="address_format">Địa chỉ:</string>
+    <string name="distance_format">Khoảng cách: %1$.2f mét</string>
 </resources>
