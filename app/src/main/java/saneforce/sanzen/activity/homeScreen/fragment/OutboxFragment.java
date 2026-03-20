@@ -638,13 +638,13 @@ public class OutboxFragment extends Fragment {
                 if (response.isSuccessful()) {
                     try {
                         JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
-                        if (json.getString("success").equalsIgnoreCase("true")) {
+                        if (json.optString("success").equalsIgnoreCase("true")) {
                             offlineWorkTypeDataDao.delete(workPlanModelClass.getDate());
                             child.setWorkPlanModelClass(null);
                             //notifyedmethod();
                             callback.onSuccess();
                         } else {
-                            if (json.optBoolean("update")) {
+                            if (json.optString("update").equalsIgnoreCase("true")) {
                                 String msg = json.optString("Msg");
                                 offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), msg, 2);
                                 workPlanModelClass.setSyncStatus(2);

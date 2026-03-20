@@ -56,7 +56,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
 
     private String selectedSf;
     public interface ViewPlanClickListener {
-        public void onClick(TpDeviationModelList tpDeviationModelList);
+        void onClick(TpDeviationModelList tpDeviationModelList);
     }
 
     public TpDeviationAdapter(Context context, ArrayList<TpDeviationModelList> tpDeviationModelLists, ViewPlanClickListener viewPlanClickListener) {
@@ -202,7 +202,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             jsonTpDeviation.put("reason", reason);
             jsonTpDeviation.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_15, date));
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
-            jsonTpDeviation.put("Rsf", tpDeviationModelLists.get(position).getSfCode()/*haredPref.getHqCode(context)*/);
+            jsonTpDeviation.put("Rsf", tpDeviationModelLists.get(position).getSfCode());
             Log.v("json_reject_tpDev", jsonTpDeviation.toString());
         } catch (Exception e) {
             e.printStackTrace();

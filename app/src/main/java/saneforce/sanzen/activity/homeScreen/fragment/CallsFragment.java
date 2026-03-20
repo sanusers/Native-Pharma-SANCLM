@@ -238,17 +238,17 @@ public class CallsFragment extends Fragment {
             String CheckDate = "";
             boolean isDataAvailable = false;
             if (!SharedPref.getTodayCallList(context).isEmpty()) {
-                    JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
+                JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
 //                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
 //                    CheckDate = jsonArray.getJSONObject(0).optString("DCRdt").substring(0, 10);
 //                } else {
 //                    CheckDate = jsonArray.getJSONObject(0).optString("vstTime").substring(0, 10);
 //                }
-
+//
 //                if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
 //                    isDataAvailable = true;
 //                }
-
+//
 //                if (isDataAvailable) {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject json = jsonArray.getJSONObject(i);
@@ -258,10 +258,9 @@ public class CallsFragment extends Fragment {
 //                }
             }
             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-
-
             adapter.notifyDataSetChanged();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

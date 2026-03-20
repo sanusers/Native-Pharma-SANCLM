@@ -1,15 +1,10 @@
 package saneforce.sanzen.network;
 
-import android.annotation.SuppressLint;
-
-import androidx.annotation.RawRes;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -725,7 +725,7 @@ public class TourPlanActivity extends AppCompatActivity {
 //                            }else if(modelClass1.getCluster().size() == 0) {
 //                                isEmpty = true;
 //                                position = i;
-//                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+//                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getClusterCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
 //                                break;
 //                            }
                                 else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
@@ -1074,7 +1074,7 @@ public class TourPlanActivity extends AppCompatActivity {
 //                    }else if(modelClass.getCluster().size() == 0) {
 //                        isEmpty = true;
 //                        position = i;
-//                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+//                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getClusterCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
 //                        break;
 //                    }else if(modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
 //                        if(FW_meetup_mandatory.equals("0")) {

@@ -178,9 +178,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 @Override
                 public void onSafeClick(View view) {
                     int index = groupModelClasses.indexOf(groupModelClass);
-                    if (index != 0) {
-                        CommonUtilsMethods.showToastMessage(context, context.getString(R.string.please_sync_previous_dates));
-                    } else {
+//                    if (index != 0) {
+//                        CommonUtilsMethods.showToastMessage(context, context.getString(R.string.please_sync_previous_dates));
+//                    } else {
                         if (UtilityClass.isNetworkAvailable(context)) {
                             progressDialog = CommonUtilsMethods.createProgressDialog(context);
 //                CallOfflineData(groupModelClass, 0);
@@ -210,7 +210,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                         } else {
                             commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                         }
-                    }
+//                    }
                 }
             });
 
@@ -514,13 +514,13 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 if (response.isSuccessful()) {
                     try {
                         JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
-                        if (json.getString("success").equalsIgnoreCase("true")) {
+                        if (json.optString("success").equalsIgnoreCase("true")) {
                             offlineWorkTypeDataDao.delete(workPlanModelClass.getDate());
                             child.setWorkPlanModelClass(null);
                             notifyDataSetChanged();
                             callback.onSuccess();
                         } else {
-                            if (json.optBoolean("update")) {
+                            if (json.optString("update").equalsIgnoreCase("true")) {
                                 String msg = json.optString("Msg");
                                 offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), msg, 2);
                                 workPlanModelClass.setSyncStatus(2);

@@ -5,9 +5,7 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,7 +14,6 @@ import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityPrivacypolicyBinding;
-import saneforce.sanzen.databinding.ActivityTourPlanBinding;
 import saneforce.sanzen.storage.SharedPref;
 
 public class PrivacyPolicyActivity extends AppCompatActivity {
@@ -46,7 +43,6 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
 //                }
 //            }
 //        });
-
         binding.privacyCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 binding.submitPrivacy.setEnabled(true);

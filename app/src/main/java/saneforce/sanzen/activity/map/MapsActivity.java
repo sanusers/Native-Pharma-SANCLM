@@ -914,7 +914,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     tv_cust_name.setText(cust_name);
                     tv_address.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
                 }
-
             }
         });
 
@@ -983,7 +982,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         jsonObject.put("image_name", imageName);
                         jsonObject.put("sfcode", SfCode);
                         jsonObject.put("addr", tv_address.getText().toString());
-                       // jsonObject.put("addr", "6PJR+2WH - Al Mu'tarid -Oud Al Hassah - Abu Dhabi-United Arab States");
                         if (SfType.equalsIgnoreCase("1")) {
                             jsonObject.put("tagged_cust_HQ", SfCode);
                         } else {
@@ -2518,6 +2516,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setCompassEnabled(false);
             mMap.getUiSettings().setRotateGesturesEnabled(true);
         }
+        mapsBinding.progressBar.setVisibility(View.GONE);
     }
 
 

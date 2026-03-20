@@ -5801,7 +5801,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void dialogEditOrDelete(String sessionType) {
+    private void
+    dialogEditOrDelete(String sessionType) {
         Dialog dialogOptionSelection = new Dialog(requireActivity());
         dialogOptionSelection.setContentView(R.layout.popup_remarks);
         Objects.requireNonNull(dialogOptionSelection.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
