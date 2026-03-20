@@ -115,23 +115,23 @@ public class RetrofitClient {
 
     /**
      * Entry point for sanitizing the request body before it is sent to the server.
-     *
+     * <p>
      * Skips sanitization entirely for multipart/binary bodies (image uploads)
      * because binary data contains raw bytes with '%' characters that are NOT
      * valid URL-encoded sequences — URLDecoder would throw IllegalArgumentException.
-     *
+     * <p>
      * Handles two types of text request bodies:
-     *
+     * <p>
      *   1. Raw JSON (@Body JsonObject) — Content-Type: application/json
      *      Body arrives as plain JSON string e.g. {"key":"value"}
      *      Detected by checking if trimmed body starts with '{' or '['
      *      No URL decoding needed.
-     *
+     * <p>
      *   2. Form URL Encoded (@Field) — Content-Type: application/x-www-form-urlencoded
      *      Body arrives as key=value e.g. data=%7B%22key%22%3A%22value%22%7D
      *      Split on first '=' to separate field name from value.
      *      Value is URL decoded, parsed as JSON, sanitized, then re-encoded.
-     *
+     * <p>
      * In both cases, only STRING VALUES inside the JSON are sanitized.
      * JSON keys, numbers, booleans, and nulls are left untouched.
      *
@@ -147,16 +147,12 @@ public class RetrofitClient {
             // These contain raw binary data that will break URL decoding
             if (contentType != null) {
                 String type = contentType.toString();
-                if (type.contains("multipart/form-data") ||
-                        type.contains("image/") ||
-                        type.contains("application/octet-stream")) {
+                if (type.contains("multipart/form-data") || type.contains("image/") || type.contains("application/octet-stream")) {
                     Log.d(TAG, "Skipping sanitization for multipart/binary body");
                     return body;
                 }
             }
-
             String trimmed = body.trim();
-
             // Case 1: Raw JSON body (@Body JsonObject)
             // Content-Type: application/json
             // Body is already plain JSON — no URL decoding needed
@@ -164,23 +160,17 @@ public class RetrofitClient {
                 JSONObject jsonObject = new JSONObject(trimmed);
                 sanitizeJsonObject(jsonObject);
                 return jsonObject.toString();
-
             } else if (trimmed.startsWith("[")) {
                 JSONArray jsonArray = new JSONArray(trimmed);
                 sanitizeJsonArray(jsonArray);
                 return jsonArray.toString();
-
             } else {
                 // Case 2: FormUrlEncoded body (@Field)
                 // Content-Type: application/x-www-form-urlencoded
-                // Body format: data=%7B%22name%22%3A%22abc%22%7D
-                // Split on '=' to get: key=data, value=%7B%22name%22%3A%22abc%22%7D
-
                 int separatorIndex = trimmed.indexOf('=');
                 if (separatorIndex != -1) {
                     String fieldKey = trimmed.substring(0, separatorIndex);     // "data"
                     String fieldValue = trimmed.substring(separatorIndex + 1);  // URL encoded JSON
-
                     // URL decode the value part only
                     String decoded;
                     try {
@@ -191,20 +181,16 @@ public class RetrofitClient {
                         Log.d(TAG, "URL decode failed — skipping sanitization: " + e.getMessage());
                         return body;
                     }
-
                     String decodedTrimmed = decoded.trim();
-
                     if (decodedTrimmed.startsWith("{")) {
                         JSONObject jsonObject = new JSONObject(decodedTrimmed);
                         sanitizeJsonObject(jsonObject);
                         // Re-encode and reconstruct: data=<encoded sanitized JSON>
                         return fieldKey + "=" + URLEncoder.encode(jsonObject.toString(), "UTF-8");
-
                     } else if (decodedTrimmed.startsWith("[")) {
                         JSONArray jsonArray = new JSONArray(decodedTrimmed);
                         sanitizeJsonArray(jsonArray);
                         return fieldKey + "=" + URLEncoder.encode(jsonArray.toString(), "UTF-8");
-
                     } else {
                         // Plain string value — sanitize and re-encode
                         return fieldKey + "=" + URLEncoder.encode(sanitizeValue(decoded), "UTF-8");
@@ -224,7 +210,7 @@ public class RetrofitClient {
 
     /**
      * Recursively traverses and sanitizes all String values inside a JSONObject.
-     *
+     * <p>
      * Only String values are sanitized — numbers, booleans, and nulls
      * are left unchanged to avoid breaking data types.
      * Nested JSONObject and JSONArray values are recursively processed.
@@ -256,7 +242,7 @@ public class RetrofitClient {
 
     /**
      * Recursively traverses and sanitizes all String values inside a JSONArray.
-     *
+     * <p>
      * Handles mixed arrays containing strings, nested objects, or nested arrays.
      *
      * @param jsonArray The JSONArray whose string values will be sanitized in-place
@@ -280,11 +266,11 @@ public class RetrofitClient {
 
     /**
      * Strips SQL injection characters from a single string value.
-     *
+     * <p>
      * Removes both raw characters and their URL-encoded equivalents.
      * URL-encoded equivalents are removed as a safety measure in case
      * any encoded characters slip through before URL decoding.
-     *
+     * <p>
      * Characters removed:
      *   '   single quote        breaks string literals in SQL
      *   "   double quote        breaks string literals in SQL
@@ -293,7 +279,7 @@ public class RetrofitClient {
      *   #   hash                MySQL line comment
      *   /*  block comment open  SQL block comment
      *   * / block comment close SQL block comment
-     *
+     * <p>
      * URL-encoded equivalents also removed:
      *   %27 → '    %22 → "    %3B/%3b → ;
      *   %2D%2D/%2d%2d → --   %23 → #
@@ -334,29 +320,29 @@ public class RetrofitClient {
 
     /**
      * Builds and returns a configured OkHttpClient.Builder with:
-     *
+     * <p>
      *   1. SSL certificate validation bypass
      *      Required for servers using self-signed or internal certificates.
      *      Do NOT use on public-facing production servers.
-     *
+     * <p>
      *   2. Timeout configuration
      *      Connect / Write / Read timeout: 35 seconds each
-     *
+     * <p>
      *   3. HTTP Logging Interceptor
      *      Logs full request and response body for debugging.
      *      Disable or reduce log level in production builds.
-     *
+     * <p>
      *   4. SQL Injection Sanitizer Interceptor
      *      Automatically sanitizes all outgoing POST request bodies.
      *      Applied to every API call without any per-call changes needed.
      *      Works for both @Body JsonObject and @Field FormUrlEncoded requests.
      *      Automatically skips multipart/binary bodies (image uploads).
      *      Fail-safe: if sanitization fails, original request is sent as-is.
-     *
+     * <p>
      * Interceptor execution order:
      *   Request:  Logging → Sanitizer → Server
      *   Response: Server  → Sanitizer → Logging
-     *
+     * <p>
      * Body type handling in sanitizer:
      *   multipart/form-data      → Skipped (image/file uploads)
      *   image/*                  → Skipped (binary data)
@@ -401,10 +387,8 @@ public class RetrofitClient {
                     .connectTimeout(35, TimeUnit.SECONDS)
                     .writeTimeout(35, TimeUnit.SECONDS)
                     .readTimeout(35, TimeUnit.SECONDS)
-
                     // Interceptor 1: Logging
                     .addInterceptor(loggingInterceptor)
-
                     // Interceptor 2: SQL Injection Sanitizer
                     // Reads the request body, sanitizes string values,
                     // rebuilds the request and forwards it to the server.
@@ -412,7 +396,6 @@ public class RetrofitClient {
                     .addInterceptor(chain -> {
                         Request original = chain.request();
                         RequestBody body = original.body();
-
                         if (body != null) {
                             try {
                                 // Read body into buffer
@@ -420,37 +403,26 @@ public class RetrofitClient {
                                 Buffer buffer = new Buffer();
                                 body.writeTo(buffer);
                                 String bodyString = buffer.readUtf8();
-
                                 // Pass contentType to detect and skip multipart/binary
                                 String sanitized = sanitizeBody(bodyString, body.contentType());
-
                                 Log.d(TAG, "Sanitized request body: " + sanitized);
-
                                 // Rebuild request with sanitized body
-                                RequestBody newBody = RequestBody.create(
-                                        sanitized, body.contentType());
-                                Request newRequest = original.newBuilder()
-                                        .post(newBody)
-                                        .build();
+                                RequestBody newBody = RequestBody.create(sanitized, body.contentType());
+                                Request newRequest = original.newBuilder().post(newBody).build();
                                 return chain.proceed(newRequest);
-
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 // Fail-safe: send original request if sanitization fails
                                 return chain.proceed(original);
                             }
                         }
-
                         // GET requests or empty body — pass through unchanged
                         return chain.proceed(original);
                     });
-
             // Apply SSL bypass settings
             builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
             builder.hostnameVerifier((hostname, session) -> true);
-
             return builder;
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
