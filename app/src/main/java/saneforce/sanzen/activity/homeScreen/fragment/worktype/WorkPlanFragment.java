@@ -1604,19 +1604,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                     if (dayStatus == null || dayStatus.isEmpty()) dayStatus = "0";
                     if (DayPlanCount.equalsIgnoreCase("1") || (DayPlanCount.equalsIgnoreCase("2") && binding.flSession2.getVisibility() == View.VISIBLE)) {
-//                        if (dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked())
-//                                || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1"))
-//                        ) {
+                        if (dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked())
+                                || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1"))
+                        ) {
                             dialogEditOrDelete("1");
-//                        } else {
-//                            if (binding.llDeviation.getVisibility() == View.VISIBLE) {
-//                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
-//                            } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
-//                                dialogFWEditConfirmation("1", mWTName1);
-//                            } else {
-//                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
-//                            }
-//                        }
+                        } else {
+                            if (binding.llDeviation.getVisibility() == View.VISIBLE) {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
+                            } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                                dialogFWEditConfirmation("1", mWTName1);
+                            } else {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
+                            }
+                        }
                     } else {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_update_session_2));
                     }
