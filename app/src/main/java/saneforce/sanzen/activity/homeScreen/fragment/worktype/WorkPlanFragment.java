@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
@@ -112,7 +113,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public static ArrayList<Multicheckclass_clust> listSelectedCluster = new ArrayList<>();
     public HashMap<String, ArrayList<MultiHQClusterItem>> mapSelectedCluster = new HashMap<>();
     public ArrayList<Multicheckclass_clust> listSelectedHQ = new ArrayList<>();
-    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "",tpChemists="", tpWorkType2 = "", tpCluster2 = "", tpDoctor2 = "",tpChemists2="", deviation = "0", remarks = "", tpApprovalStatus = "", workDayName = "", workDayCode = "", workDayName2 = "", workDayCode2 = "";
+    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "", tpChemists = "", tpWorkType2 = "", tpCluster2 = "", tpDoctor2 = "", tpChemists2 = "", deviation = "0", remarks = "", tpApprovalStatus = "", workDayName = "", workDayCode = "", workDayName2 = "", workDayCode2 = "";
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
@@ -170,7 +171,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OutboxUtil outboxUtil;
     private Handler dateHandler;
     private String status;
-
+   //String stayPopup = "0";
     private void checkDateChange() {
         if (!isAdded()) return;
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
@@ -1599,6 +1600,21 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                     break;
+//                case R.id.btn_submit:
+//
+//                    Log.e("CHECK_FLOW", "stayPopup value = " + stayPopup);
+//
+//                    // 👉 Popup ENABLE ("0")
+//                    if ("0".equalsIgnoreCase(stayPopup)) {
+//                        Log.e("CHECK_FLOW", "INSIDE IF - calling stayPopup()");
+//                        stayPopup();
+//                        return;
+//                    }
+//
+//                    // 👉 Popup DISABLE ("1") → direct flow
+//                    proceedSubmitFlow();
+//
+//                    break;
 
                 case R.id.ll_delete:
                     Dialog dialog = new Dialog(requireContext());
@@ -1728,7 +1744,39 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
     }
-
+//    private void proceedSubmitFlow() {
+//
+//        if (SharedPref.getApprovalManatoryStatus(requireContext())
+//                && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")
+//                && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+//
+//            CommonAlertBox.ApprovalAlert(requireActivity());
+//
+//        } else if (SharedPref.getTpmanatoryStatus(requireContext())
+//                && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")
+//                && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
+//
+//            CommonAlertBox.TpAlert(requireActivity());
+//
+//        } else {
+//
+//            if (SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
+//
+//                if ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+//                    submitMyDayPlan();
+//                } else {
+//                    gpsTrack = new GPSTrack(requireActivity());
+//                    commonUtilsMethods.showToastMessage(
+//                            requireContext(),
+//                            getString(R.string.no_location_please_try_again)
+//                    );
+//                }
+//
+//            } else {
+//                submitMyDayPlan();
+//            }
+//        }
+//    }
     private void refresh(boolean isToSetupWorkPlan) {
         try {
             JSONObject refreshJsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
@@ -1954,7 +2002,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         workDayCode = stpOfflineDataTable.getDayID();
                         workDayName = stpOfflineDataTable.getDayCaption();
                         tpDoctor = stpOfflineDataTable.getDoctorCode();
-                        tpChemists=stpOfflineDataTable.getChemistCode();
+                        tpChemists = stpOfflineDataTable.getChemistCode();
                         binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                         chk_cluster = mTowncode1;
                     } else {
@@ -1963,7 +2011,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         workDayCode2 = stpOfflineDataTable.getDayID();
                         workDayName2 = stpOfflineDataTable.getDayCaption();
                         tpDoctor2 = stpOfflineDataTable.getDoctorCode();
-                        tpChemists2=stpOfflineDataTable.getChemistCode();
+                        tpChemists2 = stpOfflineDataTable.getChemistCode();
                         binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                         chk_cluster = mTowncode2;
                     }
@@ -2074,7 +2122,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     workDayCode = stpOfflineDataTable.getDayID();
                                     workDayName = stpOfflineDataTable.getDayCaption();
                                     tpDoctor = stpOfflineDataTable.getDoctorCode();
-                                    tpChemists= stpOfflineDataTable.getChemistCode();
+                                    tpChemists = stpOfflineDataTable.getChemistCode();
                                     tpWorkType = mWTCode1;
                                     tpCluster = stpOfflineDataTable.getClusterCode();
                                     binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
@@ -2087,7 +2135,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     tpWorkType2 = mWTCode2;
                                     tpCluster2 = stpOfflineDataTable.getClusterCode();
                                     tpDoctor2 = stpOfflineDataTable.getDoctorCode();
-                                    tpChemists2=stpOfflineDataTable.getChemistCode();
+                                    tpChemists2 = stpOfflineDataTable.getChemistCode();
                                     binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                                     chk_cluster = mTowncode2;
                                 }
@@ -2356,13 +2404,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             deviationJSONObject.put("TP_cluster", tpCluster);
             deviationJSONObject.put("TP_worktype", tpWorkType);
             deviationJSONObject.put("TP_Doctor", tpDoctor);
-            deviationJSONObject.put("TP_Chemists",tpChemists);
+            deviationJSONObject.put("TP_Chemists", tpChemists);
             deviationJSONObject.put("Others_Code", workDayCode);
             deviationJSONObject.put("Others_Name", workDayName);
             deviationJSONObject.put("TP_cluster2", tpCluster2);
             deviationJSONObject.put("TP_worktype2", tpWorkType2);
             deviationJSONObject.put("TP_Doctor2", tpDoctor2);
-            deviationJSONObject.put("TP_Chemists2",tpChemists2);
+            deviationJSONObject.put("TP_Chemists2", tpChemists2);
             deviationJSONObject.put("Others_Code2", workDayCode2);
             deviationJSONObject.put("Others_Name2", workDayName2);
             if (TPDCRMGRApprNeed.equalsIgnoreCase("0")) {
@@ -2996,7 +3044,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode1;
-                if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg2.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3010,7 +3059,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode2;
-                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg1.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3046,7 +3096,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObjectwt.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     jsonObjectwt.put("TP_Doctor", tpDoctor);
-                    jsonObjectwt.put("TP_Chemists",tpChemists);
+                    jsonObjectwt.put("TP_Chemists", tpChemists);
                     jsonObjectwt.put("TP_cluster", tpCluster);
                     jsonObjectwt.put("TP_worktype", tpWorkType);
                     jsonObjectwt.put("Others_Code", workDayCode);
@@ -3070,7 +3120,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 firstSessionObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg1.equalsIgnoreCase("F")) {
                     firstSessionObject.put("TP_Doctor", tpDoctor);
-                    firstSessionObject.put("TP_Chemists",tpChemists);
+                    firstSessionObject.put("TP_Chemists", tpChemists);
                     firstSessionObject.put("TP_cluster", tpCluster);
                     firstSessionObject.put("TP_worktype", tpWorkType);
                     firstSessionObject.put("Others_Code", workDayCode);
@@ -3093,7 +3143,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 secondSessionObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     secondSessionObject.put("TP_Doctor", tpDoctor2);
-                    secondSessionObject.put("TP_Chemists",tpChemists2);
+                    secondSessionObject.put("TP_Chemists", tpChemists2);
                     secondSessionObject.put("TP_cluster", tpCluster2);
                     secondSessionObject.put("TP_worktype", tpWorkType2);
                     secondSessionObject.put("Others_Code", workDayCode2);
@@ -3292,19 +3342,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TP_cluster", tpCluster);
             jsonObject.put("TP_worktype", tpWorkType);
             jsonObject.put("TP_Doctor", tpDoctor);
-            jsonObject.put("TP_Chemists",tpChemists);
+            jsonObject.put("TP_Chemists", tpChemists);
             jsonObject.put("TP_cluster2", tpCluster2);
             jsonObject.put("TP_worktype2", tpWorkType2);
             jsonObject.put("TP_Doctor2", tpDoctor2);
-            jsonObject.put("TP_Chemists2",tpChemists2);
+            jsonObject.put("TP_Chemists2", tpChemists2);
             jsonObject.put("day_flag", "0");
 
             SharedPref.setTodayTPDoctor(requireContext(), tpDoctor);
             Log.e("TPDoctorSave", "Saved TP Doctor => " + tpDoctor);
 
-            SharedPref.setTodayTPChemists(requireContext(),tpChemists);
-            Log.e("TPChemistSave","Saved TP Chemist =>" + tpChemists);
-            if(!deviation.equalsIgnoreCase("1")) {
+            SharedPref.setTodayTPChemists(requireContext(), tpChemists);
+            Log.e("TPChemistSave", "Saved TP Chemist =>" + tpChemists);
+            if (!deviation.equalsIgnoreCase("1")) {
                 if ("F".equalsIgnoreCase(mFwFlg1)) {
                     ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(
                             tpDoctor, isFromTP, tpChemists  // Session 1 data
@@ -3316,7 +3366,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     );
                 }
             }
-           // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP,tpChemists);
+            // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP,tpChemists);
 
             jsonObject.put("Others_Code", workDayCode);
             jsonObject.put("Others_Name", workDayName);
@@ -3933,7 +3983,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             String todayPlanClusterCode = mTowncode1;
-            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
             SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), true, mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"));
 
@@ -3956,7 +4006,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             FirstSeasonObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
             if (mFwFlg1.equalsIgnoreCase("F")) {
                 FirstSeasonObject.put("TP_Doctor", tpDoctor);
-                FirstSeasonObject.put("TP_Chemists",tpChemists);
+                FirstSeasonObject.put("TP_Chemists", tpChemists);
                 FirstSeasonObject.put("TP_cluster", tpCluster);
                 FirstSeasonObject.put("TP_worktype", tpWorkType);
                 FirstSeasonObject.put("Others_Code", workDayCode);
@@ -3979,7 +4029,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SecondSeasonObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     SecondSeasonObject.put("TP_Doctor", tpDoctor2);
-                    SecondSeasonObject.put("TP_Chemists",tpChemists2);
+                    SecondSeasonObject.put("TP_Chemists", tpChemists2);
                     SecondSeasonObject.put("TP_cluster", tpCluster2);
                     SecondSeasonObject.put("TP_worktype", tpWorkType2);
                     SecondSeasonObject.put("Others_Code", workDayCode2);
@@ -4467,13 +4517,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             tpWorkType = "";
             tpCluster = "";
             tpDoctor = "";
-            tpChemists="";
+            tpChemists = "";
             workDayCode = "";
             workDayName = "";
             tpWorkType2 = "";
             tpCluster2 = "";
             tpDoctor2 = "";
-            tpChemists2="";
+            tpChemists2 = "";
             workDayCode2 = "";
             workDayName2 = "";
             isFromTP = false;
@@ -4615,7 +4665,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             tpWorkType = FirstSeasonDayPlanObject.optString("TP_worktype");
                             tpCluster = FirstSeasonDayPlanObject.optString("TP_cluster");
                             tpDoctor = FirstSeasonDayPlanObject.optString("TP_Doctor");
-                            tpChemists=FirstSeasonDayPlanObject.optString("TP_Chemists");
+                            tpChemists = FirstSeasonDayPlanObject.optString("TP_Chemists");
                             deviation = FirstSeasonDayPlanObject.optString("TpVwFlg");
                             workDayCode = FirstSeasonDayPlanObject.optString("Others_Code");
                             workDayName = FirstSeasonDayPlanObject.optString("Others_Name");
@@ -4831,7 +4881,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(mTownname2).replaceAll(",", " , ")));
                                 binding.txtheadquaters2.setText(CommonUtilsMethods.removeLastComma(mHQName2).replaceAll(",", " , "));
                                 String todayPlanClusterCode = mTowncode2;
-                                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                                if (mFwFlg1.equalsIgnoreCase("F"))
+                                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                             }
                             disableSession2();
@@ -5004,7 +5055,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 Type type = new TypeToken<OneBuildModelClass>() {
                 }.getType();
                 OneBuildModelClass oneBuildModelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
-                StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder(),listedChm=new StringBuilder();
+                StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder(), listedChm = new StringBuilder();
                 String stpCode = "", stpName = "";
                 if (oneBuildModelClass.getSessionList() != null && !oneBuildModelClass.getSessionList().isEmpty()) {
                     stpCode = oneBuildModelClass.getSessionList().get(0).getSTPCode();
@@ -5061,7 +5112,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     obj.put("Rem", "");
                     obj.put("TpVwFlg", "0");
                     obj.put("TP_Doctor", listedDr.toString());
-                    obj.put("TP_Chemists",listedChm.toString());
+                    obj.put("TP_Chemists", listedChm.toString());
                     obj.put("TP_cluster", clusterCode.toString());
                     obj.put("TP_worktype", oneBuildModelClass.getSessionList().get(0).getWorkType().getCode());
                     if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
@@ -5078,7 +5129,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                     if (oneBuildModelClass.getSessionList().size() > 1) {
                         listedDr = new StringBuilder();
-                        listedChm=new StringBuilder();
+                        listedChm = new StringBuilder();
                         clusterCode = new StringBuilder();
                         clusterName = new StringBuilder();
                         String stpCode2 = "", stpName2 = "";
@@ -5132,7 +5183,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         obj2.put("Rem", "");
                         obj2.put("TpVwFlg", "0");
                         obj2.put("TP_Doctor", listedDr.toString());
-                        obj2.put("TP_Chemists",listedChm.toString());
+                        obj2.put("TP_Chemists", listedChm.toString());
                         obj2.put("TP_cluster", clusterCode.toString());
                         obj2.put("TP_worktype", oneBuildModelClass.getSessionList().get(1).getWorkType().getCode());
                         if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
@@ -5752,6 +5803,73 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         }
     }
+//    private void stayPopup() {
+//        Dialog dialogStayNight = new Dialog(requireActivity());
+//        dialogStayNight.setContentView(R.layout.popup_stay_night);
+//        if (dialogStayNight.getWindow() != null) {
+//            dialogStayNight.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        }
+//        dialogStayNight.setCancelable(false);
+//        ImageView iv_close = dialogStayNight.findViewById(R.id.img_close);
+//        AppCompatButton btnYes = dialogStayNight.findViewById(R.id.btn_yes); // YES
+//        AppCompatButton btnNo = dialogStayNight.findViewById(R.id.btn_no); // NO
+//        //dialogAcknowledge(dialogStayNight);
+//        dialogStayNight.show();
+//        btnYes.setOnClickListener(v -> {
+//            Log.e("CLICK_TEST", "YES CLICKED");
+//
+//            dialogStayNight.dismiss();
+//
+//            stayPopup2(); // 👉 next popup
+//        });
+//        iv_close.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                dialogStayNight.dismiss();
+//            }
+//        });
+//
+//
+//        // ✅ NO → direct flow
+//        btnNo.setOnClickListener(v -> {
+//            dialogStayNight.dismiss();
+//            proceedSubmitFlow();
+//        });
+//    }
+//    private void stayPopup2() {
+//
+//        Dialog dialogStayNight = new Dialog(requireActivity());
+//        dialogStayNight.setContentView(R.layout.popup_stay_night_territory);
+//
+//        if (dialogStayNight.getWindow() != null) {
+//            dialogStayNight.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        }
+//
+//        dialogStayNight.setCancelable(false);
+//
+//        ImageView iv_close = dialogStayNight.findViewById(R.id.img_close);
+//        AppCompatButton btnCancel = dialogStayNight.findViewById(R.id.btn_cancel);
+//        AppCompatButton btnSubmit = dialogStayNight.findViewById(R.id.btn_submit);
+//
+//        dialogStayNight.show();
+//
+////        dialogStayNight.getWindow().setLayout(
+////                ViewGroup.LayoutParams.MATCH_PARENT,
+////                ViewGroup.LayoutParams.WRAP_CONTENT
+////        );
+//
+//        // ❌ close
+//        iv_close.setOnClickListener(v -> dialogStayNight.dismiss());
+//
+//        // ❌ cancel
+//        btnCancel.setOnClickListener(v -> dialogStayNight.dismiss());
+//
+//        // ✅ FINAL SUBMIT → main flow
+//        btnSubmit.setOnClickListener(v -> {
+//            dialogStayNight.dismiss();
+//            proceedSubmitFlow();
+//        });
+//    }
 
     private void remarksAlertBox() {
         Dialog dialogRemarks = new Dialog(requireActivity());
