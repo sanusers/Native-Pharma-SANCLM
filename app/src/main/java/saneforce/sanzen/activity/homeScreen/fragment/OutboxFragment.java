@@ -1137,7 +1137,8 @@ public class OutboxFragment extends Fragment {
                                     activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
                                     activityList.remove(activityModelClass);
                                     //notifyedmethod();
-                                    callback.onSuccess();
+//                                    callback.onSuccess();
+                                    activitySubmitAPI(child, index, 0, callback);
                                 } else {
                                     outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                     activityModelClass.setSyncStatus(Constants.FAILED);
@@ -1205,7 +1206,8 @@ public class OutboxFragment extends Fragment {
                                 activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
                                 activityUploadList.remove(activityUploadModelClass);
                                 //notifyedmethod();
-                                callback.onSuccess();
+//                                callback.onSuccess();
+                                activityUploadSubmitAPI(child, index, 0, callback);
                             } else {
                                 outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                 activityUploadModelClass.setSyncStatus(Constants.FAILED);

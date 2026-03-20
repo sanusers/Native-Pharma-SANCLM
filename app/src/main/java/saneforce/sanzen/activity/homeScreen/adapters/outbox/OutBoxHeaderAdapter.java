@@ -993,7 +993,8 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                     activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
                                     activityList.remove(activityModelClass);
                                     notifyDataSetChanged();
-                                    callback.onSuccess();
+//                                    callback.onSuccess();
+                                    activitySubmitAPI(child, index, callback);
                                 } else {
                                     outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                     activityModelClass.setSyncStatus(Constants.FAILED);
@@ -1057,7 +1058,8 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
                                 activityUploadList.remove(activityUploadModelClass);
                                 notifyDataSetChanged();
-                                callback.onSuccess();
+//                                callback.onSuccess();
+                                activityUploadSubmitAPI(child, index, callback);
                             } else {
                                 outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                 activityUploadModelClass.setSyncStatus(Constants.FAILED);
