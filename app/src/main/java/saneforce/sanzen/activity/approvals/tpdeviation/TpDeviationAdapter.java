@@ -52,7 +52,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
     private ViewPlanClickListener viewPlanClickListener;
 
     public interface ViewPlanClickListener {
-        public void onClick(TpDeviationModelList tpDeviationModelList);
+        void onClick(TpDeviationModelList tpDeviationModelList);
     }
 
     public TpDeviationAdapter(Context context, ArrayList<TpDeviationModelList> tpDeviationModelLists, ViewPlanClickListener viewPlanClickListener) {
@@ -173,11 +173,11 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             jsonTpDeviation.put("tableName", "savedev_appr");
             jsonTpDeviation.put("slno", slNo);
             jsonTpDeviation.put("status", status);
-            jsonTpDeviation.put("sfcode", sfCode);
+            jsonTpDeviation.put("sfcode", SharedPref.getSfCode(context));
             jsonTpDeviation.put("sfname", sfName);
             jsonTpDeviation.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_15, date));
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
-            jsonTpDeviation.put("Rsf", SharedPref.getHqCode(context));
+            jsonTpDeviation.put("Rsf", tpDeviationModelLists.get(position).getSfCode());
             Log.v("json_approve_tpDev", jsonTpDeviation.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,12 +192,12 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             jsonTpDeviation.put("tableName", "savedev_appr");
             jsonTpDeviation.put("slno", slNo);
             jsonTpDeviation.put("status", status);
-            jsonTpDeviation.put("sfcode", sfCode);
+            jsonTpDeviation.put("sfcode", SharedPref.getSfCode(context));
             jsonTpDeviation.put("sfname", sfName);
             jsonTpDeviation.put("reason", reason);
             jsonTpDeviation.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_15, date));
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
-            jsonTpDeviation.put("Rsf", SharedPref.getHqCode(context));
+            jsonTpDeviation.put("Rsf", tpDeviationModelLists.get(position).getSfCode());
             Log.v("json_reject_tpDev", jsonTpDeviation.toString());
         } catch (Exception e) {
             e.printStackTrace();

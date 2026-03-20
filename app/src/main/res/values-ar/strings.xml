@@ -1044,5 +1044,7 @@
     <string name="others">أخرى</string>
     <string name="location">الموقع</string>
     <string name="failed_to_save_image">فشل حفظ الصورة</string>
+    <string name="loc_dect">لم يتم اكتشاف الموقع، يرجى التحديث</string>
+    <string name="kindly_replan">يرجى إعادة التخطيط</string>
 
 </resources>

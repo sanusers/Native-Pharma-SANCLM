@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.call.dcrCallSelection;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static saneforce.sanzen.activity.map.MapsActivity.BitmapFromVector;
+import static saneforce.sanzen.activity.map.MapsActivity.mapsBinding;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 //import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
@@ -123,8 +125,15 @@ public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallba
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
-
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
+            LatLng location = new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(16.2f));
+//        if((lat != 0.0 || lng != 0.0) && (!binding.tvTaggedAddress.getText().equals(MapsAddition.this.getString(R.string.no_address_found)) || !binding.tvTaggedAddress.getText().equals(MapsAddition.this.getString(R.string.no_address_found2)))){
+//            binding.btnTag.setEnabled(true);
+//        }else{
+//            binding.btnTag.setEnabled(false);
+//        }
         binding.btnTag.setText(R.string.tag);
         binding.constraintTaggedView.setVisibility(View.VISIBLE);
         binding.constraintMid.setVisibility(View.INVISIBLE);
@@ -155,6 +164,7 @@ public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallba
                 finish();
             }
         });
+
 
         binding.btnTag.setOnClickListener(new SafeClickListener() {
             @Override

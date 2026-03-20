@@ -1056,4 +1056,6 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="others">Khác</string>
     <string name="failed_to_save_image">Không thể lưu hình ảnh</string>
     <string name="location">Vị trí</string>
+    <string name="loc_dect">Không phát hiện vị trí, vui lòng làm mới</string>
+    <string name="kindly_replan">vui lòng lập kế hoạch lại</string>
 </resources>

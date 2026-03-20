@@ -1052,5 +1052,7 @@
     <string name="others">Другое</string>
     <string name="location">Местоположение</string>
     <string name="failed_to_save_image">Не удалось сохранить изображение</string>
+    <string name="loc_dect">Местоположение не обнаружено, пожалуйста обновите</string>
+    <string name="kindly_replan">пожалуйста перепланируйте</string>
 
 </resources>

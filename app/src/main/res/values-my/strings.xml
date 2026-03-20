@@ -1043,6 +1043,8 @@
     <string name="others">အခြား</string>
     <string name="location">တည်နေရာ</string>
     <string name="failed_to_save_image">ပုံကို သိမ်းဆည်းရန် မအောင်မြင်ပါ</string>
+    <string name="loc_dect">တည်နေရာ မတွေ့ရှိပါ၊ ကျေးဇူးပြု၍ ပြန်လည်ပြင်ဆင်ပါ</string>
+    <string name="kindly_replan">ပြန်လည်စီစဉ်ပေးပါ</string>
 
 
 </resources>

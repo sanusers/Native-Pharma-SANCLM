@@ -1040,5 +1040,7 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="others">Autres</string>
     <string name="location">Emplacement</string>
     <string name="failed_to_save_image">Échec de l’enregistrement de l’image</string>
+    <string name="loc_dect">Emplacement non détecté, veuillez actualiser</string>
+    <string name="kindly_replan">veuillez replanifier</string>
 
 </resources>

@@ -94,6 +94,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.activityModule.adapter.ActivityAdapter;
 import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
@@ -135,7 +136,6 @@ public class ActivityFragment extends Fragment {
     int StorageFlag = 0, chosenActivityPosition = -1;
     File file1;
     CommonUtilsMethods commonUtilsMethods;
-    public static TextView FilnameTet;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private ActivityDetailsDataDao activityDetailsDataDao;
@@ -148,6 +148,8 @@ public class ActivityFragment extends Fragment {
     public static List<JSONObject> activityData;
     public static Set<String> savedActivityList = new HashSet<>();
     public static LinkedHashMap<String, LinkedHashMap<String, ActivityDetailsModelClass>> activityAnswerData = new LinkedHashMap<>();
+    private static final long MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+    private TextView selectedTextFileUpload;
 
     @Override
     public void onResume() {
@@ -2336,7 +2338,7 @@ public class ActivityFragment extends Fragment {
         textfileupload.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                FilnameTet = textfileupload;
+                selectedTextFileUpload = textfileupload;
 //                if(!CheckStoragePermission()) {
 //                    RequestStoragePermission();
 //                }else {
@@ -3454,8 +3456,17 @@ public class ActivityFragment extends Fragment {
                         commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.zip_not_supported));
                         return;
                     }
-                    FilnameTet.setText(filename);
-                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.file_accepted));
+                    selectedTextFileUpload.setText(filename);
+                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.file_accepted));uri = data.getData();
+
+                    long fileSize = getFileSize(uri);
+
+                    if (fileSize > MAX_FILE_SIZE) {
+                        commonUtilsMethods.showToastMessage(requireContext(), "File size limit exceeded");
+                        removeFile(selectedTextFileUpload.getText().toString());
+                        selectedTextFileUpload.setText("");
+                        return;
+                    }
                     copyFileToAppDir(uri);
 //                    String fullPath = getPathFromURI(requireContext(), uri);
 //                    String[] parts = fullPath.split("/");
@@ -3493,6 +3504,21 @@ public class ActivityFragment extends Fragment {
             }
             commonFun();
         }
+    }
+
+    private long getFileSize(Uri uri) {
+        long size = -1;
+        try (Cursor cursor = requireContext().getContentResolver().query(uri, null, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                if (sizeIndex != -1) {
+                    size = cursor.getLong(sizeIndex);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 
     private void copyFileToAppDir(Uri sourceUri) {

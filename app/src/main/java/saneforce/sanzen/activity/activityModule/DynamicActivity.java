@@ -122,7 +122,6 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class DynamicActivity extends AppCompatActivity {
-
     ActivityBinding binding;
     private static final int PICK_FROM_GALLERY = 101;
     ApiInterface apiInterface;
@@ -140,7 +139,6 @@ public class DynamicActivity extends AppCompatActivity {
     int StorageFlag = 0, chosenActivityPosition = -1;
     File file1;
     CommonUtilsMethods commonUtilsMethods;
-    public static TextView FilnameTet;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private ActivityDetailsDataDao activityDetailsDataDao;
@@ -149,6 +147,8 @@ public class DynamicActivity extends AppCompatActivity {
     public static boolean isEdited = false;
     private ActivityModelClass chosenActivityModelClass;
     private String activityDate, activityTime, selectedHQ = "", activityCap;
+    private static final long MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+    private TextView selectedTextFileUpload;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -2128,7 +2128,7 @@ public class DynamicActivity extends AppCompatActivity {
         textfileupload.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                FilnameTet = textfileupload;
+                selectedTextFileUpload = textfileupload;
 //                if (!CheckStoragePermission()) {
 //                    RequestStoragePermission();
 //                } else {
@@ -2607,8 +2607,17 @@ public class DynamicActivity extends AppCompatActivity {
 //                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
 //                        return;
 //                    }
-                    FilnameTet.setText(filename);
-                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
+                    selectedTextFileUpload.setText(filename);
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));uri = data.getData();
+
+                    long fileSize = getFileSize(uri);
+
+                    if (fileSize > MAX_FILE_SIZE) {
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "File size limit exceeded");
+                        removeFile(selectedTextFileUpload.getText().toString());
+                        selectedTextFileUpload.setText("");
+                        return;
+                    }
                     copyFileToAppDir(uri);
 //                    String fullPath = getPathFromURI(DynamicActivity.this, uri);
 //                    String[] parts = fullPath.split("/");
@@ -2691,6 +2700,21 @@ public class DynamicActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private long getFileSize(Uri uri) {
+        long size = -1;
+        try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                if (sizeIndex != -1) {
+                    size = cursor.getLong(sizeIndex);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 
     public void copyFileOrDirectory(String srcDir, String dstDir) {

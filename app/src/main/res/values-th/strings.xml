@@ -1055,4 +1055,6 @@
     <string name="others">อื่น ๆ</string>
     <string name="location">ตำแหน่งที่ตั้ง</string>
     <string name="failed_to_save_image">บันทึกรูปภาพไม่สำเร็จ</string>
+    <string name="loc_dect">ไม่พบตำแหน่ง กรุณารีเฟรช</string>
+    <string name="kindly_replan">กรุณาวางแผนใหม่</string>
 </resources>
