@@ -57,7 +57,6 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull PreviewAdapter.MyViewHolder holder, int position) {
-
         holder.name.setText(arrayList.get(position).getBrandName());
         products = arrayList.get(position).getProductArrayList();
 
