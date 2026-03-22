@@ -16,11 +16,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -38,11 +36,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
@@ -63,7 +57,6 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -138,7 +131,6 @@ import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.myresource.MyResource_Activity;
-import saneforce.sanzen.activity.myresource.ProfilingActivity;
 import saneforce.sanzen.activity.myresource.profile.ProfileViewScreen;
 import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
@@ -177,7 +169,6 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.services.NotificationDialog;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkChangeReceiver;
-import saneforce.sanzen.utility.NetworkUtil;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -187,7 +178,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static int DeviceWith;
     public static Dialog dialog;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
-    public static String CustomPresentationNeed, PresentationNeed, SequentialEntry, CheckInOutNeed;
+    public String CustomPresentationNeed, PresentationNeed, CheckInOutNeed, PracticeNeed;
+    public static String SequentialEntry;
     public static LocalDate selectedDate;
     public static String workingDate = "";
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
@@ -1634,6 +1626,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            }
             CheckInOutNeed = SharedPref.getSrtNd(this);
             PresentationNeed = SharedPref.getPresentationNeed(this);
+            PracticeNeed = SharedPref.getPracticeNeed(this);
             CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
             SequentialEntry = SharedPref.getDcrSequential(this);
             if (PresentationNeed.equalsIgnoreCase("0")) {
@@ -1642,7 +1635,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else {
                 binding.llPresentation.setVisibility(View.GONE);
             }
-//                binding.llSlide.setVisibility(View.VISIBLE);
+            if (PracticeNeed.equalsIgnoreCase("1")) {
+                binding.llSlide.setVisibility(View.VISIBLE);
+            } else {
+                binding.llSlide.setVisibility(View.GONE);
+            };
 //            } else {
 //                binding.llPresentation.setVisibility(View.GONE);
 //                binding.llSlide.setVisibility(View.GONE);

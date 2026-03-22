@@ -537,6 +537,7 @@ public class SharedPref {
     public static final String TodayTPChemists = "TodayTPChemist";
    // public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
     public static final String RemainderTime = "RemainderTime";
+    public static final String PRACTICE_NEED = "PracticeNd";
     public static final String DataClearedFlag = "DataClearedFlag";
     private static final String TodayPopupShown = "TodayPopupShown";
     public static final String LAST_KNOWN_VERSION = "last_known_version";
@@ -943,6 +944,7 @@ public class SharedPref {
             editor.putString(LEAVE_ATTACHMENT_NEED,jsonObject.optString("leave_attachment_need"));
             editor.putString(JW_AUTO_SELECTION_NEED, jsonObject.optString("jw_auto_selection_need"));
             editor.putString(RemainderTime, jsonObject.optString("Remainder_Time"));
+            editor.putString(PRACTICE_NEED,jsonObject.optString("PracticeNd"));
             editor.putString(SCREEN_ACCESS, jsonObject.optString("Screen_Access"));
             editor.putString(CLEAR_DATA_NEED, jsonObject.optString("Clear_Data_Need"));
             editor.putString(SEND_LOGS_NEED, jsonObject.optString("Send_Logs_Need"));
@@ -3421,6 +3423,10 @@ public class SharedPref {
 
     public static String getDoctorRemainingShownDate(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(RemainderTime, "");
+    }
+
+    public static String getPracticeNeed(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(PRACTICE_NEED,"0");
     }
 
 //    public static void addVisitedDoctor(Context context, String custCode) {
