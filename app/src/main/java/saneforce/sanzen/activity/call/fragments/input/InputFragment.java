@@ -4,6 +4,7 @@ import static saneforce.sanzen.activity.call.DCRCallActivity.PrdMandatory;
 import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 
 import android.annotation.SuppressLint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -47,6 +51,10 @@ public class InputFragment extends Fragment {
         changeCaption();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        fragmentInputBinding.rvListInput.setOnTouchListener((v, event) -> {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        });
         if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             fragmentInputBinding.tagStock.setVisibility(View.VISIBLE);
         } else {
@@ -69,7 +77,46 @@ public class InputFragment extends Fragment {
                 filter(editable.toString());
             }
         });
+
+        // --- Inside onCreateView, after searchInput.addTextChangedListener ---
+
+//        View root = requireActivity().findViewById(android.R.id.content);
+//
+//        root.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+//
+//            Rect r = new Rect();
+//            root.getWindowVisibleDisplayFrame(r);
+//
+//            int screenHeight = root.getRootView().getHeight();
+//            int keypadHeight = screenHeight - r.bottom;
+//
+//            // 15% mela keypad height iruntha keyboard open-la iruku nu artham
+//            if (keypadHeight > screenHeight * 0.15) {
+//
+//                // 🔥 Navigation bar height-a calculate panni minus panrom
+//                int navBarHeight = 0;
+//                int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+//
+//                if (resourceId > 0) {
+//                    navBarHeight = getResources().getDimensionPixelSize(resourceId);
+//                }
+//
+//                int finalHeight = keypadHeight - navBarHeight;
+//
+//                if (finalHeight < 0) finalHeight = 0;
+//
+//                // RecyclerView padding-a adjust panrom
+//                fragmentInputBinding.rvListInput.setClipToPadding(false);
+//                fragmentInputBinding.rvListInput.setPadding(0, 0, 0, finalHeight);
+//
+//            } else {
+//                // Keyboard close-la iruntha padding 0
+//                fragmentInputBinding.rvListInput.setPadding(0, 0, 0, 0);
+//            }
+//        });
+
         return view;
+
     }
 
     private void dummyAdapter() {

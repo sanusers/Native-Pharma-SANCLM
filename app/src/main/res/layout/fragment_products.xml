@@ -241,7 +241,6 @@
                 android:id="@+id/rv_list_prd"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:windowSoftInputMode="adjustResize|adjustPan"
                 android:layout_marginHorizontal="@dimen/_2sdp"
                 android:layout_marginTop="@dimen/_4sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
