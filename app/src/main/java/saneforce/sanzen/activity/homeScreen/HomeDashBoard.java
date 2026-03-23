@@ -798,9 +798,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
             checkUserStatus();
         }
-        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
-            checkAndShowDoctorPopup();
-        }
+//        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
+//            checkAndShowDoctorPopup();
+//        }
     }
     private void checkAndShowDoctorPopup() {
         try {
