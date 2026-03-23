@@ -253,7 +253,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpNeed(this).equalsIgnoreCase("0")
                 && !SharedPref.getTpStartDate(this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(this).equalsIgnoreCase("-1")
                 && !SharedPref.getTpEndDate(this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(this).equalsIgnoreCase("-1")) {
-            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare)+" " + SharedPref.getStpCaption(this)+" " + getString(R.string.and_get_approved_to_prepare_tour_plan));
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare) + " " + SharedPref.getStpCaption(this) + " " + getString(R.string.and_get_approved_to_prepare_tour_plan));
             Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
             startActivity(intent);
             finish();
@@ -385,7 +385,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 LocalDate localDate1 = LocalDate.now();
                                 TourPlanOfflineDataTable tourPlanOfflineDataTable1 = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                                 changeStatus = tourPlanOfflineDataTable1.getTpMonthSyncedOrEmpty();
-                                if(changeStatus.equalsIgnoreCase("0") || changeStatus.equalsIgnoreCase("2")){
+                                if (changeStatus.equalsIgnoreCase("0") || changeStatus.equalsIgnoreCase("2")) {
                                     if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.minusMonths(1)))) {
                                         getDraftSaveOneBuild("previous", monthYearFromDateUI(localDate1.minusMonths(1)), dayWiseArrayPreviousMonthOneBuild, isFrom, status);
                                     } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1))) {
@@ -393,7 +393,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.plusMonths(1)))) {
                                         getDraftSaveOneBuild("next", monthYearFromDateUI(localDate1.plusMonths(1)), dayWiseArrayNextMonthOneBuild, isFrom, status);
                                     }
-                                }else{
+                                } else {
                                     get1MonthRemoteTPDataOneBuild(localDate);
                                 }
 
@@ -617,7 +617,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 } else if (modelClass1.getTerritories().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any)+" "+ SharedPref.getClusterCap(TourPlanActivity.this)+" "+getString(R.string.for_session)+" "+ (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + SharedPref.getClusterCap(TourPlanActivity.this) + " " + getString(R.string.for_session) + " " + (i + 1));
                                     break;
                                 } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                                     if (FW_meetup_mandatory.equals("0")) {
@@ -714,7 +714,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         || (modelClass1.getClusters().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0"))) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any)+" "+ SharedPref.getClusterCap(TourPlanActivity.this)+" " +getString(R.string.for_session)+" "+ (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + SharedPref.getClusterCap(TourPlanActivity.this) + " " + getString(R.string.for_session) + " " + (i + 1));
                                     break;
                                 }
 //                            if(modelClass1.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
@@ -865,7 +865,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         } else if (oneBuildModelClass.getTerritories().size() == 0) {
                             isEmpty = true;
                             position = i;
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any)+" "+ SharedPref.getClusterCap(TourPlanActivity.this)+" "+getString(R.string.for_session)+" "+ (i + 1));
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + SharedPref.getClusterCap(TourPlanActivity.this) + " " + getString(R.string.for_session) + " " + (i + 1));
                             break;
                         } else if (oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                             if (FW_meetup_mandatory.equals("0")) {
@@ -1161,7 +1161,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 || (checkList.isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0"))) {
                             isEmpty = true;
                             position = i;
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any)+" "+ SharedPref.getClusterCap(TourPlanActivity.this)+" "+getString(R.string.for_session)+" "+ (i + 1));
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + SharedPref.getClusterCap(TourPlanActivity.this) + " " + getString(R.string.for_session) + " " + (i + 1));
                             break;
                         } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                             if (FW_meetup_mandatory.equals("0")) {
@@ -3069,11 +3069,11 @@ public class TourPlanActivity extends AppCompatActivity {
                     String selectedHQCode = "", selectedHQName = "";
 //                    for (OneBuildModelClass.SessionList sessionList : oneBuildModelClass.getSessionList()) {
                     OneBuildModelClass.SessionList sessionList = oneBuildModelClass.getSessionList().get(position);
-                        if (sessionList.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                            selectedHQCode = sessionList.getHeadquarters().getCode();
-                            selectedHQName = sessionList.getHeadquarters().getName();
+                    if (sessionList.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                        selectedHQCode = sessionList.getHeadquarters().getCode();
+                        selectedHQName = sessionList.getHeadquarters().getName();
 //                            break;
-                        }
+                    }
 //                    }
                     if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
                         getSTPMGR(arrayListOneBuild, position, selectedHQCode, selectedHQName, stpCode, stpName);
@@ -4068,59 +4068,71 @@ public class TourPlanActivity extends AppCompatActivity {
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                             Log.v("tpGetPlan", "----" + response.body());
                             try {
-                                JSONObject json = new JSONObject(response.body().toString());
-                                Log.d("TAG", "onResponse: " + json);
-                                boolean success = json.optBoolean("success");
+                                if (response.body() != null && !response.body().isJsonNull()) {
+                                    JSONObject json = new JSONObject(response.body().toString());
 
-                                if (success) {
-                                    Log.d("TAG", "onResponse: success TRUE");
-                                } else {
-                                    Log.d("TAG", "onResponse: success FALSE");
-                                }
+                                    Log.d("TAG", "onResponse: " + json);
+                                    boolean success = json.optBoolean("success");
 
-                                if (response.body() != null && !response.body().isJsonNull() && success) {
-                                    try {
-                                        SharedPref.setTpSyncStaus(TourPlanActivity.this, true);
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.draft_save));
-                                        tourPlanOfflineDataTable1.setTpMonthSynced("0");
-                                        tourPlanOfflineDataDao.saveMonthlySyncStatus(tourPlanOfflineDataTable1.getTpMonth(), "0");
-                                        inputDataArrayOneBuild.setSyncStatus("0");
+                                    if (success) {
+                                        Log.d("TAG", "onResponse: success TRUE");
+                                    } else {
+                                        Log.d("TAG", "onResponse: success FALSE");
+                                    }
 
-                                        for (OneBuildModelClass oneBuildModelClass : arrayList) {
-                                            if (oneBuildModelClass.getSyncStatus() != null && oneBuildModelClass.getSyncStatus().equals("1")) {
-                                                oneBuildModelClass.setSyncStatus("0");
-                                            }
-                                        }
-
-                                        binding.progressBar.setVisibility(View.GONE);
+                                    if (response.body() != null && !response.body().isJsonNull() && success) {
                                         try {
-                                            JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
-                                            if (!isFrom.equalsIgnoreCase("sendToApproval")) {
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
-                                                binding.progressBar.setVisibility(View.GONE);
-                                                binding.tvSync.setEnabled(true);
-                                            }
-                                            if (isFrom.equalsIgnoreCase("sendToApproval")) {
-                                                JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(
-                                                        TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                                                Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {}.getType();
-                                                if (jsonArray.length() >= 0) {
-                                                    ArrayList<OneBuildModelClass> arrayList1 = new Gson().fromJson(String.valueOf(jsonArray), type);
-                                                    sendTpForApprovalOneBuild(jbonj, arrayList1, localDate.toString(), monthYearFromDateUI(localDate), statusOffline, isClickedName);
+                                            SharedPref.setTpSyncStaus(TourPlanActivity.this, true);
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.draft_save));
+                                            tourPlanOfflineDataTable1.setTpMonthSynced("0");
+                                            tourPlanOfflineDataDao.saveMonthlySyncStatus(tourPlanOfflineDataTable1.getTpMonth(), "0");
+                                            inputDataArrayOneBuild.setSyncStatus("0");
+
+                                            for (OneBuildModelClass oneBuildModelClass : arrayList) {
+                                                if (oneBuildModelClass.getSyncStatus() != null && oneBuildModelClass.getSyncStatus().equals("1")) {
+                                                    oneBuildModelClass.setSyncStatus("0");
                                                 }
-                                            } else {
-                                                get1MonthRemoteTPDataOneBuild(localDate);
                                             }
-                                        } catch (JSONException e) {
+
+                                            binding.progressBar.setVisibility(View.GONE);
+                                            try {
+                                                JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
+                                                if (!isFrom.equalsIgnoreCase("sendToApproval")) {
+                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
+                                                    binding.progressBar.setVisibility(View.GONE);
+                                                    binding.tvSync.setEnabled(true);
+                                                }
+                                                if (isFrom.equalsIgnoreCase("sendToApproval")) {
+                                                    JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(
+                                                            TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                                                    Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
+                                                    }.getType();
+                                                    if (jsonArray.length() >= 0) {
+                                                        ArrayList<OneBuildModelClass> arrayList1 = new Gson().fromJson(String.valueOf(jsonArray), type);
+                                                        sendTpForApprovalOneBuild(jbonj, arrayList1, localDate.toString(), monthYearFromDateUI(localDate), statusOffline, isClickedName);
+                                                    }
+                                                } else {
+                                                    get1MonthRemoteTPDataOneBuild(localDate);
+                                                }
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                    } else {
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
+                                        SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
+                                        binding.progressBar.setVisibility(View.GONE);
+
                                     }
                                 } else {
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                                     SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                                     binding.progressBar.setVisibility(View.GONE);
+                                    if (isFrom.equalsIgnoreCase("sendToApproval")){
+                                        binding.tpSendToApproval.setEnabled(true);
+                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -4139,7 +4151,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     if (isFrom.equalsIgnoreCase("sendToApproval")) {
                         JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(
                                 TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                        Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {}.getType();
+                        Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
+                        }.getType();
                         if (jsonArray.length() >= 0) {
                             ArrayList<OneBuildModelClass> arrayList1 = new Gson().fromJson(String.valueOf(jsonArray), type);
                             sendTpForApprovalOneBuild(jbonj, arrayList1, localDate.toString(), monthYearFromDateUI(localDate), statusOffline, isClickedName);
@@ -4157,6 +4170,7 @@ public class TourPlanActivity extends AppCompatActivity {
         });
         networkStatusTask.execute();
     }
+
     private void SaveTourPlanWholeMonth(JSONObject jsonObject1, String isClickedName) {
         try {
             localDate = LocalDate.now();
@@ -5236,7 +5250,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
                         jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
-                        jsonObject.put("Status",1);
+                        jsonObject.put("Status", 1);
 
 
                         Log.v("ApprovalObject", String.valueOf(jsonObject));
@@ -5724,8 +5738,8 @@ public class TourPlanActivity extends AppCompatActivity {
         }.getType();
         if (jsonArray.length() >= 0) {
             binding.progressBar.setVisibility(View.VISIBLE);
-            sendWholeMonthStatusOneBuild(localDate,isClickedName);
-        }else{
+            sendWholeMonthStatusOneBuild(localDate, isClickedName);
+        } else {
             get1MonthRemoteTPDataOneBuild(localDate);
         }
        /* apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
