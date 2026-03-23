@@ -306,7 +306,17 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                     .onRender((nbPages) -> {
                                         progressAnim.setVisibility(View.GONE);
                                         progressAnim.cancelAnimation();
-                                    }).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(context)).load();
+                                    })
+                                    .defaultPage(0)
+                                    .enableAnnotationRendering(true)
+                                    .scrollHandle(new DefaultScrollHandle(context))
+                                    .enableSwipe(true)
+                                    .swipeHorizontal(false)
+                                    .pageSnap(true)
+                                    .autoSpacing(false)
+                                    .pageFling(true)
+                                    .spacing(0)
+                                    .load();
                             break;
                         case "mp4":
                         case "avi":

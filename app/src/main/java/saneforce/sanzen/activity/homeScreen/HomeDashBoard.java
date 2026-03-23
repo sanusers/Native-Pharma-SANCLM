@@ -1635,7 +1635,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else {
                 binding.llPresentation.setVisibility(View.GONE);
             }
-            if (PracticeNeed.equalsIgnoreCase("1")) {
+            if (PracticeNeed.equalsIgnoreCase("0")) {
                 binding.llSlide.setVisibility(View.VISIBLE);
             } else {
                 binding.llSlide.setVisibility(View.GONE);
