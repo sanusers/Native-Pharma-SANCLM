@@ -311,7 +311,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
                         String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
 
-                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
+                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && !lastShownDate.isEmpty() && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
                             checkAndShowDoctorPopup();
                         }
                     } catch (Exception e) {
@@ -802,6 +802,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             checkAndShowDoctorPopup();
         }
     }
+
     private void checkAndShowDoctorPopup() {
         try {
             if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")) {

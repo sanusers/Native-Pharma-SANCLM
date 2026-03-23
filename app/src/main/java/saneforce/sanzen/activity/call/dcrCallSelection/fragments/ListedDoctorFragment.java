@@ -819,11 +819,18 @@ public class ListedDoctorFragment extends Fragment {
                 if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
                     List<String> drList = null;
                     STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
-                    drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
+                    drList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",")));
+                    drList.removeIf(s -> s == null || s.isEmpty());
                     Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                     if (!drList.isEmpty()) {
                         if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
                             prepareData(jsonObject, i, brands, false);
+                        }
+                    } else {
+                        if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {
+                            prepareData(jsonObject, i, brands, false);
+                        } else {
+                            prepareData(jsonObject, i, brands, true);
                         }
                     }
                 } else if (tpDataObj != null) {
@@ -955,11 +962,18 @@ public class ListedDoctorFragment extends Fragment {
                 if (isFenced) {
                     if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/ && !stpOfflineDataDao.isNotApproved(status))) {
                         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
-                        List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
+                        List<String> drList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",")));
+                        drList.removeIf(s -> s == null || s.isEmpty());
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                         if (!drList.isEmpty()) {
                             if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
                                 prepareData(jsonObject, i, brands, false);
+                            }
+                        } else {
+                            if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {
+                                prepareData(jsonObject, i, brands, false);
+                            } else {
+                                prepareData(jsonObject, i, brands, true);
                             }
                         }
                     } else if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {
@@ -968,11 +982,18 @@ public class ListedDoctorFragment extends Fragment {
                 } else {
                     if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") */ && !stpOfflineDataDao.isNotApproved(status))) {
                         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
-                        List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
+                        List<String> drList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",")));
+                        drList.removeIf(s -> s == null || s.isEmpty());
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
                         if (!drList.isEmpty()) {
                             if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
                                 prepareData(jsonObject, i, brands, false);
+                            }
+                        } else {
+                            if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {
+                                prepareData(jsonObject, i, brands, false);
+                            } else {
+                                prepareData(jsonObject, i, brands, true);
                             }
                         }
                     } else if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {
