@@ -540,7 +540,8 @@ public class ChemistFragment extends Fragment {
                     && !deviation.equalsIgnoreCase("1")) {
                 if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !SharedPref.getStpType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
                     STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
-                    List<String> chmList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(","));
+                    List<String> chmList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",")));
+                    chmList.removeIf(s -> s == null || s.isEmpty());
                     Log.i("STP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
                     if (!chmList.isEmpty()) {
                         if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.optString("Code")))) {
@@ -673,7 +674,8 @@ public class ChemistFragment extends Fragment {
                 if (isFenced) {
                     if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !SharedPref.getStpType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getStpType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status))) {
                         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
-                        List<String> chmList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(","));
+                        List<String> chmList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",")));
+                        chmList.removeIf(s -> s == null || s.isEmpty());
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
                         if (!chmList.isEmpty()) {
                             if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.optString("Code")))) {
@@ -692,7 +694,8 @@ public class ChemistFragment extends Fragment {
                 } else {
                     if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !SharedPref.getStpType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/ && !stpOfflineDataDao.isNotApproved(status))) {
                         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
-                        List<String> chmList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(","));
+                        List<String> chmList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",")));
+                        chmList.removeIf(s -> s == null || s.isEmpty());
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
                         if (!chmList.isEmpty()) {
                             if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.optString("Code")))) {

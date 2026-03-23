@@ -3431,7 +3431,8 @@ public class DCRCallActivity extends AppCompatActivity {
                             }
                         }
                     }
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 

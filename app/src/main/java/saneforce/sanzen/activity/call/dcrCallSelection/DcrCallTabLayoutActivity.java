@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.CIPFragment;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.ChemistFragment;
@@ -80,6 +81,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity implements HQCha
     public void onHQChange(String hqID, String hqName) {
         DcrCallTabLayoutActivity.TodayPlanSfCode = hqID;
         DcrCallTabLayoutActivity.TodayPlanSfName = hqName;
+        DCRCallActivity.TodayPlanSfCode = hqID;
         SharedPref.saveHq(DcrCallTabLayoutActivity.this, DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
         prepareClusterList();
         if (listedDoctorFragment != null) {
