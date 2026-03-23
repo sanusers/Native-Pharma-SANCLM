@@ -545,6 +545,10 @@ public class ActivityFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+        if(fragmentActivityBinding.progrlessdetail.getVisibility() == View.VISIBLE) {
+            fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
+        }
+
     }
 
     private void callActivityDetailsAPI(ActivityModelClass activityModelClass) {
