@@ -144,7 +144,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         Log.v("outBox", "---" + contentList.getChildName() + "--count--" + childListModelClasses.size() + "----" + contentList.isAvailableList() + "---" + contentList.getCounts());
 
         holder.tvContentList.setText(contentList.getChildName());
-        holder.delete.setVisibility(View.GONE);
 
         if (contentList.isAvailableList()) {
             holder.expandContentView.setEnabled(true);
@@ -181,21 +180,10 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     if (contentList.getWorkPlanModelClass().getSyncStatus() == 2 && !contentList.getWorkPlanModelClass().getWtStatus().isEmpty()) {
                         holder.tvCount.setText(" i ");
                         holder.tvCount.setVisibility(View.VISIBLE);
-                        holder.delete.setVisibility(View.GONE);
                         holder.tvCount.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, contentList.getWorkPlanModelClass().getWtStatus()));
-                    } else if (contentList.getWorkPlanModelClass().getSyncStatus() == 1) {
-                        holder.tvCount.setText("");
-                        holder.tvCount.setVisibility(View.GONE);
-                        holder.delete.setVisibility(View.VISIBLE);
-                        holder.delete.setOnClickListener(view -> {
-                            callOfflineWorkTypeDataDao.delete(contentList.getWorkPlanModelClass().getDate());
-                            childListModelClasses.get(position).setWorkPlanModelClass(null);
-                            notifyDataSetChanged();
-                        });
                     } else {
                         holder.tvCount.setText("");
                         holder.tvCount.setVisibility(View.GONE);
-                        holder.delete.setVisibility(View.GONE);
                     }
                 }
                 break;
@@ -289,10 +277,10 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         holder.sync.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-//                List<String> dates = List.copyOf(outboxUtil.getOutboxDates());
-//                if (dates.indexOf(date) > 0) {
-//                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.please_sync_previous_dates));
-//                } else {
+                List<String> dates = List.copyOf(outboxUtil.getOutboxDates());
+                if (dates.indexOf(date) > 0) {
+                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.please_sync_previous_dates));
+                } else {
                     if (UtilityClass.isNetworkAvailable(context)) {
                         progressDialog = CommonUtilsMethods.createProgressDialog(context);
                         switch (contentList.getChildId()) {
@@ -339,7 +327,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                     }
-//                }
+                }
             }
         });
 
@@ -513,32 +501,15 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 if (response.isSuccessful()) {
                     try {
                         JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
-                        if (json.optString("success").equalsIgnoreCase("true")) {
+                        if (json.getString("success").equalsIgnoreCase("true")) {
                             callOfflineWorkTypeDataDao.delete(workPlanModelClass.getDate());
                             childListModelClasses.get(childPos).setWorkPlanModelClass(null);
-                            notifyDataSetChanged();
                         } else {
-                            if (json.optString("update").equalsIgnoreCase("true")) {
-                                String msg = json.optString("Msg");
-                                callOfflineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), msg, 2);
-                                workPlanModelClass.setSyncStatus(2);
-                                workPlanModelClass.setWtStatus(msg);
-                                notifyDataSetChanged();
-                            } else {
-                                callOfflineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
-                                workPlanModelClass.setSyncStatus(1);
-                                notifyDataSetChanged();
-                            }
+                            callOfflineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
+                            workPlanModelClass.setSyncStatus(1);
                         }
-//                        if (json.getString("success").equalsIgnoreCase("true")) {
-//                            callOfflineWorkTypeDataDao.delete(workPlanModelClass.getDate());
-//                            childListModelClasses.get(childPos).setWorkPlanModelClass(null);
-//                        } else {
-//                            callOfflineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
-//                            workPlanModelClass.setSyncStatus(1);
-//                        }
                         CallAPIWorkPlan(childPos);
-//                        notifyDataSetChanged();
+                        notifyDataSetChanged();
                     } catch (Exception ignored) {
                         callOfflineWorkTypeDataDao.delete(workPlanModelClass.getDate());
                         childListModelClasses.get(childPos).setWorkPlanModelClass(null);
@@ -638,7 +609,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     } else {
                         CallSendAPIImage(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
                     }
-//                    CallSendAPIImage(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                    // CallSendAPIImage(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
 
                 }
                 break;
@@ -1395,10 +1366,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
     public static class listDataViewholider extends RecyclerView.ViewHolder {
         TextView tvContentList, tvCount;
-        ImageView sync, img_expand_child, delete;
+        ImageView sync, img_expand_child;
         ConstraintLayout constraintRv, constraintMain;
         CardView expandContentView;
         RecyclerView rv_outbox_list;
+
 
         public listDataViewholider(@NonNull View view) {
             super(view);
@@ -1410,8 +1382,8 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             rv_outbox_list = view.findViewById(R.id.rv_outbox_list);
             constraintRv = view.findViewById(R.id.constraint_rv);
             constraintMain = view.findViewById(R.id.constraint_top);
-            delete = view.findViewById(R.id.img_delete);
         }
     }
 }
+
 
