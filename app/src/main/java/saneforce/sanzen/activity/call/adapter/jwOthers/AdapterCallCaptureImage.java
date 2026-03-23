@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -159,6 +160,42 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         }
 
 
+//        holder.img_del_img.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                Dialog dialog = new Dialog(context);
+//                dialog.setContentView(R.layout.dcr_cancel_alert);
+//                dialog.setCancelable(false);
+//                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                dialog.show();
+//                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+//                TextView btn_no = dialog.findViewById(R.id.btn_no);
+//                TextView title = dialog.findViewById(R.id.ed_alert_msg);
+//                title.setText(R.string.are_you_sure_to_delete);
+//                btn_yes.setOnClickListener(new SafeClickListener() {
+//                    @Override
+//                    public void onSafeClick(View view) {
+//                        dialog.dismiss();
+//                        File fileDelete = new File(callCaptureImageList.getFilePath());
+//                        if (fileDelete.exists()) {
+//                            if (fileDelete.delete()) {
+////                        System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
+//                            } else {
+////                        System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
+//                            }
+//                        }
+//                        callOfflineECDataDao.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
+//                        removeAt(holder.getBindingAdapterPosition());
+//                    }
+//                });
+//                btn_no.setOnClickListener(new SafeClickListener() {
+//                    @Override
+//                    public void onSafeClick(View view) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//            }
+//        });
         holder.img_del_img.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -174,17 +211,30 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 btn_yes.setOnClickListener(new SafeClickListener() {
                     @Override
                     public void onSafeClick(View view) {
-                        dialog.dismiss();
-                        File fileDelete = new File(callCaptureImageList.getFilePath());
-                        if (fileDelete.exists()) {
-                            if (fileDelete.delete()) {
-//                        System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
-                            } else {
-//                        System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
-                            }
+                        // 1. Adapter-kulla RecyclerView-ah kandupidiunga
+                        RecyclerView rv_img_capture = (RecyclerView) holder.itemView.getParent();
+
+                        if (rv_img_capture != null) {
+                            // 2. Focus-ah block pannunga (Crash-ah thadukka)
+                            rv_img_capture.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                            rv_img_capture.clearFocus();
                         }
-                        callOfflineECDataDao.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
-                        removeAt(holder.getBindingAdapterPosition());
+
+                        dialog.dismiss();
+
+                        final int currentPos = holder.getBindingAdapterPosition();
+                        if (currentPos != RecyclerView.NO_POSITION) {
+                            // ... Unga File & DB delete logic ...
+
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                removeAt(currentPos);
+
+                                // 3. Delete mudinjadhukku apparam thirumba focus-ah open pannunga
+                                if (rv_img_capture != null) {
+                                    rv_img_capture.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+                                }
+                            }, 300);
+                        }
                     }
                 });
                 btn_no.setOnClickListener(new SafeClickListener() {
@@ -195,7 +245,6 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 });
             }
         });
-
 
         holder.img_view.setOnClickListener(new SafeClickListener() {
             @Override
@@ -397,12 +446,19 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         progressBar.dismiss();
     }
 
-    public void removeAt(int position) {
+//    public void removeAt(int position) {
+//        callCaptureImageLists.remove(position);
+//        notifyItemRemoved(position);
+//        notifyItemRangeChanged(position, callCaptureImageLists.size());
+//    }
+public void removeAt(int position) {
+    if (position < callCaptureImageLists.size()) {
         callCaptureImageLists.remove(position);
         notifyItemRemoved(position);
+        // Indha line romba mukkiyam, appo thaan matha items-oda position refresh aagum
         notifyItemRangeChanged(position, callCaptureImageLists.size());
     }
-
+}
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView img_view, img_del_img;
         EditText tv_image_name;
