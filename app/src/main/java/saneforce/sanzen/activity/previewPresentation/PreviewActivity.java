@@ -368,13 +368,17 @@ public class PreviewActivity extends AppCompatActivity {
                 // Mandatory pathuruka koodathu, vera entha slide-um (timer map) pathuruka koodathu
                 if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty() &&
                         (PlaySlideDetailedAdapter.timer == null || PlaySlideDetailedAdapter.timer.isEmpty())) {
-
-                    Toast.makeText(this, "Please Detail Mandatory Slides", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.please_detail_mandatory_slides), Toast.LENGTH_LONG).show();
+                   // Toast.makeText(this, "Please Detail Mandatory Slides", Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if (!pendingBrands.isEmpty()) {
-                    Toast.makeText(this, "Mandatory Slides Pending For Brand: " + TextUtils.join(", ", pendingBrands), Toast.LENGTH_LONG).show();
+                    // Existing logic-aiye string resource-ku maathunga
+                    Toast.makeText(this,
+                            getString(R.string.mandatory_slides_pending_for_brand, TextUtils.join(", ", pendingBrands)),
+                            Toast.LENGTH_LONG).show();
+                   // Toast.makeText(this, "Mandatory Slides Pending For Brand: " + TextUtils.join(", ", pendingBrands), Toast.LENGTH_LONG).show();
                     return;
                 }
             }
