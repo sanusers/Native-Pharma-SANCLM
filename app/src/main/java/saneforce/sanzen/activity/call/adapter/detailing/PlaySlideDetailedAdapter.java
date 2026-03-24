@@ -155,6 +155,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         return "";
     }
 
+    private boolean isActivityAlive() {
+        if (act == null) return false;
+        if (act.isFinishing()) return false;
+        if (act.isDestroyed()) return false;
+        return true;
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @NonNull
     @Override
@@ -471,6 +478,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     public void popupPaint(String slideName, final String path) {
+        if (!isActivityAlive()) return;
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -691,6 +699,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     public void commentsPopup() {
+        if (!isActivityAlive()) return;
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -730,6 +739,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     public void popupScribbling(String slideName, String slideId, String path, String fileFormat) {
+        if (!isActivityAlive()) return;
         act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         dialogPopUp = new Dialog(context);
         dialogPopUp.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -935,6 +945,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     private void handleStopDetailing() {
+        if (dialogPopUp != null && dialogPopUp.isShowing()) {
+            dialogPopUp.dismiss();
+        }
+
+        if (!isActivityAlive()) return;
         if (arrayStore != null) {
             arrayStore.clear();
         }
@@ -1137,7 +1152,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {        View view = (View) object;
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        View view = (View) object;
         VideoView videoView = view.findViewById(R.id.videoView);
         if (videoView != null) {
             try {
