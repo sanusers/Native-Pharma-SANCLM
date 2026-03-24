@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_180sdp"
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/_2sdp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,66 +30,156 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/img_close"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
-            android:layout_marginEnd="@dimen/_3sdp"
-            android:padding="@dimen/_2sdp"
-            android:src="@drawable/img_close"
-            app:layout_constraintBottom_toBottomOf="@id/tv_head"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tv_head"
-            app:layout_constraintTop_toTopOf="@id/tv_head"
-            tools:ignore="ContentDescription" />
-
         <View
             android:id="@+id/view_dummy"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
             android:layout_marginVertical="@dimen/_4sdp"
             android:background="@color/light_grey_3"
-            app:layout_constraintBottom_toTopOf="@id/rl_btns"
+            app:layout_constraintBottom_toTopOf="@id/radioGroup"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_head"
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="NotSibling" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Yes / No Radio -->
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes"
+            android:fontFamily="@font/satoshi_bold"/>
+
+        <RadioButton
+            android:id="@+id/radioNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"/>
+    </RadioGroup>
+
+    <!-- Territory Dropdown -->
+    <Spinner
+        android:id="@+id/spinnerTerritory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="12dp"/>
+
+    <!-- Remarks -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_head2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:padding="@dimen/_4sdp"
+            android:text="@string/remarks"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/spinnerTerritory"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="NotSibling" />
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/img_close"-->
+        <!--            android:layout_width="@dimen/_15sdp"-->
+        <!--            android:layout_height="@dimen/_15sdp"-->
+        <!--            android:layout_marginEnd="@dimen/_3sdp"-->
+        <!--            android:padding="@dimen/_2sdp"-->
+        <!--            android:src="@drawable/img_close"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/tv_head"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintHorizontal_bias="1.0"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/tv_head"-->
+        <!--            app:layout_constraintTop_toTopOf="@id/tv_head"-->
+        <!--            tools:ignore="ContentDescription" />-->
+
+        <View
+            android:id="@+id/view_dummy2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:background="@color/light_grey_3"
+            app:layout_constraintBottom_toTopOf="@id/ed_remark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_head2"
             app:layout_constraintVertical_bias="0.0" />
 
-<!--        <androidx.appcompat.widget.AppCompatEditText-->
-<!--            android:id="@+id/ed_remark"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="@dimen/_42sdp"-->
-<!--            android:layout_marginHorizontal="@dimen/_8sdp"-->
-<!--            android:background="@drawable/bg_light_cement"-->
-<!--            android:fontFamily="@font/satoshi_medium"-->
-<!--            android:gravity="start|top"-->
-<!--            android:hint="@string/type_remarks"-->
-<!--            android:padding="@dimen/_4sdp"-->
-<!--            android:imeOptions="actionDone"-->
-<!--            android:paddingVertical="@dimen/_3sdp"-->
-<!--            android:textSize="@dimen/_6ssp"-->
-<!--            app:layout_constraintBottom_toTopOf="@id/rl_btns"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/view_dummy" />-->
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/ed_remark"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:background="@drawable/bg_light_cement"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:hint="@string/type_remarks"
+            android:padding="@dimen/_6sdp"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:textSize="@dimen/_6ssp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintBottom_toTopOf="@id/rl_btns"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_dummy2"/>
+        <!--        <androidx.appcompat.widget.AppCompatEditText-->
+        <!--            android:id="@+id/ed_remark"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="@dimen/_42sdp"-->
+        <!--            android:layout_marginHorizontal="@dimen/_8sdp"-->
+        <!--            android:background="@drawable/bg_light_cement"-->
+        <!--            android:fontFamily="@font/satoshi_medium"-->
+        <!--            android:gravity="start|top"-->
+        <!--            android:hint="@string/type_remarks"-->
+        <!--            android:padding="@dimen/_4sdp"-->
+        <!--            android:imeOptions="actionDone"-->
+        <!--            android:paddingVertical="@dimen/_3sdp"-->
+        <!--            android:textSize="@dimen/_6ssp"-->
+        <!--            app:layout_constraintBottom_toTopOf="@id/rl_btns"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/view_dummy2" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/content"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="@dimen/_42sdp"-->
-<!--            android:layout_marginHorizontal="@dimen/_8sdp"-->
-<!--            android:fontFamily="@font/satoshi_medium"-->
-<!--            android:text="@string/workplan_submit_ack"-->
-<!--            android:textAlignment="center"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="@dimen/_4sdp"-->
-<!--            android:paddingVertical="@dimen/_3sdp"-->
-<!--            android:visibility="gone"-->
-<!--            android:textSize="@dimen/_6ssp"-->
-<!--            app:layout_constraintBottom_toTopOf="@id/rl_btns"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/view_dummy" />-->
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="@string/workplan_submit_ack"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:padding="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:visibility="gone"
+            android:textSize="@dimen/_6ssp"
+            app:layout_constraintBottom_toTopOf="@id/rl_btns"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_dummy2" />
 
         <RelativeLayout
             android:id="@+id/rl_btns"
@@ -102,28 +192,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_head"
+            app:layout_constraintTop_toBottomOf="@id/ed_remark"
             app:layout_constraintVertical_bias="0.0">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_no"
+                android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_toStartOf="@id/btn_yes"
+                android:layout_toStartOf="@id/btn_submit"
                 android:layout_marginVertical="@dimen/_2sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:background="@drawable/bg_border_with_pink"
                 android:fontFamily="@font/satoshi_bold"
-                android:paddingHorizontal="@dimen/_3sdp"
-                android:text="No"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:text="Cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_6ssp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_yes"
+                android:id="@+id/btn_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -135,7 +225,7 @@
                 android:fontFamily="@font/satoshi_bold"
                 android:paddingHorizontal="@dimen/_3sdp"
                 android:singleLine="true"
-                android:text="Yes"
+                android:text="Submit"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_6ssp"
@@ -143,4 +233,297 @@
                 tools:ignore="NotSibling,RelativeOverlap" />
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</LinearLayout>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--    xmlns:tools="http://schemas.android.com/tools"-->
+    <!--    android:layout_width="@dimen/_180sdp"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    app:cardBackgroundColor="@color/white"-->
+    <!--    app:cardCornerRadius="@dimen/_2sdp">-->
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content">-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/tv_head"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginHorizontal="@dimen/_4sdp"-->
+    <!--            android:layout_marginTop="@dimen/_3sdp"-->
+    <!--            android:fontFamily="@font/satoshi_bold"-->
+    <!--            android:gravity="center"-->
+    <!--            android:padding="@dimen/_4sdp"-->
+    <!--            android:text="Night Stay"-->
+    <!--            android:textColor="@color/dark_purple"-->
+    <!--            android:textSize="@dimen/_7ssp"-->
+    <!--            android:textStyle="bold"-->
+    <!--            app:layout_constraintBottom_toTopOf="@id/view_dummy"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.0"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/img_close"-->
+    <!--            android:layout_width="@dimen/_15sdp"-->
+    <!--            android:layout_height="@dimen/_15sdp"-->
+    <!--            android:layout_marginEnd="@dimen/_3sdp"-->
+    <!--            android:padding="@dimen/_2sdp"-->
+    <!--            android:src="@drawable/img_close"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@id/tv_head"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="1.0"-->
+    <!--            app:layout_constraintStart_toEndOf="@id/tv_head"-->
+    <!--            app:layout_constraintTop_toTopOf="@id/tv_head"-->
+    <!--            tools:ignore="ContentDescription" />-->
+
+    <!--        <View-->
+    <!--            android:id="@+id/view_dummy"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="@dimen/_1sdp"-->
+    <!--            android:layout_marginVertical="@dimen/_4sdp"-->
+    <!--            android:background="@color/light_grey_3"-->
+    <!--            app:layout_constraintBottom_toTopOf="@id/rl_btns"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/tv_head"-->
+    <!--            app:layout_constraintVertical_bias="0.0" />-->
+
+    <!--&lt;!&ndash;        <androidx.appcompat.widget.AppCompatEditText&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:id="@+id/ed_remark"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_height="@dimen/_42sdp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginHorizontal="@dimen/_8sdp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:background="@drawable/bg_light_cement"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:fontFamily="@font/satoshi_medium"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:gravity="start|top"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:hint="@string/type_remarks"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:padding="@dimen/_4sdp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:imeOptions="actionDone"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:paddingVertical="@dimen/_3sdp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textSize="@dimen/_6ssp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintBottom_toTopOf="@id/rl_btns"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintTop_toBottomOf="@id/view_dummy" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;        <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:id="@+id/content"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_height="@dimen/_42sdp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginHorizontal="@dimen/_8sdp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:fontFamily="@font/satoshi_medium"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:text="@string/workplan_submit_ack"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:gravity="center"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:padding="@dimen/_4sdp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:paddingVertical="@dimen/_3sdp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:visibility="gone"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textSize="@dimen/_6ssp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintBottom_toTopOf="@id/rl_btns"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintTop_toBottomOf="@id/view_dummy" />&ndash;&gt;-->
+
+    <!--        <RelativeLayout-->
+    <!--            android:id="@+id/rl_btns"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginHorizontal="@dimen/_5sdp"-->
+    <!--            android:layout_marginVertical="@dimen/_3sdp"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="1.0"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/tv_head"-->
+    <!--            app:layout_constraintVertical_bias="0.0">-->
+
+    <!--            <androidx.appcompat.widget.AppCompatButton-->
+    <!--                android:id="@+id/btn_no"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_alignParentTop="true"-->
+    <!--                android:layout_toStartOf="@id/btn_yes"-->
+    <!--                android:layout_marginVertical="@dimen/_2sdp"-->
+    <!--                android:layout_marginEnd="@dimen/_10sdp"-->
+    <!--                android:background="@drawable/bg_border_with_pink"-->
+    <!--                android:fontFamily="@font/satoshi_bold"-->
+    <!--                android:paddingHorizontal="@dimen/_3sdp"-->
+    <!--                android:text="No"-->
+    <!--                android:textAllCaps="false"-->
+    <!--                android:textColor="@color/dark_purple"-->
+    <!--                android:textSize="@dimen/_6ssp"-->
+    <!--                android:textStyle="bold" />-->
+
+    <!--            <androidx.appcompat.widget.AppCompatButton-->
+    <!--                android:id="@+id/btn_yes"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_alignParentTop="true"-->
+    <!--                android:layout_alignParentEnd="true"-->
+    <!--                android:layout_marginHorizontal="@dimen/_2sdp"-->
+    <!--                android:layout_marginVertical="@dimen/_2sdp"-->
+    <!--                android:layout_toEndOf="@id/btn_skip"-->
+    <!--                android:background="@drawable/bg_purple"-->
+    <!--                android:fontFamily="@font/satoshi_bold"-->
+    <!--                android:paddingHorizontal="@dimen/_3sdp"-->
+    <!--                android:singleLine="true"-->
+    <!--                android:text="Yes"-->
+    <!--                android:textAllCaps="false"-->
+    <!--                android:textColor="@color/white"-->
+    <!--                android:textSize="@dimen/_6ssp"-->
+    <!--                android:textStyle="bold"-->
+    <!--                tools:ignore="NotSibling,RelativeOverlap" />-->
+    <!--        </RelativeLayout>-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+    <!--</androidx.cardview.widget.CardView>-->
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="@dimen/_180sdp"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    app:cardBackgroundColor="@color/white"-->
+<!--    app:cardCornerRadius="@dimen/_2sdp">-->
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_head"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/_4sdp"-->
+<!--            android:layout_marginTop="@dimen/_3sdp"-->
+<!--            android:fontFamily="@font/satoshi_bold"-->
+<!--            android:gravity="center"-->
+<!--            android:padding="@dimen/_4sdp"-->
+<!--            android:text="Night Stay"-->
+<!--            android:textColor="@color/dark_purple"-->
+<!--            android:textSize="@dimen/_7ssp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/view_dummy"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/img_close"-->
+<!--            android:layout_width="@dimen/_15sdp"-->
+<!--            android:layout_height="@dimen/_15sdp"-->
+<!--            android:layout_marginEnd="@dimen/_3sdp"-->
+<!--            android:padding="@dimen/_2sdp"-->
+<!--            android:src="@drawable/img_close"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/tv_head"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="1.0"-->
+<!--            app:layout_constraintStart_toEndOf="@id/tv_head"-->
+<!--            app:layout_constraintTop_toTopOf="@id/tv_head"-->
+<!--            tools:ignore="ContentDescription" />-->
+
+<!--        <View-->
+<!--            android:id="@+id/view_dummy"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="@dimen/_1sdp"-->
+<!--            android:layout_marginVertical="@dimen/_4sdp"-->
+<!--            android:background="@color/light_grey_3"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/rl_btns"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_head"-->
+<!--            app:layout_constraintVertical_bias="0.0" />-->
+
+<!--&lt;!&ndash;        <androidx.appcompat.widget.AppCompatEditText&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/ed_remark"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="@dimen/_42sdp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginHorizontal="@dimen/_8sdp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:background="@drawable/bg_light_cement"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:fontFamily="@font/satoshi_medium"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:gravity="start|top"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:hint="@string/type_remarks"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:padding="@dimen/_4sdp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:imeOptions="actionDone"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:paddingVertical="@dimen/_3sdp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textSize="@dimen/_6ssp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintBottom_toTopOf="@id/rl_btns"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintTop_toBottomOf="@id/view_dummy" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="@dimen/_42sdp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginHorizontal="@dimen/_8sdp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:fontFamily="@font/satoshi_medium"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:text="@string/workplan_submit_ack"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:gravity="center"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:padding="@dimen/_4sdp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:paddingVertical="@dimen/_3sdp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:visibility="gone"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textSize="@dimen/_6ssp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintBottom_toTopOf="@id/rl_btns"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintTop_toBottomOf="@id/view_dummy" />&ndash;&gt;-->
+
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/rl_btns"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/_5sdp"-->
+<!--            android:layout_marginVertical="@dimen/_3sdp"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="1.0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_head"-->
+<!--            app:layout_constraintVertical_bias="0.0">-->
+
+<!--            <androidx.appcompat.widget.AppCompatButton-->
+<!--                android:id="@+id/btn_no"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentTop="true"-->
+<!--                android:layout_toStartOf="@id/btn_yes"-->
+<!--                android:layout_marginVertical="@dimen/_2sdp"-->
+<!--                android:layout_marginEnd="@dimen/_10sdp"-->
+<!--                android:background="@drawable/bg_border_with_pink"-->
+<!--                android:fontFamily="@font/satoshi_bold"-->
+<!--                android:paddingHorizontal="@dimen/_3sdp"-->
+<!--                android:text="No"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/dark_purple"-->
+<!--                android:textSize="@dimen/_6ssp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <androidx.appcompat.widget.AppCompatButton-->
+<!--                android:id="@+id/btn_yes"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentTop="true"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_marginHorizontal="@dimen/_2sdp"-->
+<!--                android:layout_marginVertical="@dimen/_2sdp"-->
+<!--                android:layout_toEndOf="@id/btn_skip"-->
+<!--                android:background="@drawable/bg_purple"-->
+<!--                android:fontFamily="@font/satoshi_bold"-->
+<!--                android:paddingHorizontal="@dimen/_3sdp"-->
+<!--                android:singleLine="true"-->
+<!--                android:text="Yes"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="@dimen/_6ssp"-->
+<!--                android:textStyle="bold"-->
+<!--                tools:ignore="NotSibling,RelativeOverlap" />-->
+<!--        </RelativeLayout>-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--</androidx.cardview.widget.CardView>-->

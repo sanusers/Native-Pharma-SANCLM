@@ -24,12 +24,17 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -171,7 +176,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OutboxUtil outboxUtil;
     private Handler dateHandler;
     private String status;
-   //String stayPopup = "0";
+   String stayPopup = "0";
     private void checkDateChange() {
         if (!isAdded()) return;
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
@@ -1582,23 +1587,32 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                     break;
 
+//                case R.id.btn_submit:
+//                    if (SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+//                        CommonAlertBox.ApprovalAlert(requireActivity());
+//                    } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
+//                        CommonAlertBox.TpAlert(requireActivity());
+//                    } else {
+//                        if (SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
+//                            if ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+//                                submitMyDayPlan();
+//                            } else {
+//                                gpsTrack = new GPSTrack(requireActivity());
+//                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
+//                            }
+//                        } else {
+//                            submitMyDayPlan();
+//                        }
+//                    }
+//                    break;
                 case R.id.btn_submit:
-                    if (SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
-                        CommonAlertBox.ApprovalAlert(requireActivity());
-                    } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
-                        CommonAlertBox.TpAlert(requireActivity());
+
+                    if ("0".equalsIgnoreCase(stayPopup)) {
+                        showNewPopup(); // 👈 new popup
                     } else {
-                        if (SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
-                            if ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
-                                submitMyDayPlan();
-                            } else {
-                                gpsTrack = new GPSTrack(requireActivity());
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
-                            }
-                        } else {
-                            submitMyDayPlan();
-                        }
+                        proceedSubmitFlow(); // 👈 existing logic
                     }
+
                     break;
 //                case R.id.btn_submit:
 //
@@ -1743,6 +1757,97 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             Log.e("WorkPlan Fragment", "onClick: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    private void proceedSubmitFlow() {
+        if (SharedPref.getApprovalManatoryStatus(requireContext()) &&
+                SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") &&
+                SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+
+            CommonAlertBox.ApprovalAlert(requireActivity());
+
+        } else if (SharedPref.getTpmanatoryStatus(requireContext()) &&
+                SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") &&
+                SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
+
+            CommonAlertBox.TpAlert(requireActivity());
+
+        } else {
+            if (SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
+
+                if ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+                    submitMyDayPlan();
+                } else {
+                    gpsTrack = new GPSTrack(requireActivity());
+                    commonUtilsMethods.showToastMessage(requireContext(),
+                            getString(R.string.no_location_please_try_again));
+                }
+
+            } else {
+                submitMyDayPlan();
+            }
+        }
+    }
+    private void showNewPopup() {
+
+        Dialog dialog = new Dialog(requireActivity());
+        dialog.setContentView(R.layout.popup_stay_night);
+        dialog.setCancelable(false);
+
+        RadioButton radioYes = dialog.findViewById(R.id.radioYes);
+        RadioButton radioNo = dialog.findViewById(R.id.radioNo);
+        Spinner spinner = dialog.findViewById(R.id.spinnerTerritory);
+        EditText etRemarks = dialog.findViewById(R.id.ed_remark);
+        Button btnSubmit = dialog.findViewById(R.id.btn_submit);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+
+        // Territory list
+        List<String> territoryList = new ArrayList<>();
+        territoryList.add("Select Territory");
+        territoryList.add("Territory 1");
+        territoryList.add("Territory 2");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_dropdown_item, territoryList);
+        spinner.setAdapter(adapter);
+
+        // Radio logic
+        radioYes.setOnClickListener(v -> spinner.setVisibility(View.VISIBLE));
+        radioNo.setOnClickListener(v -> spinner.setVisibility(View.GONE));
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSubmit.setOnClickListener(v -> {
+
+            String remarks = etRemarks.getText().toString().trim();
+
+            if (radioYes.isChecked()) {
+                if (spinner.getSelectedItemPosition() == 0) {
+                    Toast.makeText(requireContext(), "Select Territory", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            if (remarks.isEmpty()) {
+                Toast.makeText(requireContext(), "Enter Remarks", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            dialog.dismiss();
+
+            // 🔥 IMPORTANT: Existing flow call here
+            proceedSubmitFlow();
+        });
+
+        dialog.show();
+       // dialog.show();
+
+       // EditText etRemarks = dialog.findViewById(R.id.ed_remark);
+
+        etRemarks.requestFocus();
+
+        dialog.getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+        );
     }
 //    private void proceedSubmitFlow() {
 //
