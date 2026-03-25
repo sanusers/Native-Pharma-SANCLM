@@ -1068,5 +1068,6 @@
 
     <string name="address_format">地址：</string>
     <string name="distance_format">距离：%1$.2f 米</string>
+    <string name="loading">加载中</string>
 
 </resources>

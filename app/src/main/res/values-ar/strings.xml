@@ -1059,4 +1059,5 @@
     <string name="and">و</string>
     <string name="syncing">جارٍ المزامنة...</string>
     <string name="deleting">جارٍ الحذف...</string>
+    <string name="loading">جارٍ التحميل</string>
 </resources>

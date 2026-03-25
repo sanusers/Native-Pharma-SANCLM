@@ -75,6 +75,7 @@ import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.custom_views.LoadingDotsView;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -114,7 +115,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private HashMap<Integer, PDFView> pdfViewList = new HashMap<>();
     private HashMap<Integer, VideoView> videoViewList = new HashMap<>();
     private HashMap<Integer, WebView> webViewList = new HashMap<>();
-    private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
+//    private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
+    private HashMap<Integer, LoadingDotsView> loadingAnimationViewList = new HashMap<>();
     private MediaController mediaController;
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList,ArrayList<BrandModelClass.Product>mandatoryProductList) {
@@ -128,7 +130,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         pdfViewList = new HashMap<>();
         videoViewList = new HashMap<>();
         webViewList = new HashMap<>();
-        progressAnimationViewList = new HashMap<>();
+//        progressAnimationViewList = new HashMap<>();
+        loadingAnimationViewList = new HashMap<>();
         commonUtilsMethods = new CommonUtilsMethods(context);
         for (int i = 0; i < productArrayList.size(); i++) {
             File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(i).getSlideName());
@@ -178,12 +181,14 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             WebView webView = sliderLayout.findViewById(R.id.webView);
             PDFView pdfView = sliderLayout.findViewById(R.id.pdfView);
             VideoView videoView = sliderLayout.findViewById(R.id.videoView);
-            LottieAnimationView progressAnim = sliderLayout.findViewById(R.id.progress_anim);
+//            LottieAnimationView progressAnim = sliderLayout.findViewById(R.id.progress_anim);
+            LoadingDotsView loadingDotsView = sliderLayout.findViewById(R.id.loading_view);
             imageViewList.put(position, imageViewZoom);
             pdfViewList.put(position, pdfView);
             videoViewList.put(position, videoView);
             webViewList.put(position, webView);
-            progressAnimationViewList.put(position, progressAnim);
+//            progressAnimationViewList.put(position, progressAnim);
+            loadingAnimationViewList.put(position, loadingDotsView);
             RelativeLayout rl_rightView = sliderLayout.findViewById(R.id.rightArrow);
             rl_rightView.setVisibility(View.VISIBLE);
 
@@ -208,12 +213,14 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             WebView webView = sliderLayout.findViewById(R.id.webView);
             PDFView pdfView = sliderLayout.findViewById(R.id.pdfView);
             VideoView videoView = sliderLayout.findViewById(R.id.videoView);
-            LottieAnimationView progressAnim = sliderLayout.findViewById(R.id.progress_anim);
+//            LottieAnimationView progressAnim = sliderLayout.findViewById(R.id.progress_anim);
+            LoadingDotsView loadingDotsView = sliderLayout.findViewById(R.id.loading_view);
             imageViewList.put(position, imageView);
             pdfViewList.put(position, pdfView);
             videoViewList.put(position, videoView);
             webViewList.put(position, webView);
-            progressAnimationViewList.put(position, progressAnim);
+//            progressAnimationViewList.put(position, progressAnim);
+            loadingAnimationViewList.put(position, loadingDotsView);
             RelativeLayout rl_rightView = sliderLayout.findViewById(R.id.rightArrow);
             rl_rightView.setVisibility(View.VISIBLE);
 
@@ -296,7 +303,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 ImageView imageView = imageViewList.get(position);
                 WebView webView = webViewList.get(position);
                 VideoView videoView = videoViewList.get(position);
-                LottieAnimationView progressAnim = progressAnimationViewList.get(position);
+//                LottieAnimationView progressAnim = progressAnimationViewList.get(position);
+                LoadingDotsView loadingDotsView = loadingAnimationViewList.get(position);
                 PDFView pdfView = pdfViewList.get(position);
                 String fileName = productArrayList.get(position).getSlideName();
                 File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
@@ -307,12 +315,16 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             pdfView.setVisibility(View.VISIBLE);
                             videoView.setVisibility(View.GONE);
                             webView.setVisibility(View.GONE);
-                            progressAnim.setVisibility(View.VISIBLE);
-                            progressAnim.playAnimation();
+                            if (loadingDotsView != null) {
+                                loadingDotsView.setVisibility(View.VISIBLE);
+                                loadingDotsView.startLoading();
+                            }
                             pdfView.fromFile(file)
                                     .onRender((nbPages) -> {
-                                        progressAnim.setVisibility(View.GONE);
-                                        progressAnim.cancelAnimation();
+                                        if (loadingDotsView != null) {
+                                            loadingDotsView.setVisibility(View.GONE);
+                                            loadingDotsView.stopLoading();
+                                        }
                                     })
                                     .defaultPage(0)
                                     .enableAnnotationRendering(true)
@@ -332,13 +344,18 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             pdfView.setVisibility(View.GONE);
                             videoView.setVisibility(View.VISIBLE);
                             webView.setVisibility(View.GONE);
-                            progressAnim.setVisibility(View.VISIBLE);
-                            progressAnim.playAnimation();
+                            if (loadingDotsView != null) {
+                                loadingDotsView.setVisibility(View.VISIBLE);
+                                loadingDotsView.startLoading();
+                            }
                             Uri uri = Uri.parse(file.getAbsolutePath());
                             videoView.setVideoURI(uri);
                             videoView.setMediaController(mediaController);
                             videoView.setOnPreparedListener(mp -> {
-                                progressAnim.setVisibility(View.GONE);
+                                if (loadingDotsView != null) {
+                                    loadingDotsView.setVisibility(View.GONE);
+                                    loadingDotsView.stopLoading();
+                                }
                                 mp.start();
                             });
                             videoView.setOnCompletionListener(mp -> {
@@ -350,8 +367,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             pdfView.setVisibility(View.GONE);
                             videoView.setVisibility(View.GONE);
                             webView.setVisibility(View.VISIBLE);
-                            progressAnim.setVisibility(View.VISIBLE);
-                            progressAnim.playAnimation();
+                            if (loadingDotsView != null) {
+                                loadingDotsView.setVisibility(View.VISIBLE);
+                                loadingDotsView.startLoading();
+                            }
 
                             webView.getSettings().setBuiltInZoomControls(false);
                             webView.getSettings().setDisplayZoomControls(false);
@@ -391,8 +410,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                 public void onPageFinished(WebView view, String url) {
                                     super.onPageFinished(view, url);
                                     Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                                    progressAnim.setVisibility(View.GONE);
-                                    progressAnim.cancelAnimation();
+                                    if (loadingDotsView != null) {
+                                        loadingDotsView.setVisibility(View.GONE);
+                                        loadingDotsView.stopLoading();
+                                    }
                                 }
                             });
                             break;
@@ -400,7 +421,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             pdfView.setVisibility(View.GONE);
                             videoView.setVisibility(View.GONE);
                             webView.setVisibility(View.GONE);
-                            progressAnim.setVisibility(View.GONE);
+                            if (loadingDotsView != null) {
+                                loadingDotsView.setVisibility(View.GONE);
+                                loadingDotsView.stopLoading();
+                            }
                             break;
                     }
                 }

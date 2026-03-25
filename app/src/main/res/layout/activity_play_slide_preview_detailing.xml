@@ -422,27 +422,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_16sdp"
-        android:src="@drawable/play_icon"
         android:elevation="10dp"
+        android:src="@drawable/play_icon"
         android:translationZ="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="@color/white" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/progress_anim"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:padding="@dimen/_20sdp"
+    <!--    <com.airbnb.lottie.LottieAnimationView-->
+    <!--        android:id="@+id/progress_anim"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@color/white"-->
+    <!--        android:padding="@dimen/_20sdp"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:lottie_autoPlay="true"-->
+    <!--        app:lottie_loop="false"-->
+    <!--        app:lottie_rawRes="@raw/file_transfer" />-->
+
+    <saneforce.sanzen.custom_views.LoadingDotsView
+        android:id="@+id/loading_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="false"
-        app:lottie_rawRes="@raw/file_transfer" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/touchBlocker"

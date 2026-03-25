@@ -1069,4 +1069,5 @@
 
     <string name="address_format">Адрес:</string>
     <string name="distance_format">Расстояние: %1$.2f метров</string>
+    <string name="loading">Загрузка</string>
 </resources>

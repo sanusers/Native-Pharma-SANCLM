@@ -1059,4 +1059,5 @@
 
     <string name="address_format">လိပ်စာ:</string>
     <string name="distance_format">အကွာအဝေး: %1$.2f မီတာ</string>
+    <string name="loading">တင်နေသည်</string>
 </resources>

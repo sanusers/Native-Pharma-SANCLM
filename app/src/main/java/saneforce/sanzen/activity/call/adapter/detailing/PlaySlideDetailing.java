@@ -246,8 +246,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                             binding.pdfView.setVisibility(View.VISIBLE);
                             binding.videoView.setVisibility(View.GONE);
                             binding.webView.setVisibility(View.GONE);
-                            binding.progressAnim.setVisibility(View.VISIBLE);
-                            binding.progressAnim.playAnimation();
+                            binding.loadingView.setVisibility(View.VISIBLE);
+                            binding.loadingView.startLoading();
                             loadPdf(file.getAbsolutePath());
                             break;
                         case "mp4":
@@ -255,13 +255,14 @@ public class PlaySlideDetailing extends AppCompatActivity {
                             binding.pdfView.setVisibility(View.GONE);
                             binding.videoView.setVisibility(View.VISIBLE);
                             binding.webView.setVisibility(View.GONE);
-                            binding.progressAnim.setVisibility(View.VISIBLE);
-                            binding.progressAnim.playAnimation();
+                            binding.loadingView.setVisibility(View.VISIBLE);
+                            binding.loadingView.startLoading();
                             Uri uri = Uri.parse(file.getAbsolutePath());
                             binding.videoView.setVideoURI(uri);
                             binding.videoView.setMediaController(mediaController);
                             binding.videoView.setOnPreparedListener(mp -> {
-                                binding.progressAnim.setVisibility(View.GONE);
+                                binding.loadingView.setVisibility(View.GONE);
+                                binding.loadingView.stopLoading();
                                 mp.start();
                             });
                             binding.videoView.setZOrderOnTop(false);
@@ -272,8 +273,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                             binding.pdfView.setVisibility(View.GONE);
                             binding.videoView.setVisibility(View.GONE);
                             binding.webView.setVisibility(View.VISIBLE);
-                            binding.progressAnim.setVisibility(View.VISIBLE);
-                            binding.progressAnim.playAnimation();
+                            binding.loadingView.setVisibility(View.VISIBLE);
+                            binding.loadingView.startLoading();
 
                             binding.webView.getSettings().setBuiltInZoomControls(false);
                             binding.webView.getSettings().setDisplayZoomControls(false);
@@ -328,8 +329,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                 public void onPageFinished(WebView view, String url) {
                                     super.onPageFinished(view, url);
                                     Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                                    binding.progressAnim.setVisibility(View.GONE);
-                                    binding.progressAnim.cancelAnimation();
+                                    binding.loadingView.setVisibility(View.GONE);
+                                    binding.loadingView.stopLoading();
                                 }
                             });
                             break;
@@ -353,7 +354,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 binding.viewPager.setVisibility(View.VISIBLE);
                 binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.GONE);
-                binding.progressAnim.setVisibility(View.GONE);
+                binding.loadingView.setVisibility(View.GONE);
+                binding.loadingView.stopLoading();
                 binding.webView.setVisibility(View.GONE);
                 binding.upArrow.setVisibility(View.VISIBLE);
             }
@@ -672,8 +674,8 @@ public class PlaySlideDetailing extends AppCompatActivity {
     public void loadPdf(String fileName) {
         binding.pdfView.fromFile(new File(fileName))
                 .onRender((nbPages) -> {
-                    binding.progressAnim.setVisibility(View.GONE);
-                    binding.progressAnim.cancelAnimation();
+                    binding.loadingView.setVisibility(View.GONE);
+                    binding.loadingView.stopLoading();
                 })
                 .defaultPage(0)
                 .enableAnnotationRendering(true)

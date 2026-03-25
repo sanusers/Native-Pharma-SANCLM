@@ -1056,5 +1056,6 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="and">et</string>
     <string name="syncing">Synchronisation...</string>
     <string name="deleting">Suppression...</string>
+    <string name="loading">Chargement</string>
 
 </resources>

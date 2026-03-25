@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_3sdp">
+
+    <TextView
+        android:id="@+id/tv_loading_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:text="@string/loading"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_18ssp" />
+
+    <View
+        android:id="@+id/dot1"
+        android:layout_width="@dimen/_3sdp"
+        android:layout_height="@dimen/_3sdp"
+        android:layout_gravity="bottom"
+        android:layout_marginEnd="@dimen/_2sdp"
+        android:background="@drawable/bg_circle_dot"
+        android:layout_marginBottom="@dimen/_1sdp" />
+
+    <View
+        android:id="@+id/dot2"
+        android:layout_width="@dimen/_3sdp"
+        android:layout_height="@dimen/_3sdp"
+        android:layout_gravity="bottom"
+        android:layout_marginEnd="@dimen/_2sdp"
+        android:background="@drawable/bg_circle_dot"
+        android:layout_marginBottom="@dimen/_1sdp" />
+
+    <View
+        android:id="@+id/dot3"
+        android:layout_width="@dimen/_3sdp"
+        android:layout_height="@dimen/_3sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_circle_dot"
+        android:layout_marginBottom="@dimen/_1sdp" />
+
+</merge>

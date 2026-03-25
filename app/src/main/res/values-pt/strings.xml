@@ -1073,4 +1073,5 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
 
     <string name="address_format">Endereço:</string>
     <string name="distance_format">Distância: %1$.2f metros</string>
+    <string name="loading">Carregando</string>
 </resources>
