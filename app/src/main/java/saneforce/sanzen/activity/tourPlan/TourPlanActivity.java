@@ -253,7 +253,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpNeed(this).equalsIgnoreCase("0")
                 && !SharedPref.getTpStartDate(this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(this).equalsIgnoreCase("-1")
                 && !SharedPref.getTpEndDate(this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(this).equalsIgnoreCase("-1")) {
-            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare)+" " + SharedPref.getStpCaption(this)+" " + getString(R.string.and_get_approved_to_prepare_tour_plan));
+            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.prepare) + " " + SharedPref.getStpCaption(this) + " " + getString(R.string.and_get_approved_to_prepare_tour_plan));
             Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
             startActivity(intent);
             finish();
@@ -382,6 +382,10 @@ public class TourPlanActivity extends AppCompatActivity {
                                 isFrom = getString(R.string.sync);
                                 binding.tvSync.setEnabled(true);
                                 binding.progressBar.setVisibility(View.VISIBLE);
+                                binding.freezeOverlay.setVisibility(View.VISIBLE);
+                                /*binding.backArrow.setEnabled(false);*/
+                                /*binding.calendarNextButton.setEnabled(false);*/
+                                /*binding.calendarPrevButton.setEnabled(false);*/
                                 LocalDate localDate1 = LocalDate.now();
                                 TourPlanOfflineDataTable tourPlanOfflineDataTable1 = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                                 changeStatus = tourPlanOfflineDataTable1.getTpMonthSyncedOrEmpty();
@@ -399,6 +403,10 @@ public class TourPlanActivity extends AppCompatActivity {
 
                             } else {
                                 binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
+                                /*binding.backArrow.setEnabled(true);*/
+                                /*binding.calendarNextButton.setEnabled(true);*/
+                                /*binding.calendarPrevButton.setEnabled(true);*/
                                 CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
                             }
                         }
@@ -416,6 +424,10 @@ public class TourPlanActivity extends AppCompatActivity {
                             if (status) {
                                 binding.tvSync.setEnabled(false);
                                 binding.progressBar.setVisibility(View.VISIBLE);
+                                binding.freezeOverlay.setVisibility(View.VISIBLE);
+//                                binding.backArrow.setEnabled(false);
+//                                binding.calendarNextButton.setEnabled(false);
+//                                binding.calendarPrevButton.setEnabled(false);
 
                                 LocalDate localDate1 = LocalDate.now();
                                 if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDateUI(localDate1.minusMonths(1)))) {
@@ -622,7 +634,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 } else if (modelClass1.getTerritories().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any)+" "+ SharedPref.getClusterCap(TourPlanActivity.this)+" "+getString(R.string.for_session)+" "+ (i + 1));
+                                    CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + SharedPref.getClusterCap(TourPlanActivity.this) + " " + getString(R.string.for_session) + " " + (i + 1));
                                     break;
                                 } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                                     if (FW_meetup_mandatory.equals("0")) {
@@ -724,7 +736,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         || (modelClass1.getClusters().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0"))) {
                                     isEmpty = true;
                                     position = i;
-                                    CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any)+" "+ SharedPref.getClusterCap(TourPlanActivity.this)+" " +getString(R.string.for_session)+" "+ (i + 1));
+                                    CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + SharedPref.getClusterCap(TourPlanActivity.this) + " " + getString(R.string.for_session) + " " + (i + 1));
                                     break;
                                 }
 //                            if(modelClass1.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
@@ -880,7 +892,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         } else if (oneBuildModelClass.getTerritories().isEmpty()) {
                             isEmpty = true;
                             position = i;
-                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any)+" "+ SharedPref.getClusterCap(TourPlanActivity.this)+" "+getString(R.string.for_session)+" "+ (i + 1));
+                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + SharedPref.getClusterCap(TourPlanActivity.this) + " " + getString(R.string.for_session) + " " + (i + 1));
                             break;
                         } else if (oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                             if (FW_meetup_mandatory.equals("0")) {
@@ -1176,7 +1188,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 || (checkList.isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0"))) {
                             isEmpty = true;
                             position = i;
-                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any)+" "+ SharedPref.getClusterCap(TourPlanActivity.this)+" "+getString(R.string.for_session)+" "+ (i + 1));
+                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + SharedPref.getClusterCap(TourPlanActivity.this) + " " + getString(R.string.for_session) + " " + (i + 1));
                             break;
                         } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                             if (FW_meetup_mandatory.equals("0")) {
@@ -1612,6 +1624,10 @@ public class TourPlanActivity extends AppCompatActivity {
                             dummy.add(modelClass.getDayNo());
                             Log.v("tpApproval", "---" + modelClass.getDayNo());
                             binding.progressBar.setVisibility(View.VISIBLE);
+                            binding.freezeOverlay.setVisibility(View.VISIBLE);
+//                            binding.backArrow.setEnabled(false);
+//                            binding.calendarNextButton.setEnabled(false);
+//                            binding.calendarPrevButton.setEnabled(false);
                             prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList, true);
                             break;
                         }
@@ -1619,6 +1635,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
                 if (dummy.size() == 0) {
                     binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.freezeOverlay.setVisibility(View.VISIBLE);
+//                    binding.backArrow.setEnabled(false);
+//                    binding.calendarNextButton.setEnabled(false);
+//                    binding.calendarPrevButton.setEnabled(false);
                     sendWholeMonthStatus(localDate);
                 }
             } else {
@@ -1634,6 +1654,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 isFrom = "sendToApproval";
                 binding.tpSendToApproval.setEnabled(false);
                 binding.progressBar.setVisibility(View.VISIBLE);
+                binding.freezeOverlay.setVisibility(View.VISIBLE);
                 LocalDate localDate1 = LocalDate.now();
                 if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
                     getDraftSaveOneBuild("previous", monthYearFromDate(localDate1.minusMonths(1)), dayWiseArrayPreviousMonthOneBuild, isFrom, status);
@@ -2577,6 +2598,7 @@ public class TourPlanActivity extends AppCompatActivity {
         if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
             try {
                 binding.progressBar.setVisibility(View.VISIBLE);
+                binding.freezeOverlay.setVisibility(View.VISIBLE);
                 apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
                 JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
                 jsonObject.put("tableName", "getstp_details_mgr");
@@ -2644,22 +2666,39 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         }
                         binding.progressBar.setVisibility(View.GONE);
+                        binding.freezeOverlay.setVisibility(View.GONE);
+//                        binding.backArrow.setEnabled(true);
+//                        binding.calendarNextButton.setEnabled(true);
+//                        binding.calendarPrevButton.setEnabled(true);
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         Log.e("STP", "onFailure: ");
                         binding.progressBar.setVisibility(View.GONE);
+                        binding.freezeOverlay.setVisibility(View.GONE);
+//                        binding.backArrow.setEnabled(true);
+//                        binding.calendarNextButton.setEnabled(true);
+//                        binding.calendarPrevButton.setEnabled(true);
                         CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
                         t.printStackTrace();
                     }
                 });
             } catch (Exception e) {
                 binding.progressBar.setVisibility(View.GONE);
+                binding.freezeOverlay.setVisibility(View.GONE);
+//                binding.backArrow.setEnabled(true);
+//                binding.calendarNextButton.setEnabled(true);
+//                binding.calendarPrevButton.setEnabled(true);
+                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_went_wrong_please_try_again));
                 e.printStackTrace();
             }
         } else {
             binding.progressBar.setVisibility(View.GONE);
+            binding.freezeOverlay.setVisibility(View.GONE);
+//            binding.backArrow.setEnabled(true);
+//            binding.calendarNextButton.setEnabled(true);
+//            binding.calendarPrevButton.setEnabled(true);
             CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
         }
     }
@@ -3506,6 +3545,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TP_SETUP, (new JSONArray().put(jsonObject1)).toString(), 2));
                                     }
                                     binding.progressBar.setVisibility(View.GONE);
+                                    binding.freezeOverlay.setVisibility(View.GONE);
                                     binding.tvSync.setEnabled(true);
                                     if (SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
                                         checkTpApiStatusOneBuild();
@@ -3530,6 +3570,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     checkTpApiStaus();
                                 }
                                 binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
                                 binding.tvSync.setEnabled(true);
                                 Log.v("tpGetPlan", "--error--2--" + e);
                                 e.printStackTrace();
@@ -3540,11 +3581,13 @@ public class TourPlanActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                             binding.progressBar.setVisibility(View.GONE);
+                            binding.freezeOverlay.setVisibility(View.GONE);
                             Log.e("tpGetPlan", "error getTp : " + t);
                         }
                     });
                 } catch (JSONException e) {
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.freezeOverlay.setVisibility(View.GONE);
                     binding.tvSync.setEnabled(true);
                     Log.v("tpGetPlan", "--error--1--" + e);
                 }
@@ -3588,6 +3631,10 @@ public class TourPlanActivity extends AppCompatActivity {
                                         SaveTourPlanWholeMonth(jsonObject1, isClickedName);
                                     }
                                     binding.progressBar.setVisibility(View.GONE);
+                                    binding.freezeOverlay.setVisibility(View.GONE);
+//                                    binding.backArrow.setEnabled(true);
+//                                    binding.calendarNextButton.setEnabled(true);
+//                                    binding.calendarPrevButton.setEnabled(true);
                                     binding.tvSync.setEnabled(true);
 
                                     dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate.minusMonths(1));
@@ -3618,7 +3665,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                 SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                                 checkTpApiStaus();
                                 binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
+//                                binding.backArrow.setEnabled(true);
+//                                binding.calendarNextButton.setEnabled(true);
+//                                binding.calendarPrevButton.setEnabled(true);
                                 binding.tvSync.setEnabled(true);
+                                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_went_wrong_please_try_again));
                                 Log.v("tpGetPlan", "--error--2--" + e);
                                 e.printStackTrace();
                             }
@@ -3628,14 +3680,26 @@ public class TourPlanActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                             binding.progressBar.setVisibility(View.GONE);
+                            binding.freezeOverlay.setVisibility(View.GONE);
+//                            binding.backArrow.setEnabled(true);
+//                            binding.calendarNextButton.setEnabled(true);
+//                            binding.calendarPrevButton.setEnabled(true);
+                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_went_wrong_please_try_again));
                             Log.e("tpGetPlan", "error getTp : " + t);
                         }
                     });
                 } catch (JSONException e) {
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.freezeOverlay.setVisibility(View.GONE);
+//                    binding.backArrow.setEnabled(true);
+//                    binding.calendarNextButton.setEnabled(true);
+//                    binding.calendarPrevButton.setEnabled(true);
                     binding.tvSync.setEnabled(true);
+                    CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_went_wrong_please_try_again));
                     Log.v("tpGetPlan", "--error--1--" + e);
                 }
+            }else{
+                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
             }
         });
         networkStatusTask.execute();
@@ -3672,6 +3736,10 @@ public class TourPlanActivity extends AppCompatActivity {
                                         SaveTourPlanWholeMonthOneBuild(jsonObject1, isClickedName);
                                     }
                                     binding.progressBar.setVisibility(View.GONE);
+                                    binding.freezeOverlay.setVisibility(View.GONE);
+//                                    binding.backArrow.setEnabled(true);
+//                                    binding.calendarNextButton.setEnabled(true);
+//                                    binding.calendarPrevButton.setEnabled(true);
                                     binding.tvSync.setEnabled(true);
                                     dayWiseArrayPreviousMonthOneBuild = prepareModelClassForMonthOneBuild(localDate.minusMonths(1));
                                     dayWiseArrayCurrentMonthOneBuild = prepareModelClassForMonthOneBuild(LocalDate.now());
@@ -3699,6 +3767,10 @@ public class TourPlanActivity extends AppCompatActivity {
                                 SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                                 checkTpApiStatusOneBuild();
                                 binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
+//                                binding.backArrow.setEnabled(true);
+//                                binding.calendarNextButton.setEnabled(true);
+//                                binding.calendarPrevButton.setEnabled(true);
                                 binding.tvSync.setEnabled(true);
                                 Log.v("tpGetPlan", "--error--2--" + e);
                                 e.printStackTrace();
@@ -3709,14 +3781,24 @@ public class TourPlanActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                             binding.progressBar.setVisibility(View.GONE);
+                            binding.freezeOverlay.setVisibility(View.GONE);
+//                            binding.backArrow.setEnabled(true);
+//                            binding.calendarNextButton.setEnabled(true);
+//                            binding.calendarPrevButton.setEnabled(true);
                             Log.e("tpGetPlan", "error getTp : " + t);
                         }
                     });
                 } catch (JSONException e) {
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.freezeOverlay.setVisibility(View.GONE);
+//                    binding.backArrow.setEnabled(true);
+//                    binding.calendarNextButton.setEnabled(true);
+//                    binding.calendarPrevButton.setEnabled(true);
                     binding.tvSync.setEnabled(true);
                     Log.v("tpGetPlan", "--error--1--" + e);
                 }
+            }else{
+                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
             }
         });
         networkStatusTask.execute();
@@ -4095,13 +4177,13 @@ public class TourPlanActivity extends AppCompatActivity {
                                         Log.d("TAG", "onResponse: success FALSE");
                                     }
 
-                                if (response.body() != null && !response.body().isJsonNull() && success) {
-                                    try {
-                                        SharedPref.setTpSyncStaus(TourPlanActivity.this, true);
-                                        CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.draft_save));
-                                        tourPlanOfflineDataTable1.setTpMonthSynced("0");
-                                        tourPlanOfflineDataDao.saveMonthlySyncStatus(tourPlanOfflineDataTable1.getTpMonth(), "0");
-                                        inputDataArrayOneBuild.setSyncStatus("0");
+                                    if (response.body() != null && !response.body().isJsonNull() && success) {
+                                        try {
+                                            SharedPref.setTpSyncStaus(TourPlanActivity.this, true);
+                                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.draft_save));
+                                            tourPlanOfflineDataTable1.setTpMonthSynced("0");
+                                            tourPlanOfflineDataDao.saveMonthlySyncStatus(tourPlanOfflineDataTable1.getTpMonth(), "0");
+                                            inputDataArrayOneBuild.setSyncStatus("0");
 
                                             for (OneBuildModelClass oneBuildModelClass : arrayList) {
                                                 if (oneBuildModelClass.getSyncStatus() != null && oneBuildModelClass.getSyncStatus().equals("1")) {
@@ -4110,11 +4192,19 @@ public class TourPlanActivity extends AppCompatActivity {
                                             }
 
                                             binding.progressBar.setVisibility(View.GONE);
+                                            binding.freezeOverlay.setVisibility(View.GONE);
+//                                            binding.backArrow.setEnabled(true);
+//                                            binding.calendarNextButton.setEnabled(true);
+//                                            binding.calendarPrevButton.setEnabled(true);
                                             try {
                                                 JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
                                                 if (!isFrom.equalsIgnoreCase("sendToApproval")) {
                                                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
                                                     binding.progressBar.setVisibility(View.GONE);
+                                                    binding.freezeOverlay.setVisibility(View.GONE);
+//                                                    binding.backArrow.setEnabled(true);
+//                                                    binding.calendarNextButton.setEnabled(true);
+//                                                    binding.calendarPrevButton.setEnabled(true);
                                                     binding.tvSync.setEnabled(true);
                                                 }
                                                 if (isFrom.equalsIgnoreCase("sendToApproval")) {
@@ -4139,13 +4229,21 @@ public class TourPlanActivity extends AppCompatActivity {
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                                         SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                                         binding.progressBar.setVisibility(View.GONE);
+                                        binding.freezeOverlay.setVisibility(View.GONE);
+//                                        binding.backArrow.setEnabled(true);
+//                                        binding.calendarNextButton.setEnabled(true);
+//                                        binding.calendarPrevButton.setEnabled(true);
 
                                     }
                                 } else {
                                     CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                                     SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                                     binding.progressBar.setVisibility(View.GONE);
-                                    if (isFrom.equalsIgnoreCase("sendToApproval")){
+                                    binding.freezeOverlay.setVisibility(View.GONE);
+//                                    binding.backArrow.setEnabled(true);
+//                                    binding.calendarNextButton.setEnabled(true);
+//                                    binding.calendarPrevButton.setEnabled(true);
+                                    if (isFrom.equalsIgnoreCase("sendToApproval")) {
                                         binding.tpSendToApproval.setEnabled(true);
                                     }
                                 }
@@ -4157,7 +4255,12 @@ public class TourPlanActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
+                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                             binding.progressBar.setVisibility(View.GONE);
+                            binding.freezeOverlay.setVisibility(View.GONE);
+//                            binding.backArrow.setEnabled(true);
+//                            binding.calendarNextButton.setEnabled(true);
+//                            binding.calendarPrevButton.setEnabled(true);
                             Log.e("tpGetPlan", "error getTp : " + t);
                         }
                     });
@@ -4178,7 +4281,12 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
 
             } catch (JsonIOException e) {
+                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                 binding.progressBar.setVisibility(View.GONE);
+                binding.freezeOverlay.setVisibility(View.GONE);
+//                binding.backArrow.setEnabled(true);
+//                binding.calendarNextButton.setEnabled(true);
+//                binding.calendarPrevButton.setEnabled(true);
                 binding.tvSync.setEnabled(true);
                 Log.v("tpGetPlan", "--error--1--" + e);
             }
@@ -4205,8 +4313,13 @@ public class TourPlanActivity extends AppCompatActivity {
             }
 
         } catch (Exception e) {
+            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
             binding.tvSync.setEnabled(true);
             binding.progressBar.setVisibility(View.GONE);
+            binding.freezeOverlay.setVisibility(View.GONE);
+//            binding.backArrow.setEnabled(true);
+//            binding.calendarNextButton.setEnabled(true);
+//            binding.calendarPrevButton.setEnabled(true);
             Log.v("getTp", "----error---" + e);
         }
     }
@@ -4231,8 +4344,13 @@ public class TourPlanActivity extends AppCompatActivity {
             }
 
         } catch (Exception e) {
+            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
             binding.tvSync.setEnabled(true);
             binding.progressBar.setVisibility(View.GONE);
+            binding.freezeOverlay.setVisibility(View.GONE);
+//            binding.backArrow.setEnabled(true);
+//            binding.calendarNextButton.setEnabled(true);
+//            binding.calendarPrevButton.setEnabled(true);
             Log.v("getTp", "----error---" + e);
         }
     }
@@ -5092,6 +5210,10 @@ public class TourPlanActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
 //                        progressDialog.dismiss();
                         binding.progressBar.setVisibility(View.GONE);
+                        binding.freezeOverlay.setVisibility(View.GONE);
+//                        binding.backArrow.setEnabled(true);
+//                        binding.calendarNextButton.setEnabled(true);
+//                        binding.calendarPrevButton.setEnabled(true);
                         uiInitializationOneBuild();
                         if (response.body().isJsonArray()) {
                             try {
@@ -5159,17 +5281,32 @@ public class TourPlanActivity extends AppCompatActivity {
                         } else {
 //                            progressDialog.dismiss();
                             binding.progressBar.setVisibility(View.GONE);
+                            binding.freezeOverlay.setVisibility(View.GONE);
+//                            binding.backArrow.setEnabled(true);
+//                            binding.calendarNextButton.setEnabled(true);
+//                            binding.calendarPrevButton.setEnabled(true);
+                            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_went_wrong_please_try_again));
                             System.out.println("No Response");
                         }
                     } else {
                         System.out.println("No Response");
                         binding.progressBar.setVisibility(View.GONE);
+                        binding.freezeOverlay.setVisibility(View.GONE);
+//                        binding.backArrow.setEnabled(true);
+//                        binding.calendarNextButton.setEnabled(true);
+//                        binding.calendarPrevButton.setEnabled(true);
+                        CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_went_wrong_please_try_again));
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.freezeOverlay.setVisibility(View.GONE);
+//                    binding.backArrow.setEnabled(true);
+//                    binding.calendarNextButton.setEnabled(true);
+//                    binding.calendarPrevButton.setEnabled(true);
                     System.out.println("On Failure");
 
                 }
@@ -5205,6 +5342,10 @@ public class TourPlanActivity extends AppCompatActivity {
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.v("tpApproval", "--ressapproval--" + response.body());
                                 binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
+//                                binding.backArrow.setEnabled(true);
+//                                binding.calendarNextButton.setEnabled(true);
+//                                binding.calendarPrevButton.setEnabled(true);
                                 if (response.body() != null) {
                                     try {
                                         JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
@@ -5220,10 +5361,18 @@ public class TourPlanActivity extends AppCompatActivity {
                                         }
                                     } catch (JSONException e) {
                                         binding.progressBar.setVisibility(View.GONE);
+                                        binding.freezeOverlay.setVisibility(View.GONE);
+//                                        binding.backArrow.setEnabled(true);
+//                                        binding.calendarNextButton.setEnabled(true);
+//                                        binding.calendarPrevButton.setEnabled(true);
                                         e.printStackTrace();
                                     }
                                 } else {
                                     binding.progressBar.setVisibility(View.GONE);
+                                    binding.freezeOverlay.setVisibility(View.GONE);
+//                                    binding.backArrow.setEnabled(true);
+//                                    binding.calendarNextButton.setEnabled(true);
+//                                    binding.calendarPrevButton.setEnabled(true);
 //                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                                     tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                                 }
@@ -5232,16 +5381,25 @@ public class TourPlanActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
+//                                binding.backArrow.setEnabled(true);
+//                                binding.calendarNextButton.setEnabled(true);
+//                                binding.calendarPrevButton.setEnabled(true);
 //                                sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                                 tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                             }
                         });
                     } catch (JSONException e) {
                         binding.progressBar.setVisibility(View.GONE);
+                        binding.freezeOverlay.setVisibility(View.GONE);
                         e.printStackTrace();
                     }
                 } else {
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.freezeOverlay.setVisibility(View.GONE);
+//                    binding.backArrow.setEnabled(true);
+//                    binding.calendarNextButton.setEnabled(true);
+//                    binding.calendarPrevButton.setEnabled(true);
 //                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                     tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                 }
@@ -5278,6 +5436,10 @@ public class TourPlanActivity extends AppCompatActivity {
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.v("tpApproval", "--ressapproval--" + response.body());
                                 binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
+//                                binding.backArrow.setEnabled(true);
+//                                binding.calendarNextButton.setEnabled(true);
+//                                binding.calendarPrevButton.setEnabled(true);
                                 if (response.body() != null) {
                                     try {
                                         JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
@@ -5305,10 +5467,20 @@ public class TourPlanActivity extends AppCompatActivity {
                                         get1MonthRemoteTPDataOneBuild(localDate);
                                     } catch (JSONException e) {
                                         binding.progressBar.setVisibility(View.GONE);
+                                        binding.freezeOverlay.setVisibility(View.GONE);
+//                                        binding.backArrow.setEnabled(true);
+//                                        binding.calendarNextButton.setEnabled(true);
+//                                        binding.calendarPrevButton.setEnabled(true);
+                                        CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_went_wrong_please_try_again));
+
                                         e.printStackTrace();
                                     }
                                 } else {
                                     binding.progressBar.setVisibility(View.GONE);
+                                    binding.freezeOverlay.setVisibility(View.GONE);
+//                                    binding.backArrow.setEnabled(true);
+//                                    binding.calendarNextButton.setEnabled(true);
+//                                    binding.calendarPrevButton.setEnabled(true);
 
                                     tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                                 }
@@ -5316,16 +5488,31 @@ public class TourPlanActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                                 binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
+//                                binding.backArrow.setEnabled(true);
+//                                binding.calendarNextButton.setEnabled(true);
+//                                binding.calendarPrevButton.setEnabled(true);
                                 tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                             }
                         });
                     } catch (JSONException e) {
+                        CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                         binding.progressBar.setVisibility(View.GONE);
+                        binding.freezeOverlay.setVisibility(View.GONE);
+//                        binding.backArrow.setEnabled(true);
+//                        binding.calendarNextButton.setEnabled(true);
+//                        binding.calendarPrevButton.setEnabled(true);
                         e.printStackTrace();
                     }
                 } else {
+                    CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.poor_connection));
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.freezeOverlay.setVisibility(View.GONE);
+//                    binding.backArrow.setEnabled(true);
+//                    binding.calendarNextButton.setEnabled(true);
+//                    binding.calendarPrevButton.setEnabled(true);
                     tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                 }
             }
@@ -5611,12 +5798,20 @@ public class TourPlanActivity extends AppCompatActivity {
                     } catch (JSONException ex) {
                         if (statusOffline) {
                             binding.progressBar.setVisibility(View.GONE);
+                            binding.freezeOverlay.setVisibility(View.GONE);
+//                            binding.backArrow.setEnabled(true);
+//                            binding.calendarNextButton.setEnabled(true);
+//                            binding.calendarPrevButton.setEnabled(true);
                         }
                         ex.printStackTrace();
                     }
                 } else {
                     if (statusOffline) {
                         binding.progressBar.setVisibility(View.GONE);
+                        binding.freezeOverlay.setVisibility(View.GONE);
+//                        binding.backArrow.setEnabled(true);
+//                        binding.calendarNextButton.setEnabled(true);
+//                        binding.calendarPrevButton.setEnabled(true);
                     }
                     saveTpLocal(arrayList, dateForApproval, month, "1"); // Sync Failed
                 }
@@ -5710,6 +5905,10 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                     if (dummy.size() == 0) {
                                         binding.progressBar.setVisibility(View.GONE);
+                                        binding.freezeOverlay.setVisibility(View.GONE);
+//                                        binding.backArrow.setEnabled(true);
+//                                        binding.calendarNextButton.setEnabled(true);
+//                                        binding.calendarPrevButton.setEnabled(true);
                                         changeApprovalBtnState(arrayList);
                                     }
 
@@ -5724,9 +5923,17 @@ public class TourPlanActivity extends AppCompatActivity {
                         saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
                     }
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.freezeOverlay.setVisibility(View.GONE);
+//                    binding.backArrow.setEnabled(true);
+//                    binding.calendarNextButton.setEnabled(true);
+//                    binding.calendarPrevButton.setEnabled(true);
                 } catch (JSONException e) {
                     if (statusOffline) {
                         binding.progressBar.setVisibility(View.GONE);
+                        binding.freezeOverlay.setVisibility(View.GONE);
+//                        binding.backArrow.setEnabled(true);
+//                        binding.calendarNextButton.setEnabled(true);
+//                        binding.calendarPrevButton.setEnabled(true);
                     }
                     e.printStackTrace();
                 }
@@ -5736,6 +5943,10 @@ public class TourPlanActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 if (statusOffline) {
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.freezeOverlay.setVisibility(View.GONE);
+//                    binding.backArrow.setEnabled(true);
+//                    binding.calendarNextButton.setEnabled(true);
+//                    binding.calendarPrevButton.setEnabled(true);
                 }
                 CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
                 saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
@@ -5753,6 +5964,10 @@ public class TourPlanActivity extends AppCompatActivity {
         }.getType();
         if (jsonArray.length() >= 0) {
             binding.progressBar.setVisibility(View.VISIBLE);
+            binding.freezeOverlay.setVisibility(View.VISIBLE);
+//            binding.backArrow.setEnabled(false);
+//            binding.calendarNextButton.setEnabled(false);
+//            binding.calendarPrevButton.setEnabled(false);
             sendWholeMonthStatusOneBuild(localDate, isClickedName);
         } else {
             get1MonthRemoteTPDataOneBuild(localDate);
