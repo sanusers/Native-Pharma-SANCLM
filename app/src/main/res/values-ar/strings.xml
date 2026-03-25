@@ -1059,5 +1059,7 @@
     <string name="and">و</string>
     <string name="syncing">جارٍ المزامنة...</string>
     <string name="deleting">جارٍ الحذف...</string>
+    <string name="please_detail_mandatory_slides">يرجى توضيح الشرائح الإلزامية</string>
+    <string name="mandatory_slides_pending_for_brand">الشرائح الإلزامية معلقة للعلامة التجارية: %1$s</string>
     <string name="loading">جارٍ التحميل</string>
 </resources>

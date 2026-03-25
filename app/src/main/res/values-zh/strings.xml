@@ -1070,4 +1070,7 @@
     <string name="distance_format">距离：%1$.2f 米</string>
     <string name="loading">加载中</string>
 
+    <string name="please_detail_mandatory_slides">请详细说明必填幻灯片</string>
+    <string name="mandatory_slides_pending_for_brand">品牌的必填幻灯片待完成：%1$s</string>
+
 </resources>

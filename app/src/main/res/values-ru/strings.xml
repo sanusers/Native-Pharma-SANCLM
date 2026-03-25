@@ -1069,5 +1069,8 @@
 
     <string name="address_format">Адрес:</string>
     <string name="distance_format">Расстояние: %1$.2f метров</string>
+
+    <string name="please_detail_mandatory_slides">Пожалуйста, укажите обязательные слайды</string>
+    <string name="mandatory_slides_pending_for_brand">Обязательные слайды, ожидающие для бренда: %1$s</string>
     <string name="loading">Загрузка</string>
 </resources>

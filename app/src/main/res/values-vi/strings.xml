@@ -1074,5 +1074,8 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
 
     <string name="address_format">Địa chỉ:</string>
     <string name="distance_format">Khoảng cách: %1$.2f mét</string>
+
+    <string name="please_detail_mandatory_slides">Vui lòng cung cấp chi tiết các slide bắt buộc</string>
+    <string name="mandatory_slides_pending_for_brand">Các slide bắt buộc còn thiếu cho thương hiệu: %1$s</string>
     <string name="loading">Đang tải</string>
 </resources>

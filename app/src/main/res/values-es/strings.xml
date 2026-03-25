@@ -639,7 +639,6 @@
     <string name="draft_save">Datos del plan de viaje guardados correctamente</string>
 
 
-
     //converted
     <string name="need_remarks">Ingrese observaciones en la sesión</string>
     <string name="reset_password">Restablecer contraseña</string>
@@ -1063,6 +1062,9 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="address_format">Dirección:</string>
     <string name="distance_format">Distancia : %1$.2f metros</string>
     <string name="loading">Cargando</string>
+
+    <string name="please_detail_mandatory_slides">Por favor, detalle las diapositivas obligatorias</string>
+    <string name="mandatory_slides_pending_for_brand">Diapositivas obligatorias pendientes para la marca: %1$s</string>
 
 
 </resources>
