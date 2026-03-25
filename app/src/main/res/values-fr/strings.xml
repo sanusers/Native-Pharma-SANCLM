@@ -1056,5 +1056,6 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="and">et</string>
     <string name="syncing">Synchronisation...</string>
     <string name="deleting">Suppression...</string>
-
+    <string name="please_detail_mandatory_slides">Veuillez détailler les diapositives obligatoires</string>
+    <string name="mandatory_slides_pending_for_brand">Diapositives obligatoires en attente pour la marque : %1$s</string>
 </resources>

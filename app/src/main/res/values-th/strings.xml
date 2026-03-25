@@ -1072,4 +1072,7 @@
 
     <string name="address_format">ที่อยู่:</string>
     <string name="distance_format">ระยะทาง: %1$.2f เมตร</string>
+
+    <string name="please_detail_mandatory_slides">โปรดระบุสไลด์ที่จำเป็น</string>
+    <string name="mandatory_slides_pending_for_brand">สไลด์ที่จำเป็นที่ยังค้างสำหรับแบรนด์: %1$s</string>
 </resources>

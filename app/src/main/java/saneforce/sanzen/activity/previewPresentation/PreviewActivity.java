@@ -39,7 +39,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,7 +99,7 @@ public class PreviewActivity extends AppCompatActivity {
     private SideScreenAdapter sideScreenAdapter;
     private JSONObject checkInJsonObject = new JSONObject();
     public static boolean isTimerEnd = false;
-   // String mandatorySlide ="0";
+    // String mandatorySlide ="0";
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -122,7 +125,7 @@ public class PreviewActivity extends AppCompatActivity {
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         TextView titte = dialog.findViewById(R.id.ed_alert_msg);
-        titte.setText(getString(R.string.idle_time)+ " " + SharedPref.getDetailingIdleDuration(this) + " " +getString(R.string.minutes)+ " " +getString(R.string.for_detailing_has_been_exceeded));
+        titte.setText(getString(R.string.idle_time) + " " + SharedPref.getDetailingIdleDuration(this) + " " + getString(R.string.minutes) + " " + getString(R.string.for_detailing_has_been_exceeded));
         btn_no.setVisibility(View.GONE);
         btn_yes.setText(getString(R.string.ok));
         btn_yes.setOnClickListener(new SafeClickListener() {
@@ -145,7 +148,7 @@ public class PreviewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // playedMandatorySlideIds.clear();
+        // playedMandatorySlideIds.clear();
         previewBinding = saneforce.sanzen.databinding.ActivityPreviewBinding.inflate(getLayoutInflater());
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -353,35 +356,83 @@ public class PreviewActivity extends AppCompatActivity {
 //                }
 //            }
         previewBinding.btnFinishDet.setOnClickListener(view -> {
-            Set<String> pendingBrands = new LinkedHashSet<>();
-
-            // 1. Pending mandatory brands-ah collect pannunga
+            Map<String, Set<String>> brandPendingSlidesMap = new LinkedHashMap<>();
             for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
                 if (!PlaySlideDetailedAdapter.playedMandatorySlideIds.contains(p.getSlideId())) {
-                    pendingBrands.add(p.getBrandName());
+                    String brandName = p.getBrandName();
+                    String slideId = p.getSlideId();
+
+                    if (!brandPendingSlidesMap.containsKey(brandName)) {
+                        brandPendingSlidesMap.put(brandName, new HashSet<>());
+                    }
+
+                    brandPendingSlidesMap.get(brandName).add(slideId);
                 }
             }
 
             if (!PlaySlideDetailedAdapter.mandatoryProductList.isEmpty()) {
 
                 // --- CONDITION 1: Direct Finish ---
-                // Mandatory pathuruka koodathu, vera entha slide-um (timer map) pathuruka koodathu
                 if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty() &&
                         (PlaySlideDetailedAdapter.timer == null || PlaySlideDetailedAdapter.timer.isEmpty())) {
-                    Toast.makeText(this, getString(R.string.please_detail_mandatory_slides), Toast.LENGTH_LONG).show();
-                   // Toast.makeText(this, "Please Detail Mandatory Slides", Toast.LENGTH_LONG).show();
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_detail_mandatory_slides));
                     return;
                 }
 
-                if (!pendingBrands.isEmpty()) {
-                    // Existing logic-aiye string resource-ku maathunga
-                    Toast.makeText(this,
-                            getString(R.string.mandatory_slides_pending_for_brand, TextUtils.join(", ", pendingBrands)),
-                            Toast.LENGTH_LONG).show();
-                   // Toast.makeText(this, "Mandatory Slides Pending For Brand: " + TextUtils.join(", ", pendingBrands), Toast.LENGTH_LONG).show();
+                // --- CONDITION 2: Brands with Correct Counts ---
+                if (!brandPendingSlidesMap.isEmpty()) {
+                    List<String> formattedList = new ArrayList<>();
+
+                    for (Map.Entry<String, Set<String>> entry : brandPendingSlidesMap.entrySet()) {
+                        // Set size-ai eduthaal exact pending slide count kidaikkum
+                        formattedList.add(entry.getKey() + " (" + entry.getValue().size() + ")");
+                    }
+                    commonUtilsMethods.showToastMessage(
+                            this,
+                            context.getString(
+                                    R.string.mandatory_slides_pending_for_brand,
+                                    TextUtils.join(", ", formattedList)
+                            )
+                    );
+//                    String joinedBrands = TextUtils.join(", ", formattedList);
+//                    commonUtilsMethods.showToastMessage(this, getString(R.string.mandatory_slides_pending_for_brand, joinedBrands));
                     return;
                 }
             }
+
+//        previewBinding.btnFinishDet.setOnClickListener(view -> {
+//            Set<String> pendingBrands = new LinkedHashSet<>();
+//
+//            // 1. Pending mandatory brands-ah collect pannunga
+//            for (BrandModelClass.Product p : PlaySlideDetailedAdapter.mandatoryProductList) {
+//                if (!PlaySlideDetailedAdapter.playedMandatorySlideIds.contains(p.getSlideId())) {
+//                    pendingBrands.add(p.getBrandName());
+//                }
+//            }
+//
+//            if (!PlaySlideDetailedAdapter.mandatoryProductList.isEmpty()) {
+//
+//                // --- CONDITION 1: Direct Finish ---
+//                // Mandatory pathuruka koodathu, vera entha slide-um (timer map) pathuruka koodathu
+//                if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty() &&
+//                        (PlaySlideDetailedAdapter.timer == null || PlaySlideDetailedAdapter.timer.isEmpty())) {
+//                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_detail_mandatory_slides));
+//                    //  Toast.makeText(this, getString(R.string.please_detail_mandatory_slides), Toast.LENGTH_LONG).show();
+//                    // Toast.makeText(this, "Please Detail Mandatory Slides", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//
+//                if (!pendingBrands.isEmpty()) {
+//
+//                    String joinedBrands = TextUtils.join(", ", pendingBrands);
+//                    commonUtilsMethods.showToastMessage(this,getString(R.string.mandatory_slides_pending_for_brand, joinedBrands));
+////                    Toast.makeText(this,
+////                            getString(R.string.mandatory_slides_pending_for_brand, TextUtils.join(", ", pendingBrands)),
+////                            Toast.LENGTH_LONG).show();
+//                    // Toast.makeText(this, "Mandatory Slides Pending For Brand: " + TextUtils.join(", ", pendingBrands), Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//            }
 
 //        previewBinding.btnFinishDet.setOnClickListener(view -> {
 //            Log.e("MANDATORY", "mandatoryProductList size: " + PlaySlideDetailedAdapter.mandatoryProductList.size());
@@ -408,16 +459,16 @@ public class PreviewActivity extends AppCompatActivity {
             previewBinding.rlThankYou.setVisibility(View.VISIBLE);
             String DrDetCap = SharedPref.getDetDrCap(PreviewActivity.this);
             String UlDrDetCap = SharedPref.getDetUldrCap(PreviewActivity.this);
-            if(CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
+            if (CusType.equalsIgnoreCase("1") || CusType.equalsIgnoreCase("4")) {
                 if (CusType.equalsIgnoreCase("1") && !DrDetCap.isEmpty() || !DrDetCap.equalsIgnoreCase("null")) {
                     previewBinding.docName.setText("Thank You\n" + DrDetCap + " " + CallActivityCustDetails.get(0).getName());
-                } else if (CusType.equalsIgnoreCase("4") && !UlDrDetCap.isEmpty() || !UlDrDetCap.equalsIgnoreCase("null")){
+                } else if (CusType.equalsIgnoreCase("4") && !UlDrDetCap.isEmpty() || !UlDrDetCap.equalsIgnoreCase("null")) {
                     previewBinding.docName.setText("Thank You\n" + UlDrDetCap + " " + CallActivityCustDetails.get(0).getName());
-                }else {
+                } else {
                     previewBinding.docName.setText("Thank You\n" + "Dr." + " " + CallActivityCustDetails.get(0).getName());
                 }
-            }else{
-                previewBinding.docName.setText("Thank You\n"+ " " + CallActivityCustDetails.get(0).getName());
+            } else {
+                previewBinding.docName.setText("Thank You\n" + " " + CallActivityCustDetails.get(0).getName());
             }
             previewBinding.btnFinishDet.setVisibility(View.GONE);
 //            @Override
@@ -425,7 +476,7 @@ public class PreviewActivity extends AppCompatActivity {
 //            }
         });
 
-        previewBinding.proceed.setOnClickListener( view -> {
+        previewBinding.proceed.setOnClickListener(view -> {
             Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
             String totalDuration = "";
             for (int j = 0; j < arrayStore.size(); j++) {
@@ -666,7 +717,7 @@ public class PreviewActivity extends AppCompatActivity {
         try {
             for (int i = 0; i < arrayStore.size(); i++) {
                 if (arrayStore.get(i).getBrdName().equalsIgnoreCase(BrandName)) {
-                    dummyArr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming(),arrayStore.get(i).getFlag()));
+                    dummyArr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming(), arrayStore.get(i).getFlag()));
                 }
             }
             ArrayList<String> timesMax = new ArrayList<>();

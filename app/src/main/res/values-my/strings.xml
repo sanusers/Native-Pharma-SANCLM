@@ -1059,4 +1059,7 @@
 
     <string name="address_format">လိပ်စာ:</string>
     <string name="distance_format">အကွာအဝေး: %1$.2f မီတာ</string>
+
+    <string name="please_detail_mandatory_slides">မဖြစ်မနေလိုအပ်သော စလိုက်များကို အသေးစိတ်ဖော်ပြပါ</string>
+    <string name="mandatory_slides_pending_for_brand">အမှတ်တံဆိပ်အတွက် မဖြစ်မနေလိုအပ်သော စလိုက်များ မပြီးသေးပါ: %1$s</string>
 </resources>
