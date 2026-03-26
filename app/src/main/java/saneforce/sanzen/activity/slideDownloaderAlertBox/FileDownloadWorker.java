@@ -340,6 +340,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
@@ -563,9 +564,7 @@ public class FileDownloadWorker extends Worker {
         }
     }
 
-
     boolean Thumbnail(String fileName) {
-
         String fileFormat = SupportClass.getFileExtension(fileName);
         File sourceFile = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/", fileName);
         File thumbnailStorage;
@@ -582,40 +581,119 @@ public class FileDownloadWorker extends Worker {
         }
         File destinationFile = new File(thumbnailStorage, fileName.replace(fileFormat, "jpeg"));
         String destinationFilePath = destinationFile.getAbsolutePath();
-        if (sourceFile.exists()) {
-            Bitmap bitmap = SupportClass.generateBitmap(getApplicationContext(), sourceFile, fileFormat);
-            if (bitmap != null) {
-                try {
-                    if (destinationFile.exists()) {
-                        if (destinationFile.delete()) {
-                            Log.d("Thumbnail Conversion", "Old thumbnail(" + fileName + ") deleted.");
-                        } else {
-                            Log.e("Thumbnail Conversion", "Failed to delete old thumbnail(" + fileName + ").");
-                        }
-                    }
-                    if (!destinationFile.createNewFile()) {
-                        Log.e("Thumbnail Conversion", "Destination File Creation Failed.");
-                        return false;
-                    }
-                    FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 75, fileOutputStream);
-                    fileOutputStream.close();
-                    return true;
-                } catch (IOException e) {
-                    Log.e("Thumbnail Conversion", Objects.requireNonNull(e.getMessage()));
+        if (!sourceFile.exists()) return false;
+
+        Bitmap bitmap = null;
+        try {
+            // OPTIMIZED: decode with inSampleSize to avoid OOM on large images
+            bitmap = decodeSampledBitmap(sourceFile.getAbsolutePath(), 200, 200);
+
+            if (bitmap == null) {
+                Log.e("Thumbnail Creation", "Bitmap not generated for: " + fileName);
+                return false;
+            }
+
+            if (destinationFile.exists()) {
+                if (destinationFile.delete()) {
+                    Log.d("Thumbnail Conversion", "Old thumbnail(" + fileName + ") deleted.");
                 }
-            } else Log.e("Thumbnail Creation", "Bitmap not generated");
+            }
+
+            if (!destinationFile.createNewFile()) {
+                Log.e("Thumbnail Conversion", "Destination File Creation Failed.");
+                return false;
+            }
+
+            try (FileOutputStream fileOutputStream = new FileOutputStream(destinationFile)) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, fileOutputStream);
+                fileOutputStream.flush();
+            }
+            return true;
+
+        } catch (IOException e) {
+            Log.e("Thumbnail Conversion", "IOException: " + e.getMessage());
+            return false;
+        } finally {
+            // OPTIMIZED: always recycle bitmap to free native memory
+            if (bitmap != null) {
+                bitmap.recycle();
+            }
         }
-        return false;
+//        if (sourceFile.exists()) {
+//            Bitmap bitmap = SupportClass.generateBitmap(getApplicationContext(), sourceFile, fileFormat);
+//            if (bitmap != null) {
+//                try {
+//                    if (destinationFile.exists()) {
+//                        if (destinationFile.delete()) {
+//                            Log.d("Thumbnail Conversion", "Old thumbnail(" + fileName + ") deleted.");
+//                        } else {
+//                            Log.e("Thumbnail Conversion", "Failed to delete old thumbnail(" + fileName + ").");
+//                        }
+//                    }
+//                    if (!destinationFile.createNewFile()) {
+//                        Log.e("Thumbnail Conversion", "Destination File Creation Failed.");
+//                        return false;
+//                    }
+//                    FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 75, fileOutputStream);
+//                    fileOutputStream.close();
+//                    return true;
+//                } catch (IOException e) {
+//                    Log.e("Thumbnail Conversion", Objects.requireNonNull(e.getMessage()));
+//                }
+//            } else Log.e("Thumbnail Creation", "Bitmap not generated");
+//        }
+    }
+
+    /**
+     * Decodes bitmap with inSampleSize to avoid OOM on large images.
+     * Only loads a downsampled version — never the full resolution.
+     */
+    private Bitmap decodeSampledBitmap(String filePath, int reqWidth, int reqHeight) {
+        try {
+            // Step 1: Decode bounds only — no pixel data loaded yet
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(filePath, options);
+
+            // Step 2: Calculate safe inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+            // Step 3: Decode with inSampleSize — only loads small version
+            options.inJustDecodeBounds = false;
+            options.inPreferredConfig = Bitmap.Config.RGB_565; // uses 2 bytes per pixel vs 4 for ARGB_8888
+            return BitmapFactory.decodeFile(filePath, options);
+
+        } catch (OutOfMemoryError e) {
+            Log.e("Thumbnail Creation", "OOM even with sampling: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            Log.e("Thumbnail Creation", "Error decoding: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            int halfHeight = height / 2;
+            int halfWidth = width / 2;
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
     }
 
     public void ServicesRestarmehtod() {
-
         Intent Intent = new Intent(getApplicationContext(), SlideServices.class);
         getApplicationContext().stopService(Intent);
 
         Intent Intent1 = new Intent(getApplicationContext(), SlideServices.class);
         getApplicationContext().startService(Intent1);
-
     }
 }

@@ -3094,6 +3094,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             SharedPref.setSelectedDateCal(requireContext(), "");
                             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
                             SharedPref.setDayCheckInData(requireContext(), "");
+                            SharedPref.setTodayCallList(context, "");
                             JSONObject jsonObject = new JSONObject(response.body().toString());
                             previousWTCode1 = "";
                             previousWTCode2 = "";
@@ -5353,6 +5354,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SharedPref.setDayCheckInData(requireContext(), "");
                 SharedPref.setCheckInTime(requireContext(), "");
                 SharedPref.setCheckDateTodayPlan(requireContext(), "");
+                SharedPref.setTodayCallList(context, "");
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHECK_IN, "[]", 2));
                 offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
             }
