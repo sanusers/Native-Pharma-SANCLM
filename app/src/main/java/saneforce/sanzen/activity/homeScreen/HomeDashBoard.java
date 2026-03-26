@@ -2462,11 +2462,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
             @Override
             public void datesFound() {
-                if (outboxUtil != null && outboxUtil.getOutboxDates().size() > 2 && !SharedPref.getLastOutboxAlertDate(context).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4))) {
-                    CommonAlertBox.outboxDataAvailableAlert(activity);
-                    SharedPref.setLastOutboxAlertDate(context, CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4));
-                }
-
+                if (activity == null) return;
+                activity.runOnUiThread(() -> {
+                    if (activity.isFinishing() || activity.isDestroyed()) return;
+                    if (outboxUtil != null && outboxUtil.getOutboxDates().size() > 2 && !SharedPref.getLastOutboxAlertDate(context).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4))) {
+                        if (activity.hasWindowFocus()) {
+                            CommonAlertBox.outboxDataAvailableAlert(activity);
+                            SharedPref.setLastOutboxAlertDate(context, CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4));
+                        }
+                    }
+                });
                 if (SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")) {
                     String dateRequired = SharedPref.getSelectedDateCal(context);
                     String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_27, dateRequired);
@@ -2496,8 +2501,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         SharedPref.setLastCallDate(context, "");
                     }
                     setupLeftViewPager(context, fragmentManager);
-                    if (SharedPref.getQuizNeed(context).equalsIgnoreCase("0")
-                            && SharedPref.getQuizNeedMandt(context).equalsIgnoreCase("0")) {
+                    if (SharedPref.getQuizNeed(context).equalsIgnoreCase("0") && SharedPref.getQuizNeedMandt(context).equalsIgnoreCase("0")) {
                         activity.setUpQuiz();
                     }
                 } else {
