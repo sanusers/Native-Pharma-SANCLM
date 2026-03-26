@@ -1,9 +1,10 @@
 <LinearLayout xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="10dp"
+
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
@@ -13,10 +14,10 @@
 
         <TextView
             android:id="@+id/tv_head"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginTop="@dimen/_3sdp"
+
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
             android:padding="@dimen/_4sdp"
@@ -29,12 +30,13 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+<!--        android:layout_marginTop="@dimen/_3sdp"-->
 
         <View
             android:id="@+id/view_dummy"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
-            android:layout_marginVertical="@dimen/_4sdp"
+            android:layout_marginVertical="@dimen/_2sdp"
             android:background="@color/light_grey_3"
             app:layout_constraintBottom_toTopOf="@id/radioGroup"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Yes"
+            android:textSize="@dimen/_6ssp"
             android:fontFamily="@font/satoshi_bold"/>
 
         <RadioButton
@@ -61,9 +64,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="20dp"/>
+            android:textSize="@dimen/_6ssp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_marginStart="@dimen/_40sdp"/>
     </RadioGroup>
 
     <!-- Territory Dropdown -->
@@ -71,7 +74,7 @@
         android:id="@+id/spinnerTerritory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginTop="12dp"/>
 
     <!-- Remarks -->
@@ -87,10 +90,10 @@
             android:layout_marginTop="@dimen/_3sdp"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
-            android:padding="@dimen/_4sdp"
+            android:padding="@dimen/_2sdp"
             android:text="@string/remarks"
             android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_7ssp"
+            android:textSize="@dimen/_6ssp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/spinnerTerritory"
             app:layout_constraintEnd_toEndOf="parent"
@@ -117,7 +120,7 @@
             android:id="@+id/view_dummy2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
-            android:layout_marginVertical="@dimen/_4sdp"
+            android:layout_marginVertical="@dimen/_2sdp"
             android:background="@color/light_grey_3"
             app:layout_constraintBottom_toTopOf="@id/ed_remark"
             app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +136,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:gravity="start"
             android:hint="@string/type_remarks"
-            android:padding="@dimen/_6sdp"
+            android:padding="@dimen/_4sdp"
             android:inputType="text"
             android:maxLines="1"
             android:singleLine="true"
@@ -186,7 +189,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_marginVertical="@dimen/_3sdp"
+            android:layout_marginVertical="@dimen/_2sdp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

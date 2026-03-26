@@ -24,6 +24,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -1800,55 +1801,229 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         Button btnSubmit = dialog.findViewById(R.id.btn_submit);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
-        // Territory list
+        View remarksLayout = (View) etRemarks.getParent();
+        spinner.setVisibility(View.GONE);
+        remarksLayout.setVisibility(View.GONE);
         List<String> territoryList = new ArrayList<>();
         territoryList.add("Select Territory");
-        territoryList.add("Territory 1");
-        territoryList.add("Territory 2");
+        String selectedClusters = (DayPlanCount.equals("1")) ? mTownname1 : mTownname2;
+        if (selectedClusters != null && !selectedClusters.isEmpty()) {
+            String[] selectedArray = selectedClusters.split(",");
+            for (String name : selectedArray) {
+                String trimmedName = name.trim();
+                if (!trimmedName.isEmpty() && !trimmedName.equalsIgnoreCase("$")) {
+                    territoryList.add(trimmedName);
+                }
+            }
+        } else {
+            updateClusterList(DayPlanCount);
+            for (Multicheckclass_clust item : multiple_cluster_list) {
+                territoryList.add(item.getStrname());
+            }
+        }
 
+// 4. Spinner Adapter setup
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_dropdown_item, territoryList);
+                R.layout.popup_stay_night_spinner, territoryList);
+        adapter.setDropDownViewResource(R.layout.popup_stay_night_spinner);
         spinner.setAdapter(adapter);
+        radioYes.setOnClickListener(v -> {
+            spinner.setVisibility(View.VISIBLE);
+            remarksLayout.setVisibility(View.VISIBLE);
+        });
 
-        // Radio logic
-        radioYes.setOnClickListener(v -> spinner.setVisibility(View.VISIBLE));
-        radioNo.setOnClickListener(v -> spinner.setVisibility(View.GONE));
+        radioNo.setOnClickListener(v -> dialog.dismiss());
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnSubmit.setOnClickListener(v -> {
 
-            String remarks = etRemarks.getText().toString().trim();
-
             if (radioYes.isChecked()) {
+
                 if (spinner.getSelectedItemPosition() == 0) {
                     Toast.makeText(requireContext(), "Select Territory", Toast.LENGTH_SHORT).show();
                     return;
                 }
-            }
 
-            if (remarks.isEmpty()) {
-                Toast.makeText(requireContext(), "Enter Remarks", Toast.LENGTH_SHORT).show();
-                return;
+                String remarks = etRemarks.getText().toString().trim();
+                if (remarks.isEmpty()) {
+                    Toast.makeText(requireContext(), "Enter Remarks", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // ✅ Selected cluster code edukalam (optional use)
+                Multicheckclass_clust selectedCluster =
+                        multiple_cluster_list.get(spinner.getSelectedItemPosition() - 1); // -1 for "Select Territory"
+                String selectedClusterCode = selectedCluster.getStrid();
+                String selectedClusterName = selectedCluster.getStrname();
+                Log.d("StayPopup", "Selected: " + selectedClusterCode + " - " + selectedClusterName);
             }
 
             dialog.dismiss();
-
-            // 🔥 IMPORTANT: Existing flow call here
             proceedSubmitFlow();
         });
 
         dialog.show();
-       // dialog.show();
 
-       // EditText etRemarks = dialog.findViewById(R.id.ed_remark);
-
-        etRemarks.requestFocus();
-
-        dialog.getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
-        );
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.45),
+                    WindowManager.LayoutParams.WRAP_CONTENT
+            );
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
     }
+//    private void showNewPopup() {
+//
+//        Dialog dialog = new Dialog(requireActivity());
+//        dialog.setContentView(R.layout.popup_stay_night);
+//        dialog.setCancelable(false);
+//
+//        RadioButton radioYes = dialog.findViewById(R.id.radioYes);
+//        RadioButton radioNo = dialog.findViewById(R.id.radioNo);
+//        Spinner spinner = dialog.findViewById(R.id.spinnerTerritory);
+//        EditText etRemarks = dialog.findViewById(R.id.ed_remark);
+//        Button btnSubmit = dialog.findViewById(R.id.btn_submit);
+//        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+//
+//        // 🔥 Get remarks parent layout (no XML change)
+//        View remarksLayout = (View) etRemarks.getParent();
+//
+//        // 🔥 Default hide
+//        spinner.setVisibility(View.GONE);
+//        remarksLayout.setVisibility(View.GONE);
+//
+//        // Territory list
+//        List<String> territoryList = new ArrayList<>();
+//        territoryList.add("Select Territory");
+//        territoryList.add("Territory 1");
+//        territoryList.add("Territory 2");
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+//                R.layout.popup_stay_night_spinner, territoryList);
+//
+//// Dropdown list-kum athe style venum-na
+//        adapter.setDropDownViewResource(R.layout.popup_stay_night_spinner);
+//
+//        spinner.setAdapter(adapter);
+////        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+////                android.R.layout.simple_spinner_dropdown_item, territoryList);
+////        spinner.setAdapter(adapter);
+//
+//        // 🔥 Radio logic
+//        radioYes.setOnClickListener(v -> {
+//            spinner.setVisibility(View.VISIBLE);
+//            remarksLayout.setVisibility(View.VISIBLE);
+//        });
+//
+//        // 🔥 No → close popup
+//        radioNo.setOnClickListener(v -> {
+//            dialog.dismiss();
+//        });
+//
+//        btnCancel.setOnClickListener(v -> dialog.dismiss());
+//
+//        btnSubmit.setOnClickListener(v -> {
+//
+//            String remarks = etRemarks.getText().toString().trim();
+//
+//            // 🔥 Validation only for YES
+//            if (radioYes.isChecked()) {
+//
+////                if (spinner.getSelectedItemPosition() == 0) {
+////                    Toast.makeText(requireContext(), "Select Territory", Toast.LENGTH_SHORT).show();
+////                    return;
+////                }
+//
+//                if (remarks.isEmpty()) {
+//                    Toast.makeText(requireContext(), "Enter Remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//            }
+//
+//            dialog.dismiss();
+//            proceedSubmitFlow();
+//        });
+//
+//        dialog.show();
+//
+//        // 🔥 Small popup size
+//        Window window = dialog.getWindow();
+//        if (window != null) {
+//            window.setLayout(
+//                    (int) (getResources().getDisplayMetrics().widthPixels * 0.45), // small width
+//                    WindowManager.LayoutParams.WRAP_CONTENT
+//            );
+//
+//            // 🔥 keyboard only on click
+//            window.setSoftInputMode(
+//                    WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
+//            );
+//        }
+//    }
+//    private void showNewPopup() {
+//
+//        Dialog dialog = new Dialog(requireActivity());
+//        dialog.setContentView(R.layout.popup_stay_night);
+//        dialog.setCancelable(false);
+//
+//        RadioButton radioYes = dialog.findViewById(R.id.radioYes);
+//        RadioButton radioNo = dialog.findViewById(R.id.radioNo);
+//        Spinner spinner = dialog.findViewById(R.id.spinnerTerritory);
+//        EditText etRemarks = dialog.findViewById(R.id.ed_remark);
+//        Button btnSubmit = dialog.findViewById(R.id.btn_submit);
+//        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+//
+//        // Territory list
+//        List<String> territoryList = new ArrayList<>();
+//        territoryList.add("Select Territory");
+//        territoryList.add("Territory 1");
+//        territoryList.add("Territory 2");
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+//                android.R.layout.simple_spinner_dropdown_item, territoryList);
+//        spinner.setAdapter(adapter);
+//
+//        // Radio logic
+//        radioYes.setOnClickListener(v -> spinner.setVisibility(View.VISIBLE));
+//        radioNo.setOnClickListener(v -> spinner.setVisibility(View.GONE));
+//
+//        btnCancel.setOnClickListener(v -> dialog.dismiss());
+//
+//        btnSubmit.setOnClickListener(v -> {
+//
+//            String remarks = etRemarks.getText().toString().trim();
+//
+//            if (radioYes.isChecked()) {
+//                if (spinner.getSelectedItemPosition() == 0) {
+//                    Toast.makeText(requireContext(), "Select Territory", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//            }
+//
+//            if (remarks.isEmpty()) {
+//                Toast.makeText(requireContext(), "Enter Remarks", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//
+//            dialog.dismiss();
+//
+//            // 🔥 IMPORTANT: Existing flow call here
+//            proceedSubmitFlow();
+//        });
+//
+//        dialog.show();
+//       // dialog.show();
+//
+//       // EditText etRemarks = dialog.findViewById(R.id.ed_remark);
+//
+//        etRemarks.requestFocus();
+//
+//        dialog.getWindow().setSoftInputMode(
+//                WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
+//
+//        );
+//    }
 //    private void proceedSubmitFlow() {
 //
 //        if (SharedPref.getApprovalManatoryStatus(requireContext())
