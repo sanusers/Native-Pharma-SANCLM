@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ import saneforce.sanzen.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportRcpaModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.SignatureModelClass;
-import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
+import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetailsModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -59,6 +60,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkStatusTask;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetailAdapter.MyViewHolder> implements Filterable {
 
@@ -83,7 +85,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
     String acdCode;
     String ReportingSfCode;
-    ArrayList<SlideRatingDetalisModelClass> callDetailingLists = new ArrayList<>();
+    ArrayList<SlideRatingDetailsModelClass> callDetailingLists = new ArrayList<>();
     ArrayList<DayReportRcpaModelClass> rcpaModelArray;
 
     public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst, String ActCode, String ReportingSfCode, String rcpaItem, String eventCaptureItem, String pobItem, String feedBackItem, String inputItem, String productItem) {
@@ -955,10 +957,38 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                         JSONArray jsonArray = new JSONArray();
                                         if(response.body().isJsonArray()) {
                                             jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
-                                            Type typeToken = new TypeToken<ArrayList<SlideRatingDetalisModelClass>>() {
+                                            Type typeToken = new TypeToken<ArrayList<SlideRatingDetailsModelClass>>() {
                                             }.getType();
                                             callDetailingLists = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
                                             if(callDetailingLists.size()>0) {
+                                                LinkedHashMap<String, SlideRatingDetailsModelClass> slideDetailsMap = new LinkedHashMap<>();
+                                                try {
+                                                    for (SlideRatingDetailsModelClass data : callDetailingLists) {
+                                                        if (slideDetailsMap.containsKey(data.getProduct_Code())) {
+                                                            SlideRatingDetailsModelClass details = slideDetailsMap.get(data.getProduct_Code());
+                                                            String duration = details.getDuration();
+                                                            String timeDuration = TimeUtils.timeDurationHMS(data.getStartTime().substring(11), data.getEndTime().substring(11));
+                                                            duration = TimeUtils.addTime(duration, timeDuration);
+                                                            List<SlideRatingDetailsModelClass.SlideDetails> slideDetailsList = details.getSlideDetailsList();
+                                                            slideDetailsList.add(new SlideRatingDetailsModelClass.SlideDetails(data.getSlide_Name(), data.getStartTime(), data.getEndTime()));
+                                                            details.setDuration(duration);
+                                                            details.setSlideDetailsList(slideDetailsList);
+                                                            slideDetailsMap.put(data.getProduct_Code(), details);
+                                                        } else {
+                                                            String duration = "";
+                                                            String timeDuration = TimeUtils.timeDurationHMS(data.getStartTime().substring(11), data.getEndTime().substring(11));
+                                                            duration = TimeUtils.addTime(duration, timeDuration);
+                                                            List<SlideRatingDetailsModelClass.SlideDetails> slideDetailsList = new ArrayList<>();
+                                                            slideDetailsList.add(new SlideRatingDetailsModelClass.SlideDetails(data.getSlide_Name(), data.getStartTime(), data.getEndTime()));
+                                                            SlideRatingDetailsModelClass details = new SlideRatingDetailsModelClass(data.getProduct_Code(), data.getProduct_Name(), data.getRating(), data.getFeedbk(), duration, slideDetailsList);
+                                                            slideDetailsMap.put(data.getProduct_Code(), details);
+                                                        }
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                callDetailingLists.clear();
+                                                callDetailingLists.addAll(slideDetailsMap.values());
                                                 holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
                                                 DayReportSlideDetailsAdapter adapter = new DayReportSlideDetailsAdapter(callDetailingLists, context);
                                                 recyclerView.setLayoutManager(new LinearLayoutManager(context));

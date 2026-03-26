@@ -41,7 +41,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
 import com.github.barteksc.pdfviewer.PDFView;
@@ -118,6 +117,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 //    private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
     private HashMap<Integer, LoadingDotsView> loadingAnimationViewList = new HashMap<>();
     private MediaController mediaController;
+    private boolean isDetailingPaused = false;
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList,ArrayList<BrandModelClass.Product>mandatoryProductList) {
         this.context = context;
@@ -438,7 +438,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     public void logCurrentPageEndIfNeeded() {
-        if (currentPage != -1 && !pageStartTime.isEmpty()) {
+        if (currentPage != -1 && !pageStartTime.isEmpty() && !isDetailingPaused) {
             String now = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
             String slideName = getSlideNameAt(currentPage);
             ArrayList<String> list = new ArrayList<>();
@@ -915,11 +915,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 iv_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
                 CommonUtilsMethods.showToastMessage(context, "Detailing Paused");
                 isPaused = true;
+                isDetailingPaused = true;
             } else {
                 tv_play_pause.setText(context.getString(R.string.pause));
                 iv_play_pause.setImageResource(R.drawable.baseline_pause_24);
                 CommonUtilsMethods.showToastMessage(context, "Detailing Resumed");
                 isPaused = false;
+                isDetailingPaused = false;
             }
 //            rl_like.setEnabled(!isPaused);
 //            rl_dislike.setEnabled(!isPaused);

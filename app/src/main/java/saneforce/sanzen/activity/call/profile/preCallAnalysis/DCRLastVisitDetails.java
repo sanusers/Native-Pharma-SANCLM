@@ -32,7 +32,11 @@ public class DCRLastVisitDetails {
     @Expose
     private String aMSLNo;
 
-    public DCRLastVisitDetails(String custCode, VstDate vstDate, String prodSamp, String prodDet, String inputs, String feedbkCd, String feedbk, String remks, String aMSLNo) {
+    @SerializedName("SlideNames")
+    @Expose
+    private String SlideNames;
+
+    public DCRLastVisitDetails(String custCode, VstDate vstDate, String prodSamp, String prodDet, String inputs, String feedbkCd, String feedbk, String remks, String aMSLNo, String SlideNames) {
         this.custCode = custCode;
         this.vstDate = vstDate;
         this.prodSamp = prodSamp;
@@ -42,6 +46,7 @@ public class DCRLastVisitDetails {
         this.feedbk = feedbk;
         this.remks = remks;
         this.aMSLNo = aMSLNo;
+        this.SlideNames = SlideNames;
     }
 
     public String getCustCode() {
@@ -114,6 +119,14 @@ public class DCRLastVisitDetails {
 
     public void setAMSLNo(String aMSLNo) {
         this.aMSLNo = aMSLNo;
+    }
+
+    public String getSlideNames() {
+        return SlideNames;
+    }
+
+    public void setSlideNames(String slideNames) {
+        SlideNames = slideNames;
     }
 
     public static class VstDate {

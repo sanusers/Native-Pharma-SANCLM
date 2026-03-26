@@ -28,7 +28,7 @@
 
             <TextView
                 android:id="@+id/txt_duration"
-                android:layout_width="@dimen/_20sdp"
+                android:layout_width="@dimen/_30sdp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="left|center"
@@ -41,9 +41,10 @@
                 android:layout_width="@dimen/_7sdp"
                 android:layout_height="@dimen/_7sdp"
                 android:layout_centerHorizontal="true"
+                android:layout_marginStart="@dimen/_1sdp"
                 android:layout_marginTop="@dimen/_1sdp"
                 android:layout_toRightOf="@id/txt_duration"
-                android:src="@drawable/info_icon_purple"></ImageView>
+                android:src="@drawable/info_icon_purple" />
 
         </RelativeLayout>
 

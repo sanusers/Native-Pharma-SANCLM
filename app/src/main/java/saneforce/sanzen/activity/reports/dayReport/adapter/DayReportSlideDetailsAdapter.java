@@ -1,10 +1,12 @@
 package saneforce.sanzen.activity.reports.dayReport.adapter;
 
+import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
+import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,26 +18,33 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.sql.Time;
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.TreeMap;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.adapter.detailing.TimelineAdapter;
+import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
+import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetailsModelClass;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReportSlideDetailsAdapter.ViewHolder> {
 
-   ArrayList<SlideRatingDetalisModelClass> callDetailingLists;
+   ArrayList<SlideRatingDetailsModelClass> callDetailingLists;
    Context context;
 
-    public DayReportSlideDetailsAdapter(ArrayList<SlideRatingDetalisModelClass> callDetailingLists, Context context) {
+    public DayReportSlideDetailsAdapter(ArrayList<SlideRatingDetailsModelClass> callDetailingLists, Context context) {
         this.callDetailingLists = callDetailingLists;
         this.context = context;
     }
@@ -50,7 +59,8 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
     @Override
     public void onBindViewHolder(@NonNull DayReportSlideDetailsAdapter.ViewHolder holder, int position) {
         holder.txtbrandName.setText(callDetailingLists.get(position).getProduct_Name());
-        holder.TxtDuration.setText(calculateDuration(callDetailingLists.get(position).getStartTime(),callDetailingLists.get(position).getEndTime()));
+//        holder.TxtDuration.setText(calculateDuration(callDetailingLists.get(position).getStartTime(),callDetailingLists.get(position).getEndTime()));
+        holder.TxtDuration.setText(callDetailingLists.get(position).getDuration());
         holder.TxtFeedback.setText(callDetailingLists.get(position).getFeedbk());
         try {
             holder.rating_bar.setRating(Float.parseFloat(String.valueOf(callDetailingLists.get(position).getRating())));
@@ -60,7 +70,8 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         holder.rating_bar.setEnabled(false);
 
         
-        if(!calculateDuration(callDetailingLists.get(position).getStartTime(),callDetailingLists.get(position).getEndTime()).equalsIgnoreCase("00:00:00")){
+//        if(!calculateDuration(callDetailingLists.get(position).getStartTime(),callDetailingLists.get(position).getEndTime()).equalsIgnoreCase("00:00:00")){
+        if(!callDetailingLists.get(position).getDuration().equalsIgnoreCase("00:00:00")){
             holder.imgView.setVisibility(View.VISIBLE);
         }else {
             holder.imgView.setVisibility(View.GONE);
@@ -68,8 +79,21 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         holder.imgView.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + TimeUtils.timeConverter(callDetailingLists.get(position).getStartTime()) + "<br><br>" + " End Time  : " + TimeUtils.timeConverter(callDetailingLists.get(position).getEndTime()));
-                showTimelinePopUp(view, initialGuideTex);
+                TreeMap<String, String> timeline = new TreeMap<>();
+                try {
+                    List<SlideRatingDetailsModelClass.SlideDetails> slideDetailsList = callDetailingLists.get(position).getSlideDetailsList();
+                                for (int i = 0; i < slideDetailsList.size(); i++) {
+                                    SlideRatingDetailsModelClass.SlideDetails slideDetails = slideDetailsList.get(i);
+                                    String startTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_33, slideDetails.getStartTime()),
+                                            endTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_33, slideDetails.getEndTime());
+                                    timeline.put(slideDetails.getStartTime(), String.format("%s~%s~%s", slideDetails.getSlideName(), startTime, endTime));
+                                }
+                    showTimelinePopUp(view, new ArrayList<>(timeline.values()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//                CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + TimeUtils.timeConverter(callDetailingLists.get(position).getStartTime()) + "<br><br>" + " End Time  : " + TimeUtils.timeConverter(callDetailingLists.get(position).getEndTime()));
+//                showTimelinePopUp(view, initialGuideTex);
             }
         });
 
@@ -88,14 +112,12 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         });
     }
 
-
     @Override
     public int getItemCount() {
         return callDetailingLists.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         TextView txtbrandName, TxtDuration,TxtFeedback;
         RatingBar rating_bar;
 
@@ -131,6 +153,8 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
             return "00:00:00";
         }
     }
+
+
     private void showTimelinePopUp(View view, CharSequence timeline) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.timeline_popup_top, null);
@@ -144,6 +168,37 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
             popupWindow.dismiss();
         });
     }
+
+    private void showTimelinePopUp(View view, List<String> timeline) {
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.timeline_popup, null);
+        TimelineAdapter timelineAdapter = new TimelineAdapter(context, timeline);
+        RecyclerView timeLineRecyclerview = popupView.findViewById(R.id.timeline_recyclerview);
+        int recyclerHeight = 150;
+        if(timeline.size() < 4) recyclerHeight = WindowManager.LayoutParams.WRAP_CONTENT;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        ViewGroup.LayoutParams layoutParams = timeLineRecyclerview.getLayoutParams();
+        layoutParams.height = recyclerHeight;
+        timeLineRecyclerview.setLayoutParams(layoutParams);
+        timeLineRecyclerview.setLayoutManager(layoutManager);
+        timeLineRecyclerview.setAdapter(timelineAdapter);
+        PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, false);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        popupWindow.setOutsideTouchable(true);
+        ImageView close = popupView.findViewById(R.id.img_close);
+        close.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int width = popupView.getMeasuredWidth();
+        int height = popupView.getMeasuredHeight();
+        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - width + 25, location[1] - height + 5);
+    }
+
     private void popUp(View view, String name) {
         PopupWindow popup = new PopupWindow(context);
         View layout = LayoutInflater.from(context).inflate(R.layout.popup_text, null);

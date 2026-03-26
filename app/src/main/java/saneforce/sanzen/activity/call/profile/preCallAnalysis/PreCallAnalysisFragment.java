@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.call.profile.preCallAnalysis;
 
+import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -20,7 +22,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,12 +41,11 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
 
-
 public class PreCallAnalysisFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentPrecallAnalysisBinding preCallAnalysisBinding;
     public static ApiInterface apiInterface;
-    public static String PrdSamNeed, PrdRxNeed, PrdRCPANeed, CallFeedbackNeed;
+    public static String PrdSamNeed, PrdRxNeed, PrdRCPANeed, CallFeedbackNeed, PrdCap, InpCap;
     public static PreCallAnalysisAdapter adapter;
     public static ArrayList<PreCallAnalysisModelClass> ProductList = new ArrayList<>();
     static List<DCRLastVisitDetails> dcrLastVstDetails = new ArrayList<>();
@@ -68,8 +72,8 @@ public class PreCallAnalysisFragment extends Fragment {
             json.put("Rsf", SharedPref.getHqCode(context));
 
             Log.v("json_cus_l_visit", json.toString());
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         Map<String, String> mapString = new HashMap<>();
@@ -90,11 +94,11 @@ public class PreCallAnalysisFragment extends Fragment {
                             dcrLastVstDetails.clear();
                             vstDate = new DCRLastVisitDetails.VstDate();
                             vstDate.setDate(jsonObject.getString("date"));
-                            dcrLastVstDetails.add(new DCRLastVisitDetails(json.getString("CustCode"), vstDate, json.getString("Prod_Samp"), json.getString("Prod_Det"), json.getString("Inputs"), json.getString("FeedbkCd"), json.getString("Feedbk"), json.getString("Remks"), json.getString("AMSLNo")));
+                            dcrLastVstDetails.add(new DCRLastVisitDetails(json.getString("CustCode"), vstDate, json.getString("Prod_Samp"), json.getString("Prod_Det"), json.getString("Inputs"), json.getString("FeedbkCd"), json.getString("Feedbk"), json.getString("Remks"), json.getString("AMSLNo"), json.optString("SlideNames")));
 
                             assert dcrLastVstDetails != null;
                             if (dcrLastVstDetails.get(0).getProdSamp().isEmpty()) {
-                                preCallAnalysisBinding.tvPrdPromoted.setText(R.string.no_prds_promoted);
+                                preCallAnalysisBinding.tvPrdPromoted.setText(context.getString(R.string.no) + " " + PrdCap + " " + context.getString(R.string.promoted));
                                 preCallAnalysisBinding.tvPrdPromoted.setVisibility(View.VISIBLE);
                                 preCallAnalysisBinding.productTableList.setVisibility(View.GONE);
                                 preCallAnalysisBinding.recyelerview.setVisibility(View.GONE);
@@ -103,7 +107,7 @@ public class PreCallAnalysisFragment extends Fragment {
                                 preCallAnalysisBinding.productTableList.setVisibility(View.VISIBLE);
                                 preCallAnalysisBinding.recyelerview.setVisibility(View.VISIBLE);
 
-                                dataSplite(dcrLastVstDetails.get(0).getProdSamp());
+                                dataSplit(dcrLastVstDetails.get(0).getProdSamp());
                                 HiddenVisibleFunction();
 //                                if (PrdSamNeed.equalsIgnoreCase("0")) {
 //                                    preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
@@ -134,7 +138,7 @@ public class PreCallAnalysisFragment extends Fragment {
 
                             }
                             if (dcrLastVstDetails.get(0).getInputs().equalsIgnoreCase("( 0 ),")) {
-                                preCallAnalysisBinding.tvInputs.setText(R.string.no_inputs);
+                                preCallAnalysisBinding.tvInputs.setText(context.getString(R.string.no) + " " + InpCap);
                             } else {
                                 preCallAnalysisBinding.tvInputs.setText(dcrLastVstDetails.get(0).getInputs());
                             }
@@ -156,11 +160,42 @@ public class PreCallAnalysisFragment extends Fragment {
                             } else {
                                 preCallAnalysisBinding.tvRemark.setText(dcrLastVstDetails.get(0).getRemks());
                             }
+
+                            if (dcrLastVstDetails.get(0).getSlideNames().isEmpty()) {
+                                preCallAnalysisBinding.tvNoDetailedSlides.setVisibility(View.VISIBLE);
+                                preCallAnalysisBinding.llDetailedSlides.setVisibility(View.GONE);
+                                preCallAnalysisBinding.tvNoDetailedSlides.setText(context.getString(R.string.no_detailed_slides));
+                            } else {
+                                preCallAnalysisBinding.tvNoDetailedSlides.setVisibility(View.GONE);
+                                preCallAnalysisBinding.llDetailedSlides.setVisibility(View.VISIBLE);
+                                LinkedHashMap<String, LinkedList<String>> data = new LinkedHashMap<>();
+                                LinkedList<String> brands = new LinkedList<>();
+                                try {
+                                    String SlideNames = dcrLastVstDetails.get(0).getSlideNames();
+                                    String[] brandData = SlideNames.split("\\$");
+                                    for (String brandSlide : brandData) {
+                                        String[] brandSlideData = brandSlide.split("~");
+                                        String brand = brandSlideData[0], slides = brandSlideData[1];
+                                        LinkedList<String> slidesList = new LinkedList<>();
+                                        Collections.addAll(slidesList, slides.split("#"));
+                                        brands.add(brand);
+                                        data.put(brand, slidesList);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                DetailedSlidesAdapter adapter = new DetailedSlidesAdapter(context, brands, data);
+                                preCallAnalysisBinding.rvDetailedSlides.setAdapter(adapter);
+                                preCallAnalysisBinding.rvDetailedSlides.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
+                            }
                         } else {
-                            preCallAnalysisBinding.tvPrdPromoted.setText(R.string.no_prds_promoted);
+                            preCallAnalysisBinding.tvPrdPromoted.setText(context.getString(R.string.no) + " " + PrdCap + " " + context.getString(R.string.promoted));
                             preCallAnalysisBinding.tvPrdPromoted.setVisibility(View.VISIBLE);
                             preCallAnalysisBinding.productTableList.setVisibility(View.GONE);
                             preCallAnalysisBinding.recyelerview.setVisibility(View.GONE);
+                            preCallAnalysisBinding.tvNoDetailedSlides.setVisibility(View.VISIBLE);
+                            preCallAnalysisBinding.llDetailedSlides.setVisibility(View.GONE);
+                            preCallAnalysisBinding.tvNoDetailedSlides.setText(context.getString(R.string.no_detailed_slides));
                         }
 
                     } catch (Exception e) {
@@ -181,7 +216,7 @@ public class PreCallAnalysisFragment extends Fragment {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public static void dataSplite(String inputString) {
+    public static void dataSplit(String inputString) {
         ProductList.clear();
         String str = inputString.replace(")", "");
         String[] separated = str.split(",");
@@ -205,7 +240,6 @@ public class PreCallAnalysisFragment extends Fragment {
     public static void HiddenVisibleFunction() {
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
-
                 if (PrdSamNeed.equalsIgnoreCase("1")) {
                     preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
                     preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.VISIBLE);
@@ -310,6 +344,14 @@ public class PreCallAnalysisFragment extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         getRequiredData();
+        if (PrdCap == null || PrdCap.isEmpty()){
+            PrdCap = getString(R.string.product);
+        }
+        preCallAnalysisBinding.prodCaption.setText(PrdCap);
+        if (InpCap == null || InpCap.isEmpty()){
+            InpCap = getString(R.string.input);
+        }
+        preCallAnalysisBinding.tvTagInputs.setText(InpCap);
         // CallPreCallAPI();
         ProductList.clear();
         adapter = new PreCallAnalysisAdapter(ProductList, getActivity());
@@ -328,68 +370,76 @@ public class PreCallAnalysisFragment extends Fragment {
                 PrdRxNeed =  SharedPref.getDrRxNd(requireContext());
                 PrdRCPANeed =  SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getDfNeed(requireContext());
-                if (SharedPref.getDocProductCaption(requireContext()).isEmpty() || SharedPref.getDocProductCaption(requireContext()).equalsIgnoreCase(null)){
-                    preCallAnalysisBinding.prodCaption.setText("Product");
-                }else{
-                    preCallAnalysisBinding.prodCaption.setText(SharedPref.getDocProductCaption(requireContext()));
-                }
-                if (SharedPref.getDocInputCaption(requireContext()).isEmpty() || SharedPref.getDocInputCaption(requireContext()).equalsIgnoreCase(null)){
-                    preCallAnalysisBinding.tvTagInputs.setText("Inputs");
-                }
-                else {
-                    preCallAnalysisBinding.tvTagInputs.setText(SharedPref.getDocInputCaption(requireContext()));
-                }
+                PrdCap = SharedPref.getDocProductCaption(requireContext());
+                InpCap = SharedPref.getDocInputCaption(requireContext());
+//                if (SharedPref.getDocProductCaption(requireContext()).isEmpty() || SharedPref.getDocProductCaption(requireContext()).equalsIgnoreCase(null)){
+//                    preCallAnalysisBinding.prodCaption.setText("Product");
+//                }else{
+//                    preCallAnalysisBinding.prodCaption.setText(SharedPref.getDocProductCaption(requireContext()));
+//                }
+//                if (SharedPref.getDocInputCaption(requireContext()).isEmpty() || SharedPref.getDocInputCaption(requireContext()).equalsIgnoreCase(null)){
+//                    preCallAnalysisBinding.tvTagInputs.setText("Inputs");
+//                }
+//                else {
+//                    preCallAnalysisBinding.tvTagInputs.setText(SharedPref.getDocInputCaption(requireContext()));
+//                }
                 break;
             case "2":
                 PrdSamNeed = SharedPref.getChmsamqtyNeed(requireContext());
                 PrdRxNeed = SharedPref.getChmRxNd(requireContext());;//1
                 PrdRCPANeed = SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getCfNeed(requireContext());
-                if (SharedPref.getChmProductCaption(requireContext()).isEmpty() || SharedPref.getChmProductCaption(requireContext()).equalsIgnoreCase(null)){
-                    preCallAnalysisBinding.prodCaption.setText("Product");
-                }else{
-                    preCallAnalysisBinding.prodCaption.setText(SharedPref.getChmProductCaption(requireContext()));
-                }
-                if (SharedPref.getChmInputCaption(requireContext()).isEmpty() || SharedPref.getChmInputCaption(requireContext()).equalsIgnoreCase(null)){
-                    preCallAnalysisBinding.tvTagInputs.setText("Inputs");
-                }
-                else {
-                    preCallAnalysisBinding.tvTagInputs.setText(SharedPref.getChmInputCaption(requireContext()));
-                }
+                PrdCap = SharedPref.getChmProductCaption(requireContext());
+                InpCap = SharedPref.getChmInputCaption(requireContext());
+//                if (SharedPref.getChmProductCaption(requireContext()).isEmpty() || SharedPref.getChmProductCaption(requireContext()).equalsIgnoreCase(null)){
+//                    preCallAnalysisBinding.prodCaption.setText("Product");
+//                }else{
+//                    preCallAnalysisBinding.prodCaption.setText(SharedPref.getChmProductCaption(requireContext()));
+//                }
+//                if (SharedPref.getChmInputCaption(requireContext()).isEmpty() || SharedPref.getChmInputCaption(requireContext()).equalsIgnoreCase(null)){
+//                    preCallAnalysisBinding.tvTagInputs.setText("Inputs");
+//                }
+//                else {
+//                    preCallAnalysisBinding.tvTagInputs.setText(SharedPref.getChmInputCaption(requireContext()));
+//                }
                 break;
             case "3":
                 PrdSamNeed = "0";
                 PrdRxNeed = SharedPref.getStkPobNeed(requireContext());
                 PrdRCPANeed = SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getSfNeed(requireContext());
-                if (SharedPref.getStkProductCaption(requireContext()).isEmpty() || SharedPref.getStkProductCaption(requireContext()).equalsIgnoreCase(null)){
-                    preCallAnalysisBinding.prodCaption.setText("Product");
-                }else{
-                    preCallAnalysisBinding.prodCaption.setText(SharedPref.getStkProductCaption(requireContext()));
-                }
-                if (SharedPref.getStkInputCaption(requireContext()).isEmpty() || SharedPref.getStkInputCaption(requireContext()).equalsIgnoreCase(null)){
-                    preCallAnalysisBinding.tvTagInputs.setText("Inputs");
-                }
-                else {
-                    preCallAnalysisBinding.tvTagInputs.setText(SharedPref.getStkInputCaption(requireContext()));
-                }
+                PrdCap = SharedPref.getStkProductCaption(requireContext());
+                InpCap = SharedPref.getStkInputCaption(requireContext());
+//                if (SharedPref.getStkProductCaption(requireContext()).isEmpty() || SharedPref.getStkProductCaption(requireContext()).equalsIgnoreCase(null)){
+//                    preCallAnalysisBinding.prodCaption.setText("Product");
+//                }else{
+//                    preCallAnalysisBinding.prodCaption.setText(SharedPref.getStkProductCaption(requireContext()));
+//                }
+//                if (SharedPref.getStkInputCaption(requireContext()).isEmpty() || SharedPref.getStkInputCaption(requireContext()).equalsIgnoreCase(null)){
+//                    preCallAnalysisBinding.tvTagInputs.setText("Inputs");
+//                }
+//                else {
+//                    preCallAnalysisBinding.tvTagInputs.setText(SharedPref.getStkInputCaption(requireContext()));
+//                }
                 break;
             case "4":
                 PrdRxNeed = SharedPref.getUlPobNeed(requireContext());
                 PrdSamNeed = "0";
                 PrdRCPANeed = SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getNfNeed(requireContext());
-                if (SharedPref.getUlProductCaption(requireContext()).isEmpty() || SharedPref.getUlProductCaption(requireContext()).equalsIgnoreCase(null)){
-                    preCallAnalysisBinding.prodCaption.setText("Product");
-                }else{
-                    preCallAnalysisBinding.prodCaption.setText(SharedPref.getUlProductCaption(requireContext()));
-                }
-                if (SharedPref.getUlInputCaption(requireContext()).isEmpty() || SharedPref.getUlInputCaption(requireContext()).equalsIgnoreCase(null)){
-                    preCallAnalysisBinding.tvTagInputs.setText("Inputs");
-                }
-                else {
-                    preCallAnalysisBinding.tvTagInputs.setText(SharedPref.getUlInputCaption(requireContext()));
-                }
+                PrdCap = SharedPref.getUlProductCaption(requireContext());
+                InpCap = SharedPref.getUlInputCaption(requireContext());
+//                if (SharedPref.getUlProductCaption(requireContext()).isEmpty() || SharedPref.getUlProductCaption(requireContext()).equalsIgnoreCase(null)){
+//                    preCallAnalysisBinding.prodCaption.setText("Product");
+//                }else{
+//                    preCallAnalysisBinding.prodCaption.setText(SharedPref.getUlProductCaption(requireContext()));
+//                }
+//                if (SharedPref.getUlInputCaption(requireContext()).isEmpty() || SharedPref.getUlInputCaption(requireContext()).equalsIgnoreCase(null)){
+//                    preCallAnalysisBinding.tvTagInputs.setText("Inputs");
+//                }
+//                else {
+//                    preCallAnalysisBinding.tvTagInputs.setText(SharedPref.getUlInputCaption(requireContext()));
+//                }
                 break;
             case "5":
                 CallFeedbackNeed = SharedPref.getCipFNeed(requireContext());

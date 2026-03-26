@@ -1,13 +1,11 @@
 package saneforce.sanzen.activity.approvals.dcr.detailView.adapter;
 
-import static saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewActivity.dcrDetailModelLists;
 import static saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewActivity.dcrDetailViewBinding;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,9 +50,8 @@ import saneforce.sanzen.activity.reports.dayReport.adapter.SignatureAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportRcpaModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.SignatureModelClass;
-import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
+import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetailsModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -80,7 +77,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     EventDetailsCapture adapter;
     String category;
 
-    ArrayList<SlideRatingDetalisModelClass> callDetailingLists=new ArrayList<>();
+    ArrayList<SlideRatingDetailsModelClass> callDetailingLists=new ArrayList<>();
     public AdapterCusSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames, OnItemClickListenerApproval listenerApproval,String category) {
         this.context = context;
         this.dcrApprovalNames = dcrApprovalNames;
@@ -548,7 +545,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                         JSONArray jsonArray = new JSONArray();
                                         if (response.body().isJsonArray()) {
                                             jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
-                                            Type typeToken = new TypeToken<ArrayList<SlideRatingDetalisModelClass>>() {
+                                            Type typeToken = new TypeToken<ArrayList<SlideRatingDetailsModelClass>>() {
                                             }.getType();
                                             callDetailingLists = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
                                             if(callDetailingLists.size()>0){

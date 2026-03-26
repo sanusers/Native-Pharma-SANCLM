@@ -1063,7 +1063,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         } else {
                             CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_plan_all_the) + drCap + getString(R.string.at_least_one_time));
                         }
-                    } else if (visitFrequencyNeed.equalsIgnoreCase("0")) {
+                    } else if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && visitFrequencyNeed.equalsIgnoreCase("0")) {
                         if (validateVisitFrequency()) {
                             sendToApprovalOneBuild();
                         } else {
