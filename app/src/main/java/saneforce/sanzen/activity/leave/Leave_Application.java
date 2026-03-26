@@ -60,10 +60,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -1147,6 +1149,7 @@ public class Leave_Application extends AppCompatActivity {
                                 try {
                                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                     JSONArray wtJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+                                    JSONArray dtJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
                                     String FWIndicator = "", WTName = "";
                                     for (int i = 0; i < wtJsonArray.length(); i++) {
                                         JSONObject jsonObject = wtJsonArray.optJSONObject(i);
@@ -1160,6 +1163,12 @@ public class Leave_Application extends AppCompatActivity {
                                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_21);
                                     LocalDate fromDate = LocalDate.parse(f_date, formatter);
                                     LocalDate toDate = LocalDate.parse(t_date, formatter);
+
+                                    Set<String> addedDates = new HashSet<>();
+                                    for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
+                                        addedDates.add(date.toString());
+                                    }
+
 
                                     for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
                                         JSONObject jsonObject = new JSONObject();
@@ -1183,6 +1192,26 @@ public class Leave_Application extends AppCompatActivity {
                                         jsonArray.put(jsonObject);
                                     }
                                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
+
+                                    JSONArray updatedDtJsonArray = new JSONArray();
+                                    for (int j = 0; j < dtJsonArray.length(); j++) {
+                                        JSONObject dtObj = dtJsonArray.optJSONObject(j);
+                                        if (dtObj != null) {
+                                            JSONObject dtInner = dtObj.optJSONObject("dt");
+                                            if (dtInner != null) {
+                                                String fullDate = dtInner.optString("date");
+                                                String dateOnly = fullDate.split(" ")[0];
+                                                if (!addedDates.contains(dateOnly)) {
+                                                    updatedDtJsonArray.put(dtObj);
+                                                    Log.d("DATE_SYNC", "Kept in dtSync: " + dateOnly);
+                                                } else {
+                                                    Log.d("DATE_SYNC", "Removed from dtSync: " + dateOnly);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, updatedDtJsonArray.toString(), 2));
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
