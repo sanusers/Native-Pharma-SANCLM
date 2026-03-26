@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,11 +22,13 @@ import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -177,7 +180,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OutboxUtil outboxUtil;
     private Handler dateHandler;
     private String status;
-   String stayPopup = "0";
+    String stayPopup = "0";
+
     private void checkDateChange() {
         if (!isAdded()) return;
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
@@ -1759,6 +1763,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
     }
+
     private void proceedSubmitFlow() {
         if (SharedPref.getApprovalManatoryStatus(requireContext()) &&
                 SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") &&
@@ -1788,6 +1793,93 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         }
     }
+//    private void showNewPopup() {
+//
+//        Dialog dialog = new Dialog(requireActivity());
+//        dialog.setContentView(R.layout.popup_stay_night);
+//        dialog.setCancelable(false);
+//
+//        RadioButton radioYes = dialog.findViewById(R.id.radioYes);
+//        RadioButton radioNo = dialog.findViewById(R.id.radioNo);
+//        Spinner spinner = dialog.findViewById(R.id.spinnerTerritory);
+//        EditText etRemarks = dialog.findViewById(R.id.ed_remark);
+//        Button btnSubmit = dialog.findViewById(R.id.btn_submit);
+//        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+//
+//        View remarksLayout = (View) etRemarks.getParent();
+//        spinner.setVisibility(View.GONE);
+//        remarksLayout.setVisibility(View.GONE);
+//        List<String> territoryList = new ArrayList<>();
+//        territoryList.add("Select Territory");
+//        String selectedClusters = (DayPlanCount.equals("1")) ? mTownname1 : mTownname2;
+//        if (selectedClusters != null && !selectedClusters.isEmpty()) {
+//            String[] selectedArray = selectedClusters.split(",");
+//            for (String name : selectedArray) {
+//                String trimmedName = name.trim();
+//                if (!trimmedName.isEmpty() && !trimmedName.equalsIgnoreCase("$")) {
+//                    territoryList.add(trimmedName);
+//                }
+//            }
+//        } else {
+//            updateClusterList(DayPlanCount);
+//            for (Multicheckclass_clust item : multiple_cluster_list) {
+//                territoryList.add(item.getStrname());
+//            }
+//        }
+//
+
+    /// / 4. Spinner Adapter setup
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+//                R.layout.popup_stay_night_spinner, territoryList);
+//        adapter.setDropDownViewResource(R.layout.popup_stay_night_spinner);
+//        spinner.setAdapter(adapter);
+//        radioYes.setOnClickListener(v -> {
+//            spinner.setVisibility(View.VISIBLE);
+//            remarksLayout.setVisibility(View.VISIBLE);
+//        });
+//
+//        radioNo.setOnClickListener(v -> dialog.dismiss());
+//
+//        btnCancel.setOnClickListener(v -> dialog.dismiss());
+//
+//        btnSubmit.setOnClickListener(v -> {
+//
+//            if (radioYes.isChecked()) {
+//
+//                if (spinner.getSelectedItemPosition() == 0) {
+//                    Toast.makeText(requireContext(), "Select Territory", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                String remarks = etRemarks.getText().toString().trim();
+//                if (remarks.isEmpty()) {
+//                    Toast.makeText(requireContext(), "Enter Remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                // ✅ Selected cluster code edukalam (optional use)
+//                Multicheckclass_clust selectedCluster =
+//                        multiple_cluster_list.get(spinner.getSelectedItemPosition() - 1); // -1 for "Select Territory"
+//                String selectedClusterCode = selectedCluster.getStrid();
+//                String selectedClusterName = selectedCluster.getStrname();
+//                Log.d("StayPopup", "Selected: " + selectedClusterCode + " - " + selectedClusterName);
+//            }
+//
+//            dialog.dismiss();
+//            proceedSubmitFlow();
+//        });
+//
+//        dialog.show();
+//
+//        Window window = dialog.getWindow();
+//        if (window != null) {
+//            window.setLayout(
+//                    (int) (getResources().getDisplayMetrics().widthPixels * 0.45),
+//                    WindowManager.LayoutParams.WRAP_CONTENT
+//            );
+//            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+//        }
+//    }
     private void showNewPopup() {
 
         Dialog dialog = new Dialog(requireActivity());
@@ -1804,9 +1896,25 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         View remarksLayout = (View) etRemarks.getParent();
         spinner.setVisibility(View.GONE);
         remarksLayout.setVisibility(View.GONE);
+
         List<String> territoryList = new ArrayList<>();
         territoryList.add("Select Territory");
-        String selectedClusters = (DayPlanCount.equals("1")) ? mTownname1 : mTownname2;
+
+        // ✅ Field Work session territory மட்டும் எடுக்கணும்
+        String selectedClusters = "";
+
+        if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+            // Both sessions are Field Work → combine both
+            selectedClusters = mTownname1 + "," + mTownname2;
+        } else if (mFwFlg1.equalsIgnoreCase("F")) {
+            // Only Session 1 is Field Work
+            selectedClusters = mTownname1;
+        } else if (mFwFlg2.equalsIgnoreCase("F")) {
+            // Only Session 2 is Field Work
+            selectedClusters = mTownname2;
+        }
+        // else → no field work session, selectedClusters stays empty
+
         if (selectedClusters != null && !selectedClusters.isEmpty()) {
             String[] selectedArray = selectedClusters.split(",");
             for (String name : selectedArray) {
@@ -1816,23 +1924,75 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
         } else {
-            updateClusterList(DayPlanCount);
+            // ✅ Field Work session's cluster மட்டும் load பண்ணணும்
+            String fwSession = mFwFlg1.equalsIgnoreCase("F") ? "1" :
+                    mFwFlg2.equalsIgnoreCase("F") ? "2" : DayPlanCount;
+            updateClusterList(fwSession);
             for (Multicheckclass_clust item : multiple_cluster_list) {
                 territoryList.add(item.getStrname());
             }
         }
 
-// 4. Spinner Adapter setup
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                R.layout.popup_stay_night_spinner, territoryList);
+        // ✅ Spinner Adapter setup
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+//                R.layout.popup_stay_night_spinner, territoryList);
+//        adapter.setDropDownViewResource(R.layout.popup_stay_night_spinner);
+//        spinner.setAdapter(adapter);
+// ✅ Replace your adapter setup with this:
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(),
+                R.layout.popup_stay_night_spinner, territoryList) {
+
+            @Override
+            public boolean isEnabled(int position) {
+                // First item (Select Territory) click aagathu
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position == 0) {
+                    view.setVisibility(View.GONE);
+                    view.setLayoutParams(new AbsListView.LayoutParams(0, 1));
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                    int heightInPx = (int) (45 * getContext().getResources().getDisplayMetrics().density);
+                    view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightInPx));
+                    // 4. Divider Line (Border) add panna
+                    GradientDrawable gd = new GradientDrawable();
+                    gd.setColor(Color.WHITE);
+                    gd.setStroke(1, Color.parseColor("#E0E0E0")); // Light grey line
+                    view.setBackground(gd);
+
+                    // 5. Text alignment and padding
+                    TextView tv = view.findViewById(android.R.id.text1);
+                    if (tv != null) {
+                        tv.setTextColor(Color.BLACK);
+                        tv.setTextSize(14);
+                        tv.setGravity(Gravity.CENTER_VERTICAL);
+                        tv.setPadding(30, 0, 30, 0); // Spacing adjust panna
+                    }
+                }
+                return view;
+            }
+        };
         adapter.setDropDownViewResource(R.layout.popup_stay_night_spinner);
         spinner.setAdapter(adapter);
+        spinner.setSelection(0, false);
+
+// ✅ This is the KEY fix - dropdown list கீழே தள்ளி வரும்
+        spinner.setDropDownVerticalOffset(spinner.getHeight());
         radioYes.setOnClickListener(v -> {
             spinner.setVisibility(View.VISIBLE);
             remarksLayout.setVisibility(View.VISIBLE);
         });
 
-        radioNo.setOnClickListener(v -> dialog.dismiss());
+      //  radioNo.setOnClickListener(v -> dialog.dismiss());
+        radioNo.setOnClickListener(v -> {
+            dialog.dismiss();
+            proceedSubmitFlow();
+        });
+
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
@@ -1851,12 +2011,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
-                // ✅ Selected cluster code edukalam (optional use)
-                Multicheckclass_clust selectedCluster =
-                        multiple_cluster_list.get(spinner.getSelectedItemPosition() - 1); // -1 for "Select Territory"
-                String selectedClusterCode = selectedCluster.getStrid();
-                String selectedClusterName = selectedCluster.getStrname();
-                Log.d("StayPopup", "Selected: " + selectedClusterCode + " - " + selectedClusterName);
+                // ✅ Selected cluster code எடுக்கலாம்
+                if (!multiple_cluster_list.isEmpty()) {
+                    int selectedIndex = spinner.getSelectedItemPosition() - 1; // -1 for "Select Territory"
+                    if (selectedIndex >= 0 && selectedIndex < multiple_cluster_list.size()) {
+                        Multicheckclass_clust selectedCluster = multiple_cluster_list.get(selectedIndex);
+                        String selectedClusterCode = selectedCluster.getStrid();
+                        String selectedClusterName = selectedCluster.getStrname();
+                        Log.d("StayPopup", "Selected: " + selectedClusterCode + " - " + selectedClusterName);
+                    }
+                }
             }
 
             dialog.dismiss();
@@ -1930,10 +2094,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //            // 🔥 Validation only for YES
 //            if (radioYes.isChecked()) {
 //
-////                if (spinner.getSelectedItemPosition() == 0) {
-////                    Toast.makeText(requireContext(), "Select Territory", Toast.LENGTH_SHORT).show();
-////                    return;
-////                }
+
+    /// /                if (spinner.getSelectedItemPosition() == 0) {
+    /// /                    Toast.makeText(requireContext(), "Select Territory", Toast.LENGTH_SHORT).show();
+    /// /                    return;
+    /// /                }
 //
 //                if (remarks.isEmpty()) {
 //                    Toast.makeText(requireContext(), "Enter Remarks", Toast.LENGTH_SHORT).show();
@@ -6133,10 +6298,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //
 //        dialogStayNight.show();
 //
-////        dialogStayNight.getWindow().setLayout(
-////                ViewGroup.LayoutParams.MATCH_PARENT,
-////                ViewGroup.LayoutParams.WRAP_CONTENT
-////        );
+
+    /// /        dialogStayNight.getWindow().setLayout(
+    /// /                ViewGroup.LayoutParams.MATCH_PARENT,
+    /// /                ViewGroup.LayoutParams.WRAP_CONTENT
+    /// /        );
 //
 //        // ❌ close
 //        iv_close.setOnClickListener(v -> dialogStayNight.dismiss());
@@ -6150,7 +6316,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //            proceedSubmitFlow();
 //        });
 //    }
-
     private void remarksAlertBox() {
         Dialog dialogRemarks = new Dialog(requireActivity());
         dialogRemarks.setContentView(R.layout.popup_remarks);
