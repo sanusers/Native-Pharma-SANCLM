@@ -20,6 +20,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tv_content_side"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_regular"
+        android:gravity="end"
+        android:textColor="@color/red_60"
+        android:textSize="@dimen/_7ssp"
+        android:layout_marginStart="@dimen/_3sdp"
+        tools:text="Side Content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_add_tp"
+        app:layout_constraintWidth_max="0dp"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
         android:id="@+id/tv_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -27,23 +42,10 @@
         android:fontFamily="@font/satoshi_regular"
         android:gravity="start"
         android:textColor="@color/black"
-        android:textSize="@dimen/_7ssp"
+        android:textSize="@dimen/_6ssp"
         tools:text="Content"
         app:layout_constraintStart_toEndOf="@id/btn_add_tp"
         app:layout_constraintEnd_toStartOf="@id/tv_content_side"
-        app:layout_constraintTop_toTopOf="@id/btn_add_tp" />
-
-    <TextView
-        android:id="@+id/tv_content_side"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/satoshi_regular"
-        android:gravity="end"
-        android:textColor="@color/red_60"
-        android:textSize="@dimen/_7ssp"
-        tools:text="Side Content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_content"
         app:layout_constraintTop_toTopOf="@id/btn_add_tp" />
 
     <TextView
@@ -55,7 +57,7 @@
         android:fontFamily="@font/satoshi_regular"
         android:gravity="start"
         android:textColor="@color/text_grey"
-        android:textSize="@dimen/_7ssp"
+        android:textSize="@dimen/_6ssp"
         tools:text="Sub Content"
         app:layout_constraintStart_toEndOf="@id/btn_add_tp"
         app:layout_constraintEnd_toEndOf="parent"

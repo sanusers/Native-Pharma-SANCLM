@@ -1529,7 +1529,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (validatePlanAllDrs(false, new ArrayList<>(), arrayList)) {
+                    if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && validatePlanAllDrs(false, new ArrayList<>(), arrayList)) {
                         sendToApproval();
                     } else {
                         CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_plan_all_the) + drCap + getString(R.string.at_least_one_time));
