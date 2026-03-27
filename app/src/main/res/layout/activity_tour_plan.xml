@@ -847,14 +847,7 @@
             </LinearLayout>
 
         </LinearLayout>
-        <View
-            android:id="@+id/freezeOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#80000000"
-            android:clickable="false"
-            android:focusable="false"
-            android:visibility="gone" />
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -864,6 +857,15 @@
             android:visibility="gone" />
 
     </RelativeLayout>
+    <View
+        android:id="@+id/freezeOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:elevation="@dimen/_2sdp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone" />
 
     <com.google.android.material.navigation.NavigationView
         android:layout_width="@dimen/_150sdp"

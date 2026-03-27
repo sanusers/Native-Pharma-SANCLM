@@ -3807,6 +3807,8 @@ public class TourPlanActivity extends AppCompatActivity {
     public void getDraftSaveOneBuild(String isClickedName, String monthYear, ArrayList<OneBuildModelClass> arrayList, String isFrom, boolean statusOffline) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
             try {
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.freezeOverlay.setVisibility(View.VISIBLE);
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("Mod", "AndroidDetailing");
 
@@ -4220,9 +4222,15 @@ public class TourPlanActivity extends AppCompatActivity {
                                                     get1MonthRemoteTPDataOneBuild(localDate);
                                                 }
                                             } catch (JSONException e) {
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
+                                                binding.progressBar.setVisibility(View.GONE);
+                                                binding.freezeOverlay.setVisibility(View.GONE);
                                                 e.printStackTrace();
                                             }
                                         } catch (Exception e) {
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
+                                            binding.progressBar.setVisibility(View.GONE);
+                                            binding.freezeOverlay.setVisibility(View.GONE);
                                             e.printStackTrace();
                                         }
                                     } else {
@@ -4248,6 +4256,9 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 }
                             } catch (JSONException e) {
+                                CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
+                                binding.progressBar.setVisibility(View.GONE);
+                                binding.freezeOverlay.setVisibility(View.GONE);
                                 e.printStackTrace();
                             }
                         }
@@ -5189,8 +5200,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void get1MonthRemoteTPDataOneBuild(LocalDate localDate1) {
         try {
-//            ProgressDialog progressDialog = new ProgressDialog(this);  //remove this
-//            progressDialog.show();
+            binding.progressBar.setVisibility(View.VISIBLE);
+            binding.freezeOverlay.setVisibility(View.VISIBLE);
             apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
             JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
             jsonObject.put("tableName", "gettpdetail_onebuild");
@@ -5313,6 +5324,9 @@ public class TourPlanActivity extends AppCompatActivity {
             });
 
         } catch (JSONException e) {
+            CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
+            binding.progressBar.setVisibility(View.GONE);
+            binding.freezeOverlay.setVisibility(View.GONE);
             e.printStackTrace();
         }
     }
@@ -5409,7 +5423,8 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void sendWholeMonthStatusOneBuild(LocalDate localDate1, String isClickedName) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.freezeOverlay.setVisibility(View.VISIBLE);
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
             @Override
             public void isNetworkAvailable(Boolean status) {
@@ -5463,6 +5478,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                         } else {
                                             tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                                             CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.failed_to_send_approval));
+                                            binding.progressBar.setVisibility(View.GONE);
+                                            binding.freezeOverlay.setVisibility(View.GONE);
                                         }
                                         get1MonthRemoteTPDataOneBuild(localDate);
                                     } catch (JSONException e) {
