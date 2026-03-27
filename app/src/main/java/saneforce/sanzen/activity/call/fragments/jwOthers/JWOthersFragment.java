@@ -10,6 +10,7 @@ import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -67,6 +68,7 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.FragmentJwothersBinding;
+import saneforce.sanzen.databinding.PopupUnlistedJointworkNameBinding;
 import saneforce.sanzen.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -83,6 +85,8 @@ public class JWOthersFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static AdapterCallJointWorkList adapterCallJointWorkList;
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
+    public static ArrayList<CallCommonCheckedList> unlistedJointList = new ArrayList<>();
+    public static AdapterCallJointWorkList adapterUnlistedJointWork;
     public static ArrayList<String> JWKCodeList = new ArrayList<>();
     Gson gson;
     CommonUtilsMethods commonUtilsMethods;
@@ -90,6 +94,7 @@ public class JWOthersFragment extends Fragment {
     private RoomDB roomDB;
     private DCRDocDataDao dcrDocDataDao;
     private MasterDataDao masterDataDao;
+    String unlisted_jointWork = "0";
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -145,6 +150,12 @@ public class JWOthersFragment extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         gson = new Gson();
+        if ("0".equalsIgnoreCase(unlisted_jointWork)) {
+            jwOthersBinding.constraintNewSection.setVisibility(View.VISIBLE);
+        } else {
+            jwOthersBinding.constraintNewSection.setVisibility(View.GONE);
+        }
+
         if (savedInstanceState != null) {
             editRemarks = savedInstanceState.getString("EDITREMARKS");
             editPob = savedInstanceState.getString("EDITPOB");
@@ -251,6 +262,174 @@ public class JWOthersFragment extends Fragment {
             }
         });
 
+        jwOthersBinding.btnAddJw2.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View v) {
+                PopupUnlistedJointworkNameBinding popupBinding = PopupUnlistedJointworkNameBinding.inflate(LayoutInflater.from(requireContext()));
+                AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).setView(popupBinding.getRoot()).create();
+                alertDialog.setCancelable(false);
+                alertDialog.setCanceledOnTouchOutside(false);
+                String unlCaption = SharedPref.getUNLcap(requireContext());
+                //for  popup heading
+                // Head text (TextView) - Idhuku setText correct
+                if (unlCaption.isEmpty()) {
+                    popupBinding.tvHead2.setText("Unlisted JointWork");
+                } else {
+                    popupBinding.tvHead2.setText(unlCaption + " JointWork");
+                }
+
+                // joint work type text
+                if (unlCaption.isEmpty()) {
+                    popupBinding.unlistedJointwork.setHint("Type Unlisted Jointwork Name");
+                    popupBinding.unlistedJointwork.setText("");
+                } else {
+
+                    popupBinding.unlistedJointwork.setHint("Type " + unlCaption + " Jointwork Name");
+                    popupBinding.unlistedJointwork.setText("");
+                }
+
+                // Main Fragment Tag (TextView)
+                if (unlCaption.isEmpty()) {
+                    jwOthersBinding.tagJointwork2.setText("Unlisted JointWork");
+                } else {
+                    jwOthersBinding.tagJointwork2.setText(unlCaption + " JointWork");
+                }
+                final String[] selectedSpeciality = {""};
+                List<String> specialtyList = new ArrayList<>();
+                try {
+                    JSONArray jsonArray;
+                    if (DCRCallActivity.save_valid.equals("1")) {
+                        jsonArray = dcrDocDataDao.getDCRDocData(DCRCallActivity.hqcode).getDCRDocDataJSONArray();
+                    } else {
+                        jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + TodayPlanSfCode).getMasterSyncDataJsonArray();
+                    }
+                    java.util.LinkedHashSet<String> seen = new java.util.LinkedHashSet<>();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        String specialty = obj.optString("Specialty", "").trim();
+                        if (!specialty.isEmpty()) {
+                            seen.add(specialty);
+                        }
+                    }
+                    specialtyList.addAll(seen);
+
+                } catch (Exception e) {
+                    Log.e("JW", "Speciality fetch error: " + e.getMessage());
+                }
+
+                popupBinding.secondConstraint.setOnClickListener(view -> {
+                    InputMethodManager imm = (InputMethodManager) requireContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+                    if (specialtyList.isEmpty()) {
+                        commonUtilsMethods.showToastMessage(requireContext(), "No speciality found");
+                        return;
+                    }
+
+                    android.widget.ScrollView scrollView = new android.widget.ScrollView(requireContext());
+                    android.widget.LinearLayout innerLayout = new android.widget.LinearLayout(requireContext());
+                    innerLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+
+                    AlertDialog specialityDialog = new AlertDialog.Builder(requireContext())
+                            .setView(scrollView)
+                            .create();
+
+                    for (String specialty : specialtyList) {
+
+                        View itemView = LayoutInflater.from(requireContext())
+                                .inflate(R.layout.popup_unlisted_jointwork_speciality, innerLayout, false);
+
+                        androidx.appcompat.widget.AppCompatTextView tv = itemView.findViewById(R.id.tv_speciality);
+                        tv.setText(specialty);
+                        itemView.setOnClickListener(click -> {
+                            selectedSpeciality[0] = specialty;
+                            popupBinding.secondConstraint.setText(specialty);
+                            specialityDialog.dismiss();
+                        });
+
+                        innerLayout.addView(itemView);
+                    }
+
+                    scrollView.addView(innerLayout);
+                    specialityDialog.show();
+
+                    if (specialityDialog.getWindow() != null) {
+                        specialityDialog.getWindow().setLayout(
+                                (int) (getResources().getDisplayMetrics().widthPixels * 0.45),
+                                (int) (getResources().getDisplayMetrics().heightPixels * 0.4)
+                        );
+                    }
+                });
+//                popupBinding.secondConstraint.setOnClickListener(view -> {
+//                    // Keyboard hide
+//                    InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//
+//                    if (specialtyList.isEmpty()) {
+//                        commonUtilsMethods.showToastMessage(requireContext(), "No speciality found");
+//                        return;
+//                    }
+//                    String[] specialtyArray = specialtyList.toArray(new String[0]);
+//                    new AlertDialog.Builder(requireContext())
+//                            .setTitle("Select Speciality")
+//                            .setItems(specialtyArray, (dialog, which) -> {
+//                                selectedSpeciality[0] = specialtyArray[which];
+//                                popupBinding.secondConstraint.setText(selectedSpeciality[0]);
+//                                dialog.dismiss();
+//                            })
+//                            .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+//                            .create()
+//                            .show();
+//                });
+
+                // Cancel
+                popupBinding.btnCancel.setOnClickListener(view -> alertDialog.dismiss());
+
+                // Save
+                popupBinding.btnSave.setOnClickListener(view -> {
+                    String name = popupBinding.unlistedJointwork.getText().toString().trim();
+                    if (name.isEmpty()) {
+                        commonUtilsMethods.showToastMessage(requireContext(), "Enter the unlisted jointwork");
+                        return;
+                    }
+                    if (selectedSpeciality[0].isEmpty()) {
+                        commonUtilsMethods.showToastMessage(requireContext(), "Select a speciality");
+                        return;
+                    }
+                    unlistedJointList.add(new CallCommonCheckedList(name, selectedSpeciality[0], true));
+                    if (adapterUnlistedJointWork != null) {
+                        adapterUnlistedJointWork.notifyDataSetChanged();
+                    }
+                    alertDialog.dismiss();
+                });
+
+                alertDialog.show();
+            }
+        });
+//        jwOthersBinding.btnAddJw2.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View v) {
+//                PopupUnlistedJointworkNameBinding popupBinding = PopupUnlistedJointworkNameBinding.inflate(LayoutInflater.from(requireContext()));
+//                AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).setView(popupBinding.getRoot()).create();
+//                alertDialog.setCancelable(false);
+//                alertDialog.setCanceledOnTouchOutside(false);
+//                popupBinding.btnSave.setOnClickListener(view -> {
+//                    String name = popupBinding.unlistedJointwork.getText().toString().trim();
+//                    if (!name.isEmpty()) {
+//                        unlistedJointList.add(new CallCommonCheckedList(name, "0", true));
+//                        if (adapterUnlistedJointWork != null) {
+//                            adapterUnlistedJointWork.notifyDataSetChanged();
+//                        }
+//                        alertDialog.dismiss();
+//                    }else{
+//                        commonUtilsMethods.showToastMessage(requireContext(), "Enter the unlisted jointwork");
+//                    }
+//                });
+//                alertDialog.show();
+//            }
+//        });
+
         jwOthersBinding.tvFeedback.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -334,6 +513,13 @@ public class JWOthersFragment extends Fragment {
         jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
         jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+
+        adapterUnlistedJointWork = new AdapterCallJointWorkList(getContext(), getActivity(), unlistedJointList, JointWorkSelectionSide.JwList);
+        RecyclerView.LayoutManager mLayoutManagerJW2 = new LinearLayoutManager(getActivity());
+        jwOthersBinding.rvJointwork2.setLayoutManager(mLayoutManagerJW2);
+        jwOthersBinding.rvJointwork2.setItemAnimator(new DefaultItemAnimator());
+        jwOthersBinding.rvJointwork2.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        jwOthersBinding.rvJointwork2.setAdapter(adapterUnlistedJointWork);
 
         adapterCallJointWorkList = new AdapterCallJointWorkList(getContext(), getActivity(), callAddedJointList, JointWorkSelectionSide.JwList);
         RecyclerView.LayoutManager mLayoutManagerJW = new LinearLayoutManager(getActivity());
