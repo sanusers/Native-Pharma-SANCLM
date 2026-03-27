@@ -78,6 +78,8 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
 
         if (!callDetailingLists.get(position).getFeedback().isEmpty()) {
             holder.img_feedback.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_feedback_red));
+        } else {
+            holder.img_feedback.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_feedback_black));
         }
 
         holder.ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> callDetailingLists.set(holder.getAbsoluteAdapterPosition(), new CallDetailingList(callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandName(),
@@ -113,7 +115,6 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                     }
                 });
 
-
                 btn_clear.setOnClickListener(new SafeClickListener() {
                     @Override
                     public void onSafeClick(View view) {
@@ -121,7 +122,6 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                         ed_remark.setHint("Type your feedback");
                     }
                 });
-
 
                 btn_save.setOnClickListener(new SafeClickListener() {
                     @Override
@@ -184,9 +184,7 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         return !stringBuilder.toString().isEmpty() && !stringBuilder.toString().endsWith("\n");
     }
 
-    private void
-
-    showTimelinePopUp(View view, List<String> timeline) {
+    private void showTimelinePopUp(View view, List<String> timeline) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.timeline_popup, null);
         TimelineAdapter timelineAdapter = new TimelineAdapter(context, timeline);

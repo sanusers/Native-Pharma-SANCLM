@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/slide_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/brand_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/satoshi_bold"
+            android:singleLine="true"
+            android:textAlignment="textStart"
+            android:textColor="@color/text_grey"
+            android:textSize="@dimen/_8ssp"
+            android:textStyle="bold"
+            tools:text="Dolo" />
+
+        <TextView
+            android:id="@+id/slide_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/satoshi_regular"
+            android:textAlignment="textStart"
+            android:textColor="@color/text_grey"
+            android:textSize="@dimen/_6ssp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            tools:text="Dolo 650mg\nDolo 450mg" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginVertical="@dimen/_1sdp"
+        android:background="@color/gray_20" />
+
+</LinearLayout>

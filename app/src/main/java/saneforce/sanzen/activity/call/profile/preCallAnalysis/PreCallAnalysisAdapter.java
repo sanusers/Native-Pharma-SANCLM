@@ -33,7 +33,6 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
 
     @Override
     public void onBindViewHolder(@NonNull PreCallAnalysisAdapter.Viewholder holder, int position) {
-
         PreCallAnalysisModelClass mlist = list.get(position);
         holder.txt_productname.setText(mlist.getProductname());
         holder.txt_sample.setText(mlist.getSample());
@@ -103,14 +102,12 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
         }
     }
 
-
     @Override
     public int getItemCount() {
         return list.size();
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder {
-
         TextView txt_productname, txt_sample, txt_rx, txt_rcpa, txt_feedback;
         View view, view_sample, view_rx, view_rcpa;
 

@@ -1679,6 +1679,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             if (!json.getString("DigitalHead").equalsIgnoreCase("[]")) {
                 JSONArray jsonPrdSlides = new JSONArray(json.getString("DigitalHead"));
+                Map<String, CallDetailingList> brandData = new LinkedHashMap<>();
                 for (int i = 0; i < jsonPrdSlides.length(); i++) {
                     JSONObject jsSlidesPrds = jsonPrdSlides.getJSONObject(i);
 
@@ -1693,11 +1694,10 @@ public class DCRCallActivity extends AppCompatActivity {
                         if (funStringValidation(jsSlidesPrds.getString("Rating")))
                             Rating = jsSlidesPrds.getString("Rating");
 
-                        JSONObject jsonStart = jsSlidesPrds.getJSONObject("StartTime");
-
                         if (funStringValidation(jsSlidesPrds.getString("Feedbk_Status")))
                             PrdFeedBack = jsSlidesPrds.getString("Feedbk_Status");
 
+                        JSONObject jsonStart = jsSlidesPrds.getJSONObject("StartTime");
                         if (funStringValidation(jsonStart.getString("date")))
                             Date = jsonStart.getString("date").substring(0, 11);
                         StartTime = jsonStart.getString("date").substring((jsonStart.getString("date").indexOf(" ")) + 1);
@@ -1707,6 +1707,9 @@ public class DCRCallActivity extends AppCompatActivity {
                             EndTime = jsonEnd.getString("date").substring((jsonStart.getString("date").indexOf(" ")) + 1);
 
                         String timeDuration = "";
+                        if (brandData.containsKey(ProductCode)) {
+                            timeDuration = brandData.get(ProductCode).getDuration();
+                        }
                         JSONArray jsonArray = jsSlidesPrds.getJSONArray("DigitalDet");
                         Log.v("DcrDetail_extract", "----DigitalSlides--len--" + jsonArray.length());
                         for (int j = 0; j < jsonArray.length(); j++) {
@@ -1743,9 +1746,15 @@ public class DCRCallActivity extends AppCompatActivity {
 //                            }
                             arrayStore.add(new StoreImageTypeUrl("", "", SlideName, SlideType, "", "0", "", remArray.toString(), ProductName, ProductCode, "", false));
                         }
-                        DetailedFragment.callDetailingLists.add(new CallDetailingList(ProductName, ProductCode, SlideName, SlideType, "", StartTime.trim() + " " + EndTime.trim(), StartTime.trim(), Integer.parseInt(Rating), PrdFeedBack, Date, timeDuration));
+                        CallDetailingList callDetailingList = new CallDetailingList(ProductName, ProductCode, SlideName, SlideType, "", StartTime.trim() + " " + EndTime.trim(), StartTime.trim(), Integer.parseInt(Rating), PrdFeedBack, Date, timeDuration);
+                        if (brandData.containsKey(ProductCode)) {
+                            callDetailingList = brandData.get(ProductCode);
+                            callDetailingList.setDuration(timeDuration);
+                        }
+                        brandData.put(ProductCode, callDetailingList);
                     }
                 }
+                DetailedFragment.callDetailingLists.addAll(brandData.values());
             }
 
             JSONArray jsonPrdArray = new JSONArray(json.getString("DCRDetail"));

@@ -129,7 +129,7 @@ public class CallsFragment extends Fragment {
                                                 if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
                                                     for (int j = 0; j < jsonArray1.length(); j++) {
                                                         JSONObject jsonObject = jsonArray1.getJSONObject(j);
-                                                        if (json.optString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode"))&& jsonObject.optString("CustType").equalsIgnoreCase(json.optString("CustType"))) {
+                                                        if (json.optString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.optString("Dcr_dt")) && jsonObject.optString("CustCode").equalsIgnoreCase(json.optString("CustCode")) && jsonObject.optString("CustType").equalsIgnoreCase(json.optString("CustType"))) {
                                                             TodayCallListOne.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                                                             jsonArray1.remove(j);
                                                             break;
@@ -191,8 +191,10 @@ public class CallsFragment extends Fragment {
                                                 }
                                                 CallDataRestClass.resetcallValues(context);
                                             }
-                                            binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-                                            adapter.notifyDataSetChanged();
+                                            if (adapter != null) {
+                                                binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+                                                adapter.notifyDataSetChanged();
+                                            }
                                             if (isProgressNeed) progressDialog.dismiss();
                                             SharedPref.setLastCallSyncDate(context, HomeDashBoard.selectedDate.toString());
                                         } catch (Exception e) {
@@ -205,6 +207,7 @@ public class CallsFragment extends Fragment {
                                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                     binding.rlSyncCall.setEnabled(true);
@@ -239,26 +242,30 @@ public class CallsFragment extends Fragment {
             boolean isDataAvailable = false;
             if (!SharedPref.getTodayCallList(context).isEmpty()) {
                 JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
-//                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
-//                    CheckDate = jsonArray.getJSONObject(0).optString("DCRdt").substring(0, 10);
-//                } else {
-//                    CheckDate = jsonArray.getJSONObject(0).optString("vstTime").substring(0, 10);
-//                }
-//
-//                if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
-//                    isDataAvailable = true;
-//                }
-//
-//                if (isDataAvailable) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject json = jsonArray.getJSONObject(i);
-                        SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-                        TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                if (jsonArray.length() > 0) {
+                    if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                        CheckDate = jsonArray.optJSONObject(0).optString("DCRdt").substring(0, 10);
+                    } else {
+                        CheckDate = jsonArray.optJSONObject(0).optString("vstTime").substring(0, 10);
                     }
-//                }
+
+                    if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
+                        isDataAvailable = true;
+                    }
+
+                    if (isDataAvailable) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject json = jsonArray.optJSONObject(i);
+                            SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
+                            TodayCallList.add(new CallsModalClass(json.optString("Trans_SlNo"), json.optString("ADetSLNo"), json.optString("CustName"), json.optString("CustCode"), json.optString("CustType"), json.optString("vstTime"), json.optString("DCRdt"), json.optString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                        }
+                    }
+                }
             }
-            binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-            adapter.notifyDataSetChanged();
+            if (adapter != null) {
+                binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+                adapter.notifyDataSetChanged();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -304,6 +311,15 @@ public class CallsFragment extends Fragment {
         Mcontext = requireContext();
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
+
+        adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
+        LinearLayoutManager manager = new LinearLayoutManager(requireContext());
+        binding.recyelerview.setNestedScrollingEnabled(false);
+        binding.recyelerview.setHasFixedSize(true);
+        binding.recyelerview.setLayoutManager(manager);
+        binding.recyelerview.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
         getFromLocal(requireContext(), apiInterface);
         if (
 //                syncCalls ||
@@ -322,15 +338,6 @@ public class CallsFragment extends Fragment {
         //binding.TvAddActivty.setText("Add " + SharedPref.getActivityCap(requireContext()));
         String activityCap = SharedPref.getActivityCap(requireContext());
         binding.TvAddActivty.setText(getString(R.string.add_activity, activityCap));
-
-
-        adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
-        LinearLayoutManager manager = new LinearLayoutManager(requireContext());
-        binding.recyelerview.setNestedScrollingEnabled(false);
-        binding.recyelerview.setHasFixedSize(true);
-        binding.recyelerview.setLayoutManager(manager);
-        binding.recyelerview.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
         binding.rlSyncCall.setOnClickListener(new SafeClickListener() {
             @Override
@@ -446,7 +453,7 @@ public class CallsFragment extends Fragment {
                             } else if (WorkPlanFragment.isFromTP && WorkPlanFragment.binding.txtSave.isEnabled()) {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                             } else if (WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
-                               // commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
+                                // commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.get_deviation_approval));
                             } else if (workTypeArray.length() > 0) {
                                 JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
