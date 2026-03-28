@@ -1066,18 +1066,21 @@ public class TourPlanActivity extends AppCompatActivity {
                                 if (validateVisitFrequency()) {
                                     sendToApprovalOneBuild();
                                 } else {
+                                    hideLoadingOverlay();
                                     CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_plan_all_the) + drCap + " " + getString(R.string.visit));
                                 }
                             } else {
                                 sendToApprovalOneBuild();
                             }
                         } else {
+                            hideLoadingOverlay();
                             CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_plan_all_the) + drCap + getString(R.string.at_least_one_time));
                         }
                     } else if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && visitFrequencyNeed.equalsIgnoreCase("0")) {
                         if (validateVisitFrequency()) {
                             sendToApprovalOneBuild();
                         } else {
+                            hideLoadingOverlay();
                             CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.please_plan_all_the) + drCap + " " + getString(R.string.visit));
                         }
                     } else {
@@ -4252,6 +4255,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                     if (jsonArray.length() >= 0) {
                                                         ArrayList<OneBuildModelClass> arrayList1 = new Gson().fromJson(String.valueOf(jsonArray), type);
                                                         sendTpForApprovalOneBuild(jbonj, arrayList1, localDate.toString(), monthYearFromDateUI(localDate), statusOffline, isClickedName);
+                                                    }else{
+                                                        hideLoadingOverlay();
                                                     }
                                                 } else {
                                                     get1MonthRemoteTPDataOneBuild(localDate);
@@ -4326,6 +4331,8 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (jsonArray.length() >= 0) {
                             ArrayList<OneBuildModelClass> arrayList1 = new Gson().fromJson(String.valueOf(jsonArray), type);
                             sendTpForApprovalOneBuild(jbonj, arrayList1, localDate.toString(), monthYearFromDateUI(localDate), statusOffline, isClickedName);
+                        }else{
+                            hideLoadingOverlay();
                         }
                     } else {
                         hideLoadingOverlay();
@@ -4333,7 +4340,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
 
-            } catch (JsonIOException e) {
+            } catch (Exception e) {
                 CommonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                 hideLoadingOverlay();
 //                binding.progressBar.setVisibility(View.GONE);
@@ -5334,6 +5341,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 }
 
                             } catch (JSONException e) {
+                                hideLoadingOverlay();
                                 e.printStackTrace();
                             }
                         } else {
