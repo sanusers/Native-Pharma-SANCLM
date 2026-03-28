@@ -180,8 +180,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OutboxUtil outboxUtil;
     private Handler dateHandler;
     private String status;
-    String stayPopup = "0";
-
+//    String stayPopup = "0";
     private void checkDateChange() {
         if (!isAdded()) return;
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
@@ -1611,14 +1610,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                    }
 //                    break;
                 case R.id.btn_submit:
-
-                    if ("0".equalsIgnoreCase(stayPopup)) {
-                        showNewPopup(); // 👈 new popup
+                    String nightStay = SharedPref.getNightStay(requireContext());
+                    if ("1".equals(nightStay)) {
+                        showNewPopup();
                     } else {
-                        proceedSubmitFlow(); // 👈 existing logic
+                        proceedSubmitFlow();
                     }
-
                     break;
+
 //                case R.id.btn_submit:
 //
 //                    Log.e("CHECK_FLOW", "stayPopup value = " + stayPopup);
@@ -1987,7 +1986,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             remarksLayout.setVisibility(View.VISIBLE);
         });
 
-      //  radioNo.setOnClickListener(v -> dialog.dismiss());
+        //  radioNo.setOnClickListener(v -> dialog.dismiss());
         radioNo.setOnClickListener(v -> {
             dialog.dismiss();
             proceedSubmitFlow();
@@ -6187,6 +6186,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("day_remarks", remark);
             finalSubmitJSONObject.put("location", latitude + ":" + longitude);
             finalSubmitJSONObject.put("address", address);
+            finalSubmitJSONObject.put("Ns_Rsf_Name",SharedPref.getHqName(requireContext()));
+//            if(TPNeed.equalsIgnoreCase("0")&&TPMandatory.equalsIgnoreCase("0")&&TPBasedDCR.equalsIgnoreCase("0")||TPNeed.equalsIgnoreCase("0")&&TPMandatory.equalsIgnoreCase("0")&&TPBasedDCR.equalsIgnoreCase("0")&&STPNeed.equalsIgnoreCase("0")&&STPBasedMTP.equalsIgnoreCase("0")){
+//                if()
+//            }
+//            finalSubmitJSONObject.put("Ns_Territory_Code",SharedPref.get)
 
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
         } catch (JSONException e) {
