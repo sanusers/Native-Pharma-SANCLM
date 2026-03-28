@@ -44,6 +44,19 @@
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="NotSibling" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+       android:id="@+id/tv_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:padding="@dimen/_2sdp"
+        android:text="Are you staying overnight ?"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_7ssp"
+        android:textStyle="bold"/>
+<!--    android:gravity="center"-->
+<!--    android:layout_marginHorizontal="@dimen/_4sdp"-->
     <!-- Yes / No Radio -->
     <RadioGroup
         android:id="@+id/radioGroup"
@@ -68,7 +81,16 @@
             android:fontFamily="@font/satoshi_bold"
             android:layout_marginStart="@dimen/_40sdp"/>
     </RadioGroup>
-
+<!--    <Spinner-->
+<!--        android:id="@+id/spinnerHeadquater"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:paddingStart="8dp"-->
+<!--        android:paddingEnd="8dp"-->
+<!--        android:layout_marginTop="12dp" />-->
     <!-- Territory Dropdown -->
     <Spinner
         android:id="@+id/spinnerTerritory"
@@ -79,13 +101,13 @@
         android:layout_marginEnd="16dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:layout_marginTop="12dp"
-        />
+        android:layout_marginTop="10dp" />
 
     <!-- Remarks -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_3sdp">
 
         <TextView
             android:id="@+id/tv_head2"
