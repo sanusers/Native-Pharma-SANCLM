@@ -3516,6 +3516,7 @@ public class DCRCallActivity extends AppCompatActivity {
         callCaptureImageLists = new ArrayList<>();
         JWOthersFragment.callAddedJointList = new ArrayList<>();
         JointWorkSelectionSide.JwList = new ArrayList<>();
+        JWOthersFragment.unlistedJointList = new ArrayList<>();
     }
 
     private void AddSignData() {        // just added for reff

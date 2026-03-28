@@ -1065,6 +1065,11 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
 
     <string name="please_detail_mandatory_slides">Por favor, detalle las diapositivas obligatorias</string>
     <string name="mandatory_slides_pending_for_brand">Diapositivas obligatorias pendientes para la marca: %1$s</string>
+    <string name="enter_unlisted_jointwork">Ingrese trabajo conjunto no listado</string>
+    <string name="unlisted_jointwork">Trabajo conjunto no listado</string>
+    <string name="type_unlisted_name">Escriba el nombre no listado</string>
+    <string name="type">Tipo</string>
+    <string name="joint_work_name">Nombre del trabajo conjunto</string>
 
 
 </resources>

@@ -1072,5 +1072,9 @@
 
     <string name="please_detail_mandatory_slides">请详细说明必填幻灯片</string>
     <string name="mandatory_slides_pending_for_brand">品牌的必填幻灯片待完成：%1$s</string>
-
+    <string name="enter_unlisted_jointwork">输入未列出的共同工作</string>
+    <string name="unlisted_jointwork">未列出的共同工作</string>
+    <string name="type_unlisted_name">输入未列出的名称</string>
+    <string name="type">类型</string>
+    <string name="joint_work_name">共同工作名称</string>
 </resources>

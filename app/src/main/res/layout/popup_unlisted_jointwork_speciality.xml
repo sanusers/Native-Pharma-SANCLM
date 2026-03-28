@@ -14,10 +14,10 @@
         android:fontFamily="@font/satoshi_bold"
         android:textColor="@color/dark_purple" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_1sdp"
-        android:layout_marginHorizontal="@dimen/_6sdp"
-        android:background="@color/light_grey_3" />
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/_1sdp"-->
+<!--        android:layout_marginHorizontal="@dimen/_6sdp"-->
+<!--        android:background="@color/light_grey_3" />-->
 
 </LinearLayout>

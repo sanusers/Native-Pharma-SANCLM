@@ -1073,4 +1073,9 @@
     <string name="please_detail_mandatory_slides">Пожалуйста, укажите обязательные слайды</string>
     <string name="mandatory_slides_pending_for_brand">Обязательные слайды, ожидающие для бренда: %1$s</string>
     <string name="loading">Загрузка</string>
+    <string name="enter_unlisted_jointwork">Введите невнесенную совместную работу</string>
+    <string name="unlisted_jointwork">Невнесенная совместная работа</string>
+    <string name="type_unlisted_name">Введите невнесенное имя</string>
+    <string name="type">Тип</string>
+    <string name="joint_work_name">Название совместной работы</string>
 </resources>

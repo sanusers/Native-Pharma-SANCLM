@@ -20,7 +20,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
             android:padding="@dimen/_2sdp"
-            android:text="Unlisted JointWork"
+            android:text="@string/unlisted_jointwork"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp"
             android:textStyle="bold"
@@ -48,12 +48,13 @@
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginEnd="@dimen/_2sdp"
             android:background="@drawable/bg_light_cement"
-            android:hint="Type unlisted Name"
+            android:hint="@string/type_unlisted_name"
             android:padding="@dimen/_4sdp"
             android:fontFamily="@font/satoshi_medium"
-            android:gravity="start"
+            android:gravity="left"
             android:inputType="text"
             android:maxLines="1"
+
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:focusable="true"
@@ -64,7 +65,6 @@
             app:layout_constraintEnd_toStartOf="@+id/second_constraint"
             app:layout_constraintTop_toBottomOf="@id/view_dummy2"
             app:layout_constraintBottom_toTopOf="@id/rl_btns"/>
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/second_constraint"
             android:layout_width="0dp"
@@ -72,15 +72,13 @@
             android:layout_marginStart="@dimen/_2sdp"
             android:layout_marginEnd="@dimen/_5sdp"
             android:background="@drawable/bg_light_cement"
-            android:gravity="start"
-            android:inputType="text"
+            android:gravity="left"
             android:maxLines="1"
             android:padding="@dimen/_4sdp"
             android:singleLine="true"
-            android:hint="Select Speciality"
-            android:imeOptions="actionDone"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:hint="@string/select_speciality"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:paddingHorizontal="@dimen/_8sdp"
             android:textSize="@dimen/_6ssp"
             android:fontFamily="@font/satoshi_medium"
@@ -90,6 +88,46 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/unlisted_jointwork"
             app:layout_constraintBottom_toBottomOf="@id/unlisted_jointwork" />
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/second_constraint"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="@dimen/_25sdp"-->
+<!--            android:layout_marginStart="@dimen/_2sdp"-->
+<!--            android:layout_marginEnd="@dimen/_5sdp"-->
+<!--            android:background="@drawable/bg_light_cement"-->
+<!--            android:gravity="start"-->
+<!--            android:inputType="text"-->
+<!--            android:maxLines="1"-->
+<!--            android:padding="@dimen/_4sdp"-->
+<!--            android:singleLine="true"-->
+<!--            android:hint="Select Speciality"-->
+<!--            android:imeOptions="actionDone"-->
+<!--            android:focusable="true"-->
+<!--            android:focusableInTouchMode="true"-->
+<!--            android:paddingHorizontal="@dimen/_8sdp"-->
+<!--            android:textSize="@dimen/_6ssp"-->
+<!--            android:fontFamily="@font/satoshi_medium"-->
+<!--            app:drawableEndCompat="@drawable/spin_down_arrow"-->
+<!--            app:layout_constraintHorizontal_weight="1"-->
+<!--            app:layout_constraintStart_toEndOf="@id/unlisted_jointwork"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@id/unlisted_jointwork"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/unlisted_jointwork" />-->
+
+        <ListView
+            android:id="@+id/lv_speciality"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@color/white"
+            android:divider="@color/light_grey_3"
+            android:dividerHeight="@dimen/_1sdp"
+            android:visibility="gone"
+            android:elevation="@dimen/_4sdp"
+            app:layout_constraintEnd_toEndOf="@id/second_constraint"
+            app:layout_constraintStart_toStartOf="@id/second_constraint"
+            app:layout_constraintTop_toBottomOf="@id/second_constraint"
+            app:layout_constraintVertical_bias="0.0" />
+
 <!--            <TextView-->
 <!--                android:id="@+id/tv_unlisted_category"-->
 <!--                android:layout_width="0dp"-->
@@ -164,7 +202,7 @@
                 android:background="@drawable/bg_border_with_pink"
                 android:fontFamily="@font/satoshi_bold"
                 android:paddingHorizontal="@dimen/_4sdp"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_6ssp"
@@ -183,7 +221,7 @@
                 android:fontFamily="@font/satoshi_bold"
                 android:paddingHorizontal="@dimen/_3sdp"
                 android:singleLine="true"
-                android:text="Save"
+                android:text="@string/save"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_6ssp"

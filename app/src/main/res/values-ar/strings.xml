@@ -1062,4 +1062,12 @@
     <string name="please_detail_mandatory_slides">يرجى توضيح الشرائح الإلزامية</string>
     <string name="mandatory_slides_pending_for_brand">الشرائح الإلزامية معلقة للعلامة التجارية: %1$s</string>
     <string name="loading">جارٍ التحميل</string>
+    <string name="enter_unlisted_jointwork">أدخل عمل مشترك غير مدرج</string>
+    <string name="unlisted_jointwork">عمل مشترك غير مدرج</string>
+    <string name="type_unlisted_name">اكتب الاسم غير المدرج</string>
+    <string name="type">النوع</string>
+    <string name="joint_work_name">اسم العمل المشترك</string>
+
+
+
 </resources>

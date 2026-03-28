@@ -1063,4 +1063,9 @@
     <string name="please_detail_mandatory_slides">မဖြစ်မနေလိုအပ်သော စလိုက်များကို အသေးစိတ်ဖော်ပြပါ</string>
     <string name="mandatory_slides_pending_for_brand">အမှတ်တံဆိပ်အတွက် မဖြစ်မနေလိုအပ်သော စလိုက်များ မပြီးသေးပါ: %1$s</string>
     <string name="loading">တင်နေသည်</string>
+    <string name="enter_unlisted_jointwork">စာရင်းမဝင်သော ပူးတွဲလုပ်ဆောင်ချက်ကို ထည့်သွင်းပါ</string>
+    <string name="unlisted_jointwork">စာရင်းမဝင်သော ပူးတွဲလုပ်ဆောင်ချက်</string>
+    <string name="type_unlisted_name">စာရင်းမဝင်သော အမည်ကို ရိုက်ထည့်ပါ</string>
+    <string name="type">အမျိုးအစား</string>
+    <string name="joint_work_name">ပူးတွဲလုပ်ဆောင်ချက် အမည်</string>
 </resources>

@@ -1077,4 +1077,9 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="please_detail_mandatory_slides">Por favor, detalhe os slides obrigatórios</string>
     <string name="mandatory_slides_pending_for_brand">Slides obrigatórios pendentes para a marca: %1$s</string>
     <string name="loading">Carregando</string>
+    <string name="enter_unlisted_jointwork">Insira o trabalho conjunto não listado</string>
+    <string name="unlisted_jointwork">Trabalho conjunto não listado</string>
+    <string name="type_unlisted_name">Digite o nome não listado</string>
+    <string name="type">Tipo</string>
+    <string name="joint_work_name">Nome do trabalho conjunto</string>
 </resources>

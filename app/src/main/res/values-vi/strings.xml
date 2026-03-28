@@ -1078,4 +1078,9 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="please_detail_mandatory_slides">Vui lòng cung cấp chi tiết các slide bắt buộc</string>
     <string name="mandatory_slides_pending_for_brand">Các slide bắt buộc còn thiếu cho thương hiệu: %1$s</string>
     <string name="loading">Đang tải</string>
+    <string name="enter_unlisted_jointwork">Nhập công việc chung không có trong danh sách</string>
+    <string name="unlisted_jointwork">Công việc chung không có trong danh sách</string>
+    <string name="type_unlisted_name">Nhập tên không có trong danh sách</string>
+    <string name="type">Loại</string>
+    <string name="joint_work_name">Tên công việc chung</string>
 </resources>

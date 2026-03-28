@@ -1076,4 +1076,9 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="please_detail_mandatory_slides">Please Detail Mandatory Slides</string>
     <string name="mandatory_slides_pending_for_brand">Mandatory Slides Pending For Brand: %1$s</string>
     <string name="loading">Loading</string>
+    <string name="enter_unlisted_jointwork">Enter Unlisted JointWork</string>
+    <string name="unlisted_jointwork">Unlisted JointWork</string>
+    <string name="type_unlisted_name">Type Unlisted Name</string>
+    <string name="type">Type</string>
+    <string name="joint_work_name">Joint Work Name</string>
 </resources>

@@ -1059,5 +1059,9 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="please_detail_mandatory_slides">Veuillez détailler les diapositives obligatoires</string>
     <string name="mandatory_slides_pending_for_brand">Diapositives obligatoires en attente pour la marque : %1$s</string>
     <string name="loading">Chargement</string>
-
+    <string name="enter_unlisted_jointwork">Saisir un travail conjoint non répertorié</string>
+    <string name="unlisted_jointwork">Travail conjoint non répertorié</string>
+    <string name="type_unlisted_name">Saisissez le nom non répertorié</string>
+    <string name="type">Type</string>
+    <string name="joint_work_name">Nom du travail conjoint</string>
 </resources>

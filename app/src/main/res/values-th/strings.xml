@@ -1076,4 +1076,9 @@
     <string name="please_detail_mandatory_slides">โปรดระบุสไลด์ที่จำเป็น</string>
     <string name="mandatory_slides_pending_for_brand">สไลด์ที่จำเป็นที่ยังค้างสำหรับแบรนด์: %1$s</string>
     <string name="loading">กำลังโหลด</string>
+    <string name="enter_unlisted_jointwork">กรอกการทำงานร่วมกันที่ไม่ได้ระบุไว้</string>
+    <string name="unlisted_jointwork">งานร่วมที่ไม่ได้ระบุไว้</string>
+    <string name="type_unlisted_name">พิมพ์ชื่อที่ไม่ได้ระบุไว้</string>
+    <string name="type">ประเภท</string>
+    <string name="joint_work_name">ชื่อการทำงานร่วมกัน</string>
 </resources>
