@@ -111,6 +111,7 @@ public class ListedDoctorFragment extends Fragment {
     private String status;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private String tpClustersNeed ="1";
 
     public ListedDoctorFragment() {
     }
@@ -475,112 +476,6 @@ public class ListedDoctorFragment extends Fragment {
         custListArrayList.clear();
         executor.execute(() -> {
             if (SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-          /*  try {
-                JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-                JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-                HashMap<String, JSONObject> docObj = new HashMap<>();
-                for (int i = 0; i < masterJsonArray1.length(); i++) {
-                    JSONObject jsonObject = masterJsonArray1.getJSONObject(i);
-                    String code = jsonObject.optString("Code");
-                    if (!code.isEmpty()) {
-                        docObj.put(code, jsonObject);
-                    } else {
-                        Log.d("Merge", "Skipping DOCTOR_MAS object with empty 'Code': " + jsonObject.toString());
-                    }
-                }
-                for (int i = 0; i < masterJsonArray2.length(); i++) {
-                    JSONObject jsonObject_geo = masterJsonArray2.getJSONObject(i);
-                    String code = jsonObject_geo.optString("Code");
-                    if (code.isEmpty()) {
-                        Log.w("Merge", "Skipping GEO object with empty 'Code': " + jsonObject_geo.toString());
-                        continue;
-                    }
-                    if (docObj.containsKey(code)) {
-                        JSONObject existingObject = docObj.get(code);
-                        for (java.util.Iterator<String> it = jsonObject_geo.keys(); it.hasNext(); ) {
-                            String key = it.next();
-                            try {
-                                assert existingObject != null;
-                                existingObject.put(key, jsonObject_geo.get(key));
-                            } catch (JSONException e) {
-                                Log.e("MergeError", "Error merging key " + key + " for code " + code + ": " + e.getMessage());
-                            }
-                        }
-                    }
-                }
-                List<JSONObject> sortedList = new ArrayList<>(docObj.values());
-
-
-                Collections.sort(sortedList, (o1, o2) -> {
-                    String name1 = o1.optString("Name", "");
-                    String name2 = o2.optString("Name", "");
-                    return name1.compareToIgnoreCase(name2);
-                });
-
-
-                jsonArray = new JSONArray(docObj.values());
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    jsonObject = jsonArray.getJSONObject(i);
-                    try {
-                        if (SharedPref.getGeotagNeed(requireContext()).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-                            if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
-                                if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
-//                                    Log.v("DrCall", "111");
-                                    float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-                                    if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                        if (jsonObject.optString("cust_status").equalsIgnoreCase("0")) {
-                                            custListArrayList = SaveData(jsonObject, i, true);
-                                        }
-                                    }
-                                } else {
-//                                    Log.v("DrCall", "222");
-                                    float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.optString("lat")), Double.parseDouble(jsonObject.optString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-                                    if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                        custListArrayList = SaveData(jsonObject, i, true);
-                                    }
-                                }
-                            }
-                        } else {
-//                            Log.v("DrCall", "333");
-
-                            // This not need TbBased DCR
-//                        if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
-//                            Log.v("DrCall", "444");
-//                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.optString("Town_Code"))) {
-//                                custListArrayList = SaveData(jsonObject, i);
-//                            }
-//                        } else {
-//                            Log.v("DrCall", "555");
-//                            custListArrayList = SaveData(jsonObject, i);
-//                        }
-
-                            custListArrayList = SaveData(jsonObject, i, false);
-                        }
-
-
-                    } catch (Exception e) {
-                        Log.v("DrCall", "dr--error-1-" + e);
-                        e.printStackTrace();
-                    }
-                }
-
-                for (int i = 0; i < count; i++) {
-//                    for (int j = i + 1; j < count; j++) {
-//                        if (custListArrayList.get(i).getCode().equalsIgnoreCase(custListArrayList.get(j).getCode())) {
-//                            custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getSpecialistCode(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getTotalVisitCount(), custListArrayList.get(i).getQualification(), custListArrayList.get(i).getPriorityPrdCode(), custListArrayList.get(i).getMappedBrands(), custListArrayList.get(i).getMappedSlides(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getclass(), custListArrayList.get(i).getClassCode(), custListArrayList.get(i).isClusterAvailable()));
-//                            custListArrayList.remove(j--);
-//                            count--;
-//                        } else {
-                    custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getSpecialistCode(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getTotalVisitCount(), custListArrayList.get(i).getQualification(), custListArrayList.get(i).getPriorityPrdCode(), custListArrayList.get(i).getMappedBrands(), custListArrayList.get(i).getMappedSlides(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getclass(), custListArrayList.get(i).getClassCode(), custListArrayList.get(i).isClusterAvailable()));
-//                        }
-//                    }
-                }
-
-            } catch (Exception e) {
-                Log.v("DrCall", "-dr--error-2-" + e);
-            }*/
                 try {
                     JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                     JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
@@ -655,31 +550,6 @@ public class ListedDoctorFragment extends Fragment {
                             Log.e("DrCall", "Error processing doctor at index " + i, e);
                         }
                     }
-//                int count = custListArrayList.size();
-//                for (int i = 0; i < count; i++) {
-//                    for (int j = i + 1; j < count; j++) {
-//                        if (custListArrayList.get(i).getCode().equalsIgnoreCase(custListArrayList.get(j).getCode())) {
-//                            custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getSpecialistCode(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getQualification(), custListArrayList.get(i).getPriorityPrdCode(), custListArrayList.get(i).getMappedBrands(), custListArrayList.get(i).getMappedSlides(), custListArrayList.get(i).getTotalVisitCount(), custListArrayList.get(i).getclass(), custListArrayList.get(i).getClassCode(),custListArrayList.get(i).getGeoAddress() ,custListArrayList.get(i).isClusterAvailable()));
-//                            custListArrayList.remove(j--);
-//                            count--;
-//                        } else {
-//                            custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getSpecialistCode(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getQualification(), custListArrayList.get(i).getPriorityPrdCode(), custListArrayList.get(i).getMappedBrands(), custListArrayList.get(i).getMappedSlides(), custListArrayList.get(i).getTotalVisitCount(), custListArrayList.get(i).getclass(), custListArrayList.get(i).getClassCode(), custListArrayList.get(i).getGeoAddress() ,custListArrayList.get(i).isClusterAvailable()));
-//                        }
-//                    }
-//                }
-      /*          for (int i = 0; i < custListArrayList.size(); i++) {
-                    CustList item = custListArrayList.get(i);
-                    custListArrayList.set(i, new CustList(
-                            item.getName(), item.getCode(), item.getType(), item.getCategory(),
-                            item.getCategoryCode(), item.getSpecialist(), item.getSpecialistCode(),
-                            item.getTown_name(), item.getTown_code(), item.getTag(), item.getMaxTag(),
-                            String.valueOf(i), item.getLatitude(), item.getLongitude(), item.getAddress(),
-                            item.getDob(), item.getWedding_date(), item.getEmail(), item.getMobile(),
-                            item.getTotalVisitCount(), item.getQualification(), item.getPriorityPrdCode(),
-                            item.getMappedBrands(), item.getMappedSlides(), item.getPhone(),
-                            item.getclass(), item.getClassCode(), item.isClusterAvailable()
-                    ));
-                }*/
 
                 } catch (Exception e) {
                     Log.e("DrCall", "Main process error", e);
@@ -813,16 +683,16 @@ public class ListedDoctorFragment extends Fragment {
         try {
             String brands = getBrands(jsonObject.optString("MappProds"));
             List<String> todayPlannedClusters = Arrays.asList(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(SharedPref.getTodayDayPlanClusterCode(requireContext()))).split(","));
-            if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/) && !stpOfflineDataDao.isNotApproved(status)))
+            if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0")) && !stpOfflineDataDao.isNotApproved(status)))
                     && !deviation.equalsIgnoreCase("1")) {
-                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
                     List<String> drList = null;
                     STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
                     drList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",")));
                     drList.removeIf(s -> s == null || s.isEmpty());
                     Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
-                    if (!drList.isEmpty()) {
+                    if (!drList.isEmpty() /*&& !tpClustersNeed.equalsIgnoreCase("0")*/) {
                         if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
                             prepareData(jsonObject, i, brands, false);
                         }
@@ -948,8 +818,8 @@ public class ListedDoctorFragment extends Fragment {
                     Log.d("TAG", "SaveData: 2");
                 }
                 Log.d("TAG", "SaveData: 3");
-            } else if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/)))
+            } else if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0"))))
                     && deviation.equalsIgnoreCase("1")) {
 //                STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workDayCode);
 //                List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
@@ -960,12 +830,12 @@ public class ListedDoctorFragment extends Fragment {
 //                    }
 //                } else
                 if (isFenced) {
-                    if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/ && !stpOfflineDataDao.isNotApproved(status))) {
+                    if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
                         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
                         List<String> drList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",")));
                         drList.removeIf(s -> s == null || s.isEmpty());
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
-                        if (!drList.isEmpty()) {
+                        if (!drList.isEmpty() /*&& !tpClustersNeed.equalsIgnoreCase("0")*/) {
                             if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
                                 prepareData(jsonObject, i, brands, false);
                             }
@@ -980,12 +850,12 @@ public class ListedDoctorFragment extends Fragment {
                         prepareData(jsonObject, i, brands, false);
                     }
                 } else {
-                    if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") */ && !stpOfflineDataDao.isNotApproved(status))) {
+                    if ((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && !SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0") && !stpOfflineDataDao.isNotApproved(status))) {
                         STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workdayCode, TodayPlanSfCode);
                         List<String> drList = new ArrayList<>(Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",")));
                         drList.removeIf(s -> s == null || s.isEmpty());
                         Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
-                        if (!drList.isEmpty()) {
+                        if (!drList.isEmpty() /*&& !tpClustersNeed.equalsIgnoreCase("0")*/) {
                             if (todayPlannedClusters.contains(jsonObject.optString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.optString("Code")))) {
                                 prepareData(jsonObject, i, brands, false);
                             }

@@ -1073,4 +1073,6 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="and">and</string>
     <string name="syncing">Syncing...</string>
     <string name="deleting">Deleting...</string>
+    <string name="current_undo"> Current Day Undo </string>
+    <string name="undo_day"> Do You Want to Undo the Day </string>
 </resources>

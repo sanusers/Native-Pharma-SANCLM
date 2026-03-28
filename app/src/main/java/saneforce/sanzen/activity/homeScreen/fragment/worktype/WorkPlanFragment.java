@@ -329,6 +329,25 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             binding.rlheadquates1.setVisibility(View.GONE);
             binding.rlheadquates2.setVisibility(View.GONE);
         }
+        binding.txtDeviationPending.setText(R.string.current_undo);
+        if (dayStatus == null || dayStatus.isEmpty()) dayStatus = "0";
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String custStatus = jsonObject.getString("CustType");
+                String dateStatus = jsonObject.getString("day_status");
+                String date = jsonObject.getString("Dcr_dt");
+                if (custStatus.equalsIgnoreCase("0") && dateStatus.equalsIgnoreCase("1") && date.equalsIgnoreCase(String.valueOf(LocalDate.now()))) {
+                   binding.rlDevPending.setVisibility(View.VISIBLE);
+                    break;
+                }else{
+                    binding.rlDevPending.setVisibility(View.GONE);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         binding.btnSubmit.setOnClickListener(this);
         binding.rlworktype1.setOnClickListener(this);
@@ -345,7 +364,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.flSession2.setOnClickListener(this);
         binding.rlworkday1.setOnClickListener(this);
         binding.rlworkday2.setOnClickListener(this);
-        binding.txtRefresh.setOnClickListener(this);
+        binding.txtRefresh.setOnClickListener(this);        binding.btnUndo.setOnClickListener(this);
+
 
         if (binding.switchButton.isChecked()) {
             binding.switchButton.getThumbDrawable().setTint(ContextCompat.getColor(requireContext(), R.color.white));
@@ -1720,8 +1740,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         refresh(true);
                     } else {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
-                    }
+                     }
                     break;
+
+                case R.id.btnUndo:
+                    if (UtilityClass.isNetworkAvailable(requireContext())) {
+                        dayUndo();
+                    }else{
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    }
             }
         } catch (Exception e) {
             Log.e("WorkPlan Fragment", "onClick: " + e.getMessage());
@@ -6254,4 +6281,59 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
         binding.txtAddPlan.setEnabled(false);
     }
+
+    private void dayUndo(){
+        Dialog dialogUndo = new Dialog(requireActivity());
+        dialogUndo.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogUndo.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogUndo.setCancelable(false);
+        ImageView iv_close = dialogUndo.findViewById(R.id.img_close);
+        EditText ed_remarks = dialogUndo.findViewById(R.id.ed_remark);
+        ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks, 300)});
+        TextView heading = dialogUndo.findViewById(R.id.tv_head);
+        TextView content = dialogUndo.findViewById(R.id.content);
+        Button btn_clear = dialogUndo.findViewById(R.id.btn_clear);
+        Button btn_save = dialogUndo.findViewById(R.id.btn_save);
+        heading.setText(R.string.current_undo);
+        btn_save.setText(requireContext().getString(R.string.yes));
+        btn_clear.setText(requireContext().getString(R.string.no));
+        content.setVisibility(View.VISIBLE);
+        content.setText(getString(R.string.undo_day)+ " "+ TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_17));
+        ed_remarks.setVisibility(View.INVISIBLE);
+        iv_close.setVisibility(View.INVISIBLE);
+
+        btn_clear.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogUndo.dismiss();
+            }
+        });
+
+        btn_save.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if(UtilityClass.isNetworkAvailable(requireContext())){
+                    getDayUndo();
+                    dialogUndo.dismiss();
+                }else{
+                    commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.no_network));
+                }
+            }
+        });
+
+        dialogUndo.show();
+
+    }
+
+    private void getDayUndo(){
+        try{
+            // here api call happens aftr that revert the day status flag for the day from 1 to 0
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

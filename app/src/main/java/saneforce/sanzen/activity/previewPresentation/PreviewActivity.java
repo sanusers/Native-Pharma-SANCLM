@@ -733,7 +733,7 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     public String gettingProductStartEndTime(String jsonvalue, int i) {
-        String finalTime = null;
+        String finalTime = "";
         StoreImageTypeUrl mm, mm1;
         try {
             JSONArray json;
