@@ -180,6 +180,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OutboxUtil outboxUtil;
     private Handler dateHandler;
     private String status;
+    private String nsRsfName = "";
+    private String nsRsfCode = "";
+    private String nsRsfTerritoryCode = "";
+    private String nsRsfTerritoryName = "";
+    private String nsRsfRemarks = "";
 //    String stayPopup = "0";
     private void checkDateChange() {
         if (!isAdded()) return;
@@ -1611,7 +1616,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                    break;
                 case R.id.btn_submit:
                     String nightStay = SharedPref.getNightStay(requireContext());
-                    if ("1".equals(nightStay)) {
+                    if ("0".equals(nightStay)) {
                         showNewPopup();
                     } else {
                         proceedSubmitFlow();
@@ -1994,7 +1999,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
-
         btnSubmit.setOnClickListener(v -> {
 
             if (radioYes.isChecked()) {
@@ -2010,21 +2014,67 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
-                // ✅ Selected cluster code எடுக்கலாம்
+                // ✅ Night stay values capture
+                nsRsfRemarks = remarks;
                 if (!multiple_cluster_list.isEmpty()) {
-                    int selectedIndex = spinner.getSelectedItemPosition() - 1; // -1 for "Select Territory"
+                    int selectedIndex = spinner.getSelectedItemPosition() - 1;
                     if (selectedIndex >= 0 && selectedIndex < multiple_cluster_list.size()) {
                         Multicheckclass_clust selectedCluster = multiple_cluster_list.get(selectedIndex);
-                        String selectedClusterCode = selectedCluster.getStrid();
-                        String selectedClusterName = selectedCluster.getStrname();
-                        Log.d("StayPopup", "Selected: " + selectedClusterCode + " - " + selectedClusterName);
+                        nsRsfTerritoryCode = selectedCluster.getStrid();
+                        nsRsfTerritoryName = selectedCluster.getStrname();
                     }
                 }
+                if (mFwFlg1.equalsIgnoreCase("F")) {
+                    Log.d("NightStay", "mFwFlg1=" + mFwFlg1 + " mFwFlg2=" + mFwFlg2);
+                    nsRsfCode = mHQCode1;
+                } else if (mFwFlg2.equalsIgnoreCase("F")) {
+                    nsRsfCode = mHQCode2;
+                } else {
+                    nsRsfCode = SharedPref.getSfCode(requireContext());
+                }
+
+            } else {
+                // radioNo selected - reset
+                nsRsfName = "";
+                nsRsfCode = "";
+                nsRsfTerritoryCode = "";
+                nsRsfTerritoryName = "";
+                nsRsfRemarks = "";
             }
 
             dialog.dismiss();
             proceedSubmitFlow();
         });
+//        btnSubmit.setOnClickListener(v -> {
+//
+//            if (radioYes.isChecked()) {
+//
+//                if (spinner.getSelectedItemPosition() == 0) {
+//                    Toast.makeText(requireContext(), "Select Territory", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                String remarks = etRemarks.getText().toString().trim();
+//                if (remarks.isEmpty()) {
+//                    Toast.makeText(requireContext(), "Enter Remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                // ✅ Selected cluster code எடுக்கலாம்
+//                if (!multiple_cluster_list.isEmpty()) {
+//                    int selectedIndex = spinner.getSelectedItemPosition() - 1; // -1 for "Select Territory"
+//                    if (selectedIndex >= 0 && selectedIndex < multiple_cluster_list.size()) {
+//                        Multicheckclass_clust selectedCluster = multiple_cluster_list.get(selectedIndex);
+//                        String selectedClusterCode = selectedCluster.getStrid();
+//                        String selectedClusterName = selectedCluster.getStrname();
+//                        Log.d("StayPopup", "Selected: " + selectedClusterCode + " - " + selectedClusterName);
+//                    }
+//                }
+//            }
+//
+//            dialog.dismiss();
+//            proceedSubmitFlow();
+//        });
 
         dialog.show();
 
@@ -6186,9 +6236,30 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("day_remarks", remark);
             finalSubmitJSONObject.put("location", latitude + ":" + longitude);
             finalSubmitJSONObject.put("address", address);
-            finalSubmitJSONObject.put("Ns_Rsf_Name",SharedPref.getHqName(requireContext()));
+
+            if (!nsRsfRemarks.isEmpty()) {
+                finalSubmitJSONObject.put("Ns_Rsf_Name", SharedPref.getHqName(requireContext()));
+                finalSubmitJSONObject.put("Ns_Rsf_Code", nsRsfCode);
+                finalSubmitJSONObject.put("Ns_Rsf_territory_code", nsRsfTerritoryCode);
+                finalSubmitJSONObject.put("Ns_Rsf_territory_name", nsRsfTerritoryName);
+                finalSubmitJSONObject.put("Ns_Rsf_remarks", nsRsfRemarks);
+            }
+//            else {
+//                finalSubmitJSONObject.put("Ns_Rsf_Name", "");
+//                finalSubmitJSONObject.put("Ns_Rsf_Code", "");
+//                finalSubmitJSONObject.put("Ns_Rsf_territory_code", "");
+//                finalSubmitJSONObject.put("Ns_Rsf_territory_name", "");
+//                finalSubmitJSONObject.put("Ns_Rsf_remarks", "");
+//            }
+//            finalSubmitJSONObject.put("Ns_Rsf_Name",SharedPref.getHqName(requireContext()));
+//            finalSubmitJSONObject.put("Ns_Rsf_Code", nsRsfCode);
+//            finalSubmitJSONObject.put("Ns_Rsf_territory_code", nsRsfTerritoryCode);
+//            finalSubmitJSONObject.put("Ns_Rsf_territory_name", nsRsfTerritoryName);
+//            finalSubmitJSONObject.put("Ns_Rsf_remarks", nsRsfRemarks);
 //            if(TPNeed.equalsIgnoreCase("0")&&TPMandatory.equalsIgnoreCase("0")&&TPBasedDCR.equalsIgnoreCase("0")||TPNeed.equalsIgnoreCase("0")&&TPMandatory.equalsIgnoreCase("0")&&TPBasedDCR.equalsIgnoreCase("0")&&STPNeed.equalsIgnoreCase("0")&&STPBasedMTP.equalsIgnoreCase("0")){
-//                if()
+//                if ((DayPlanCount.equalsIgnoreCase("1") && mTowncode1.isEmpty()) || (DayPlanCount.equalsIgnoreCase("2") && mTowncode2.isEmpty())) {
+//                    tpCluster
+//                }
 //            }
 //            finalSubmitJSONObject.put("Ns_Territory_Code",SharedPref.get)
 
