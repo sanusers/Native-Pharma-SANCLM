@@ -14,7 +14,7 @@ android {
         applicationId "saneforce.sanzen"
         minSdk 23
         targetSdk 36
-        versionCode 81
+        versionCode 82
         versionName "1.5.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -37,6 +37,7 @@ android {
         buildConfigField "String", "AES_IV", "\"${aesIv}\""
         //To use java Local(Date) library below api level 26
         multiDexEnabled = true
+//        multiDexKeepProguard file('multidex-config.pro')
     }
     buildTypes {
         release {
@@ -137,7 +138,7 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics"
     implementation "com.google.firebase:firebase-crashlytics"
 //    implementation "com.google.firebase:firebase-auth:22.1.2"
-    implementation platform("com.google.firebase:firebase-bom:34.5.0")
+    implementation platform("com.google.firebase:firebase-bom:34.11.0")
 
     //To use java Local(Date) library below api level 26
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
@@ -215,8 +216,14 @@ dependencies {
     //Apache commons IO
     implementation 'commons-io:commons-io:2.18.0'
 
+    // firebase analytics
+    implementation 'com.google.firebase:firebase-analytics:23.2.0'
+
     //youtube player
-    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:13.0.0'
+//    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:13.0.0'
+
+    // multidex
+//    implementation 'androidx.multidex:multidex:2.0.1'
 
 }
 

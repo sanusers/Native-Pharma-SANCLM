@@ -816,54 +816,54 @@
         <!--            android:layout_alignParentEnd="true"-->
         <!--            android:visibility="gone" />-->
 
-        <RelativeLayout
-            android:id="@+id/floatingPlayer"
-            android:layout_width="@dimen/_160sdp"
-            android:layout_height="@dimen/_90sdp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_50sdp"
-            android:layout_marginBottom="@dimen/_50sdp"
-            android:background="@drawable/rounded_bg"
-            android:elevation="8dp"
-            android:visibility="gone">
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/floatingPlayer"-->
+<!--            android:layout_width="@dimen/_160sdp"-->
+<!--            android:layout_height="@dimen/_90sdp"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginHorizontal="@dimen/_5sdp"-->
+<!--            android:layout_marginTop="@dimen/_50sdp"-->
+<!--            android:layout_marginBottom="@dimen/_50sdp"-->
+<!--            android:background="@drawable/rounded_bg"-->
+<!--            android:elevation="8dp"-->
+<!--            android:visibility="gone">-->
 
-            <!--            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView-->
-            <!--                android:id="@+id/youtubePlayerView"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                android:layout_alignParentTop="true"-->
-            <!--                android:layout_alignParentStart="true"/>-->
+<!--            &lt;!&ndash;            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:id="@+id/youtubePlayerView"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_width="match_parent"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_height="match_parent"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_alignParentTop="true"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_alignParentStart="true"/>&ndash;&gt;-->
 
-            <View
-                android:id="@+id/dragOverlay"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:clickable="true" />
+<!--            <View-->
+<!--                android:id="@+id/dragOverlay"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:clickable="true" />-->
 
-            <!-- Close Button -->
-            <ImageButton
-                android:id="@+id/btnClose"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="4dp"
-                android:background="@drawable/round_back_gray"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
-                app:tint="@android:color/white" />
+<!--            &lt;!&ndash; Close Button &ndash;&gt;-->
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnClose"-->
+<!--                android:layout_width="24dp"-->
+<!--                android:layout_height="24dp"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_margin="4dp"-->
+<!--                android:background="@drawable/round_back_gray"-->
+<!--                android:src="@android:drawable/ic_menu_close_clear_cancel"-->
+<!--                app:tint="@android:color/white" />-->
 
-            <!-- Play/Pause Button -->
-            <ImageButton
-                android:id="@+id/btnPlayPause"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_centerInParent="true"
-                android:background="@android:color/transparent"
-                android:src="@android:drawable/ic_media_pause"
-                app:tint="@android:color/white" />
-        </RelativeLayout>
+<!--            &lt;!&ndash; Play/Pause Button &ndash;&gt;-->
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnPlayPause"-->
+<!--                android:layout_width="36dp"-->
+<!--                android:layout_height="36dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:src="@android:drawable/ic_media_pause"-->
+<!--                app:tint="@android:color/white" />-->
+<!--        </RelativeLayout>-->
 
     </RelativeLayout>
 
