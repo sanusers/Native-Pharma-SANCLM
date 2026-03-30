@@ -508,8 +508,8 @@ public class UnlistedDoctorFragment extends Fragment {
             String qualification = qualificationMap.get(jsonObject.optString("Qual"));
             if (qualification == null) qualification = "";
             List<String> todayPlannedClusters = Arrays.asList(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(SharedPref.getTodayDayPlanClusterCode(requireContext()))).split(","));
-            if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/)))
+            if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0"))))
                     && !deviation.equalsIgnoreCase("1")) {
                 if (tpDataObj != null) {
                     if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {
@@ -522,8 +522,8 @@ public class UnlistedDoctorFragment extends Fragment {
                         custListArrayList.add(new CustList(jsonObject.optString("Name"), jsonObject.optString("Code"), "4", jsonObject.optString("CategoryName"), jsonObject.optString("Category"), jsonObject.optString("SpecialtyName"), jsonObject.optString("Town_Name"), jsonObject.optString("Town_Code"), jsonObject.optString("GEOTagedCnt"), jsonObject.optString("Geototal"), String.valueOf(i), jsonObject.optString("lat"), jsonObject.optString("long"), jsonObject.optString("addr"), dob, dow, jsonObject.optString("Email"), jsonObject.optString("Mobile"), jsonObject.optString("Phone"), qualification, "", jsonObject.optString("Doc_ClsCode"), jsonObject.optString("Specialty"), true));
                     }
                 }
-            } else if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")/* && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")*/)))
+            } else if ((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getTerrBasedDcr(requireContext()).equalsIgnoreCase("0"))))
                     && deviation.equalsIgnoreCase("1")) {
                 if (isFenced) {
                     if (todayPlannedClusters.contains(jsonObject.optString("Town_Code"))) {

@@ -338,7 +338,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 String custStatus = jsonObject.getString("CustType");
                 String dateStatus = jsonObject.getString("day_status");
                 String date = jsonObject.getString("Dcr_dt");
-                if (custStatus.equalsIgnoreCase("0") && dateStatus.equalsIgnoreCase("1") && date.equalsIgnoreCase(String.valueOf(LocalDate.now()))) {
+                if (custStatus.equalsIgnoreCase("0") && dateStatus.equalsIgnoreCase("1") && HomeDashBoard.selectedDate.toString().isEmpty() && date.equalsIgnoreCase(String.valueOf(LocalDate.now()))) {
                    binding.rlDevPending.setVisibility(View.VISIBLE);
                     break;
                 }else{
