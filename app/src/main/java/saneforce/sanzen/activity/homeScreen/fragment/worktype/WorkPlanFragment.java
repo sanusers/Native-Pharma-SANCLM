@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.homeScreen.fragment.worktype;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,21 +22,27 @@ import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.Gson;
@@ -170,6 +177,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OutboxUtil outboxUtil;
     private Handler dateHandler;
     private String status;
+    String sfCode = "";
+
 
     private void checkDateChange() {
         if (!isAdded()) return;
@@ -5703,6 +5712,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("location", latitude + ":" + longitude);
             finalSubmitJSONObject.put("address", address);
 
+
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -5820,7 +5830,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-
     private void dialogAcknowledge(Dialog dialogRemarks) {
         EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
         ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks, 300)});
@@ -5836,16 +5845,217 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_save.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                dialogFinalSubmit(dialogRemarks);
+                dialogRemarks.dismiss(); // ← Alert close பண்ணு
+               StayAlert(); // ← Night Stay popup open
             }
         });
         btn_clear.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                dialogRemarks.dismiss();
+                dialogFinalSubmit(dialogRemarks); // No → Remarks popup
             }
         });
     }
+
+    public  void StayAlert() {
+        Log.d("STAY_ALERT", "StayAlert called"); // ← இது வருதா பாருங்க
+        AlertDialog.Builder alert = new AlertDialog.Builder(workPlanFragment.requireActivity());
+        alert.setCancelable(false);
+        LayoutInflater inflater = workPlanFragment.requireActivity().getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.popup_night_stay, null);
+        Button btn_yes = alertLayout.findViewById(R.id.btn_yes);
+        Button btn_no = alertLayout.findViewById(R.id.btn_no);
+        alert.setView(alertLayout);
+        AlertDialog dialog = alert.create();
+        dialog.show();
+
+        btn_yes.setOnClickListener(view -> {
+            StayAlert2(
+                    requireActivity(),
+                    mFwFlg1, mFwFlg2,
+                    mTownname1, mTownname2,
+                    mHQCode1, mHQCode2,
+                    sfCode, // ✅ now works
+                    multiple_cluster_list
+                   // callback
+            );
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view -> {
+            dialog.dismiss();
+            Dialog dialogRemarks = new Dialog(workPlanFragment.requireActivity());
+            dialogRemarks.setContentView(R.layout.popup_remarks);
+            dialogRemarks.setCancelable(false);
+            dialogFinalSubmit(dialogRemarks);
+            dialogRemarks.show();
+        });
+//        btn_no.setOnClickListener(view -> {
+//            dialog.dismiss();
+//
+//        });
+    }
+
+    public  void StayAlert2(FragmentActivity fragment,
+                            String mFwFlg1, String mFwFlg2,
+                            String mTownname1, String mTownname2,
+                            String mHQCode1, String mHQCode2,
+                            String sfCode,   // 👈 add this
+                            List<Multicheckclass_clust> multiple_cluster_list){
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.popup_night_stay_teritorry);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        dialog.setCancelable(false);
+
+        Spinner spinnerTerritory = dialog.findViewById(R.id.spinnerTerritory);
+        EditText ed_remark = dialog.findViewById(R.id.ed_remark);
+        EditText ed_remark3 = dialog.findViewById(R.id.ed_remark3);
+        Button btn_submit = dialog.findViewById(R.id.btn_submit);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+
+        // ✅ Territory list build - showNewPopup மாதிரியே
+        List<String> territoryList = new ArrayList<>();
+        territoryList.add("Select Territory");
+
+        String selectedClusters = "";
+        if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+            selectedClusters = mTownname1 + "," + mTownname2;
+        } else if (mFwFlg1.equalsIgnoreCase("F")) {
+            selectedClusters = mTownname1;
+        } else if (mFwFlg2.equalsIgnoreCase("F")) {
+            selectedClusters = mTownname2;
+        }
+
+        if (!selectedClusters.isEmpty()) {
+            for (String name : selectedClusters.split(",")) {
+                String trimmed = name.trim();
+                if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+                    territoryList.add(trimmed);
+                }
+            }
+        } else {
+            for (Multicheckclass_clust item : multiple_cluster_list) {
+                territoryList.add(item.getStrname());
+            }
+        }
+
+        // ✅ Spinner adapter - showNewPopup மாதிரியே
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.popup_night_stay_spinner, territoryList) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position == 0) {
+                    view.setVisibility(View.GONE);
+                    view.setLayoutParams(new AbsListView.LayoutParams(0, 1));
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                    TextView tv = view.findViewById(android.R.id.text1);
+                    if (tv != null) {
+                        tv.setTextColor(Color.BLACK);
+                        tv.setTextSize(14);
+                        tv.setGravity(Gravity.CENTER_VERTICAL);
+                        tv.setPadding(30, 0, 30, 0);
+                    }
+                }
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource((R.layout.popup_night_stay_spinner));
+        spinnerTerritory.setAdapter(adapter);
+        spinnerTerritory.setSelection(0, false);
+
+        dialog.show();
+
+        btn_submit.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (spinnerTerritory.getSelectedItemPosition() == 0) {
+                    Toast.makeText(context, "Select Territory", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String nightRemark = ed_remark.getText().toString().trim();
+                String dayRemark = ed_remark3.getText().toString().trim();
+                if (nightRemark.isEmpty()) {
+                    Toast.makeText(context, "Please enter Night Stay remarks", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (dayRemark.isEmpty()) {
+                    Toast.makeText(context, "Please enter Day remarks", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // ✅ Territory code/name எடுக்கணும்
+                String nsRsfTerritoryCode = "";
+                String nsRsfTerritoryName = "";
+                String nsRsfCode = "";
+
+                if (!multiple_cluster_list.isEmpty()) {
+                    int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
+                    if (selectedIndex >= 0 && selectedIndex < multiple_cluster_list.size()) {
+                        nsRsfTerritoryCode = multiple_cluster_list.get(selectedIndex).getStrid();
+                        nsRsfTerritoryName = multiple_cluster_list.get(selectedIndex).getStrname();
+                    }
+                }
+
+                if (mFwFlg1.equalsIgnoreCase("F")) {
+                    nsRsfCode = mHQCode1;
+                } else if (mFwFlg2.equalsIgnoreCase("F")) {
+                    nsRsfCode = mHQCode2;
+                } else {
+                    nsRsfCode = sfCode;
+                }
+
+                dialog.dismiss();
+                // ✅ Final submit callback
+              //  callback.onSubmit(nightRemark, dayRemark, nsRsfCode, nsRsfTerritoryCode, nsRsfTerritoryName);
+            }
+        });
+
+        btn_cancel.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    // ✅ Callback interface
+    public interface StayAlertCallback {
+        void onSubmit(String nightRemark, String dayRemark, String nsRsfCode,
+                      String nsRsfTerritoryCode, String nsRsfTerritoryName);
+    }
+
+//    private void dialogAcknowledge(Dialog dialogRemarks) {
+//        EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
+//        ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks, 300)});
+//        TextView heading = dialogRemarks.findViewById(R.id.tv_head);
+//        TextView content = dialogRemarks.findViewById(R.id.content);
+//        Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
+//        Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
+//        heading.setText(R.string.alert);
+//        btn_save.setText(requireContext().getString(R.string.yes));
+//        btn_clear.setText(requireContext().getString(R.string.no));
+//        content.setVisibility(View.VISIBLE);
+//        ed_remarks.setVisibility(View.INVISIBLE);
+//        btn_save.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                dialogFinalSubmit(dialogRemarks);
+//            }
+//        });
+//        btn_clear.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                dialogRemarks.dismiss();
+//            }
+//        });
+//    }
 
     private void
     dialogEditOrDelete(String sessionType) {
