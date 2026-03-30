@@ -89,7 +89,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -246,7 +246,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private HomeNavigationFooterBinding navigationFooterBinding;
     private MediaController mediaController;
     private String videoUrl = "";
-    YouTubePlayer youTubePlayer;
+//    YouTubePlayer youTubePlayer;
     boolean isPlaying = true;
     private String previousDate = "";
     float dX, dY;
@@ -361,37 +361,37 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            }
 //        });
 
-        // Play / Pause
-        binding.btnPlayPause.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (youTubePlayer != null) {
-                    if (isPlaying) {
-                        youTubePlayer.pause();
-                        binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_play);
-                    } else {
-                        youTubePlayer.play();
-                        binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-                    }
-                    isPlaying = !isPlaying;
-                }
-            }
-        });
-
-        // Close
-        binding.btnClose.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                if (youTubePlayer != null) {
-                    youTubePlayer.pause();
-                    isPlaying = false;
-                    youTubePlayer = null;
-                }
-//            binding.youtubePlayerView.release();
-//            getLifecycle().removeObserver(binding.youtubePlayerView);
-                binding.floatingPlayer.setVisibility(View.GONE);
-            }
-        });
+//        // Play / Pause
+//        binding.btnPlayPause.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                if (youTubePlayer != null) {
+//                    if (isPlaying) {
+//                        youTubePlayer.pause();
+//                        binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_play);
+//                    } else {
+//                        youTubePlayer.play();
+//                        binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+//                    }
+//                    isPlaying = !isPlaying;
+//                }
+//            }
+//        });
+//
+//        // Close
+//        binding.btnClose.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                if (youTubePlayer != null) {
+//                    youTubePlayer.pause();
+//                    isPlaying = false;
+//                    youTubePlayer = null;
+//                }
+////            binding.youtubePlayerView.release();
+////            getLifecycle().removeObserver(binding.youtubePlayerView);
+//                binding.floatingPlayer.setVisibility(View.GONE);
+//            }
+//        });
 
         // Dragging
 //        binding.floatingPlayer.setOnTouchListener(new View.OnTouchListener() {
@@ -445,52 +445,52 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            }
 //        });
 
-        binding.dragOverlay.setOnTouchListener(new View.OnTouchListener() {
-            float dX, dY;
-            int lastAction;
-
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                View root = binding.getRoot(); // <-- your root container id
-                if (root == null) return false;
-
-                switch (event.getActionMasked()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Prevent parent (e.g., RecyclerView/ScrollView) from stealing events
-                        view.getParent().requestDisallowInterceptTouchEvent(true);
-                        dX = binding.floatingPlayer.getX() - event.getRawX();
-                        dY = binding.floatingPlayer.getY() - event.getRawY();
-                        lastAction = MotionEvent.ACTION_DOWN;
-                        return true;
-
-                    case MotionEvent.ACTION_MOVE: {
-                        float newX = event.getRawX() + dX;
-                        float newY = event.getRawY() + dY;
-
-                        // Clamp to root bounds
-                        int rootW = root.getWidth();
-                        int rootH = root.getHeight();
-                        int fpW = binding.floatingPlayer.getWidth();
-                        int fpH = binding.floatingPlayer.getHeight();
-
-                        newX = Math.max(0, Math.min(newX, rootW - fpW));
-                        newY = Math.max(0, Math.min(newY, rootH - fpH));
-
-                        binding.floatingPlayer.setX(newX);
-                        binding.floatingPlayer.setY(newY);
-                        lastAction = MotionEvent.ACTION_MOVE;
-                        return true;
-                    }
-
-                    case MotionEvent.ACTION_UP:
-                        view.getParent().requestDisallowInterceptTouchEvent(false);
-                        return lastAction == MotionEvent.ACTION_MOVE;
-
-                    default:
-                        return false;
-                }
-            }
-        });
+//        binding.dragOverlay.setOnTouchListener(new View.OnTouchListener() {
+//            float dX, dY;
+//            int lastAction;
+//
+//            @Override
+//            public boolean onTouch(View view, MotionEvent event) {
+//                View root = binding.getRoot(); // <-- your root container id
+//                if (root == null) return false;
+//
+//                switch (event.getActionMasked()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        // Prevent parent (e.g., RecyclerView/ScrollView) from stealing events
+//                        view.getParent().requestDisallowInterceptTouchEvent(true);
+//                        dX = binding.floatingPlayer.getX() - event.getRawX();
+//                        dY = binding.floatingPlayer.getY() - event.getRawY();
+//                        lastAction = MotionEvent.ACTION_DOWN;
+//                        return true;
+//
+//                    case MotionEvent.ACTION_MOVE: {
+//                        float newX = event.getRawX() + dX;
+//                        float newY = event.getRawY() + dY;
+//
+//                        // Clamp to root bounds
+//                        int rootW = root.getWidth();
+//                        int rootH = root.getHeight();
+//                        int fpW = binding.floatingPlayer.getWidth();
+//                        int fpH = binding.floatingPlayer.getHeight();
+//
+//                        newX = Math.max(0, Math.min(newX, rootW - fpW));
+//                        newY = Math.max(0, Math.min(newY, rootH - fpH));
+//
+//                        binding.floatingPlayer.setX(newX);
+//                        binding.floatingPlayer.setY(newY);
+//                        lastAction = MotionEvent.ACTION_MOVE;
+//                        return true;
+//                    }
+//
+//                    case MotionEvent.ACTION_UP:
+//                        view.getParent().requestDisallowInterceptTouchEvent(false);
+//                        return lastAction == MotionEvent.ACTION_MOVE;
+//
+//                    default:
+//                        return false;
+//                }
+//            }
+//        });
 //        checkAndShowDoctorPopup();
         // Show binding.floatingPlayer player initially
 //        binding.floatingPlayer.setVisibility(View.VISIBLE);
@@ -608,52 +608,52 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-    private void playVideo(String url) {
+//    private void playVideo(String url) {
 //        binding.videoView.setVideoURI(Uri.parse(url));
 //        binding.videoView.setVisibility(VideoView.VISIBLE);
 //        binding.videoView.start();
-    }
+//    }
 
-    @Override
-    public void onUserLeaveHint() {
-        super.onUserLeaveHint();
-//        enterPipMode();
-        if (youTubePlayer != null) {
-            youTubePlayer.pause();
-            isPlaying = false;
-            youTubePlayer = null;
-        }
-//        binding.youtubePlayerView.release();
-//        getLifecycle().removeObserver(binding.youtubePlayerView);
-        binding.floatingPlayer.setVisibility(View.GONE);
-    }
-
-    private void enterPipMode() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Rational aspectRatio = new Rational(16, 9);
-            PictureInPictureParams params = new PictureInPictureParams.Builder()
-                    .setAspectRatio(aspectRatio)
-                    .build();
-            enterPictureInPictureMode(params);
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                enterPictureInPictureMode();
-            }
-        }
-    }
-
-    @Override
-    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
-
-//        if (isInPictureInPictureMode) {
-//            // Hide extra dashboard UI if needed
-//            mediaController.hide();
-//        } else {
-//            // Restore full UI when back
-//            mediaController.show();
+//    @Override
+//    public void onUserLeaveHint() {
+//        super.onUserLeaveHint();
+////        enterPipMode();
+//        if (youTubePlayer != null) {
+//            youTubePlayer.pause();
+//            isPlaying = false;
+//            youTubePlayer = null;
 //        }
-    }
+////        binding.youtubePlayerView.release();
+////        getLifecycle().removeObserver(binding.youtubePlayerView);
+//        binding.floatingPlayer.setVisibility(View.GONE);
+//    }
+
+//    private void enterPipMode() {
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            Rational aspectRatio = new Rational(16, 9);
+//            PictureInPictureParams params = new PictureInPictureParams.Builder()
+//                    .setAspectRatio(aspectRatio)
+//                    .build();
+//            enterPictureInPictureMode(params);
+//        } else {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                enterPictureInPictureMode();
+//            }
+//        }
+//    }
+
+//    @Override
+//    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+//        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+//
+////        if (isInPictureInPictureMode) {
+////            // Hide extra dashboard UI if needed
+////            mediaController.hide();
+////        } else {
+////            // Restore full UI when back
+////            mediaController.show();
+////        }
+//    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
