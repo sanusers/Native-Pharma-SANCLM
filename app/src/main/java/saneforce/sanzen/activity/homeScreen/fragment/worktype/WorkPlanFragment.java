@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -119,7 +121,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public static ArrayList<Multicheckclass_clust> listSelectedCluster = new ArrayList<>();
     public HashMap<String, ArrayList<MultiHQClusterItem>> mapSelectedCluster = new HashMap<>();
     public ArrayList<Multicheckclass_clust> listSelectedHQ = new ArrayList<>();
-    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "",tpChemists="", tpWorkType2 = "", tpCluster2 = "", tpDoctor2 = "",tpChemists2="", deviation = "0", remarks = "", tpApprovalStatus = "", workDayName = "", workDayCode = "", workDayName2 = "", workDayCode2 = "";
+    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "", tpChemists = "", tpWorkType2 = "", tpCluster2 = "", tpDoctor2 = "", tpChemists2 = "", deviation = "0", remarks = "", tpApprovalStatus = "", workDayName = "", workDayCode = "", workDayName2 = "", workDayCode2 = "";
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
@@ -178,7 +180,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private Handler dateHandler;
     private String status;
     String sfCode = "";
-
+    private String nsRsfName = "";
+    private String nsRsfCode = "";
+    private String nsRsfTerritoryCode = "";
+    private String nsRsfTerritoryName = "";
+    private String nsRsfNightStayRemarks = "";
+    String nsRsfDayRemarks = "";
 
     private void checkDateChange() {
         if (!isAdded()) return;
@@ -516,7 +523,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
-                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))&& mFwFlg2.equalsIgnoreCase("F")) {
+                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) && mFwFlg2.equalsIgnoreCase("F")) {
                             binding.txtworkday2.setText("");
                             binding.txtCluster2.setText("");
                             binding.rlworkday2.setVisibility(View.VISIBLE);
@@ -1963,7 +1970,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         workDayCode = stpOfflineDataTable.getDayID();
                         workDayName = stpOfflineDataTable.getDayCaption();
                         tpDoctor = stpOfflineDataTable.getDoctorCode();
-                        tpChemists=stpOfflineDataTable.getChemistCode();
+                        tpChemists = stpOfflineDataTable.getChemistCode();
                         binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                         chk_cluster = mTowncode1;
                     } else {
@@ -1972,7 +1979,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         workDayCode2 = stpOfflineDataTable.getDayID();
                         workDayName2 = stpOfflineDataTable.getDayCaption();
                         tpDoctor2 = stpOfflineDataTable.getDoctorCode();
-                        tpChemists2=stpOfflineDataTable.getChemistCode();
+                        tpChemists2 = stpOfflineDataTable.getChemistCode();
                         binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                         chk_cluster = mTowncode2;
                     }
@@ -2083,7 +2090,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     workDayCode = stpOfflineDataTable.getDayID();
                                     workDayName = stpOfflineDataTable.getDayCaption();
                                     tpDoctor = stpOfflineDataTable.getDoctorCode();
-                                    tpChemists= stpOfflineDataTable.getChemistCode();
+                                    tpChemists = stpOfflineDataTable.getChemistCode();
                                     tpWorkType = mWTCode1;
                                     tpCluster = stpOfflineDataTable.getClusterCode();
                                     binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
@@ -2096,7 +2103,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     tpWorkType2 = mWTCode2;
                                     tpCluster2 = stpOfflineDataTable.getClusterCode();
                                     tpDoctor2 = stpOfflineDataTable.getDoctorCode();
-                                    tpChemists2=stpOfflineDataTable.getChemistCode();
+                                    tpChemists2 = stpOfflineDataTable.getChemistCode();
                                     binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                                     chk_cluster = mTowncode2;
                                 }
@@ -2370,13 +2377,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             deviationJSONObject.put("TP_cluster", tpCluster);
             deviationJSONObject.put("TP_worktype", tpWorkType);
             deviationJSONObject.put("TP_Doctor", tpDoctor);
-            deviationJSONObject.put("TP_Chemists",tpChemists);
+            deviationJSONObject.put("TP_Chemists", tpChemists);
             deviationJSONObject.put("Others_Code", workDayCode);
             deviationJSONObject.put("Others_Name", workDayName);
             deviationJSONObject.put("TP_cluster2", tpCluster2);
             deviationJSONObject.put("TP_worktype2", tpWorkType2);
             deviationJSONObject.put("TP_Doctor2", tpDoctor2);
-            deviationJSONObject.put("TP_Chemists2",tpChemists2);
+            deviationJSONObject.put("TP_Chemists2", tpChemists2);
             deviationJSONObject.put("Others_Code2", workDayCode2);
             deviationJSONObject.put("Others_Name2", workDayName2);
             if (TPDCRMGRApprNeed.equalsIgnoreCase("0")) {
@@ -3010,7 +3017,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode1;
-                if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg2.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3024,7 +3032,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode2;
-                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg1.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3060,7 +3069,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObjectwt.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     jsonObjectwt.put("TP_Doctor", tpDoctor);
-                    jsonObjectwt.put("TP_Chemists",tpChemists);
+                    jsonObjectwt.put("TP_Chemists", tpChemists);
                     jsonObjectwt.put("TP_cluster", tpCluster);
                     jsonObjectwt.put("TP_worktype", tpWorkType);
                     jsonObjectwt.put("Others_Code", workDayCode);
@@ -3084,7 +3093,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 firstSessionObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg1.equalsIgnoreCase("F")) {
                     firstSessionObject.put("TP_Doctor", tpDoctor);
-                    firstSessionObject.put("TP_Chemists",tpChemists);
+                    firstSessionObject.put("TP_Chemists", tpChemists);
                     firstSessionObject.put("TP_cluster", tpCluster);
                     firstSessionObject.put("TP_worktype", tpWorkType);
                     firstSessionObject.put("Others_Code", workDayCode);
@@ -3107,7 +3116,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 secondSessionObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     secondSessionObject.put("TP_Doctor", tpDoctor2);
-                    secondSessionObject.put("TP_Chemists",tpChemists2);
+                    secondSessionObject.put("TP_Chemists", tpChemists2);
                     secondSessionObject.put("TP_cluster", tpCluster2);
                     secondSessionObject.put("TP_worktype", tpWorkType2);
                     secondSessionObject.put("Others_Code", workDayCode2);
@@ -3311,19 +3320,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TP_cluster", tpCluster);
             jsonObject.put("TP_worktype", tpWorkType);
             jsonObject.put("TP_Doctor", tpDoctor);
-            jsonObject.put("TP_Chemists",tpChemists);
+            jsonObject.put("TP_Chemists", tpChemists);
             jsonObject.put("TP_cluster2", tpCluster2);
             jsonObject.put("TP_worktype2", tpWorkType2);
             jsonObject.put("TP_Doctor2", tpDoctor2);
-            jsonObject.put("TP_Chemists2",tpChemists2);
+            jsonObject.put("TP_Chemists2", tpChemists2);
             jsonObject.put("day_flag", "0");
 
             SharedPref.setTodayTPDoctor(requireContext(), tpDoctor);
             Log.e("TPDoctorSave", "Saved TP Doctor => " + tpDoctor);
 
-            SharedPref.setTodayTPChemists(requireContext(),tpChemists);
-            Log.e("TPChemistSave","Saved TP Chemist =>" + tpChemists);
-            if(!deviation.equalsIgnoreCase("1")) {
+            SharedPref.setTodayTPChemists(requireContext(), tpChemists);
+            Log.e("TPChemistSave", "Saved TP Chemist =>" + tpChemists);
+            if (!deviation.equalsIgnoreCase("1")) {
                 if ("F".equalsIgnoreCase(mFwFlg1)) {
                     ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(
                             tpDoctor, isFromTP, tpChemists  // Session 1 data
@@ -3335,7 +3344,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     );
                 }
             }
-           // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP,tpChemists);
+            // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP,tpChemists);
 
             jsonObject.put("Others_Code", workDayCode);
             jsonObject.put("Others_Name", workDayName);
@@ -3953,7 +3962,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             String todayPlanClusterCode = mTowncode1;
-            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
             SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), true, mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"));
 
@@ -3976,7 +3985,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             FirstSeasonObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
             if (mFwFlg1.equalsIgnoreCase("F")) {
                 FirstSeasonObject.put("TP_Doctor", tpDoctor);
-                FirstSeasonObject.put("TP_Chemists",tpChemists);
+                FirstSeasonObject.put("TP_Chemists", tpChemists);
                 FirstSeasonObject.put("TP_cluster", tpCluster);
                 FirstSeasonObject.put("TP_worktype", tpWorkType);
                 FirstSeasonObject.put("Others_Code", workDayCode);
@@ -3999,7 +4008,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SecondSeasonObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     SecondSeasonObject.put("TP_Doctor", tpDoctor2);
-                    SecondSeasonObject.put("TP_Chemists",tpChemists2);
+                    SecondSeasonObject.put("TP_Chemists", tpChemists2);
                     SecondSeasonObject.put("TP_cluster", tpCluster2);
                     SecondSeasonObject.put("TP_worktype", tpWorkType2);
                     SecondSeasonObject.put("Others_Code", workDayCode2);
@@ -4487,13 +4496,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             tpWorkType = "";
             tpCluster = "";
             tpDoctor = "";
-            tpChemists="";
+            tpChemists = "";
             workDayCode = "";
             workDayName = "";
             tpWorkType2 = "";
             tpCluster2 = "";
             tpDoctor2 = "";
-            tpChemists2="";
+            tpChemists2 = "";
             workDayCode2 = "";
             workDayName2 = "";
             isFromTP = false;
@@ -4635,7 +4644,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             tpWorkType = FirstSeasonDayPlanObject.optString("TP_worktype");
                             tpCluster = FirstSeasonDayPlanObject.optString("TP_cluster");
                             tpDoctor = FirstSeasonDayPlanObject.optString("TP_Doctor");
-                            tpChemists=FirstSeasonDayPlanObject.optString("TP_Chemists");
+                            tpChemists = FirstSeasonDayPlanObject.optString("TP_Chemists");
                             deviation = FirstSeasonDayPlanObject.optString("TpVwFlg");
                             workDayCode = FirstSeasonDayPlanObject.optString("Others_Code");
                             workDayName = FirstSeasonDayPlanObject.optString("Others_Name");
@@ -4851,7 +4860,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(mTownname2).replaceAll(",", " , ")));
                                 binding.txtheadquaters2.setText(CommonUtilsMethods.removeLastComma(mHQName2).replaceAll(",", " , "));
                                 String todayPlanClusterCode = mTowncode2;
-                                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                                if (mFwFlg1.equalsIgnoreCase("F"))
+                                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                             }
                             disableSession2();
@@ -4873,7 +4883,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     deviation = "1";
                                 }
                                 Log.i("TP", "setUpWorkPlan: " + isFromTP);
-                                if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))&& mFwFlg2.equalsIgnoreCase("F")) {
+                                if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) && mFwFlg2.equalsIgnoreCase("F")) {
                                     binding.rlworkday2.setVisibility(View.VISIBLE);
                                     binding.txtworkday2.setText(workDayName2);
 
@@ -5024,7 +5034,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 Type type = new TypeToken<OneBuildModelClass>() {
                 }.getType();
                 OneBuildModelClass oneBuildModelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
-                StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder(),listedChm=new StringBuilder();
+                StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder(), listedChm = new StringBuilder();
                 String stpCode = "", stpName = "";
                 if (oneBuildModelClass.getSessionList() != null && !oneBuildModelClass.getSessionList().isEmpty()) {
                     stpCode = oneBuildModelClass.getSessionList().get(0).getSTPCode();
@@ -5081,7 +5091,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     obj.put("Rem", "");
                     obj.put("TpVwFlg", "0");
                     obj.put("TP_Doctor", listedDr.toString());
-                    obj.put("TP_Chemists",listedChm.toString());
+                    obj.put("TP_Chemists", listedChm.toString());
                     obj.put("TP_cluster", clusterCode.toString());
                     obj.put("TP_worktype", oneBuildModelClass.getSessionList().get(0).getWorkType().getCode());
                     if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
@@ -5098,7 +5108,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                     if (oneBuildModelClass.getSessionList().size() > 1) {
                         listedDr = new StringBuilder();
-                        listedChm=new StringBuilder();
+                        listedChm = new StringBuilder();
                         clusterCode = new StringBuilder();
                         clusterName = new StringBuilder();
                         String stpCode2 = "", stpName2 = "";
@@ -5152,7 +5162,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         obj2.put("Rem", "");
                         obj2.put("TpVwFlg", "0");
                         obj2.put("TP_Doctor", listedDr.toString());
-                        obj2.put("TP_Chemists",listedChm.toString());
+                        obj2.put("TP_Chemists", listedChm.toString());
                         obj2.put("TP_cluster", clusterCode.toString());
                         obj2.put("TP_worktype", oneBuildModelClass.getSessionList().get(1).getWorkType().getCode());
                         if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
@@ -5712,6 +5722,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("location", latitude + ":" + longitude);
             finalSubmitJSONObject.put("address", address);
 
+            if (!nsRsfNightStayRemarks.isEmpty()) {
+                finalSubmitJSONObject.put("Ns_Rsf_Name", SharedPref.getHqName(requireContext()));
+                finalSubmitJSONObject.put("Ns_Rsf_Code", nsRsfCode);
+                finalSubmitJSONObject.put("Ns_Rsf_territory_code", nsRsfTerritoryCode);
+                finalSubmitJSONObject.put("Ns_Rsf_territory_name", nsRsfTerritoryName);
+                finalSubmitJSONObject.put("Ns_Rsf_day_remarks", nsRsfDayRemarks);
+                finalSubmitJSONObject.put("Ns_Rsf_night_stay_remarks", nsRsfNightStayRemarks);
+            }
 
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
         } catch (JSONException e) {
@@ -5783,19 +5801,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         dialogRemarks.setCancelable(false);
         ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
-        dialogAcknowledge(dialogRemarks);
+        dialogAcknowledge(dialogRemarks); // ✅ same
         dialogRemarks.show();
-
         iv_close.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                dialogRemarks.dismiss();
+                dialogRemarks.dismiss(); // ✅ same
             }
         });
-
     }
-
-    private void dialogFinalSubmit(Dialog dialogRemarks) {
+//    private void dialogFinalSubmit(Dialog dialogRemarks){
+    private void dialogFinalSubmit(Dialog dialogRemarks,boolean isDayRemarks) {
         EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
         ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks, 300)});
         TextView heading = dialogRemarks.findViewById(R.id.tv_head);
@@ -5807,6 +5823,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         content.setVisibility(View.GONE);
         heading.setText(requireContext().getString(R.string.remarks));
         ed_remarks.setVisibility(View.VISIBLE);
+
+        if (isDayRemarks) {
+            heading.setText(R.string.day_remarks); // Day Remarks (Arabic/French etc. automatic-ah maarum)
+            ed_remarks.setHint(R.string.day_remarks);
+        }
+//        } else {
+//            heading.setText(R.string.night_stay_remarks); // Default Night Stay
+//            ed_remarks.setHint(R.string.night_stay_remarks);
+//        }
+
         btn_save.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -5830,6 +5856,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
     private void dialogAcknowledge(Dialog dialogRemarks) {
         EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
         ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks, 300)});
@@ -5843,22 +5870,59 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
         btn_save.setOnClickListener(new SafeClickListener() {
+            //            @Override
+//            public void onSafeClick(View view) {
+//                dialogRemarks.dismiss(); // ← Alert close பண்ணு
+//               StayAlert(); // ← Night Stay popup open
+//            }
+//        });
             @Override
             public void onSafeClick(View view) {
-                dialogRemarks.dismiss(); // ← Alert close பண்ணு
-               StayAlert(); // ← Night Stay popup open
+                dialogRemarks.dismiss();
+
+                if (SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) {
+                    StayAlert();
+                } else {
+                    Dialog dialog = new Dialog(requireActivity());
+                    dialog.setContentView(R.layout.popup_remarks);
+                    dialog.setCancelable(false);
+                    if (dialog.getWindow() != null) {
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    }
+//                    dialogFinalSubmit(dialog);
+                    dialogFinalSubmit(dialog,true);
+                    dialog.show();
+                }
             }
         });
         btn_clear.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                dialogFinalSubmit(dialogRemarks); // No → Remarks popup
+                // ✅ Same dialog dismiss பண்ணி புது dialog open பண்ணு
+                dialogRemarks.dismiss();
+                Dialog newDialog = new Dialog(requireActivity());
+                newDialog.setContentView(R.layout.popup_remarks);
+                newDialog.setCancelable(false);
+                if (newDialog.getWindow() != null) {
+                    newDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                ImageView iv_close2 = newDialog.findViewById(R.id.img_close);
+                iv_close2.setOnClickListener(v -> newDialog.dismiss()); // ✅ close fix
+                //dialogFinalSubmit(newDialog);
+                dialogFinalSubmit(newDialog,true);
+                newDialog.show();
             }
         });
+//        btn_clear.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                dialogFinalSubmit(dialogRemarks); // No → Remarks popup
+//            }
+//        });
     }
 
-    public  void StayAlert() {
-        Log.d("STAY_ALERT", "StayAlert called"); // ← இது வருதா பாருங்க
+    public void StayAlert() {
+        Log.d("STAY_ALERT", "StayAlert called");
         AlertDialog.Builder alert = new AlertDialog.Builder(workPlanFragment.requireActivity());
         alert.setCancelable(false);
         LayoutInflater inflater = workPlanFragment.requireActivity().getLayoutInflater();
@@ -5868,40 +5932,79 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         alert.setView(alertLayout);
         AlertDialog dialog = alert.create();
         dialog.show();
+        Window window = dialog.getWindow();
+        if (window != null) {
+
+
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+            window.setLayout(
+                    (int) (workPlanFragment.requireActivity()
+                            .getResources().getDisplayMetrics().widthPixels * 0.38),
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+        }
+        ImageView img_close = alertLayout.findViewById(R.id.img_close);
+        if (img_close != null) {
+            img_close.setOnClickListener(v -> dialog.dismiss());
+        }
 
         btn_yes.setOnClickListener(view -> {
+            dialog.dismiss(); // ✅ முதல்ல dismiss
+            Log.d("STAY_DEBUG", "mFwFlg1=" + mFwFlg1);
+            Log.d("STAY_DEBUG", "mFwFlg2=" + mFwFlg2);
+            Log.d("STAY_DEBUG", "mTownname1=" + mTownname1);
+            Log.d("STAY_DEBUG", "mTownname2=" + mTownname2);
+            Log.d("STAY_DEBUG", "cluster size=" + multiple_cluster_list.size());
             StayAlert2(
                     requireActivity(),
                     mFwFlg1, mFwFlg2,
                     mTownname1, mTownname2,
                     mHQCode1, mHQCode2,
-                    sfCode, // ✅ now works
+                    mHQName1, mHQName2,
+                    sfCode,
                     multiple_cluster_list
-                   // callback
             );
-            dialog.dismiss();
         });
         btn_no.setOnClickListener(view -> {
             dialog.dismiss();
             Dialog dialogRemarks = new Dialog(workPlanFragment.requireActivity());
             dialogRemarks.setContentView(R.layout.popup_remarks);
             dialogRemarks.setCancelable(false);
-            dialogFinalSubmit(dialogRemarks);
+            if (dialogRemarks.getWindow() != null) {
+                dialogRemarks.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+            // ✅ இங்க add பண்ணுங்க
+            ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
+            iv_close.setOnClickListener(v -> dialogRemarks.dismiss());
+            //dialogFinalSubmit(dialogRemarks);
+            dialogFinalSubmit(dialogRemarks,true);
             dialogRemarks.show();
         });
+//        btn_no.setOnClickListener(view -> {
+//            dialog.dismiss();
+//            Dialog dialogRemarks = new Dialog(workPlanFragment.requireActivity());
+//            dialogRemarks.setContentView(R.layout.popup_remarks);
+//            dialogRemarks.setCancelable(false);
+//            dialogFinalSubmit(dialogRemarks);
+//            dialogRemarks.show();
+//        });
 //        btn_no.setOnClickListener(view -> {
 //            dialog.dismiss();
 //
 //        });
     }
 
-    public  void StayAlert2(FragmentActivity fragment,
-                            String mFwFlg1, String mFwFlg2,
-                            String mTownname1, String mTownname2,
-                            String mHQCode1, String mHQCode2,
-                            String sfCode,   // 👈 add this
-                            List<Multicheckclass_clust> multiple_cluster_list){
-        Dialog dialog = new Dialog(context);
+    public void StayAlert2(FragmentActivity fragment,
+                           String mFwFlg1, String mFwFlg2,
+                           String mTownname1, String mTownname2,
+                           String mHQCode1, String mHQCode2,
+                           String mHQName1, String mHQName2,
+                           String sfCode,
+                           List<Multicheckclass_clust> multiple_cluster_list) {
+
+        Dialog dialog = new Dialog(fragment);
         dialog.setContentView(R.layout.popup_night_stay_teritorry);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -5909,14 +6012,118 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         dialog.setCancelable(false);
 
         Spinner spinnerTerritory = dialog.findViewById(R.id.spinnerTerritory);
+        Spinner spinnerHeadQuaters = dialog.findViewById(R.id.spinnerHeadQuaters);
+        TextView select_hq = dialog.findViewById(R.id.select_hq);
+        TextView select_territory = dialog.findViewById(R.id.select_territory);
         EditText ed_remark = dialog.findViewById(R.id.ed_remark);
         EditText ed_remark3 = dialog.findViewById(R.id.ed_remark3);
         Button btn_submit = dialog.findViewById(R.id.btn_submit);
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        String clusterCap = SharedPref.getClusterCap(fragment);
+        select_territory.setText(getString(R.string.select) + " " + clusterCap);
+        // ✅ sfType check - HQ visible/gone
+        if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+            select_hq.setVisibility(View.VISIBLE);
+            spinnerHeadQuaters.setVisibility(View.VISIBLE);
+        } else {
+            select_hq.setVisibility(View.GONE);
+            spinnerHeadQuaters.setVisibility(View.GONE);
+        }
 
-        // ✅ Territory list build - showNewPopup மாதிரியே
-        List<String> territoryList = new ArrayList<>();
-        territoryList.add("Select Territory");
+        // ✅ HQ Spinner setup - sfType 2 மட்டும்
+        if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+            List<String> hqDisplayList = new ArrayList<>();
+            hqDisplayList.add(getString(R.string.select_head_quarter));
+
+            String selectedHQ = "";
+            if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+                selectedHQ = mHQName1 + "," + mHQName2;
+            } else if (mFwFlg1.equalsIgnoreCase("F")) {
+                selectedHQ = mHQName1;
+            } else if (mFwFlg2.equalsIgnoreCase("F")) {
+                selectedHQ = mHQName2;
+            }
+
+            if (!selectedHQ.isEmpty()) {
+                for (String name : selectedHQ.split(",")) {
+                    String trimmed = name.trim();
+                    if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+                        hqDisplayList.add(trimmed);
+                    }
+                }
+            }
+
+            ArrayAdapter<String> hqAdapter = new ArrayAdapter<String>(
+                    fragment, R.layout.popup_night_stay_spinner, hqDisplayList) {
+
+                @Override
+                public boolean isEnabled(int position) {
+                    return position != 0;
+                }
+
+                //                @Override
+//                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//                    View view = super.getDropDownView(position, convertView, parent);
+//                    if (position == 0) {
+//                        view.setVisibility(View.VISIBLE);
+//                        view.setLayoutParams(new AbsListView.LayoutParams(
+//                                AbsListView.LayoutParams.MATCH_PARENT, 0));
+//                    } else {
+//                        view.setVisibility(View.VISIBLE);
+//                        view.setLayoutParams(new AbsListView.LayoutParams(
+//                                AbsListView.LayoutParams.MATCH_PARENT,
+//                                AbsListView.LayoutParams.WRAP_CONTENT));
+//                        TextView tv = view.findViewById(android.R.id.text1);
+//                        if (tv != null) {
+//                            tv.setTextColor(Color.BLACK);
+//                            tv.setTextSize(14);
+//                            tv.setGravity(Gravity.CENTER_VERTICAL);
+//                            tv.setPadding(30, 20, 30, 20);
+//                        }
+//                    }
+//                    return view;
+//                }
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getDropDownView(position, convertView, parent);
+                    if (position == 0) {
+                        view.setVisibility(View.GONE);
+                        view.setLayoutParams(new AbsListView.LayoutParams(0, 1));
+                    } else {
+                        view.setVisibility(View.VISIBLE);
+                        int heightInPx = (int) (45 * getContext().getResources().getDisplayMetrics().density);
+                        view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightInPx));
+                        // 4. Divider Line (Border) add panna
+                        GradientDrawable gd = new GradientDrawable();
+                        gd.setColor(Color.WHITE);
+                        gd.setStroke(1, Color.parseColor("#E0E0E0")); // Light grey line
+                        view.setBackground(gd);
+
+                        // 5. Text alignment and padding
+                        TextView tv = view.findViewById(android.R.id.text1);
+                        if (tv != null) {
+//                            tv.setTextColor(Color.BLACK);
+//                            tv.setTextSize(14);
+                            tv.setGravity(Gravity.CENTER_VERTICAL);
+                            tv.setPadding(30, 0, 30, 0); // Spacing adjust panna
+                        }
+                    }
+                    return view;
+                }
+            };
+            hqAdapter.setDropDownViewResource(R.layout.popup_night_stay_spinner);
+            spinnerHeadQuaters.setAdapter(hqAdapter);
+            spinnerHeadQuaters.setSelection(0, false);
+            spinnerHeadQuaters.post(() -> {
+                spinnerHeadQuaters.setDropDownWidth(spinnerHeadQuaters.getWidth());
+                spinnerHeadQuaters.setDropDownVerticalOffset(spinnerHeadQuaters.getHeight());
+            });
+        }
+
+        // ✅ Territory list build
+        List<String> territoryDisplayList = new ArrayList<>();
+        List<Multicheckclass_clust> filteredTerritoryList = new ArrayList<>();
+        //territoryDisplayList.add("Select Territory");
+        territoryDisplayList.add(getString(R.string.select)+ " " +SharedPref.getClusterCap(context));
 
         String selectedClusters = "";
         if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
@@ -5927,26 +6134,80 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             selectedClusters = mTownname2;
         }
 
+        Log.d("STAY_DEBUG", "selectedClusters=" + selectedClusters);
+
         if (!selectedClusters.isEmpty()) {
             for (String name : selectedClusters.split(",")) {
                 String trimmed = name.trim();
                 if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
-                    territoryList.add(trimmed);
+                    territoryDisplayList.add(trimmed);
+                    boolean found = false;
+                    for (Multicheckclass_clust clust : multiple_cluster_list) {
+                        if (clust.getStrname().trim().equalsIgnoreCase(trimmed)) {
+                            filteredTerritoryList.add(clust);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        filteredTerritoryList.add(
+                                new Multicheckclass_clust("", trimmed, "", false)
+                        );
+                    }
                 }
             }
         } else {
             for (Multicheckclass_clust item : multiple_cluster_list) {
-                territoryList.add(item.getStrname());
+                filteredTerritoryList.add(item);
+                territoryDisplayList.add(item.getStrname());
             }
         }
 
-        // ✅ Spinner adapter - showNewPopup மாதிரியே
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.popup_night_stay_spinner, territoryList) {
+        Log.d("STAY_DEBUG", "territoryDisplayList=" + territoryDisplayList);
+        Log.d("STAY_DEBUG", "filteredTerritoryList size=" + filteredTerritoryList.size());
+
+        // ✅ Territory Spinner Adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                fragment, R.layout.popup_night_stay_spinner, territoryDisplayList) {
+
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
             }
 
+            //            @Override
+//            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//                View view = super.getDropDownView(position, convertView, parent);
+//                TextView tv = view.findViewById(android.R.id.text1);
+//
+//                if (position == 0) {
+//                    // ✅ Select Territory hide பண்ணு
+//                    view.setVisibility(View.GONE);
+//                    view.setLayoutParams(new AbsListView.LayoutParams(0, 0));
+//                    if (tv != null) tv.setVisibility(View.GONE);
+//                } else {
+//                    view.setVisibility(View.VISIBLE);
+//                    view.setLayoutParams(new AbsListView.LayoutParams(
+//                            AbsListView.LayoutParams.MATCH_PARENT,
+//                            AbsListView.LayoutParams.WRAP_CONTENT));
+//
+//                    if (tv != null) {
+//                        tv.setVisibility(View.VISIBLE);
+//                        tv.setTextColor(Color.BLACK);
+//                        tv.setTextSize(14);
+//                        tv.setGravity(Gravity.CENTER_VERTICAL);
+//                        tv.setPadding(30, 20, 30, 20);
+//
+//                        // ✅ Divider line - bottom border
+//                        tv.setBackground(null);
+//                        GradientDrawable gd = new GradientDrawable();
+//                        gd.setColor(Color.WHITE);
+//                        gd.setStroke(1, Color.parseColor("#E0E0E0"));
+//                        view.setBackground(gd);
+//                    }
+//                }
+//                return view;
+//            }
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -5955,65 +6216,106 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     view.setLayoutParams(new AbsListView.LayoutParams(0, 1));
                 } else {
                     view.setVisibility(View.VISIBLE);
+                    int heightInPx = (int) (45 * getContext().getResources().getDisplayMetrics().density);
+                    view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightInPx));
+                    // 4. Divider Line (Border) add panna
+                    GradientDrawable gd = new GradientDrawable();
+                    gd.setColor(Color.WHITE);
+                    gd.setStroke(1, Color.parseColor("#E0E0E0")); // Light grey line
+                    view.setBackground(gd);
+
+                    // 5. Text alignment and padding
                     TextView tv = view.findViewById(android.R.id.text1);
                     if (tv != null) {
                         tv.setTextColor(Color.BLACK);
                         tv.setTextSize(14);
                         tv.setGravity(Gravity.CENTER_VERTICAL);
-                        tv.setPadding(30, 0, 30, 0);
+                        tv.setPadding(30, 0, 30, 0); // Spacing adjust panna
                     }
                 }
                 return view;
             }
         };
-        adapter.setDropDownViewResource((R.layout.popup_night_stay_spinner));
-        spinnerTerritory.setAdapter(adapter);
-        spinnerTerritory.setSelection(0, false);
+        adapter.setDropDownViewResource(R.layout.popup_night_stay_spinner);
 
         dialog.show();
+
+        spinnerTerritory.post(() -> {
+            spinnerTerritory.setAdapter(adapter);
+            spinnerTerritory.setSelection(0, false);
+            spinnerTerritory.setDropDownWidth(spinnerTerritory.getWidth());
+            spinnerTerritory.setDropDownVerticalOffset(spinnerTerritory.getHeight());
+        });
 
         btn_submit.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
                 if (spinnerTerritory.getSelectedItemPosition() == 0) {
-                    Toast.makeText(context, "Select Territory", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String nightRemark = ed_remark.getText().toString().trim();
                 String dayRemark = ed_remark3.getText().toString().trim();
+                //  Night Remark condition
                 if (nightRemark.isEmpty()) {
-                    Toast.makeText(context, "Please enter Night Stay remarks", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fragment, getString(R.string.please_enter_the_remarks), Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (nightRemark.length() <= 2) {
+                    Toast.makeText(fragment, getString(R.string.remarks_must_contain_at_least_3_characters), Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                //  Day Remark condition
                 if (dayRemark.isEmpty()) {
-                    Toast.makeText(context, "Please enter Day remarks", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fragment, getString(R.string.please_enter_the_remarks), Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (dayRemark.length() <= 2) {
+                    Toast.makeText(fragment, getString(R.string.remarks_must_contain_at_least_3_characters), Toast.LENGTH_SHORT).show();
                     return;
                 }
+//                if (nightRemark.isEmpty()) {
+//                    Toast.makeText(fragment, "Please enter Night Stay remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if (dayRemark.isEmpty()) {
+//                    Toast.makeText(fragment, "Please enter Day remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
 
-                // ✅ Territory code/name எடுக்கணும்
-                String nsRsfTerritoryCode = "";
-                String nsRsfTerritoryName = "";
-                String nsRsfCode = "";
-
-                if (!multiple_cluster_list.isEmpty()) {
-                    int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
-                    if (selectedIndex >= 0 && selectedIndex < multiple_cluster_list.size()) {
-                        nsRsfTerritoryCode = multiple_cluster_list.get(selectedIndex).getStrid();
-                        nsRsfTerritoryName = multiple_cluster_list.get(selectedIndex).getStrname();
-                    }
+                // ✅ Territory code/name எடு
+                int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
+                if (selectedIndex >= 0 && selectedIndex < filteredTerritoryList.size()) {
+                    nsRsfTerritoryCode = filteredTerritoryList.get(selectedIndex).getStrid();
+                    nsRsfTerritoryName = filteredTerritoryList.get(selectedIndex).getStrname();
                 }
 
+                // ✅ nsRsfCode + nsRsfName logic
                 if (mFwFlg1.equalsIgnoreCase("F")) {
                     nsRsfCode = mHQCode1;
+                    nsRsfName = mHQName1;
                 } else if (mFwFlg2.equalsIgnoreCase("F")) {
                     nsRsfCode = mHQCode2;
+                    nsRsfName = mHQName2;
                 } else {
                     nsRsfCode = sfCode;
+                    nsRsfName = SharedPref.getHqName(fragment);
                 }
 
+                // ✅ Remarks save
+                nsRsfNightStayRemarks = nightRemark;
+                nsRsfDayRemarks = dayRemark;
+
+                Log.d("STAY_DEBUG", "Territory Code=" + nsRsfTerritoryCode);
+                Log.d("STAY_DEBUG", "Territory Name=" + nsRsfTerritoryName);
+                Log.d("STAY_DEBUG", "RSF Code=" + nsRsfCode);
+                Log.d("STAY_DEBUG", "RSF Name=" + nsRsfName);
+                Log.d("STAY_DEBUG", "Night Remark=" + nsRsfNightStayRemarks);
+                Log.d("STAY_DEBUG", "Day Remark=" + nsRsfDayRemarks);
+
                 dialog.dismiss();
-                // ✅ Final submit callback
-              //  callback.onSubmit(nightRemark, dayRemark, nsRsfCode, nsRsfTerritoryCode, nsRsfTerritoryName);
+
+                // ✅ Day Submit
+                finalSubmit(nsRsfDayRemarks, false);
             }
         });
 
@@ -6024,12 +6326,556 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+// final corrected code
+//    public void StayAlert2(FragmentActivity fragment,
+//                           String mFwFlg1, String mFwFlg2,
+//                           String mTownname1, String mTownname2,
+//                           String mHQCode1, String mHQCode2,
+//                           String mHQName1, String mHQName2,
+//                           String sfCode,
+//                           List<Multicheckclass_clust> multiple_cluster_list) {
+//
+//        Dialog dialog = new Dialog(fragment);
+//        dialog.setContentView(R.layout.popup_night_stay_teritorry);
+//        if (dialog.getWindow() != null) {
+//            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        }
+//        dialog.setCancelable(false);
+//
+//        Spinner spinnerTerritory = dialog.findViewById(R.id.spinnerTerritory);
+//        Spinner spinnerHeadQuaters = dialog.findViewById(R.id.spinnerHeadQuaters);
+//        TextView select_hq = dialog.findViewById(R.id.select_hq);
+//        EditText ed_remark = dialog.findViewById(R.id.ed_remark);
+//        EditText ed_remark3 = dialog.findViewById(R.id.ed_remark3);
+//        Button btn_submit = dialog.findViewById(R.id.btn_submit);
+//        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+//
+//        // ✅ sfType check - HQ visible/gone
+//        if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+//            select_hq.setVisibility(View.VISIBLE);
+//            spinnerHeadQuaters.setVisibility(View.VISIBLE);
+//        } else {
+//            select_hq.setVisibility(View.GONE);
+//            spinnerHeadQuaters.setVisibility(View.GONE);
+//        }
+//
+//        // ✅ HQ Spinner setup - sfType 2 மட்டும்
+//        if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+//            List<String> hqDisplayList = new ArrayList<>();
+//            hqDisplayList.add("Select HQ");
+//
+//            String selectedHQ = "";
+//            if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+//                selectedHQ = mHQName1 + "," + mHQName2;
+//            } else if (mFwFlg1.equalsIgnoreCase("F")) {
+//                selectedHQ = mHQName1;
+//            } else if (mFwFlg2.equalsIgnoreCase("F")) {
+//                selectedHQ = mHQName2;
+//            }
+//
+//            if (!selectedHQ.isEmpty()) {
+//                for (String name : selectedHQ.split(",")) {
+//                    String trimmed = name.trim();
+//                    if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+//                        hqDisplayList.add(trimmed);
+//                    }
+//                }
+//            }
+//
+//            ArrayAdapter<String> hqAdapter = new ArrayAdapter<String>(
+//                    fragment, R.layout.popup_night_stay_spinner, hqDisplayList) {
+//
+//                @Override
+//                public boolean isEnabled(int position) {
+//                    return position != 0;
+//                }
+//
+//                @Override
+//                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//                    View view = super.getDropDownView(position, convertView, parent);
+//                    if (position == 0) {
+//                        view.setVisibility(View.VISIBLE);
+//                        view.setLayoutParams(new AbsListView.LayoutParams(
+//                                AbsListView.LayoutParams.MATCH_PARENT, 0));
+//                    } else {
+//                        view.setVisibility(View.VISIBLE);
+//                        view.setLayoutParams(new AbsListView.LayoutParams(
+//                                AbsListView.LayoutParams.MATCH_PARENT,
+//                                AbsListView.LayoutParams.WRAP_CONTENT));
+//                        TextView tv = view.findViewById(android.R.id.text1);
+//                        if (tv != null) {
+//                            tv.setTextColor(Color.BLACK);
+//                            tv.setTextSize(14);
+//                            tv.setGravity(Gravity.CENTER_VERTICAL);
+//                            tv.setPadding(30, 20, 30, 20);
+//                        }
+//                    }
+//                    return view;
+//                }
+//            };
+//            hqAdapter.setDropDownViewResource(R.layout.popup_night_stay_hq_spinner);
+//            spinnerHeadQuaters.setAdapter(hqAdapter);
+//            spinnerHeadQuaters.setSelection(0, false);
+//            spinnerHeadQuaters.post(() -> {
+//                spinnerHeadQuaters.setDropDownWidth(spinnerHeadQuaters.getWidth());
+//                spinnerHeadQuaters.setDropDownVerticalOffset(spinnerHeadQuaters.getHeight());
+//            });
+//        }
+//
+//        // ✅ Territory list build
+//        List<String> territoryDisplayList = new ArrayList<>();
+//        List<Multicheckclass_clust> filteredTerritoryList = new ArrayList<>();
+//        territoryDisplayList.add("Select Territory");
+//
+//        String selectedClusters = "";
+//        if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname1 + "," + mTownname2;
+//        } else if (mFwFlg1.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname1;
+//        } else if (mFwFlg2.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname2;
+//        }
+//
+//        Log.d("STAY_DEBUG", "selectedClusters=" + selectedClusters);
+//
+//        if (!selectedClusters.isEmpty()) {
+//            for (String name : selectedClusters.split(",")) {
+//                String trimmed = name.trim();
+//                if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+//                    territoryDisplayList.add(trimmed);
+//                    boolean found = false;
+//                    for (Multicheckclass_clust clust : multiple_cluster_list) {
+//                        if (clust.getStrname().trim().equalsIgnoreCase(trimmed)) {
+//                            filteredTerritoryList.add(clust);
+//                            found = true;
+//                            break;
+//                        }
+//                    }
+//                    if (!found) {
+//                        filteredTerritoryList.add(
+//                                new Multicheckclass_clust("", trimmed, "", false)
+//                        );
+//                    }
+//                }
+//            }
+//        } else {
+//            for (Multicheckclass_clust item : multiple_cluster_list) {
+//                filteredTerritoryList.add(item);
+//                territoryDisplayList.add(item.getStrname());
+//            }
+//        }
+//
+//        Log.d("STAY_DEBUG", "territoryDisplayList=" + territoryDisplayList);
+//        Log.d("STAY_DEBUG", "filteredTerritoryList size=" + filteredTerritoryList.size());
+//
+//        // ✅ Territory Spinner Adapter
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                fragment, R.layout.popup_night_stay_spinner, territoryDisplayList) {
+//
+//            @Override
+//            public boolean isEnabled(int position) {
+//                return position != 0;
+//            }
+//
+//            @Override
+//            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//                View view = super.getDropDownView(position, convertView, parent);
+//                if (position == 0) {
+//                    view.setVisibility(View.VISIBLE);
+//                    view.setLayoutParams(new AbsListView.LayoutParams(
+//                            AbsListView.LayoutParams.MATCH_PARENT, 0));
+//                } else {
+//                    view.setVisibility(View.VISIBLE);
+//                    view.setLayoutParams(new AbsListView.LayoutParams(
+//                            AbsListView.LayoutParams.MATCH_PARENT,
+//                            AbsListView.LayoutParams.WRAP_CONTENT));
+//                    TextView tv = view.findViewById(android.R.id.text1);
+//                    if (tv != null) {
+//                        tv.setTextColor(Color.BLACK);
+//                        tv.setTextSize(14);
+//                        tv.setGravity(Gravity.CENTER_VERTICAL);
+//                        tv.setPadding(30, 20, 30, 20);
+//                    }
+//                }
+//                return view;
+//            }
+//        };
+//        adapter.setDropDownViewResource(R.layout.popup_night_stay_spinner);
+//
+//        dialog.show();
+//
+//        spinnerTerritory.post(() -> {
+//            spinnerTerritory.setAdapter(adapter);
+//            spinnerTerritory.setSelection(0, false);
+//            spinnerTerritory.setDropDownWidth(spinnerTerritory.getWidth());
+//            spinnerTerritory.setDropDownVerticalOffset(spinnerTerritory.getHeight());
+//        });
+//
+//        btn_submit.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                if (spinnerTerritory.getSelectedItemPosition() == 0) {
+//                    Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                String nightRemark = ed_remark.getText().toString().trim();
+//                String dayRemark = ed_remark3.getText().toString().trim();
+//                if (nightRemark.isEmpty()) {
+//                    Toast.makeText(fragment, "Please enter Night Stay remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if (dayRemark.isEmpty()) {
+//                    Toast.makeText(fragment, "Please enter Day remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                // ✅ Territory code/name எடு
+//                String nsRsfTerritoryCode = "";
+//                String nsRsfTerritoryName = "";
+//                int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
+//                if (selectedIndex >= 0 && selectedIndex < filteredTerritoryList.size()) {
+//                    nsRsfTerritoryCode = filteredTerritoryList.get(selectedIndex).getStrid();
+//                    nsRsfTerritoryName = filteredTerritoryList.get(selectedIndex).getStrname();
+//                }
+//
+//                // ✅ nsRsfCode logic
+//                String nsRsfCode = "";
+//                if (mFwFlg1.equalsIgnoreCase("F")) {
+//                    nsRsfCode = mHQCode1;
+//                } else if (mFwFlg2.equalsIgnoreCase("F")) {
+//                    nsRsfCode = mHQCode2;
+//                } else {
+//                    nsRsfCode = sfCode;
+//                }
+//
+//                Log.d("STAY_DEBUG", "Territory Code=" + nsRsfTerritoryCode);
+//                Log.d("STAY_DEBUG", "Territory Name=" + nsRsfTerritoryName);
+//                Log.d("STAY_DEBUG", "RSF Code=" + nsRsfCode);
+//                Log.d("STAY_DEBUG", "Night Remark=" + nightRemark);
+//                Log.d("STAY_DEBUG", "Day Remark=" + dayRemark);
+//
+//                dialog.dismiss();
+//
+//                // ✅ Day Submit
+//                finalSubmit(dayRemark, false);
+//            }
+//        });
+//
+//        btn_cancel.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//    }
+//    public void StayAlert2(FragmentActivity fragment,
+//                           String mFwFlg1, String mFwFlg2,
+//                           String mTownname1, String mTownname2,
+//                           String mHQCode1, String mHQCode2,
+//                           String sfCode,
+//                           List<Multicheckclass_clust> multiple_cluster_list) {
+//
+//        Dialog dialog = new Dialog(fragment);
+//        dialog.setContentView(R.layout.popup_night_stay_teritorry);
+//        if (dialog.getWindow() != null) {
+//            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        }
+//        dialog.setCancelable(false);
+//
+//        Spinner spinnerTerritory = dialog.findViewById(R.id.spinnerTerritory);
+//        EditText ed_remark = dialog.findViewById(R.id.ed_remark);
+//        EditText ed_remark3 = dialog.findViewById(R.id.ed_remark3);
+//        Button btn_submit = dialog.findViewById(R.id.btn_submit);
+//        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+//
+//        // ✅ Two separate lists - display + data
+//        List<String> territoryDisplayList = new ArrayList<>();
+//        List<Multicheckclass_clust> filteredTerritoryList = new ArrayList<>();
+//        territoryDisplayList.add("Select Territory");
+//
+//        // ✅ Field Work session territory எடுக்கணும்
+//        String selectedClusters = "";
+//        if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname1 + "," + mTownname2;
+//        } else if (mFwFlg1.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname1;
+//        } else if (mFwFlg2.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname2;
+//        }
+//
+//        Log.d("STAY_DEBUG", "selectedClusters=" + selectedClusters);
+//
+//        if (!selectedClusters.isEmpty()) {
+//            for (String name : selectedClusters.split(",")) {
+//                String trimmed = name.trim();
+//                if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+//                    // ✅ Display list-ல add பண்ணு
+//                    territoryDisplayList.add(trimmed);
+//                    // ✅ multiple_cluster_list-ல match பண்ணி code எடு
+//                    boolean found = false;
+//                    for (Multicheckclass_clust clust : multiple_cluster_list) {
+//                        if (clust.getStrname().trim().equalsIgnoreCase(trimmed)) {
+//                            filteredTerritoryList.add(clust);
+//                            found = true;
+//                            break;
+//                        }
+//                    }
+//                    // ✅ Match இல்லன்னாலும் name add பண்ணு
+//                    if (!found) {
+//                        filteredTerritoryList.add(
+//                                new Multicheckclass_clust("", trimmed, "", false)
+//                        );
+//                    }
+//                }
+//            }
+//        } else {
+//            // ✅ Field Work இல்லன்னா full cluster list
+//            for (Multicheckclass_clust item : multiple_cluster_list) {
+//                filteredTerritoryList.add(item);
+//                territoryDisplayList.add(item.getStrname());
+//            }
+//        }
+//
+//        Log.d("STAY_DEBUG", "territoryDisplayList=" + territoryDisplayList);
+//        Log.d("STAY_DEBUG", "filteredTerritoryList size=" + filteredTerritoryList.size());
+//
+//        // ✅ Spinner Adapter
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                fragment, R.layout.popup_night_stay_spinner, territoryDisplayList) {
+//
+//            @Override
+//            public boolean isEnabled(int position) {
+//                return position != 0;
+//            }
+//
+//            @Override
+//            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//                View view = super.getDropDownView(position, convertView, parent);
+//                if (position == 0) {
+//                    view.setVisibility(View.VISIBLE);
+//                    view.setLayoutParams(new AbsListView.LayoutParams(
+//                            AbsListView.LayoutParams.MATCH_PARENT, 0));
+//                } else {
+//                    view.setVisibility(View.VISIBLE);
+//                    view.setLayoutParams(new AbsListView.LayoutParams(
+//                            AbsListView.LayoutParams.MATCH_PARENT,
+//                            AbsListView.LayoutParams.WRAP_CONTENT));
+//                    TextView tv = view.findViewById(android.R.id.text1);
+//                    if (tv != null) {
+//                        tv.setTextColor(Color.BLACK);
+//                        tv.setTextSize(14);
+//                        tv.setGravity(Gravity.CENTER_VERTICAL);
+//                        tv.setPadding(30, 20, 30, 20);
+//                    }
+//                }
+//                return view;
+//            }
+//        };
+//
 
-    // ✅ Callback interface
-    public interface StayAlertCallback {
-        void onSubmit(String nightRemark, String dayRemark, String nsRsfCode,
-                      String nsRsfTerritoryCode, String nsRsfTerritoryName);
-    }
+    /// / ✅ showNewPopup-ல use பண்ற existing layout
+//        adapter.setDropDownViewResource(R.layout.popup_night_stay_spinner);
+//
+//        dialog.show();
+//
+//        spinnerTerritory.post(() -> {
+//            spinnerTerritory.setAdapter(adapter);
+//            spinnerTerritory.setSelection(0, false);
+//            spinnerTerritory.setDropDownWidth(spinnerTerritory.getWidth());
+//            spinnerTerritory.setDropDownVerticalOffset(spinnerTerritory.getHeight());
+//        });
+//        btn_submit.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                if (spinnerTerritory.getSelectedItemPosition() == 0) {
+//                    Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                String nightRemark = ed_remark.getText().toString().trim();
+//                String dayRemark = ed_remark3.getText().toString().trim();
+//                if (nightRemark.isEmpty()) {
+//                    Toast.makeText(fragment, "Please enter Night Stay remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if (dayRemark.isEmpty()) {
+//                    Toast.makeText(fragment, "Please enter Day remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                // ✅ Territory code/name எடு
+//                String nsRsfTerritoryCode = "";
+//                String nsRsfTerritoryName = "";
+//                int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
+//                if (selectedIndex >= 0 && selectedIndex < filteredTerritoryList.size()) {
+//                    nsRsfTerritoryCode = filteredTerritoryList.get(selectedIndex).getStrid();
+//                    nsRsfTerritoryName = filteredTerritoryList.get(selectedIndex).getStrname();
+//                }
+//
+//                // ✅ nsRsfCode logic
+//                String nsRsfCode = "";
+//                if (mFwFlg1.equalsIgnoreCase("F")) {
+//                    nsRsfCode = mHQCode1;
+//                } else if (mFwFlg2.equalsIgnoreCase("F")) {
+//                    nsRsfCode = mHQCode2;
+//                } else {
+//                    nsRsfCode = sfCode;
+//                }
+//
+//                Log.d("STAY_DEBUG", "Territory Code=" + nsRsfTerritoryCode);
+//                Log.d("STAY_DEBUG", "Territory Name=" + nsRsfTerritoryName);
+//                Log.d("STAY_DEBUG", "RSF Code=" + nsRsfCode);
+//                Log.d("STAY_DEBUG", "Night Remark=" + nightRemark);
+//                Log.d("STAY_DEBUG", "Day Remark=" + dayRemark);
+//
+//                dialog.dismiss();
+//
+//                // ✅ Day Submit call பண்ணு
+//                finalSubmit(dayRemark, false);
+//            }
+//        });
+//
+//        btn_cancel.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//    }
+//    public  void StayAlert2(FragmentActivity fragment,
+//                            String mFwFlg1, String mFwFlg2,
+//                            String mTownname1, String mTownname2,
+//                            String mHQCode1, String mHQCode2,
+//                            String sfCode,   // 👈 add this
+//                            List<Multicheckclass_clust> multiple_cluster_list){
+//        Dialog dialog = new Dialog(context);
+//        dialog.setContentView(R.layout.popup_night_stay_teritorry);
+//        if (dialog.getWindow() != null) {
+//            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        }
+//        dialog.setCancelable(false);
+//
+//        Spinner spinnerTerritory = dialog.findViewById(R.id.spinnerTerritory);
+//        EditText ed_remark = dialog.findViewById(R.id.ed_remark);
+//        EditText ed_remark3 = dialog.findViewById(R.id.ed_remark3);
+//        Button btn_submit = dialog.findViewById(R.id.btn_submit);
+//        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+//
+//        // ✅ Territory list build - showNewPopup மாதிரியே
+//        List<String> territoryList = new ArrayList<>();
+//        territoryList.add("Select Territory");
+//
+//        String selectedClusters = "";
+//        if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname1 + "," + mTownname2;
+//        } else if (mFwFlg1.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname1;
+//        } else if (mFwFlg2.equalsIgnoreCase("F")) {
+//            selectedClusters = mTownname2;
+//        }
+//
+//        if (!selectedClusters.isEmpty()) {
+//            for (String name : selectedClusters.split(",")) {
+//                String trimmed = name.trim();
+//                if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+//                    territoryList.add(trimmed);
+//                }
+//            }
+//        } else {
+//            for (Multicheckclass_clust item : multiple_cluster_list) {
+//                territoryList.add(item.getStrname());
+//            }
+//        }
+//
+//        // ✅ Spinner adapter - showNewPopup மாதிரியே
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.popup_night_stay_spinner, territoryList) {
+//            @Override
+//            public boolean isEnabled(int position) {
+//                return position != 0;
+//            }
+//
+//            @Override
+//            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//                View view = super.getDropDownView(position, convertView, parent);
+//                if (position == 0) {
+//                    view.setVisibility(View.GONE);
+//                    view.setLayoutParams(new AbsListView.LayoutParams(0, 1));
+//                } else {
+//                    view.setVisibility(View.VISIBLE);
+//                    TextView tv = view.findViewById(android.R.id.text1);
+//                    if (tv != null) {
+//                        tv.setTextColor(Color.BLACK);
+//                        tv.setTextSize(14);
+//                        tv.setGravity(Gravity.CENTER_VERTICAL);
+//                        tv.setPadding(30, 0, 30, 0);
+//                    }
+//                }
+//                return view;
+//            }
+//        };
+//        adapter.setDropDownViewResource((R.layout.popup_night_stay_spinner));
+//        spinnerTerritory.setAdapter(adapter);
+//        spinnerTerritory.setSelection(0, false);
+//
+//        dialog.show();
+//
+//        btn_submit.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                if (spinnerTerritory.getSelectedItemPosition() == 0) {
+//                    Toast.makeText(context, "Select Territory", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                String nightRemark = ed_remark.getText().toString().trim();
+//                String dayRemark = ed_remark3.getText().toString().trim();
+//                if (nightRemark.isEmpty()) {
+//                    Toast.makeText(context, "Please enter Night Stay remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if (dayRemark.isEmpty()) {
+//                    Toast.makeText(context, "Please enter Day remarks", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                // ✅ Territory code/name எடுக்கணும்
+//                String nsRsfTerritoryCode = "";
+//                String nsRsfTerritoryName = "";
+//                String nsRsfCode = "";
+//
+//                if (!multiple_cluster_list.isEmpty()) {
+//                    int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
+//                    if (selectedIndex >= 0 && selectedIndex < multiple_cluster_list.size()) {
+//                        nsRsfTerritoryCode = multiple_cluster_list.get(selectedIndex).getStrid();
+//                        nsRsfTerritoryName = multiple_cluster_list.get(selectedIndex).getStrname();
+//                    }
+//                }
+//
+//                if (mFwFlg1.equalsIgnoreCase("F")) {
+//                    nsRsfCode = mHQCode1;
+//                } else if (mFwFlg2.equalsIgnoreCase("F")) {
+//                    nsRsfCode = mHQCode2;
+//                } else {
+//                    nsRsfCode = sfCode;
+//                }
+//
+//                dialog.dismiss();
+//                // ✅ Final submit callback
+//              //  callback.onSubmit(nightRemark, dayRemark, nsRsfCode, nsRsfTerritoryCode, nsRsfTerritoryName);
+//            }
+//        });
+//
+//        btn_cancel.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//    }
+//
+//    // ✅ Callback interface
+//    public interface StayAlertCallback {
+//        void onSubmit(String nightRemark, String dayRemark, String nsRsfCode,
+//                      String nsRsfTerritoryCode, String nsRsfTerritoryName);
+//    }
 
 //    private void dialogAcknowledge(Dialog dialogRemarks) {
 //        EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
@@ -6056,7 +6902,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //            }
 //        });
 //    }
-
     private void
     dialogEditOrDelete(String sessionType) {
         Dialog dialogOptionSelection = new Dialog(requireActivity());

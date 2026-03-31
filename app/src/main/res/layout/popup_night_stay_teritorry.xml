@@ -9,38 +9,48 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/_3sdp">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tv_head"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginVertical="@dimen/_3sdp"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
-            android:padding="@dimen/_2sdp"
-            android:text="Night Stay"
+            android:padding="@dimen/_4sdp"
+            android:text="@string/night_stay"
             android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_7sdp"
+            android:textSize="@dimen/_7ssp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/view_dummy"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view_dummy"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/light_grey_3"
+           android:layout_below="@+id/tv_head"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+<!--        android:layout_marginVertical="@dimen/_2sdp"-->
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/ed_alert_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_head"
+            android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:padding="@dimen/_2sdp"
             android:layout_alignParentStart="true"
             android:fontFamily="@font/satoshi_medium"
             android:gravity="left"
-            android:hint="You are staying overnight"
+            android:text="@string/you_are_staying_overnight"
             android:paddingVertical="@dimen/_3sdp"
             android:textSize="@dimen/_7sdp"
             android:textStyle="bold" />
@@ -51,12 +61,13 @@
             android:layout_below="@id/ed_alert_msg"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:padding="@dimen/_2sdp"
+            android:textColor="@color/dark_purple"
             android:layout_alignParentStart="true"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="left"
-            android:hint="Select headQuaters"
+            android:text="@string/select_head_quarter"
             android:paddingVertical="@dimen/_3sdp"
-            android:textSize="@dimen/_7sdp"
+            android:textSize="@dimen/_6sdp"
             android:textStyle="bold" />
 
         <Spinner
@@ -67,7 +78,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:paddingStart="8dp"
-            android:background="@drawable/backround_text"
+            android:background="@drawable/spinner"
             android:layout_below="@+id/select_hq"
             android:paddingEnd="8dp" />
 <!--        android:layout_marginTop="@dimen/_4sdp"-->
@@ -81,26 +92,26 @@
             android:layout_alignParentStart="true"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="left"
-            android:hint="Select territory"
+            android:textColor="@color/dark_purple"
+            android:text="Select Territory"
             android:paddingVertical="@dimen/_3sdp"
-            android:textSize="@dimen/_7sdp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/_6ssp"
+           android:textStyle="bold" />
         <Spinner
             android:id="@+id/spinnerTerritory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
+            android:background="@drawable/spinner"
             android:layout_below="@id/select_territory"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            android:layout_marginEnd="16dp" />
 <!--        android:layout_marginTop="@dimen/_50sdp"-->
         <!-- Remarks -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"/>
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/_3sdp"/>-->
 
         <TextView
             android:id="@+id/tv_head2"
@@ -111,7 +122,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
             android:padding="@dimen/_2sdp"
-            android:text="@string/remarks"
+            android:text="@string/night_stay_remarks"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp"
             android:textStyle="bold"
@@ -119,8 +130,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-           />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!--        <ImageView-->
         <!--            android:id="@+id/img_close"-->
@@ -154,11 +164,10 @@
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:background="@drawable/bg_light_cement"
             android:fontFamily="@font/satoshi_medium"
-            android:gravity="start"
+            android:gravity="left"
             android:hint="@string/type_remarks"
             android:padding="@dimen/_4sdp"
-            android:inputType="text"
-            android:maxLines="1"
+            android:inputType="textMultiLine"
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:textSize="@dimen/_6ssp"
@@ -169,32 +178,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 <!--        app:layout_constraintTop_toBottomOf="@id/view_dummy2"-->
-        <!--        <androidx.appcompat.widget.AppCompatEditText-->
-        <!--            android:id="@+id/ed_remark"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="@dimen/_42sdp"-->
-        <!--            android:layout_marginHorizontal="@dimen/_8sdp"-->
-        <!--            android:background="@drawable/bg_light_cement"-->
-        <!--            android:fontFamily="@font/satoshi_medium"-->
-        <!--            android:gravity="start|top"-->
-        <!--            android:hint="@string/type_remarks"-->
-        <!--            android:padding="@dimen/_4sdp"-->
-        <!--            android:imeOptions="actionDone"-->
-        <!--            android:paddingVertical="@dimen/_3sdp"-->
-        <!--            android:textSize="@dimen/_6ssp"-->
-        <!--            app:layout_constraintBottom_toTopOf="@id/rl_btns"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/view_dummy2" />-->
 
 
-<!--        app:layout_constraintTop_toBottomOf="@id/view_dummy2"-->
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"/>
 
         <TextView
             android:id="@+id/tv_head3"
@@ -205,7 +190,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
             android:padding="@dimen/_2sdp"
-            android:text="Day Remarks"
+            android:text="@string/day_remarks"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp"
             android:textStyle="bold"
@@ -215,30 +200,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!--        <ImageView-->
-        <!--            android:id="@+id/img_close"-->
-        <!--            android:layout_width="@dimen/_15sdp"-->
-        <!--            android:layout_height="@dimen/_15sdp"-->
-        <!--            android:layout_marginEnd="@dimen/_3sdp"-->
-        <!--            android:padding="@dimen/_2sdp"-->
-        <!--            android:src="@drawable/img_close"-->
-        <!--            app:layout_constraintBottom_toBottomOf="@id/tv_head"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintHorizontal_bias="1.0"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/tv_head"-->
-        <!--            app:layout_constraintTop_toTopOf="@id/tv_head"-->
-        <!--            tools:ignore="ContentDescription" />-->
-
-        <!--        <View-->
-        <!--            android:id="@+id/view_dummy2"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="@dimen/_1sdp"-->
-        <!--            android:layout_marginVertical="@dimen/_2sdp"-->
-        <!--            android:background="@color/light_grey_3"-->
-        <!--            app:layout_constraintBottom_toTopOf="@id/ed_remark"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/tv_head2"-->
-        <!--            app:layout_constraintVertical_bias="0.0" />-->
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/ed_remark3"
@@ -247,11 +208,10 @@
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:background="@drawable/bg_light_cement"
             android:fontFamily="@font/satoshi_medium"
-            android:gravity="start"
+            android:gravity="left"
             android:hint="@string/type_remarks"
             android:padding="@dimen/_4sdp"
-            android:inputType="text"
-            android:maxLines="1"
+            android:inputType="textMultiLine"
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:textSize="@dimen/_6ssp"
@@ -261,6 +221,7 @@
             app:layout_constraintBottom_toTopOf="@id/rl_btns"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+<!--        android:maxLines="1"-->
         <!--        app:layout_constraintTop_toBottomOf="@id/view_dummy2"-->
         <!--        <androidx.appcompat.widget.AppCompatEditText-->
         <!--            android:id="@+id/ed_remark"-->
@@ -313,7 +274,7 @@
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:background="@drawable/bg_border_with_pink"
                 android:fontFamily="@font/satoshi_bold"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_6ssp"
@@ -326,7 +287,7 @@
                 android:layout_alignParentEnd="true"
                 android:background="@drawable/bg_purple"
                 android:fontFamily="@font/satoshi_bold"
-                android:text="Submit"
+                android:text="@string/submit"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_6ssp"

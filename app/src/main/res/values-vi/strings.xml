@@ -1078,4 +1078,13 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="please_detail_mandatory_slides">Vui lòng cung cấp chi tiết các slide bắt buộc</string>
     <string name="mandatory_slides_pending_for_brand">Các slide bắt buộc còn thiếu cho thương hiệu: %1$s</string>
     <string name="loading">Đang tải</string>
+
+    <string name="detailed_slides">Các slide chi tiết</string>
+    <string name="no_detailed_slides">Không có slide chi tiết</string>
+
+    <string name="night_stay">Lưu trú qua đêm</string>
+    <string name="are_you_staying_overnight">Bạn có lưu trú qua đêm không?</string>
+    <string name="you_are_staying_overnight">Bạn đang lưu trú qua đêm</string>
+    <string name="night_stay_remarks">Ghi chú lưu trú qua đêm</string>
+    <string name="day_remarks">Ghi chú trong ngày</string>
 </resources>

@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textSize="@dimen/_6ssp"
-    android:fontFamily="@font/satoshi_bold"
+    android:fontFamily="@font/satoshi_medium"
     android:padding="10dp"
+    android:textColor="@color/dark_purple"
     android:background="@drawable/backround_text"
     android:layout_marginStart="@dimen/_10sdp"
     android:gravity="center_vertical" />
