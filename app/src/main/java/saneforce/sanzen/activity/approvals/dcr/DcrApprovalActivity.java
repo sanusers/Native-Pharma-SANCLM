@@ -418,7 +418,19 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
         });
 
+        dcrCallApprovalBinding.dcrSync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if(UtilityClass.isNetworkAvailable(DcrApprovalActivity.this)){
+                    dcrApprovalLists.clear();
+                    CallDcrListApi();
 
+                }else{
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this,getString(R.string.no_network));
+                }
+
+            }
+        });
         dcrCallApprovalBinding.btnReject.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -631,6 +643,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
                             dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator"), json.getString("Submission_Date"), json.getString("Hlfday"), json.getString("Remarks"), json.getString("Additional_Temp_Details")));
+                        }
+                        if(DcrCount < dcrApprovalLists.size()){
+                            DcrCount++;
                         }
 
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());

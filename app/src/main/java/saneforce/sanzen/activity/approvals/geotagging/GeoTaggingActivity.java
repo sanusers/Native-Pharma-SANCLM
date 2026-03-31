@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.approvals.geotagging;
 
+import static saneforce.sanzen.activity.approvals.ApprovalsActivity.GeoTagCount;
+
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -36,10 +38,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
+import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityGeoTaggingBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -191,6 +195,18 @@ public class GeoTaggingActivity extends AppCompatActivity {
             }
         });
 
+        geoTaggingBinding.geoSync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if(UtilityClass.isNetworkAvailable(GeoTaggingActivity.this)){
+                    geoTaggingModelLists.clear();
+                    CallGeoTagApi();
+                }else{
+                    commonUtilsMethods.showToastMessage(GeoTaggingActivity.this,getString(R.string.no_network));
+                }
+            }
+        });
+
         geoTaggingBinding.searchGeoTagging.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -300,6 +316,9 @@ public class GeoTaggingActivity extends AppCompatActivity {
                             if (SharedPref.getDrNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("D") || SharedPref.getChmNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("C") || SharedPref.getStkNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("S") || SharedPref.getUnlNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("U") || SharedPref.getCipNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("CIP") || SharedPref.getHospNeed(GeoTaggingActivity.this).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("H")) {
                                 geoTaggingModelLists.add(new GeoTaggingModelList(json.getString("cust_name"), json.getString("Cust_Code"), json.getString("Sf_Name"), json.getString("tagged_sfCode"), json.getString("tagged_cluster"), json.getString("addrs"), json.getString("lat"), json.getString("long"), json.getString("cus_mode"), json.getString("tagged_time"), json.getString("MapId")));
                                 geoTaggingModelSort.add(new GeoTaggingModelList(json.getString("cust_name"), json.getString("Cust_Code"), json.getString("Sf_Name"), json.getString("tagged_sfCode"), json.getString("tagged_cluster"), json.getString("addrs"), json.getString("lat"), json.getString("long"), json.getString("cus_mode"), json.getString("tagged_time"), json.getString("MapId")));
+                            }
+                            if(GeoTagCount < geoTaggingModelLists.size()){
+                                GeoTagCount++;
                             }
                         }
 

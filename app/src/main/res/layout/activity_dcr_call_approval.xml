@@ -49,6 +49,18 @@
         app:layout_constraintTop_toTopOf="@id/view_top"
         tools:ignore="TextSizeCheck" />
 
+    <ImageView
+        android:id="@+id/dcrSync"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_gravity="center"
+        android:background="@drawable/sync_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/view_top"
+        app:layout_constraintTop_toTopOf="@id/view_top"
+        tools:ignore="MissingConstraints" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_main"
         android:layout_width="match_parent"

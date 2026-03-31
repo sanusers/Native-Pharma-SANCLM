@@ -2365,7 +2365,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return oneBuildModelClasses;
     }
 
-    private void prepareDoctorVisitDataOneBuild(ArrayList<OneBuildModelClass> oneBuildModelClassList) {
+    private void prepareDoctorVisitDataOneBuild(ArrayList<OneBuildModelClass> oneBuildModelClassList) {     // App Creah here When Tp setup is not synced
         if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && (visitFrequencyNeed.equalsIgnoreCase("0") || Integer.parseInt(minimumGap) > 0)) {
             try {
 //            doctorVisitMap = new HashMap<>();

@@ -32,6 +32,7 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.SafeClickListener;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityApprovalsBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -131,6 +132,20 @@ public class ApprovalsActivity extends AppCompatActivity {
                 getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
+        approvalsBinding.approvalSync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if(UtilityClass.isNetworkAvailable(ApprovalsActivity.this)) {
+                    list_approvals.clear();
+                    CallListCountAPI();
+                }else{
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(ApprovalsActivity.this,getString(R.string.no_network));
+                }
+            }
+        });
+
 
         // approvalsBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(ApprovalsActivity.this, HomeDashBoard.class)));
     }
