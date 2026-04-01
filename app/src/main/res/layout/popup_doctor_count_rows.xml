@@ -1,60 +1,125 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
+    <!-- S.No -->
     <TextView
         android:id="@+id/tvSno"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/_2sdp"
+        android:layout_weight="2"
         android:text="1"
-        android:padding="@dimen/_2sdp"
-        android:fontFamily="@font/satoshi_bold"
+        android:maxLines="1"
         android:textColor="@color/dark_purple"
+        android:gravity="start"
+        android:fontFamily="@font/satoshi_bold"
+        android:padding="@dimen/_2sdp"
         android:textSize="@dimen/_5ssp"/>
 
+    <!-- Cluster -->
     <TextView
         android:id="@+id/tvCluster"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:text="Cluster"
-        android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginEnd="@dimen/_2sdp"
-        android:gravity="center"
         android:padding="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_bold"
         android:textColor="@color/dark_purple"
-        android:textSize="@dimen/_5ssp"/>
+        android:textSize="@dimen/_5ssp"
+        android:gravity="center"
 
+        android:ellipsize="end"/>
+
+    <!-- Doctor -->
     <TextView
         android:id="@+id/tvDoctor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="4"
-        android:text="Doctor Name"
-        android:padding="@dimen/_2sdp"
-        android:layout_marginStart="@dimen/_2sdp"
-        android:layout_marginEnd="@dimen/_2sdp"
+        android:text="Doctor"
         android:gravity="center"
+        android:padding="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_bold"
         android:textColor="@color/dark_purple"
-        android:textSize="@dimen/_5ssp"/>
+        android:textSize="@dimen/_5ssp"
+        android:ellipsize="end"/>
 
+    <!-- Category -->
     <TextView
         android:id="@+id/tvCategory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="5"
         android:text="Category"
-        android:layout_marginStart="@dimen/_2sdp"
-        android:layout_marginEnd="@dimen/_2sdp"
-        android:gravity="center"
         android:padding="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_bold"
         android:textColor="@color/dark_purple"
-        android:textSize="@dimen/_5ssp"/>
+        android:textSize="@dimen/_5ssp"
+        android:gravity="center"
+        android:ellipsize="end"/>
 
 </LinearLayout>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="horizontal">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvSno"-->
+<!--        android:layout_width="@dimen/_20sdp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="0"-->
+<!--        android:layout_marginEnd="@dimen/_2sdp"-->
+<!--        android:text="1"-->
+<!--        android:padding="@dimen/_2sdp"-->
+<!--        android:fontFamily="@font/satoshi_bold"-->
+<!--        android:textColor="@color/dark_purple"-->
+<!--        android:gravity="start"-->
+<!--        android:textSize="@dimen/_5ssp"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvCluster"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="3"-->
+<!--        android:text="Cluster"-->
+<!--        android:layout_marginStart="@dimen/_4sdp"-->
+<!--        android:layout_marginEnd="@dimen/_2sdp"-->
+<!--        android:gravity="start"-->
+<!--        android:padding="@dimen/_2sdp"-->
+<!--        android:fontFamily="@font/satoshi_bold"-->
+<!--        android:textColor="@color/dark_purple"-->
+<!--        android:textSize="@dimen/_5ssp"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvDoctor"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="4"-->
+<!--        android:text="Doctor Name"-->
+<!--        android:padding="@dimen/_2sdp"-->
+<!--        android:layout_marginStart="@dimen/_2sdp"-->
+<!--        android:layout_marginEnd="@dimen/_2sdp"-->
+<!--        android:gravity="center"-->
+<!--        android:fontFamily="@font/satoshi_bold"-->
+<!--        android:textColor="@color/dark_purple"-->
+<!--        android:textSize="@dimen/_5ssp"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvCategory"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="5"-->
+<!--        android:text="Category"-->
+<!--        android:layout_marginStart="@dimen/_2sdp"-->
+<!--        android:layout_marginEnd="@dimen/_2sdp"-->
+<!--        android:gravity="center"-->
+<!--        android:padding="@dimen/_2sdp"-->
+<!--        android:fontFamily="@font/satoshi_bold"-->
+<!--        android:textColor="@color/dark_purple"-->
+<!--        android:textSize="@dimen/_5ssp"/>-->
+
+<!--</LinearLayout>-->

@@ -126,9 +126,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:baselineAligned="false"
                 android:gravity="center_vertical"
                 android:padding="2dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -137,6 +137,7 @@
                     android:gravity="center"
                     android:textSize="@dimen/_5ssp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_Cluster"
                     android:layout_width="0dp"
@@ -148,6 +149,7 @@
                     android:gravity="center"
                     android:textSize="@dimen/_5ssp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_Name"
                     android:layout_width="0dp"
@@ -159,6 +161,7 @@
                     android:gravity="center"
                     android:textSize="@dimen/_5ssp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -169,8 +172,8 @@
                     android:gravity="center"
                     android:textSize="@dimen/_5ssp"
                     android:textStyle="bold" />
-            </LinearLayout>
 
+            </LinearLayout>
             <View android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="#9e9ea5" />
