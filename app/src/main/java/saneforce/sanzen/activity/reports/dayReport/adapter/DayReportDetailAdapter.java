@@ -970,7 +970,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                             String timeDuration = TimeUtils.timeDurationHMS(data.getStartTime().substring(11), data.getEndTime().substring(11));
                                                             duration = TimeUtils.addTime(duration, timeDuration);
                                                             List<SlideRatingDetailsModelClass.SlideDetails> slideDetailsList = details.getSlideDetailsList();
-                                                            slideDetailsList.add(new SlideRatingDetailsModelClass.SlideDetails(data.getSlide_Name(), data.getStartTime(), data.getEndTime()));
+                                                            slideDetailsList.add(new SlideRatingDetailsModelClass.SlideDetails(data.getSlideName(), data.getStartTime(), data.getEndTime()));
                                                             details.setDuration(duration);
                                                             details.setSlideDetailsList(slideDetailsList);
                                                             slideDetailsMap.put(data.getProduct_Code(), details);
@@ -979,7 +979,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                             String timeDuration = TimeUtils.timeDurationHMS(data.getStartTime().substring(11), data.getEndTime().substring(11));
                                                             duration = TimeUtils.addTime(duration, timeDuration);
                                                             List<SlideRatingDetailsModelClass.SlideDetails> slideDetailsList = new ArrayList<>();
-                                                            slideDetailsList.add(new SlideRatingDetailsModelClass.SlideDetails(data.getSlide_Name(), data.getStartTime(), data.getEndTime()));
+                                                            slideDetailsList.add(new SlideRatingDetailsModelClass.SlideDetails(data.getSlideName(), data.getStartTime(), data.getEndTime()));
                                                             SlideRatingDetailsModelClass details = new SlideRatingDetailsModelClass(data.getProduct_Code(), data.getProduct_Name(), data.getRating(), data.getFeedbk(), duration, slideDetailsList);
                                                             slideDetailsMap.put(data.getProduct_Code(), details);
                                                         }

@@ -14,7 +14,7 @@ public class SlideRatingDetailsModelClass {
     private String DDSl_No;
     private String Rating;
     private String Feedbk;
-    private String Slide_Name;
+    private String SlideName;
     private String duration;
     private List<SlideDetails> slideDetailsList;
 
@@ -107,12 +107,12 @@ public class SlideRatingDetailsModelClass {
         Feedbk = feedbk;
     }
 
-    public String getSlide_Name() {
-        return Slide_Name;
+    public String getSlideName() {
+        return SlideName;
     }
 
-    public void setSlide_Name(String slide_Name) {
-        Slide_Name = slide_Name;
+    public void setSlideName(String slideName) {
+        SlideName = slideName;
     }
 
     public String getDuration() {
