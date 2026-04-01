@@ -3280,6 +3280,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateSummaryAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
         try {
+            prepareDoctorVisitDataOneBuild(arrayListOneBuild);
             ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
             int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
             for (OneBuildModelClass oneBuildModelClass : arrayListOneBuild) {

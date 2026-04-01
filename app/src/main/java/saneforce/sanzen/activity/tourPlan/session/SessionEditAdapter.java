@@ -45,6 +45,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -55,6 +56,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
+import saneforce.sanzen.activity.tourPlan.model.DoctorVisitModel;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
@@ -3651,6 +3653,24 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public void clearSelectedItem(MyViewHolder holder, TextView labelTxt, TextView countTxt) {
         // un check the all check boxes
         for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
+            if (holder.drLayout.getVisibility() == View.VISIBLE) {
+                EditModelClass data = holder.sessionItemAdapterArray.get(i);
+                if (data != null && data.isChecked()) {
+                    String code = data.getCode();
+                    Log.d("TP", "clearSelectedItem: dr code --> " + code);
+                    DoctorVisitModel doctorVisitModel = TourPlanActivity.doctorVisitMap.get(code);
+                    if (doctorVisitModel != null) {
+                        int totalVisits = doctorVisitModel.getTotalVisit();
+                        int plannedVisits = doctorVisitModel.getPlannedVisit();
+                        Set<String> plannedDatesList = doctorVisitModel.getPlannedDates();
+                        plannedDatesList.remove(SessionEditAdapter.inputDataArrayOneBuild.getDayNo());
+                        plannedVisits--;
+                        doctorVisitModel.setPlannedDates(plannedDatesList);
+                        doctorVisitModel.setPlannedVisit(plannedVisits);
+                        TourPlanActivity.doctorVisitMap.put(code, doctorVisitModel);
+                    }
+                }
+            }
             holder.sessionItemAdapterArray.get(i).setChecked(false);
         }
         for (int i = 0; i < holder.mgrSessionItemAdapterArray.size(); i++) {
