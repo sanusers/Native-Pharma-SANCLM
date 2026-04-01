@@ -3578,12 +3578,14 @@ public class MasterSyncActivity extends AppCompatActivity {
         slideDialog.setCancelable(false);
         if (!isFinishing()) {
             slideDialog.show();
-        }
-
-        cancel_img.setOnClickListener(view -> {
+        }/*else{
             slideDialog.dismiss();
-            navigateFrom = "Slide";
-        });
+        }*/
+
+//        cancel_img.setOnClickListener(view -> {
+//            slideDialog.dismiss();
+//            navigateFrom = "Slide";
+//        });
 
         SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
         slidesViewModel.getAllSlides().observe(this, slides -> {
@@ -3622,6 +3624,13 @@ public class MasterSyncActivity extends AppCompatActivity {
             } else {
                 SharedPref.putSlidestatus(MasterSyncActivity.this, false);
             }
+        });
+        cancel_img.setOnClickListener(view -> {
+            slideDialog.dismiss();
+            navigateFrom = "Slide";
+            slidesViewModel.getAllSlides().removeObservers(this);
+            slidesViewModel.GetDowloaingCount().removeObservers(this);
+            slidesViewModel.getCountOfDownloadingProcessDone().removeObservers(this);
         });
     }
 
@@ -3691,12 +3700,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         welcomeSlideDialog.setCancelable(false);
         if (!isFinishing()) {
             welcomeSlideDialog.show();
-        }
-
-        cancel_img.setOnClickListener(view -> {
+        }/*else{
             welcomeSlideDialog.dismiss();
-            navigateFrom = "Slide";
-        });
+        }*/
+
 
         WelcomeSlidesViewModel slidesViewModel = new ViewModelProvider(this).get(WelcomeSlidesViewModel.class);
         slidesViewModel.getAllSlides().observe(this, slides -> {
@@ -3728,5 +3735,23 @@ public class MasterSyncActivity extends AppCompatActivity {
                 SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
             }
         });
+        cancel_img.setOnClickListener(view -> {
+            welcomeSlideDialog.dismiss();
+            navigateFrom = "Slide";
+            slidesViewModel.getAllSlides().removeObservers(this);
+            slidesViewModel.getDownloadingCount().removeObservers(this);
+            slidesViewModel.getCountOfDownloadingProcessDone().removeObservers(this);
+        });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (slideDialog != null && slideDialog.isShowing()) {
+            slideDialog.dismiss();
+
+        }
+        if (welcomeSlideDialog != null && welcomeSlideDialog.isShowing()) {
+            welcomeSlideDialog.dismiss();
+        }
     }
 }

@@ -3332,6 +3332,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("Others_Name", workDayName);
             jsonObject.put("Others_Code2", workDayCode2);
             jsonObject.put("Others_Name2", workDayName2);
+            if(!mWTCode2.isEmpty()){
+                jsonObject.put("Session_Count","1");
+            }else{
+                jsonObject.put("Session_Count","0");
+            }
             isFromTP = false;
 
             Log.e("SAVE JSON", "CreateJson: " + jsonObject.toString());
