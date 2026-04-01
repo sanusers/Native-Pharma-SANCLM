@@ -182,10 +182,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     String sfCode = "";
     private String nsRsfName = "";
     private String nsRsfCode = "";
-    private String nsRsfTerritoryCode = "";
-    private String nsRsfTerritoryName = "";
-    private String nsRsfNightStayRemarks = "";
-    String nsRsfDayRemarks = "";
+    private String nsTerritoryCode = "";
+    private String nsTerritoryName = "";
+    private String nsRemarks = "";
+
+    //String nsRsfDayRemarks = "";
 
     private void checkDateChange() {
         if (!isAdded()) return;
@@ -5722,13 +5723,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("location", latitude + ":" + longitude);
             finalSubmitJSONObject.put("address", address);
 
-            if (!nsRsfNightStayRemarks.isEmpty()) {
-                finalSubmitJSONObject.put("Ns_Rsf_Name", SharedPref.getHqName(requireContext()));
-                finalSubmitJSONObject.put("Ns_Rsf_Code", nsRsfCode);
-                finalSubmitJSONObject.put("Ns_Rsf_territory_code", nsRsfTerritoryCode);
-                finalSubmitJSONObject.put("Ns_Rsf_territory_name", nsRsfTerritoryName);
-                finalSubmitJSONObject.put("Ns_Rsf_day_remarks", nsRsfDayRemarks);
-                finalSubmitJSONObject.put("Ns_Rsf_night_stay_remarks", nsRsfNightStayRemarks);
+            if (!nsRemarks.isEmpty()) {
+                finalSubmitJSONObject.put("NS_Rsf_Name", SharedPref.getHqName(requireContext()));
+                finalSubmitJSONObject.put("IsNightStay", SharedPref.getNightStay(requireContext()));
+                finalSubmitJSONObject.put("NS_Rsf_Code", nsRsfCode);
+                finalSubmitJSONObject.put("NS_Territory_Code", nsTerritoryCode);
+                finalSubmitJSONObject.put("NS_Territory_Name", nsTerritoryName);
+                finalSubmitJSONObject.put("NS_Remarks", nsRemarks);
+              //  finalSubmitJSONObject.put("NS_Rsf_Night_Stay_Remarks", nsRsfNightStayRemarks);
             }
 
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
@@ -5810,8 +5812,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-//    private void dialogFinalSubmit(Dialog dialogRemarks){
-    private void dialogFinalSubmit(Dialog dialogRemarks,boolean isDayRemarks) {
+   private void dialogFinalSubmit(Dialog dialogRemarks, boolean isFromNightStay){
+   // private void dialogFinalSubmit(Dialog dialogRemarks,boolean isDayRemarks) {
         EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
         ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks, 300)});
         TextView heading = dialogRemarks.findViewById(R.id.tv_head);
@@ -5821,13 +5823,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_clear.setText(requireContext().getString(R.string.clear));
         btn_save.setText(requireContext().getString(R.string.save));
         content.setVisibility(View.GONE);
-        heading.setText(requireContext().getString(R.string.remarks));
+       // Night Stay flow மட்டும் "Day Remarks"
+       if (isFromNightStay) {
+           heading.setText("Day Remarks");
+       } else {
+           heading.setText(requireContext().getString(R.string.remarks));
+       }
+        //heading.setText(requireContext().getString(R.string.remarks));
         ed_remarks.setVisibility(View.VISIBLE);
 
-        if (isDayRemarks) {
-            heading.setText(R.string.day_remarks); // Day Remarks (Arabic/French etc. automatic-ah maarum)
-            ed_remarks.setHint(R.string.day_remarks);
-        }
+//        if (isDayRemarks) {
+//            heading.setText(R.string.day_remarks); // Day Remarks (Arabic/French etc. automatic-ah maarum)
+//            ed_remarks.setHint(R.string.day_remarks);
+//        }
 //        } else {
 //            heading.setText(R.string.night_stay_remarks); // Default Night Stay
 //            ed_remarks.setHint(R.string.night_stay_remarks);
@@ -5889,8 +5897,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if (dialog.getWindow() != null) {
                         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     }
-//                    dialogFinalSubmit(dialog);
-                    dialogFinalSubmit(dialog,true);
+                    dialogFinalSubmit(dialog,false);
+                   // dialogFinalSubmit(dialog,true);
                     dialog.show();
                 }
             }
@@ -5908,8 +5916,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
                 ImageView iv_close2 = newDialog.findViewById(R.id.img_close);
                 iv_close2.setOnClickListener(v -> newDialog.dismiss()); // ✅ close fix
-                //dialogFinalSubmit(newDialog);
-                dialogFinalSubmit(newDialog,true);
+                dialogFinalSubmit(newDialog,false);
+               // dialogFinalSubmit(newDialog,true);
                 newDialog.show();
             }
         });
@@ -5978,8 +5986,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             // ✅ இங்க add பண்ணுங்க
             ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
             iv_close.setOnClickListener(v -> dialogRemarks.dismiss());
-            //dialogFinalSubmit(dialogRemarks);
             dialogFinalSubmit(dialogRemarks,true);
+       //     dialogFinalSubmit(dialogRemarks,true);
             dialogRemarks.show();
         });
 //        btn_no.setOnClickListener(view -> {
@@ -6285,8 +6293,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 // ✅ Territory code/name எடு
                 int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
                 if (selectedIndex >= 0 && selectedIndex < filteredTerritoryList.size()) {
-                    nsRsfTerritoryCode = filteredTerritoryList.get(selectedIndex).getStrid();
-                    nsRsfTerritoryName = filteredTerritoryList.get(selectedIndex).getStrname();
+                    nsTerritoryCode = filteredTerritoryList.get(selectedIndex).getStrid();
+                    nsTerritoryName = filteredTerritoryList.get(selectedIndex).getStrname();
                 }
 
                 // ✅ nsRsfCode + nsRsfName logic
@@ -6302,20 +6310,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
 
                 // ✅ Remarks save
-                nsRsfNightStayRemarks = nightRemark;
-                nsRsfDayRemarks = dayRemark;
+                nsRemarks = nightRemark;
+                nsRemarks = dayRemark;
 
-                Log.d("STAY_DEBUG", "Territory Code=" + nsRsfTerritoryCode);
-                Log.d("STAY_DEBUG", "Territory Name=" + nsRsfTerritoryName);
+                Log.d("STAY_DEBUG", "Territory Code=" + nsTerritoryCode);
+                Log.d("STAY_DEBUG", "Territory Name=" + nsTerritoryName);
                 Log.d("STAY_DEBUG", "RSF Code=" + nsRsfCode);
                 Log.d("STAY_DEBUG", "RSF Name=" + nsRsfName);
-                Log.d("STAY_DEBUG", "Night Remark=" + nsRsfNightStayRemarks);
-                Log.d("STAY_DEBUG", "Day Remark=" + nsRsfDayRemarks);
+               // Log.d("STAY_DEBUG", "Night Remark=" + nsRsfNightStayRemarks);
+                Log.d("STAY_DEBUG", "Day Remark=" + nsRemarks);
 
                 dialog.dismiss();
 
                 // ✅ Day Submit
-                finalSubmit(nsRsfDayRemarks, false);
+                finalSubmit(nsRemarks, false);
             }
         });
 
