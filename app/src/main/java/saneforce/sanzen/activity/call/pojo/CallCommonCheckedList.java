@@ -27,6 +27,7 @@ public class CallCommonCheckedList implements Parcelable {
         totalVisit = in.readString();
         town_code = in.readString();
         town_name = in.readString();
+        specialityName = in.readString();
     }
 
     public static final Creator<CallCommonCheckedList> CREATOR = new Creator<CallCommonCheckedList>() {
@@ -104,6 +105,7 @@ public class CallCommonCheckedList implements Parcelable {
 
     String town_code;
     String town_name;
+    String specialityName;
     public String pack;
     String NSR_Price,Sample_Price,Target_Price,Distributor_Price,Product_Detail_Name,value;
 
@@ -383,6 +385,13 @@ public class CallCommonCheckedList implements Parcelable {
         return priorityCodes;
     }
 
+    public String getSpecialityName() {
+        return specialityName != null ? specialityName : "";
+    }
+    public void setSpecialityName(String specialityName) {
+        this.specialityName = specialityName;
+    }
+
     public void setPriorityCodes(String priorityCodes) {
         this.priorityCodes = priorityCodes;
     }
@@ -407,5 +416,6 @@ public class CallCommonCheckedList implements Parcelable {
         dest.writeString(totalVisit);
         dest.writeString(town_code);
         dest.writeString(town_name);
+        dest.writeString(specialityName);
     }
 }

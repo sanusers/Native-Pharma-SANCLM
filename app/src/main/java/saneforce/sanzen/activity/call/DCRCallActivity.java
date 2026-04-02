@@ -2860,56 +2860,61 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.d("DEBUG_ADCUSS_FINAL", jsonAdCuss.toString());
 
 
-            jsonSaveDcr.put("UnlistedJointWork", jsonArray);
-            JSONArray unlistedJsonArray = masterDataDao
-                    .getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(getApplicationContext()))
-                    .getMasterSyncDataJsonArray();
-            HashMap<String, JSONObject> unlistedDoctorMap = new HashMap<>();
-            for (int i = 0; i < unlistedJsonArray.length(); i++) {  // ✅ correct array
-                JSONObject doctorObj = unlistedJsonArray.getJSONObject(i);
-                String code = doctorObj.optString("Code").trim();
-                unlistedDoctorMap.put(code, doctorObj);  // ✅ correct map name
-            }
-            JSONArray unlistedJointWorkArray = new JSONArray();
-            for (String code : unlistedDoctorMap.keySet()) {
-                JSONObject doctorObj = unlistedDoctorMap.get(code);
-
-                JSONObject unlistObj = new JSONObject();
-
-                // unlistObj.put("Code", code);
-                unlistObj.put("Name", doctorObj.optString("Name", ""));
-                unlistObj.put("SpecialtyName", doctorObj.optString("SpecialtyName", ""));
-                unlistObj.put("Specialty",doctorObj.optString("Specialty",""));
-                unlistedJointWorkArray.put(unlistObj);
-            }
-
-            jsonSaveDcr.put("UnlistedJointWork", unlistedJointWorkArray);
-
-
-//            JSONArray jsonAdCuss = new JSONArray();
-//            HashSet<String> selectedNames = PopupNameAdapter.getSelectedNames();
+//            jsonSaveDcr.put("UnlistedJointWork", jsonArray);
+//            JSONArray unlistedJsonArray = masterDataDao
+//                    .getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(getApplicationContext()))
+//                    .getMasterSyncDataJsonArray();
+//            HashMap<String, JSONObject> unlistedDoctorMap = new HashMap<>();
+//            for (int i = 0; i < unlistedJsonArray.length(); i++) {  // ✅ correct array
+//                JSONObject doctorObj = unlistedJsonArray.getJSONObject(i);
+//                String code = doctorObj.optString("Code").trim();
+//                unlistedDoctorMap.put(code, doctorObj);  // ✅ correct map name
+//            }
+//            JSONArray unlistedJointWorkArray = new JSONArray();
+//            for (String code : unlistedDoctorMap.keySet()) {
+//                JSONObject doctorObj = unlistedDoctorMap.get(code);
 //
-//            for (modelClass doc : JointWorkSelectionSide.TodayCallList) {
-//                Log.d("DEBUG_ADCUSS", "DocName: " + doc.getDocName() + " | DocCode: " + doc.getDocCode());
-//                Log.d("DEBUG_ADCUSS", "SelectedNames: " + selectedNames.toString());
-//                if (doc.getDocName() != null) {
-//                    // Trim the name like you did for the popup
-//                    String cleanName = doc.getDocName().split("---")[0].trim();
+//                JSONObject unlistObj = new JSONObject();
 //
-//                    if (selectedNames.contains(cleanName)) {
-//                        JSONObject jsonDoc = new JSONObject();
-//                        jsonDoc.put("Code", doc.getDocCode());
-//                        jsonDoc.put("Name", doc.getDocName()); // keep full name in JSON
-//                        jsonArray.put(jsonDoc);
-//
-//                        Log.d("DEBUG_ADCUSS", "MATCHED: " + doc.getDocName());
-//                    }
-//                }
+//                // unlistObj.put("Code", code);
+//                unlistObj.put("Name", doctorObj.optString("Name", ""));
+//                unlistObj.put("SpecialtyName", doctorObj.optString("SpecialtyName", ""));
+//                unlistObj.put("Specialty",doctorObj.optString("Specialty",""));
+//                unlistedJointWorkArray.put(unlistObj);
 //            }
 //
-//            jsonSaveDcr.put("AdCuss", jsonArray);
-//            Log.d("DEBUG_ADCUSS_FINAL", jsonArray.toString());
-//
+//            jsonSaveDcr.put("UnlistedJointWork", unlistedJointWorkArray);
+
+            //Unlisted Jointwork
+            JSONArray unlistedJointWorkArray = new JSONArray();
+            for (CallCommonCheckedList item : JWOthersFragment.unlistedJointList) {
+                try {
+                    JSONObject unlistObj = new JSONObject();
+                    unlistObj.put("Name", item.getName());
+                    unlistObj.put("SpecialityName", item.getSpecialityName());
+                    unlistObj.put("SpecialityCode", item.getCode());
+                    unlistedJointWorkArray.put(unlistObj);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            jsonSaveDcr.put("UnlistedJointWork", unlistedJointWorkArray);
+
+//            if ("0".equalsIgnoreCase(JWOthersFragment.unlisted_jointWork)) {
+//                JSONArray unlistedJointWorkArray = new JSONArray();
+//                for (CallCommonCheckedList item : JWOthersFragment.unlistedJointList) {
+//                    try {
+//                        JSONObject unlistObj = new JSONObject();
+//                        unlistObj.put("Name", item.getName());
+//                        unlistObj.put("SpecialityName", item.getSpecialityName());
+//                        unlistObj.put("SpecialityCode", item.getCode());
+//                        unlistedJointWorkArray.put(unlistObj);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                jsonSaveDcr.put("UnlistedJointWork", unlistedJointWorkArray);
+//            }
 
             //RCPA
             jsonArray = new JSONArray();
