@@ -14,7 +14,7 @@
         android:maxLines="1"
         android:textColor="@color/dark_purple"
         android:gravity="start"
-        android:fontFamily="@font/satoshi_bold"
+        android:fontFamily="@font/satoshi_medium"
         android:padding="@dimen/_2sdp"
         android:textSize="@dimen/_5ssp"/>
 
@@ -26,7 +26,7 @@
         android:layout_weight="4"
         android:text="Cluster"
         android:padding="@dimen/_2sdp"
-        android:fontFamily="@font/satoshi_bold"
+        android:fontFamily="@font/satoshi_medium"
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_5ssp"
         android:gravity="center"
@@ -42,7 +42,7 @@
         android:text="Doctor"
         android:gravity="center"
         android:padding="@dimen/_2sdp"
-        android:fontFamily="@font/satoshi_bold"
+        android:fontFamily="@font/satoshi_medium"
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_5ssp"
         android:ellipsize="end"/>
@@ -55,7 +55,7 @@
         android:layout_weight="5"
         android:text="Category"
         android:padding="@dimen/_2sdp"
-        android:fontFamily="@font/satoshi_bold"
+        android:fontFamily="@font/satoshi_medium"
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_5ssp"
         android:gravity="center"

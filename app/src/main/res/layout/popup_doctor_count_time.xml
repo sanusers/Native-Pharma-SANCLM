@@ -4,27 +4,27 @@
     android:id="@+id/popup_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/_5sdp"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="@dimen/_5sdp">
 
     <LinearLayout
         android:id="@+id/header_layout_touch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:gravity="center"
-        android:orientation="horizontal"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-<!--        <ImageView-->
-<!--            android:id="@+id/imgdr"-->
-<!--            android:layout_width="@dimen/_15sdp"-->
-<!--            android:layout_height="@dimen/_15sdp"-->
-<!--            android:layout_marginEnd="@dimen/_5sdp"-->
-<!--            android:src="@drawable/doctor_img" />-->
+        <!--        <ImageView-->
+        <!--            android:id="@+id/imgdr"-->
+        <!--            android:layout_width="@dimen/_15sdp"-->
+        <!--            android:layout_height="@dimen/_15sdp"-->
+        <!--            android:layout_marginEnd="@dimen/_5sdp"-->
+        <!--            android:src="@drawable/doctor_img" />-->
 
         <TextView
             android:id="@+id/heading"
@@ -51,13 +51,14 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_13sdp"
         app:tabGravity="fill"
-        app:tabMode="fixed"
-        app:tabMaxWidth="0dp"
-        app:tabPaddingStart="0dp"
-        app:tabPaddingEnd="0dp"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorHeight="2dp"
-        app:tabInlineLabel="true"/>
+        app:tabInlineLabel="true"
+        app:tabMaxWidth="0dp"
+        app:tabMode="fixed"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp" />
+
     <View
         android:id="@+id/view_dummy2"
         android:layout_width="match_parent"
@@ -70,8 +71,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_marginTop="@dimen/_2sdp"
+        android:layout_weight="1"
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:weightSum="2">
@@ -81,27 +82,30 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="@dimen/_4sdp">
+            android:paddingStart="@dimen/_2sdp"
+            android:paddingEnd="@dimen/_2sdp"
+            android:paddingBottom="@dimen/_2sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/_2sdp">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/satoshi_bold"
+                    android:fontFamily="@font/satoshi_medium"
                     android:text="Visited"
                     android:textColor="@color/dark_purple"
-                    android:textSize="@dimen/_7sdp" />
+                    android:textSize="@dimen/_6sdp" />
 
                 <FrameLayout
                     android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_height="25dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
                     android:background="@drawable/circle_shape"
                     android:backgroundTint="@color/black_45">
 
@@ -125,17 +129,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="2dp">
+                android:orientation="horizontal"
+                android:padding="@dimen/_2sdp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/_2sdp"
-                    android:text="S.No"
+                    android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
-                    android:textSize="@dimen/_5ssp"
+                    android:text="S.No"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -144,10 +150,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_4sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
-                    android:layout_weight="3"
-                    android:text="Cluster"
+                    android:layout_weight="5"
+                    android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
-                    android:textSize="@dimen/_5ssp"
+                    android:text="Cluster"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -157,9 +165,11 @@
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="4"
-                    android:text="Doctor"
+                    android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
-                    android:textSize="@dimen/_5ssp"
+                    android:text="Doctor"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -168,13 +178,17 @@
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="5"
-                    android:text="Category"
+                    android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
-                    android:textSize="@dimen/_5ssp"
+                    android:text="Category"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-            <View android:layout_width="match_parent"
+
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="#9e9ea5" />
 
@@ -188,7 +202,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/_3sdp" />
+                    android:padding="@dimen/_4sdp" />
             </ScrollView>
         </LinearLayout>
 
@@ -204,27 +218,30 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="@dimen/_4sdp">
+            android:paddingStart="@dimen/_2sdp"
+            android:paddingEnd="@dimen/_2sdp"
+            android:paddingBottom="@dimen/_2sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/_2sdp">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/satoshi_bold"
+                    android:fontFamily="@font/satoshi_medium"
                     android:text="To be Visited"
                     android:textColor="@color/dark_purple"
-                    android:textSize="@dimen/_7sdp" />
+                    android:textSize="@dimen/_6sdp" />
 
                 <FrameLayout
                     android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_height="25dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
                     android:background="@drawable/circle_shape"
                     android:backgroundTint="@color/black_45">
 
@@ -240,34 +257,43 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#9e9ea5" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#9e9ea5" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:baselineAligned="false"
                 android:gravity="center_vertical"
-                android:padding="2dp">
+                android:orientation="horizontal"
+                android:padding="@dimen/_2sdp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/_2sdp"
-                    android:text="S.No"
+                    android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
-                    android:textSize="@dimen/_5ssp"
+                    android:text="S.No"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_Cluster2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_4sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
-                    android:layout_weight="3"
-                    android:text="Cluster"
+                    android:layout_weight="5"
+                    android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
-                    android:textSize="@dimen/_5ssp"
+                    android:text="Cluster"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_Name2"
                     android:layout_width="0dp"
@@ -275,23 +301,29 @@
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="4"
-                    android:text="Doctor"
+                    android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
-                    android:textSize="@dimen/_5ssp"
+                    android:text="Doctor"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_weight="5"
-                    android:text="Category"
+                    android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
-                    android:textSize="@dimen/_5ssp"
+                    android:text="Category"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <View android:layout_width="match_parent"
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="#9e9ea5" />
 
@@ -305,7 +337,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/_3sdp" />
+                    android:padding="@dimen/_4sdp" />
             </ScrollView>
         </LinearLayout>
     </LinearLayout>
@@ -323,321 +355,320 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_5ssp"
         android:textStyle="bold" />
-<!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
 
-</LinearLayout>
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:orientation="vertical"-->
-<!--    android:padding="@dimen/_5sdp">-->
+</LinearLayout><!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:orientation="vertical"-->
+    <!--    android:padding="@dimen/_5sdp">-->
 
 
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="top"-->
-<!--        android:gravity="center"-->
-<!--        android:orientation="horizontal">-->
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="top"-->
+    <!--        android:gravity="center"-->
+    <!--        android:orientation="horizontal">-->
 
-<!--        <ImageView-->
-<!--            android:id="@+id/imgdr"-->
-<!--            android:layout_width="@dimen/_15sdp"-->
-<!--            android:layout_height="@dimen/_15sdp"-->
-<!--            android:layout_marginEnd="@dimen/_5sdp"-->
-<!--            android:src="@drawable/doctor_img" />-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/imgdr"-->
+    <!--            android:layout_width="@dimen/_15sdp"-->
+    <!--            android:layout_height="@dimen/_15sdp"-->
+    <!--            android:layout_marginEnd="@dimen/_5sdp"-->
+    <!--            android:src="@drawable/doctor_img" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/heading"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/satoshi_bold"-->
-<!--            android:text="Today's Doctor Plan !!"-->
-<!--            android:textColor="@color/dark_purple"-->
-<!--            android:textSize="@dimen/_8sdp"-->
-<!--            android:textStyle="bold" />-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/heading"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:fontFamily="@font/satoshi_bold"-->
+    <!--            android:text="Today's Doctor Plan !!"-->
+    <!--            android:textColor="@color/dark_purple"-->
+    <!--            android:textSize="@dimen/_8sdp"-->
+    <!--            android:textStyle="bold" />-->
 
-<!--    </LinearLayout>-->
+    <!--    </LinearLayout>-->
 
-<!--    <View-->
-<!--        android:id="@+id/view_dummy"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0.5dp"-->
-<!--        android:layout_marginHorizontal="@dimen/_2sdp"-->
-<!--        android:layout_marginTop="@dimen/_4sdp"-->
-<!--        android:layout_marginBottom="@dimen/_2sdp"-->
-<!--        android:background="#9e9ea5" />-->
+    <!--    <View-->
+    <!--        android:id="@+id/view_dummy"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0.5dp"-->
+    <!--        android:layout_marginHorizontal="@dimen/_2sdp"-->
+    <!--        android:layout_marginTop="@dimen/_4sdp"-->
+    <!--        android:layout_marginBottom="@dimen/_2sdp"-->
+    <!--        android:background="#9e9ea5" />-->
 
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:baselineAligned="false"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:weightSum="2">-->
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:baselineAligned="false"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:weightSum="2">-->
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="@dimen/_4sdp">-->
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:orientation="vertical"-->
+    <!--            android:padding="@dimen/_4sdp">-->
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:paddingBottom="@dimen/_4sdp">-->
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:gravity="center"-->
+    <!--                android:orientation="horizontal"-->
+    <!--                android:paddingBottom="@dimen/_4sdp">-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:fontFamily="@font/satoshi_bold"-->
-<!--                    android:text="Visited"-->
-<!--                    android:textColor="@color/dark_purple"-->
-<!--                    android:textSize="@dimen/_7sdp" />-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:fontFamily="@font/satoshi_bold"-->
+    <!--                    android:text="Visited"-->
+    <!--                    android:textColor="@color/dark_purple"-->
+    <!--                    android:textSize="@dimen/_7sdp" />-->
 
-<!--                <FrameLayout-->
-<!--                    android:layout_width="32dp"-->
-<!--                    android:layout_height="32dp"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:background="@drawable/circle_shape"-->
-<!--                    android:backgroundTint="@color/black_45">-->
+    <!--                <FrameLayout-->
+    <!--                    android:layout_width="32dp"-->
+    <!--                    android:layout_height="32dp"-->
+    <!--                    android:layout_marginStart="8dp"-->
+    <!--                    android:background="@drawable/circle_shape"-->
+    <!--                    android:backgroundTint="@color/black_45">-->
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_visited_ratio"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
-<!--                        android:text="0/0"-->
-<!--                        android:textColor="@color/white"-->
-<!--                        android:textSize="9sp"-->
-<!--                        android:textStyle="bold" />-->
-<!--                </FrameLayout>-->
-<!--            </LinearLayout>-->
+    <!--                    <TextView-->
+    <!--                        android:id="@+id/tv_visited_ratio"-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_gravity="center"-->
+    <!--                        android:text="0/0"-->
+    <!--                        android:textColor="@color/white"-->
+    <!--                        android:textSize="9sp"-->
+    <!--                        android:textStyle="bold" />-->
+    <!--                </FrameLayout>-->
+    <!--            </LinearLayout>-->
 
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0.5dp"-->
-<!--                android:background="#9e9ea5" />-->
+    <!--            <View-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="0.5dp"-->
+    <!--                android:background="#9e9ea5" />-->
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:padding="2dp">-->
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:orientation="horizontal"-->
+    <!--                android:padding="2dp">-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginEnd="@dimen/_2sdp"-->
-<!--                    android:text="S.No"-->
-<!--                    android:textSize="@dimen/_6ssp"-->
-<!--                    android:textStyle="bold" />-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="match_parent"-->
+    <!--                    android:layout_marginEnd="@dimen/_2sdp"-->
+    <!--                    android:text="S.No"-->
+    <!--                    android:textSize="@dimen/_6ssp"-->
+    <!--                    android:textStyle="bold" />-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginStart="@dimen/_4sdp"-->
-<!--                    android:layout_marginEnd="@dimen/_2sdp"-->
-<!--                    android:layout_weight="3"-->
-<!--                    android:text="Cluster"-->
-<!--                    android:textSize="@dimen/_6ssp"-->
-<!--                    android:textStyle="bold" />-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="0dp"-->
+    <!--                    android:layout_height="match_parent"-->
+    <!--                    android:layout_marginStart="@dimen/_4sdp"-->
+    <!--                    android:layout_marginEnd="@dimen/_2sdp"-->
+    <!--                    android:layout_weight="3"-->
+    <!--                    android:text="Cluster"-->
+    <!--                    android:textSize="@dimen/_6ssp"-->
+    <!--                    android:textStyle="bold" />-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginStart="@dimen/_2sdp"-->
-<!--                    android:layout_marginEnd="@dimen/_2sdp"-->
-<!--                    android:layout_weight="4"-->
-<!--                    android:text="Doctor"-->
-<!--                    android:textSize="@dimen/_6ssp"-->
-<!--                    android:textStyle="bold" />-->
-<!--            </LinearLayout>-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="0dp"-->
+    <!--                    android:layout_height="match_parent"-->
+    <!--                    android:layout_marginStart="@dimen/_2sdp"-->
+    <!--                    android:layout_marginEnd="@dimen/_2sdp"-->
+    <!--                    android:layout_weight="4"-->
+    <!--                    android:text="Doctor"-->
+    <!--                    android:textSize="@dimen/_6ssp"-->
+    <!--                    android:textStyle="bold" />-->
+    <!--            </LinearLayout>-->
 
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0.5dp"-->
-<!--                android:background="#9e9ea5" />-->
+    <!--            <View-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="0.5dp"-->
+    <!--                android:background="#9e9ea5" />-->
 
-<!--            <ScrollView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:maxHeight="@dimen/_150sdp">-->
+    <!--            <ScrollView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:maxHeight="@dimen/_150sdp">-->
 
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/visitedContainer"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="vertical"-->
-<!--                    android:padding="@dimen/_3sdp" />-->
-<!--                &lt;!&ndash;                    <TextView&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:id="@+id/messagePopup"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:layout_width="match_parent"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:padding="@dimen/_5sdp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:textColor="@color/black"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:fontFamily="@font/satoshi_bold"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:typeface="monospace"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:singleLine="false"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:maxLines="100"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:textAlignment="viewStart"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:ellipsize="none"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:scrollHorizontally="false"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:inputType="textMultiLine"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:gravity="start"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        android:textSize="12sp" />&ndash;&gt;-->
-<!--            </ScrollView>-->
-<!--        </LinearLayout>-->
+    <!--                <LinearLayout-->
+    <!--                    android:id="@+id/visitedContainer"-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="@dimen/_3sdp" />-->
+    <!--                &lt;!&ndash;                    <TextView&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:id="@+id/messagePopup"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:layout_width="match_parent"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:padding="@dimen/_5sdp"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:textColor="@color/black"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:fontFamily="@font/satoshi_bold"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:typeface="monospace"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:singleLine="false"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:maxLines="100"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:textAlignment="viewStart"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:ellipsize="none"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:scrollHorizontally="false"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:inputType="textMultiLine"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:gravity="start"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                        android:textSize="12sp" />&ndash;&gt;-->
+    <!--            </ScrollView>-->
+    <!--        </LinearLayout>-->
 
-<!--        <View-->
-<!--            android:id="@+id/dividerView"-->
-<!--            android:layout_width="1dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_marginVertical="@dimen/_5sdp"-->
-<!--            android:background="#9e9ea5" />-->
+    <!--        <View-->
+    <!--            android:id="@+id/dividerView"-->
+    <!--            android:layout_width="1dp"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_marginVertical="@dimen/_5sdp"-->
+    <!--            android:background="#9e9ea5" />-->
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="@dimen/_4sdp">-->
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:orientation="vertical"-->
+    <!--            android:padding="@dimen/_4sdp">-->
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:paddingBottom="@dimen/_4sdp">-->
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:gravity="center"-->
+    <!--                android:orientation="horizontal"-->
+    <!--                android:paddingBottom="@dimen/_4sdp">-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:fontFamily="@font/satoshi_bold"-->
-<!--                    android:text="Not Visited"-->
-<!--                    android:textColor="@color/dark_purple"-->
-<!--                    android:textSize="@dimen/_7sdp" />-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:fontFamily="@font/satoshi_bold"-->
+    <!--                    android:text="Not Visited"-->
+    <!--                    android:textColor="@color/dark_purple"-->
+    <!--                    android:textSize="@dimen/_7sdp" />-->
 
-<!--                <FrameLayout-->
-<!--                    android:layout_width="32dp"-->
-<!--                    android:layout_height="32dp"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:background="@drawable/circle_shape"-->
-<!--                    android:backgroundTint="@color/black_45">-->
+    <!--                <FrameLayout-->
+    <!--                    android:layout_width="32dp"-->
+    <!--                    android:layout_height="32dp"-->
+    <!--                    android:layout_marginStart="8dp"-->
+    <!--                    android:background="@drawable/circle_shape"-->
+    <!--                    android:backgroundTint="@color/black_45">-->
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_visited_ratio2"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
-<!--                        android:text="0/0"-->
-<!--                        android:textColor="@color/white"-->
-<!--                        android:textSize="9sp"-->
-<!--                        android:textStyle="bold" />-->
-<!--                </FrameLayout>-->
-<!--            </LinearLayout>-->
+    <!--                    <TextView-->
+    <!--                        android:id="@+id/tv_visited_ratio2"-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_gravity="center"-->
+    <!--                        android:text="0/0"-->
+    <!--                        android:textColor="@color/white"-->
+    <!--                        android:textSize="9sp"-->
+    <!--                        android:textStyle="bold" />-->
+    <!--                </FrameLayout>-->
+    <!--            </LinearLayout>-->
 
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0.5dp"-->
-<!--                android:background="#9e9ea5" />-->
+    <!--            <View-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="0.5dp"-->
+    <!--                android:background="#9e9ea5" />-->
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:padding="2dp">-->
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:orientation="horizontal"-->
+    <!--                android:padding="2dp">-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="match_parent"-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="match_parent"-->
 
-<!--                    android:layout_marginEnd="@dimen/_2sdp"-->
-<!--                    android:text="S.No"-->
+    <!--                    android:layout_marginEnd="@dimen/_2sdp"-->
+    <!--                    android:text="S.No"-->
 
-<!--                    android:textSize="@dimen/_6ssp"-->
-<!--                    android:textStyle="bold" />-->
+    <!--                    android:textSize="@dimen/_6ssp"-->
+    <!--                    android:textStyle="bold" />-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginStart="@dimen/_4sdp"-->
-<!--                    android:layout_marginEnd="@dimen/_2sdp"-->
-<!--                    android:layout_weight="3"-->
-<!--                    android:text="Cluster"-->
-<!--                    android:textSize="@dimen/_6ssp"-->
-<!--                    android:textStyle="bold" />-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="0dp"-->
+    <!--                    android:layout_height="match_parent"-->
+    <!--                    android:layout_marginStart="@dimen/_4sdp"-->
+    <!--                    android:layout_marginEnd="@dimen/_2sdp"-->
+    <!--                    android:layout_weight="3"-->
+    <!--                    android:text="Cluster"-->
+    <!--                    android:textSize="@dimen/_6ssp"-->
+    <!--                    android:textStyle="bold" />-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginStart="@dimen/_2sdp"-->
-<!--                    android:layout_marginEnd="@dimen/_2sdp"-->
-<!--                    android:layout_weight="4"-->
-<!--                    android:text="Doctor"-->
-<!--                    android:textSize="@dimen/_6ssp"-->
-<!--                    android:textStyle="bold" />-->
-<!--            </LinearLayout>-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="0dp"-->
+    <!--                    android:layout_height="match_parent"-->
+    <!--                    android:layout_marginStart="@dimen/_2sdp"-->
+    <!--                    android:layout_marginEnd="@dimen/_2sdp"-->
+    <!--                    android:layout_weight="4"-->
+    <!--                    android:text="Doctor"-->
+    <!--                    android:textSize="@dimen/_6ssp"-->
+    <!--                    android:textStyle="bold" />-->
+    <!--            </LinearLayout>-->
 
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0.5dp"-->
-<!--                android:background="#9e9ea5" />-->
+    <!--            <View-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="0.5dp"-->
+    <!--                android:background="#9e9ea5" />-->
 
-<!--            <ScrollView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:maxHeight="@dimen/_150sdp">-->
+    <!--            <ScrollView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:maxHeight="@dimen/_150sdp">-->
 
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/visitedContainer2"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="vertical"-->
-<!--                    android:padding="@dimen/_3sdp" />-->
-<!--                &lt;!&ndash;                <TextView&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:id="@+id/messagePopup2"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:padding="@dimen/_5sdp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:textColor="@color/black"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:typeface="monospace"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:fontFamily="@font/satoshi_bold"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:gravity="start"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:singleLine="false"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:textAlignment="viewStart"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:maxLines="100"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:ellipsize="none"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:scrollHorizontally="false"&ndash;&gt;-->
-<!--                &lt;!&ndash;                    android:inputType="textMultiLine"&ndash;&gt;-->
+    <!--                <LinearLayout-->
+    <!--                    android:id="@+id/visitedContainer2"-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="@dimen/_3sdp" />-->
+    <!--                &lt;!&ndash;                <TextView&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:id="@+id/messagePopup2"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:padding="@dimen/_5sdp"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:textColor="@color/black"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:typeface="monospace"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:fontFamily="@font/satoshi_bold"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:gravity="start"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:singleLine="false"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:textAlignment="viewStart"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:maxLines="100"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:ellipsize="none"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:scrollHorizontally="false"&ndash;&gt;-->
+    <!--                &lt;!&ndash;                    android:inputType="textMultiLine"&ndash;&gt;-->
 
-<!--                &lt;!&ndash;                    android:textSize="12sp" />&ndash;&gt;-->
-<!--            </ScrollView>-->
-<!--        </LinearLayout>-->
-<!--    </LinearLayout>-->
+    <!--                &lt;!&ndash;                    android:textSize="12sp" />&ndash;&gt;-->
+    <!--            </ScrollView>-->
+    <!--        </LinearLayout>-->
+    <!--    </LinearLayout>-->
 
-<!--    &lt;!&ndash;    <RelativeLayout&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:id="@+id/button2"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_width="match_parent"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginTop="@dimen/_10sdp">&ndash;&gt;-->
+    <!--    &lt;!&ndash;    <RelativeLayout&ndash;&gt;-->
+    <!--    &lt;!&ndash;        android:id="@+id/button2"&ndash;&gt;-->
+    <!--    &lt;!&ndash;        android:layout_width="match_parent"&ndash;&gt;-->
+    <!--    &lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--    &lt;!&ndash;        android:layout_marginTop="@dimen/_10sdp">&ndash;&gt;-->
 
-<!--    <androidx.appcompat.widget.AppCompatButton-->
-<!--        android:id="@+id/okButton2"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="center"-->
+    <!--    <androidx.appcompat.widget.AppCompatButton-->
+    <!--        android:id="@+id/okButton2"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="center"-->
 
-<!--        android:background="@drawable/backround_button"-->
-<!--        android:fontFamily="@font/satoshi_bold"-->
+    <!--        android:background="@drawable/backround_button"-->
+    <!--        android:fontFamily="@font/satoshi_bold"-->
 
-<!--        android:text="OK"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="@dimen/_5ssp"-->
-<!--        android:textStyle="bold" />-->
-<!--    &lt;!&ndash;    </RelativeLayout>&ndash;&gt;-->
-<!--</LinearLayout>-->
+    <!--        android:text="OK"-->
+    <!--        android:textAllCaps="false"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="@dimen/_5ssp"-->
+    <!--        android:textStyle="bold" />-->
+    <!--    &lt;!&ndash;    </RelativeLayout>&ndash;&gt;-->
+    <!--</LinearLayout>-->

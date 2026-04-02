@@ -617,7 +617,7 @@ public class CommonAlertBox {
             // பட்டன் ஓரத்திற்கு ஒட்டாமல் இருக்க ஒரு சிறிய Padding
             tv.setPadding(100,0,100,0);
             Drawable icon = ContextCompat.getDrawable(activity, R.drawable.doctor_img); // declare
-            icon.setBounds(0, 0, 35, 35); // small size
+            icon.setBounds(0, 0, 30, 30); // small size
 
             tv.setCompoundDrawables(icon, null, null, null);
             tv.setCompoundDrawablePadding(10);
@@ -631,11 +631,11 @@ public class CommonAlertBox {
             tv.setTextSize(16);
             tv.setGravity(Gravity.CENTER);
             tv.setTextColor(Color.BLACK);
-            tv.setTypeface(null, Typeface.BOLD);
+            tv.setTypeface(null, Typeface.NORMAL);
             // பட்டன் ஓரத்திற்கு ஒட்டாமல் இருக்க ஒரு சிறிய Padding
             tv.setPadding(100,0,100,0);
             Drawable icon = ContextCompat.getDrawable(activity, R.drawable.map_chemist_img); // declare
-            icon.setBounds(0, 0, 35, 35); // small size
+            icon.setBounds(0, 0, 30, 30); // small size
 
             tv.setCompoundDrawables(icon, null, null, null);
             tv.setCompoundDrawablePadding(10);
@@ -659,7 +659,9 @@ public class CommonAlertBox {
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
+                if (tab.getCustomView() instanceof TextView) {
+                    ((TextView) tab.getCustomView()).setTypeface(null, Typeface.BOLD);
+                }
                 if (tab.getPosition() == 0) {
 
                     // Doctor
@@ -693,7 +695,12 @@ public class CommonAlertBox {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Unselected tab → NORMAL
+                if (tab.getCustomView() instanceof TextView) {
+                    ((TextView) tab.getCustomView()).setTypeface(null, Typeface.NORMAL);
+                }
+            }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
@@ -745,328 +752,6 @@ public class CommonAlertBox {
             container.addView(rowView);
         }
     }
-//    public static void DoctorPlanPopup2(Activity activity,
-//                                     boolean isDoctor,
-//                                     List<String> vList,
-//                                     List<String> nvList,
-//                                     Map<String, String> nameMap,
-//                                     Map<String, String> clusterMap,
-//                                     Map<String, String> categoryMap,
-//                                     String vRatio,
-//                                     String nvRatio) {
-//
-//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-//        View layout = activity.getLayoutInflater().inflate(R.layout.popup_doctor_count_time, null);
-//
-//        // XML elements-ai find pannunga
-//        TextView heading = layout.findViewById(R.id.heading);
-//        ImageView imgIcon = layout.findViewById(R.id.imgdr);
-//        TextView clusterHead = layout.findViewById(R.id.tv_Cluster);
-//        TextView name = layout.findViewById(R.id.tv_Name);
-//        TextView clusterHead2 = layout.findViewById(R.id.tv_Cluster2);
-//        TextView name2 = layout.findViewById(R.id.tv_Name2);
-//        LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
-//        LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
-//        TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
-//        TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
-//        Button okButton2 = layout.findViewById(R.id.okButton2);
-//
-//        // Title and Headers Dynamic Setup
-//        String cap = isDoctor ? SharedPref.getDrCap(activity) : "Chemist"; // Or get from SharedPref
-//        heading.setText(" Today's " + cap + " Plan ");
-//        imgIcon.setImageResource(isDoctor ? R.drawable.doctor_img : R.drawable.map_chemist_img);
-//
-//        clusterHead.setText(SharedPref.getClusterCap(activity));
-//        clusterHead2.setText(SharedPref.getClusterCap(activity));
-//        name.setText(cap);
-//        name2.setText(cap);
-//
-//        tvVCount.setText(vRatio);
-//        tvNVCount.setText(nvRatio);
-//
-//        // Add Rows
-//        addRows(activity, vContainer, vList, nameMap, clusterMap, categoryMap);
-//        addRows(activity, nvContainer, nvList, nameMap, clusterMap, categoryMap);
-//
-//        alert.setView(layout);
-//        AlertDialog dialog = alert.create();
-//        dialog.setCancelable(false);
-//
-//        // --- SWIPE LOGIC START ---
-//        // Layout-la top-most view-ku ID iruntha atha find panni touch listener kudunga
-////        View rootLayout = layout.findViewById(R.id.popup_parent_layout);
-////        View headerLayout = layout.findViewById(R.id.header_layout_touch);
-////
-////        OnSwipeTouchListener swipeListener = new OnSwipeTouchListener(activity) {
-////            @Override
-////            public void onSwipeLeft() {
-////                if (isDoctor && tempChmNVList != null) {
-////                    Toast.makeText(activity, "Swiping to Chemist...", Toast.LENGTH_SHORT).show();
-////                    dialog.dismiss();
-////                    DoctorPlanPopup2(activity, false,
-////                            tempChmVList, tempChmNVList,
-////                            tempChmNameMap, tempChmClusterMap, tempChmCatMap,
-////                            tempChmVRatio, tempChmNVRatio);
-////                }
-////            }
-////            Override
-////            public void onSwipeRight() {
-////                // Ippo neenga ketta logic: Chemist-la irunthu thirumba Doctor-ku vara
-////                // Ingae data-vai namma parameter-la irunthe eduthukalaam
-////                if (!isDoctor) {
-////                    Toast.makeText(activity, "Back to Doctor Plan", Toast.LENGTH_SHORT).show();
-////                    dialog.dismiss();
-////
-////                    // Thirumba Doctor popup-ai original data-vudan call panrom
-////                    // Intha vList, nvList ellam intha method-oda starting parameters
-////                    DoctorPlanPopup2(activity, true,
-////                            vList, nvList, nameMap, clusterMap, categoryMap, vRatio, nvRatio);
-////                }
-////            }
-////        };
-////
-////// Rendu layouts-kum listener-ai attach pannunga
-////        rootLayout.setOnTouchListener(swipeListener);
-////        headerLayout.setOnTouchListener(swipeListener);
-//        View rootLayout = layout.findViewById(R.id.popup_parent_layout);
-//        View headerLayout = layout.findViewById(R.id.header_layout_touch);
-//
-//        OnSwipeTouchListener swipeListener = new OnSwipeTouchListener(activity) {
-//            @Override
-//            public void onSwipeLeft() {
-//                // Doctor -> Chemist (Left Swipe)
-//                if (isDoctor && tempChmNVList != null) {
-//                    Toast.makeText(activity, "Swiping to Chemist...", Toast.LENGTH_SHORT).show();
-//                    dialog.dismiss();
-//                    DoctorPlanPopup2(activity, false,
-//                            tempChmVList, tempChmNVList,
-//                            tempChmNameMap, tempChmClusterMap, tempChmCatMap,
-//                            tempChmVRatio, tempChmNVRatio);
-//                }
-//            }
-//
-//            @Override
-//            public void onSwipeRight() {
-//                // Chemist -> Doctor (Right Swipe / Left to Right)
-//                // Ingae data-vai namma method parameters-la irunthe eduthukirom
-//                if (!isDoctor) {
-//                    Toast.makeText(activity, "Back to Doctor Plan", Toast.LENGTH_SHORT).show();
-//                    dialog.dismiss();
-//
-//                    // Intha vList, nvList ellam Doctor-oda original data
-//                    DoctorPlanPopup2(activity, true,
-//                            vList, nvList, nameMap, clusterMap, categoryMap,
-//                            vRatio, nvRatio);
-//                }
-//            }
-//        };
-//
-//// Listener-ai rendu layout-kum attach pannunga
-//        if (rootLayout != null) rootLayout.setOnTouchListener(swipeListener);
-//        if (headerLayout != null) headerLayout.setOnTouchListener(swipeListener);
-//        // --- SWIPE LOGIC END ---
-//
-//        dialog.show();
-//        okButton2.setOnClickListener(v -> dialog.dismiss());
-//
-//        // Window size setup
-//        Window window = dialog.getWindow();
-//        if (window != null) {
-//            int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.65);
-//            int height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.55);
-//            window.setLayout(width, height);
-//        }
-//    }
-////    public static void DoctorPlanPopup2(Activity activity,
-////                                        List<String> vList,
-////                                        List<String> nvList,
-////                                        Map<String, String> nameMap,
-////                                        Map<String, String> clusterMap,
-////                                        Map<String, String> categoryMap,
-////                                        String vRatio,
-////                                        String nvRatio) {
-////
-////        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-////        View layout = activity.getLayoutInflater()
-////                .inflate(R.layout.popup_doctor_count_time, null);
-////
-////        // Find Views
-////        TextView heading = layout.findViewById(R.id.heading);
-////        TextView clusterHead = layout.findViewById(R.id.tv_Cluster);
-////        TextView name = layout.findViewById(R.id.tv_Name);
-////        TextView clusterHead2 = layout.findViewById(R.id.tv_Cluster2);
-////        TextView name2 = layout.findViewById(R.id.tv_Name2);
-////        LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
-////        LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
-////        TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
-////        TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
-////        Button okButton2 = layout.findViewById(R.id.okButton2);
-////        heading.setText(" Today's " + SharedPref.getDrCap(activity) + " Plan ");
-////        clusterHead.setText(SharedPref.getClusterCap(activity));
-////        clusterHead2.setText(SharedPref.getClusterCap(activity));
-////        name.setText(SharedPref.getDrCap(activity));
-////        name2.setText(SharedPref.getDrCap(activity));
-////        // Set Ratio Text
-////        tvVCount.setText(vRatio);
-////        tvNVCount.setText(nvRatio);
-////
-////        // Add Rows
-////        addRows(activity, vContainer, vList, nameMap, clusterMap, categoryMap);
-////        addRows(activity, nvContainer, nvList, nameMap, clusterMap, categoryMap);
-////
-////        alert.setView(layout);
-////
-////        AlertDialog dialog = alert.create();
-////        dialog.setCancelable(false);
-////        dialog.setCanceledOnTouchOutside(false);
-////
-////        // OK Button Click
-////
-////
-////        // SHOW FIRST
-////        dialog.show();
-////        okButton2.setOnClickListener(v -> dialog.dismiss());
-////        // AFTER showing, set proper size
-////        Window window = dialog.getWindow();
-////        if (window != null) {
-////
-////            int width = (int) (activity.getResources()
-////                    .getDisplayMetrics().widthPixels * 0.65);
-////
-////            int height = (int) (activity.getResources()
-////                    .getDisplayMetrics().heightPixels * 0.55);
-////
-////            window.setLayout(width, height);
-////        }
-////    }
-////    public static void DoctorPlanPopup2(Activity activity, List<String> vList, List<String> nvList,
-////                                        Map<String, String> nameMap, Map<String, String> clusterMap,
-////                                        String vRatio, String nvRatio) {
-////
-////        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-////        View layout = activity.getLayoutInflater().inflate(R.layout.popup_doctor_count_time, null);
-////
-////        LinearLayout vContainer = layout.findViewById(R.id.visitedContainer);
-////        LinearLayout nvContainer = layout.findViewById(R.id.visitedContainer2);
-////        TextView tvVCount = layout.findViewById(R.id.tv_visited_ratio);
-////        TextView tvNVCount = layout.findViewById(R.id.tv_visited_ratio2);
-////
-////        tvVCount.setText(vRatio);
-////        tvNVCount.setText(nvRatio);
-////
-////        // Visited Rows
-////        addRows(activity, vContainer, vList, nameMap, clusterMap);
-////        // Not Visited Rows
-////        addRows(activity, nvContainer, nvList, nameMap, clusterMap);
-////
-////        alert.setView(layout);
-////        AlertDialog dialog = alert.create();
-////        dialog.setCancelable(false);
-////        dialog.setCanceledOnTouchOutside(false);
-////        layout.findViewById(R.id.okButton2).setOnClickListener(v -> dialog.dismiss());
-////
-////        // Inside DoctorPlanPopup2
-////        dialog.setOnShowListener(d -> {
-////            Window window = dialog.getWindow();
-////            if (window != null) {
-////                // Width 85% of screen
-////                int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.65);
-////
-////                // Max height limit (60% of screen)
-////                int maxHeight = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.60);
-////
-////                // Setting height to WRAP_CONTENT makes it small for 1 doctor
-////                // But the XML layout_weight="1" will prevent it from going past the screen
-////                window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
-////
-////                WindowManager.LayoutParams lp = window.getAttributes();
-////                // If content is huge, this forces it to stay within screen limits
-////                if (window.getDecorView().getHeight() > maxHeight) {
-////                    window.setLayout(width, maxHeight);
-////                }
-////            }
-////        });
-////        dialog.show();
-////    }
-//
-//    private static void addRows(Activity act, LinearLayout container, List<String> codes,
-//                                Map<String, String> nMap, Map<String, String> cMap, Map<String, String> catMap) {
-//        container.removeAllViews(); // ஹெடரை அழிக்காமல் இருக்க, XML-ல் ஹெடரை ScrollView-க்கு வெளியே வைத்திருங்கள்.
-//
-//        int i = 1;
-//        for (String code : codes) {
-//            // ✅ ஜாவாவில் புது TextView-க்கு பதில், உங்கள் XML டிசைனைப் பயன்படுத்துகிறோம்
-//            View rowView = act.getLayoutInflater()
-//                    .inflate(R.layout.popup_doctor_count_rows, container, false);
-//            LinearLayout.LayoutParams params =
-//                    new LinearLayout.LayoutParams(
-//                            LinearLayout.LayoutParams.MATCH_PARENT,
-//                            LinearLayout.LayoutParams.WRAP_CONTENT);
-//
-//            rowView.setLayoutParams(params);
-//            TextView tvSno = rowView.findViewById(R.id.tvSno);
-//            TextView tvCluster = rowView.findViewById(R.id.tvCluster);
-//            TextView tvDoctor = rowView.findViewById(R.id.tvDoctor);
-//            TextView tvCategory = rowView.findViewById(R.id.tvCategory);
-//
-//            // ✅ டேட்டாவை செட் செய்கிறோம்
-//            tvSno.setText(String.valueOf(i++));
-//            tvCluster.setText(cMap.getOrDefault(code, "-"));
-//            tvCategory.setText(catMap.getOrDefault(code, "-"));
-//            tvDoctor.setText(nMap.getOrDefault(code, code));
-//
-//            // ✅ முழு Row-வையும் லிஸ்ட்டில் சேர்க்கிறோம்
-//            container.addView(rowView);
-//        }
-//    }
-
-//    private static TextView createTextView(Activity act, String text, int weight) {
-//        TextView tv = new TextView(act);
-//        tv.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, weight));
-//        tv.setText(text);
-//        tv.setTextSize(10f);
-//        tv.setTextColor(Color.BLACK);
-//        tv.setTypeface(Typeface.MONOSPACE);
-//        return tv;
-//    }
-//    public static void DoctorPlanPopup2(Activity activity, String visitedMsg, String notVisitedMsg, String ratio, String nvRatio) {
-//        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-//        alert.setCancelable(false);
-//
-//        LayoutInflater inflater = activity.getLayoutInflater();
-//        View alertLayout = inflater.inflate(R.layout.popup_doctor_count_time, null);
-//
-//        TextView heading = alertLayout.findViewById(R.id.heading);
-//        TextView tvVisitedList = alertLayout.findViewById(R.id.messagePopup);
-//        TextView tvNotVisitedList = alertLayout.findViewById(R.id.messagePopup2);
-//
-//        // ✅ பிழை திருத்தம்: 'alertLayout' மூலம் ஐடியை தேட வேண்டும்
-//        TextView tvRatio = alertLayout.findViewById(R.id.tv_visited_ratio);
-//        TextView tvRatio2 = alertLayout.findViewById(R.id.tv_visited_ratio2);
-//
-//        AppCompatButton okButton = alertLayout.findViewById(R.id.okButton);
-//
-//        heading.setText(" Today's Planned " + SharedPref.getDrCap(activity));
-//
-//        // ✅ டேட்டாவை செட் செய்தல்
-//        tvVisitedList.setText(visitedMsg);
-//        tvNotVisitedList.setText(notVisitedMsg);
-//
-//        // ✅ ரேஷியோ (1/12) செட் செய்தல்
-//        if (tvRatio != null) {
-//            tvRatio.setText(ratio);
-//        }
-//        if (tvRatio2 != null) {
-//            tvRatio2.setText(nvRatio);
-//        }
-//        alert.setView(alertLayout);
-//        AlertDialog dialog = alert.create();
-//
-//        // ✅ பட்டன் கிளிக் லாஜிக்
-//        okButton.setOnClickListener(view -> dialog.dismiss());
-//
-//        dialog.show();
-//    }
 
     public static void ApprovalAlert(Activity activity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
