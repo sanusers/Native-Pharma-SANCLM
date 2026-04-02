@@ -3412,6 +3412,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.tpStatusTxt.setText(R.string.tp_rejected);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
+                SetTpRangeStatus();
                 break;
             }
             case "3": {
@@ -3512,7 +3513,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.tpStatusTxt.setText(R.string.tp_rejected);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                 calendarAdapter.notifyDataSetChanged();
-//                SetTpRangeStatus();
+                SetTpRangeStatus();
                 break;
             }
             case "3": {
