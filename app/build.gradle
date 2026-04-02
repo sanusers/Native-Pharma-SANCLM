@@ -15,7 +15,7 @@ android {
         minSdk 23
         targetSdk 36
         versionCode 82
-        versionName "1.5.5"
+        versionName "1.5.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         def props = new Properties()

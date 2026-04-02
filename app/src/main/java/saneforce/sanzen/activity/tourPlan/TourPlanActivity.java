@@ -1881,6 +1881,42 @@ public class TourPlanActivity extends AppCompatActivity {
                 minimumGap = jsonObject.optString("min_gap_need", "0");
             }
 
+            boolean tpSetupVisibile = false;
+            if (!visitFrequencyNeed.equalsIgnoreCase("1") && drNeed.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtVisitFrequency.setVisibility(View.VISIBLE);
+            } else {
+                binding.txtVisitFrequency.setVisibility(View.GONE);
+            }
+            if (!planAllDr.equalsIgnoreCase("1") && drNeed.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtPlanAllDoctors.setVisibility(View.VISIBLE);
+            } else {
+                binding.txtPlanAllDoctors.setVisibility(View.GONE);
+            }
+            if (!minimumGap.equalsIgnoreCase("0") && drNeed.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtMinimumGap.setVisibility(View.VISIBLE);
+                binding.txtMinimumGap.setText(getString(R.string.minimum_gap) + " - " + minimumGap);
+            } else {
+                binding.txtMinimumGap.setVisibility(View.GONE);
+            }
+            if (!minDrCount.equalsIgnoreCase("0") && drNeed.equalsIgnoreCase("0") && FW_meetup_mandatory.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtMinimumDoctors.setVisibility(View.VISIBLE);
+                binding.txtMinimumDoctors.setText(getString(R.string.minimum) + " " + drCap + " " + getString(R.string.selection) + " - " + minDrCount);
+            } else {
+                binding.txtMinimumDoctors.setVisibility(View.GONE);
+            }
+            if (!maxDrCount.equalsIgnoreCase("0") && drNeed.equalsIgnoreCase("0") && FW_meetup_mandatory.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtMaximumDoctors.setVisibility(View.VISIBLE);
+                binding.txtMaximumDoctors.setText(getString(R.string.maximum) + " " + drCap + " " + getString(R.string.selection) + " - " + maxDrCount);
+            } else {
+                binding.txtMaximumDoctors.setVisibility(View.GONE);
+            }
+            binding.llTpSetup.setVisibility((tpSetupVisibile ? View.VISIBLE : View.GONE));
+
             StringBuilder masters = new StringBuilder();
             if (drNeed.equalsIgnoreCase("0")) {
                 masters.append(drCap);
@@ -2004,6 +2040,42 @@ public class TourPlanActivity extends AppCompatActivity {
                 visitFrequencyNeed = jsonObject.optString("visit_freq_need", "1");
                 minimumGap = jsonObject.optString("min_gap_need", "0");
             }
+
+            boolean tpSetupVisibile = false;
+            if (!visitFrequencyNeed.equalsIgnoreCase("1") && drNeed.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtVisitFrequency.setVisibility(View.VISIBLE);
+            } else {
+                binding.txtVisitFrequency.setVisibility(View.GONE);
+            }
+            if (!planAllDr.equalsIgnoreCase("1") && drNeed.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtPlanAllDoctors.setVisibility(View.VISIBLE);
+            } else {
+                binding.txtPlanAllDoctors.setVisibility(View.GONE);
+            }
+            if (!minimumGap.equalsIgnoreCase("0") && drNeed.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtMinimumGap.setVisibility(View.VISIBLE);
+                binding.txtMinimumGap.setText(getString(R.string.minimum_gap) + " - " + minimumGap);
+            } else {
+                binding.txtMinimumGap.setVisibility(View.GONE);
+            }
+            if (!minDrCount.equalsIgnoreCase("0") && drNeed.equalsIgnoreCase("0") && FW_meetup_mandatory.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtMinimumDoctors.setVisibility(View.VISIBLE);
+                binding.txtMinimumDoctors.setText(getString(R.string.minimum) + " " + drCap + " " + getString(R.string.selection) + " - " + minDrCount);
+            } else {
+                binding.txtMinimumDoctors.setVisibility(View.GONE);
+            }
+            if (!maxDrCount.equalsIgnoreCase("0") && drNeed.equalsIgnoreCase("0") && FW_meetup_mandatory.equalsIgnoreCase("0")) {
+                tpSetupVisibile = true;
+                binding.txtMaximumDoctors.setVisibility(View.VISIBLE);
+                binding.txtMaximumDoctors.setText(getString(R.string.maximum) + " " + drCap + " " + getString(R.string.selection) + " - " + maxDrCount);
+            } else {
+                binding.txtMaximumDoctors.setVisibility(View.GONE);
+            }
+            binding.llTpSetup.setVisibility((tpSetupVisibile ? View.VISIBLE : View.GONE));
 
             StringBuilder masters = new StringBuilder();
             if (drNeed.equalsIgnoreCase("0")) {
@@ -2135,7 +2207,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public ArrayList<ModelClass> prepareModelClassForMonth(LocalDate localDate1) {
-        if (isSTPBasedTP && SharedPref.getStpType(TourPlanActivity.this).equalsIgnoreCase("0")) {
+        if (isSTPBasedTP && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && SharedPref.getStpType(TourPlanActivity.this).equalsIgnoreCase("0")) {
             checkAndSetSTPDataAvailable(localDate1);
         }
         ArrayList<ModelClass> modelClasses = new ArrayList<>();
@@ -2250,7 +2322,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public ArrayList<OneBuildModelClass> prepareModelClassForMonthOneBuild(LocalDate localDate2) {
-        if (isSTPBasedTP && SharedPref.getStpType(TourPlanActivity.this).equalsIgnoreCase("0")) {
+        if (isSTPBasedTP && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && SharedPref.getStpType(TourPlanActivity.this).equalsIgnoreCase("0")) {
             checkAndSetSTPDataAvailable(localDate2);
         }
         ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();

@@ -313,9 +313,8 @@
                         android:layout_height="wrap_content"
                         android:layout_above="@id/types"
                         android:layout_below="@id/calendar_header"
-                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         tools:listitem="@layout/tp_calendar_cell" />
-
 
                     <ScrollView
                         android:id="@+id/types"
@@ -517,46 +516,40 @@
                             </LinearLayout>
 
                             <LinearLayout
+                                android:id="@+id/ll_tp_setup"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:visibility="gone">
+                                android:visibility="visible">
 
                                 <TextView
-                                    android:id="@+id/txt_miss_rele"
+                                    android:id="@+id/txt_visit_frequency"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@id/txt_field_work"
-                                    android:layout_marginStart="@dimen/_2sdp"
-                                    android:layout_marginTop="@dimen/_2sdp"
-                                    android:layout_marginEnd="@dimen/_2sdp"
-                                    android:layout_marginBottom="@dimen/_2sdp"
-                                    android:layout_toRightOf="@id/txt_holiday"
+                                    android:layout_margin="@dimen/_2sdp"
                                     android:background="@drawable/custom_backround_layout"
                                     android:backgroundTint="@color/Hilo_bay_10"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:padding="@dimen/_3sdp"
-                                    android:text="@string/missed_released"
+                                    android:text="@string/visit_frequency"
                                     android:textColor="@color/Hilo_bay_60"
                                     android:textSize="@dimen/_5sdp" />
 
                                 <TextView
-                                    android:id="@+id/txt_re_entry"
+                                    android:id="@+id/txt_plan_all_doctors"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@id/txt_field_work"
                                     android:layout_margin="@dimen/_2sdp"
-                                    android:layout_toRightOf="@id/txt_miss_rele"
                                     android:background="@drawable/custom_backround_layout"
                                     android:backgroundTint="@color/pink_10"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:padding="@dimen/_3sdp"
-                                    android:text="@string/re_entry"
+                                    android:text="Plan All Doctors"
                                     android:textColor="@color/pink_60"
                                     android:textSize="@dimen/_5sdp" />
 
                                 <TextView
-                                    android:id="@+id/txt_rejected"
+                                    android:id="@+id/txt_minimum_gap"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="@dimen/_2sdp"
@@ -564,18 +557,43 @@
                                     android:backgroundTint="@color/brown_10"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:padding="@dimen/_3sdp"
-                                    android:text="@string/rejected"
+                                    android:text="@string/minimum_gap"
                                     android:textColor="@color/brown_60"
                                     android:textSize="@dimen/_5sdp" />
-                            </LinearLayout>
 
+                                <TextView
+                                    android:id="@+id/txt_minimum_doctors"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:background="@drawable/custom_backround_layout"
+                                    android:backgroundTint="@color/dark_green_10"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:padding="@dimen/_3sdp"
+                                    android:text="Minimum Doctors"
+                                    android:textColor="@color/dark_green_60"
+                                    android:textSize="@dimen/_5sdp" />
+
+                                <TextView
+                                    android:id="@+id/txt_maximum_doctors"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:background="@drawable/custom_backround_layout"
+                                    android:backgroundTint="@color/Evening_Blue_10"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:padding="@dimen/_3sdp"
+                                    android:text="Maximum Doctors"
+                                    android:textColor="@color/Evening_Blue_60"
+                                    android:textSize="@dimen/_5sdp" />
+
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:visibility="gone">
-
 
                                 <TextView
                                     android:id="@+id/txt_holiday1"
