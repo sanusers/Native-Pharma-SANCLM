@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/tv_head"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:fontFamily="@font/satoshi_bold"
@@ -77,10 +77,8 @@
             android:visibility="visible"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:paddingStart="8dp"
             android:background="@drawable/spinner"
-            android:layout_below="@+id/select_hq"
-            android:paddingEnd="8dp" />
+            android:layout_below="@+id/select_hq" />
 <!--        android:layout_marginTop="@dimen/_4sdp"-->
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/select_territory"
