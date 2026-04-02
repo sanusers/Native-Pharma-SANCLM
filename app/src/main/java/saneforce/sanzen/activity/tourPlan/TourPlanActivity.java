@@ -2373,30 +2373,33 @@ public class TourPlanActivity extends AppCompatActivity {
                     doctorVisitModel.setPlannedVisit(0);
                     doctorVisitModel.setPlannedDates(new HashSet<>());
                 }
-                for (OneBuildModelClass day : oneBuildModelClassList) {
-                    String dayNo = day.getDayNo();
-                    if (day.getSessionList() == null || day.getSessionList().isEmpty()) continue;
-                    for (OneBuildModelClass.SessionList session : day.getSessionList()) {
-                        if (session == null || session.getWorkType() == null) continue;
-                        if (!"F".equalsIgnoreCase(session.getWorkType().getFWFlg())) continue;
-                        if (session.getDoctors() == null || session.getDoctors().isEmpty())
+                if (oneBuildModelClassList != null) {
+                    for (OneBuildModelClass day : oneBuildModelClassList) {
+                        String dayNo = day.getDayNo();
+                        if (day.getSessionList() == null || day.getSessionList().isEmpty())
                             continue;
-                        for (OneBuildModelClass.SessionList.SubClass doctorSub : session.getDoctors()) {
-                            if (doctorSub == null) continue;
-                            DoctorDataModel doctorDataModel = doctorDataMap.get(doctorSub.getCode());
-                            if (doctorDataModel == null) continue;
-                            DoctorVisitModel doctorVisitModel = doctorVisitMap.get(doctorDataModel.getCode());
-                            if (doctorVisitModel == null) {
-                                Set<String> dates = new HashSet<>();
-                                dates.add(dayNo);
-                                doctorVisitModel = new DoctorVisitModel(doctorDataModel.getCode(), doctorDataModel.getName(), doctorDataModel.getCategory(), dates, doctorDataModel.getVisitCount(), 1);
-                            } else {
-                                Set<String> dates = doctorVisitModel.getPlannedDates();
-                                dates.add(dayNo);
-                                doctorVisitModel.setPlannedDates(dates);
-                                doctorVisitModel.setPlannedVisit(doctorVisitModel.getPlannedDates().size());
+                        for (OneBuildModelClass.SessionList session : day.getSessionList()) {
+                            if (session == null || session.getWorkType() == null) continue;
+                            if (!"F".equalsIgnoreCase(session.getWorkType().getFWFlg())) continue;
+                            if (session.getDoctors() == null || session.getDoctors().isEmpty())
+                                continue;
+                            for (OneBuildModelClass.SessionList.SubClass doctorSub : session.getDoctors()) {
+                                if (doctorSub == null) continue;
+                                DoctorDataModel doctorDataModel = doctorDataMap.get(doctorSub.getCode());
+                                if (doctorDataModel == null) continue;
+                                DoctorVisitModel doctorVisitModel = doctorVisitMap.get(doctorDataModel.getCode());
+                                if (doctorVisitModel == null) {
+                                    Set<String> dates = new HashSet<>();
+                                    dates.add(dayNo);
+                                    doctorVisitModel = new DoctorVisitModel(doctorDataModel.getCode(), doctorDataModel.getName(), doctorDataModel.getCategory(), dates, doctorDataModel.getVisitCount(), 1);
+                                } else {
+                                    Set<String> dates = doctorVisitModel.getPlannedDates();
+                                    dates.add(dayNo);
+                                    doctorVisitModel.setPlannedDates(dates);
+                                    doctorVisitModel.setPlannedVisit(doctorVisitModel.getPlannedDates().size());
+                                }
+                                doctorVisitMap.put(doctorDataModel.getCode(), doctorVisitModel);
                             }
-                            doctorVisitMap.put(doctorDataModel.getCode(), doctorVisitModel);
                         }
                     }
                 }

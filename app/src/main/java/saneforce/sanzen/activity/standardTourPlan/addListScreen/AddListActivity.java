@@ -142,9 +142,10 @@ public class AddListActivity extends AppCompatActivity {
                     && selectedDCRMap.get(Constants.CHEMIST) != null && selectedDCRMap.get(Constants.CHEMIST).isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or " + chmCap);
             }*/
-            else if (selectedDCRMap.get(Constants.DOCTOR_MAS) != null && selectedDCRMap.get(Constants.DOCTOR_MAS).isEmpty()
-                    && selectedDCRMap.get(Constants.CHEMIST_MAS) != null && selectedDCRMap.get(Constants.CHEMIST_MAS).isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + drCap + " or " + chmCap);
+            else if (selectedDCRMap.get(Constants.DOCTOR_MAS) == null || selectedDCRMap.get(Constants.DOCTOR_MAS).isEmpty()){
+//                    && selectedDCRMap.get(Constants.CHEMIST_MAS) != null && selectedDCRMap.get(Constants.CHEMIST_MAS).isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + " " + drCap);
+//                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + drCap + " or " + chmCap);
 //                String message = getString(R.string.please_select_any) + " " + drCap + " "
 //                        + getString(R.string.or_text) + " " + chmCap;
 //                commonUtilsMethods.showToastMessage(this, message);
