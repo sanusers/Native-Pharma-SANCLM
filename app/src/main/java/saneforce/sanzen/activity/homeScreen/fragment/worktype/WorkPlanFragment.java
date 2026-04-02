@@ -191,6 +191,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void checkDateChange() {
         if (!isAdded()) return;
+        if(SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) return;
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
                 && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
             return;
