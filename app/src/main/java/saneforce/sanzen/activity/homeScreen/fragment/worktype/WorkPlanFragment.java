@@ -5823,26 +5823,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         TextView content = dialogRemarks.findViewById(R.id.content);
         Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
         Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
+        ImageView imgClose = dialogRemarks.findViewById(R.id.img_close);
         btn_clear.setText(requireContext().getString(R.string.clear));
         btn_save.setText(requireContext().getString(R.string.save));
         content.setVisibility(View.GONE);
-        // Night Stay flow மட்டும் "Day Remarks"
-        if (isFromNightStay) {
-            heading.setText("Day Remarks");
-        } else {
-            heading.setText(requireContext().getString(R.string.remarks));
-        }
-        //heading.setText(requireContext().getString(R.string.remarks));
+        heading.setText(requireContext().getString(R.string.remarks));
         ed_remarks.setVisibility(View.VISIBLE);
-
-//        if (isDayRemarks) {
-//            heading.setText(R.string.day_remarks); // Day Remarks (Arabic/French etc. automatic-ah maarum)
-//            ed_remarks.setHint(R.string.day_remarks);
-//        }
-//        } else {
-//            heading.setText(R.string.night_stay_remarks); // Default Night Stay
-//            ed_remarks.setHint(R.string.night_stay_remarks);
-//        }
 
         btn_save.setOnClickListener(new SafeClickListener() {
             @Override
@@ -5866,6 +5852,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 ed_remarks.setText("");
             }
         });
+        imgClose.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialogRemarks.dismiss();
+            }
+        });
     }
 
     private void dialogAcknowledge(Dialog dialogRemarks) {
@@ -5885,11 +5877,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             public void onSafeClick(View view) {
                 dialogRemarks.dismiss();
                 if (SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) {
-                    //  Field Work available
                     if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
                         StayAlert();
                     } else {
-                        //  no Field Work direct submit
                         Dialog dialog = new Dialog(requireActivity());
                         dialog.setContentView(R.layout.popup_remarks);
                         dialog.setCancelable(false);
@@ -5899,6 +5889,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         dialogFinalSubmit(dialog, false);
                         dialog.show();
                     }
+                }else{
+                    Dialog dialog = new Dialog(requireActivity());
+                    dialog.setContentView(R.layout.popup_remarks);
+                    dialog.setCancelable(false);
+                    if (dialog.getWindow() != null) {
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    }
+                    dialogFinalSubmit(dialog, false);
+                    dialog.show();
                 }
             }
         });
@@ -5906,17 +5905,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onSafeClick(View view) {
                 dialogRemarks.dismiss();
-                Dialog newDialog = new Dialog(requireActivity());
-                newDialog.setContentView(R.layout.popup_remarks);
-                newDialog.setCancelable(false);
-                if (newDialog.getWindow() != null) {
-                    newDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                }
-                ImageView iv_close2 = newDialog.findViewById(R.id.img_close);
-                iv_close2.setOnClickListener(v -> newDialog.dismiss());
-                dialogFinalSubmit(newDialog, false);
-                // dialogFinalSubmit(newDialog,true);
-                newDialog.show();
+//                Dialog newDialog = new Dialog(requireActivity());
+//                newDialog.setContentView(R.layout.popup_remarks);
+//                newDialog.setCancelable(false);
+//                if (newDialog.getWindow() != null) {
+//                    newDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                }
+//                ImageView iv_close2 = newDialog.findViewById(R.id.img_close);
+//                iv_close2.setOnClickListener(v -> newDialog.dismiss());
+//                dialogFinalSubmit(newDialog, false);
+//                // dialogFinalSubmit(newDialog,true);
+//                newDialog.show();
             }
         });
 //        btn_clear.setOnClickListener(new SafeClickListener() {
