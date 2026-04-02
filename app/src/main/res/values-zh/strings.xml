@@ -1072,5 +1072,12 @@
 
     <string name="please_detail_mandatory_slides">请详细说明必填幻灯片</string>
     <string name="mandatory_slides_pending_for_brand">品牌的必填幻灯片待完成：%1$s</string>
+    <string name="detailed_slides">详细幻灯片</string>
+    <string name="no_detailed_slides">没有详细幻灯片</string>
 
+    <string name="night_stay">过夜</string>
+    <string name="are_you_staying_overnight">您要过夜吗？</string>
+    <string name="you_are_staying_overnight">您正在过夜</string>
+    <string name="night_stay_remarks">过夜备注</string>
+    <string name="day_remarks">当日备注</string>
 </resources>

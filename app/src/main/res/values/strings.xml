@@ -1078,4 +1078,11 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="loading">Loading</string>
     <string name="detailed_slides">Detailed Slides</string>
     <string name="no_detailed_slides">No Detailed Slides</string>
+
+
+    <string name="night_stay">Night Stay</string>
+    <string name="are_you_staying_overnight">Are you staying overnight ?</string>
+    <string name="you_are_staying_overnight">You are staying overnight</string>
+    <string name="night_stay_remarks">Night Stay Remarks</string>
+    <string name="day_remarks">Day Remarks</string>
 </resources>

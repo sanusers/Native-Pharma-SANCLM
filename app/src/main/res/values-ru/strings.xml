@@ -1073,4 +1073,12 @@
     <string name="please_detail_mandatory_slides">Пожалуйста, укажите обязательные слайды</string>
     <string name="mandatory_slides_pending_for_brand">Обязательные слайды, ожидающие для бренда: %1$s</string>
     <string name="loading">Загрузка</string>
+    <string name="detailed_slides">Подробные слайды</string>
+    <string name="no_detailed_slides">Нет подробных слайдов</string>
+
+    <string name="night_stay">Ночевка</string>
+    <string name="are_you_staying_overnight">Вы остаетесь на ночь?</string>
+    <string name="you_are_staying_overnight">Вы остаетесь на ночь</string>
+    <string name="night_stay_remarks">Примечания к ночевке</string>
+    <string name="day_remarks">Примечания за день</string>
 </resources>

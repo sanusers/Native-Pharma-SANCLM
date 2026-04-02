@@ -1062,4 +1062,13 @@
     <string name="please_detail_mandatory_slides">يرجى توضيح الشرائح الإلزامية</string>
     <string name="mandatory_slides_pending_for_brand">الشرائح الإلزامية معلقة للعلامة التجارية: %1$s</string>
     <string name="loading">جارٍ التحميل</string>
+
+    <string name="detailed_slides">شرائح مفصلة</string>
+    <string name="no_detailed_slides">لا توجد شرائح مفصلة</string>
+
+    <string name="night_stay">الإقامة ليلة واحدة</string>
+    <string name="are_you_staying_overnight">هل ستقضي الليلة؟</string>
+    <string name="you_are_staying_overnight">أنت تقيم طوال الليل</string>
+    <string name="night_stay_remarks">ملاحظات المبيت</string>
+    <string name="day_remarks">ملاحظات اليوم</string>
 </resources>

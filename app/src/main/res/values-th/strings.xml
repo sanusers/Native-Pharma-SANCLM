@@ -1076,4 +1076,13 @@
     <string name="please_detail_mandatory_slides">โปรดระบุสไลด์ที่จำเป็น</string>
     <string name="mandatory_slides_pending_for_brand">สไลด์ที่จำเป็นที่ยังค้างสำหรับแบรนด์: %1$s</string>
     <string name="loading">กำลังโหลด</string>
+
+    <string name="detailed_slides">สไลด์รายละเอียด</string>
+    <string name="no_detailed_slides">ไม่มีสไลด์รายละเอียด</string>
+
+    <string name="night_stay">การพักค้างคืน</string>
+    <string name="are_you_staying_overnight">คุณจะพักค้างคืนหรือไม่?</string>
+    <string name="you_are_staying_overnight">คุณกำลังพักค้างคืน</string>
+    <string name="night_stay_remarks">หมายเหตุการพักค้างคืน</string>
+    <string name="day_remarks">หมายเหตุประจำวัน</string>
 </resources>

@@ -1059,5 +1059,12 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="please_detail_mandatory_slides">Veuillez détailler les diapositives obligatoires</string>
     <string name="mandatory_slides_pending_for_brand">Diapositives obligatoires en attente pour la marque : %1$s</string>
     <string name="loading">Chargement</string>
+    <string name="detailed_slides">Diapositives détaillées</string>
+    <string name="no_detailed_slides">Aucune diapositive détaillée</string>
 
+    <string name="night_stay">Nuitée</string>
+    <string name="are_you_staying_overnight">Passerez-vous la nuit sur place ?</string>
+    <string name="you_are_staying_overnight">Vous passez la nuit sur place</string>
+    <string name="night_stay_remarks">Remarques sur la nuitée</string>
+    <string name="day_remarks">Remarques de la journée</string>
 </resources>

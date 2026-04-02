@@ -3,12 +3,14 @@ package saneforce.sanzen.activity.homeScreen.fragment.worktype;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,21 +23,29 @@ import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.Gson;
@@ -112,7 +122,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public static ArrayList<Multicheckclass_clust> listSelectedCluster = new ArrayList<>();
     public HashMap<String, ArrayList<MultiHQClusterItem>> mapSelectedCluster = new HashMap<>();
     public ArrayList<Multicheckclass_clust> listSelectedHQ = new ArrayList<>();
-    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "",tpChemists="", tpWorkType2 = "", tpCluster2 = "", tpDoctor2 = "",tpChemists2="", deviation = "0", remarks = "", tpApprovalStatus = "", workDayName = "", workDayCode = "", workDayName2 = "", workDayCode2 = "";
+    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "", tpChemists = "", tpWorkType2 = "", tpCluster2 = "", tpDoctor2 = "", tpChemists2 = "", deviation = "0", remarks = "", tpApprovalStatus = "", workDayName = "", workDayCode = "", workDayName2 = "", workDayCode2 = "";
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
@@ -170,9 +180,18 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OutboxUtil outboxUtil;
     private Handler dateHandler;
     private String status;
+    String sfCode = "";
+    private String nsRsfName = "";
+    private String nsRsfCode = "";
+    private String nsTerritoryCode = "";
+    private String nsTerritoryName = "";
+    private String nsRemarks = "";
+
+    //String nsRsfDayRemarks = "";
 
     private void checkDateChange() {
         if (!isAdded()) return;
+        if(SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) return;
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
                 && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
             return;
@@ -507,7 +526,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
-                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))&& mFwFlg2.equalsIgnoreCase("F")) {
+                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) && mFwFlg2.equalsIgnoreCase("F")) {
                             binding.txtworkday2.setText("");
                             binding.txtCluster2.setText("");
                             binding.rlworkday2.setVisibility(View.VISIBLE);
@@ -1954,7 +1973,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         workDayCode = stpOfflineDataTable.getDayID();
                         workDayName = stpOfflineDataTable.getDayCaption();
                         tpDoctor = stpOfflineDataTable.getDoctorCode();
-                        tpChemists=stpOfflineDataTable.getChemistCode();
+                        tpChemists = stpOfflineDataTable.getChemistCode();
                         binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                         chk_cluster = mTowncode1;
                     } else {
@@ -1963,7 +1982,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         workDayCode2 = stpOfflineDataTable.getDayID();
                         workDayName2 = stpOfflineDataTable.getDayCaption();
                         tpDoctor2 = stpOfflineDataTable.getDoctorCode();
-                        tpChemists2=stpOfflineDataTable.getChemistCode();
+                        tpChemists2 = stpOfflineDataTable.getChemistCode();
                         binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                         chk_cluster = mTowncode2;
                     }
@@ -2074,7 +2093,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     workDayCode = stpOfflineDataTable.getDayID();
                                     workDayName = stpOfflineDataTable.getDayCaption();
                                     tpDoctor = stpOfflineDataTable.getDoctorCode();
-                                    tpChemists= stpOfflineDataTable.getChemistCode();
+                                    tpChemists = stpOfflineDataTable.getChemistCode();
                                     tpWorkType = mWTCode1;
                                     tpCluster = stpOfflineDataTable.getClusterCode();
                                     binding.txtCluster1.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
@@ -2087,7 +2106,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     tpWorkType2 = mWTCode2;
                                     tpCluster2 = stpOfflineDataTable.getClusterCode();
                                     tpDoctor2 = stpOfflineDataTable.getDoctorCode();
-                                    tpChemists2=stpOfflineDataTable.getChemistCode();
+                                    tpChemists2 = stpOfflineDataTable.getChemistCode();
                                     binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(strClusterName.trim()).replaceAll(",", " , ")));
                                     chk_cluster = mTowncode2;
                                 }
@@ -2361,13 +2380,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             deviationJSONObject.put("TP_cluster", tpCluster);
             deviationJSONObject.put("TP_worktype", tpWorkType);
             deviationJSONObject.put("TP_Doctor", tpDoctor);
-            deviationJSONObject.put("TP_Chemists",tpChemists);
+            deviationJSONObject.put("TP_Chemists", tpChemists);
             deviationJSONObject.put("Others_Code", workDayCode);
             deviationJSONObject.put("Others_Name", workDayName);
             deviationJSONObject.put("TP_cluster2", tpCluster2);
             deviationJSONObject.put("TP_worktype2", tpWorkType2);
             deviationJSONObject.put("TP_Doctor2", tpDoctor2);
-            deviationJSONObject.put("TP_Chemists2",tpChemists2);
+            deviationJSONObject.put("TP_Chemists2", tpChemists2);
             deviationJSONObject.put("Others_Code2", workDayCode2);
             deviationJSONObject.put("Others_Name2", workDayName2);
             if (TPDCRMGRApprNeed.equalsIgnoreCase("0")) {
@@ -3001,7 +3020,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode1;
-                if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg2.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3015,7 +3035,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                 }
                 String todayPlanClusterCode = mTowncode2;
-                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                if (mFwFlg1.equalsIgnoreCase("F"))
+                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                 if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
                     HomeDashBoard.binding.viewPager.setCurrentItem(1);
@@ -3051,7 +3072,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObjectwt.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     jsonObjectwt.put("TP_Doctor", tpDoctor);
-                    jsonObjectwt.put("TP_Chemists",tpChemists);
+                    jsonObjectwt.put("TP_Chemists", tpChemists);
                     jsonObjectwt.put("TP_cluster", tpCluster);
                     jsonObjectwt.put("TP_worktype", tpWorkType);
                     jsonObjectwt.put("Others_Code", workDayCode);
@@ -3075,7 +3096,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 firstSessionObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg1.equalsIgnoreCase("F")) {
                     firstSessionObject.put("TP_Doctor", tpDoctor);
-                    firstSessionObject.put("TP_Chemists",tpChemists);
+                    firstSessionObject.put("TP_Chemists", tpChemists);
                     firstSessionObject.put("TP_cluster", tpCluster);
                     firstSessionObject.put("TP_worktype", tpWorkType);
                     firstSessionObject.put("Others_Code", workDayCode);
@@ -3098,7 +3119,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 secondSessionObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     secondSessionObject.put("TP_Doctor", tpDoctor2);
-                    secondSessionObject.put("TP_Chemists",tpChemists2);
+                    secondSessionObject.put("TP_Chemists", tpChemists2);
                     secondSessionObject.put("TP_cluster", tpCluster2);
                     secondSessionObject.put("TP_worktype", tpWorkType2);
                     secondSessionObject.put("Others_Code", workDayCode2);
@@ -3302,19 +3323,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TP_cluster", tpCluster);
             jsonObject.put("TP_worktype", tpWorkType);
             jsonObject.put("TP_Doctor", tpDoctor);
-            jsonObject.put("TP_Chemists",tpChemists);
+            jsonObject.put("TP_Chemists", tpChemists);
             jsonObject.put("TP_cluster2", tpCluster2);
             jsonObject.put("TP_worktype2", tpWorkType2);
             jsonObject.put("TP_Doctor2", tpDoctor2);
-            jsonObject.put("TP_Chemists2",tpChemists2);
+            jsonObject.put("TP_Chemists2", tpChemists2);
             jsonObject.put("day_flag", "0");
 
             SharedPref.setTodayTPDoctor(requireContext(), tpDoctor);
             Log.e("TPDoctorSave", "Saved TP Doctor => " + tpDoctor);
 
-            SharedPref.setTodayTPChemists(requireContext(),tpChemists);
-            Log.e("TPChemistSave","Saved TP Chemist =>" + tpChemists);
-            if(!deviation.equalsIgnoreCase("1")) {
+            SharedPref.setTodayTPChemists(requireContext(), tpChemists);
+            Log.e("TPChemistSave", "Saved TP Chemist =>" + tpChemists);
+            if (!deviation.equalsIgnoreCase("1")) {
                 if ("F".equalsIgnoreCase(mFwFlg1)) {
                     ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(
                             tpDoctor, isFromTP, tpChemists  // Session 1 data
@@ -3322,11 +3343,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
                 if ("F".equalsIgnoreCase(mFwFlg2)) {
                     ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(
-                            tpDoctor2, isFromTP, tpChemists2  // Session 2 data ✅
+                            tpDoctor2, isFromTP, tpChemists2  // Session 2 data
                     );
                 }
             }
-           // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP,tpChemists);
+            // ((HomeDashBoard) requireActivity()).showDoctorPlanPopup(tpDoctor, isFromTP,tpChemists);
 
             jsonObject.put("Others_Code", workDayCode);
             jsonObject.put("Others_Name", workDayName);
@@ -3949,7 +3970,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             String todayPlanClusterCode = mTowncode1;
-            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+            if (mFwFlg2.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
             SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), true, mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"));
 
@@ -3972,7 +3993,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             FirstSeasonObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
             if (mFwFlg1.equalsIgnoreCase("F")) {
                 FirstSeasonObject.put("TP_Doctor", tpDoctor);
-                FirstSeasonObject.put("TP_Chemists",tpChemists);
+                FirstSeasonObject.put("TP_Chemists", tpChemists);
                 FirstSeasonObject.put("TP_cluster", tpCluster);
                 FirstSeasonObject.put("TP_worktype", tpWorkType);
                 FirstSeasonObject.put("Others_Code", workDayCode);
@@ -3995,7 +4016,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SecondSeasonObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if (mFwFlg2.equalsIgnoreCase("F")) {
                     SecondSeasonObject.put("TP_Doctor", tpDoctor2);
-                    SecondSeasonObject.put("TP_Chemists",tpChemists2);
+                    SecondSeasonObject.put("TP_Chemists", tpChemists2);
                     SecondSeasonObject.put("TP_cluster", tpCluster2);
                     SecondSeasonObject.put("TP_worktype", tpWorkType2);
                     SecondSeasonObject.put("Others_Code", workDayCode2);
@@ -4483,13 +4504,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             tpWorkType = "";
             tpCluster = "";
             tpDoctor = "";
-            tpChemists="";
+            tpChemists = "";
             workDayCode = "";
             workDayName = "";
             tpWorkType2 = "";
             tpCluster2 = "";
             tpDoctor2 = "";
-            tpChemists2="";
+            tpChemists2 = "";
             workDayCode2 = "";
             workDayName2 = "";
             isFromTP = false;
@@ -4631,7 +4652,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             tpWorkType = FirstSeasonDayPlanObject.optString("TP_worktype");
                             tpCluster = FirstSeasonDayPlanObject.optString("TP_cluster");
                             tpDoctor = FirstSeasonDayPlanObject.optString("TP_Doctor");
-                            tpChemists=FirstSeasonDayPlanObject.optString("TP_Chemists");
+                            tpChemists = FirstSeasonDayPlanObject.optString("TP_Chemists");
                             deviation = FirstSeasonDayPlanObject.optString("TpVwFlg");
                             workDayCode = FirstSeasonDayPlanObject.optString("Others_Code");
                             workDayName = FirstSeasonDayPlanObject.optString("Others_Name");
@@ -4847,7 +4868,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtCluster2.setText(CommonUtilsMethods.removeDollar(CommonUtilsMethods.removeLastComma(mTownname2).replaceAll(",", " , ")));
                                 binding.txtheadquaters2.setText(CommonUtilsMethods.removeLastComma(mHQName2).replaceAll(",", " , "));
                                 String todayPlanClusterCode = mTowncode2;
-                                if (mFwFlg1.equalsIgnoreCase("F")) todayPlanClusterCode = mTowncode1 + ","+ mTowncode2;
+                                if (mFwFlg1.equalsIgnoreCase("F"))
+                                    todayPlanClusterCode = mTowncode1 + "," + mTowncode2;
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), todayPlanClusterCode);
                             }
                             disableSession2();
@@ -4869,7 +4891,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     deviation = "1";
                                 }
                                 Log.i("TP", "setUpWorkPlan: " + isFromTP);
-                                if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))&& mFwFlg2.equalsIgnoreCase("F")) {
+                                if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) && mFwFlg2.equalsIgnoreCase("F")) {
                                     binding.rlworkday2.setVisibility(View.VISIBLE);
                                     binding.txtworkday2.setText(workDayName2);
 
@@ -5020,7 +5042,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 Type type = new TypeToken<OneBuildModelClass>() {
                 }.getType();
                 OneBuildModelClass oneBuildModelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
-                StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder(),listedChm=new StringBuilder();
+                StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder(), listedChm = new StringBuilder();
                 String stpCode = "", stpName = "";
                 if (oneBuildModelClass.getSessionList() != null && !oneBuildModelClass.getSessionList().isEmpty()) {
                     stpCode = oneBuildModelClass.getSessionList().get(0).getSTPCode();
@@ -5077,7 +5099,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     obj.put("Rem", "");
                     obj.put("TpVwFlg", "0");
                     obj.put("TP_Doctor", listedDr.toString());
-                    obj.put("TP_Chemists",listedChm.toString());
+                    obj.put("TP_Chemists", listedChm.toString());
                     obj.put("TP_cluster", clusterCode.toString());
                     obj.put("TP_worktype", oneBuildModelClass.getSessionList().get(0).getWorkType().getCode());
                     if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
@@ -5094,7 +5116,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                     if (oneBuildModelClass.getSessionList().size() > 1) {
                         listedDr = new StringBuilder();
-                        listedChm=new StringBuilder();
+                        listedChm = new StringBuilder();
                         clusterCode = new StringBuilder();
                         clusterName = new StringBuilder();
                         String stpCode2 = "", stpName2 = "";
@@ -5148,7 +5170,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         obj2.put("Rem", "");
                         obj2.put("TpVwFlg", "0");
                         obj2.put("TP_Doctor", listedDr.toString());
-                        obj2.put("TP_Chemists",listedChm.toString());
+                        obj2.put("TP_Chemists", listedChm.toString());
                         obj2.put("TP_cluster", clusterCode.toString());
                         obj2.put("TP_worktype", oneBuildModelClass.getSessionList().get(1).getWorkType().getCode());
                         if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved(status) && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0) || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2"))) {
@@ -5708,6 +5730,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("location", latitude + ":" + longitude);
             finalSubmitJSONObject.put("address", address);
 
+            if (!nsRemarks.isEmpty()) {
+                finalSubmitJSONObject.put("NS_Rsf_Name", SharedPref.getHqName(requireContext()));
+                finalSubmitJSONObject.put("IsNightStay", SharedPref.getNightStay(requireContext()));
+                finalSubmitJSONObject.put("NS_Rsf_Code", nsRsfCode);
+                finalSubmitJSONObject.put("NS_Territory_Code", nsTerritoryCode);
+                finalSubmitJSONObject.put("NS_Territory_Name", nsTerritoryName);
+                finalSubmitJSONObject.put("NS_Remarks", nsRemarks);
+                //  finalSubmitJSONObject.put("NS_Rsf_Night_Stay_Remarks", nsRsfNightStayRemarks);
+            }
+
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -5778,19 +5810,18 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         dialogRemarks.setCancelable(false);
         ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
-        dialogAcknowledge(dialogRemarks);
+        dialogAcknowledge(dialogRemarks); //  same
         dialogRemarks.show();
-
         iv_close.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                dialogRemarks.dismiss();
+                dialogRemarks.dismiss(); //  same
             }
         });
-
     }
 
-    private void dialogFinalSubmit(Dialog dialogRemarks) {
+    private void dialogFinalSubmit(Dialog dialogRemarks, boolean isFromNightStay) {
+        // private void dialogFinalSubmit(Dialog dialogRemarks,boolean isDayRemarks) {
         EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
         ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks, 300)});
         TextView heading = dialogRemarks.findViewById(R.id.tv_head);
@@ -5800,8 +5831,24 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_clear.setText(requireContext().getString(R.string.clear));
         btn_save.setText(requireContext().getString(R.string.save));
         content.setVisibility(View.GONE);
-        heading.setText(requireContext().getString(R.string.remarks));
+        // Night Stay flow மட்டும் "Day Remarks"
+        if (isFromNightStay) {
+            heading.setText("Day Remarks");
+        } else {
+            heading.setText(requireContext().getString(R.string.remarks));
+        }
+        //heading.setText(requireContext().getString(R.string.remarks));
         ed_remarks.setVisibility(View.VISIBLE);
+
+//        if (isDayRemarks) {
+//            heading.setText(R.string.day_remarks); // Day Remarks (Arabic/French etc. automatic-ah maarum)
+//            ed_remarks.setHint(R.string.day_remarks);
+//        }
+//        } else {
+//            heading.setText(R.string.night_stay_remarks); // Default Night Stay
+//            ed_remarks.setHint(R.string.night_stay_remarks);
+//        }
+
         btn_save.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -5841,16 +5888,514 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_save.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                dialogFinalSubmit(dialogRemarks);
+                dialogRemarks.dismiss();
+                if (SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) {
+                    //  Field Work available
+                    if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
+                        StayAlert();
+                    } else {
+                        //  no Field Work direct submit
+                        Dialog dialog = new Dialog(requireActivity());
+                        dialog.setContentView(R.layout.popup_remarks);
+                        dialog.setCancelable(false);
+                        if (dialog.getWindow() != null) {
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        }
+                        dialogFinalSubmit(dialog, false);
+                        dialog.show();
+                    }
+                }
             }
         });
         btn_clear.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
                 dialogRemarks.dismiss();
+                Dialog newDialog = new Dialog(requireActivity());
+                newDialog.setContentView(R.layout.popup_remarks);
+                newDialog.setCancelable(false);
+                if (newDialog.getWindow() != null) {
+                    newDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                ImageView iv_close2 = newDialog.findViewById(R.id.img_close);
+                iv_close2.setOnClickListener(v -> newDialog.dismiss());
+                dialogFinalSubmit(newDialog, false);
+                // dialogFinalSubmit(newDialog,true);
+                newDialog.show();
+            }
+        });
+//        btn_clear.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                dialogFinalSubmit(dialogRemarks); // No → Remarks popup
+//            }
+//        });
+    }
+
+    public void StayAlert() {
+        Log.d("STAY_ALERT", "StayAlert called");
+        AlertDialog.Builder alert = new AlertDialog.Builder(workPlanFragment.requireActivity());
+        alert.setCancelable(false);
+        LayoutInflater inflater = workPlanFragment.requireActivity().getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.popup_night_stay, null);
+        Button btn_yes = alertLayout.findViewById(R.id.btn_yes);
+        Button btn_no = alertLayout.findViewById(R.id.btn_no);
+        alert.setView(alertLayout);
+        AlertDialog dialog = alert.create();
+        dialog.show();
+        Window window = dialog.getWindow();
+        if (window != null) {
+
+
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+            window.setLayout((int) (workPlanFragment.requireActivity()
+                            .getResources().getDisplayMetrics().widthPixels * 0.38), ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        ImageView img_close = alertLayout.findViewById(R.id.img_close);
+        if (img_close != null) {
+            img_close.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        btn_yes.setOnClickListener(view -> {
+            dialog.dismiss();
+            StayAlert2(requireActivity(), mFwFlg1, mFwFlg2, mTownname1, mTownname2, mHQCode1, mHQCode2,
+                    mHQName1, mHQName2, sfCode, multiple_cluster_list);
+        });
+        btn_no.setOnClickListener(view -> {
+            dialog.dismiss();
+            Dialog dialogRemarks = new Dialog(workPlanFragment.requireActivity());
+            dialogRemarks.setContentView(R.layout.popup_remarks);
+            dialogRemarks.setCancelable(false);
+            if (dialogRemarks.getWindow() != null) {
+                dialogRemarks.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+            ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
+            iv_close.setOnClickListener(v -> dialogRemarks.dismiss());
+            dialogFinalSubmit(dialogRemarks, true);
+            //     dialogFinalSubmit(dialogRemarks,true);
+            dialogRemarks.show();
+        });
+//        btn_no.setOnClickListener(view -> {
+//            dialog.dismiss();
+//            Dialog dialogRemarks = new Dialog(workPlanFragment.requireActivity());
+//            dialogRemarks.setContentView(R.layout.popup_remarks);
+//            dialogRemarks.setCancelable(false);
+//            dialogFinalSubmit(dialogRemarks);
+//            dialogRemarks.show();
+//        });
+//        btn_no.setOnClickListener(view -> {
+//            dialog.dismiss();
+//
+//        });
+    }
+
+    public void StayAlert2(FragmentActivity fragment, String mFwFlg1, String mFwFlg2, String mTownname1, String mTownname2, String mHQCode1, String mHQCode2,
+                           String mHQName1, String mHQName2, String sfCode,
+                           List<Multicheckclass_clust> multiple_cluster_list) {
+
+        Dialog dialog = new Dialog(fragment);
+        dialog.setContentView(R.layout.popup_night_stay_teritorry);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        dialog.setCancelable(false);
+
+        Spinner spinnerTerritory = dialog.findViewById(R.id.spinnerTerritory);
+        Spinner spinnerHeadQuaters = dialog.findViewById(R.id.spinnerHeadQuaters);
+        TextView select_hq = dialog.findViewById(R.id.select_hq);
+        TextView select_territory = dialog.findViewById(R.id.select_territory);
+        EditText ed_remark = dialog.findViewById(R.id.ed_remark);
+        EditText ed_remark3 = dialog.findViewById(R.id.ed_remark3);
+        Button btn_submit = dialog.findViewById(R.id.btn_submit);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        String clusterCap = SharedPref.getClusterCap(fragment);
+        select_territory.setText(getString(R.string.select) + " " + clusterCap);
+        //  sfType check - HQ visible/gone
+        if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+            select_hq.setVisibility(View.VISIBLE);
+            spinnerHeadQuaters.setVisibility(View.VISIBLE);
+        } else {
+            select_hq.setVisibility(View.GONE);
+            spinnerHeadQuaters.setVisibility(View.GONE);
+        }
+
+        //  HQ Spinner setup - sfType 2
+        if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+            List<String> hqDisplayList = new ArrayList<>();
+            hqDisplayList.add(getString(R.string.select_head_quarter));
+
+            String selectedHQ = "";
+            if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+                selectedHQ = mHQName1 + "," + mHQName2;
+            } else if (mFwFlg1.equalsIgnoreCase("F")) {
+                selectedHQ = mHQName1;
+            } else if (mFwFlg2.equalsIgnoreCase("F")) {
+                selectedHQ = mHQName2;
+            }
+
+            if (!selectedHQ.isEmpty()) {
+                for (String name : selectedHQ.split(",")) {
+                    String trimmed = name.trim();
+                    if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+                        hqDisplayList.add(trimmed);
+                    }
+                }
+            }
+
+            ArrayAdapter<String> hqAdapter = new ArrayAdapter<String>(
+                    fragment, R.layout.popup_night_stay_spinner, hqDisplayList) {
+
+                @Override
+                public boolean isEnabled(int position) {
+                    return position != 0;
+                }
+
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getDropDownView(position, convertView, parent);
+                    if (position == 0) {
+                        view.setVisibility(View.GONE);
+                        view.setLayoutParams(new AbsListView.LayoutParams(0, 1));
+                    } else {
+                        view.setVisibility(View.VISIBLE);
+                        int heightInPx = (int) (45 * getContext().getResources().getDisplayMetrics().density);
+                        view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightInPx));
+                        // 4. Divider Line (Border) add panna
+                        GradientDrawable gd = new GradientDrawable();
+                        gd.setColor(Color.WHITE);
+                        gd.setStroke(1, Color.parseColor("#E0E0E0"));
+                        view.setBackground(gd);
+
+                        // 5. Text alignment and padding
+                        TextView tv = view.findViewById(android.R.id.text1);
+                        if (tv != null) {
+//                            tv.setTextColor(Color.BLACK);
+//                            tv.setTextSize(14);
+                            tv.setGravity(Gravity.CENTER_VERTICAL);
+                            tv.setPadding(30, 0, 30, 0);
+                        }
+                    }
+                    return view;
+                }
+            };
+            hqAdapter.setDropDownViewResource(R.layout.popup_night_stay_spinner);
+            spinnerHeadQuaters.setAdapter(hqAdapter);
+            spinnerHeadQuaters.setSelection(0, false);
+
+//            spinnerHeadQuaters.post(() -> {
+//                spinnerHeadQuaters.setDropDownWidth(spinnerHeadQuaters.getWidth());
+//                spinnerHeadQuaters.setDropDownVerticalOffset(spinnerHeadQuaters.getHeight());
+            spinnerHeadQuaters.post(() -> {
+                spinnerHeadQuaters.setDropDownWidth(spinnerHeadQuaters.getWidth());
+                spinnerHeadQuaters.setPopupBackgroundResource(android.R.color.white);
+                //  Double post - correct height
+                spinnerHeadQuaters.post(() ->
+                        spinnerHeadQuaters.setDropDownVerticalOffset(spinnerHeadQuaters.getHeight())
+                );
+            });
+            spinnerHeadQuaters.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position == 0) return;
+
+                    // Selected HQ name
+                    String selectedHQName = parent.getItemAtPosition(position).toString().trim();
+
+                    //   based on HQ  select
+                    String clustersForHQ = "";
+                    if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+                        // 2 Hq   based territory
+                        String hq1Name = mHQName1.split(",")[0].trim();
+                        if (selectedHQName.equalsIgnoreCase(hq1Name)) {
+                            clustersForHQ = mTownname1.split("\\$")[0];
+                        } else {
+                            clustersForHQ = mTownname2.split("\\$")[0];
+                        }
+                    } else if (mFwFlg1.equalsIgnoreCase("F")) {
+                        clustersForHQ = mTownname1;
+                    } else if (mFwFlg2.equalsIgnoreCase("F")) {
+                        clustersForHQ = mTownname2;
+                    }
+
+                    //  Territory list filter
+                    List<String> newTerritoryList = new ArrayList<>();
+                    newTerritoryList.add(getString(R.string.select) + " " + SharedPref.getClusterCap(fragment));
+
+                    final List<Multicheckclass_clust> newFilteredList = new ArrayList<>();
+
+                    if (!clustersForHQ.isEmpty()) {
+                        for (String name : clustersForHQ.split(",")) {
+                            String trimmed = name.trim();
+                            if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+                                newTerritoryList.add(trimmed);
+                                boolean found = false;
+                                for (Multicheckclass_clust clust : multiple_cluster_list) {
+                                    if (clust.getStrname().trim().equalsIgnoreCase(trimmed)) {
+                                        newFilteredList.add(clust);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found) {
+                                    newFilteredList.add(new Multicheckclass_clust("", trimmed, "", false));
+                                }
+                            }
+                        }
+                    }
+
+                    //  Territory spinner refresh
+                    ArrayAdapter<String> newAdapter = new ArrayAdapter<String>(
+                            fragment, R.layout.popup_night_stay_spinner, newTerritoryList) {
+                        @Override
+                        public boolean isEnabled(int position) {
+                            return position != 0;
+                        }
+
+                        @Override
+                        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                            View view = super.getDropDownView(position, convertView, parent);
+                            if (position == 0) {
+                                view.setVisibility(View.GONE);
+                                view.setLayoutParams(new AbsListView.LayoutParams(0, 1));
+                            } else {
+                                view.setVisibility(View.VISIBLE);
+                                int heightInPx = (int) (45 * getContext().getResources().getDisplayMetrics().density);
+                                view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightInPx));
+                                GradientDrawable gd = new GradientDrawable();
+                                gd.setColor(Color.WHITE);
+                                gd.setStroke(1, Color.parseColor("#E0E0E0"));
+                                view.setBackground(gd);
+                                TextView tv = view.findViewById(android.R.id.text1);
+                                if (tv != null) {
+                                    tv.setTextColor(Color.BLACK);
+                                    tv.setTextSize(14);
+                                    tv.setGravity(Gravity.CENTER_VERTICAL);
+                                    tv.setPadding(30, 0, 30, 0);
+                                }
+                            }
+                            return view;
+                        }
+                    };
+                    newAdapter.setDropDownViewResource(R.layout.popup_night_stay_spinner);
+
+                    spinnerTerritory.post(() -> {
+                        spinnerTerritory.setAdapter(newAdapter);
+                        spinnerTerritory.setSelection(0, false);
+                        spinnerTerritory.setDropDownWidth(spinnerTerritory.getWidth());
+                        spinnerTerritory.setPopupBackgroundResource(android.R.color.white);
+                        spinnerTerritory.post(() ->
+                                spinnerTerritory.setDropDownVerticalOffset(spinnerTerritory.getHeight())
+                        );
+                    });
+
+
+                    // filteredTerritoryList update - submit-ல் correct code கிடைக்கும்
+//                    filteredTerritoryList.clear();
+//                    filteredTerritoryList.addAll(newFilteredList);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        }
+
+        //  Territory list build
+        List<String> territoryDisplayList = new ArrayList<>();
+        List<Multicheckclass_clust> filteredTerritoryList = new ArrayList<>();
+        //territoryDisplayList.add("Select Territory");
+        territoryDisplayList.add(getString(R.string.select) + " " + SharedPref.getClusterCap(context));
+
+        String selectedClusters = "";
+        if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
+            selectedClusters = mTownname1 + "," + mTownname2;
+        } else if (mFwFlg1.equalsIgnoreCase("F")) {
+            selectedClusters = mTownname1;
+        } else if (mFwFlg2.equalsIgnoreCase("F")) {
+            selectedClusters = mTownname2;
+        }
+
+        Log.d("STAY_DEBUG", "selectedClusters=" + selectedClusters);
+
+        if (!selectedClusters.isEmpty()) {
+            for (String name : selectedClusters.split(",")) {
+                String trimmed = name.trim();
+                if (!trimmed.isEmpty() && !trimmed.equalsIgnoreCase("$")) {
+                    territoryDisplayList.add(trimmed);
+                    boolean found = false;
+                    for (Multicheckclass_clust clust : multiple_cluster_list) {
+                        if (clust.getStrname().trim().equalsIgnoreCase(trimmed)) {
+                            filteredTerritoryList.add(clust);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        filteredTerritoryList.add(
+                                new Multicheckclass_clust("", trimmed, "", false)
+                        );
+                    }
+                }
+            }
+        } else {
+            for (Multicheckclass_clust item : multiple_cluster_list) {
+                filteredTerritoryList.add(item);
+                territoryDisplayList.add(item.getStrname());
+            }
+        }
+
+        Log.d("STAY_DEBUG", "territoryDisplayList=" + territoryDisplayList);
+        Log.d("STAY_DEBUG", "filteredTerritoryList size=" + filteredTerritoryList.size());
+
+        //  Territory Spinner Adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                fragment, R.layout.popup_night_stay_spinner, territoryDisplayList) {
+
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position == 0) {
+                    view.setVisibility(View.GONE);
+                    view.setLayoutParams(new AbsListView.LayoutParams(0, 1));
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                    int heightInPx = (int) (45 * getContext().getResources().getDisplayMetrics().density);
+                    view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightInPx));
+                    // 4. Divider Line (Border) add panna
+                    GradientDrawable gd = new GradientDrawable();
+                    gd.setColor(Color.WHITE);
+                    gd.setStroke(1, Color.parseColor("#E0E0E0"));
+                    view.setBackground(gd);
+
+                    // 5. Text alignment and padding
+                    TextView tv = view.findViewById(android.R.id.text1);
+                    if (tv != null) {
+                        tv.setTextColor(Color.BLACK);
+                        tv.setTextSize(14);
+                        tv.setGravity(Gravity.CENTER_VERTICAL);
+                        tv.setPadding(30, 0, 30, 0);
+                    }
+                }
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(R.layout.popup_night_stay_spinner);
+
+        dialog.show();
+        spinnerTerritory.post(() -> {
+            spinnerTerritory.setAdapter(adapter);
+            spinnerTerritory.setSelection(0, false);
+            spinnerTerritory.setDropDownWidth(spinnerTerritory.getWidth());
+            spinnerTerritory.setPopupBackgroundResource(android.R.color.white);
+            spinnerTerritory.post(() ->
+                    spinnerTerritory.setDropDownVerticalOffset(spinnerTerritory.getHeight())
+            );
+//        spinnerTerritory.post(() -> {
+//            spinnerTerritory.setAdapter(adapter);
+//            spinnerTerritory.setSelection(0, false);
+//            spinnerTerritory.setDropDownWidth(spinnerTerritory.getWidth());
+//            spinnerTerritory.setDropDownVerticalOffset(spinnerTerritory.getHeight());
+        });
+        spinnerTerritory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 0) {
+                    //  HQ select based on choosen territory
+                    if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+                        if (spinnerHeadQuaters.getSelectedItemPosition() == 0) {
+                            CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_head_quarter));
+                            //  Toast.makeText(fragment, "Select Head Quarter", Toast.LENGTH_SHORT).show();
+                            spinnerTerritory.setSelection(0); // Territory reset
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        btn_submit.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (spinnerTerritory.getSelectedItemPosition() == 0) {
+                    String clusterCap = SharedPref.getClusterCap(requireContext());
+                    CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select) + " " + clusterCap);
+                   // Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+                    if (spinnerHeadQuaters.getSelectedItemPosition() == 0) {
+                        CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_head_quarter));
+                        //  Toast.makeText(fragment, "Select Head Quarter", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+                String nightRemark = ed_remark.getText().toString().trim();
+                String dayRemark = ed_remark3.getText().toString().trim();
+                //  Night Remark condition
+                if (nightRemark.isEmpty()) {
+                    Toast.makeText(fragment, getString(R.string.please_enter_the_remarks), Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (nightRemark.length() <= 2) {
+                    Toast.makeText(fragment, getString(R.string.remarks_must_contain_at_least_3_characters), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //  Day Remark condition
+                if (dayRemark.isEmpty()) {
+                    Toast.makeText(fragment, getString(R.string.please_enter_the_remarks), Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (dayRemark.length() <= 2) {
+                    Toast.makeText(fragment, getString(R.string.remarks_must_contain_at_least_3_characters), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //  Territory code
+                int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
+                if (selectedIndex >= 0 && selectedIndex < filteredTerritoryList.size()) {
+                    nsTerritoryCode = filteredTerritoryList.get(selectedIndex).getStrid();
+                    nsTerritoryName = filteredTerritoryList.get(selectedIndex).getStrname();
+                }
+
+                //  nsRsfCode + nsRsfName logic
+                if (mFwFlg1.equalsIgnoreCase("F")) {
+                    nsRsfCode = mHQCode1;
+                    nsRsfName = mHQName1;
+                } else if (mFwFlg2.equalsIgnoreCase("F")) {
+                    nsRsfCode = mHQCode2;
+                    nsRsfName = mHQName2;
+                } else {
+                    nsRsfCode = sfCode;
+                    nsRsfName = SharedPref.getHqName(fragment);
+                }
+
+                //  Remarks save
+                nsRemarks = nightRemark;
+                nsRemarks = dayRemark;
+
+                dialog.dismiss();
+
+                // Day Submit
+                finalSubmit(nsRemarks, false);
+            }
+        });
+
+        btn_cancel.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                dialog.dismiss();
             }
         });
     }
+
 
     private void
     dialogEditOrDelete(String sessionType) {

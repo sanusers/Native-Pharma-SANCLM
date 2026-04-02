@@ -1077,4 +1077,13 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="please_detail_mandatory_slides">Por favor, detalhe os slides obrigatórios</string>
     <string name="mandatory_slides_pending_for_brand">Slides obrigatórios pendentes para a marca: %1$s</string>
     <string name="loading">Carregando</string>
+
+    <string name="detailed_slides">Slides detalhados</string>
+    <string name="no_detailed_slides">Sem slides detalhados</string>
+
+    <string name="night_stay">Pernoite</string>
+    <string name="are_you_staying_overnight">Você vai pernoitar?</string>
+    <string name="you_are_staying_overnight">Você está pernoitando</string>
+    <string name="night_stay_remarks">Observações de pernoite</string>
+    <string name="day_remarks">Observações do dia</string>
 </resources>

@@ -1065,6 +1065,13 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
 
     <string name="please_detail_mandatory_slides">Por favor, detalle las diapositivas obligatorias</string>
     <string name="mandatory_slides_pending_for_brand">Diapositivas obligatorias pendientes para la marca: %1$s</string>
+    <string name="detailed_slides">Diapositivas detalladas</string>
+    <string name="no_detailed_slides">No hay diapositivas detalladas</string>
 
+    <string name="night_stay">Pernoctación</string>
+    <string name="are_you_staying_overnight">¿Se quedará a pasar la noche?</string>
+    <string name="you_are_staying_overnight">Usted se queda a pasar la noche</string>
+    <string name="night_stay_remarks">Observaciones de pernoctación</string>
+    <string name="day_remarks">Observaciones del día</string>
 
 </resources>
