@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.approvals.tp;
 
+import static saneforce.sanzen.activity.approvals.ApprovalsActivity.TpCount;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -40,6 +42,7 @@ import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
+import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingActivity;
 import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalAdapter;
 import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalDetailedAdapter;
@@ -128,6 +131,17 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             }
         });
 
+        tpApprovalBinding.tpSync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if(UtilityClass.isNetworkAvailable(TpApprovalActivity.this)){
+                    tpModelLists.clear();
+                    CallTpListApi();
+                }else{
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                }
+            }
+        });
 
         tpApprovalBinding.searchTp.addTextChangedListener(new TextWatcher() {
             @Override
@@ -195,7 +209,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.approved_successfully));
                             removeSelectedData();
-                            ApprovalsActivity.TpCount--;
+                            TpCount--;
                         }
                     } catch (Exception ignored) {
                     }
@@ -301,7 +315,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.rejected_successfully));
                             dialogReject.dismiss();
                             removeSelectedData();
-                            ApprovalsActivity.TpCount--;
+                            TpCount--;
                         }
                     } catch (Exception e) {
                         dialogReject.dismiss();
@@ -387,6 +401,9 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 tpModelLists.add(new TpModelList(json.getString("Sf_Code"), json.getString("SFName"), json.getString("Mnth"), json.getString("Yr"), json.getString("Mn")));
+                            }
+                            if(TpCount < tpModelLists.size()){
+                                TpCount++;
                             }
                             tpApprovalAdapter = new TpApprovalAdapter(TpApprovalActivity.this, tpModelLists, TpApprovalActivity.this);
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());

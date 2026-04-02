@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.approvals.stp;
 
+import static saneforce.sanzen.activity.approvals.ApprovalsActivity.STPCount;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -125,6 +127,19 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
             }
         });
 
+        stpApprovalBinding.stpSync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if(UtilityClass.isNetworkAvailable(STPApprovalActivity.this)){
+                    stpModelLists.clear();
+                    CallSTPListApi();
+                }else{
+                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+
+                }
+            }
+        });
+
         stpApprovalBinding.btnApproved.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
@@ -211,6 +226,9 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 stpModelLists.add(new STPModelList(json.getString("SFName"), json.getString("Sf_Code"), json.getString("Division_Code")));
+                            }
+                            if(STPCount < stpModelLists.size()){
+                                STPCount++;
                             }
                             stpApprovalAdapter = new STPApprovalAdapter(STPApprovalActivity.this, stpModelLists, STPApprovalActivity.this);
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -363,7 +381,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.approved_successfully));
                             removeSelectedData();
-                            ApprovalsActivity.STPCount--;
+                            STPCount--;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -457,7 +475,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                             commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.rejected_successfully));
                             dialogReject.dismiss();
                             removeSelectedData();
-                            ApprovalsActivity.STPCount--;
+                            STPCount--;
                         }
                     } catch (Exception e) {
                         dialogReject.dismiss();

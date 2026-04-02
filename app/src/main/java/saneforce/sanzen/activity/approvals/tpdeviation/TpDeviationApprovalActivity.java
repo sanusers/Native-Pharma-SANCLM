@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.approvals.tpdeviation;
 
+import static saneforce.sanzen.activity.approvals.ApprovalsActivity.DeviationCount;
 import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapter;
 import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapterOneBuild;
 
@@ -39,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -48,6 +50,7 @@ import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.session.SessionViewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityTpDeviationApprovalBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -99,6 +102,17 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                 Intent intent = new Intent(TpDeviationApprovalActivity.this, ApprovalsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            }
+        });
+        tpDeviationApprovalBinding.devSync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (UtilityClass.isNetworkAvailable(TpDeviationApprovalActivity.this)){
+                    tpDeviationModelLists.clear();
+                    CallTpDeviationAPI();
+                }else{
+                    commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this,getString(R.string.no_network));
+                }
             }
         });
 
@@ -244,6 +258,9 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                         for (int i = 0; i<jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
                             tpDeviationModelLists.add(new TpDeviationModelList(json.optString("sf_name"), json.optString("sf_code"), json.optString("sl_no"), json.optString("missed_date"), json.optString("Deviation_Reason"), json.optString("WorkType_Name"), json.optString("HQ_Name"), json.optString("Cluster_Name"), json.optString("Req_date")));
+                        }
+                        if(DeviationCount < tpDeviationModelLists.size()){
+                            DeviationCount++;
                         }
                         sortData(SortType.NAME_ASCENDING);
                         tpDeviationAdapter = new TpDeviationAdapter(TpDeviationApprovalActivity.this, tpDeviationModelLists, viewPlanClickListener);

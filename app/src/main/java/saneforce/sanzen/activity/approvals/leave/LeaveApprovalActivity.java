@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.approvals.leave;
 
+import static saneforce.sanzen.activity.approvals.ApprovalsActivity.LeaveCount;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -96,6 +98,18 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                 filter(editable.toString());
             }
         });
+
+        leaveBinding.leaveSync.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if(UtilityClass.isNetworkAvailable(LeaveApprovalActivity.this)) {
+                    leaveModelLists.clear();
+                    CallApiLeave();
+                }else{
+                    commonUtilsMethods.showToastMessage(LeaveApprovalActivity.this,getString(R.string.no_network));
+                }
+            }
+        });
     }
 
     private void CallApiLeave() {
@@ -127,6 +141,9 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
                             leaveModelLists.add(new LeaveModelList(json.optString("LvID"), json.optString("Sf_Code"), json.optString("SFName"), json.optString("FDate"), json.optString("TDate"), json.optString("Reason"), json.optString("Address"), json.optString("LType"), json.optString("LAvail"), json.optString("No_of_Days"), json.optString("Sf_Emp_Id")));
+                        }
+                        if(LeaveCount < leaveModelLists.size()){
+                            LeaveCount++;
                         }
                         leaveApprovalAdapter = new LeaveApprovalAdapter(LeaveApprovalActivity.this, leaveModelLists);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
