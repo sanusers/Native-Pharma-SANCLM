@@ -1915,7 +1915,7 @@ public class TourPlanActivity extends AppCompatActivity {
             } else {
                 binding.txtMaximumDoctors.setVisibility(View.GONE);
             }
-            binding.llTpSetup.setVisibility((tpSetupVisibile ? View.VISIBLE : View.GONE));
+            binding.llTpSetup.setVisibility(((tpSetupVisibile && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) ? View.VISIBLE : View.GONE));
 
             StringBuilder masters = new StringBuilder();
             if (drNeed.equalsIgnoreCase("0")) {
@@ -2075,7 +2075,7 @@ public class TourPlanActivity extends AppCompatActivity {
             } else {
                 binding.txtMaximumDoctors.setVisibility(View.GONE);
             }
-            binding.llTpSetup.setVisibility((tpSetupVisibile ? View.VISIBLE : View.GONE));
+            binding.llTpSetup.setVisibility(((tpSetupVisibile && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) ? View.VISIBLE : View.GONE));
 
             StringBuilder masters = new StringBuilder();
             if (drNeed.equalsIgnoreCase("0")) {

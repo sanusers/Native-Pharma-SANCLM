@@ -1520,6 +1520,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             ConstraintLayout constraintLayout = dialogFilter.findViewById(R.id.constraint_btns);
             img_close.setOnClickListener(view12 -> dismissSwap(dialogFilter));
             btn_cancel.setOnClickListener(view12 -> dismissSwap(dialogFilter));
+            swapCode = "";
+            swapName = "";
 
             tvTo.setOnClickListener(view -> {
                 if (lv_to.getVisibility() == View.VISIBLE) {

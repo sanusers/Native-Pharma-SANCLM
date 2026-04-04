@@ -3431,7 +3431,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     if (SfType.equalsIgnoreCase("1")) {
                         TodayPlanSfCode = SfCode;
                     } else {
-                        TodayPlanSfCode = SharedPref.getHqCode(this);
+                        if (DcrCallTabLayoutActivity.TodayPlanSfCode != null && !DcrCallTabLayoutActivity.TodayPlanSfCode.isEmpty()) {
+                            TodayPlanSfCode = DcrCallTabLayoutActivity.TodayPlanSfCode;
+                        } else {
+                            TodayPlanSfCode = SharedPref.getHqCode(this);
+                        }
                         if (TodayPlanSfCode.isEmpty()) {
                             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                             for (int i = 0; i < 1; i++) {

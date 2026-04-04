@@ -478,6 +478,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#AA000000"
+        android:clickable="true"
+        android:focusable="true"
         android:elevation="@dimen/_5sdp"
         android:visibility="gone">
 
