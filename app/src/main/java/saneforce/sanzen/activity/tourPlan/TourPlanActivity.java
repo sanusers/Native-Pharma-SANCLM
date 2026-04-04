@@ -5297,6 +5297,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setText(R.string.tp_approved);
+                                            SetTpRangeStatus();
                                             break;
                                         }
                                         default: {
@@ -5375,7 +5376,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpStatusTxt.setText(R.string.planning);
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
-                                            System.out.println("status 0");
                                             break;
                                         }
                                         case "1": {
@@ -5384,7 +5384,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             binding.tpSendToApproval.setEnabled(false);
                                             binding.tpNavigation.sessionEdit.setEnabled(false);
-                                            System.out.println("status 1");
                                             break;
                                         }
                                         case "2": {
@@ -5394,7 +5393,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.rejectedReasonTxt.setText(reason);
                                             binding.tpSendToApproval.setEnabled(true);
                                             binding.tpNavigation.sessionEdit.setEnabled(true);
-                                            System.out.println("status 2");
+                                            SetTpRangeStatus();
                                             break;
                                         }
                                         case "3": {
@@ -5404,7 +5403,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpSendToApproval.setEnabled(false);
                                             binding.tpNavigation.sessionEdit.setEnabled(false);
                                             SetTpRangeStatus();
-                                            System.out.println("status 3");
                                             break;
                                         }
                                         default: {
