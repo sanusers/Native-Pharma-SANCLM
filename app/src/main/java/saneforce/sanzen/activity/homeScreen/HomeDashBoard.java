@@ -3064,6 +3064,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             navigationFooterBinding.dayCheckInDot.setVisibility(View.GONE);
         }
 
+        if(SharedPref.getWeekoffAutoPostNeed(this).equalsIgnoreCase("1")){
+            navigationFooterBinding.weeklyOff.setVisibility(View.VISIBLE);
+        }else{
+            navigationFooterBinding.weeklyOff.setVisibility(View.GONE);
+        }
+
+         if(SharedPref.getHolidayAutoPostNeed(this).equalsIgnoreCase("1")){
+             navigationFooterBinding.holidayHd.setVisibility(View.VISIBLE);
+         }else{
+             navigationFooterBinding.holidayHd.setVisibility(View.GONE);
+         }
+
+
         if (SharedPref.getCustSrtNd(this).equalsIgnoreCase("0") ||
                 SharedPref.getChmSrtNd(this).equalsIgnoreCase("0") ||
                 SharedPref.getUnlistSrtNd(this).equalsIgnoreCase("0")) {
