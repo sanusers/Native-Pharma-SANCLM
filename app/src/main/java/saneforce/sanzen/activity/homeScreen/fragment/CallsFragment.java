@@ -320,6 +320,12 @@ public class CallsFragment extends Fragment {
         binding.recyelerview.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+            binding.btnSubmit.setText(requireContext().getString(R.string.final_submit_check_out));
+        } else {
+            binding.btnSubmit.setText(requireContext().getString(R.string.final_submit));
+        }
+
         getFromLocal(requireContext(), apiInterface);
         if (
 //                syncCalls ||
@@ -497,6 +503,23 @@ public class CallsFragment extends Fragment {
                 }
             }
         });
+
+        binding.btnSubmit.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View view) {
+                if (SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+                    CommonAlertBox.ApprovalAlert(requireActivity());
+                } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
+                    CommonAlertBox.TpAlert(requireActivity());
+                }
+                else {
+                    if (WorkPlanFragment.binding != null && WorkPlanFragment.binding.btnSubmit != null) {
+                        WorkPlanFragment.binding.btnSubmit.performClick();
+                    }
+                }
+            }
+        });
+
         return view;
     }
 
