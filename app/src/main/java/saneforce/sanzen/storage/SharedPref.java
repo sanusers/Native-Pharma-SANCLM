@@ -2246,7 +2246,7 @@ public class SharedPref {
     public static void saveUrlsOneBuild(Context context, String baseUrl, String licenseKey, String baseWebUrl, String detPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState,String aBKey,String aBSKey) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(BASE_URL, baseUrl);
+        editor.putString(BASE_URL, baseWebUrl.replace("https://", "").replace("http://", ""));
         editor.putString(LICENSE_KEY, licenseKey);
         editor.putString(BASE_WEB_URL, baseWebUrl);
         editor.putString(PHP_PATH_URL, detPathUrl);

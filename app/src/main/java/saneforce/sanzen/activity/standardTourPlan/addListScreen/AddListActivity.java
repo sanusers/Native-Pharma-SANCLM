@@ -346,11 +346,12 @@ public class AddListActivity extends AppCompatActivity {
         strClusterName = "";
         jsonObject = new JSONObject();
         if (clusterCap.isEmpty()) {
-            activityAddListBinding.clusterTitle.setText("Cluster");
-            activityAddListBinding.selectedClusters.setText("Select Cluster");
+            activityAddListBinding.clusterTitle.setText(getString(R.string.cluster));
+            activityAddListBinding.selectedClusters.setText(getString(R.string.select_cluster));
         } else {
             activityAddListBinding.clusterTitle.setText(clusterCap);
             activityAddListBinding.selectedClusters.setText(getString(R.string.select) + " " + clusterCap);
+            activityAddListBinding.selectedClusters.setHint(getString(R.string.select) + " " + clusterCap);
         }
         localDocCodeList = new ArrayList<>();
         localChmCodeList = new ArrayList<>();

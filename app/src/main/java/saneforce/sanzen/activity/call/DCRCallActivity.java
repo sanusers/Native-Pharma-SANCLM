@@ -2577,7 +2577,6 @@ public class DCRCallActivity extends AppCompatActivity {
         }
     }
 
-
     private void createJsonFileCall() {
         try {
             CurrentDate = CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd");
@@ -2821,52 +2820,52 @@ public class DCRCallActivity extends AppCompatActivity {
                 jsonArray.put(json_AdditionalCall);
             }
             jsonSaveDcr.put("AdCuss", jsonArray);
-            JSONArray doctorJsonArray = masterDataDao
-                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(getApplicationContext()))
-                    .getMasterSyncDataJsonArray();
-
-            // 2️⃣ Build a map: DoctorCode -> JSONObject (for town lookup)
-            HashMap<String, JSONObject> doctorMasterMap = new HashMap<>();
-            for (int i = 0; i < doctorJsonArray.length(); i++) {
-                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
-                String code = doctorObj.optString("Code").trim();
-                doctorMasterMap.put(code, doctorObj);
-            }
-
-            // 3️⃣ Build AdCuss JSON
-            JSONArray jsonAdCuss = new JSONArray();
-            HashSet<String> selectedNames = PopupNameAdapter.getSelectedNames();
-
-            for (modelClass doc : JointWorkSelectionSide.TodayCallList) {
-                if (doc.getDocName() != null) {
-                    String cleanName = doc.getDocName().split("---")[0].trim();
-
-                    if (selectedNames.contains(cleanName)) {
-                        String code = doc.getDocCode().trim();
-                        JSONObject jsonDoc = new JSONObject();
-                        jsonDoc.put("Code", code);
-                        jsonDoc.put("Name", doc.getDocName());
-
-                        // 4️⃣ Get Town info from doctorMasterMap
-                        if (doctorMasterMap.containsKey(code)) {
-                            JSONObject doctorObj = doctorMasterMap.get(code);
-                            String townCode = doctorObj.optString("Town_Code", ""); // default empty
-                            String townName = doctorObj.optString("Town_Name", "");
-                            jsonDoc.put("Town_Code", townCode);
-                            jsonDoc.put("Town_Name", townName);
-                        } else {
-                            jsonDoc.put("Town_Code", "");
-                            jsonDoc.put("Town_Name", "");
-                        }
-
-                        jsonAdCuss.put(jsonDoc);
-                    }
-                }
-            }
-
-            // 5️⃣ Add to main JSON for submission
-            jsonSaveDcr.put("AdCuss", jsonAdCuss);
-            Log.d("DEBUG_ADCUSS_FINAL", jsonAdCuss.toString());
+//            JSONArray doctorJsonArray = masterDataDao
+//                    .getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(getApplicationContext()))
+//                    .getMasterSyncDataJsonArray();
+//
+//            // 2️⃣ Build a map: DoctorCode -> JSONObject (for town lookup)
+//            HashMap<String, JSONObject> doctorMasterMap = new HashMap<>();
+//            for (int i = 0; i < doctorJsonArray.length(); i++) {
+//                JSONObject doctorObj = doctorJsonArray.getJSONObject(i);
+//                String code = doctorObj.optString("Code").trim();
+//                doctorMasterMap.put(code, doctorObj);
+//            }
+//
+//            // 3️⃣ Build AdCuss JSON
+//            JSONArray jsonAdCuss = new JSONArray();
+//            HashSet<String> selectedNames = PopupNameAdapter.getSelectedNames();
+//
+//            for (modelClass doc : JointWorkSelectionSide.TodayCallList) {
+//                if (doc.getDocName() != null) {
+//                    String cleanName = doc.getDocName().split("---")[0].trim();
+//
+//                    if (selectedNames.contains(cleanName)) {
+//                        String code = doc.getDocCode().trim();
+//                        JSONObject jsonDoc = new JSONObject();
+//                        jsonDoc.put("Code", code);
+//                        jsonDoc.put("Name", doc.getDocName());
+//
+//                        // 4️⃣ Get Town info from doctorMasterMap
+//                        if (doctorMasterMap.containsKey(code)) {
+//                            JSONObject doctorObj = doctorMasterMap.get(code);
+//                            String townCode = doctorObj.optString("Town_Code", ""); // default empty
+//                            String townName = doctorObj.optString("Town_Name", "");
+//                            jsonDoc.put("Town_Code", townCode);
+//                            jsonDoc.put("Town_Name", townName);
+//                        } else {
+//                            jsonDoc.put("Town_Code", "");
+//                            jsonDoc.put("Town_Name", "");
+//                        }
+//
+//                        jsonAdCuss.put(jsonDoc);
+//                    }
+//                }
+//            }
+//
+//            // 5️⃣ Add to main JSON for submission
+//            jsonSaveDcr.put("AdCuss", jsonAdCuss);
+//            Log.d("DEBUG_ADCUSS_FINAL", jsonAdCuss.toString());
 
 //            JSONArray jsonAdCuss = new JSONArray();
 //            HashSet<String> selectedNames = PopupNameAdapter.getSelectedNames();
@@ -2891,7 +2890,6 @@ public class DCRCallActivity extends AppCompatActivity {
 //
 //            jsonSaveDcr.put("AdCuss", jsonArray);
 //            Log.d("DEBUG_ADCUSS_FINAL", jsonArray.toString());
-//
 
             //RCPA
             jsonArray = new JSONArray();
