@@ -396,6 +396,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_top"
         android:layout_height="0dp">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/search_cust"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginVertical="@dimen/_3sdp"
+            android:background="@drawable/border_shape_spinner"
+            android:drawableStart="@drawable/grey_search"
+            android:hint="@string/search"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:drawablePadding="@dimen/_5sdp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/light_grey"
+            android:textSize="@dimen/_6ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="0.0" />
         <ImageView
             android:id="@+id/noTagImage"
             android:layout_width="@dimen/_50sdp"
@@ -411,7 +429,8 @@
             android:layout_width="@dimen/_130sdp"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_below="@+id/search_cust"/>
     </RelativeLayout>
 
 

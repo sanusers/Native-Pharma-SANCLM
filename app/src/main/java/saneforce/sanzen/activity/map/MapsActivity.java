@@ -30,10 +30,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -159,6 +162,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint("StaticFieldLeak")
     public static TaggingAdapter taggingAdapter;
     public static ArrayList<TaggedMapList> taggedMapListArrayList = new ArrayList<>();
+    private ArrayList<TaggedMapList> fullTaggedList = new ArrayList<>();
     public static ViewTagModel mm = null;
     public static Marker marker;
     public static GoogleMap mMap;
@@ -190,7 +194,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static Bundle bundle;
     private ArrayList<CustList> taggedLocations;
     boolean isRefreshClicked = false;
-
+    private EditText ed_search;
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
         @Override
@@ -268,6 +272,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         util = new Util();
+        ed_search = mapsBinding.searchCust;
         Bundle extra = getIntent().getExtras();
         if (extra != null && extra.getString("from") != null && extra.getString("from").equalsIgnoreCase("not_tagging")) {
             bundle = extra;
@@ -510,8 +515,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
             }
         });
+
+        mapsBinding.searchCust.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
     }
 
+    private void filter(String text) {
+        if (taggingAdapter == null) return;
+        ArrayList<TaggedMapList> filtered = new ArrayList<>();
+        for (TaggedMapList s : fullTaggedList) {
+            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
+                filtered.add(s);
+            }
+        }
+        taggingAdapter.filterList(filtered);
+    }
     private void showTaggedAlert() {
         Dialog dialog = new Dialog(MapsActivity.this);
         dialog.setContentView(R.layout.dcr_cancel_alert);
@@ -2867,6 +2895,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
             taggingAdapter = new TaggingAdapter(MapsActivity.this, taggedMapListArrayList);
+            fullTaggedList = new ArrayList<>(taggedMapListArrayList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             mapsBinding.rvList.setLayoutManager(mLayoutManager);
             mapsBinding.rvList.setItemAnimator(new DefaultItemAnimator());
@@ -2878,12 +2907,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (taggedMapListArrayList.size() > 0) {
                 mapsBinding.rvList.setVisibility(View.VISIBLE);
                 mapsBinding.tagginglistlayout.setVisibility(View.VISIBLE);
+                mapsBinding.searchCust.setVisibility(View.VISIBLE);
                 mapsBinding.rvList.setVisibility(View.VISIBLE);
                 mapsBinding.noTagImage.setVisibility(View.GONE);
                 mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
                 mapsBinding.imgRvLeft.setVisibility(View.GONE);
             } else {
                 mapsBinding.tagginglistlayout.setVisibility(View.GONE);
+                mapsBinding.searchCust.setVisibility(View.GONE);
                 mapsBinding.rvList.setVisibility(View.GONE);
                 mapsBinding.noTagImage.setVisibility(View.VISIBLE);
                 mapsBinding.imgRvRight.setVisibility(View.GONE);

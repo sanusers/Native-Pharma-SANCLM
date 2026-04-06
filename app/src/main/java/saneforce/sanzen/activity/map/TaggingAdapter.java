@@ -85,6 +85,13 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
         return taggedMapLists.size();
     }
 
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void filterList(ArrayList<TaggedMapList> filteredList) {
+        this.taggedMapLists = filteredList;
+        notifyDataSetChanged();
+    }
+
     public int getItemPosition(String code, String lat, String lng) {
         for (int i = 0; i < taggedMapListArrayList.size(); i++) {
             if (taggedMapListArrayList.get(i).getCode().equalsIgnoreCase(code) && taggedMapListArrayList.get(i).getLat().equalsIgnoreCase(lat) &&
