@@ -2692,7 +2692,8 @@ public class TourPlanActivity extends AppCompatActivity {
     private void getSTPMGR(OneBuildModelClass arrayListOneBuild, int position, String hqCode, String hqName, String dayOfWeek, String dayName) {
         if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
             try {
-                showLoadingOverlay();
+                binding.tpNavigation.navProgress.setVisibility(View.VISIBLE);
+//                showLoadingOverlay();
 //                binding.progressBar.setVisibility(View.VISIBLE);
 //                binding.freezeOverlay.setVisibility(View.VISIBLE);
                 apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
@@ -2712,6 +2713,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+//                        hideLoadingOverlay();
+                        binding.tpNavigation.navProgress.setVisibility(View.GONE);
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
 
@@ -2761,7 +2764,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                 populateSessionEditAdapterOneBuild(arrayListOneBuild);
                             }
                         }
-                        hideLoadingOverlay();
 //                        binding.progressBar.setVisibility(View.GONE);
 //                        binding.freezeOverlay.setVisibility(View.GONE);
 //                        binding.backArrow.setEnabled(true);
@@ -2772,7 +2774,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         Log.e("STP", "onFailure: ");
-                        hideLoadingOverlay();
+//                        hideLoadingOverlay();
+                        binding.tpNavigation.navProgress.setVisibility(View.GONE);
 //                        binding.progressBar.setVisibility(View.GONE);
 //                        binding.freezeOverlay.setVisibility(View.GONE);
 //                        binding.backArrow.setEnabled(true);
@@ -2783,7 +2786,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 });
             } catch (Exception e) {
-                hideLoadingOverlay();
+//                hideLoadingOverlay();
+                binding.tpNavigation.navProgress.setVisibility(View.GONE);
 //                binding.progressBar.setVisibility(View.GONE);
 //                binding.freezeOverlay.setVisibility(View.GONE);
 //                binding.backArrow.setEnabled(true);
@@ -2793,7 +2797,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            hideLoadingOverlay();
+//            hideLoadingOverlay();
+            binding.tpNavigation.navProgress.setVisibility(View.GONE);
 //            binding.progressBar.setVisibility(View.GONE);
 //            binding.freezeOverlay.setVisibility(View.GONE);
 //            binding.backArrow.setEnabled(true);
@@ -6277,21 +6282,23 @@ public class TourPlanActivity extends AppCompatActivity {
     private void showLoadingOverlay() {
         binding.calendarPrevButton.setEnabled(false);
         binding.calendarNextButton.setEnabled(false);
-        binding.tpSendToApproval.setEnabled(false);
         binding.tvSync.setEnabled(false);
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.freezeOverlay.setVisibility(View.VISIBLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        binding.freezeOverlay.setClickable(true);
+        binding.freezeOverlay.setFocusable(true);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     private void hideLoadingOverlay() {
         binding.calendarPrevButton.setEnabled(true);
         binding.calendarNextButton.setEnabled(true);
-        binding.tpSendToApproval.setEnabled(true);
         binding.tvSync.setEnabled(true);
         binding.progressBar.setVisibility(View.GONE);
         binding.freezeOverlay.setVisibility(View.GONE);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        binding.freezeOverlay.setClickable(false);
+        binding.freezeOverlay.setFocusable(false);
+//        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
