@@ -59,7 +59,6 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-
 public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataViewholider> {
     Context context;
     ArrayList<CallsModalClass> list;
@@ -95,7 +94,6 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
     @Override
     public void onBindViewHolder(@NonNull listDataViewholider holder, int position) {
-
         CallsModalClass callslist = list.get(position);
         holder.DocName.setText(callslist.getCustName());
         String dateTime = callslist.getCallsDateTime();

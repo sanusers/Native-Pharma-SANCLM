@@ -1592,7 +1592,7 @@ public class TourPlanActivity extends AppCompatActivity {
             doctorMap = new HashMap<>();
             doctorDataMap = new HashMap<>();
             doctorVisitMap = new HashMap<>();
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(TourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(TourPlanActivity.this)).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
                 String name = "-", code = "-", clusterName = "-", clusterCode = "-", category = "-", categoryCode = "-", classs = "-", classsCode = "-", speciality = "-", specialityCode = "-", qualificationCode = "-";
@@ -2221,7 +2221,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<ModelClass>>() {
                 }.getType();
                 modelClasses = new Gson().fromJson(savedDataArray.toString(), type);
-                if (visitFrequencyNeed.equalsIgnoreCase("0")) {
+                if (modelClasses != null) {
                     prepareDoctorVisitData(modelClasses);
                 }
             } else { //If tour plan table has no data
@@ -2333,7 +2333,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
                 }.getType();
                 oneBuildModelClasses = new Gson().fromJson(savedDataArrayOneBuild.toString(), type);
-                if (visitFrequencyNeed.equalsIgnoreCase("0")) {
+                if (oneBuildModelClasses != null) {
                     prepareDoctorVisitDataOneBuild(oneBuildModelClasses);
                 }
             } else {//If tour plan table has no data
@@ -2437,7 +2437,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return oneBuildModelClasses;
     }
 
-    private void prepareDoctorVisitDataOneBuild(ArrayList<OneBuildModelClass> oneBuildModelClassList) {     // App Creah here When Tp setup is not synced
+    private void prepareDoctorVisitDataOneBuild(ArrayList<OneBuildModelClass> oneBuildModelClassList) {
         if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && (visitFrequencyNeed.equalsIgnoreCase("0") || Integer.parseInt(minimumGap) > 0)) {
             try {
 //            doctorVisitMap = new HashMap<>();
@@ -3355,7 +3355,9 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateSummaryAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
         try {
-            prepareDoctorVisitDataOneBuild(arrayListOneBuild);
+            if (arrayListOneBuild != null) {
+                prepareDoctorVisitDataOneBuild(arrayListOneBuild);
+            }
             ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
             int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
             for (OneBuildModelClass oneBuildModelClass : arrayListOneBuild) {
