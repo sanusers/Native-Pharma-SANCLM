@@ -25,6 +25,19 @@ public class callstatus_model {
         this.workType = workType;
         this.time = time;
     }
+    private String spKey;
+
+    public String getSpKey() {
+        return spKey;
+    }
+
+    public void setSpKey(String spKey) {
+        this.spKey = spKey;
+    }
+    public callstatus_model() {
+    }
+
+    private boolean promoted;
 
     public String getTime() {
         return time;
@@ -160,5 +173,13 @@ public class callstatus_model {
 
     public void setDcrname(String dcrname) {
         Dcrname = dcrname;
+    }
+
+    public boolean isPromoted() {
+        return promoted;
+    }
+
+    public void setPromoted(boolean promoted) {
+        this.promoted = promoted;
     }
 }

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginLeft="@dimen/_2sdp"
+    android:layout_marginTop="@dimen/_2sdp"
+    android:layout_marginRight="@dimen/_2sdp"
+    android:layout_marginBottom="@dimen/_4sdp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/cs_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#5d6d7e"
+        android:orientation="vertical"
+        android:padding=".02dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/CustName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:fontFamily="@font/satoshi_regular"
+            android:textColor="@color/black_45"
+            android:textSize="@dimen/_7sdp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/img_promoted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:thumb="@drawable/custom_thumb"
+            app:track="@drawable/custom_switch_bg"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    </LinearLayout>
+
+</LinearLayout>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_marginLeft="@dimen/_2sdp"-->
+<!--    android:layout_marginTop="@dimen/_2sdp"-->
+<!--    android:layout_marginRight="@dimen/_2sdp"-->
+<!--    android:layout_marginBottom="@dimen/_4sdp"-->
+<!--    android:orientation="vertical">-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/cs_line"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="#5d6d7e"-->
+<!--        android:orientation="vertical"-->
+<!--        android:padding=".02dp"-->
+<!--        android:visibility="gone" />-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:weightSum="2">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1.5">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/Date_view"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fontFamily="@font/satoshi_bold"-->
+<!--                android:textSize="@dimen/_7sdp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--        </LinearLayout>-->
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/cardproche"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:padding="@dimen/_4sdp"-->
+<!--            android:elevation="4dp"-->
+<!--            android:layout_weight=".5">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
+
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:weightSum="2">-->
+
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/CustName"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:fontFamily="@font/satoshi_medium"-->
+<!--                        android:textColor="@color/pink"-->
+<!--                        android:textSize="@dimen/_7sdp"-->
+<!--                        android:textStyle="bold" />-->
+
+<!--                    <androidx.appcompat.widget.SwitchCompat-->
+<!--                        android:id="@+id/img_promoted"-->
+<!--                        android:layout_width="@dimen/_20sdp"-->
+<!--                        android:layout_height="@dimen/_12sdp"-->
+<!--                        android:paddingVertical="@dimen/_1sdp"-->
+<!--                        android:layout_marginEnd="@dimen/_20sdp"-->
+<!--                        android:scaleX="0.8"-->
+<!--                        android:scaleY="0.8"-->
+<!--                        android:thumb="@drawable/custom_thumb"-->
+<!--                        app:track="@drawable/custom_switch_bg"-->
+<!--                        tools:ignore="UseSwitchCompatOrMaterialXml"-->
+<!--                        tools:layout_editor_absoluteY="@dimen/_1sdp" />-->
+
+
+
+<!--                </LinearLayout>-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="@dimen/_2sdp"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/calls_town"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/satoshi_medium"-->
+<!--                        android:textSize="@dimen/_7sdp"-->
+<!--                        android:textStyle="bold" />-->
+
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
+<!--        </androidx.cardview.widget.CardView>-->
+
+
+<!--    </LinearLayout>-->
+
+
+<!--</LinearLayout>-->

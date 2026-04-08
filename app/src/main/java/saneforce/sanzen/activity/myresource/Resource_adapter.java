@@ -38,6 +38,7 @@ import saneforce.sanzen.activity.myresource.StockBalanceview.StockBalanceScreen;
 import saneforce.sanzen.activity.myresource.callstatusview.Callsstatus_screenview;
 import saneforce.sanzen.activity.myresource.myresourcemodel.MyResourceInterface;
 import saneforce.sanzen.activity.myresource.profile.ProfileViewScreen;
+import saneforce.sanzen.activity.myresource.setupdetails.SetupDetails;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -940,6 +941,14 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                             MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                             break;
+
+                        case ("20"):
+                            Intent setupDetails = new Intent(context, SetupDetails.class);
+                            context.startActivity(setupDetails);
+                            MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                            MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+
                         default:
                             throw new IllegalStateException("Unexpected value: " + app_adapt.getListed_data());
                     }
