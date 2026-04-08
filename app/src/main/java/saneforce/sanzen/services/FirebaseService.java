@@ -38,7 +38,7 @@ public class FirebaseService extends FirebaseMessagingService {
     LocalBroadcastManager broadcastManager;
     NotificationManager notificationManager;
     Random random;
-    String imageUrl = "", title = "", body = "", time = "", type = "", hqCode = "";
+    String imageUrl = "", title = "", body = "", time = "", type = "", hqCode = "", monthYear = "";
     //    int notificationId = 0;
     long id = 0;
     private NotificationDataDao notificationDataDao;
@@ -120,6 +120,9 @@ public class FirebaseService extends FirebaseMessagingService {
                                 if (body.contains("-MR")) {
                                     type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
                                     hqCode = body.substring(body.lastIndexOf("-MR") + 1);
+                                } else if (body.contains("$TP#")) {
+                                    type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("#"));
+                                    monthYear = body.substring(body.lastIndexOf("#") + 1);
                                 } else {
                                     type = body.substring(body.lastIndexOf("$") + 1);
                                 }
@@ -232,7 +235,7 @@ public class FirebaseService extends FirebaseMessagingService {
             Activity currentActivity = AppActivityTracker.getInstance().getCurrentActivity();
             if(currentActivity != null) {
                 currentActivity.runOnUiThread(() -> {
-                    NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, id);
+                    NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, monthYear, id);
                 });
             }
         });

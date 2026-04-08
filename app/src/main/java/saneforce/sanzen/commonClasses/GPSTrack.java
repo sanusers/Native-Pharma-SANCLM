@@ -83,9 +83,9 @@ public class GPSTrack implements LocationListener {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         locationManager.removeUpdates(this);
-        Log.w("Location", "onLocationChanged: " + latitude + " : " +longitude);
-        if(location.isFromMockProvider() && !(activity instanceof SplashScreen)) {
-            if(dialog != null && dialog.isShowing()) {
+        Log.w("Location", "onLocationChanged: " + latitude + " : " + longitude);
+        if (location.isFromMockProvider() && !(activity instanceof SplashScreen)) {
+            if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
             }
             HomeDashBoard.isFakeLocationDetected = true;
@@ -97,9 +97,9 @@ public class GPSTrack implements LocationListener {
                 Button btnOk = alertLayout.findViewById(R.id.BtnClose);
                 alert.setView(alertLayout);
                 dialog = alert.create();
-                if(!activity.isFinishing()) {
+                if (!activity.isFinishing()) {
                     dialog.show();
-                    if(CommonAlertBox.dialog != null && CommonAlertBox.dialog.isShowing()) {
+                    if (CommonAlertBox.dialog != null && CommonAlertBox.dialog.isShowing()) {
                         CommonAlertBox.dialog.dismiss();
                     }
                 }
@@ -115,26 +115,22 @@ public class GPSTrack implements LocationListener {
                 e.printStackTrace();
             }
         }
-        if(locationChangeListener != null) {
+        if (locationChangeListener != null) {
             locationChangeListener.onLocationChanged(location);
         }
-
     }
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
-
     }
 
     @Override
     public void onProviderEnabled(String s) {
-
         Log.v("that_provider_are", "enabled");
     }
 
     @Override
     public void onProviderDisabled(String s) {
-
     }
 
     public GPSTrack(Activity context) {
@@ -164,9 +160,9 @@ public class GPSTrack implements LocationListener {
 //        locationRequest.setFastestInterval(500);     // Accept updates as fast as 500ms
 //        locationRequest.setNumUpdates(1);            // Get one update and stop
 
-        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
                 .setWaitForAccurateLocation(true)
-                .setMinUpdateIntervalMillis(500)
+                .setMinUpdateIntervalMillis(2000)
                 .setMaxUpdateDelayMillis(5000)
                 .setMaxUpdates(1)
                 .build();
@@ -174,54 +170,55 @@ public class GPSTrack implements LocationListener {
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
-                Location location = locationResult.getLastLocation(); // Get the most recent location
+                Location location = locationResult.getLastLocation();
 
                 if (location != null) {
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
 
-                    // Stop location updates once we have a fix
-                    if(locationCallback != null) {
+                    if (locationCallback != null) {
                         fusedLocationClient.removeLocationUpdates(locationCallback);
                     }
-                    locationCallback = null; // Important: Clear the callback to avoid memory leaks
+                    locationCallback = null;
 
                     GPSTrack.location = location;
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
-                    Log.w("Location", "onLocationChanged: " + latitude + " : " +longitude);
-                    if(location.isFromMockProvider() && !(activity instanceof SplashScreen)) {
-                        if(dialog != null && dialog.isShowing()) {
-                            dialog.dismiss();
-                        }
-                        HomeDashBoard.isFakeLocationDetected = true;
-                        try {
-                            AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-                            alert.setCancelable(false);
-                            LayoutInflater inflater = activity.getLayoutInflater();
-                            View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
-                            Button btnOk = alertLayout.findViewById(R.id.BtnClose);
-                            alert.setView(alertLayout);
-                            dialog = alert.create();
-                            if(!activity.isFinishing()) {
-                                dialog.show();
-                                if(CommonAlertBox.dialog != null && CommonAlertBox.dialog.isShowing()) {
-                                    CommonAlertBox.dialog.dismiss();
-                                }
+                    Log.w("Location", "onLocationChanged: " + latitude + " : " + longitude);
+                    if (location.isFromMockProvider() && !(activity instanceof SplashScreen)) {
+                        activity.runOnUiThread(() -> {
+                            if (dialog != null && dialog.isShowing()) {
+                                dialog.dismiss();
                             }
-                            btnOk.setOnClickListener(new SafeClickListener() {
-                                @Override
-                                public void onSafeClick(View view) {
-                                    dialog.dismiss();
-                                    activity.finishAffinity();
-                                    System.exit(0);
+                            HomeDashBoard.isFakeLocationDetected = true;
+                            try {
+                                AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+                                alert.setCancelable(false);
+                                LayoutInflater inflater = activity.getLayoutInflater();
+                                View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
+                                Button btnOk = alertLayout.findViewById(R.id.BtnClose);
+                                alert.setView(alertLayout);
+                                dialog = alert.create();
+                                if (!activity.isFinishing()) {
+                                    dialog.show();
+                                    if (CommonAlertBox.dialog != null && CommonAlertBox.dialog.isShowing()) {
+                                        CommonAlertBox.dialog.dismiss();
+                                    }
                                 }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                                btnOk.setOnClickListener(new SafeClickListener() {
+                                    @Override
+                                    public void onSafeClick(View view) {
+                                        dialog.dismiss();
+                                        activity.finishAffinity();
+                                        System.exit(0);
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
                     }
-                    if(locationChangeListener != null) {
+                    if (locationChangeListener != null) {
                         locationChangeListener.onLocationChanged(location);
                     }
 
@@ -234,37 +231,25 @@ public class GPSTrack implements LocationListener {
 
     public Location getLocation() {
         try {
-            locationManager = (LocationManager) mContext
-                    .getSystemService(Context.LOCATION_SERVICE);
-
-            // getting GPS status
-            isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
+            locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             Log.v("isGPSEnabled", "=" + isGPSEnabled);
-
-            // getting network status
-            isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             Log.v("isNetworkEnabled", "=" + isNetworkEnabled);
 
-            if(!isGPSEnabled && !isNetworkEnabled) {
+            if (!isGPSEnabled && !isNetworkEnabled) {
                 // no network provider is enabled
                 // isLocationEnabled();
                 return location;
-            }else {
+            } else {
                 this.canGetLocation = true;
                 // if GPS Enabled get lat/long using GPS Services
-                if(isGPSEnabled) {
+                if (isGPSEnabled) {
 //                    location = null;
-                    if(ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
+                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        //    ActivityCompat#requestPermissions here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+                        // to handle the case where the user grants the permission.
                         return location;
                     }
                     locationManager.requestLocationUpdates(
@@ -284,9 +269,9 @@ public class GPSTrack implements LocationListener {
 //                    }
                 }
 
-                if(isNetworkEnabled) {
+                if (isNetworkEnabled) {
 //                    location = null;
-                    if(ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
                         // here to request the missing permissions, and then overriding
@@ -321,28 +306,23 @@ public class GPSTrack implements LocationListener {
     }
 
     public double getLatitude() {
-        if(location != null) {
+        if (location != null) {
             latitude = location.getLatitude();
             Log.v("LATITUDE", String.valueOf(latitude));
         }
-
-        // return latitude
         return latitude;
     }
 
     public double getLongitude() {
-        if(location != null) {
+        if (location != null) {
             longitude = location.getLongitude();
-
             Log.v("LATITUDE", String.valueOf(longitude));
         }
-
-        // return latitude
         return longitude;
     }
 
     public boolean isFakeLocation() {
-        if(location != null) {
+        if (location != null) {
             return location.isFromMockProvider();
         }
         return false;

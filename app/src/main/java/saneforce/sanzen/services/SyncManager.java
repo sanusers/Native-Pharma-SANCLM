@@ -3,6 +3,7 @@ package saneforce.sanzen.services;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
@@ -15,18 +16,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
@@ -37,11 +44,15 @@ import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
+import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
+import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class SyncManager {
-    private int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0,profileStatus = 0;
+    private int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0, profileStatus = 0;
     private final ArrayList<MasterSyncItemModel> doctorModelArray = new ArrayList<>();
     private final ArrayList<MasterSyncItemModel> stockiestModelArray = new ArrayList<>();
     private final ArrayList<MasterSyncItemModel> chemistModelArray = new ArrayList<>();
@@ -62,23 +73,30 @@ public class SyncManager {
     private final ArrayList<MasterSyncItemModel> profileModelArray = new ArrayList<>();
     private final ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
     private final Context context;
-    private final String hqCode, type;
+    private final String hqCode, type, monthYear;
     private final long id;
     private final ArrayList<MasterSyncItemModel> masterSyncAllModel = new ArrayList<>();
     private final MasterDataDao masterDataDao;
+    private final TourPlanOfflineDataDao tourPlanOfflineDataDao;
+    private final STPOfflineDataDao stpOfflineDataDao;
     private final NotificationDataDao notificationDataDao;
     private ApiInterface apiInterface;
     private int apiSuccessCount = 0;
+    private LocalDate localDate;
 
-    public SyncManager(Context context, String hqCode, String type, long id) {
+    public SyncManager(Context context, String hqCode, String type, String monthYear, long id) {
         this.context = context;
         this.hqCode = hqCode;
         this.type = type;
+        this.monthYear = monthYear;
         this.id = id;
+        localDate = LocalDate.now();
         RoomDB db = RoomDB.getDatabase(context);
         masterDataDao = db.masterDataDao();
+        tourPlanOfflineDataDao = db.tourPlanOfflineDataDao();
+        stpOfflineDataDao = db.stpOfflineDataDao();
         notificationDataDao = db.notificationDataDao();
-        notificationDataDao.changeNotificationSyncStatus((int)id, 2);
+        notificationDataDao.changeNotificationSyncStatus((int) id, 2);
         getRequiredData();
         prepareArray();
     }
@@ -146,7 +164,7 @@ public class SyncManager {
 //            if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1")) {
 //                MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(context), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
             MasterSyncItemModel dr_mas = new MasterSyncItemModel(SharedPref.getDrCap(context), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
-            MasterSyncItemModel geo = new MasterSyncItemModel(SharedPref.getDrCap(context)+" Geo", Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
+            MasterSyncItemModel geo = new MasterSyncItemModel(SharedPref.getDrCap(context) + " Geo", Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
             MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR_MAS, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
             MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR_MAS, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
             MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getcategorys", Constants.CATEGORY, categoryStatus, false);
@@ -186,7 +204,7 @@ public class SyncManager {
         if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
 //            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(context),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
             MasterSyncItemModel cheMas = new MasterSyncItemModel(SharedPref.getChmCap(context), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
-            MasterSyncItemModel cheGeo = new MasterSyncItemModel(SharedPref.getChmCap(context)+" Geo", Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);
+            MasterSyncItemModel cheGeo = new MasterSyncItemModel(SharedPref.getChmCap(context) + " Geo", Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);
             MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
 //            chemistModelArray.add(cheModel);
             chemistModelArray.add(cheMas);
@@ -199,7 +217,7 @@ public class SyncManager {
         if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
 //            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(context),Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
             MasterSyncItemModel stock_mas = new MasterSyncItemModel(SharedPref.getStkCap(context), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, stockiestStatus, false);
-            MasterSyncItemModel stock_geo = new MasterSyncItemModel(SharedPref.getStkCap(context)+" Geo", Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode, stockiestGeoStatus, false);
+            MasterSyncItemModel stock_geo = new MasterSyncItemModel(SharedPref.getStkCap(context) + " Geo", Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode, stockiestGeoStatus, false);
 //            stockiestModelArray.add(stockModel);
             stockiestModelArray.add(stock_mas);
             stockiestModelArray.add(stock_geo);
@@ -210,7 +228,7 @@ public class SyncManager {
         if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
 //            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(context),  Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
             MasterSyncItemModel unList_mas = new MasterSyncItemModel(SharedPref.getUNLcap(context), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, unlistedDrStatus, false);
-            MasterSyncItemModel unList_geo = new MasterSyncItemModel(SharedPref.getUNLcap(context)+" Geo", Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, unlistedDrGeoStatus, false);
+            MasterSyncItemModel unList_geo = new MasterSyncItemModel(SharedPref.getUNLcap(context) + " Geo", Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, unlistedDrGeoStatus, false);
 
 //            unlistedDrModelArray.add(unListModel);
             unlistedDrModelArray.add(unList_mas);
@@ -273,9 +291,9 @@ public class SyncManager {
         if (SharedPref.getSfType(context).equalsIgnoreCase("1") && SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
         } else {
-            if(SharedPref.getSfType(context).equalsIgnoreCase("2") && SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+            if (SharedPref.getSfType(context).equalsIgnoreCase("2") && SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
                 myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
-            }else {
+            } else {
                 myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
             }
         }
@@ -396,79 +414,199 @@ public class SyncManager {
 
     public void sync() {
         LinkedHashSet<MasterSyncItemModel> masterSyncItemModels = new LinkedHashSet<>();
-        if(type.equalsIgnoreCase("DR")) {
-            masterSyncItemModels.add(doctorModelArray.get(0));
+        switch (type) {
+            case "DR":
+                masterSyncItemModels.add(doctorModelArray.get(0));
+                if (doctorModelArray.size() > 1) {
+                    masterSyncItemModels.add(doctorModelArray.get(1));
+                }
+                break;
+            case "CH":
+                masterSyncItemModels.add(chemistModelArray.get(0));
+                if (chemistModelArray.size() > 1) {
+                    masterSyncItemModels.add(chemistModelArray.get(1));
+                }
+                break;
+            case "ST":
+                masterSyncItemModels.add(stockiestModelArray.get(0));
+                if (stockiestModelArray.size() > 1) {
+                    masterSyncItemModels.add(stockiestModelArray.get(1));
+                }
+                break;
+            case "UL":
+                masterSyncItemModels.add(unlistedDrModelArray.get(0));
+                if (unlistedDrModelArray.size() > 1) {
+                    masterSyncItemModels.add(unlistedDrModelArray.get(1));
+                }
+                break;
+            case "HOS":
+                masterSyncItemModels.add(hospitalModelArray.get(0));
+                if (hospitalModelArray.size() > 1) {
+                    masterSyncItemModels.add(hospitalModelArray.get(1));
+                }
+                break;
+            case "CIP":
+                masterSyncItemModels.add(cipModelArray.get(0));
+                if (cipModelArray.size() > 1) {
+                    masterSyncItemModels.add(cipModelArray.get(1));
+                }
+                break;
+            case "TM":
+                masterSyncItemModels.add(clusterModelArray.get(0));
+                break;
+            case "WT":
+                masterSyncItemModels.add(workTypeModelArray.get(0));
+                break;
+            case "HW":
+                masterSyncItemModels.add(workTypeModelArray.get(1));
+                masterSyncItemModels.add(workTypeModelArray.get(2));
+                break;
+            case "MI":
+                masterSyncItemModels.add(dcrModelArray.get(1));
+                break;
+            case "PR":
+                masterSyncItemModels.add(productModelArray.get(0));
+                break;
+            case "GIF":
+                masterSyncItemModels.add(inputModelArray.get(0));
+                break;
+            case "SUB":
+                masterSyncItemModels.add(subordinateModelArray.get(0));
+                break;
+            case "SE":
+                masterSyncItemModels.add(setupModelArray.get(0));
+                break;
+            case "OTR":
+                masterSyncItemModels.add(productModelArray.get(2));
+                masterSyncItemModels.add(workTypeModelArray.get(1));
+                masterSyncItemModels.add(workTypeModelArray.get(2));
+                break;
+            case "FSD":
+                masterSyncItemModels.addAll(doctorModelArray);
+                masterSyncItemModels.add(unlistedDrModelArray.get(0));
+                masterSyncItemModels.add(clusterModelArray.get(0));
+                break;
+            case "AMS":
+                masterSyncItemModels.addAll(doctorModelArray);
+                masterSyncItemModels.addAll(chemistModelArray);
+                masterSyncItemModels.addAll(stockiestModelArray);
+                masterSyncItemModels.addAll(unlistedDrModelArray);
+                masterSyncItemModels.addAll(hospitalModelArray);
+                masterSyncItemModels.addAll(cipModelArray);
+                masterSyncItemModels.addAll(clusterModelArray);
+                masterSyncItemModels.addAll(inputModelArray);
+                masterSyncItemModels.addAll(productModelArray);
+                masterSyncItemModels.add(dcrModelArray.get(0));
+                masterSyncItemModels.add(dcrModelArray.get(1));
+                masterSyncItemModels.addAll(workTypeModelArray);
+                masterSyncItemModels.addAll(subordinateModelArray);
+                masterSyncItemModels.addAll(setupModelArray);
+                break;
+            case "DCR":
+                masterSyncItemModels.addAll(dcrModelArray);
+                break;
+            case "TP":
+//                masterSyncItemModels.add(tpModelArray.get(0));
+//                masterSyncItemModels.add(tpModelArray.get(1));
+                MasterSyncItemModel tpPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "gettpdetail_onebuild", Constants.TOUR_PLAN, tourPLanStatus, false);
+                masterSyncItemModels.add(tpPlan);
+                break;
+            case "TPD":
+                break;
+            case "LE":
+                masterSyncItemModels.addAll(leaveModelArray);
+                break;
+            case "STP":
+                if (tpModelArray.size() > 2) {
+                    masterSyncItemModels.add(tpModelArray.get(2));
+                }
+                if (tpModelArray.size() > 3) {
+                    masterSyncItemModels.add(tpModelArray.get(3));
+                }
+                break;
         }
-        if(type.equalsIgnoreCase("CH")) {
-            masterSyncItemModels.add(chemistModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("ST")) {
-            masterSyncItemModels.add(stockiestModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("UL")) {
-            masterSyncItemModels.add(unlistedDrModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("HOS")) {
-            masterSyncItemModels.add(hospitalModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("CIP")) {
-            masterSyncItemModels.add(cipModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("TM")) {
-            masterSyncItemModels.add(clusterModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("WT")) {
-            masterSyncItemModels.add(workTypeModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("HW")) {
-            masterSyncItemModels.add(workTypeModelArray.get(1));
-            masterSyncItemModels.add(workTypeModelArray.get(2));
-        }
-        if(type.equalsIgnoreCase("MI")) {
-            masterSyncItemModels.add(dcrModelArray.get(1));
-        }
-        if(type.equalsIgnoreCase("PR")) {
-            masterSyncItemModels.add(productModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("GIF")) {
-            masterSyncItemModels.add(inputModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("SUB")) {
-            masterSyncItemModels.add(subordinateModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("SE")) {
-            masterSyncItemModels.add(setupModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("OTR")) {
-            masterSyncItemModels.add(productModelArray.get(2));
-            masterSyncItemModels.add(workTypeModelArray.get(1));
-            masterSyncItemModels.add(workTypeModelArray.get(2));
-        }
-        if(type.equalsIgnoreCase("FSD")) {
-            masterSyncItemModels.addAll(doctorModelArray);
-            masterSyncItemModels.add(unlistedDrModelArray.get(0));
-            masterSyncItemModels.add(clusterModelArray.get(0));
-        }
-        if(type.equalsIgnoreCase("AMS")) {
-            masterSyncItemModels.addAll(doctorModelArray);
-            masterSyncItemModels.addAll(chemistModelArray);
-            masterSyncItemModels.addAll(stockiestModelArray);
-            masterSyncItemModels.addAll(unlistedDrModelArray);
-            masterSyncItemModels.addAll(hospitalModelArray);
-            masterSyncItemModels.addAll(cipModelArray);
-            masterSyncItemModels.addAll(clusterModelArray);
-            masterSyncItemModels.addAll(inputModelArray);
-            masterSyncItemModels.addAll(productModelArray);
-            masterSyncItemModels.add(dcrModelArray.get(0));
-            masterSyncItemModels.add(dcrModelArray.get(1));
-            masterSyncItemModels.addAll(workTypeModelArray);
-            masterSyncItemModels.addAll(subordinateModelArray);
-            masterSyncItemModels.addAll(setupModelArray);
-        }
+//        if (type.equalsIgnoreCase("DR")) {
+//            masterSyncItemModels.add(doctorModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("CH")) {
+//            masterSyncItemModels.add(chemistModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("ST")) {
+//            masterSyncItemModels.add(stockiestModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("UL")) {
+//            masterSyncItemModels.add(unlistedDrModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("HOS")) {
+//            masterSyncItemModels.add(hospitalModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("CIP")) {
+//            masterSyncItemModels.add(cipModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("TM")) {
+//            masterSyncItemModels.add(clusterModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("WT")) {
+//            masterSyncItemModels.add(workTypeModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("HW")) {
+//            masterSyncItemModels.add(workTypeModelArray.get(1));
+//            masterSyncItemModels.add(workTypeModelArray.get(2));
+//        }
+//        if (type.equalsIgnoreCase("MI")) {
+//            masterSyncItemModels.add(dcrModelArray.get(1));
+//        }
+//        if (type.equalsIgnoreCase("PR")) {
+//            masterSyncItemModels.add(productModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("GIF")) {
+//            masterSyncItemModels.add(inputModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("SUB")) {
+//            masterSyncItemModels.add(subordinateModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("SE")) {
+//            masterSyncItemModels.add(setupModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("OTR")) {
+//            masterSyncItemModels.add(productModelArray.get(2));
+//            masterSyncItemModels.add(workTypeModelArray.get(1));
+//            masterSyncItemModels.add(workTypeModelArray.get(2));
+//        }
+//        if (type.equalsIgnoreCase("FSD")) {
+//            masterSyncItemModels.addAll(doctorModelArray);
+//            masterSyncItemModels.add(unlistedDrModelArray.get(0));
+//            masterSyncItemModels.add(clusterModelArray.get(0));
+//        }
+//        if (type.equalsIgnoreCase("AMS")) {
+//            masterSyncItemModels.addAll(doctorModelArray);
+//            masterSyncItemModels.addAll(chemistModelArray);
+//            masterSyncItemModels.addAll(stockiestModelArray);
+//            masterSyncItemModels.addAll(unlistedDrModelArray);
+//            masterSyncItemModels.addAll(hospitalModelArray);
+//            masterSyncItemModels.addAll(cipModelArray);
+//            masterSyncItemModels.addAll(clusterModelArray);
+//            masterSyncItemModels.addAll(inputModelArray);
+//            masterSyncItemModels.addAll(productModelArray);
+//            masterSyncItemModels.add(dcrModelArray.get(0));
+//            masterSyncItemModels.add(dcrModelArray.get(1));
+//            masterSyncItemModels.addAll(workTypeModelArray);
+//            masterSyncItemModels.addAll(subordinateModelArray);
+//            masterSyncItemModels.addAll(setupModelArray);
+//        }
         masterSyncAllModel.addAll(masterSyncItemModels);
 
+        if (masterSyncItemModels.isEmpty()) {
+            new Handler().postDelayed(() -> {
+                notificationDataDao.changeNotificationSyncStatus((int) id, 0);
+                notificationDataDao.changeNotificationReadStatus((int) id, 1);
+                NotificationDialog.dismissDialog();
+                notifySyncCompleted();
+            }, 2000);
+        }
+
         apiSuccessCount = 0;
-        for (int position = 0; position<masterSyncAllModel.size(); position++) {
+        for (int position = 0; position < masterSyncAllModel.size(); position++) {
             sync(masterSyncAllModel.get(position).getMasterOf(), masterSyncAllModel.get(position).getRemoteTableName(), masterSyncAllModel, position);
         }
     }
@@ -498,6 +636,26 @@ public class SyncManager {
                     if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
                         jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                         jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                        break;
+                    }
+                }
+                case "gettpdetail_onebuild": {
+                    if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                        try {
+                            String[] monthYearVal = monthYear.split("-");
+                            if (monthYearVal.length > 1) {
+                                localDate = TimeUtils.convertToLocalDate(monthYear, TimeUtils.FORMAT_43);
+                            } else {
+                                localDate = LocalDate.now();
+                            }
+                            jsonObject.put("Month", localDate.getMonthValue());
+                            jsonObject.put("Year", localDate.getYear());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            localDate = LocalDate.now();
+                            jsonObject.put("Month", localDate.getMonthValue());
+                            jsonObject.put("Year", localDate.getYear());
+                        }
                         break;
                     }
                 }
@@ -536,40 +694,40 @@ public class SyncManager {
             Map<String, String> mapString = new HashMap<>();
             Log.e("API Object", "master sync obj : " + jsonObject);
             Call<JsonElement> call = null;
-            if(masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+            if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                 mapString.put("axn", "table/dcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
                 mapString.put("axn", "table/subordinates");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
                 mapString.put("axn", "table/products");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("Leave")) {
+            } else if (masterOf.equalsIgnoreCase("Leave")) {
                 mapString.put("axn", "get/leave");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("Home")) {
+            } else if (masterOf.equalsIgnoreCase("Home")) {
                 mapString.put("axn", "home");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("AdditionalDcr")) {
+            } else if (masterOf.equalsIgnoreCase("AdditionalDcr")) {
                 mapString.put("axn", "table/additionaldcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("Slide")) {
+            } else if (masterOf.equalsIgnoreCase("Slide")) {
                 mapString.put("axn", "table/slides");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.SETUP)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
                 mapString.put("axn", "table/setups");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
                 mapString.put("axn", "get/tp");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
                 mapString.put("axn", "get/stp");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.ACTIVITY)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.ACTIVITY)) {
                 mapString.put("axn", "get/activity");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.SURVEY)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.SURVEY)) {
                 mapString.put("axn", "get/survey");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.CHECK_IN)) {
@@ -577,7 +735,7 @@ public class SyncManager {
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
             }
 
-            if(call != null) {
+            if (call != null) {
                 call.enqueue(new Callback<JsonElement>() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
@@ -585,71 +743,96 @@ public class SyncManager {
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         ++apiSuccessCount;
                         Log.e("response :   ", remoteTableName + " : " + response.body().toString());
+                        if (remoteTableName.equalsIgnoreCase("gettpdetail_onebuild")) {
+                            if (response.body().isJsonArray()) {
+                                try {
+                                    JSONArray jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
+                                    if (jsonArray.length() > 0) {
+                                        String status = jsonArray.getJSONObject(0).getString("Change_Status");
+                                        String reason = jsonArray.getJSONObject(0).getString("Rejection_Reason");
+                                        tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, reason);
 
-                        boolean success = false;
-                        JSONArray jsonArray = new JSONArray();
-                        JSONObject jsonObject2 = new JSONObject();
-                        if(response.isSuccessful()) {
-                            Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
-                            try {
-                                JsonElement jsonElement = response.body();
-                                if(!jsonElement.isJsonNull()) {
-                                    if(jsonElement.isJsonArray()) {
-                                        jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                        success = true;
-                                    }else if(jsonElement.isJsonObject()) {
-                                        jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
-                                        if(!jsonObject2.has("success")) {
-                                            // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
-                                            jsonArray.put(jsonObject2);
-                                            success = true;
-                                        }else if(jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
-                                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
-                                            masterSyncItemModels.get(position).setSyncSuccess(1);
+                                        TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                                        if (tourPlanOfflineDataTable != null) {
+                                            status = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                                            reason = tourPlanOfflineDataTable.getTpRejectionReasonOrEmpty();
+                                        }
+                                        switch (status) {
+                                            case "2":
+                                            case "3": {
+                                                SetTpRangeStatus();
+                                                break;
+                                            }
                                         }
                                     }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            boolean success = false;
+                            JSONArray jsonArray = new JSONArray();
+                            JSONObject jsonObject2 = new JSONObject();
+                            if (response.isSuccessful()) {
+                                Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
+                                try {
+                                    JsonElement jsonElement = response.body();
+                                    if (!jsonElement.isJsonNull()) {
+                                        if (jsonElement.isJsonArray()) {
+                                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                            success = true;
+                                        } else if (jsonElement.isJsonObject()) {
+                                            jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
+                                            if (!jsonObject2.has("success")) {
+                                                jsonArray.put(jsonObject2);
+                                                success = true;
+                                            } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                                masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
+                                                masterSyncItemModels.get(position).setSyncSuccess(1);
+                                            }
+                                        }
 
-                                    if(success) {
-                                        masterSyncItemModels.get(position).setCount(jsonArray.length());
-                                        masterSyncItemModels.get(position).setSyncSuccess(2);
-                                        masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
-                                        if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)) {
-                                            CallDataRestClass.resetcallValues(context);
-                                        }else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)) {
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
-                                        }else if(!hqCode.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + hqCode)) {
-                                            JSONObject jointWorkJsonObject = new JSONObject();
-                                            jointWorkJsonObject.put("Code", SharedPref.getSfCode(context));
-                                            jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
-                                            jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
-                                            jointWorkJsonObject.put("Reporting_To_SF", "");
-                                            jointWorkJsonObject.put("OwnDiv", "");
-                                            jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(context));
-                                            jointWorkJsonObject.put("SF_Status", "");
-                                            jointWorkJsonObject.put("ActFlg", "");
-                                            jointWorkJsonObject.put("UsrDfd_UserName", "");
-                                            jointWorkJsonObject.put("DS_name", "");
-                                            jointWorkJsonObject.put("sf_type", SharedPref.getSfType(context));
-                                            jointWorkJsonObject.put("Desig", SharedPref.getDesig(context));
-                                            jointWorkJsonObject.put("steps", "");
+                                        if (success) {
+                                            masterSyncItemModels.get(position).setCount(jsonArray.length());
+                                            masterSyncItemModels.get(position).setSyncSuccess(2);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
+                                            if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)) {
+                                                CallDataRestClass.resetcallValues(context);
+                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)) {
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
+                                            } else if (!hqCode.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + hqCode)) {
+                                                JSONObject jointWorkJsonObject = new JSONObject();
+                                                jointWorkJsonObject.put("Code", SharedPref.getSfCode(context));
+                                                jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
+                                                jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
+                                                jointWorkJsonObject.put("Reporting_To_SF", "");
+                                                jointWorkJsonObject.put("OwnDiv", "");
+                                                jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(context));
+                                                jointWorkJsonObject.put("SF_Status", "");
+                                                jointWorkJsonObject.put("ActFlg", "");
+                                                jointWorkJsonObject.put("UsrDfd_UserName", "");
+                                                jointWorkJsonObject.put("DS_name", "");
+                                                jointWorkJsonObject.put("sf_type", SharedPref.getSfType(context));
+                                                jointWorkJsonObject.put("Desig", SharedPref.getDesig(context));
+                                                jointWorkJsonObject.put("steps", "");
 
-                                            JSONArray jointWorkJsonArray = new JSONArray();
-                                            jointWorkJsonArray.put(jointWorkJsonObject);
-                                            for (int i = 0; i<jsonArray.length(); i++) {
-                                                jointWorkJsonObject = jsonArray.optJSONObject(i);
+                                                JSONArray jointWorkJsonArray = new JSONArray();
                                                 jointWorkJsonArray.put(jointWorkJsonObject);
+                                                for (int i = 0; i < jsonArray.length(); i++) {
+                                                    jointWorkJsonObject = jsonArray.optJSONObject(i);
+                                                    jointWorkJsonArray.put(jointWorkJsonObject);
+                                                }
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.JOINT_WORK + hqCode, jointWorkJsonArray.toString(), 2));
                                             }
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.JOINT_WORK + hqCode, jointWorkJsonArray.toString(), 2));
-                                        }
-                                        if(masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
-                                            if(jsonArray.length()>0) {
-                                                JSONObject jsonObject1 = jsonArray.getJSONObject(0);
-                                                JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
-                                                JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 2));
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 2));
+                                            if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
+                                                if (jsonArray.length() > 0) {
+                                                    JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+                                                    JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
+                                                    JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
+                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 2));
+                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 2));
+                                                }
                                             }
-                                        }
 //                                        else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
 //                                            if(jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")){
 //                                                SharedPref.setTpSyncStaus(context,false);
@@ -672,17 +855,19 @@ public class SyncManager {
 //                                                }
 //                                            }
 //                                        }
-                                        else if(masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
-                                            if(jsonArray.length()>0) {
-                                                SharedPref.InsertLogInData(context, jsonArray.getJSONObject(0));
-                                            }
-//                                        } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
-//                                            stpOfflineDataDao.deleteAllData("0");
-//                                            saveSTPDataToLocal();
+                                            else if (masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+                                                if (jsonArray.length() > 0) {
+                                                    SharedPref.InsertLogInData(context, jsonArray.getJSONObject(0));
+                                                }
+                                        } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                                                if (SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+                                                    stpOfflineDataDao.deleteAllData("0");
+                                                }
+                                                saveSTPDataToLocal(hqCode);
 //                                        } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
 //                                            activityDetailsDataDao.deleteAllData();
 //                                            syncIndividualActivityDetails();
-                                        }
+                                            }
 //                                        JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
 //                                        for (int bean = 0; bean < input.length(); bean++) {
 //                                            try {
@@ -695,25 +880,25 @@ public class SyncManager {
 //                                                throw new RuntimeException(e);
 //                                            }
 //                                        }
-                                    }
-                                }else {
-                                    masterSyncItemModels.get(position).setSyncSuccess(1);
-                                    masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                                        }
+                                    } else {
+                                        masterSyncItemModels.get(position).setSyncSuccess(1);
+                                        masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
 //                                    if (navigateFrom.equalsIgnoreCase("Login")) {
 //                                        masterSyncAll(false);
 //                                    }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            } else {
+                                if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
+                                    SharedPref.setTpSyncStaus(context, false);
+                                }
+                                masterSyncItemModels.get(position).setSyncSuccess(1);
+                                masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                             }
-                        }else {
-                            if(masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
-                                SharedPref.setTpSyncStaus(context, false);
-                            }
-                            masterSyncItemModels.get(position).setSyncSuccess(1);
-                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                         }
-
                         // when all the masters are synced and intent from Login Activity
 //                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
 //                            if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
@@ -740,7 +925,7 @@ public class SyncManager {
 //                            }
 //                        }
                         Log.e("test", "success count : " + apiSuccessCount);
-                        if(apiSuccessCount == masterSyncAllModel.size()) {
+                        if (apiSuccessCount == masterSyncAllModel.size()) {
                             notificationDataDao.changeNotificationSyncStatus((int) id, 0);
                             notificationDataDao.changeNotificationReadStatus((int) id, 1);
                             NotificationDialog.dismissDialog();
@@ -751,8 +936,7 @@ public class SyncManager {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-                        if(masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
+                        if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
                             SharedPref.setTpSyncStaus(context, false);
                         }
                         Log.e("test", "failed : " + t);
@@ -784,7 +968,7 @@ public class SyncManager {
 //                                finish();
 //                            }
 //                        }
-                        if(apiSuccessCount == masterSyncAllModel.size()) {
+                        if (apiSuccessCount == masterSyncAllModel.size()) {
                             notificationDataDao.changeNotificationSyncStatus((int) id, 2);
                             notificationDataDao.changeNotificationReadStatus((int) id, 0);
                             NotificationDialog.dismissDialog();
@@ -801,7 +985,170 @@ public class SyncManager {
             NotificationDialog.dismissDialog();
             notifySyncCompleted();
         }
+    }
 
+    public void SetTpRangeStatus() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
+        String mCurrDate = date.format(calendar.getTime());
+        String currentDate = sdf.format(calendar.getTime());
+        calendar.add(Calendar.MONTH, 1);
+        String nextMonthDate = sdf.format(calendar.getTime());
+
+        String tp_start = SharedPref.getTpStartDate(context);
+        String tp_end = SharedPref.getTpEndDate(context);
+        int Start_Date = Integer.parseInt(tp_start);
+        int End_Date = Integer.parseInt(tp_end);
+        int mCurrentDate = Integer.parseInt(mCurrDate);
+
+        if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+            SharedPref.setTpStatus(context, true);
+        } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3") && (mCurrentDate >= Start_Date)) {
+            SharedPref.setTpStatus(context, End_Date < mCurrentDate);
+        } else {
+            SharedPref.setTpStatus(context, false);
+        }
+    }
+
+    private void saveSTPDataToLocal(String hqCode) {
+        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+            try {
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+                JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                JSONArray jsonCluster = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String doctorSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Dr_Code")));
+                        String chemistSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Chem_Code")));
+                        String clusterSize = String.valueOf(getCountFromCommaString(jsonObject.optString("Patch_Code")));
+                        String doctorSpeciality = jsonObject.optString("Speciality_Name");
+                        String doctorCategory = jsonObject.optString("CategoryName");
+                        String doctorCategoryCode = jsonObject.optString("CategoryCode");
+                        String doctorClass = jsonObject.optString("Class_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                        if ((activeFlag.equalsIgnoreCase("0") && !SharedPref.getOneBuild(context).equalsIgnoreCase("0"))
+                                || (SharedPref.getOneBuild(context).equalsIgnoreCase("0") && activeFlag.equalsIgnoreCase("2"))) {
+                            SharedPref.setStpStatus(context, "Approved");
+                        }
+
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(context);
+                        jsonSave.put("sfcode", hqCode);
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(context));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(context));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Planned_Territory_Count", clusterSize + " (" + jsonCluster.length() + ")");
+                        jsonSave.put("Planned_Doctor_Count", doctorSize + " (" + jsonDoc_mas.length() + ")");
+                        jsonSave.put("Planned_Chemist_Count", chemistSize + " (" + jsonChm_mas.length() + ")");
+                        jsonSave.put("Planned_Hospital_Count", "0" + " (" + "0" + ")");
+                        jsonSave.put("Speciality_Name", doctorSpeciality);
+                        jsonSave.put("Category_Name", doctorCategory);
+                        jsonSave.put("Category_Code", doctorCategoryCode);
+                        jsonSave.put("Class_Name", doctorClass);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 0;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, hqCode, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String dayID = jsonObject.optString("Day_Plan_ShortName");
+                        String dayCaption = jsonObject.optString("Day_Plan_Name");
+                        String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                        String clusterCode = jsonObject.optString("Patch_Code");
+                        String clusterName = jsonObject.optString("Patch_Name");
+                        String doctorCode = jsonObject.optString("Dr_Code");
+                        String doctorName = jsonObject.optString("Dr_Name");
+                        String chemistCode = jsonObject.optString("Chem_Code");
+                        String chemistName = jsonObject.optString("Chem_Name");
+                        String dateTime = jsonObject.optString("Created_Date");
+                        String activeFlag = jsonObject.optString("Active_Flag");
+                        Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                        if ((activeFlag.equalsIgnoreCase("0") && !SharedPref.getOneBuild(context).equalsIgnoreCase("0"))
+                                || (SharedPref.getOneBuild(context).equalsIgnoreCase("0") && activeFlag.equalsIgnoreCase("2"))) {
+                            SharedPref.setStpStatus(context, "Approved");
+                        }
+
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(context);
+                        jsonSave.put("sfcode", hqCode);
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(context));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(context));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, hqCode, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private int getCountFromCommaString(String value) {
+        if (value == null || value.trim().isEmpty()) return 0;
+
+        int count = 0;
+        for (String s : value.split(",")) {
+            if (!s.trim().isEmpty()) count++;
+        }
+        return count;
     }
 
     private void notifySyncCompleted() {

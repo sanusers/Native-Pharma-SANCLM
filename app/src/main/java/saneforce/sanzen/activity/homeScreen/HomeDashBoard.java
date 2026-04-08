@@ -70,6 +70,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -638,6 +639,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
             checkUserStatus();
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
 //        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
 //            checkAndShowDoctorPopup();
 //        }
@@ -880,7 +882,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 for (NotificationDataTable notificationData : list) {
                     if (syncingIds.contains(notificationData.getId())) continue;
                     syncingIds.add(notificationData.getId());
-                    String title = notificationData.getTitle(), body = notificationData.getMessage(), time = notificationData.getDateTime(), type = "", hqCode = "";
+                    String title = notificationData.getTitle(), body = notificationData.getMessage(), time = notificationData.getDateTime(), type = "", hqCode = "", monthYear = "";
                     int id = notificationData.getId();
                     hqCode = SharedPref.getHqCode(this);
                     if (hqCode == null || hqCode.isEmpty()) {
@@ -891,6 +893,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             if (body.contains("-MR")) {
                                 type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
                                 hqCode = body.substring(body.lastIndexOf("-MR") + 1);
+                            } else if (body.contains("$TP#")) {
+                                type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("#"));
+                                monthYear = body.substring(body.lastIndexOf("#") + 1);
                             } else {
                                 type = body.substring(body.lastIndexOf("$") + 1);
                             }
@@ -900,7 +905,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             body = body.replace("Kindly Logout the App.", "");
                             body = body.replace(" Kindly Logout & Login the App.", "");
                             body = body.replace(" Kindly Sync these in Master Sync Screen.", "");
-                            showNotificationDialog(title, body, type, hqCode, id);
+                            showNotificationDialog(title, body, type, hqCode, monthYear, id);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -1247,13 +1252,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         notificationPopupWindow.update();
     }
 
-    private void showNotificationDialog(String title, String body, String type, String hqCode, int id) {
+    private void showNotificationDialog(String title, String body, String type, String hqCode, String monthYear, int id) {
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(() -> {
             Activity currentActivity = AppActivityTracker.getInstance().getCurrentActivity();
             if (currentActivity != null) {
                 currentActivity.runOnUiThread(() -> {
-                    NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, id);
+                    NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, monthYear, id);
                 });
             }
         });
@@ -3932,7 +3937,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         public void onReceive(Context context, Intent intent) {
             try {
                 String type = intent.getStringExtra("type");
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.sync_completed));
+//                CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.sync_completed));
+                if (type != null && type.equalsIgnoreCase("TPD")) {
+                    try {
+                        Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + 0);
+                        if (fragment instanceof WorkPlanFragment) {
+                            ((WorkPlanFragment) fragment).refresh(true);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

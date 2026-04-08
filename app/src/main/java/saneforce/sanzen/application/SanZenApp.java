@@ -41,6 +41,13 @@ public class SanZenApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .detectNetwork()
+                .penaltyLog()
+                .build());
+
         AppActivityTracker.init(this);
 
 //        if (BuildConfig.DEBUG) {

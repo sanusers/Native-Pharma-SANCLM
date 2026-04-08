@@ -25,12 +25,11 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
 public class NotificationDialog {
-
     private static AlertDialog dialog;
     private static final Queue<NotificationData> queue = new LinkedList<>();
     private static boolean isShowing = false;
 
-    public static void showDialog(Context context, String title, String message, String type, String hqCode, long id) {
+    public static void showDialog(Context context, String title, String message, String type, String hqCode, String monthYear, long id) {
         if (!(context instanceof Activity) || ((Activity) context).isFinishing()) return;
 
         if (((context instanceof DCRCallActivity) || (context instanceof CustomerProfile)
@@ -38,14 +37,12 @@ public class NotificationDialog {
                 || (context instanceof PreviewActivity) || (context instanceof PlaySlideDetailing))
                 && (!type.matches("(?i)LT|VT|BK|PWD"))) {
 
-            RoomDB.getDatabase(context).notificationDataDao()
-                    .changeNotificationReadStatus((int) id, 0);
-            RoomDB.getDatabase(context).notificationDataDao()
-                    .changeNotificationSyncStatus((int) id, 1);
+            RoomDB.getDatabase(context).notificationDataDao().changeNotificationReadStatus((int) id, 0);
+            RoomDB.getDatabase(context).notificationDataDao().changeNotificationSyncStatus((int) id, 1);
             return;
         }
 
-        queue.offer(new NotificationData(context, title, message, type, hqCode, id));
+        queue.offer(new NotificationData(context, title, message, type, hqCode, monthYear, id));
         if (!isShowing) {
             showNextDialog();
         }
@@ -84,8 +81,8 @@ public class NotificationDialog {
             data.context.startActivity(intent);
             ((Activity) data.context).finish();
             new Handler().postDelayed(NotificationDialog::dismissDialog, 2000);
-        } else if (data.type.matches("(?i)DR|CH|ST|UL|HOS|CIP|GIF|TM|WT|PR|MI|SUB|SE|HW|OTR|FSD|AMS")) {
-            new SyncManager(data.context, data.hqCode, data.type, data.id).sync();
+        } else if (data.type.matches("(?i)DR|CH|ST|UL|HOS|CIP|GIF|TM|WT|PR|MI|SUB|SE|HW|OTR|FSD|AMS|DCR|TP|STP|TPD|LE")) {
+            new SyncManager(data.context, data.hqCode, data.type, data.monthYear, data.id).sync();
         } else {
             new Handler().postDelayed(NotificationDialog::dismissDialog, 3000);
         }
@@ -106,15 +103,16 @@ public class NotificationDialog {
 
     private static class NotificationData {
         Context context;
-        String title, message, type, hqCode;
+        String title, message, type, hqCode, monthYear;
         long id;
 
-        NotificationData(Context context, String title, String message, String type, String hqCode, long id) {
+        NotificationData(Context context, String title, String message, String type, String hqCode, String monthYear, long id) {
             this.context = context;
             this.title = title;
             this.message = message;
             this.type = type;
             this.hqCode = hqCode;
+            this.monthYear = monthYear;
             this.id = id;
         }
     }

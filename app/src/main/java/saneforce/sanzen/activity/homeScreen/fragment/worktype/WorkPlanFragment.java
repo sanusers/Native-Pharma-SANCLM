@@ -1748,7 +1748,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void refresh(boolean isToSetupWorkPlan) {
+    public void refresh(boolean isToSetupWorkPlan) {
         try {
             JSONObject refreshJsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
             refreshJsonObject.put("devDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
