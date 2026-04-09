@@ -386,8 +386,6 @@ public class LoginActivity extends AppCompatActivity {
         SharedPref.clearSP(LoginActivity.this);
         SharedPref.saveLoginState(getApplicationContext(), false);
         SharedPref.saveSettingState(getApplicationContext(), false);
-        SharedPref.setTodayPopupShown(getApplicationContext(),LocalDate.now().toString());
-
         SharedPref.setDataCleared(this, true);
 
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));

@@ -314,8 +314,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
                         String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
 
-                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && !lastShownDate.isEmpty() && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
+                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") /*&& !lastShownDate.isEmpty()*/ && !today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
                             checkAndShowDoctorPopup();
+                        }else{
+                            Log.d("run", "checkAndShowDoctorPopup: "+"condition Skipped (run)");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -446,52 +448,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-//    private void playVideo(String url) {
-//        binding.videoView.setVideoURI(Uri.parse(url));
-//        binding.videoView.setVisibility(VideoView.VISIBLE);
-//        binding.videoView.start();
-//    }
-
-//    @Override
-//    public void onUserLeaveHint() {
-//        super.onUserLeaveHint();
-////        enterPipMode();
-//        if (youTubePlayer != null) {
-//            youTubePlayer.pause();
-//            isPlaying = false;
-//            youTubePlayer = null;
-//        }
-////        binding.youtubePlayerView.release();
-////        getLifecycle().removeObserver(binding.youtubePlayerView);
-//        binding.floatingPlayer.setVisibility(View.GONE);
-//    }
-
-//    private void enterPipMode() {
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            Rational aspectRatio = new Rational(16, 9);
-//            PictureInPictureParams params = new PictureInPictureParams.Builder()
-//                    .setAspectRatio(aspectRatio)
-//                    .build();
-//            enterPictureInPictureMode(params);
-//        } else {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                enterPictureInPictureMode();
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
-//        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
-//
-////        if (isInPictureInPictureMode) {
-////            // Hide extra dashboard UI if needed
-////            mediaController.hide();
-////        } else {
-////            // Restore full UI when back
-////            mediaController.show();
-////        }
-//    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -712,9 +668,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int currentTimeInt = Integer.parseInt(time.replace(":", ""));
                 int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
 
-                if (!today.equals(lastShownDate)/* && currentTimeInt >= remainderTimeInt*/) {
+                if (!today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
                     showNotVisitedDoctorsPopup(tpDoctorCodes, tpChemistCodes, forceImmediate, doctorMasArray);
                     SharedPref.setTodayPopupShown(this, today);
+                    Log.d("onCreate", "checkAndShowDoctorPopup: "+"Popup date seted"+today);
+                }else{
+                    Log.d("onCreate", "checkAndShowDoctorPopup: "+"condition Skipped -- OnCreate");
+                    Log.d("onCreate", "checkAndShowDoctorPopup: "+lastShownDate);
                 }
 
             } catch (Exception e) {
@@ -1040,6 +1000,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
         if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
+            Log.d("onCreate if", "onCreate: "+"Entered onCreate if");
             checkAndShowDoctorPopup();
         }
     }
