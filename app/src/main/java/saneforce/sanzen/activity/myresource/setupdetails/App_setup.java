@@ -58,18 +58,28 @@ public class App_setup extends Fragment {
         boolean isGpsEnabled = App_setup.isLocationEnabled(requireContext());
 
         callstatus_model model1 = new callstatus_model();
-        model1.setCustName(SharedPref.LOCATION_TRACK);
+        model1.setCustName("Location");
         model1.setChkflk("0");
         model1.setSpKey(SharedPref.LOCATION_TRACK);
         model1.setPromoted(isGpsEnabled);
         list.add(model1);
 
-        String taggedDcr = SharedPref.getTaggedDcrCustomers(requireContext());
+        String taggedDcr = SharedPref.getGeoChk(requireContext());
         callstatus_model model2 = new callstatus_model();
-        model2.setCustName(SharedPref.TAGGED_DCR_CUSTOMERS);
+        model2.setCustName("Near Me");
         model2.setChkflk("0");
-        model2.setSpKey(SharedPref.TAGGED_DCR_CUSTOMERS);
-        model2.setPromoted(taggedDcr.equals("1"));
+        model2.setSpKey(SharedPref.GEO_CHK);
+        model2.setPromoted(taggedDcr.equals("0"));
         list.add(model2);
+
+        String deviceLock = SharedPref.getDeviceIdNeed(requireContext());
+        callstatus_model model3 = new callstatus_model();
+        model3.setCustName("Device Lock");
+        model3.setChkflk("0");
+        model3.setSpKey(SharedPref.DEVICE_ID_NEED);
+        model3.setPromoted(deviceLock.equals("0"));
+        list.add(model3);
+
+
     }
 }

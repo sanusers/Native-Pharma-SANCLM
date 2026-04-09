@@ -4,8 +4,12 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="App Setup Screen"/>
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_5sdp"/>
+    <!--    android:divider="@color/gray_45"-->
+    <!--    android:dividerHeight="1dp"-->
+    <!--    android:padding="@dimen/_10sdp"-->
 </FrameLayout>

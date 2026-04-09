@@ -34,6 +34,17 @@ public class callstatus_model {
     public void setSpKey(String spKey) {
         this.spKey = spKey;
     }
+
+    private String geoStatus ;
+
+
+    public String getGeoStatus() {
+        return geoStatus;
+    }
+
+    public void setGeoStatus(String geoStatus) {
+        this.geoStatus = geoStatus;
+    }
     public callstatus_model() {
     }
 
