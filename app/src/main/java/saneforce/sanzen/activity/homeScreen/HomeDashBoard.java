@@ -159,6 +159,7 @@ import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.databinding.HomeNavigationFooterBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
@@ -313,7 +314,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
                         String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
 
-                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") /*&& !lastShownDate.isEmpty()*/ && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
+                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && !lastShownDate.isEmpty() && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
                             checkAndShowDoctorPopup();
                         }
                     } catch (Exception e) {
@@ -711,7 +712,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int currentTimeInt = Integer.parseInt(time.replace(":", ""));
                 int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
 
-                if (!today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
+                if (!today.equals(lastShownDate)/* && currentTimeInt >= remainderTimeInt*/) {
                     showNotVisitedDoctorsPopup(tpDoctorCodes, tpChemistCodes, forceImmediate, doctorMasArray);
                     SharedPref.setTodayPopupShown(this, today);
                 }
@@ -2355,7 +2356,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         switch (view.getId()) {
             case R.id.rl_calender_syn:
                 binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
-                callAPIDateSync();
+                callAPICallSync();
                 break;
 
             case R.id.rl_date_layoout:
@@ -2516,6 +2517,56 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
     }
 
+    private void callAPICallSync() {
+        if (UtilityClass.isNetworkAvailable(this)) {
+//        progressDialog = CommonUtilsMethods.createProgressDialog(this);
+            JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
+            try {
+                jj.put("tableName", "gethome");
+                jj.put("sfcode", SharedPref.getSfCode(this));
+                jj.put("division_code", SharedPref.getDivisionCode(this));
+                jj.put("Rsf", SharedPref.getHqCode(this));
+                Log.d("object", jj.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "home");
+            Call<JsonElement> callSyncDate = apiInterface.getJSONElement(SharedPref.getCallApiUrl(HomeDashBoard.this), mapString, jj.toString());
+
+            callSyncDate.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+                            assert jsonElement != null;
+                            JsonArray jsonArray = jsonElement.getAsJsonArray();
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
+                            CallDataRestClass.resetcallValues(HomeDashBoard.this);
+                            callAPIDateSync();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
+                    binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            CommonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void callAPIDateSync() {
         if (UtilityClass.isNetworkAvailable(this)) {
 //        progressDialog = CommonUtilsMethods.createProgressDialog(this);
@@ -2547,7 +2598,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
 //                        binding.tabLayout.setVisibility(View.VISIBLE);
 //                        binding.viewPager.setVisibility(View.VISIBLE);
-                            commonUtilsMethods.showToastMessage(HomeDashBoard.this, HomeDashBoard.this.getString(R.string.synced_successfully));
+                            CommonUtilsMethods.showToastMessage(HomeDashBoard.this, HomeDashBoard.this.getString(R.string.synced_successfully));
 //                        progressDialog.dismiss();
                             setUpCalendar();
                         } catch (Exception ignored) {
@@ -2560,12 +2611,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 //                progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
                     binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
                 }
             });
         } else {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            CommonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
             binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
         }
     }
