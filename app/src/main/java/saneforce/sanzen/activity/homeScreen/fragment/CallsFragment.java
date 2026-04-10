@@ -369,6 +369,8 @@ public class CallsFragment extends Fragment {
                     CommonAlertBox.ApprovalAlert(requireActivity());
                 } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                     CommonAlertBox.TpAlert(requireActivity());
+                } else if (WorkPlanFragment.isFromTP) {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                 } else {
                     JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
