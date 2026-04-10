@@ -1094,5 +1094,6 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="dcr_setup">Dcr Setup</string>
     <string name="call_setup">Call Setup</string>
     <string name="tour_plan_setup">Tour Plan Setup</string>
+    <string name="slides_setup">Slides Setup</string>
 
 </resources>

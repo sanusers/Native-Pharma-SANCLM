@@ -62,22 +62,52 @@ public class Tour_plan_setup extends Fragment {
         model2.setPromoted(tpBasedMandatory.equals("0"));
         list.add(model2);
 
-        String tpBasedDcr = SharedPref.getTpbasedDcr(requireContext());
-        callstatus_model model3 = new callstatus_model();
-        //  model.setCustName(SharedPref.GEOTAG_NEED);
-        model3.setCustName("TP Based DCR");
-        model3.setChkflk("0");
-        model3.setSpKey(SharedPref.TPBASED_DCR);
-        model3.setPromoted(tpBasedDcr.equals("0"));
-        list.add(model3);
+//        String tpBasedDcr = SharedPref.getTpbasedDcr(requireContext());
+//        callstatus_model model3 = new callstatus_model();
+//        //  model.setCustName(SharedPref.GEOTAG_NEED);
+//        model3.setCustName("TP Based DCR");
+//        model3.setChkflk("0");
+//        model3.setSpKey(SharedPref.TPBASED_DCR);
+//        model3.setPromoted(tpBasedDcr.equals("0"));
+//        list.add(model3);
 
         String tpDeviation = SharedPref.getTpdcrDeviation(requireContext());
-        callstatus_model model4 = new callstatus_model();
+        callstatus_model model3 = new callstatus_model();
         //  model.setCustName(SharedPref.GEOTAG_NEED);
-        model4.setCustName("TP DCR Deviation");
-        model4.setChkflk("0");
-        model4.setSpKey(SharedPref.TPDCR_DEVIATION);
-        model4.setPromoted(tpDeviation.equals("0"));
+        model3.setCustName("TP DCR Deviation");
+        model3.setChkflk("0");
+        model3.setSpKey(SharedPref.TPDCR_DEVIATION);
+        model3.setPromoted(tpDeviation.equals("0"));
+        list.add(model3);
+
+
+        callstatus_model model4 = new callstatus_model();
+        model4.setCustName("TP Start & End  Date");
+        model4.setChkflk("2");
+        model4.setSpKey(SharedPref.TP_START_DATE);
+        model4.setTown_code(SharedPref.getTpStartDate(requireContext())); // From date
+        model4.setTown_name(SharedPref.getTpEndDate(requireContext()));   // To date
         list.add(model4);
+
+        String jwSelectionNeed = SharedPref.getJwAutoSelectionNeed(requireContext());
+        callstatus_model model5 = new callstatus_model();
+        model5.setCustName("TP JointWork Selection");
+        model5.setChkflk("0");
+        model5.setSpKey(SharedPref.JW_AUTO_SELECTION_NEED);
+        model5.setPromoted(jwSelectionNeed.equals("1"));
+        list.add(model5);
+
+        String holidayEdit = SharedPref.getEditHoliday(requireContext());
+        callstatus_model model8 = new callstatus_model();
+        model8.setCustName("Holiday Edit");
+        model8.setChkflk("0");
+        model8.setSpKey(SharedPref.EDIT_HOLIDAY);
+        model8.setPromoted(holidayEdit.equals("0"));
+        list.add(model8);
+
+
+
+
+
     }
 }

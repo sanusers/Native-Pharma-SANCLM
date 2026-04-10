@@ -37,32 +37,75 @@ public class setupDetailsAdapter extends RecyclerView.Adapter<setupDetailsAdapte
         return new ViewHolder(view);
     }
 
+    //    @Override
+//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//        final callstatus_model app_adapt = listeduser.get(position);
+//
+//        holder.CustName.setText(app_adapt.getCustName());
+//
+//        if (app_adapt.getChkflk().equals("0")) {
+//            holder.cs_line.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.cs_line.setVisibility(View.GONE);
+//        }
+//        holder.img_promoted.setClickable(false);
+//        holder.img_promoted.setFocusable(false);
+//        holder.img_promoted.setChecked(app_adapt.isPromoted());
+//
+//        if (app_adapt.isPromoted()) {
+//            holder.img_promoted.setTrackTintList(
+//                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.Green_45)));
+//            holder.img_promoted.setThumbTintList(
+//                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
+//        } else {
+//            holder.img_promoted.setTrackTintList(
+//                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_grey)));
+//            holder.img_promoted.setThumbTintList(
+//                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
+//        }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final callstatus_model app_adapt = listeduser.get(position);
 
         holder.CustName.setText(app_adapt.getCustName());
 
-        if (app_adapt.getChkflk().equals("0")) {
+        if (app_adapt.getChkflk().equals("0") || app_adapt.getChkflk().equals("2")) {
             holder.cs_line.setVisibility(View.VISIBLE);
         } else {
             holder.cs_line.setVisibility(View.GONE);
         }
-        holder.img_promoted.setClickable(false);
-        holder.img_promoted.setFocusable(false);
-        holder.img_promoted.setChecked(app_adapt.isPromoted());
+//        if (app_adapt.getChkflk().equals("0")) {
+//            holder.cs_line.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.cs_line.setVisibility(View.GONE);
+//        }
 
-        if (app_adapt.isPromoted()) {
-            holder.img_promoted.setTrackTintList(
-                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.Green_45)));
-            holder.img_promoted.setThumbTintList(
-                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
+        if (app_adapt.getChkflk().equals("2")) {
+            holder.img_promoted.setVisibility(View.INVISIBLE); // GONE இல்லாம INVISIBLE
+            holder.tv_date_range.setVisibility(View.VISIBLE);
+            holder.tv_date_range.setText("From "+  " " + app_adapt.getTown_code() +  "  To "+ " " + app_adapt.getTown_name());
         } else {
-            holder.img_promoted.setTrackTintList(
-                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_grey)));
-            holder.img_promoted.setThumbTintList(
-                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
+            // Normal toggle row
+            holder.img_promoted.setVisibility(View.VISIBLE);
+            holder.tv_date_range.setVisibility(View.GONE);
+
+            holder.img_promoted.setClickable(false);
+            holder.img_promoted.setFocusable(false);
+            holder.img_promoted.setChecked(app_adapt.isPromoted());
+
+            if (app_adapt.isPromoted()) {
+                holder.img_promoted.setTrackTintList(
+                        ColorStateList.valueOf(ContextCompat.getColor(context, R.color.Green_45)));
+                holder.img_promoted.setThumbTintList(
+                        ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
+            } else {
+                holder.img_promoted.setTrackTintList(
+                        ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_grey)));
+                holder.img_promoted.setThumbTintList(
+                        ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
+            }
         }
+
 //        holder.img_promoted.setOnCheckedChangeListener(null);
 //        holder.img_promoted.setChecked(app_adapt.isPromoted());
 //
@@ -82,6 +125,7 @@ public class setupDetailsAdapter extends RecyclerView.Adapter<setupDetailsAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView CustName;
+        TextView tv_date_range;
         SwitchCompat img_promoted;
         LinearLayout cs_line;
 
@@ -90,6 +134,7 @@ public class setupDetailsAdapter extends RecyclerView.Adapter<setupDetailsAdapte
             CustName = itemView.findViewById(R.id.CustName);
             img_promoted = itemView.findViewById(R.id.img_promoted);
             cs_line = itemView.findViewById(R.id.cs_line);
+            tv_date_range = itemView.findViewById(R.id.tv_date_range);
         }
     }
 }

@@ -45,6 +45,16 @@
             android:thumb="@drawable/custom_thumb"
             app:track="@drawable/custom_switch_bg"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
+        <TextView
+            android:id="@+id/tv_date_range"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/satoshi_medium"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp"
+            android:visibility="gone" />
+
 
     </LinearLayout>
 

@@ -37,7 +37,8 @@ public class SetupDetails extends AppCompatActivity {
         Dcr_setup dcrSetup = new Dcr_setup();
         Call_setup callSetup = new Call_setup();
         Tour_plan_setup tourPlanSetup = new Tour_plan_setup();
-
+        STP_setup stpSetup = new STP_setup();
+        Slides_setup slidesSetup = new Slides_setup();
 
         setupdetails.tabLayout.setupWithViewPager(setupdetails.viewPager);
         formsviewpager = new FormsViewpager(getSupportFragmentManager(), 0);
@@ -47,6 +48,9 @@ public class SetupDetails extends AppCompatActivity {
         formsviewpager.addFragment(dcrSetup, getString(R.string.dcr_setup));
         formsviewpager.addFragment(callSetup, getString(R.string.call_setup));
         formsviewpager.addFragment(tourPlanSetup, getString(R.string.tour_plan_setup));
+        formsviewpager.addFragment(stpSetup,getString(R.string.stp_setup));
+        formsviewpager.addFragment(slidesSetup,getString(R.string.slides_setup));
+
 
 
         setupdetails.viewPager.setAdapter(formsviewpager);
