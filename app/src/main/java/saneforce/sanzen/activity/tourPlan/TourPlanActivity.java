@@ -3385,7 +3385,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
                 try {
                     boolean isFWFound = false, isNFWFound = false, isWOFound = false, isHoFound = false, isLFound = false;
-                    oneBuildModelClass.getSessionList().removeIf(session -> (session.getWorkType().getFWFlg().isEmpty() || session.getWorkType().getCode().isEmpty() || session.getWorkType().getCode().equals("0")));
+//                    oneBuildModelClass.getSessionList().removeIf(session -> (session.getWorkType().getFWFlg().isEmpty() || session.getWorkType().getCode().isEmpty() || session.getWorkType().getCode().equals("0")));
                     for (OneBuildModelClass.SessionList sessionList : oneBuildModelClass.getSessionList()) {
                         String fwFlag = sessionList.getWorkType().getFWFlg();
                         if (fwFlag.equalsIgnoreCase("F")) {

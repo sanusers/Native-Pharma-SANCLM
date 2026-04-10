@@ -558,7 +558,6 @@ public class SettingsActivity extends AppCompatActivity {
 //                                        String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
 //                                        String urlData = baseWebUrl + phpPathUrl;
 //                                        String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
-//
 //                                        SharedPref.setTagImageUrl(getApplicationContext(), baseWebUrl);
 
                                         String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
