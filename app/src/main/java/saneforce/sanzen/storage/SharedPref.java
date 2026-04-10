@@ -549,6 +549,7 @@ public class SharedPref {
     public static final String DET_DR_CAP = "Detailing_Dr_Caption";
     public static final String DET_ULDR_CAP = "Detailing_UnlstDr_Caption";
     public static final String NightStay = "NightStay";
+
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
@@ -2232,7 +2233,7 @@ public class SharedPref {
     public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(BASE_URL, baseUrl);
+        editor.putString(BASE_URL, baseUrl.replace("https://", "").replace("http://", ""));
         editor.putString(LICENSE_KEY, licenseKey);
         editor.putString(BASE_WEB_URL, baseWebUrl);
         editor.putString(PHP_PATH_URL, PhpPathUrl);
@@ -3536,7 +3537,7 @@ public static void addVisitedDoctor(Context context, String custCode) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_ULDR_CAP,"");
     }
     public static String getNightStay(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(NightStay,"");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NightStay,"");
     }
 
 }

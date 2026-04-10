@@ -1258,7 +1258,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    private static void setupLeftViewPager(Context context, FragmentManager fragmentManager) {
+    private static void setupLeftViewPager(FragmentManager fragmentManager) {
         leftViewPagerAdapter = new TabLayoutAdapter(fragmentManager);
         leftViewPagerAdapter.add(new WorkPlanFragment(), homeDashBoardActivity.getString(R.string.work_plan));
         leftViewPagerAdapter.add(new CallsFragment(), homeDashBoardActivity.getString(R.string.calls));
@@ -1974,7 +1974,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getActivityCap(this))) {
-            startActivity(new Intent(HomeDashBoard.this, DynamicActivity.class));
+            if (WorkPlanFragment.mFwFlg1.isEmpty()  || WorkPlanFragment.binding.txtSave.isEnabled()) {
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_work_plan));
+            } else {
+                startActivity(new Intent(HomeDashBoard.this, DynamicActivity.class));
+            }
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.my_resource))) {
@@ -2195,7 +2199,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     if (HomeDashBoard.selectedDate != null && !SharedPref.getLastCallDate(context).equalsIgnoreCase(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)))) {
                         SharedPref.setLastCallDate(context, "");
                     }
-                    setupLeftViewPager(context, fragmentManager);
+                    setupLeftViewPager(fragmentManager);
                     if (SharedPref.getQuizNeed(context).equalsIgnoreCase("0") && SharedPref.getQuizNeedMandt(context).equalsIgnoreCase("0")) {
                         activity.setUpQuiz();
                     }
@@ -2211,7 +2215,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 workingDate = "";
                 binding.viewPagerProgress.setVisibility(View.GONE);
                 if (shouldShowCalender) {
-                    setupLeftViewPager(context, fragmentManager);
+                    setupLeftViewPager(fragmentManager);
                 } else {
                     isDateSelectionClicked = true;
                 }
@@ -3956,6 +3960,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         if (fragment instanceof WorkPlanFragment) {
                             ((WorkPlanFragment) fragment).refresh(true);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (type != null && type.equalsIgnoreCase("SE")) {
+                    try {
+                        startActivity(new Intent(HomeDashBoard.this, HomeDashBoard.class));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (type != null && type.equalsIgnoreCase("DCR")) {
+                    try {
+                        setupLeftViewPager(fragmentManager);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

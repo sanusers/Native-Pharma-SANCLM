@@ -1565,8 +1565,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtSave.setTextColor(getResources().getColor(R.color.black));
                             binding.txtSave.setEnabled(true);
                             binding.cardPlan2.setVisibility(View.VISIBLE);
+                            binding.txtCluster2.setVisibility(View.VISIBLE);
                             if (SharedPref.getWrkAreaName(requireContext()).isEmpty()) {
-                                binding.txtCluster2.setVisibility(View.VISIBLE);
                                 binding.txtCluster2.setHint(getString(R.string.select) + " " + SharedPref.getClusterCap(requireContext()));
                             } else {
                                 binding.txtCluster2.setHint(getString(R.string.select) + " " + SharedPref.getWrkAreaName(requireContext()));
