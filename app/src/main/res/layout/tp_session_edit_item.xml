@@ -1076,6 +1076,33 @@
 
             </androidx.cardview.widget.CardView>
 
+            <FrameLayout
+                android:id="@+id/nav_progress"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:indeterminateTint="@color/text_dark"
+                    android:layout_gravity="center"
+                    android:visibility="visible" />
+
+                <View
+                    android:id="@+id/freezeOverlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#80000000"
+                    android:elevation="@dimen/_5sdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="visible" />
+
+            </FrameLayout>
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

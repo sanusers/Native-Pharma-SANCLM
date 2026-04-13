@@ -619,6 +619,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 for (int i = 0; i < tpArray.length(); i++) {
                     JSONObject sessionObj = tpArray.getJSONObject(i);
                     if (sessionObj.optString("FWFlg", "").equalsIgnoreCase("F")) {
+                        boolean isFromTP = sessionObj.optBoolean("isFromTP", false);
+                        if (isFromTP) return;
                         targetSession = sessionObj;
                         break;
                     }

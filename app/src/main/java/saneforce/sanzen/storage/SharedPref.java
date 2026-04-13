@@ -549,6 +549,8 @@ public class SharedPref {
     public static final String DET_DR_CAP = "Detailing_Dr_Caption";
     public static final String DET_ULDR_CAP = "Detailing_UnlstDr_Caption";
     public static final String NightStay = "NightStay";
+    public static final String NS_FOR_NFW_NEED = "NS_For_NFW_Need";
+    public static final String NS_ALL_CLUSTER_NEED = "NS_All_Cluster_Need";
 
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
@@ -954,6 +956,8 @@ public class SharedPref {
             editor.putString(DET_DR_CAP,jsonObject.optString("Detailing_Dr_Caption"));
             editor.putString(DET_ULDR_CAP,jsonObject.optString("Detailing_UnlstDr_Caption"));
             editor.putString(NightStay,jsonObject.optString("NightStay"));
+            editor.putString(NS_FOR_NFW_NEED,jsonObject.optString("NS_For_NFW_Need"));
+            editor.putString(NS_ALL_CLUSTER_NEED,jsonObject.optString("NS_All_Cluster_Need"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3533,11 +3537,21 @@ public static void addVisitedDoctor(Context context, String custCode) {
     public static String getDetDrCap(Context context){
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_DR_CAP,"");
     }
+
     public static String getDetUldrCap(Context context){
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_ULDR_CAP,"");
     }
+
     public static String getNightStay(Context context){
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NightStay,"");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NightStay,"1");
+    }
+
+    public static String getNsForNfwNeed(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_FOR_NFW_NEED,"1");
+    }
+
+    public static String getNsAllClusterNeed(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_ALL_CLUSTER_NEED,"1");
     }
 
 }
