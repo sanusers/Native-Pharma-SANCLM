@@ -1555,7 +1555,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
 
         if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
-            binding.planOverview.setVisibility(View.VISIBLE);
+//            binding.planOverview.setVisibility(View.VISIBLE);
             binding.planOverview.setOnClickListener(view -> {
                 Intent intent = new Intent(TourPlanActivity.this, TourPlanOverviewActivity.class);
                 try {
@@ -1571,8 +1571,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
                 startActivity(intent);
             });
-        } else {
-            binding.planOverview.setVisibility(View.GONE);
+//        } else {
+//            binding.planOverview.setVisibility(View.GONE);
         }
     }
 

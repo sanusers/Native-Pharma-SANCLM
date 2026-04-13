@@ -132,7 +132,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
         viewPagerRecyclerview.setLayoutParams(params);
         GridLayoutManager layoutManager = new GridLayoutManager(context, 4);
         viewPagerRecyclerview.setLayoutManager(layoutManager);
-        viewPagerRecyclerview.setHasFixedSize(true);
+//        viewPagerRecyclerview.setHasFixedSize(true);
         SlidePopupAdapter adapter = new SlidePopupAdapter(context, products);
         viewPagerRecyclerview.setAdapter(adapter);
         RecyclerView rvSlides = popupView.findViewById(R.id.view_pager);
