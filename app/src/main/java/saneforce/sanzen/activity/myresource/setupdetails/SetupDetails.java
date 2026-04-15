@@ -13,6 +13,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.forms.weekoff.FormsViewpager;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.databinding.ActivitySetupdetailsBinding;
+import saneforce.sanzen.storage.SharedPref;
 
 public class SetupDetails extends AppCompatActivity {
     FormsViewpager formsviewpager;
@@ -47,7 +48,11 @@ public class SetupDetails extends AppCompatActivity {
         formsviewpager.addFragment(appSetup, getString(R.string.app_setup));
         formsviewpager.addFragment(dcrSetup, getString(R.string.dcr_setup));
         formsviewpager.addFragment(callSetup, getString(R.string.call_setup));
-        formsviewpager.addFragment(tourPlanSetup, getString(R.string.tour_plan_setup));
+       // formsviewpager.addFragment(tourPlanSetup, getString(R.string.tour_plan_setup));
+        String tourPlan = SharedPref.getTpNeed(this);
+        if (tourPlan.equals("0")) {
+            formsviewpager.addFragment(tourPlanSetup, getString(R.string.tour_plan_setup));
+        }
         formsviewpager.addFragment(stpSetup,getString(R.string.stp_setup));
         formsviewpager.addFragment(slidesSetup,getString(R.string.slides_setup));
 

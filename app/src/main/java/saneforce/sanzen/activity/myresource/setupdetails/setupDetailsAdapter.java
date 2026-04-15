@@ -80,15 +80,33 @@ public class setupDetailsAdapter extends RecyclerView.Adapter<setupDetailsAdapte
 //            holder.cs_line.setVisibility(View.GONE);
 //        }
 
+//        if (app_adapt.getChkflk().equals("2")) {
+//            holder.img_promoted.setVisibility(View.INVISIBLE);
+//            holder.tv_date_range.setVisibility(View.VISIBLE);
+//            holder.tv_date_range.setText("From "+  " " + app_adapt.getTown_code() +  "  To "+ " " + app_adapt.getTown_name());
+//            holder.tv_date_range.setText( app_adapt.getMnth() + " Meters");
+//           holder.tv_date_range.setText( app_adapt.getMonth_name() + " days");
         if (app_adapt.getChkflk().equals("2")) {
-            holder.img_promoted.setVisibility(View.INVISIBLE); // GONE இல்லாம INVISIBLE
+            holder.img_promoted.setVisibility(View.INVISIBLE);
             holder.tv_date_range.setVisibility(View.VISIBLE);
-            holder.tv_date_range.setText("From "+  " " + app_adapt.getTown_code() +  "  To "+ " " + app_adapt.getTown_name());
+
+            String spKey = app_adapt.getSpKey();
+
+            if (spKey.equals(SharedPref.DIS_RAD)) {
+                holder.tv_date_range.setText(app_adapt.getMnth() + " Meters");
+            } else if (spKey.equals(SharedPref.SEQ_DCR_LOCK_DAYS)) {
+                holder.tv_date_range.setText(app_adapt.getMonth_name() + " days");
+            } else if (spKey.equals(SharedPref.RESET_PASSWORD_DAYS)) {
+                holder.tv_date_range.setText(app_adapt.getWorkType() + " days");
+            } else if (spKey.equals(SharedPref.QUIZ_HEADING)){
+                holder.tv_date_range.setText(app_adapt.getDcrname());
+        } else {
+                holder.tv_date_range.setText("From " + app_adapt.getTown_code() + "  To " + app_adapt.getTown_name());
+            }
         } else {
             // Normal toggle row
             holder.img_promoted.setVisibility(View.VISIBLE);
             holder.tv_date_range.setVisibility(View.GONE);
-
             holder.img_promoted.setClickable(false);
             holder.img_promoted.setFocusable(false);
             holder.img_promoted.setChecked(app_adapt.isPromoted());

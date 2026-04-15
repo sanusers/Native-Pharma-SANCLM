@@ -54,5 +54,13 @@ public class Dcr_setup extends Fragment {
         model1.setPromoted(weekOff.equals("1"));
         list.add(model1);
 
+        String jwSelectionNeed = SharedPref.getJwAutoSelectionNeed(requireContext());
+        callstatus_model model5 = new callstatus_model();
+        model5.setCustName(" JointWork Auto Selection Need");
+        model5.setChkflk("0");
+        model5.setSpKey(SharedPref.JW_AUTO_SELECTION_NEED);
+        model5.setPromoted(jwSelectionNeed.equals("0"));
+        list.add(model5);
+
     }
     }
