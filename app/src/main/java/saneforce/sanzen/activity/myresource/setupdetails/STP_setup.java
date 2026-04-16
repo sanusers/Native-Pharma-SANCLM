@@ -32,34 +32,72 @@ public class STP_setup extends Fragment {
         recyclerView.setAdapter(adapter);
         return view;
     }
+
     private void loadFromSharedPreferences() {
         list.clear();
-        String stpNeed = SharedPref.getStpNeed(requireContext());
-        callstatus_model model = new callstatus_model();
-        //  model.setCustName(SharedPref.GEOTAG_NEED);
-        model.setCustName("STP Need");
-        model.setChkflk("0");
-        model.setSpKey(SharedPref.STP_NEED);
-        model.setPromoted(stpNeed.equals("0"));
-        list.add(model);
 
-        String stpApprovalNeed = SharedPref.getStpApprNeed(requireContext());
-        callstatus_model model1 = new callstatus_model();
-        //  model.setCustName(SharedPref.GEOTAG_NEED);
-        model1.setCustName("STP Approval Need");
-        model1.setChkflk("0");
-        model1.setSpKey(SharedPref.STP_APPR_NEED);
-        model1.setPromoted(stpApprovalNeed.equals("0"));
-        list.add(model1);
-
-        String stpMtp = SharedPref.getStpApprNeed(requireContext());
+        String stpMtp = SharedPref.getStpBasedMtp(requireContext());
         callstatus_model model2 = new callstatus_model();
-        //  model.setCustName(SharedPref.GEOTAG_NEED);
         model2.setCustName("STP Based MTP");
         model2.setChkflk("0");
         model2.setSpKey(SharedPref.STP_BASED_MTP);
         model2.setPromoted(stpMtp.equals("0"));
         list.add(model2);
 
+
+        String stp = SharedPref.getStpBasedDcr(requireContext());
+        callstatus_model stpbaseddcr = new callstatus_model();
+        stpbaseddcr.setCustName("STP Based Dcr");
+        stpbaseddcr.setChkflk("0");
+        stpbaseddcr.setSpKey(SharedPref.STP_BASED_DCR);
+        stpbaseddcr.setPromoted(stp.equals("0"));
+        list.add(stpbaseddcr);
+
+
+        String stptype = SharedPref.getStpType(requireContext());
+        String displayTxt = "";
+        if (stptype != null && stptype.equals("0")) {
+            displayTxt = "Divisionwise";
+        } else {
+            displayTxt = "Userwise";
+        }
+        callstatus_model type = new callstatus_model();
+        type.setCustName("STP Type");
+        type.setChkflk("2");
+        type.setSpKey("GENERIC_NUM");
+        type.setDcr_flag(displayTxt);
+
+        list.add(type);
+
     }
 }
+//        private void loadFromSharedPreferences() {
+//        list.clear();
+//        String stpNeed = SharedPref.getStpNeed(requireContext());
+//        callstatus_model model = new callstatus_model();
+//        //  model.setCustName(SharedPref.GEOTAG_NEED);
+//        model.setCustName("STP Need");
+//        model.setChkflk("0");
+//        model.setSpKey(SharedPref.STP_NEED);
+//        model.setPromoted(stpNeed.equals("0"));
+//        list.add(model);
+//
+//        String stpApprovalNeed = SharedPref.getStpApprNeed(requireContext());
+//        callstatus_model model1 = new callstatus_model();
+//        //  model.setCustName(SharedPref.GEOTAG_NEED);
+//        model1.setCustName("STP Approval Need");
+//        model1.setChkflk("0");
+//        model1.setSpKey(SharedPref.STP_APPR_NEED);
+//        model1.setPromoted(stpApprovalNeed.equals("0"));
+//        list.add(model1);
+//
+//        String stpMtp = SharedPref.getStpBasedMtp(requireContext());
+//        callstatus_model model2 = new callstatus_model();
+//        model2.setCustName("STP Based MTP");
+//        model2.setChkflk("0");
+//        model2.setSpKey(SharedPref.STP_BASED_MTP);
+//        model2.setPromoted(stpMtp.equals("0"));
+//        list.add(model2);
+//
+//    }
+//}

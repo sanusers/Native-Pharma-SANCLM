@@ -91,20 +91,22 @@ public class setupDetailsAdapter extends RecyclerView.Adapter<setupDetailsAdapte
             holder.tv_date_range.setVisibility(View.VISIBLE);
 
             String spKey = app_adapt.getSpKey();
-
-            if (spKey.equals(SharedPref.DIS_RAD)) {
+            if (spKey.equals("GENERIC_NUM")) {
+                holder.tv_date_range.setText(app_adapt.getDcr_flag());
+            } else if (spKey.equals(SharedPref.DIS_RAD)) {
                 holder.tv_date_range.setText(app_adapt.getMnth() + " Meters");
             } else if (spKey.equals(SharedPref.SEQ_DCR_LOCK_DAYS)) {
                 holder.tv_date_range.setText(app_adapt.getMonth_name() + " days");
             } else if (spKey.equals(SharedPref.RESET_PASSWORD_DAYS)) {
                 holder.tv_date_range.setText(app_adapt.getWorkType() + " days");
-            } else if (spKey.equals(SharedPref.QUIZ_HEADING)){
+            } else if (spKey.equals(SharedPref.QUIZ_HEADING)) {
                 holder.tv_date_range.setText(app_adapt.getDcrname());
-        } else {
+
+            } else {
                 holder.tv_date_range.setText("From " + app_adapt.getTown_code() + "  To " + app_adapt.getTown_name());
             }
         } else {
-            // Normal toggle row
+
             holder.img_promoted.setVisibility(View.VISIBLE);
             holder.tv_date_range.setVisibility(View.GONE);
             holder.img_promoted.setClickable(false);

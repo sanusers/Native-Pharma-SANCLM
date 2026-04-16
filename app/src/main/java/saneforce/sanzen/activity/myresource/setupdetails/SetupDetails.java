@@ -40,6 +40,7 @@ public class SetupDetails extends AppCompatActivity {
         Tour_plan_setup tourPlanSetup = new Tour_plan_setup();
         STP_setup stpSetup = new STP_setup();
         Slides_setup slidesSetup = new Slides_setup();
+        Approval_setup approvalSetup = new Approval_setup();
 
         setupdetails.tabLayout.setupWithViewPager(setupdetails.viewPager);
         formsviewpager = new FormsViewpager(getSupportFragmentManager(), 0);
@@ -48,14 +49,17 @@ public class SetupDetails extends AppCompatActivity {
         formsviewpager.addFragment(appSetup, getString(R.string.app_setup));
         formsviewpager.addFragment(dcrSetup, getString(R.string.dcr_setup));
         formsviewpager.addFragment(callSetup, getString(R.string.call_setup));
-       // formsviewpager.addFragment(tourPlanSetup, getString(R.string.tour_plan_setup));
+        // formsviewpager.addFragment(tourPlanSetup, getString(R.string.tour_plan_setup));
         String tourPlan = SharedPref.getTpNeed(this);
         if (tourPlan.equals("0")) {
             formsviewpager.addFragment(tourPlanSetup, getString(R.string.tour_plan_setup));
         }
-        formsviewpager.addFragment(stpSetup,getString(R.string.stp_setup));
-        formsviewpager.addFragment(slidesSetup,getString(R.string.slides_setup));
-
+        String standardTourPlan = SharedPref.getStpNeed(this);
+        if (standardTourPlan.equals("0")) {
+            formsviewpager.addFragment(stpSetup, getString(R.string.stp_setup));
+        }
+        formsviewpager.addFragment(slidesSetup, getString(R.string.slides_setup));
+        formsviewpager.addFragment(approvalSetup, getString(R.string.approval_setup));
 
 
         setupdetails.viewPager.setAdapter(formsviewpager);

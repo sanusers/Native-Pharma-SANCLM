@@ -129,7 +129,7 @@ public class App_setup extends Fragment {
 
         String profile = SharedPref.getProfilingNeed(requireContext());
         callstatus_model drProfile = new callstatus_model();
-        drProfile.setCustName("Dr Profile");
+        drProfile.setCustName("Profile" + " ( "+ SharedPref.getDrCap(requireContext())+","+SharedPref.getChmCap(requireContext())+","+SharedPref.getStkCap(requireContext())+","+SharedPref.getUNLcap(requireContext())+ " )");
         drProfile.setChkflk("0");
         drProfile.setSpKey(SharedPref.PROFILING_NEED);
         drProfile.setPromoted(profile.equals("0"));
@@ -155,7 +155,7 @@ public class App_setup extends Fragment {
 
         String dayCheckIn = SharedPref.getSrtNd(requireContext());
         callstatus_model checkIn = new callstatus_model();
-        checkIn.setCustName("CheckIn");
+        checkIn.setCustName("Day CheckIn");
         checkIn.setChkflk("0");
         checkIn.setSpKey(SharedPref.SRT_ND);
         checkIn.setPromoted(dayCheckIn.equals("0"));
@@ -260,5 +260,20 @@ public class App_setup extends Fragment {
         list.add(model);
 
 
+        callstatus_model model4 = new callstatus_model();
+        model4.setCustName("TP Start & End  Date");
+        model4.setChkflk("2");
+        model4.setSpKey(SharedPref.TP_START_DATE);
+        model4.setTown_code(SharedPref.getTpStartDate(requireContext())); // From date
+        model4.setTown_name(SharedPref.getTpEndDate(requireContext()));   // To date
+        list.add(model4);
+
+        String stp = SharedPref.getStpNeed(requireContext());
+        callstatus_model stpneed = new callstatus_model();
+        stpneed.setCustName("Standard Tour Plan");
+        stpneed.setChkflk("0");
+        stpneed.setSpKey(SharedPref.STP_NEED);
+        stpneed.setPromoted(stp.equals("0"));
+        list.add(stpneed);
     }
 }
