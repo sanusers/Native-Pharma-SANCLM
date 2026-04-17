@@ -139,7 +139,7 @@ public class TourPlanActivity extends AppCompatActivity {
     OneBuildModelClass.SessionList.WorkType holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
 
     LocalDate localDate;
-    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", minDrCount = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "", remarksNeed = "", planAllDr = "", visitFrequencyNeed = "", minimumGap = "";
+    String drNeed = "", chemistNeed = "", jwNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", minDrCount = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "", remarksNeed = "", planAllDr = "", visitFrequencyNeed = "", minimumGap = "", tpOverviewNeed = "";
     private String drCap, chmCap, stkCap, unListDrCap, cipCap, hosCap, masters;
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable, isEdited;
@@ -1879,6 +1879,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 planAllDr = jsonObject.optString("Plan_All_Drs", "1");
                 visitFrequencyNeed = jsonObject.optString("visit_freq_need", "1");
                 minimumGap = jsonObject.optString("min_gap_need", "0");
+                tpOverviewNeed = jsonObject.optString("tp_overview_need", "1");
             }
 
             boolean tpSetupVisibile = false;

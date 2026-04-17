@@ -29,6 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="left"
             android:layout_gravity="center"
             android:fontFamily="@font/satoshi_regular"
             android:textColor="@color/black_45"

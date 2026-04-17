@@ -1067,4 +1067,97 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="you_are_staying_overnight">Vous passez la nuit sur place</string>
     <string name="night_stay_remarks">Remarques sur la nuitée</string>
     <string name="day_remarks">Remarques de la journée</string>
+
+    <string name="minimum_gap">Intervalle minimum</string>
+    <string name="minimum">Minimum</string>
+    <string name="maximum">Maximum</string>
+
+    <string name="setup_details">Détails de la configuration</string>
+    <string name="app_setup">Configuration de l\'application</string>
+    <string name="dcr_setup">Configuration de DCR</string>
+    <string name="call_setup">Configuration des appels</string>
+
+    <string name="tour_plan_setup">Configuration du plan de tournée</string>
+    <string name="slides_setup">Configuration des diapositives</string>
+    <string name="approval_setup">Configuration des approbations</string>
+    <string name="device_lock">Verrouillage de l\'appareil</string>
+    <string name="fencing_radius">Rayon de géorepérage</string>
+    <string name="geotag_event_capture">Capture d\'événements géolocalisés</string>
+    <string name="night_stay_for_non_field_work">Nuitée pour travail hors terrain</string>
+    <string name="night_stay_all_cluster_need">Nuitée requise pour tous les clusters</string>
+
+
+    <string name="no_of_days_to_reset_password">Nombre de jours pour réinitialiser le mot de passe</string>
+    <string name="quiz_need">Besoin de questionnaire</string>
+    <string name="quiz_mandatory">Questionnaire obligatoire</string>
+    <string name="chemist_addition">Ajout de pharmacien</string>
+    <string name="unlist_addition">Ajout non listé</string>
+    <string name="unlist_approval_need">Approbation requise pour les non listés</string>
+    <string name="tp_start_end_date">Date de début et de fin du TP</string>
+
+
+
+    <string name="dcr_approval">Approbation DCR</string>
+    <string name="geo_tag_approval">Approbation de géolocalisation</string>
+    <string name="tpdcr_deviation_approval">Approbation de déviation TPDCR</string>
+    <string name="stp_approval">Approbation STP</string>
+    <string name="doctor_fencing_need">Besoin de géorepérage pour les médecins</string>
+
+
+
+    <string name="chemist_fencing_need">Besoin de géorepérage pour les pharmaciens</string>
+    <string name="stockiest_fencing_need">Besoin de géorepérage pour les distributeurs</string>
+    <string name="unlisted_fencing_need">Besoin de géorepérage pour les non listés</string>
+    <string name="checkin">Enregistrement</string>
+    <string name="delete_option">Option de suppression</string>
+
+    <string name="joint_work_auto_selection_need">Sélection automatique du travail conjoint</string>
+    <string name="rcpa_mandatory">RCPA obligatoire</string>
+    <string name="product_mandatory">Produit obligatoire</string>
+    <string name="input_mandatory">Saisie obligatoire</string>
+    <string name="rx_mandatory">Ordonnance obligatoire</string>
+    <string name="sample_quantity_mandatory">Quantité d\’échantillon obligatoire</string>
+    <string name="joint_work_mandatory">Travail conjoint obligatoire</string>
+    <string name="feed_back_mandatory">Retour obligatoire</string>
+
+    <string name="event_capture_mandatory">Capture d\’événement obligatoire</string>
+    <string name="dcr_sequential">DCR séquentiel</string>
+    <string name="dcr_lock">Verrouillage DCR</string>
+    <string name="dcr_lock_days">Jours de verrouillage DCR</string>
+    <string name="holiday_auto_post">Congé (publication automatique)</string>
+    <string name="week_Off_auto_post">Jour de repos (publication automatique)</string>
+    <string name="meters">mètres</string>
+    <string name="days">jours</string>
+
+    <string name="practice_need">Besoin de pratique</string>
+    <string name="presentation_need">Besoin de présentation</string>
+    <string name="zooming_option_need_for_slides">Option de zoom pour les diapositives</string>
+    <string name="html_file_play">Lire le fichier HTML</string>
+    <string name="detailing_idle_duration">Durée d\'inactivité du détail</string>
+    <string name="skip_detailing">Ignorer le détail</string>
+    <string name="stp_type">Type de STP</string>
+    <string name="stp_based_mtp">MTP basé sur STP</string>
+    <string name="stp_based_dcr">DCR basé sur STP</string>
+    <string name="tp_mandatory">TP obligatoire</string>
+    <string name="tp_based_dcr">DCR basé sur TP</string>
+
+
+    <string name="tp_based_dcr_deviation">Déviation DCR basée sur TP</string>
+    <string name="need">Besoin</string>
+    <string name="joint_work_need">Besoin de travail conjoint</string>
+    <string name="add_session_need">Besoin d\'ajouter une session</string>
+    <string name="fw_meetup_mandatory">Réunion FW obligatoire</string>
+    <string name="holiday_edit">Modifier le congé</string>
+    <string name="WeekOff_edit">Modifier le jour de repos</string>
+    <string name="remarks_mandatory">Comentarios obligatorios</string>
+
+
+    <string name="plan_all_doctors">Planifier tous les médecins</string>
+    <string name="visit_frequency_need">Fréquence des visites</string>
+    <string name="min_selection_count">Nombre minimum de sélections</string>
+    <string name="max_selection_count">Nombre maximum de sélections</string>
+    <string name="minimum_gap_days">Intervalle minimum (jours)</string>
+    <string name="add_session_count_limit">Limite du nombre de sessions</string>
+    <string name="remainder_time">Temps restant</string>
+
 </resources>

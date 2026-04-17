@@ -1080,4 +1080,93 @@
     <string name="you_are_staying_overnight">您正在过夜</string>
     <string name="night_stay_remarks">过夜备注</string>
     <string name="day_remarks">当日备注</string>
+
+    <string name="minimum_gap">最小间隔</string>
+    <string name="minimum">最小值</string>
+    <string name="maximum">最大值</string>
+
+    <string name="setup_details">设置详情</string>
+    <string name="app_setup">应用设置</string>
+    <string name="dcr_setup">DCR设置</string>
+    <string name="call_setup">通话设置</string>
+
+    <string name="tour_plan_setup">行程计划设置</string>
+    <string name="slides_setup">幻灯片设置</string>
+    <string name="approval_setup">审批设置</string>
+    <string name="device_lock">设备锁定</string>
+    <string name="fencing_radius">地理围栏半径</string>
+    <string name="geotag_event_capture">地理标记事件捕获</string>
+    <string name="night_stay_for_non_field_work">非外勤工作的过夜住宿</string>
+    <string name="night_stay_all_cluster_need">所有集群均需过夜住宿</string>
+
+    <string name="no_of_days_to_reset_password">重置密码天数</string>
+    <string name="quiz_need">需要测验</string>
+    <string name="quiz_mandatory">测验必填</string>
+    <string name="chemist_addition">新增药剂师</string>
+    <string name="unlist_addition">新增未列出项</string>
+    <string name="unlist_approval_need">未列出项需审批</string>
+    <string name="tp_start_end_date">TP开始与结束日期</string>
+
+
+    <string name="dcr_approval">DCR审批</string>
+    <string name="geo_tag_approval">GeoTag审批</string>
+    <string name="tpdcr_deviation_approval">TPDCR偏差审批</string>
+    <string name="stp_approval">STP审批</string>
+    <string name="doctor_fencing_need">医生地理围栏需求</string>
+
+    <string name="chemist_fencing_need">药剂师地理围栏需求</string>
+    <string name="stockiest_fencing_need">分销商地理围栏需求</string>
+    <string name="unlisted_fencing_need">未列出项地理围栏需求</string>
+    <string name="checkin">签到</string>
+    <string name="delete_option">删除选项</string>
+
+    <string name="joint_work_auto_selection_need">联合工作自动选择需求</string>
+    <string name="rcpa_mandatory">RCPA必填</string>
+    <string name="product_mandatory">产品必填</string>
+    <string name="input_mandatory">输入必填</string>
+    <string name="rx_mandatory">处方必填</string>
+    <string name="sample_quantity_mandatory">样品数量必填</string>
+    <string name="joint_work_mandatory">联合工作必填</string>
+    <string name="feed_back_mandatory">反馈必填</string>
+
+    <string name="event_capture_mandatory">事件捕获必填</string>
+    <string name="dcr_sequential">DCR顺序</string>
+    <string name="dcr_lock">DCR锁定</string>
+    <string name="dcr_lock_days">DCR锁定天数</string>
+    <string name="holiday_auto_post">节日（自动发布）</string>
+    <string name="week_Off_auto_post">周末（自动发布）</string>
+    <string name="meters">米</string>
+    <string name="days">天</string>
+
+
+
+
+    <string name="practice_need">需要练习</string>
+    <string name="presentation_need">需要演示</string>
+    <string name="zooming_option_need_for_slides">幻灯片缩放选项需求</string>
+    <string name="html_file_play">HTML文件播放</string>
+    <string name="detailing_idle_duration">详细说明空闲时长</string>
+    <string name="skip_detailing">跳过详细说明</string>
+    <string name="stp_type">STP类型</string>
+    <string name="stp_based_mtp">基于STP的MTP</string>
+    <string name="stp_based_dcr">基于STP的DCR</string>
+    <string name="tp_mandatory">TP必填</string>
+    <string name="tp_based_dcr">基于TP的DCR</string>
+
+    <string name="tp_based_dcr_deviation">TPDCR偏差</string>
+    <string name="need">需求</string>
+    <string name="joint_work_need">联合工作需求</string>
+    <string name="add_session_need">添加会话需求</string>
+    <string name="fw_meetup_mandatory">FW会议必填</string>
+    <string name="holiday_edit">假期编辑</string>
+    <string name="WeekOff_edit">周末编辑</string>
+    <string name="remarks_mandatory">备注必填</string>
+
+    <string name="plan_all_doctors">计划所有医生</string>
+    <string name="visit_frequency_need">访问频率需求</string>
+    <string name="min_selection_count">最小选择数量</string>
+    <string name="max_selection_count">最大选择数量</string>
+    <string name="minimum_gap_days">最小间隔（天）</string>
+    <string name="add_session_count_limit">添加会话数量限制</string>
+    <string name="remainder_time">提醒时间</string>
 </resources>

@@ -40,7 +40,7 @@ public class Approval_setup extends Fragment {
         list.clear();
         String DCR = SharedPref.getDcrApprovalNeed(requireContext());
         callstatus_model dcrApproval = new callstatus_model();
-        dcrApproval.setCustName("DCR Approval");
+        dcrApproval.setCustName(getString(R.string.dcr_approval));
         dcrApproval.setChkflk("0");
         dcrApproval.setSpKey(SharedPref.DCR_APPROVAL_NEED);
         dcrApproval.setPromoted(DCR.equals("0"));
@@ -48,7 +48,7 @@ public class Approval_setup extends Fragment {
 
         String geotag = SharedPref.getGeotagApprovalNeed(requireContext());
         callstatus_model geoTagApproval = new callstatus_model();
-        geoTagApproval.setCustName("GeoTag Approval");
+        geoTagApproval.setCustName(getString(R.string.geo_tag_approval));
         geoTagApproval.setChkflk("0");
         geoTagApproval.setSpKey(SharedPref.GEOTAG_APPROVAL_NEED);
         geoTagApproval.setPromoted(geotag.equals("0"));
@@ -56,7 +56,7 @@ public class Approval_setup extends Fragment {
 
         String tourPlan  = SharedPref.getTpdcrMgrappr(requireContext());
         callstatus_model tpApproval = new callstatus_model();
-        tpApproval.setCustName("TPDCR Deviation Approval");
+        tpApproval.setCustName(getString(R.string.tpdcr_deviation_approval));
         tpApproval.setChkflk("0");
         tpApproval.setSpKey(SharedPref.TPDCR_MGRAPPR);
         tpApproval.setPromoted(tourPlan.equals("0"));
@@ -64,7 +64,7 @@ public class Approval_setup extends Fragment {
 
         String stp  = SharedPref.getStpApprNeed(requireContext());
         callstatus_model stpApproval = new callstatus_model();
-        stpApproval.setCustName("STP Approval");
+        stpApproval.setCustName(getString(R.string.stp_approval));
         stpApproval.setChkflk("0");
         stpApproval.setSpKey(SharedPref.STP_APPR_NEED);
         stpApproval.setPromoted(stp.equals("0"));

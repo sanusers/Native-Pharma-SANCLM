@@ -1085,6 +1085,9 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="you_are_staying_overnight">You are staying overnight</string>
     <string name="night_stay_remarks">Night Stay Remarks</string>
     <string name="day_remarks">Day Remarks</string>
+
+
+
     <string name="minimum_gap">Minimum Gap</string>
     <string name="minimum">Minimum</string>
     <string name="maximum">Maximum</string>
@@ -1093,8 +1096,83 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="app_setup">App Setup</string>
     <string name="dcr_setup">Dcr Setup</string>
     <string name="call_setup">Call Setup</string>
+
     <string name="tour_plan_setup">Tour Plan Setup</string>
     <string name="slides_setup">Slides Setup</string>
     <string name="approval_setup">Approval Setup</string>
+    <string name="device_lock">Device Lock</string>
+    <string name="fencing_radius">Fencing Radius</string>
+    <string name="geotag_event_capture">GeoTag Event Capture</string>
+    <string name="night_stay_for_non_field_work">Night Stay For Non Field Work</string>
+    <string name="night_stay_all_cluster_need">Night Stay All Cluster Need</string>
+
+    <string name="no_of_days_to_reset_password">No Of Days To Reset Password</string>
+    <string name="quiz_need">Quiz Need</string>
+    <string name="quiz_mandatory">Quiz Mandatory</string>
+    <string name="chemist_addition">Chemist Addition</string>
+    <string name="unlist_addition">Unlist Addition</string>
+    <string name="unlist_approval_need">Unlist Approval Need</string>
+    <string name="tp_start_end_date">TP Start &amp; End date</string>
+
+    <string name="dcr_approval">DCR Approval</string>
+    <string name="geo_tag_approval">GeoTag Approval</string>
+    <string name="tpdcr_deviation_approval">TPDCR Deviation Approval</string>
+    <string name="stp_approval">STP Approval</string>
+    <string name="doctor_fencing_need">Doctor Fencing Need</string>
+
+    <string name="chemist_fencing_need">Chemist Fencing Need</string>
+    <string name="stockiest_fencing_need">Stockiest Fencing Need</string>
+    <string name="unlisted_fencing_need">UnListed Fencing Need</string>
+    <string name="checkin">Check In</string>
+    <string name="delete_option">Delete Option</string>
+
+    <string name="joint_work_auto_selection_need">JointWork Auto Selection Need</string>
+    <string name="rcpa_mandatory">RCPA Mandatory</string>
+    <string name="product_mandatory">Product Mandatory</string>
+    <string name="input_mandatory">Input Mandatory</string>
+    <string name="rx_mandatory">RX Mandatory</string>
+    <string name="sample_quantity_mandatory">Sample Quantity Mandatory</string>
+    <string name="joint_work_mandatory">JointWork Mandatory</string>
+    <string name="feed_back_mandatory">FeedBack Mandatory</string>
+
+    <string name="event_capture_mandatory">Event Capture Mandatory</string>
+    <string name="dcr_sequential">DCR Sequential</string>
+    <string name="dcr_lock">DCR Lock</string>
+    <string name="dcr_lock_days">DCR Lock days</string>
+    <string name="holiday_auto_post">Holiday (Autopost)</string>
+    <string name="week_Off_auto_post">Week Off (Autopost)</string>
+    <string name="meters">Meters</string>
+    <string name="days">Days</string>
+
+    <string name="practice_need">Practice Need</string>
+    <string name="presentation_need">Presentation Need</string>
+    <string name="zooming_option_need_for_slides">Zooming Option Need For Slides</string>
+    <string name="html_file_play">Html File Play</string>
+    <string name="detailing_idle_duration">Detailing Idle Duration</string>
+    <string name="skip_detailing">Skip Detailing</string>
+    <string name="stp_type">STP Type</string>
+    <string name="stp_based_mtp">STP based MTP</string>
+    <string name="stp_based_dcr">STP based DCR</string>
+    <string name="tp_mandatory">TP Mandatory</string>
+    <string name="tp_based_dcr">TP Based DCR</string>
+
+    <string name="tp_based_dcr_deviation">TPBased DCR Deviation</string>
+    <string name="need">Need</string>
+    <string name="joint_work_need">Joint Work Need</string>
+    <string name="add_session_need">Add Session Need</string>
+    <string name="fw_meetup_mandatory">FW Meetup Mandatory</string>
+    <string name="holiday_edit">Holiday Edit</string>
+    <string name="WeekOff_edit">WeekOff Edit</string>
+    <string name="remarks_mandatory">Remarks mandatory</string>
+
+    <string name="plan_all_doctors">Plan All Doctors</string>
+    <string name="visit_frequency_need">Visit Frequency Need</string>
+    <string name="min_selection_count">Min Selection Count</string>
+    <string name="max_selection_count">Max Selection Count</string>
+    <string name="minimum_gap_days">Minimum Gap (days) </string>
+    <string name="add_session_count_limit">Add Session Count Limit </string>
+    <string name="remainder_time">Remainder Time </string>
+
+
 
 </resources>

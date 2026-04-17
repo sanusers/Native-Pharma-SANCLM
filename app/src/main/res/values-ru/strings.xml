@@ -1081,4 +1081,92 @@
     <string name="you_are_staying_overnight">Вы остаетесь на ночь</string>
     <string name="night_stay_remarks">Примечания к ночевке</string>
     <string name="day_remarks">Примечания за день</string>
+
+    <string name="minimum_gap">Минимальный интервал</string>
+    <string name="minimum">Минимум</string>
+    <string name="maximum">Максимум</string>
+
+    <string name="setup_details">Детали настройки</string>
+    <string name="app_setup">Настройка приложения</string>
+    <string name="dcr_setup">Настройка DCR</string>
+    <string name="call_setup">Настройка звонков</string>
+
+    <string name="tour_plan_setup">Настройка плана маршрута</string>
+    <string name="slides_setup">Настройка слайдов</string>
+    <string name="approval_setup">Настройка утверждений</string>
+    <string name="device_lock">Блокировка устройства</string>
+    <string name="fencing_radius">Радиус геозоны</string>
+    <string name="geotag_event_capture">Захват событий с геотегом</string>
+    <string name="night_stay_for_non_field_work">Pernoite para trabalho fora de campo</string>
+    <string name="night_stay_all_cluster_need">Pernoite necessário para todos os clusters</string>
+
+    <string name="no_of_days_to_reset_password">Количество дней до сброса пароля</string>
+    <string name="quiz_need">Требуется викторина</string>
+    <string name="quiz_mandatory">Викторина обязательна</string>
+    <string name="chemist_addition">Добавление фармацевта</string>
+    <string name="unlist_addition">Добавление в список не включённых</string>
+    <string name="unlist_approval_need">Требуется одобрение для не включённых</string>
+    <string name="tp_start_end_date">Дата начала и окончания TP</string>
+
+
+
+    <string name="dcr_approval">Утверждение DCR</string>
+    <string name="geo_tag_approval">Утверждение геотега</string>
+    <string name="tpdcr_deviation_approval">Утверждение отклонения TPDCR</string>
+    <string name="stp_approval">Утверждение STP</string>
+    <string name="doctor_fencing_need">Требуется геозона для врачей</string>
+
+    <string name="chemist_fencing_need">Требуется геозона для фармацевтов</string>
+    <string name="stockiest_fencing_need">Требуется геозона для дистрибьюторов</string>
+    <string name="unlisted_fencing_need">Требуется геозона для не включённых</string>
+    <string name="checkin">Регистрация</string>
+    <string name="delete_option">Удалить</string>
+
+    <string name="joint_work_auto_selection_need">Автовыбор совместной работы</string>
+    <string name="rcpa_mandatory">RCPA обязательно</string>
+    <string name="product_mandatory">Товар обязателен</string>
+    <string name="input_mandatory">Ввод обязателен</string>
+    <string name="rx_mandatory">Рецепт обязателен</string>
+    <string name="sample_quantity_mandatory">Количество образцов обязательно</string>
+    <string name="joint_work_mandatory">Совместная работа обязательна</string>
+    <string name="feed_back_mandatory">Обратная связь обязательна</string>
+
+    <string name="event_capture_mandatory">Захват событий обязателен</string>
+    <string name="dcr_sequential">DCR последовательный</string>
+    <string name="dcr_lock">Блокировка DCR</string>
+    <string name="dcr_lock_days">Дни блокировки DCR</string>
+    <string name="holiday_auto_post">Праздник (автопубликация)</string>
+    <string name="week_Off_auto_post">Выходной (автопубликация)</string>
+    <string name="meters">Метры</string>
+    <string name="days">Дни</string>
+
+    <string name="practice_need">Требуется практика</string>
+    <string name="presentation_need">Требуется презентация</string>
+    <string name="zooming_option_need_for_slides">Опция масштабирования для слайдов</string>
+    <string name="html_file_play">Воспроизведение HTML-файла</string>
+    <string name="detailing_idle_duration">Длительность простоя детализации</string>
+    <string name="skip_detailing">Пропустить детализацию</string>
+    <string name="stp_type">Тип STP</string>
+    <string name="stp_based_mtp">MTP на основе STP</string>
+    <string name="stp_based_dcr">DCR на основе STP</string>
+    <string name="tp_mandatory">TP обязателен</string>
+    <string name="tp_based_dcr">DCR на основе TP</string>
+
+    <string name="tp_based_dcr_deviation">Отклонение DCR на основе TP</string>
+    <string name="need">Требуется</string>
+    <string name="joint_work_need">Требуется совместная работа</string>
+    <string name="add_session_need">Требуется добавление сессии</string>
+    <string name="fw_meetup_mandatory">FW встреча обязательна</string>
+    <string name="holiday_edit">Редактирование праздника</string>
+    <string name="WeekOff_edit">Редактирование выходного</string>
+    <string name="remarks_mandatory">Примечания обязательны</string>
+
+    <string name="plan_all_doctors">Планировать всех врачей</string>
+    <string name="visit_frequency_need">Требуемая частота визитов</string>
+    <string name="min_selection_count">Минимальное количество выбора</string>
+    <string name="max_selection_count">Максимальное количество выбора</string>
+    <string name="minimum_gap_days">Минимальный интервал (дни)</string>
+    <string name="add_session_count_limit">Лимит добавления сессий</string>
+    <string name="remainder_time">Оставшееся время</string>
+
 </resources>

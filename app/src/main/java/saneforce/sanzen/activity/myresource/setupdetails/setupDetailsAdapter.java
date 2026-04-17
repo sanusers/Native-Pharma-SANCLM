@@ -94,16 +94,16 @@ public class setupDetailsAdapter extends RecyclerView.Adapter<setupDetailsAdapte
             if (spKey.equals("GENERIC_NUM")) {
                 holder.tv_date_range.setText(app_adapt.getDcr_flag());
             } else if (spKey.equals(SharedPref.DIS_RAD)) {
-                holder.tv_date_range.setText(app_adapt.getMnth() + " Meters");
+                holder.tv_date_range.setText(app_adapt.getMnth() + " " + context.getString(R.string.meters));
             } else if (spKey.equals(SharedPref.SEQ_DCR_LOCK_DAYS)) {
-                holder.tv_date_range.setText(app_adapt.getMonth_name() + " days");
+                holder.tv_date_range.setText(app_adapt.getMonth_name() + " " + context.getString(R.string.days));
             } else if (spKey.equals(SharedPref.RESET_PASSWORD_DAYS)) {
-                holder.tv_date_range.setText(app_adapt.getWorkType() + " days");
-            } else if (spKey.equals(SharedPref.QUIZ_HEADING)) {
-                holder.tv_date_range.setText(app_adapt.getDcrname());
+                holder.tv_date_range.setText(app_adapt.getWorkType() + " " + context.getString(R.string.days));
+            } else if (spKey.equals(SharedPref.DETAILING_IDLE_DURATION)) {
+                holder.tv_date_range.setText(app_adapt.getDcrname()+ " " + context.getString(R.string.minutes));
 
             } else {
-                holder.tv_date_range.setText("From " + app_adapt.getTown_code() + "  To " + app_adapt.getTown_name());
+                holder.tv_date_range.setText(context.getString(R.string.from)+ " " + app_adapt.getTown_code() + "  " + context.getString(R.string.to) + " "  + app_adapt.getTown_name());
             }
         } else {
 

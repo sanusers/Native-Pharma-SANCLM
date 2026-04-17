@@ -1085,4 +1085,92 @@
     <string name="you_are_staying_overnight">คุณกำลังพักค้างคืน</string>
     <string name="night_stay_remarks">หมายเหตุการพักค้างคืน</string>
     <string name="day_remarks">หมายเหตุประจำวัน</string>
+
+    <string name="minimum_gap">ช่วงห่างขั้นต่ำ</string>
+    <string name="minimum">ขั้นต่ำ</string>
+    <string name="maximum">สูงสุด</string>
+
+    <string name="setup_details">รายละเอียดการตั้งค่า</string>
+    <string name="app_setup">การตั้งค่าแอป</string>
+    <string name="dcr_setup">การตั้งค่า DCR</string>
+    <string name="call_setup">การตั้งค่าสายโทร</string>
+
+    <string name="tour_plan_setup">การตั้งค่าแผนทัวร์</string>
+    <string name="slides_setup">การตั้งค่าสไลด์</string>
+    <string name="approval_setup">การตั้งค่าการอนุมัติ</string>
+    <string name="device_lock">ล็อกอุปกรณ์</string>
+    <string name="fencing_radius">รัศมีเขตพื้นที่</string>
+    <string name="geotag_event_capture">การจับเหตุการณ์ด้วยพิกัด</string>
+    <string name="night_stay_for_non_field_work">การพักค้างคืนสำหรับงานนอกสนาม</string>
+    <string name="night_stay_all_cluster_need">จำเป็นต้องมีการพักค้างคืนสำหรับทุกคลัสเตอร์</string>
+
+    <string name="no_of_days_to_reset_password">จำนวนวันในการรีเซ็ตรหัสผ่าน</string>
+    <string name="quiz_need">ต้องการแบบทดสอบ</string>
+    <string name="quiz_mandatory">แบบทดสอบบังคับ</string>
+    <string name="chemist_addition">เพิ่มเภสัชกร</string>
+    <string name="unlist_addition">เพิ่มรายการที่ไม่อยู่ในลิสต์</string>
+    <string name="unlist_approval_need">ต้องการอนุมัติรายการที่ไม่อยู่ในลิสต์</string>
+    <string name="tp_start_end_date">วันที่เริ่มต้นและสิ้นสุด TP</string>
+
+
+    <string name="dcr_approval">การอนุมัติ DCR</string>
+    <string name="geo_tag_approval">การอนุมัติ GeoTag</string>
+    <string name="tpdcr_deviation_approval">การอนุมัติการเบี่ยงเบน TPDCR</string>
+    <string name="stp_approval">การอนุมัติ STP</string>
+    <string name="doctor_fencing_need">ต้องการรั้วพื้นที่สำหรับแพทย์</string>
+
+    <string name="chemist_fencing_need">ต้องการรั้วพื้นที่สำหรับเภสัชกร</string>
+    <string name="stockiest_fencing_need">ต้องการรั้วพื้นที่สำหรับผู้จัดจำหน่าย</string>
+    <string name="unlisted_fencing_need">ต้องการรั้วพื้นที่สำหรับรายการที่ไม่อยู่ในระบบ</string>
+    <string name="checkin">เช็คอิน</string>
+    <string name="delete_option">ตัวเลือกการลบ</string>
+
+    <string name="joint_work_auto_selection_need">ต้องการการเลือกงานร่วมอัตโนมัติ</string>
+    <string name="rcpa_mandatory">RCPA บังคับ</string>
+    <string name="product_mandatory">ผลิตภัณฑ์บังคับ</string>
+    <string name="input_mandatory">การกรอกข้อมูลบังคับ</string>
+    <string name="rx_mandatory">ใบสั่งยา (RX) บังคับ</string>
+    <string name="sample_quantity_mandatory">จำนวนตัวอย่างบังคับ</string>
+    <string name="joint_work_mandatory">งานร่วมบังคับ</string>
+    <string name="feed_back_mandatory">ข้อเสนอแนะบังคับ</string>
+
+    <string name="event_capture_mandatory">การจับเหตุการณ์บังคับ</string>
+    <string name="dcr_sequential">DCR ตามลำดับ</string>
+    <string name="dcr_lock">ล็อก DCR</string>
+    <string name="dcr_lock_days">จำนวนวันล็อก DCR</string>
+    <string name="holiday_auto_post">วันหยุด (โพสต์อัตโนมัติ)</string>
+    <string name="week_Off_auto_post">วันหยุดประจำสัปดาห์ (โพสต์อัตโนมัติ)</string>
+    <string name="meters">เมตร</string>
+    <string name="days">วัน</string>
+
+    <string name="practice_need">ต้องการการฝึกฝน</string>
+    <string name="presentation_need">ต้องการการนำเสนอ</string>
+    <string name="zooming_option_need_for_slides">ตัวเลือกซูมสำหรับสไลด์</string>
+    <string name="html_file_play">เล่นไฟล์ HTML</string>
+    <string name="detailing_idle_duration">ระยะเวลาว่างของการนำเสนอรายละเอียด</string>
+    <string name="skip_detailing">ข้ามการนำเสนอรายละเอียด</string>
+    <string name="stp_type">ประเภท STP</string>
+    <string name="stp_based_mtp">MTP ตาม STP</string>
+    <string name="stp_based_dcr">DCR ตาม STP</string>
+    <string name="tp_mandatory">TP บังคับ</string>
+    <string name="tp_based_dcr">DCR ตาม TP</string>
+
+    <string name="tp_based_dcr_deviation">ความเบี่ยงเบน DCR ตาม TP</string>
+    <string name="need">ต้องการ</string>
+    <string name="joint_work_need">ต้องการงานร่วม</string>
+    <string name="add_session_need">ต้องการเพิ่มเซสชัน</string>
+    <string name="fw_meetup_mandatory">การประชุม FW บังคับ</string>
+    <string name="holiday_edit">แก้ไขวันหยุด</string>
+    <string name="WeekOff_edit">แก้ไขวันหยุดประจำสัปดาห์</string>
+    <string name="remarks_mandatory">จำเป็นต้องระบุหมายเหตุ</string>
+
+    <string name="plan_all_doctors">วางแผนแพทย์ทั้งหมด</string>
+    <string name="visit_frequency_need">ความถี่การเยี่ยม</string>
+    <string name="min_selection_count">จำนวนการเลือกขั้นต่ำ</string>
+    <string name="max_selection_count">จำนวนการเลือกสูงสุด</string>
+    <string name="minimum_gap_days">ช่วงห่างขั้นต่ำ (วัน)</string>
+    <string name="add_session_count_limit">จำกัดจำนวนเซสชันที่เพิ่ม</string>
+    <string name="remainder_time">เวลาที่เหลือ</string>
+
+
 </resources>

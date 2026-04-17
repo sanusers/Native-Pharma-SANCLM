@@ -1074,4 +1074,94 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="night_stay_remarks">Observaciones de pernoctación</string>
     <string name="day_remarks">Observaciones del día</string>
 
+    <string name="minimum_gap">Intervalo mínimo</string>
+    <string name="minimum">Mínimo</string>
+    <string name="maximum">Máximo</string>
+
+    <string name="setup_details">Detalles de configuración</string>
+    <string name="app_setup">Configuración de la aplicación</string>
+    <string name="dcr_setup">Configuración de DCR</string>
+    <string name="call_setup">Configuración de llamadas</string>
+
+
+    <string name="tour_plan_setup">Configuración del plan de ruta</string>
+    <string name="slides_setup">Configuración de diapositivas</string>
+    <string name="approval_setup">Configuración de aprobación</string>
+    <string name="device_lock">Bloqueo del dispositivo</string>
+    <string name="fencing_radius">Radio de geocerca</string>
+    <string name="geotag_event_capture">Captura de eventos con geolocalización</string>
+    <string name="night_stay_for_non_field_work">Pernoctación para trabajo fuera de campo</string>
+    <string name="night_stay_all_cluster_need">Pernoctación necesaria para todos los grupos</string>
+
+    <string name="no_of_days_to_reset_password">Número de días para restablecer la contraseña</string>
+    <string name="quiz_need">Necesidad de cuestionario</string>
+    <string name="quiz_mandatory">Cuestionario obligatorio</string>
+    <string name="chemist_addition">Agregar farmacéutico</string>
+    <string name="unlist_addition">Agregar no listado</string>
+    <string name="unlist_approval_need">Aprobación requerida para no listado</string>
+    <string name="tp_start_end_date">Fecha de inicio y fin del TP</string>
+
+    <string name="dcr_approval">Aprobación de DCR</string>
+    <string name="geo_tag_approval">Aprobación de geolocalización</string>
+    <string name="tpdcr_deviation_approval">Aprobación de desviación de TPDCR</string>
+    <string name="stp_approval">Aprobación de STP</string>
+    <string name="doctor_fencing_need">Necesidad de geocerca para médicos</string>
+
+
+    <string name="chemist_fencing_need">Necesidad de geocerca para farmacéuticos</string>
+    <string name="stockiest_fencing_need">Necesidad de geocerca para distribuidores</string>
+    <string name="unlisted_fencing_need">Necesidad de geocerca para no listados</string>
+    <string name="checkin">Registro</string>
+    <string name="delete_option">Opción de eliminar</string>
+
+    <string name="joint_work_auto_selection_need">Selección automática de trabajo conjunto</string>
+    <string name="rcpa_mandatory">RCPA obligatorio</string>
+    <string name="product_mandatory">Producto obligatorio</string>
+    <string name="input_mandatory">Entrada obligatoria</string>
+    <string name="rx_mandatory">Receta obligatoria</string>
+    <string name="sample_quantity_mandatory">Cantidad de muestra obligatoria</string>
+    <string name="joint_work_mandatory">Trabajo conjunto obligatorio</string>
+    <string name="feed_back_mandatory">Comentarios obligatorios</string>
+
+
+    <string name="event_capture_mandatory">Captura de eventos obligatoria</string>
+    <string name="dcr_sequential">DCR secuencial</string>
+    <string name="dcr_lock">Bloqueo de DCR</string>
+    <string name="dcr_lock_days">Días de bloqueo de DCR</string>
+    <string name="holiday_auto_post">Vacaciones (publicación automática)</string>
+    <string name="week_Off_auto_post">Día libre (publicación automática)</string>
+    <string name="meters">metros</string>
+    <string name="days">días</string>
+
+    <string name="practice_need">Necesidad de práctica</string>
+    <string name="presentation_need">Necesidad de presentación</string>
+    <string name="zooming_option_need_for_slides">Opción de zoom para diapositivas</string>
+    <string name="html_file_play">Reproducir archivo HTML</string>
+    <string name="detailing_idle_duration">Duración inactiva del detalle</string>
+    <string name="skip_detailing">Omitir detalle</string>
+    <string name="stp_type">Tipo de STP</string>
+    <string name="stp_based_mtp">MTP basado en STP</string>
+    <string name="stp_based_dcr">DCR basado en STP</string>
+    <string name="tp_mandatory">TP obligatorio</string>
+    <string name="tp_based_dcr">DCR basado en TP</string>
+
+
+    <string name="tp_based_dcr_deviation">Desviación de DCR basada en TP</string>
+    <string name="need">Necesidad</string>
+    <string name="joint_work_need">Necesidad de trabajo conjunto</string>
+    <string name="add_session_need">Necesidad de agregar sesión</string>
+    <string name="fw_meetup_mandatory">Reunión FW obligatoria</string>
+    <string name="holiday_edit">Editar vacaciones</string>
+    <string name="WeekOff_edit">Editar día libre</string>
+    <string name="remarks_mandatory">Comentarios obligatorios</string>
+
+    <string name="plan_all_doctors">Planificar todos los médicos</string>
+    <string name="visit_frequency_need">Frecuencia de visitas</string>
+    <string name="min_selection_count">Cantidad mínima de selección</string>
+    <string name="max_selection_count">Cantidad máxima de selección</string>
+    <string name="minimum_gap_days">Intervalo mínimo (días)</string>
+    <string name="add_session_count_limit">Límite de sesiones</string>
+    <string name="remainder_time">Tiempo restante</string>
+
+
 </resources>

@@ -52,24 +52,51 @@
         app:layout_constraintTop_toTopOf="@id/view_top"
         tools:ignore="SpUsage,TextSizeCheck" />
 
+<!--    <com.google.android.material.tabs.TabLayout-->
+<!--        android:id="@+id/tab_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/_25sdp"-->
+<!--        android:layout_marginStart="@dimen/_4sdp"-->
+<!--        android:layout_marginEnd="@dimen/_6sdp"-->
+<!--        app:tabIndicatorGravity="bottom"-->
+<!--        app:tabIndicatorHeight="@dimen/_1sdp"-->
+<!--        android:layout_marginTop="@dimen/_4sdp"-->
+<!--        android:background="@color/bg_grey"-->
+<!--        android:maxWidth="@dimen/_120sdp"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/view_dummy"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/view_top"-->
+<!--        app:tabGravity="fill"-->
+<!--        app:tabIndicatorColor="@color/dark_purple"-->
+<!--        app:tabMode="scrollable"-->
+<!--        app:tabPaddingEnd="@dimen/_10sdp"-->
+<!--        app:tabPaddingStart="@dimen/_10sdp"-->
+<!--        app:tabSelectedTextColor="@color/dark_purple"-->
+<!--        app:tabTextAppearance="@style/tab_text"-->
+<!--        app:tabTextColor="@color/bg_txt_color" />-->
+
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="?actionBarSize"
-        android:layout_marginStart="@dimen/_6sdp"
-        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:background="@color/bg_grey"
-        android:maxWidth="@dimen/_120sdp"
+        app:tabIndicatorGravity="bottom"
+        app:tabIndicatorHeight="@dimen/_1sdp"
         app:layout_constraintBottom_toTopOf="@id/view_dummy"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_top"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/dark_purple"
+        app:tabGravity="center"
         app:tabMode="scrollable"
-        app:tabPaddingEnd="@dimen/_10sdp"
-        app:tabPaddingStart="@dimen/_10sdp"
+        app:tabIndicatorColor="@color/dark_purple"
+        app:tabPaddingEnd="@dimen/_6sdp"
+        app:tabPaddingStart="@dimen/_6sdp"
         app:tabSelectedTextColor="@color/dark_purple"
         app:tabTextAppearance="@style/tab_text"
         app:tabTextColor="@color/bg_txt_color" />

@@ -1071,4 +1071,97 @@
     <string name="you_are_staying_overnight">သင်ညအိပ်တည်းခိုနေသည်</string>
     <string name="night_stay_remarks">ညအိပ်တည်းခိုမှုဆိုင်ရာမှတ်ချက်များ</string>
     <string name="day_remarks">နေ့စဉ်မှတ်ချက်များ</string>
+
+    <string name="minimum_gap">အနည်းဆုံး အကွာအဝေး</string>
+    <string name="minimum">အနည်းဆုံး</string>
+    <string name="maximum">အများဆုံး</string>
+
+    <string name="setup_details">ဆက်တင် အသေးစိတ်များ</string>
+    <string name="app_setup">အက်ပ် ဆက်တင်</string>
+    <string name="dcr_setup">DCR ဆက်တင်</string>
+    <string name="call_setup">ခေါ်ဆိုမှု ဆက်တင်</string>
+
+    <string name="tour_plan_setup">ခရီးစဉ် အစီအစဉ် ဆက်တင်</string>
+    <string name="slides_setup">ဆလိုက် ဆက်တင်</string>
+    <string name="approval_setup">အတည်ပြု ဆက်တင်</string>
+    <string name="device_lock">စက်ပစ္စည်း လော့ခ်</string>
+    <string name="fencing_radius">ဂျီယိုဖန်စင်း အကွာအဝေး</string>
+    <string name="geotag_event_capture">ဂျီယိုတက်ဂ် အဖြစ်အပျက် မှတ်တမ်းယူခြင်း</string>
+    <string name="night_stay_for_non_field_work">ကွင်းဆင်းမဟုတ်သော လုပ်ငန်းအတွက် ညအိပ်တည်းခိုခြင်း</string>
+    <string name="night_stay_all_cluster_need">အစုအဖွဲ့ (Cluster) အားလုံးအတွက် ညအိပ်တည်းခိုရန် လိုအပ်သည်</string>
+
+    <string name="no_of_days_to_reset_password">စကားဝှက် ပြန်လည်သတ်မှတ်ရန် လိုအပ်သော ရက်အရေအတွက်</string>
+    <string name="quiz_need">စမ်းသပ်မှု လိုအပ်သည်</string>
+    <string name="quiz_mandatory">စမ်းသပ်မှု မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="chemist_addition">ဆေးဆိုင်သူ ထည့်ခြင်း</string>
+    <string name="unlist_addition">စာရင်းမရှိသူ ထည့်ခြင်း</string>
+    <string name="unlist_approval_need">စာရင်းမရှိသူအတွက် အတည်ပြု လိုအပ်သည်</string>
+    <string name="tp_start_end_date">TP စတင်နေ့နှင့် ပြီးဆုံးနေ့</string>
+
+
+    <string name="dcr_approval">DCR အတည်ပြု</string>
+    <string name="geo_tag_approval">ဂျီယိုတက်ဂ် အတည်ပြု</string>
+    <string name="tpdcr_deviation_approval">TPDCR မတူညီမှု အတည်ပြု</string>
+    <string name="stp_approval">STP အတည်ပြု</string>
+    <string name="doctor_fencing_need">ဆရာဝန်အတွက် ဂျီယိုဖန်စင်း လိုအပ်သည်</string>
+
+
+    <string name="chemist_fencing_need">ဆေးဆိုင်သူအတွက် ဂျီယိုဖန်စင်း လိုအပ်သည်</string>
+    <string name="stockiest_fencing_need">ဖြန့်ချိသူအတွက် ဂျီယိုဖန်စင်း လိုအပ်သည်</string>
+    <string name="unlisted_fencing_need">စာရင်းမရှိသူအတွက် ဂျီယိုဖန်စင်း လိုအပ်သည်</string>
+    <string name="checkin">ဝင်ရောက်မှတ်တမ်းတင်ခြင်း</string>
+    <string name="delete_option">ဖျက်ရန် ရွေးချယ်မှု</string>
+
+
+    <string name="joint_work_auto_selection_need">ပူးတွဲအလုပ်ကို အလိုအလျောက် ရွေးချယ်ရန် လိုအပ်သည်</string>
+    <string name="rcpa_mandatory">RCPA မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="product_mandatory">ထုတ်ကုန် မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="input_mandatory">ထည့်သွင်းမှု မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="rx_mandatory">ဆေးညွှန်း မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="sample_quantity_mandatory">နမူနာ အရေအတွက် မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="joint_work_mandatory">ပူးတွဲအလုပ် မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="feed_back_mandatory">တုံ့ပြန်ချက် မဖြစ်မနေလိုအပ်သည်</string>
+
+
+
+    <string name="event_capture_mandatory">အဖြစ်အပျက် မှတ်တမ်းယူခြင်း မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="dcr_sequential">DCR အစဉ်လိုက်</string>
+    <string name="dcr_lock">DCR လော့ခ်</string>
+    <string name="dcr_lock_days">DCR လော့ခ် ရက်များ</string>
+    <string name="holiday_auto_post">အားလပ်ရက် (အလိုအလျောက် တင်ခြင်း)</string>
+    <string name="week_Off_auto_post">အပတ်စဉ် နားရက် (အလိုအလျောက် တင်ခြင်း)</string>
+    <string name="meters">မီတာ</string>
+    <string name="days">ရက်</string>
+
+    <string name="practice_need">လေ့ကျင့်မှု လိုအပ်သည်</string>
+    <string name="presentation_need">တင်ပြမှု လိုအပ်သည်</string>
+    <string name="zooming_option_need_for_slides">ဆလိုက်များအတွက် ဇူးမ် ရွေးချယ်မှု လိုအပ်သည်</string>
+    <string name="html_file_play">HTML ဖိုင် ဖွင့်ခြင်း</string>
+    <string name="detailing_idle_duration">အသေးစိတ် ပြသမှု မလှုပ်ရှားသော အချိန်ကြာချိန်</string>
+    <string name="skip_detailing">အသေးစိတ် ပြသမှု ကျော်သွားသည်</string>
+    <string name="stp_type">STP အမျိုးအစား</string>
+    <string name="stp_based_mtp">STP အပေါ် အခြေခံသော MTP</string>
+    <string name="stp_based_dcr">STP အပေါ် အခြေခံသော DCR</string>
+    <string name="tp_mandatory">TP မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="tp_based_dcr">TP အပေါ် အခြေခံသော DCR</string>
+
+
+    <string name="tp_based_dcr_deviation">TP အပေါ် အခြေခံသော DCR မတူညီမှု</string>
+    <string name="need">လိုအပ်သည်</string>
+    <string name="joint_work_need">ပူးတွဲအလုပ် လိုအပ်သည်</string>
+    <string name="add_session_need">ဆက်ရှင် ထည့်ရန် လိုအပ်သည်</string>
+    <string name="fw_meetup_mandatory">FW တွေ့ဆုံမှု မဖြစ်မနေလိုအပ်သည်</string>
+    <string name="holiday_edit">အားလပ်ရက် ပြင်ဆင်ရန်</string>
+    <string name="WeekOff_edit">နားရက် ပြင်ဆင်ရန်</string>
+    <string name="remarks_mandatory">မှတ်ချက်ရေးရန် လိုအပ်သည်</string>
+
+
+    <string name="plan_all_doctors">ဆရာဝန်အားလုံးကို စီမံရန်</string>
+    <string name="visit_frequency_need">လာရောက်မှု အကြိမ်ရေ လိုအပ်သည်</string>
+    <string name="min_selection_count">အနည်းဆုံး ရွေးချယ်မှု အရေအတွက်</string>
+    <string name="max_selection_count">အများဆုံး ရွေးချယ်မှု အရေအတွက်</string>
+    <string name="minimum_gap_days">အနည်းဆုံး အကွာအဝေး (ရက်)</string>
+    <string name="add_session_count_limit">ဆက်ရှင် အရေအတွက် ကန့်သတ်ချက်</string>
+    <string name="remainder_time">ကျန်ရှိသော အချိန်</string>
+
 </resources>

@@ -1087,4 +1087,91 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="you_are_staying_overnight">Bạn đang lưu trú qua đêm</string>
     <string name="night_stay_remarks">Ghi chú lưu trú qua đêm</string>
     <string name="day_remarks">Ghi chú trong ngày</string>
+
+
+    <string name="minimum_gap">Khoảng cách tối thiểu</string>
+    <string name="minimum">Tối thiểu</string>
+    <string name="maximum">Tối đa</string>
+
+    <string name="setup_details">Chi tiết cài đặt</string>
+    <string name="app_setup">Cài đặt ứng dụng</string>
+    <string name="dcr_setup">Cài đặt DCR</string>
+    <string name="call_setup">Cài đặt cuộc gọi</string>
+
+    <string name="tour_plan_setup">Cài đặt kế hoạch chuyến đi</string>
+    <string name="slides_setup">Cài đặt slide</string>
+    <string name="approval_setup">Cài đặt phê duyệt</string>
+    <string name="device_lock">Khóa thiết bị</string>
+    <string name="fencing_radius">Bán kính hàng rào địa lý</string>
+    <string name="geotag_event_capture">Ghi nhận sự kiện định vị</string>
+    <string name="night_stay_for_non_field_work">Lưu trú qua đêm cho công việc không thuộc hiện trường</string>
+    <string name="night_stay_all_cluster_need">Yêu cầu lưu trú qua đêm cho tất cả các nhóm (cluster)</string>
+
+    <string name="no_of_days_to_reset_password">Số ngày để đặt lại mật khẩu</string>
+    <string name="quiz_need">Cần bài kiểm tra</string>
+    <string name="quiz_mandatory">Bài kiểm tra bắt buộc</string>
+    <string name="chemist_addition">Thêm dược sĩ</string>
+    <string name="unlist_addition">Thêm ngoài danh sách</string>
+    <string name="unlist_approval_need">Cần phê duyệt mục ngoài danh sách</string>
+    <string name="tp_start_end_date">Ngày bắt đầu &amp; kết thúc TP</string>
+
+    <string name="dcr_approval">Phê duyệt DCR</string>
+    <string name="geo_tag_approval">Phê duyệt GeoTag</string>
+    <string name="tpdcr_deviation_approval">Phê duyệt sai lệch TPDCR</string>
+    <string name="stp_approval">Phê duyệt STP</string>
+    <string name="doctor_fencing_need">Cần geofence bác sĩ</string>
+
+    <string name="chemist_fencing_need">Cần geofence dược sĩ</string>
+    <string name="stockiest_fencing_need">Cần geofence nhà phân phối</string>
+    <string name="unlisted_fencing_need">Cần geofence ngoài danh sách</string>
+    <string name="checkin">Đăng ký</string>
+    <string name="delete_option">Tùy chọn xóa</string>
+
+    <string name="joint_work_auto_selection_need">Cần tự động chọn công việc chung</string>
+    <string name="rcpa_mandatory">RCPA bắt buộc</string>
+    <string name="product_mandatory">Sản phẩm bắt buộc</string>
+    <string name="input_mandatory">Nhập dữ liệu bắt buộc</string>
+    <string name="rx_mandatory">Đơn thuốc bắt buộc</string>
+    <string name="sample_quantity_mandatory">Số lượng mẫu bắt buộc</string>
+    <string name="joint_work_mandatory">Công việc chung bắt buộc</string>
+    <string name="feed_back_mandatory">Phản hồi bắt buộc</string>
+
+    <string name="event_capture_mandatory">Bắt buộc ghi nhận sự kiện</string>
+    <string name="dcr_sequential">DCR theo thứ tự</string>
+    <string name="dcr_lock">Khóa DCR</string>
+    <string name="dcr_lock_days">Số ngày khóa DCR</string>
+    <string name="holiday_auto_post">Ngày lễ (tự động đăng)</string>
+    <string name="week_Off_auto_post">Ngày nghỉ (tự động đăng)</string>
+    <string name="meters">Mét</string>
+    <string name="days">Ngày</string>
+
+    <string name="practice_need">Cần luyện tập</string>
+    <string name="presentation_need">Cần thuyết trình</string>
+    <string name="zooming_option_need_for_slides">Tùy chọn phóng to cho slide</string>
+    <string name="html_file_play">Phát tệp HTML</string>
+    <string name="detailing_idle_duration">Thời gian rảnh của phần trình bày chi tiết</string>
+    <string name="skip_detailing">Bỏ qua trình bày chi tiết</string>
+    <string name="stp_type">Loại STP</string>
+    <string name="stp_based_mtp">MTP dựa trên STP</string>
+    <string name="stp_based_dcr">DCR dựa trên STP</string>
+    <string name="tp_mandatory">TP bắt buộc</string>
+    <string name="tp_based_dcr">DCR dựa trên TP</string>
+
+    <string name="tp_based_dcr_deviation">Sai lệch DCR dựa trên TP</string>
+    <string name="need">Cần</string>
+    <string name="joint_work_need">Cần công việc chung</string>
+    <string name="add_session_need">Cần thêm phiên</string>
+    <string name="fw_meetup_mandatory">Cuộc họp FW bắt buộc</string>
+    <string name="holiday_edit">Chỉnh sửa ngày nghỉ</string>
+    <string name="WeekOff_edit">Chỉnh sửa ngày nghỉ hàng tuần</string>
+    <string name="remarks_mandatory">Bắt buộc nhập nhận xét</string>
+
+    <string name="plan_all_doctors">Lập kế hoạch cho tất cả bác sĩ</string>
+    <string name="visit_frequency_need">Cần tần suất thăm khám</string>
+    <string name="min_selection_count">Số lượng chọn tối thiểu</string>
+    <string name="max_selection_count">Số lượng chọn tối đa</string>
+    <string name="minimum_gap_days">Khoảng cách tối thiểu (ngày)</string>
+    <string name="add_session_count_limit">Giới hạn số phiên thêm</string>
+    <string name="remainder_time">Thời gian còn lại</string>
+
 </resources>

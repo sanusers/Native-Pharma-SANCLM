@@ -35,25 +35,6 @@ public class STP_setup extends Fragment {
 
     private void loadFromSharedPreferences() {
         list.clear();
-
-        String stpMtp = SharedPref.getStpBasedMtp(requireContext());
-        callstatus_model model2 = new callstatus_model();
-        model2.setCustName("STP Based MTP");
-        model2.setChkflk("0");
-        model2.setSpKey(SharedPref.STP_BASED_MTP);
-        model2.setPromoted(stpMtp.equals("0"));
-        list.add(model2);
-
-
-        String stp = SharedPref.getStpBasedDcr(requireContext());
-        callstatus_model stpbaseddcr = new callstatus_model();
-        stpbaseddcr.setCustName("STP Based Dcr");
-        stpbaseddcr.setChkflk("0");
-        stpbaseddcr.setSpKey(SharedPref.STP_BASED_DCR);
-        stpbaseddcr.setPromoted(stp.equals("0"));
-        list.add(stpbaseddcr);
-
-
         String stptype = SharedPref.getStpType(requireContext());
         String displayTxt = "";
         if (stptype != null && stptype.equals("0")) {
@@ -62,12 +43,33 @@ public class STP_setup extends Fragment {
             displayTxt = "Userwise";
         }
         callstatus_model type = new callstatus_model();
-        type.setCustName("STP Type");
+        type.setCustName(getString(R.string.stp_type));
         type.setChkflk("2");
         type.setSpKey("GENERIC_NUM");
         type.setDcr_flag(displayTxt);
 
         list.add(type);
+
+
+        String stpMtp = SharedPref.getStpBasedMtp(requireContext());
+        callstatus_model model2 = new callstatus_model();
+        model2.setCustName(getString(R.string.stp_based_mtp));
+        model2.setChkflk("0");
+        model2.setSpKey(SharedPref.STP_BASED_MTP);
+        model2.setPromoted(stpMtp.equals("0"));
+        list.add(model2);
+
+
+        String stp = SharedPref.getStpBasedDcr(requireContext());
+        callstatus_model stpbaseddcr = new callstatus_model();
+        stpbaseddcr.setCustName(getString(R.string.stp_based_dcr));
+        stpbaseddcr.setChkflk("0");
+        stpbaseddcr.setSpKey(SharedPref.STP_BASED_DCR);
+        stpbaseddcr.setPromoted(stp.equals("0"));
+        list.add(stpbaseddcr);
+
+
+
 
     }
 }

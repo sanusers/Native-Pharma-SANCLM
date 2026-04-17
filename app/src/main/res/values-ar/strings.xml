@@ -1071,4 +1071,102 @@
     <string name="you_are_staying_overnight">أنت تقيم طوال الليل</string>
     <string name="night_stay_remarks">ملاحظات المبيت</string>
     <string name="day_remarks">ملاحظات اليوم</string>
+
+    <string name="minimum_gap">الحد الأدنى للفاصل</string>
+    <string name="minimum">الحد الأدنى</string>
+    <string name="maximum">الحد الأقصى</string>
+
+    <string name="setup_details">تفاصيل الإعداد</string>
+    <string name="app_setup">إعداد التطبيق</string>
+    <string name="dcr_setup">إعداد DCR</string>
+    <string name="call_setup">إعداد المكالمات</string>
+
+    <string name="tour_plan_setup">إعداد خطة الجولة</string>
+    <string name="slides_setup">إعداد العروض</string>
+    <string name="approval_setup">إعداد الموافقات</string>
+    <string name="device_lock">قفل الجهاز</string>
+    <string name="fencing_radius">نطاق التسييج الجغرافي</string>
+    <string name="geotag_event_capture">التقاط أحداث الوسم الجغرافي</string>
+    <string name="night_stay_for_non_field_work">الإقامة الليلية للأعمال غير الميدانية</string>
+    <string name="night_stay_all_cluster_need">الإقامة الليلية مطلوبة لجميع المجموعات</string>
+
+
+    <string name="no_of_days_to_reset_password">عدد الأيام لإعادة تعيين كلمة المرور</string>
+    <string name="quiz_need">الحاجة إلى اختبار</string>
+    <string name="quiz_mandatory">الاختبار إلزامي</string>
+    <string name="chemist_addition">إضافة صيدلي</string>
+    <string name="unlist_addition">إضافة غير مدرج</string>
+    <string name="unlist_approval_need">الحاجة إلى موافقة لغير المدرج</string>
+    <string name="tp_start_end_date">تاريخ بداية ونهاية الخطة</string>
+
+    <string name="dcr_approval">موافقة DCR</string>
+    <string name="geo_tag_approval">موافقة الوسم الجغرافي</string>
+    <string name="tpdcr_deviation_approval">موافقة انحراف TPDCR</string>
+    <string name="stp_approval">موافقة STP</string>
+    <string name="doctor_fencing_need">الحاجة إلى تسييج الطبيب</string>
+
+    <string name="chemist_fencing_need">الحاجة إلى تسييج الصيدلي</string>
+    <string name="stockiest_fencing_need">الحاجة إلى تسييج الموزع</string>
+    <string name="unlisted_fencing_need">الحاجة إلى تسييج غير المدرج</string>
+    <string name="checkin">تسجيل الدخول</string>
+    <string name="delete_option">خيار الحذف</string>
+
+
+
+    <string name="joint_work_auto_selection_need">الحاجة إلى التحديد التلقائي للعمل المشترك</string>
+    <string name="rcpa_mandatory">RCPA إلزامي</string>
+    <string name="product_mandatory">المنتج إلزامي</string>
+    <string name="input_mandatory">الإدخال إلزامي</string>
+    <string name="rx_mandatory">الوصفة الطبية إلزامية</string>
+    <string name="sample_quantity_mandatory">كمية العينة إلزامية</string>
+    <string name="joint_work_mandatory">العمل المشترك إلزامي</string>
+    <string name="feed_back_mandatory">الملاحظات إلزامية</string>
+
+
+    <string name="event_capture_mandatory">التقاط الحدث إلزامي</string>
+    <string name="dcr_sequential">DCR تسلسلي</string>
+    <string name="dcr_lock">قفل DCR</string>
+    <string name="dcr_lock_days">عدد أيام قفل DCR</string>
+    <string name="holiday_auto_post">العطلة (نشر تلقائي)</string>
+    <string name="week_Off_auto_post">الإجازة الأسبوعية (نشر تلقائي)</string>
+    <string name="meters">أمتار</string>
+    <string name="days">أيام</string>
+
+
+    <string name="practice_need">الحاجة إلى التدريب</string>
+    <string name="presentation_need">الحاجة إلى العرض</string>
+    <string name="zooming_option_need_for_slides">الحاجة إلى خيار التكبير للشرائح</string>
+    <string name="html_file_play">تشغيل ملف HTML</string>
+    <string name="detailing_idle_duration">مدة الخمول للتفصيل</string>
+    <string name="skip_detailing">تخطي التفصيل</string>
+    <string name="stp_type">نوع STP</string>
+    <string name="stp_based_mtp">MTP بناءً على STP</string>
+    <string name="stp_based_dcr">DCR بناءً على STP</string>
+    <string name="tp_mandatory">TP إلزامي</string>
+    <string name="tp_based_dcr">DCR بناءً على TP</string>
+
+    <string name="tp_based_dcr_deviation">انحراف DCR بناءً على TP</string>
+    <string name="need">الحاجة</string>
+    <string name="joint_work_need">الحاجة إلى العمل المشترك</string>
+    <string name="add_session_need">الحاجة إلى إضافة جلسة</string>
+    <string name="fw_meetup_mandatory">اجتماع FW إلزامي</string>
+    <string name="holiday_edit">تعديل العطلة</string>
+    <string name="WeekOff_edit">تعديل الإجازة الأسبوعية</string>
+    <string name="remarks_mandatory">الملاحظات إلزامية</string>
+
+
+    <string name="plan_all_doctors">تخطيط لجميع الأطباء</string>
+    <string name="visit_frequency_need">الحاجة إلى تكرار الزيارة</string>
+    <string name="min_selection_count">الحد الأدنى للاختيار</string>
+    <string name="max_selection_count">الحد الأقصى للاختيار</string>
+    <string name="minimum_gap_days">الحد الأدنى للفاصل (أيام)</string>
+    <string name="add_session_count_limit">الحد الأقصى لعدد الجلسات</string>
+    <string name="remainder_time">الوقت المتبقي</string>
+
+
+
+
+
+
+
 </resources>

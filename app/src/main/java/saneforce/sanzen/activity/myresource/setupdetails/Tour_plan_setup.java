@@ -49,39 +49,41 @@ public class Tour_plan_setup extends Fragment {
             if (jsonArray != null && jsonArray.length() > 0) {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
 
-                addSetupItem("TP Mandatory", "TP_MANDATORY_NEED", SharedPref.getTpMandatoryNeed(requireContext()),"0");
-                addSetupItem("TP Based DCR", "TPBASED_DCR", SharedPref.getTpbasedDcr(requireContext()),"0");
-                addSetupItem("TPBased DCR Deviation", "TPDCR_DEVIATION", SharedPref.getTpdcrDeviation(requireContext()),"0");
+                addSetupItem(getString(R.string.tp_mandatory), "TP_MANDATORY_NEED", SharedPref.getTpMandatoryNeed(requireContext()),"0");
+                addSetupItem(getString(R.string.tp_based_dcr), "TPBASED_DCR", SharedPref.getTpbasedDcr(requireContext()),"0");
+                addSetupItem(getString(R.string.tp_based_dcr_deviation), "TPDCR_DEVIATION", SharedPref.getTpdcrDeviation(requireContext()),"0");
+                addSetupItem(getString(R.string.add_session_need), "AddsessionNeed", jsonObject.optString("AddsessionNeed"), "0");
+                addSetupItem(getString(R.string.add_session_count_limit), "AddsessionCount", jsonObject.optString("AddsessionCount", "0") + " Count", "2");
 
                 // Sharedpref setup
-                addSetupItem(SharedPref.getDrCap(requireContext()) + " Need", SharedPref.DR_NEED, jsonObject.optString("DrNeed"), "0");
-                addSetupItem(SharedPref.getChmCap(requireContext()) + " Need", SharedPref.CHM_NEED, jsonObject.optString("ChmNeed"), "0");
-                addSetupItem(SharedPref.getStkCap(requireContext()) + " Need", SharedPref.STK_NEED, jsonObject.optString("StkNeed"), "0");
-                addSetupItem(SharedPref.getUNLcap(requireContext()) + " Need", SharedPref.UNL_NEED, jsonObject.optString("UnDrNeed"), "0");
+                addSetupItem(SharedPref.getDrCap(requireContext()) + " " + getString(R.string.need), SharedPref.DR_NEED, jsonObject.optString("DrNeed"), "0");
+                addSetupItem(SharedPref.getChmCap(requireContext()) + " " + getString(R.string.need), SharedPref.CHM_NEED, jsonObject.optString("ChmNeed"), "0");
+                addSetupItem(SharedPref.getStkCap(requireContext()) + " " + getString(R.string.need), SharedPref.STK_NEED, jsonObject.optString("StkNeed"), "0");
+               // addSetupItem(SharedPref.getUNLcap(requireContext()) + " Need", SharedPref.UNL_NEED, jsonObject.optString("UnDrNeed"), "0");
 
 
                 // JW and Hospital setup
-                addSetupItem("Joint Work Need", "JWNeed", jsonObject.optString("JWNeed"), "0");
-                addSetupItem("Hospital Need", "HospNeed", jsonObject.optString("HospNeed"), "0");
-                addSetupItem("Cip Need", "Cip_Need", jsonObject.optString("Cip_Need"), "0");
-                addSetupItem("Add Session Need", "AddsessionNeed", jsonObject.optString("AddsessionNeed"), "0");
-                addSetupItem("FW Meetup Mandatory", "FW_meetup_mandatory", jsonObject.optString("FW_meetup_mandatory"), "0");
-                addSetupItem("Holiday Edit", "Holiday_Editable", jsonObject.optString("Holiday_Editable"), "0");
-                addSetupItem("WeekOff Edit", "Weeklyoff_Editable", jsonObject.optString("Weeklyoff_Editable"), "0");
-                addSetupItem("Remarks Need", "tp_objective_mandatory", jsonObject.optString("tp_objective_mandatory"), "0");
-                addSetupItem("Plan All Doctors", "Plan_All_Drs", jsonObject.optString("Plan_All_Drs"), "0");
-                addSetupItem("Visit Frequency Need", "visit_freq_need", jsonObject.optString("visit_freq_need"), "0");
-                //addSetupItem("Plan All Doctors","Plan_All_Drs",jsonObject.optString("Plan_All_Drs"),"0");
+                addSetupItem(getString(R.string.joint_work_need), "JWNeed", jsonObject.optString("JWNeed"), "0");
+//                addSetupItem("Hospital Need", "HospNeed", jsonObject.optString("HospNeed"), "0");
+//                addSetupItem("Cip Need", "Cip_Need", jsonObject.optString("Cip_Need"), "0");
+
+                addSetupItem(getString(R.string.fw_meetup_mandatory), "FW_meetup_mandatory", jsonObject.optString("FW_meetup_mandatory"), "0");
+                addSetupItem(getString(R.string.holiday_edit), "Holiday_Editable", jsonObject.optString("Holiday_Editable"), "0");
+                addSetupItem(getString(R.string.WeekOff_edit), "Weeklyoff_Editable", jsonObject.optString("Weeklyoff_Editable"), "0");
+                addSetupItem(getString(R.string.remarks_mandatory), "tp_objective_mandatory", jsonObject.optString("tp_objective_mandatory"), "0");
+                addSetupItem(getString(R.string.plan_all_doctors), "Plan_All_Drs", jsonObject.optString("Plan_All_Drs"), "0");
+                addSetupItem(getString(R.string.visit_frequency_need), "visit_freq_need", jsonObject.optString("visit_freq_need"), "0");
+                addSetupItem(getString(R.string.tour_plan_overview),"tp_overview_need",jsonObject.optString("tp_overview_need"),"0");
 
                 //Numberic values
-                addSetupItem(SharedPref.getDrCap(requireContext()) + " Min Count", "min_doc", jsonObject.optString("min_doc", "0") + " Count", "2");
-                addSetupItem(SharedPref.getDrCap(requireContext()) + " Max Count", "max_doc", jsonObject.optString("max_doc", "0") + " Count", "2");
-                addSetupItem("Minimum Gap (Days)", "min_gap_need", jsonObject.optString("min_gap_need", "0") + " Count", "2");
-                addSetupItem("Add session Count Limit", "AddsessionCount", jsonObject.optString("AddsessionCount", "0") + " Count", "2");
+                addSetupItem(SharedPref.getDrCap(requireContext()) + " " + getString(R.string.min_selection_count), "min_doc", jsonObject.optString("min_doc", "0") + " Count", "2");
+                addSetupItem(SharedPref.getDrCap(requireContext()) + " " + getString(R.string.max_selection_count), "max_doc", jsonObject.optString("max_doc", "0") + " Count", "2");
+                addSetupItem(getString(R.string.minimum_gap_days), "min_gap_need", jsonObject.optString("min_gap_need", "0") + " Count", "2");
+
 
 
                 //Remainder popup
-                addSetupItem("Remainder Time", "RemainderTime", SharedPref.getDoctorRemainingShownDate(requireContext()),"2");
+                addSetupItem(getString(R.string.remainder_time), "RemainderTime", SharedPref.getDoctorRemainingShownDate(requireContext()),"2");
 
             }
         } catch (Exception e) {
