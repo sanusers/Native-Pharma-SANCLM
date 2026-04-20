@@ -171,7 +171,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
-        if(SharedPref.getZoomEnabled(context).equalsIgnoreCase("0") && SharedPref.getSlideAutoPlay(context).equalsIgnoreCase("1")){
+        if(SharedPref.getZoomEnabled(context).equalsIgnoreCase("0")){
             ZoomableImageView imageViewZoom = sliderLayout.findViewById(R.id.imageViewZoom);
             ImageView imageView = sliderLayout.findViewById(R.id.imageView);
 

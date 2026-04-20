@@ -555,6 +555,11 @@ public class SettingsActivity extends AppCompatActivity {
                                         logoUrl = config.getString("logoimg");
                                         optionFiles = config.getString("optionFiles");
 
+//                                        String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
+//                                        String urlData = baseWebUrl + phpPathUrl;
+//                                        String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
+//                                        SharedPref.setTagImageUrl(getApplicationContext(), baseWebUrl);
+
                                         String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
                                         String urlData = web_url_getText + phpPathUrl;
                                         String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";

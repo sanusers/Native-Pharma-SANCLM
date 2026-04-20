@@ -70,6 +70,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -158,6 +159,7 @@ import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.databinding.HomeNavigationFooterBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
@@ -312,8 +314,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
                         String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
 
-                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && !lastShownDate.isEmpty() && !today.equals(lastShownDate) && (currentTimeInt >= remainderTimeInt)) {
+                        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") /*&& !lastShownDate.isEmpty()*/ && !today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
                             checkAndShowDoctorPopup();
+                        }else{
+                            Log.d("run", "checkAndShowDoctorPopup: "+"condition Skipped (run)");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -331,167 +335,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
-
-//        mediaController = new MediaController(this);
-//        binding.videoView.setMediaController(mediaController);
-//        String jsonStr = "{ \"video_url\" : \"https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm\" }";
-//        try {
-//            JSONObject jsonObject = new JSONObject(jsonStr);
-//            videoUrl = jsonObject.getString("video_url");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-//        if (!videoUrl.isEmpty()) {
-//            playVideo(videoUrl);
-//        }
-
-//        binding.youtubePlayerView.getPlayerUiController().showUi(false);
-//        binding.youtubePlayerView.setEnableAutomaticInitialization(true);
-//        getLifecycle().addObserver(binding.youtubePlayerView);
-
-//        binding.youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-//            @Override
-//            public void onReady(@NonNull YouTubePlayer player) {
-//                youTubePlayer = player;
-//                youTubePlayer.loadVideo("jZwyEuVrUKA", 0);
-//            }
-//        });
-
-//        // Play / Pause
-//        binding.btnPlayPause.setOnClickListener(new SafeClickListener() {
-//            @Override
-//            public void onSafeClick(View view) {
-//                if (youTubePlayer != null) {
-//                    if (isPlaying) {
-//                        youTubePlayer.pause();
-//                        binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_play);
-//                    } else {
-//                        youTubePlayer.play();
-//                        binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-//                    }
-//                    isPlaying = !isPlaying;
-//                }
-//            }
-//        });
-//
-//        // Close
-//        binding.btnClose.setOnClickListener(new SafeClickListener() {
-//            @Override
-//            public void onSafeClick(View view) {
-//                if (youTubePlayer != null) {
-//                    youTubePlayer.pause();
-//                    isPlaying = false;
-//                    youTubePlayer = null;
-//                }
-////            binding.youtubePlayerView.release();
-////            getLifecycle().removeObserver(binding.youtubePlayerView);
-//                binding.floatingPlayer.setVisibility(View.GONE);
-//            }
-//        });
-
-        // Dragging
-//        binding.floatingPlayer.setOnTouchListener(new View.OnTouchListener() {
-//            private int lastX, lastY;
-//            private int paramsX, paramsY;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        lastX = (int) event.getRawX();
-//                        lastY = (int) event.getRawY();
-//                        paramsX = (int) v.getX();
-//                        paramsY = (int) v.getY();
-//                        return true;
-//                    case MotionEvent.ACTION_MOVE:
-//                        int dx = (int) event.getRawX() - lastX;
-//                        int dy = (int) event.getRawY() - lastY;
-//                        v.setX(paramsX + dx);
-//                        v.setY(paramsY + dy);
-//                        return true;
-//                }
-//                return false;
-//            }
-//        });
-//        binding.floatingPlayer.setOnTouchListener((v, event) -> {
-//            switch (event.getActionMasked()) {
-//                case MotionEvent.ACTION_DOWN:
-//                    dX = v.getX() - event.getRawX();
-//                    dY = v.getY() - event.getRawY();
-//                    lastAction = MotionEvent.ACTION_DOWN;
-//                    return true;
-//
-//                case MotionEvent.ACTION_MOVE:
-//                    v.animate()
-//                            .x(event.getRawX() + dX)
-//                            .y(event.getRawY() + dY)
-//                            .setDuration(0)
-//                            .start();
-//                    lastAction = MotionEvent.ACTION_MOVE;
-//                    return true;
-//
-//                case MotionEvent.ACTION_UP:
-//                    if (lastAction == MotionEvent.ACTION_DOWN) {
-//                        // Could detect tap here if needed
-//                    }
-//                    return true;
-//
-//                default:
-//                    return false;
-//            }
-//        });
-
-//        binding.dragOverlay.setOnTouchListener(new View.OnTouchListener() {
-//            float dX, dY;
-//            int lastAction;
-//
-//            @Override
-//            public boolean onTouch(View view, MotionEvent event) {
-//                View root = binding.getRoot(); // <-- your root container id
-//                if (root == null) return false;
-//
-//                switch (event.getActionMasked()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        // Prevent parent (e.g., RecyclerView/ScrollView) from stealing events
-//                        view.getParent().requestDisallowInterceptTouchEvent(true);
-//                        dX = binding.floatingPlayer.getX() - event.getRawX();
-//                        dY = binding.floatingPlayer.getY() - event.getRawY();
-//                        lastAction = MotionEvent.ACTION_DOWN;
-//                        return true;
-//
-//                    case MotionEvent.ACTION_MOVE: {
-//                        float newX = event.getRawX() + dX;
-//                        float newY = event.getRawY() + dY;
-//
-//                        // Clamp to root bounds
-//                        int rootW = root.getWidth();
-//                        int rootH = root.getHeight();
-//                        int fpW = binding.floatingPlayer.getWidth();
-//                        int fpH = binding.floatingPlayer.getHeight();
-//
-//                        newX = Math.max(0, Math.min(newX, rootW - fpW));
-//                        newY = Math.max(0, Math.min(newY, rootH - fpH));
-//
-//                        binding.floatingPlayer.setX(newX);
-//                        binding.floatingPlayer.setY(newY);
-//                        lastAction = MotionEvent.ACTION_MOVE;
-//                        return true;
-//                    }
-//
-//                    case MotionEvent.ACTION_UP:
-//                        view.getParent().requestDisallowInterceptTouchEvent(false);
-//                        return lastAction == MotionEvent.ACTION_MOVE;
-//
-//                    default:
-//                        return false;
-//                }
-//            }
-//        });
-//        checkAndShowDoctorPopup();
-        // Show binding.floatingPlayer player initially
-//        binding.floatingPlayer.setVisibility(View.VISIBLE);
-        //checkAndShow5PMDoctorPopup();
     }
 
     private void syncSetup() {
@@ -605,52 +448,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-//    private void playVideo(String url) {
-//        binding.videoView.setVideoURI(Uri.parse(url));
-//        binding.videoView.setVisibility(VideoView.VISIBLE);
-//        binding.videoView.start();
-//    }
-
-//    @Override
-//    public void onUserLeaveHint() {
-//        super.onUserLeaveHint();
-////        enterPipMode();
-//        if (youTubePlayer != null) {
-//            youTubePlayer.pause();
-//            isPlaying = false;
-//            youTubePlayer = null;
-//        }
-////        binding.youtubePlayerView.release();
-////        getLifecycle().removeObserver(binding.youtubePlayerView);
-//        binding.floatingPlayer.setVisibility(View.GONE);
-//    }
-
-//    private void enterPipMode() {
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            Rational aspectRatio = new Rational(16, 9);
-//            PictureInPictureParams params = new PictureInPictureParams.Builder()
-//                    .setAspectRatio(aspectRatio)
-//                    .build();
-//            enterPictureInPictureMode(params);
-//        } else {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                enterPictureInPictureMode();
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
-//        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
-//
-////        if (isInPictureInPictureMode) {
-////            // Hide extra dashboard UI if needed
-////            mediaController.hide();
-////        } else {
-////            // Restore full UI when back
-////            mediaController.show();
-////        }
-//    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -799,6 +596,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
             checkUserStatus();
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
 //        if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
 //            checkAndShowDoctorPopup();
 //        }
@@ -814,63 +612,40 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             MasterDataDao masterDataDao = roomDB.masterDataDao();
 
             try {
-                JSONArray tpArray = masterDataDao
-                        .getMasterDataTableOrNew(Constants.WORK_PLAN)
-                        .getMasterSyncDataJsonArray();
+                JSONArray tpArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                 if (tpArray.length() == 0) return;
 
                 JSONObject targetSession = null;
                 for (int i = 0; i < tpArray.length(); i++) {
                     JSONObject sessionObj = tpArray.getJSONObject(i);
                     if (sessionObj.optString("FWFlg", "").equalsIgnoreCase("F")) {
+                        boolean isFromTP = sessionObj.optBoolean("isFromTP", false);
+                        if (isFromTP) return;
                         targetSession = sessionObj;
                         break;
                     }
                 }
 
                 if (targetSession == null) return;
-
-// 1. Get Doctor Codes (Existing)
                 String tpDoctorCodes = targetSession.optString("TP_Doctor", "").trim();
-
-// 2. Get Chemist Codes (Safety Check for Key Names)
-// Sila neram backend-la 's' illama 'TP_Chemist' nu anupalaam,
-// illana 'tp_chemist' nu small letters-la anupalaam.
-                // Replace your Chemist extraction with this:
                 String tpChemistCodes = targetSession.optString("TP_Chemists", "").trim();
 
-                if (tpChemistCodes.isEmpty()) {
-                    tpChemistCodes = targetSession.optString("TP_Chemist", "").trim();
-                }
-
-// Oru velai backend "tp_chemists" (small letters) anupunaalum handle panna:
-                if (tpChemistCodes.isEmpty()) {
-                    tpChemistCodes = targetSession.optString("tp_chemists", "").trim();
-                }
-
-// Indha log-la value varudha nu paarunga
                 Log.d("POPUP_DEBUG", "Chemist Codes from DB: " + tpChemistCodes);
 
-// 💡 Debugging-ku indha log romba mukkkiyam
                 Log.e("POPUP_CHECK", "Full Session JSON: " + targetSession.toString());
                 Log.e("POPUP_CHECK", "Extracted TP_Doctor: " + tpDoctorCodes);
                 Log.e("POPUP_CHECK", "Extracted TP_Chemists: " + tpChemistCodes);
 
-// 3. Both Empty check
+
                 if (tpDoctorCodes.isEmpty() && tpChemistCodes.isEmpty()) {
                     Log.e("POPUP_CHECK", "Both Doctor & Chemist Empty - Stopping Popup");
                     return;
                 }
 
-                // ✅ Save Doctor
                 SharedPref.setTodayTPDoctor(this, tpDoctorCodes);
-                // ✅ Save Chemist - NEW
                 SharedPref.setTodayTPChemists(this, tpChemistCodes);
 
-                JSONArray doctorMasArray = masterDataDao
-                        .getMasterDataTableOrNew(
-                                Constants.DOCTOR_MAS + SharedPref.getHqCode(this))
-                        .getMasterSyncDataJsonArray();
+                JSONArray doctorMasArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
 
                 if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")
                         && doctorMasArray == null
@@ -885,8 +660,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     SharedPref.clearCumulativeVisitedDoctors(this);
                 }
 
-                String today = new SimpleDateFormat("yyyy-MM-dd",
-                        Locale.ENGLISH).format(new Date());
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
                 String lastShownDate = SharedPref.getTodayPopupShown(this);
 
                 if (today.equals(lastShownDate) && !forceImmediate) return;
@@ -897,13 +671,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
 
                 if (!today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
-                    // ✅ Chemist Codes Pass பண்றோம் - NEW
-                    showNotVisitedDoctorsPopup(
-                            tpDoctorCodes,
-                            tpChemistCodes,   // ✅ NEW
-                            forceImmediate,
-                            doctorMasArray);
+                    showNotVisitedDoctorsPopup(tpDoctorCodes, tpChemistCodes, forceImmediate, doctorMasArray);
                     SharedPref.setTodayPopupShown(this, today);
+                    Log.d("onCreate", "checkAndShowDoctorPopup: "+"Popup date seted"+today);
+                }else{
+                    Log.d("onCreate", "checkAndShowDoctorPopup: "+"condition Skipped -- OnCreate");
+                    Log.d("onCreate", "checkAndShowDoctorPopup: "+lastShownDate);
                 }
 
             } catch (Exception e) {
@@ -916,86 +689,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             Log.e("TAG", "Error in Popup Logic: " + e.getMessage());
         }
     }
-//    private void checkAndShowDoctorPopup() {
-//        try {
-//            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")) {
-//                Log.d("Tag", "No Popup for MGR (check and show)");
-//                return;
-//            }
-//            RoomDB roomDB = RoomDB.getDatabase(this);
-//            MasterDataDao masterDataDao = roomDB.masterDataDao();
-//
-//            try {
-//                JSONArray tpArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
-//                if (tpArray.length() == 0) return;
-//
-//                JSONObject targetSession = null;
-//
-//                for (int i = 0; i < tpArray.length(); i++) {
-//                    JSONObject sessionObj = tpArray.getJSONObject(i);
-//                    if (sessionObj.optString("FWFlg", "").equalsIgnoreCase("F")) {
-//                        targetSession = sessionObj;
-//                        break;
-//                    }
-//                }
-//
-//                if (targetSession == null) {
-////                    Log.d("PopupCheck", "No session in the TP data has FWFlg = 'F'.");
-//                    return;
-//                }
-//
-//                String tpDoctorCodes = targetSession.optString("TP_Doctor", "").trim();
-//
-//                if (tpDoctorCodes.isEmpty()) {
-////                    Log.e("PopupCheck", "Field Work session found, but TP_Doctor codes are empty.");
-//                    return;
-//                }
-//
-//                SharedPref.setTodayTPDoctor(this, tpDoctorCodes);
-//
-//                JSONArray doctorMasArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
-//
-//                if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") && doctorMasArray == null || doctorMasArray.length() == 0) {
-//                    new Handler(Looper.getMainLooper()).postDelayed(this::checkAndShowDoctorPopup, 2000);
-//                    return;
-//                }
-//
-//                boolean forceImmediate = SharedPref.isDataCleared(this);
-//                if (forceImmediate) {
-//                    SharedPref.clearCumulativeVisitedDoctors(this);
-//                }
-//
-//                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
-//                String lastShownDate = SharedPref.getTodayPopupShown(this);
-//
-//                if (today.equals(lastShownDate) && !forceImmediate) {
-//                    Log.d("PopupCheck", "Popup already shown for today.");
-//                    return;
-//                }
-//
-//                String remainderTime = SharedPref.getDoctorRemainingShownDate(this);
-//                String time = TimeUtils.getCurrentDateTimeTp(TimeUtils.FORMAT_29);
-//
-//                int currentTimeInt = Integer.parseInt(time.replace(":", ""));
-//                int remainderTimeInt = Integer.parseInt(remainderTime.replace(":", ""));
-//
-//                if (!tpDoctorCodes.equals("null") && !tpDoctorCodes.isEmpty()) {
-//                    if (!today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
-//                        showNotVisitedDoctorsPopup(tpDoctorCodes, forceImmediate, doctorMasArray);
-//                        SharedPref.setTodayPopupShown(this, today);
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                Log.e("TAG", "Error in Popup Logic: " + e.getMessage());
-//            }
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Log.e("TAG", "Error in Popup Logic: " + e.getMessage());
-//        }
-//    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -1152,7 +845,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 for (NotificationDataTable notificationData : list) {
                     if (syncingIds.contains(notificationData.getId())) continue;
                     syncingIds.add(notificationData.getId());
-                    String title = notificationData.getTitle(), body = notificationData.getMessage(), time = notificationData.getDateTime(), type = "", hqCode = "";
+                    String title = notificationData.getTitle(), body = notificationData.getMessage(), time = notificationData.getDateTime(), type = "", hqCode = "", monthYear = "";
                     int id = notificationData.getId();
                     hqCode = SharedPref.getHqCode(this);
                     if (hqCode == null || hqCode.isEmpty()) {
@@ -1163,6 +856,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             if (body.contains("-MR")) {
                                 type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
                                 hqCode = body.substring(body.lastIndexOf("-MR") + 1);
+                            } else if (body.contains("$TP#")) {
+                                type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("#"));
+                                monthYear = body.substring(body.lastIndexOf("#") + 1);
                             } else {
                                 type = body.substring(body.lastIndexOf("$") + 1);
                             }
@@ -1172,7 +868,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             body = body.replace("Kindly Logout the App.", "");
                             body = body.replace(" Kindly Logout & Login the App.", "");
                             body = body.replace(" Kindly Sync these in Master Sync Screen.", "");
-                            showNotificationDialog(title, body, type, hqCode, id);
+                            showNotificationDialog(title, body, type, hqCode, monthYear, id);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -1306,6 +1002,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
         if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
+            Log.d("onCreate if", "onCreate: "+"Entered onCreate if");
             checkAndShowDoctorPopup();
         }
     }
@@ -1519,13 +1216,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         notificationPopupWindow.update();
     }
 
-    private void showNotificationDialog(String title, String body, String type, String hqCode, int id) {
+    private void showNotificationDialog(String title, String body, String type, String hqCode, String monthYear, int id) {
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(() -> {
             Activity currentActivity = AppActivityTracker.getInstance().getCurrentActivity();
             if (currentActivity != null) {
                 currentActivity.runOnUiThread(() -> {
-                    NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, id);
+                    NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, monthYear, id);
                 });
             }
         });
@@ -1563,7 +1260,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    private static void setupLeftViewPager(Context context, FragmentManager fragmentManager) {
+    private static void setupLeftViewPager(FragmentManager fragmentManager) {
         leftViewPagerAdapter = new TabLayoutAdapter(fragmentManager);
         leftViewPagerAdapter.add(new WorkPlanFragment(), homeDashBoardActivity.getString(R.string.work_plan));
         leftViewPagerAdapter.add(new CallsFragment(), homeDashBoardActivity.getString(R.string.calls));
@@ -2279,7 +1976,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getActivityCap(this))) {
-            startActivity(new Intent(HomeDashBoard.this, DynamicActivity.class));
+            if (WorkPlanFragment.mFwFlg1.isEmpty()  || WorkPlanFragment.binding.txtSave.isEnabled()) {
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_work_plan));
+            } else {
+                startActivity(new Intent(HomeDashBoard.this, DynamicActivity.class));
+            }
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.my_resource))) {
@@ -2500,7 +2201,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     if (HomeDashBoard.selectedDate != null && !SharedPref.getLastCallDate(context).equalsIgnoreCase(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)))) {
                         SharedPref.setLastCallDate(context, "");
                     }
-                    setupLeftViewPager(context, fragmentManager);
+                    setupLeftViewPager(fragmentManager);
                     if (SharedPref.getQuizNeed(context).equalsIgnoreCase("0") && SharedPref.getQuizNeedMandt(context).equalsIgnoreCase("0")) {
                         activity.setUpQuiz();
                     }
@@ -2516,7 +2217,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 workingDate = "";
                 binding.viewPagerProgress.setVisibility(View.GONE);
                 if (shouldShowCalender) {
-                    setupLeftViewPager(context, fragmentManager);
+                    setupLeftViewPager(fragmentManager);
                 } else {
                     isDateSelectionClicked = true;
                 }
@@ -2622,7 +2323,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         switch (view.getId()) {
             case R.id.rl_calender_syn:
                 binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
-                callAPIDateSync();
+                callAPICallSync();
                 break;
 
             case R.id.rl_date_layoout:
@@ -2783,6 +2484,56 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
     }
 
+    private void callAPICallSync() {
+        if (UtilityClass.isNetworkAvailable(this)) {
+//        progressDialog = CommonUtilsMethods.createProgressDialog(this);
+            JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
+            try {
+                jj.put("tableName", "gethome");
+                jj.put("sfcode", SharedPref.getSfCode(this));
+                jj.put("division_code", SharedPref.getDivisionCode(this));
+                jj.put("Rsf", SharedPref.getHqCode(this));
+                Log.d("object", jj.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "home");
+            Call<JsonElement> callSyncDate = apiInterface.getJSONElement(SharedPref.getCallApiUrl(HomeDashBoard.this), mapString, jj.toString());
+
+            callSyncDate.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+                            assert jsonElement != null;
+                            JsonArray jsonArray = jsonElement.getAsJsonArray();
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
+                            CallDataRestClass.resetcallValues(HomeDashBoard.this);
+                            callAPIDateSync();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
+                    binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            CommonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void callAPIDateSync() {
         if (UtilityClass.isNetworkAvailable(this)) {
 //        progressDialog = CommonUtilsMethods.createProgressDialog(this);
@@ -2814,7 +2565,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
 //                        binding.tabLayout.setVisibility(View.VISIBLE);
 //                        binding.viewPager.setVisibility(View.VISIBLE);
-                            commonUtilsMethods.showToastMessage(HomeDashBoard.this, HomeDashBoard.this.getString(R.string.synced_successfully));
+                            CommonUtilsMethods.showToastMessage(HomeDashBoard.this, HomeDashBoard.this.getString(R.string.synced_successfully));
 //                        progressDialog.dismiss();
                             setUpCalendar();
                         } catch (Exception ignored) {
@@ -2827,12 +2578,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 //                progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
+                    CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
                     binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
                 }
             });
         } else {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            CommonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
             binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
         }
     }
@@ -3885,16 +3636,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            Log.e("PopupError", e.getMessage());
 //        }
 //    }
-    private void showNotVisitedDoctorsPopup(
-            String tpDoctorCodes,
-            String tpChemistCodes,    // ✅ NEW Parameter
-            boolean isImmediatePopup,
-            JSONArray doctorMasArray) {
+    private void showNotVisitedDoctorsPopup(String tpDoctorCodes, String tpChemistCodes, boolean isImmediatePopup, JSONArray doctorMasArray) {
         try {
-            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")
-                    || (tpDoctorCodes == null && tpChemistCodes == null)) return;
+            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") || (tpDoctorCodes == null && tpChemistCodes == null)) return;
 
-            // ✅ Doctor Codes - Existing
+
             List<String> plannedDoctorCodes = new ArrayList<>();
             if (tpDoctorCodes != null && !tpDoctorCodes.isEmpty()) {
                 for (String code : tpDoctorCodes.split(",")) {
@@ -3903,7 +3649,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
             }
 
-            // ✅ Chemist Codes - NEW
+
             List<String> plannedChemistCodes = new ArrayList<>();
             if (tpChemistCodes != null && !tpChemistCodes.isEmpty()) {
                 for (String code : tpChemistCodes.split(",")) {
@@ -4000,10 +3746,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 String name = obj.optString("Name", "").trim();
                 String cluster = obj.optString("Town_Name", "").trim();
 
-                // ✅ Numeric ID-ai edukrom (Example: "2")
+
                 String catId = obj.optString("Chm_cat", "").trim();
 
-                // ✅ Match check: ID "2" irundha "te" nu maarum, illana "-" varum
+
                 String finalCatName = catLookupMap.getOrDefault(catId, "--");
 
                 if (!code.isEmpty()) {
@@ -4013,65 +3759,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     chemistCategoryMap.put(code, finalCatName);
                 }
             }
-//        JSONArray chemistMasArray = masterDataDao
-//                .getMasterDataTableOrNew(
-//                        Constants.CHEMIST_MAS + SharedPref.getHqCode(this))
-//                .getMasterSyncDataJsonArray();
-//
-//        Log.e("POPUP_CHECK", "Chemist Master Count: " + chemistMasArray.length());
-//
-//        for (int i = 0; i < chemistMasArray.length(); i++) {
-//            JSONObject obj  = chemistMasArray.getJSONObject(i);
-//            String code     = obj.optString("Code",      "").trim();
-//            String name     = obj.optString("Name",      "").trim();
-//            String cluster  = obj.optString("Town_Name", "").trim();
-//            String category = obj.optString("Category",  " ").trim();
-//            if (!code.isEmpty()) {
-//                chemistNameMap.put(code, name);
-//                chemistClusterMap.put(code, cluster);
-//                chemistCategoryMap.put(code, category);
-//            }
-//        }
 
-//        Map<String, String> chemistNameMap     = new HashMap<>();
-//        Map<String, String> chemistClusterMap  = new HashMap<>();
-//        Map<String, String> chemistCategoryMap = new HashMap<>();
-//        Map<String, String> catLookupMap = new HashMap<>();
-//        JSONArray catArray = masterDataDao
-//                .getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST)
-//                .getMasterSyncDataJsonArray();
-//
-//        if (catArray != null) {
-//            for (int j = 0; j < catArray.length(); j++) {
-//                JSONObject catObj = catArray.getJSONObject(j);
-//                // "Code" value-um "Chem_Cat_Name" value-um match aaga Map-la podrom
-//                catLookupMap.put(catObj.optString("Code"), catObj.optString("Chem_Cat_Name"));
-//            }
-//        }
-//        JSONArray chemistMasArray = masterDataDao
-//                .getMasterDataTableOrNew(
-//                        Constants.CHEMIST_MAS + SharedPref.getHqCode(this))
-//                .getMasterSyncDataJsonArray();
-//
-//        Log.e("POPUP_CHECK", "Chemist Master Count: " + chemistMasArray.length());
-//
-//        for (int i = 0; i < chemistMasArray.length(); i++) {
-//            JSONObject obj  = chemistMasArray.getJSONObject(i);
-//            String code     = obj.optString("Code",      "").trim();
-//            String name     = obj.optString("Name",      "").trim();
-//            String cluster  = obj.optString("Town_Name", "").trim();
-//            String catId = obj.optString("Chm_cat", "").trim();
-//            String categoryName = catLookupMap.getOrDefault(catId, "-");
-//            if (!code.isEmpty()) {
-//                chemistNameMap.put(code, name);
-//                chemistClusterMap.put(code, cluster);
-//                chemistCategoryMap.put(code, categoryName);
-//            }
-//        }
-//
-
-
-            // ✅ Not Visited - Existing Doctor
             List<String> notVisitedDoctors = new ArrayList<>();
             for (String code : plannedDoctorCodes) {
                 if (!visitedDoctors.contains(code)) notVisitedDoctors.add(code);
@@ -4096,26 +3784,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             Log.e("POPUP_CHECK", "Not Visited Chemists : " + notVisitedChemists.size());
 
             // ✅ Chemist Data Set - NEW
-            CommonAlertBox.setChemistData(
-                    new ArrayList<>(visitedChemists),
-                    notVisitedChemists,
-                    chemistNameMap,
-                    chemistClusterMap,
-                    chemistCategoryMap,
-                    chemistVisitRatio,
-                    chemistNVRatio
+            CommonAlertBox.setChemistData(new ArrayList<>(visitedChemists), notVisitedChemists, chemistNameMap, chemistClusterMap, chemistCategoryMap, chemistVisitRatio, chemistNVRatio
             );
 
             // ✅ Popup - Existing
-            CommonAlertBox.DoctorPlanPopup2(
-                    this, true,
-                    new ArrayList<>(visitedDoctors),
-                    notVisitedDoctors,
-                    doctorNameMap,
-                    doctorClusterMap,
-                    doctorCategoryMap,
-                    countRatio,
-                    notVisitedRatio
+            CommonAlertBox.DoctorPlanPopup2(this, true, new ArrayList<>(visitedDoctors), notVisitedDoctors, doctorNameMap, doctorClusterMap, doctorCategoryMap, countRatio, notVisitedRatio
             );
 
         } catch (Exception e) {
@@ -4295,7 +3968,29 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         public void onReceive(Context context, Intent intent) {
             try {
                 String type = intent.getStringExtra("type");
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.sync_completed));
+//                CommonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.sync_completed));
+                if (type != null && type.equalsIgnoreCase("TPD")) {
+                    try {
+                        Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + 0);
+                        if (fragment instanceof WorkPlanFragment) {
+                            ((WorkPlanFragment) fragment).refresh(true);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (type != null && type.equalsIgnoreCase("SE")) {
+                    try {
+                        startActivity(new Intent(HomeDashBoard.this, HomeDashBoard.class));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (type != null && type.equalsIgnoreCase("DCR")) {
+                    try {
+                        setupLeftViewPager(fragmentManager);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

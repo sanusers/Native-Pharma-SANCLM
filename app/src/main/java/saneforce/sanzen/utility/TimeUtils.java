@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,6 +64,7 @@ public class TimeUtils {
     public static final String FORMAT_40 = "mm:ss";
     public static final String FORMAT_41 = "hh:mm a";
     public static final String FORMAT_42 = "MMM dd, yyyy | EEEE";
+    public static final String FORMAT_43 = "MM-yyyy";
 
     public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();
@@ -543,4 +545,9 @@ public class TimeUtils {
         }
     }
 
+    public static LocalDate convertToLocalDate(String dateString, String format) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        YearMonth yearMonth = YearMonth.parse(dateString, formatter);
+        return yearMonth.atDay(1);
+    }
 }

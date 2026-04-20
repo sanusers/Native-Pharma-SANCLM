@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">T.1.5.6</string>
+    <string name="app_version" translatable="false">V.1.5</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -1085,9 +1085,7 @@ Check-in/Out is enabled and the date has been changed, so you have been logged o
     <string name="you_are_staying_overnight">You are staying overnight</string>
     <string name="night_stay_remarks">Night Stay Remarks</string>
     <string name="day_remarks">Day Remarks</string>
-
-
-
+    <string name="please_enter_the_night_stay_remarks">Please enter the Night Stay Remarks!</string>
     <string name="minimum_gap">Minimum Gap</string>
     <string name="minimum">Minimum</string>
     <string name="maximum">Maximum</string>

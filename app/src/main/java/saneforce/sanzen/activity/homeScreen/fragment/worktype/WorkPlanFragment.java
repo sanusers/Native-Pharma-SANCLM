@@ -227,7 +227,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if (finalSubmitDialog != null) {
 //                finalSubmitDialog.show();
             }
-            finalSubmit("Auto Submitted", true);
+            finalSubmit("", "Auto Submitted", true);
 //                break;
 //            }
 //        }
@@ -1565,6 +1565,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtSave.setTextColor(getResources().getColor(R.color.black));
                             binding.txtSave.setEnabled(true);
                             binding.cardPlan2.setVisibility(View.VISIBLE);
+                            binding.txtCluster2.setVisibility(View.VISIBLE);
                             if (SharedPref.getWrkAreaName(requireContext()).isEmpty()) {
                                 binding.txtCluster2.setHint(getString(R.string.select) + " " + SharedPref.getClusterCap(requireContext()));
                             } else {
@@ -1748,7 +1749,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void refresh(boolean isToSetupWorkPlan) {
+    public void refresh(boolean isToSetupWorkPlan) {
         try {
             JSONObject refreshJsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
             refreshJsonObject.put("devDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
@@ -5709,7 +5710,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void finalSubmit(String remark, boolean isAutoSubmit) {
+    private void finalSubmit(String nsRemarks, String remark, boolean isAutoSubmit) {
         gpsTrack = new GPSTrack(requireActivity());
         latitude = gpsTrack.getLatitude();
         longitude = gpsTrack.getLongitude();
@@ -5730,7 +5731,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("location", latitude + ":" + longitude);
             finalSubmitJSONObject.put("address", address);
 
-            if (!nsRemarks.isEmpty()) {
+            if (SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0") && !nsRemarks.isEmpty()) {
                 finalSubmitJSONObject.put("NS_Rsf_Name", SharedPref.getHqName(requireContext()));
                 finalSubmitJSONObject.put("IsNightStay", SharedPref.getNightStay(requireContext()));
                 finalSubmitJSONObject.put("NS_Rsf_Code", nsRsfCode);
@@ -5843,7 +5844,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     dialogRemarks.dismiss();
                     remarks = remarks.replaceAll("'", "");
                     Log.e("Remarks", "remark : " + remarks);
-                    finalSubmit(remarks, false);
+                    finalSubmit("", remarks, false);
                 } else if (remarks.isEmpty()) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
                 } else {
@@ -5881,8 +5882,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onSafeClick(View view) {
                 dialogRemarks.dismiss();
-                if (SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) {
-                    if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
+                if (SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0") && SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                    if ((mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) || SharedPref.getNsForNfwNeed(requireContext()).equals("0")) {
                         StayAlert();
                     } else {
                         Dialog dialog = new Dialog(requireActivity());
@@ -5944,13 +5945,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         dialog.show();
         Window window = dialog.getWindow();
         if (window != null) {
-
-
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-
-            window.setLayout((int) (workPlanFragment.requireActivity()
-                            .getResources().getDisplayMetrics().widthPixels * 0.38), ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setLayout((int) (workPlanFragment.requireActivity().getResources().getDisplayMetrics().widthPixels * 0.38), ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         ImageView img_close = alertLayout.findViewById(R.id.img_close);
         if (img_close != null) {
@@ -5959,8 +5955,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         btn_yes.setOnClickListener(view -> {
             dialog.dismiss();
-            StayAlert2(requireActivity(), mFwFlg1, mFwFlg2, mTownname1, mTownname2, mHQCode1, mHQCode2,
-                    mHQName1, mHQName2, sfCode, multiple_cluster_list);
+            StayAlert2(requireActivity(), mFwFlg1, mFwFlg2, mTownname1, mTownname2, mHQCode1, mHQCode2, mHQName1, mHQName2, sfCode, multiple_cluster_list);
         });
         btn_no.setOnClickListener(view -> {
             dialog.dismiss();
@@ -5990,10 +5985,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //        });
     }
 
-    public void StayAlert2(FragmentActivity fragment, String mFwFlg1, String mFwFlg2, String mTownname1, String mTownname2, String mHQCode1, String mHQCode2,
-                           String mHQName1, String mHQName2, String sfCode,
-                           List<Multicheckclass_clust> multiple_cluster_list) {
-
+    public void StayAlert2(FragmentActivity fragment, String mFwFlg1, String mFwFlg2, String mTownname1, String mTownname2, String mHQCode1, String mHQCode2, String mHQName1, String mHQName2, String sfCode, List<Multicheckclass_clust> multiple_cluster_list) {
         Dialog dialog = new Dialog(fragment);
         dialog.setContentView(R.layout.popup_night_stay_teritorry);
         if (dialog.getWindow() != null) {
@@ -6022,6 +6014,34 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         //  HQ Spinner setup - sfType 2
         if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+            List<String> hqCodeData = new ArrayList<>();
+            List<String> hqNameData = new ArrayList<>();
+            hqCodeData.add("0");
+            hqNameData.add(getString(R.string.select_head_quarter));
+            JSONArray hqJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+            if (hqJsonArray.length() == 0) {
+                CommonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.sync) + " " + requireContext().getString(R.string.headquarter));
+                return;
+            } else {
+                spinnerTerritory.setEnabled(false);
+                spinnerTerritory.setAlpha(0.5f);
+                for (int i = 0; i < hqJsonArray.length(); i++) {
+                    JSONObject hqJsonObject = hqJsonArray.optJSONObject(i);
+                    String code = hqJsonObject.optString("Code"), name = hqJsonObject.optString("name");
+                    if (SharedPref.getNsAllClusterNeed(requireContext()).equalsIgnoreCase("0")) {
+                        hqCodeData.add(code);
+                        hqNameData.add(name);
+                    } else {
+                        List<String> hqlist1 = Arrays.asList(mHQCode1.split(","));
+                        List<String> hqlist2 = Arrays.asList(mHQCode2.split(","));
+                        if (hqlist1.contains(code) || hqlist2.contains(code)) {
+                            hqCodeData.add(code);
+                            hqNameData.add(name);
+                        }
+                    }
+                }
+            }
+
             List<String> hqDisplayList = new ArrayList<>();
             hqDisplayList.add(getString(R.string.select_head_quarter));
 
@@ -6043,9 +6063,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
 
-            ArrayAdapter<String> hqAdapter = new ArrayAdapter<String>(
-                    fragment, R.layout.popup_night_stay_spinner, hqDisplayList) {
-
+            ArrayAdapter<String> hqAdapter = new ArrayAdapter<String>(fragment, R.layout.popup_night_stay_spinner, hqNameData) {
                 @Override
                 public boolean isEnabled(int position) {
                     return position != 0;
@@ -6096,7 +6114,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             spinnerHeadQuaters.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (position == 0) return;
+                    if (position == 0) {
+                        spinnerTerritory.setEnabled(false);
+                        spinnerTerritory.setAlpha(0.5f);
+                        return;
+                    }
+
+                    spinnerTerritory.setEnabled(true);
+                    spinnerTerritory.setAlpha(1f);
 
                     // Selected HQ name
                     String selectedHQName = parent.getItemAtPosition(position).toString().trim();
@@ -6142,10 +6167,37 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                     }
+                    
+                    String selectedHQCode = hqCodeData.get(hqNameData.indexOf(selectedHQName));
+
+                    List<String> clusterCodeData = new ArrayList<>();
+                    List<String> clusterNameData = new ArrayList<>();
+                    clusterCodeData.add("0");
+                    clusterNameData.add(getString(R.string.select) + " " + SharedPref.getClusterCap(requireContext()));
+                    JSONArray clusterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + selectedHQCode).getMasterSyncDataJsonArray();
+                    if (clusterJsonArray.length() == 0) {
+                        CommonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.sync) + " " + requireContext().getString(R.string.headquarter));
+                        return;
+                    } else {
+                        for (int i = 0; i < clusterJsonArray.length(); i++) {
+                            JSONObject hqJsonObject = clusterJsonArray.optJSONObject(i);
+                            String code = hqJsonObject.optString("Code"), name = hqJsonObject.optString("Name");
+                            if (SharedPref.getNsAllClusterNeed(requireContext()).equalsIgnoreCase("0")) {
+                                clusterCodeData.add(code);
+                                clusterNameData.add(name);
+                            } else {
+                                List<String> clusterCode1 = Arrays.asList(mTowncode1.split(","));
+                                List<String> clusterCode2 = Arrays.asList(mTowncode2.split(","));
+                                if (clusterCode1.contains(code) || clusterCode2.contains(code)) {
+                                    clusterCodeData.add(code);
+                                    clusterNameData.add(name);
+                                }
+                            }
+                        }
+                    }
 
                     //  Territory spinner refresh
-                    ArrayAdapter<String> newAdapter = new ArrayAdapter<String>(
-                            fragment, R.layout.popup_night_stay_spinner, newTerritoryList) {
+                    ArrayAdapter<String> newAdapter = new ArrayAdapter<String>(fragment, R.layout.popup_night_stay_spinner, clusterNameData) {
                         @Override
                         public boolean isEnabled(int position) {
                             return position != 0;
@@ -6204,7 +6256,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         List<String> territoryDisplayList = new ArrayList<>();
         List<Multicheckclass_clust> filteredTerritoryList = new ArrayList<>();
         //territoryDisplayList.add("Select Territory");
-        territoryDisplayList.add(getString(R.string.select) + " " + SharedPref.getClusterCap(context));
+        territoryDisplayList.add(getString(R.string.select) + " " + SharedPref.getClusterCap(requireContext()));
 
         String selectedClusters = "";
         if (mFwFlg1.equalsIgnoreCase("F") && mFwFlg2.equalsIgnoreCase("F")) {
@@ -6231,9 +6283,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                     if (!found) {
-                        filteredTerritoryList.add(
-                                new Multicheckclass_clust("", trimmed, "", false)
-                        );
+                        filteredTerritoryList.add(new Multicheckclass_clust("", trimmed, "", false));
                     }
                 }
             }
@@ -6247,10 +6297,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         Log.d("STAY_DEBUG", "territoryDisplayList=" + territoryDisplayList);
         Log.d("STAY_DEBUG", "filteredTerritoryList size=" + filteredTerritoryList.size());
 
-        //  Territory Spinner Adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                fragment, R.layout.popup_night_stay_spinner, territoryDisplayList) {
+        if (SharedPref.getNsAllClusterNeed(requireContext()).equals("0")) {
+            filteredTerritoryList = multiple_cluster_list;
+            territoryDisplayList.clear();
+            territoryDisplayList.add(getString(R.string.select) + " " + SharedPref.getClusterCap(context));
+            for (Multicheckclass_clust cluster : multiple_cluster_list) {
+                territoryDisplayList.add(cluster.getStrname());
+            }
+        }
 
+        //  Territory Spinner Adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(fragment, R.layout.popup_night_stay_spinner, territoryDisplayList) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -6306,7 +6363,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position != 0) {
                     //  HQ select based on choosen territory
-                    if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
+                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                         if (spinnerHeadQuaters.getSelectedItemPosition() == 0) {
                             CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_head_quarter));
                             //  Toast.makeText(fragment, "Select Head Quarter", Toast.LENGTH_SHORT).show();
@@ -6321,15 +6378,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        List<Multicheckclass_clust> finalFilteredTerritoryList = filteredTerritoryList;
         btn_submit.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (spinnerTerritory.getSelectedItemPosition() == 0) {
-                    String clusterCap = SharedPref.getClusterCap(requireContext());
-                    CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select) + " " + clusterCap);
-                   // Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
                     if (spinnerHeadQuaters.getSelectedItemPosition() == 0) {
                         CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_head_quarter));
@@ -6337,14 +6389,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         return;
                     }
                 }
+                if (spinnerTerritory.getSelectedItemPosition() == 0) {
+                    String clusterCap = SharedPref.getClusterCap(requireContext());
+                    CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select) + " " + clusterCap);
+                   // Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String nightRemark = ed_remark.getText().toString().trim();
                 String dayRemark = ed_remark3.getText().toString().trim();
                 //  Night Remark condition
                 if (nightRemark.isEmpty()) {
-                    Toast.makeText(fragment, getString(R.string.please_enter_the_remarks), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fragment, getString(R.string.please_enter_the_night_stay_remarks), Toast.LENGTH_SHORT).show();
                     return;
                 } else if (nightRemark.length() <= 2) {
-                    Toast.makeText(fragment, getString(R.string.remarks_must_contain_at_least_3_characters), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fragment, getString(R.string.night_stay) + " " + getString(R.string.remarks_must_contain_at_least_3_characters), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -6353,15 +6411,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(fragment, getString(R.string.please_enter_the_remarks), Toast.LENGTH_SHORT).show();
                     return;
                 } else if (dayRemark.length() <= 2) {
-                    Toast.makeText(fragment, getString(R.string.remarks_must_contain_at_least_3_characters), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fragment, getString(R.string.day) + " " + getString(R.string.remarks_must_contain_at_least_3_characters), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 //  Territory code
                 int selectedIndex = spinnerTerritory.getSelectedItemPosition() - 1;
-                if (selectedIndex >= 0 && selectedIndex < filteredTerritoryList.size()) {
-                    nsTerritoryCode = filteredTerritoryList.get(selectedIndex).getStrid();
-                    nsTerritoryName = filteredTerritoryList.get(selectedIndex).getStrname();
+                if (selectedIndex >= 0 && selectedIndex < finalFilteredTerritoryList.size()) {
+                    nsTerritoryCode = finalFilteredTerritoryList.get(selectedIndex).getStrid();
+                    nsTerritoryName = finalFilteredTerritoryList.get(selectedIndex).getStrname();
                 }
 
                 //  nsRsfCode + nsRsfName logic
@@ -6378,12 +6436,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 //  Remarks save
                 nsRemarks = nightRemark;
-                nsRemarks = dayRemark;
+//                nsRemarks = dayRemark;
 
                 dialog.dismiss();
 
                 // Day Submit
-                finalSubmit(nsRemarks, false);
+                finalSubmit(nsRemarks, dayRemark, false);
             }
         });
 
@@ -6395,9 +6453,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-
-    private void
-    dialogEditOrDelete(String sessionType) {
+    private void dialogEditOrDelete(String sessionType) {
         Dialog dialogOptionSelection = new Dialog(requireActivity());
         dialogOptionSelection.setContentView(R.layout.popup_remarks);
         Objects.requireNonNull(dialogOptionSelection.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

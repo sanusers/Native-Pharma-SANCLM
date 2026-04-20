@@ -1555,7 +1555,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
 
         if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
-            binding.planOverview.setVisibility(View.VISIBLE);
+//            binding.planOverview.setVisibility(View.VISIBLE);
             binding.planOverview.setOnClickListener(view -> {
                 Intent intent = new Intent(TourPlanActivity.this, TourPlanOverviewActivity.class);
                 try {
@@ -1571,8 +1571,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
                 startActivity(intent);
             });
-        } else {
-            binding.planOverview.setVisibility(View.GONE);
+//        } else {
+//            binding.planOverview.setVisibility(View.GONE);
         }
     }
 
@@ -1592,7 +1592,7 @@ public class TourPlanActivity extends AppCompatActivity {
             doctorMap = new HashMap<>();
             doctorDataMap = new HashMap<>();
             doctorVisitMap = new HashMap<>();
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getHqCode(TourPlanActivity.this)).getMasterSyncDataJsonArray();
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(TourPlanActivity.this)).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
                 String name = "-", code = "-", clusterName = "-", clusterCode = "-", category = "-", categoryCode = "-", classs = "-", classsCode = "-", speciality = "-", specialityCode = "-", qualificationCode = "-";
@@ -1882,6 +1882,12 @@ public class TourPlanActivity extends AppCompatActivity {
                 tpOverviewNeed = jsonObject.optString("tp_overview_need", "1");
             }
 
+            if (tpOverviewNeed.equals("0")) {
+                binding.planOverview.setVisibility(View.VISIBLE);
+            } else {
+                binding.planOverview.setVisibility(View.GONE);
+            }
+
             boolean tpSetupVisibile = false;
             if (!visitFrequencyNeed.equalsIgnoreCase("1") && drNeed.equalsIgnoreCase("0")) {
                 tpSetupVisibile = true;
@@ -2040,6 +2046,13 @@ public class TourPlanActivity extends AppCompatActivity {
                 planAllDr = jsonObject.optString("Plan_All_Drs", "1");
                 visitFrequencyNeed = jsonObject.optString("visit_freq_need", "1");
                 minimumGap = jsonObject.optString("min_gap_need", "0");
+                tpOverviewNeed = jsonObject.optString("tp_overview_need", "1");
+            }
+
+            if (tpOverviewNeed.equals("0")) {
+                binding.planOverview.setVisibility(View.VISIBLE);
+            } else {
+                binding.planOverview.setVisibility(View.GONE);
             }
 
             boolean tpSetupVisibile = false;
@@ -2222,7 +2235,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<ModelClass>>() {
                 }.getType();
                 modelClasses = new Gson().fromJson(savedDataArray.toString(), type);
-                if (visitFrequencyNeed.equalsIgnoreCase("0")) {
+                if (modelClasses != null) {
                     prepareDoctorVisitData(modelClasses);
                 }
             } else { //If tour plan table has no data
@@ -2334,7 +2347,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
                 }.getType();
                 oneBuildModelClasses = new Gson().fromJson(savedDataArrayOneBuild.toString(), type);
-                if (visitFrequencyNeed.equalsIgnoreCase("0")) {
+                if (oneBuildModelClasses != null) {
                     prepareDoctorVisitDataOneBuild(oneBuildModelClasses);
                 }
             } else {//If tour plan table has no data
@@ -2438,7 +2451,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return oneBuildModelClasses;
     }
 
-    private void prepareDoctorVisitDataOneBuild(ArrayList<OneBuildModelClass> oneBuildModelClassList) {     // App Creah here When Tp setup is not synced
+    private void prepareDoctorVisitDataOneBuild(ArrayList<OneBuildModelClass> oneBuildModelClassList) {
         if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && (visitFrequencyNeed.equalsIgnoreCase("0") || Integer.parseInt(minimumGap) > 0)) {
             try {
 //            doctorVisitMap = new HashMap<>();
@@ -2693,7 +2706,8 @@ public class TourPlanActivity extends AppCompatActivity {
     private void getSTPMGR(OneBuildModelClass arrayListOneBuild, int position, String hqCode, String hqName, String dayOfWeek, String dayName) {
         if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
             try {
-                showLoadingOverlay();
+                binding.tpNavigation.navProgress.setVisibility(View.VISIBLE);
+//                showLoadingOverlay();
 //                binding.progressBar.setVisibility(View.VISIBLE);
 //                binding.freezeOverlay.setVisibility(View.VISIBLE);
                 apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
@@ -2713,6 +2727,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+//                        hideLoadingOverlay();
+                        binding.tpNavigation.navProgress.setVisibility(View.GONE);
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
 
@@ -2762,7 +2778,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                 populateSessionEditAdapterOneBuild(arrayListOneBuild);
                             }
                         }
-                        hideLoadingOverlay();
 //                        binding.progressBar.setVisibility(View.GONE);
 //                        binding.freezeOverlay.setVisibility(View.GONE);
 //                        binding.backArrow.setEnabled(true);
@@ -2773,7 +2788,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         Log.e("STP", "onFailure: ");
-                        hideLoadingOverlay();
+//                        hideLoadingOverlay();
+                        binding.tpNavigation.navProgress.setVisibility(View.GONE);
 //                        binding.progressBar.setVisibility(View.GONE);
 //                        binding.freezeOverlay.setVisibility(View.GONE);
 //                        binding.backArrow.setEnabled(true);
@@ -2784,7 +2800,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 });
             } catch (Exception e) {
-                hideLoadingOverlay();
+//                hideLoadingOverlay();
+                binding.tpNavigation.navProgress.setVisibility(View.GONE);
 //                binding.progressBar.setVisibility(View.GONE);
 //                binding.freezeOverlay.setVisibility(View.GONE);
 //                binding.backArrow.setEnabled(true);
@@ -2794,7 +2811,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            hideLoadingOverlay();
+//            hideLoadingOverlay();
+            binding.tpNavigation.navProgress.setVisibility(View.GONE);
 //            binding.progressBar.setVisibility(View.GONE);
 //            binding.freezeOverlay.setVisibility(View.GONE);
 //            binding.backArrow.setEnabled(true);
@@ -3356,7 +3374,9 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateSummaryAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
         try {
-            prepareDoctorVisitDataOneBuild(arrayListOneBuild);
+            if (arrayListOneBuild != null) {
+                prepareDoctorVisitDataOneBuild(arrayListOneBuild);
+            }
             ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
             int fw = 0, nfw = 0, wo = 0, ho = 0, l = 0;
             for (OneBuildModelClass oneBuildModelClass : arrayListOneBuild) {
@@ -3365,6 +3385,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
                 try {
                     boolean isFWFound = false, isNFWFound = false, isWOFound = false, isHoFound = false, isLFound = false;
+//                    oneBuildModelClass.getSessionList().removeIf(session -> (session.getWorkType().getFWFlg().isEmpty() || session.getWorkType().getCode().isEmpty() || session.getWorkType().getCode().equals("0")));
                     for (OneBuildModelClass.SessionList sessionList : oneBuildModelClass.getSessionList()) {
                         String fwFlag = sessionList.getWorkType().getFWFlg();
                         if (fwFlag.equalsIgnoreCase("F")) {
@@ -6276,21 +6297,23 @@ public class TourPlanActivity extends AppCompatActivity {
     private void showLoadingOverlay() {
         binding.calendarPrevButton.setEnabled(false);
         binding.calendarNextButton.setEnabled(false);
-        binding.tpSendToApproval.setEnabled(false);
         binding.tvSync.setEnabled(false);
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.freezeOverlay.setVisibility(View.VISIBLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        binding.freezeOverlay.setClickable(true);
+        binding.freezeOverlay.setFocusable(true);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     private void hideLoadingOverlay() {
         binding.calendarPrevButton.setEnabled(true);
         binding.calendarNextButton.setEnabled(true);
-        binding.tpSendToApproval.setEnabled(true);
         binding.tvSync.setEnabled(true);
         binding.progressBar.setVisibility(View.GONE);
         binding.freezeOverlay.setVisibility(View.GONE);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        binding.freezeOverlay.setClickable(false);
+        binding.freezeOverlay.setFocusable(false);
+//        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
@@ -6309,7 +6332,7 @@ public class TourPlanActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|WT|OTR|FSD|AMS")) {
+            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|TM|WT|OTR|FSD|AMS|DCR|TP|STP|LE")) {
                 if (binding.tpDrawer.isOpen()) {
                     binding.tpDrawer.closeDrawer(GravityCompat.END);
                 }

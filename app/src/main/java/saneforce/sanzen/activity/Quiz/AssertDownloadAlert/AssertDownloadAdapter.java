@@ -130,7 +130,7 @@ public class AssertDownloadAdapter extends RecyclerView.Adapter<AssertDownloadAd
                     if (UtilityClass.isNetworkAvailable(activity)) {
                         QuizActivity.isSingleAssertDownloadingStatus = true;
                         text_download_size.setText("Downloading");
-                        String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getOptionFilesUrl(activity) + list.get(position).getName();
+                        String url = "https://" + SharedPref.getBaseUrl(activity) + "/" + SharedPref.getOptionFilesUrl(activity) + list.get(position).getName();
                         Log.e("DownloadingAPI", url);
                         Data inputData = new Data.Builder()
                                 .putString("Flag", "2")

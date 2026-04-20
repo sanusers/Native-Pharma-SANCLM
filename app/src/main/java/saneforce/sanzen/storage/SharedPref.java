@@ -551,6 +551,7 @@ public class SharedPref {
     public static final String NightStay = "NightStay";
     public static final String NS_FOR_NFW_NEED = "NS_For_NFW_Need";
     public static final String NS_ALL_CLUSTER_NEED = "NS_All_Cluster_Need";
+
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
@@ -2236,7 +2237,7 @@ public class SharedPref {
     public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(BASE_URL, baseUrl);
+        editor.putString(BASE_URL, baseUrl.replace("https://", "").replace("http://", ""));
         editor.putString(LICENSE_KEY, licenseKey);
         editor.putString(BASE_WEB_URL, baseWebUrl);
         editor.putString(PHP_PATH_URL, PhpPathUrl);
@@ -2250,7 +2251,7 @@ public class SharedPref {
     public static void saveUrlsOneBuild(Context context, String baseUrl, String licenseKey, String baseWebUrl, String detPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState,String aBKey,String aBSKey) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(BASE_URL, baseUrl);
+        editor.putString(BASE_URL, baseWebUrl.replace("https://", "").replace("http://", ""));
         editor.putString(LICENSE_KEY, licenseKey);
         editor.putString(BASE_WEB_URL, baseWebUrl);
         editor.putString(PHP_PATH_URL, detPathUrl);
@@ -3536,11 +3537,21 @@ public static void addVisitedDoctor(Context context, String custCode) {
     public static String getDetDrCap(Context context){
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_DR_CAP,"");
     }
+
     public static String getDetUldrCap(Context context){
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_ULDR_CAP,"");
     }
+
     public static String getNightStay(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(NightStay,"");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NightStay,"1");
+    }
+
+    public static String getNsForNfwNeed(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_FOR_NFW_NEED,"1");
+    }
+
+    public static String getNsAllClusterNeed(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_ALL_CLUSTER_NEED,"1");
     }
     public static String getNsForNfwNeed(Context context){
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_FOR_NFW_NEED,"1");

@@ -57,48 +57,41 @@ public class CustomerListSelectionAdapter extends RecyclerView.Adapter<CustomerL
         holder.tv_area.setText(customerDataModel.getClusterName());
 
 //        if(customerType.equalsIgnoreCase(Constants.DOCTOR) || customerType.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
-        if(customerType.equalsIgnoreCase(Constants.DOCTOR_MAS) || customerType.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)) {
+        if (customerType.equalsIgnoreCase(Constants.DOCTOR_MAS) || customerType.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)) {
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_specialist.setVisibility(View.VISIBLE);
             holder.tv_class.setVisibility(View.VISIBLE);
 //        }else if(customerType.equalsIgnoreCase(Constants.CHEMIST) || customerType.equalsIgnoreCase(Constants.CIP)) {
-        }else if(customerType.equalsIgnoreCase(Constants.CHEMIST_MAS) || customerType.equalsIgnoreCase(Constants.CIP)) {
+        } else if (customerType.equalsIgnoreCase(Constants.CHEMIST_MAS) || customerType.equalsIgnoreCase(Constants.CIP)) {
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_specialist.setVisibility(View.GONE);
             holder.tv_class.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.tv_category.setVisibility(View.GONE);
             holder.tv_specialist.setVisibility(View.GONE);
             holder.tv_class.setVisibility(View.GONE);
         }
         holder.view_top.setVisibility(View.GONE);
 
-        holder.tv_name.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                commonUtilsMethods.displayPopupWindow(context, view, customerDataModel.getName());
+        holder.tv_name.setOnClickListener((view) -> {
+            commonUtilsMethods.displayPopupWindow(context, view, customerDataModel.getName());
+        });
+
+        holder.constraint_main.setOnClickListener((view) -> {
+            customerSelectionListener.onSelect(customerDataModel);
+            customerDataModel.setSelected(!customerDataModel.isSelected());
+            if (customerDataModel.isSelected()) {
+                holder.iv_selected_tick.setVisibility(View.VISIBLE);
+            } else {
+                holder.iv_selected_tick.setVisibility(View.GONE);
             }
         });
 
-        holder.constraint_main.setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View view) {
-                customerSelectionListener.onSelect(customerDataModel);
-                customerDataModel.setSelected(!customerDataModel.isSelected());
-                if (customerDataModel.isSelected()) {
-                    holder.iv_selected_tick.setVisibility(View.VISIBLE);
-                } else {
-                    holder.iv_selected_tick.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        if(customerDataModel.isSelected()) {
+        if (customerDataModel.isSelected()) {
             holder.iv_selected_tick.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.iv_selected_tick.setVisibility(View.GONE);
         }
-
     }
 
     @Override

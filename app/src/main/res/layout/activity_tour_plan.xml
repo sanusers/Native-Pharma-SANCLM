@@ -875,12 +875,13 @@
             android:visibility="gone" />
 
     </RelativeLayout>
+
     <View
         android:id="@+id/freezeOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#80000000"
-        android:elevation="@dimen/_2sdp"
+        android:elevation="@dimen/_5sdp"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone" />
