@@ -1086,7 +1086,7 @@ Entrada/Saída está habilitada e a data foi alterada, portanto você foi descon
     <string name="you_are_staying_overnight">Você está pernoitando</string>
     <string name="night_stay_remarks">Observações de pernoite</string>
     <string name="day_remarks">Observações do dia</string>
-
+    <string name="please_enter_the_night_stay_remarks">Por favor, insira as observações do pernoite!</string>
     <string name="minimum_gap">Intervalo mínimo</string>
     <string name="minimum">Mínimo</string>
     <string name="maximum">Máximo</string>

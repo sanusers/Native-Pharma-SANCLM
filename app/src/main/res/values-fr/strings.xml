@@ -1067,7 +1067,7 @@ La fonctionnalité d’enregistrement/Sortie est activée et la date a été mod
     <string name="you_are_staying_overnight">Vous passez la nuit sur place</string>
     <string name="night_stay_remarks">Remarques sur la nuitée</string>
     <string name="day_remarks">Remarques de la journée</string>
-
+    <string name="please_enter_the_night_stay_remarks">Veuillez saisir les remarques concernant la nuitée !</string>
     <string name="minimum_gap">Intervalle minimum</string>
     <string name="minimum">Minimum</string>
     <string name="maximum">Maximum</string>

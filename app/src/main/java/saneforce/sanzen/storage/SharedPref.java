@@ -551,6 +551,7 @@ public class SharedPref {
     public static final String NightStay = "NightStay";
     public static final String NS_FOR_NFW_NEED = "NS_For_NFW_Need";
     public static final String NS_ALL_CLUSTER_NEED = "NS_All_Cluster_Need";
+    public static final String AUTO_SUBMIT_TIME = "Auto_Submit_Time";
 
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
@@ -958,6 +959,7 @@ public class SharedPref {
             editor.putString(NightStay,jsonObject.optString("NightStay"));
             editor.putString(NS_FOR_NFW_NEED,jsonObject.optString("NS_For_NFW_Need"));
             editor.putString(NS_ALL_CLUSTER_NEED,jsonObject.optString("NS_All_Cluster_Need"));
+            editor.putString(AUTO_SUBMIT_TIME,jsonObject.optString("Auto_Submit_Time"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3553,12 +3555,13 @@ public static void addVisitedDoctor(Context context, String custCode) {
     public static String getNsAllClusterNeed(Context context){
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_ALL_CLUSTER_NEED,"1");
     }
-    public static String getNsForNfwNeed(Context context){
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_FOR_NFW_NEED,"1");
+    public static void setAutoSubmitTime(Context context, String time) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(AUTO_SUBMIT_TIME, time);
+        editor.apply();
     }
-
-    public static String getNsAllClusterNeed(Context context){
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_ALL_CLUSTER_NEED,"1");
+    public static String getAutoSubmitTime(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(AUTO_SUBMIT_TIME, "");
     }
-
 }

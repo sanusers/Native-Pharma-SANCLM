@@ -1081,7 +1081,7 @@
     <string name="you_are_staying_overnight">Вы остаетесь на ночь</string>
     <string name="night_stay_remarks">Примечания к ночевке</string>
     <string name="day_remarks">Примечания за день</string>
-
+    <string name="please_enter_the_night_stay_remarks">Пожалуйста, введите примечания к ночевке!</string>
     <string name="minimum_gap">Минимальный интервал</string>
     <string name="minimum">Минимум</string>
     <string name="maximum">Максимум</string>

@@ -243,7 +243,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private HomeNavigationFooterBinding navigationFooterBinding;
     private MediaController mediaController;
     private String videoUrl = "";
-//    YouTubePlayer youTubePlayer;
+    //    YouTubePlayer youTubePlayer;
     boolean isPlaying = true;
     private String previousDate = "";
     float dX, dY;
@@ -315,9 +315,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         String lastShownDate = SharedPref.getTodayPopupShown(HomeDashBoard.this);
 
                         if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") /*&& !lastShownDate.isEmpty()*/ && !today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
-                            checkAndShowDoctorPopup();
-                        }else{
-                            Log.d("run", "checkAndShowDoctorPopup: "+"condition Skipped (run)");
+                                checkAndShowDoctorPopup();
+                        } else {
+                            Log.d("run", "checkAndShowDoctorPopup: " + "condition Skipped (run)");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -673,10 +673,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 if (!today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
                     showNotVisitedDoctorsPopup(tpDoctorCodes, tpChemistCodes, forceImmediate, doctorMasArray);
                     SharedPref.setTodayPopupShown(this, today);
-                    Log.d("onCreate", "checkAndShowDoctorPopup: "+"Popup date seted"+today);
-                }else{
-                    Log.d("onCreate", "checkAndShowDoctorPopup: "+"condition Skipped -- OnCreate");
-                    Log.d("onCreate", "checkAndShowDoctorPopup: "+lastShownDate);
+                    Log.d("onCreate", "checkAndShowDoctorPopup: " + "Popup date seted" + today);
+                } else {
+                    Log.d("onCreate", "checkAndShowDoctorPopup: " + "condition Skipped -- OnCreate");
+                    Log.d("onCreate", "checkAndShowDoctorPopup: " + lastShownDate);
                 }
 
             } catch (Exception e) {
@@ -689,6 +689,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             Log.e("TAG", "Error in Popup Logic: " + e.getMessage());
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -1002,7 +1003,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
         if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1")) {
-            Log.d("onCreate if", "onCreate: "+"Entered onCreate if");
+            Log.d("onCreate if", "onCreate: " + "Entered onCreate if");
             checkAndShowDoctorPopup();
         }
     }
@@ -1976,7 +1977,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getActivityCap(this))) {
-            if (WorkPlanFragment.mFwFlg1.isEmpty()  || WorkPlanFragment.binding.txtSave.isEnabled()) {
+            if (WorkPlanFragment.mFwFlg1.isEmpty() || WorkPlanFragment.binding.txtSave.isEnabled()) {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_work_plan));
             } else {
                 startActivity(new Intent(HomeDashBoard.this, DynamicActivity.class));
@@ -2815,18 +2816,27 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             navigationFooterBinding.dayCheckInDot.setVisibility(View.GONE);
         }
 
-        if(SharedPref.getWeekoffAutoPostNeed(this).equalsIgnoreCase("1")){
+        if (SharedPref.getWeekoffAutoPostNeed(this).equalsIgnoreCase("1")) {
             navigationFooterBinding.weeklyOff.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             navigationFooterBinding.weeklyOff.setVisibility(View.GONE);
         }
 
-         if(SharedPref.getHolidayAutoPostNeed(this).equalsIgnoreCase("1")){
-             navigationFooterBinding.holidayHd.setVisibility(View.VISIBLE);
-         }else{
-             navigationFooterBinding.holidayHd.setVisibility(View.GONE);
-         }
-
+        if (SharedPref.getHolidayAutoPostNeed(this).equalsIgnoreCase("1")) {
+            navigationFooterBinding.holidayHd.setVisibility(View.VISIBLE);
+        } else {
+            navigationFooterBinding.holidayHd.setVisibility(View.GONE);
+        }
+        if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")
+                && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0")
+                && SharedPref.getTpbasedDcr(this).equalsIgnoreCase("0")
+                && SharedPref.getStpNeed(this).equalsIgnoreCase("0")
+                && SharedPref.getStpBasedDcr(this).equalsIgnoreCase("0")
+                && SharedPref.getStpBasedMtp(this).equalsIgnoreCase("0")) {
+            navigationFooterBinding.tvStp.setVisibility(View.VISIBLE);
+        } else {
+            navigationFooterBinding.tvStp.setVisibility(View.GONE);
+        }
 
         if (SharedPref.getCustSrtNd(this).equalsIgnoreCase("0") ||
                 SharedPref.getChmSrtNd(this).equalsIgnoreCase("0") ||
@@ -3581,26 +3591,27 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 ////                }
 ////            }
 //
-//// ✅ Build TWO separate strings instead of one
-////            int vCount = 1;
-////            if (visitedDoctors.isEmpty()) {
-////                visitedSb.append("None");
-////            } else {
-////                for (String code : visitedDoctors) {
-////                    String name = doctorNameMap.getOrDefault(code, code);
-////                    visitedSb.append(vCount++).append(". Dr. ").append(name).append("\n");
-////                }
-////            }
-////
-////            int nvCount = 1;
-////            if (notVisitedCodes.isEmpty()) {
-////                notVisitedSb.append("None");
-////            } else {
-////                for (String code : notVisitedCodes) {
-////                    String name = doctorNameMap.getOrDefault(code, code);
-////                    notVisitedSb.append(nvCount++).append(". Dr. ").append(name).append("\n");
-////                }
-////            }
+
+    /// / ✅ Build TWO separate strings instead of one
+    /// /            int vCount = 1;
+    /// /            if (visitedDoctors.isEmpty()) {
+    /// /                visitedSb.append("None");
+    /// /            } else {
+    /// /                for (String code : visitedDoctors) {
+    /// /                    String name = doctorNameMap.getOrDefault(code, code);
+    /// /                    visitedSb.append(vCount++).append(". Dr. ").append(name).append("\n");
+    /// /                }
+    /// /            }
+    /// /
+    /// /            int nvCount = 1;
+    /// /            if (notVisitedCodes.isEmpty()) {
+    /// /                notVisitedSb.append("None");
+    /// /            } else {
+    /// /                for (String code : notVisitedCodes) {
+    /// /                    String name = doctorNameMap.getOrDefault(code, code);
+    /// /                    notVisitedSb.append(nvCount++).append(". Dr. ").append(name).append("\n");
+    /// /                }
+    /// /            }
 //
 //            // ✅ Pass BOTH strings to the popup method
 //            String notVisitedRatio = notVisitedCodes.size() + "/" + plannedDoctorCodes.size();
@@ -3638,7 +3649,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //    }
     private void showNotVisitedDoctorsPopup(String tpDoctorCodes, String tpChemistCodes, boolean isImmediatePopup, JSONArray doctorMasArray) {
         try {
-            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") || (tpDoctorCodes == null && tpChemistCodes == null)) return;
+            if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") || (tpDoctorCodes == null && tpChemistCodes == null))
+                return;
 
 
             List<String> plannedDoctorCodes = new ArrayList<>();

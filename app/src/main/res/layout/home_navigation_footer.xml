@@ -211,6 +211,23 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
+
+        <TextView
+            android:id="@+id/tv_stp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:background="@drawable/round_back_yellow"
+            android:backgroundTint="@color/mildRed"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:text="STP"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <TextView

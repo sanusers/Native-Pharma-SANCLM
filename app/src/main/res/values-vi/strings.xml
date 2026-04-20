@@ -1088,7 +1088,7 @@ Chức năng Đăng nhập/Đăng xuất đã được bật và ngày đã thay
     <string name="night_stay_remarks">Ghi chú lưu trú qua đêm</string>
     <string name="day_remarks">Ghi chú trong ngày</string>
 
-
+    <string name="please_enter_the_night_stay_remarks">Vui lòng nhập ghi chú lưu trú qua đêm!</string>
     <string name="minimum_gap">Khoảng cách tối thiểu</string>
     <string name="minimum">Tối thiểu</string>
     <string name="maximum">Tối đa</string>

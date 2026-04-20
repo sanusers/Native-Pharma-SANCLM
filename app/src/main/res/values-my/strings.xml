@@ -1071,7 +1071,7 @@
     <string name="you_are_staying_overnight">သင်ညအိပ်တည်းခိုနေသည်</string>
     <string name="night_stay_remarks">ညအိပ်တည်းခိုမှုဆိုင်ရာမှတ်ချက်များ</string>
     <string name="day_remarks">နေ့စဉ်မှတ်ချက်များ</string>
-
+    <string name="please_enter_the_night_stay_remarks">ညအိပ်တည်းခိုခြင်းဆိုင်ရာ မှတ်ချက်များကို ထည့်သွင်းပေးပါ!</string>
     <string name="minimum_gap">အနည်းဆုံး အကွာအဝေး</string>
     <string name="minimum">အနည်းဆုံး</string>
     <string name="maximum">အများဆုံး</string>

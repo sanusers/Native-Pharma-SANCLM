@@ -1073,7 +1073,7 @@ La función de entrada/salida está habilitada y la fecha ha sido cambiada, por 
     <string name="you_are_staying_overnight">Usted se queda a pasar la noche</string>
     <string name="night_stay_remarks">Observaciones de pernoctación</string>
     <string name="day_remarks">Observaciones del día</string>
-
+    <string name="please_enter_the_night_stay_remarks">¡Por favor, introduzca los comentarios de la pernoctación!</string>
     <string name="minimum_gap">Intervalo mínimo</string>
     <string name="minimum">Mínimo</string>
     <string name="maximum">Máximo</string>

@@ -1080,7 +1080,7 @@
     <string name="you_are_staying_overnight">您正在过夜</string>
     <string name="night_stay_remarks">过夜备注</string>
     <string name="day_remarks">当日备注</string>
-
+    <string name="please_enter_the_night_stay_remarks">请输入过夜住宿备注！</string>
     <string name="minimum_gap">最小间隔</string>
     <string name="minimum">最小值</string>
     <string name="maximum">最大值</string>

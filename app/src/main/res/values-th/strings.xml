@@ -1085,7 +1085,7 @@
     <string name="you_are_staying_overnight">คุณกำลังพักค้างคืน</string>
     <string name="night_stay_remarks">หมายเหตุการพักค้างคืน</string>
     <string name="day_remarks">หมายเหตุประจำวัน</string>
-
+    <string name="please_enter_the_night_stay_remarks">กรุณากรอกหมายเหตุการพักค้างคืน!</string>
     <string name="minimum_gap">ช่วงห่างขั้นต่ำ</string>
     <string name="minimum">ขั้นต่ำ</string>
     <string name="maximum">สูงสุด</string>

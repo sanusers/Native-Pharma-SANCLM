@@ -1071,7 +1071,7 @@
     <string name="you_are_staying_overnight">أنت تقيم طوال الليل</string>
     <string name="night_stay_remarks">ملاحظات المبيت</string>
     <string name="day_remarks">ملاحظات اليوم</string>
-
+    <string name="please_enter_the_night_stay_remarks">يرجى إدخال ملاحظات الإقامة الليلية!</string>
     <string name="minimum_gap">الحد الأدنى للفاصل</string>
     <string name="minimum">الحد الأدنى</string>
     <string name="maximum">الحد الأقصى</string>
