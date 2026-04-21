@@ -3564,4 +3564,17 @@ public static void addVisitedDoctor(Context context, String custCode) {
     public static String getAutoSubmitTime(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(AUTO_SUBMIT_TIME, "");
     }
+
+
+    public static String getLastAutoSubmitDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
+                .getString("last_auto_submit_date", "");
+    }
+
+    public static void setLastAutoSubmitDate(Context context, String date) {
+        context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putString("last_auto_submit_date", date)
+                .apply();
+    }
 }

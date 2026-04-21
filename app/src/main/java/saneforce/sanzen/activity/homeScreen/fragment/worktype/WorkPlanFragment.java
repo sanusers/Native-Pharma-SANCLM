@@ -202,6 +202,28 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SharedPref.setLastKnownDate(requireContext(), "");
             onDateChanged();
         }
+
+        String autoSubmitTime = SharedPref.getAutoSubmitTime(requireContext());
+        if (autoSubmitTime == null || !autoSubmitTime.contains(":")) return;
+
+        try {
+            String[] parts = autoSubmitTime.split(":");
+            Calendar now = Calendar.getInstance();
+            Calendar target = Calendar.getInstance();
+            target.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
+            target.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+            target.set(Calendar.SECOND, 0);
+            target.set(Calendar.MILLISECOND, 0);
+
+            String lastAutoSubmitDate = SharedPref.getLastAutoSubmitDate(requireContext());
+
+            if (now.after(target) && !today.equals(lastAutoSubmitDate)) {
+                SharedPref.setLastAutoSubmitDate(requireContext(), today);
+                onDateChanged();
+            }
+        } catch (Exception e) {
+            Log.e("CHECK", "Time parse error: " + e.getMessage());
+        }
     }
 
     private void onDateChanged() {
