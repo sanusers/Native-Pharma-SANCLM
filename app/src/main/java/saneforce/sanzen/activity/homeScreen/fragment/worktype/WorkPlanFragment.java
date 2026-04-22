@@ -189,46 +189,114 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     //String nsRsfDayRemarks = "";
 
+    //    private void checkDateChange() {
+//        if (!isAdded()) return;
+//        if(SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) return;
+//        if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
+//                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
+//            return;
+//        }
+//        String savedDate = SharedPref.getLastKnownDate(requireContext());
+//        String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
+//        if (!savedDate.isEmpty() && !savedDate.equals(today)) {
+//            SharedPref.setLastKnownDate(requireContext(), "");
+//            onDateChanged();
+//        }
+//
+//        String autoSubmitTime = SharedPref.getAutoSubmitTime(requireContext());
+//        if (autoSubmitTime == null || !autoSubmitTime.contains(":")) return;
+//
+//        try {
+//            String[] parts = autoSubmitTime.split(":");
+//            Calendar now = Calendar.getInstance();
+//            Calendar target = Calendar.getInstance();
+//            target.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
+//            target.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+//            target.set(Calendar.SECOND, 0);
+//            target.set(Calendar.MILLISECOND, 0);
+//
+//            String lastAutoSubmitDate = SharedPref.getLastAutoSubmitDate(requireContext());
+//
+//            if (now.after(target) && !today.equals(lastAutoSubmitDate)) {
+//                SharedPref.setLastAutoSubmitDate(requireContext(), today);
+//                onDateChanged();
+//            }
+//        } catch (Exception e) {
+//            Log.e("CHECK", "Time parse error: " + e.getMessage());
+//        }
+//    }
     private void checkDateChange() {
-        if (!isAdded()) return;
-        if(SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) return;
-        if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
+        if (!isAdded()) {
+            Log.d("AUTO_SUBMIT", "BLOCKED: not added");
             return;
         }
-        String savedDate = SharedPref.getLastKnownDate(requireContext());
-        String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
-        if (!savedDate.isEmpty() && !savedDate.equals(today)) {
-            SharedPref.setLastKnownDate(requireContext(), "");
-            onDateChanged();
+        if (SharedPref.getNightStay(requireContext()).equalsIgnoreCase("0")) {
+            Log.d("AUTO_SUBMIT", "BLOCKED: nightStay is 0");
+            return;
+        }
+        if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
+                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
+            Log.d("AUTO_SUBMIT", "BLOCKED: dcrSeq or seqDlyCtrl failed");
+            Log.d("AUTO_SUBMIT", "dcrSeq: [" + SharedPref.getDcrSequential(requireContext()) + "]");
+            Log.d("AUTO_SUBMIT", "seqDlyCtrl: [" + SharedPref.getSeqDlyCtrl(requireContext()) + "]");
+            return;
         }
 
         String autoSubmitTime = SharedPref.getAutoSubmitTime(requireContext());
-        if (autoSubmitTime == null || !autoSubmitTime.contains(":")) return;
+        Log.d("AUTO_SUBMIT", "autoSubmitTime: [" + autoSubmitTime + "]");
+
+        if (autoSubmitTime == null || !autoSubmitTime.contains(":")) {
+            Log.d("AUTO_SUBMIT", "BLOCKED: autoSubmitTime invalid");
+            return;
+        }
+
+        String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
 
         try {
             String[] parts = autoSubmitTime.split(":");
             Calendar now = Calendar.getInstance();
             Calendar target = Calendar.getInstance();
-            target.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
-            target.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+            target.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0].trim()));
+            target.set(Calendar.MINUTE, Integer.parseInt(parts[1].trim()));
             target.set(Calendar.SECOND, 0);
             target.set(Calendar.MILLISECOND, 0);
 
             String lastAutoSubmitDate = SharedPref.getLastAutoSubmitDate(requireContext());
 
+            Log.d("AUTO_SUBMIT", "now: " + now.getTime());
+            Log.d("AUTO_SUBMIT", "target: " + target.getTime());
+            Log.d("AUTO_SUBMIT", "lastAutoSubmitDate: [" + lastAutoSubmitDate + "]");
+            Log.d("AUTO_SUBMIT", "today: [" + today + "]");
+            Log.d("AUTO_SUBMIT", "now.after(target): " + now.after(target));
+            Log.d("AUTO_SUBMIT", "today.equals(lastAutoSubmitDate): " + today.equals(lastAutoSubmitDate));
+
             if (now.after(target) && !today.equals(lastAutoSubmitDate)) {
+                Log.d("AUTO_SUBMIT", "CONDITION PASSED - calling onDateChanged");
                 SharedPref.setLastAutoSubmitDate(requireContext(), today);
                 onDateChanged();
+            } else {
+                Log.d("AUTO_SUBMIT", "CONDITION FAILED - not triggering");
             }
+
         } catch (Exception e) {
-            Log.e("CHECK", "Time parse error: " + e.getMessage());
+            Log.e("AUTO_SUBMIT", "Parse error: " + e.getMessage());
         }
     }
 
     private void onDateChanged() {
+        Log.d("DATE_CHANGED", "=== onDateChanged called ===");
+        Log.d("DATE_CHANGED", "dcrSeq: [" + SharedPref.getDcrSequential(requireContext()) + "]");
+        Log.d("DATE_CHANGED", "seqDlyCtrl: [" + SharedPref.getSeqDlyCtrl(requireContext()) + "]");
+        Log.d("DATE_CHANGED", "seqDcrLockDays: [" + SharedPref.getSeqDcrLockDays(requireContext()) + "]");
+        Log.d("DATE_CHANGED", "geotagNeed: [" + SharedPref.getGeotagNeed(requireContext()) + "]");
+        Log.d("DATE_CHANGED", "geotagNeedChe: [" + SharedPref.getGeotagNeedChe(requireContext()) + "]");
+        Log.d("DATE_CHANGED", "geotagNeedStock: [" + SharedPref.getGeotagNeedStock(requireContext()) + "]");
+        Log.d("DATE_CHANGED", "geotagNeedUnlst: [" + SharedPref.getGeotagNeedUnlst(requireContext()) + "]");
+        Log.d("DATE_CHANGED", "isWorkingToday: [" + SharedPref.getIsWorkingToday(requireContext()) + "]");
+
         if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
                 && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
+            Log.d("DATE_CHANGED", "BLOCKED: Gate 1");
             return;
         } else {
             if (!SharedPref.getSeqDcrLockDays(requireContext()).equalsIgnoreCase("0")
@@ -236,39 +304,36 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     && !SharedPref.getGeotagNeedChe(requireContext()).equalsIgnoreCase("1")
                     && !SharedPref.getGeotagNeedStock(requireContext()).equalsIgnoreCase("1")
                     && !SharedPref.getGeotagNeedUnlst(requireContext()).equalsIgnoreCase("1"))) {
+                Log.d("DATE_CHANGED", "BLOCKED: Gate 2");
                 return;
             }
         }
-        if (SharedPref.getIsWorkingToday(requireContext())) {
-//        JSONArray callSync = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
-//        for (int i = callSync.length() - 1; i >= 0; i--) {
-//            JSONObject jsonObject = callSync.optJSONObject(i);
-//            if (jsonObject.optString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
-//                    && jsonObject.optString("CustCode").equalsIgnoreCase("0")
-//                    && jsonObject.optString("day_status").equalsIgnoreCase("0")) {
-            if (finalSubmitDialog != null) {
-//                finalSubmitDialog.show();
-            }
-            finalSubmit("Auto Submitted", true);
-//                break;
-//            }
-//        }
+
+        if (!SharedPref.getIsWorkingToday(requireContext())) {
+            Log.d("DATE_CHANGED", "BLOCKED: Gate 3 - not working today");
+            return;
         }
+
+        Log.d("DATE_CHANGED", "ALL GATES PASSED - calling finalSubmit");
+
+        if (finalSubmitDialog != null) {
+            // finalSubmitDialog.show();
+        }
+        finalSubmit("Auto Submitted", true);
     }
 
     private void startDateWatcher() {
-        if (!(SharedPref.getDcrSequential(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
-            return;
-        }
+        Log.d("AUTO_SUBMIT", "=== startDateWatcher called ===");
+        SharedPref.setLastAutoSubmitDate(requireContext(), "");
+        Log.d("AUTO_SUBMIT", "lastAutoSubmitDate after clear: [" + SharedPref.getLastAutoSubmitDate(requireContext()) + "]");
         dateHandler = new Handler(Looper.getMainLooper());
-        dateHandler.postDelayed(new Runnable() {
+        dateHandler.post(new Runnable() {
             @Override
             public void run() {
                 checkDateChange();
                 dateHandler.postDelayed(this, 60 * 1000);
             }
-        }, 60 * 1000);
+        });
     }
 
     @Override
@@ -294,6 +359,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d("AUTO_SUBMIT", "=== onStart called ===");
         startDateWatcher();
     }
 
@@ -302,6 +368,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         super.onStop();
         if (dateHandler != null) {
             dateHandler.removeCallbacksAndMessages(null);
+            dateHandler = null; // line added
         }
     }
 
@@ -3375,10 +3442,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("Others_Name", workDayName);
             jsonObject.put("Others_Code2", workDayCode2);
             jsonObject.put("Others_Name2", workDayName2);
-            if(!mWTCode2.isEmpty()){
-                jsonObject.put("Session_Count","1");
-            }else{
-                jsonObject.put("Session_Count","0");
+            if (!mWTCode2.isEmpty()) {
+                jsonObject.put("Session_Count", "1");
+            } else {
+                jsonObject.put("Session_Count", "0");
             }
             isFromTP = false;
 
@@ -5916,7 +5983,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         dialogFinalSubmit(dialog, false);
                         dialog.show();
                     }
-                }else{
+                } else {
                     Dialog dialog = new Dialog(requireActivity());
                     dialog.setContentView(R.layout.popup_remarks);
                     dialog.setCancelable(false);
@@ -5972,7 +6039,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
             window.setLayout((int) (workPlanFragment.requireActivity()
-                            .getResources().getDisplayMetrics().widthPixels * 0.38), ViewGroup.LayoutParams.WRAP_CONTENT);
+                    .getResources().getDisplayMetrics().widthPixels * 0.38), ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         ImageView img_close = alertLayout.findViewById(R.id.img_close);
         if (img_close != null) {
@@ -6349,7 +6416,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if (spinnerTerritory.getSelectedItemPosition() == 0) {
                     String clusterCap = SharedPref.getClusterCap(requireContext());
                     CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select) + " " + clusterCap);
-                   // Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
