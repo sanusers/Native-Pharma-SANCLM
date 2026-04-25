@@ -16,9 +16,12 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.WelcomePres
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.Gravity;
@@ -229,6 +232,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
             getOnBackPressedDispatcher().onBackPressed();
         });
 
+//        binding.playBtn.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
         binding.playBtn.setOnClickListener(view -> {
             if (!playBtnClicked) {
                 playBtnClicked = true;
@@ -251,28 +257,29 @@ public class PlaySlideDetailing extends AppCompatActivity {
 //                            loadPdf(file.getAbsolutePath());
 //                            break;
                         case "pdf":
-                            binding.pdfView.setVisibility(View.VISIBLE);
+                            setPdfThumbnail(file.getAbsolutePath()); // ✅先 thumbnail
                             binding.videoView.setVisibility(View.GONE);
                             binding.webView.setVisibility(View.GONE);
-                            loadPdf(file.getAbsolutePath());
+                            loadPdf(file.getAbsolutePath());         // ✅ background load
                             break;
                         case "mp4":
                         case "avi":
-                            binding.pdfView.setVisibility(View.GONE);
-                            binding.videoView.setVisibility(View.VISIBLE);
-                            binding.webView.setVisibility(View.GONE);
-//                            binding.loadingView.setVisibility(View.VISIBLE);
-//                            binding.loadingView.startLoading();
-                            Uri uri = Uri.parse(file.getAbsolutePath());
-                            binding.videoView.setVideoURI(uri);
-                            binding.videoView.setMediaController(mediaController);
-                            binding.videoView.setOnPreparedListener(mp -> {
-//                                binding.loadingView.setVisibility(View.GONE);
-//                                binding.loadingView.stopLoading();
-                                mp.start();
-                            });
-                            binding.videoView.setZOrderOnTop(false);
-                            binding.videoView.setZOrderMediaOverlay(false);
+                            loadVideo(file);
+//                            binding.pdfView.setVisibility(View.GONE);
+//                            binding.videoView.setVisibility(View.VISIBLE);
+//                            binding.webView.setVisibility(View.GONE);
+////                            binding.loadingView.setVisibility(View.VISIBLE);
+////                            binding.loadingView.startLoading();
+//                            Uri uri = Uri.parse(file.getAbsolutePath());
+//                            binding.videoView.setVideoURI(uri);
+//                            binding.videoView.setMediaController(mediaController);
+//                            binding.videoView.setOnPreparedListener(mp -> {
+////                                binding.loadingView.setVisibility(View.GONE);
+////                                binding.loadingView.stopLoading();
+//                                mp.start();
+//                            });
+//                            binding.videoView.setZOrderOnTop(false);
+//                            binding.videoView.setZOrderMediaOverlay(false);
 //                            binding.videoView.start();
                             break;
                         case "zip":
@@ -365,6 +372,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 binding.webView.setVisibility(View.GONE);
                 binding.upArrow.setVisibility(View.VISIBLE);
             }
+//            }
         });
 
         binding.playBtn.setOnTouchListener(new View.OnTouchListener() {
@@ -676,27 +684,73 @@ public class PlaySlideDetailing extends AppCompatActivity {
         binding.recView.setLayoutManager(layoutManager);
         binding.recView.setAdapter(bottomPreviewDetailedAdapter);
     }
+    private void loadVideo(File file) {
+        binding.pdfView.setVisibility(View.GONE);
+        binding.webView.setVisibility(View.GONE);
+        binding.previewThumb.setVisibility(View.GONE);
 
+        // ✅ Screen outside ah move pannunga - surface create aagum but user kaanmaatan
+        binding.videoView.setTranslationY(-10000f);
+        binding.videoView.setVisibility(View.VISIBLE);
+
+        Uri uri = Uri.fromFile(file);
+        binding.videoView.setVideoURI(uri);
+        binding.videoView.setMediaController(mediaController);
+        binding.videoView.setOnPreparedListener(mp -> {
+            Log.e("VIDEO_DEBUG", "onPrepared called!");
+            // ✅ Ready aana normal position la show pannunga
+            binding.videoView.setTranslationY(0f);
+            mp.start();
+        });
+        binding.videoView.setOnErrorListener((mp, what, extra) -> {
+            Log.e("VIDEO_DEBUG", "Error! what=" + what + " extra=" + extra);
+            return false;
+        });
+        binding.videoView.requestFocus();
+    }
+    private void setPdfThumbnail(String filePath) {
+        try {
+            ParcelFileDescriptor fd = ParcelFileDescriptor.open(
+                    new File(filePath), ParcelFileDescriptor.MODE_READ_ONLY);
+            PdfRenderer renderer = new PdfRenderer(fd);
+            PdfRenderer.Page page = renderer.openPage(0);
+
+            Bitmap bitmap = Bitmap.createBitmap(
+                    page.getWidth(), page.getHeight(), Bitmap.Config.ARGB_8888);
+            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+
+            binding.previewThumb.setImageBitmap(bitmap);
+            binding.previewThumb.setVisibility(View.VISIBLE);
+
+            page.close();
+            renderer.close();
+        } catch (Exception e) {
+            Log.e("THUMB_ERROR", e.getMessage());
+        }
+    }
     public void loadPdf(String fileName) {
         File pdfFile = new File(fileName);
 
-        binding.pdfView.recycle();
-        binding.pdfView.setVisibility(View.GONE);
 
-        binding.pdfView.postDelayed(() -> {
-            try {
-                binding.pdfView.fromFile(pdfFile)
-                        .defaultPage(0)
-                        .enableSwipe(true)
-                        .swipeHorizontal(false)
-                        .pageSnap(true)
-                        .spacing(0)
-                        .load();
-                binding.pdfView.setVisibility(View.VISIBLE);
-            } catch (Exception e) {
-                Log.e("PDF_ERROR", "Error loading PDF: " + e.getMessage());
-            }
-        }, 200);
+        binding.previewThumb.setVisibility(View.VISIBLE);
+        binding.pdfView.setVisibility(View.INVISIBLE);
+
+        binding.pdfView.fromFile(pdfFile)
+                .defaultPage(0)
+                .enableSwipe(true)
+                .swipeHorizontal(false)
+                .pageSnap(true)
+                .spacing(0)
+                .onRender(nbPages -> {
+
+                    binding.previewThumb.setVisibility(View.GONE);
+                    binding.pdfView.setVisibility(View.VISIBLE);
+                })
+                .onError(throwable -> {
+                    binding.previewThumb.setVisibility(View.GONE);
+                    Log.e("PDF_ERROR", "Error: " + throwable.getMessage());
+                })
+                .load();
     }
 //    public void loadPdf(String fileName) {
 //        binding.pdfView.fromFile(new File(fileName))
