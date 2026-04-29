@@ -152,6 +152,8 @@ public class TourPlanActivity extends AppCompatActivity {
     JsonObject jbonj = new JsonObject();
     String isNameClicked = "";
     String changeStatus = "";
+    String AutoJointCallNeed = "0";
+    String sftype;
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
@@ -240,6 +242,7 @@ public class TourPlanActivity extends AppCompatActivity {
         tourPlanOnlineDataDao = roomDB.tourPlanOnlineDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
         masterDataDao = roomDB.masterDataDao();
+        sftype = SharedPref.getSfType(this);
         String status;
         if (SharedPref.getOneBuild(this).equalsIgnoreCase("0")) {
             status = "2";
@@ -598,17 +601,94 @@ public class TourPlanActivity extends AppCompatActivity {
 //            }
         });
 
+//        binding.tpNavigation.checkBoxSave.setOnClickListener(view -> {
+////            @Override
+////            public void onSafeClick(View view) {
+//            SessionEditAdapter.MyViewHolder viewHolder = (SessionEditAdapter.MyViewHolder) binding.tpNavigation.tpSessionRecView.findViewHolderForAdapterPosition(sessionEditAdapter.itemPosition);
+//            if (SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+//                sessionEditAdapter.saveCheckedItemOneBuild(viewHolder);
+//            } else {
+//                sessionEditAdapter.saveCheckedItem(viewHolder);
+//            }
+////            }
+//        });
         binding.tpNavigation.checkBoxSave.setOnClickListener(view -> {
-//            @Override
-//            public void onSafeClick(View view) {
-            SessionEditAdapter.MyViewHolder viewHolder = (SessionEditAdapter.MyViewHolder) binding.tpNavigation.tpSessionRecView.findViewHolderForAdapterPosition(sessionEditAdapter.itemPosition);
+
+            Log.d("SAVE_CLICK", "Save button clicked!");
+
+            SessionEditAdapter.MyViewHolder viewHolder =
+                    (SessionEditAdapter.MyViewHolder)
+                            binding.tpNavigation.tpSessionRecView
+                                    .findViewHolderForAdapterPosition(sessionEditAdapter.itemPosition);
+
+            if (viewHolder == null) {
+                Log.d("SAVE_CLICK", "ViewHolder is NULL ❌");
+                return;
+            }
+            Log.d("FINAL_CHECK", "MgrCode = " + viewHolder.selectedMgrCode);
+            boolean isJcLayoutOpen = viewHolder.jcLayout.getVisibility() == View.VISIBLE;
+
+            boolean isMgrSelected = !viewHolder.jcField.getText().toString()
+                    .equalsIgnoreCase(getString(R.string.select));
+
+            Log.d("SAVE_CLICK", "isJcLayoutOpen: " + isJcLayoutOpen);
+            Log.d("SAVE_CLICK", "isMgrSelected: " + isMgrSelected);
+            Log.d("SAVE_CLICK", "sftype: " + sftype);
+            Log.d("SAVE_CLICK", "AutoJointCallNeed: " + AutoJointCallNeed);
+
             if (SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
-                sessionEditAdapter.saveCheckedItemOneBuild(viewHolder);
+
+                if (isMgrSelected &&
+                        sftype.equalsIgnoreCase("1") &&
+                        "0".equals(AutoJointCallNeed)) {
+
+                    Log.d("SAVE_CLICK", "🔥 NEW API CALL");
+
+                    String hqCode = viewHolder.sessionDataOneBuild
+                            .getHeadquarters().getCode();
+
+                    sessionEditAdapter.saveCheckedItemWithAPI(viewHolder, hqCode);
+
+                } else {
+                    Log.d("SAVE_CLICK", "Normal Flow");
+                    sessionEditAdapter.saveCheckedItemOneBuild(viewHolder);
+                }
+
             } else {
                 sessionEditAdapter.saveCheckedItem(viewHolder);
             }
-//            }
         });
+//        binding.tpNavigation.checkBoxSave.setOnClickListener(view -> {
+//            Log.d("SAVE_CLICK", "Save button clicked!");
+//            SessionEditAdapter.MyViewHolder viewHolder = (SessionEditAdapter.MyViewHolder)
+//                    binding.tpNavigation.tpSessionRecView
+//                            .findViewHolderForAdapterPosition(sessionEditAdapter.itemPosition);
+//
+//            if (viewHolder == null) return;
+//            Log.d("SAVE_CLICK", "jcLayout visible: " + (viewHolder.jcLayout.getVisibility() == View.VISIBLE));
+//            Log.d("SAVE_CLICK", "jcField text: " + viewHolder.jcField.getText().toString());
+//            Log.d("SAVE_CLICK", "sftype: " + sftype);
+//            Log.d("SAVE_CLICK", "AutoJointCallNeed: " + AutoJointCallNeed);
+//
+//            if (SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
+//
+//                boolean isJcLayoutOpen = viewHolder.jcLayout.getVisibility() == View.VISIBLE;
+//                boolean isMgrSelected = !viewHolder.jcField.getText().toString()
+//                        .equalsIgnoreCase(getString(R.string.select));
+//
+//                if (isJcLayoutOpen && isMgrSelected && sftype.equalsIgnoreCase("2") && "0".equals(AutoJointCallNeed)) {
+//                    Log.d("SAVE_CLICK", "JC open + MGR Selected: New API");
+//                    String hqCode = viewHolder.sessionDataOneBuild.getHeadquarters().getCode();
+//                   sessionEditAdapter.saveCheckedItemWithAPI(viewHolder,hqCode);
+//
+//                } else {
+//                    Log.d("SAVE_CLICK", "Normal Flow");
+//                    sessionEditAdapter.saveCheckedItemOneBuild(viewHolder);
+//                }
+//            } else {
+//                sessionEditAdapter.saveCheckedItem(viewHolder);
+//            }
+//        });
 
         if (SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
             binding.tpNavigation.addSession.setOnClickListener(new View.OnClickListener() {

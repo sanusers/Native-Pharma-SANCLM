@@ -552,6 +552,7 @@ public class SharedPref {
     public static final String NS_FOR_NFW_NEED = "NS_For_NFW_Need";
     public static final String NS_ALL_CLUSTER_NEED = "NS_All_Cluster_Need";
     public static final String AUTO_SUBMIT_TIME = "Auto_Submit_Time";
+    public static final String  AUTO_JOINT_CALL_NEED = "Auto_Joint_Call_Need";
 
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
@@ -960,6 +961,8 @@ public class SharedPref {
             editor.putString(NS_FOR_NFW_NEED,jsonObject.optString("NS_For_NFW_Need"));
             editor.putString(NS_ALL_CLUSTER_NEED,jsonObject.optString("NS_All_Cluster_Need"));
             editor.putString(AUTO_SUBMIT_TIME,jsonObject.optString("Auto_Submit_Time"));
+            editor.putString(AUTO_JOINT_CALL_NEED,jsonObject.optString("Auto_Joint_Call_Need"));
+
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -3577,4 +3580,9 @@ public static void addVisitedDoctor(Context context, String custCode) {
                 .putString("last_auto_submit_date", date)
                 .apply();
     }
+
+    public static String getAutoJointCallNeed(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(AUTO_JOINT_CALL_NEED,"");
+    }
+
 }

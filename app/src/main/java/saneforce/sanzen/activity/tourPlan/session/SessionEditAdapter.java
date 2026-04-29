@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
+import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapterOneBuild;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -77,6 +79,7 @@ import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.MyViewHolder> {
     public static ModelClass inputDataArray = new ModelClass();
@@ -225,6 +228,16 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJointWorks().clear();
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJointWorks(subClassListOneBuild);
+
+                    if (subClassListOneBuild.size() > 0) {
+
+                        // 👉 first selected manager code
+                        holder.selectedMgrCode = subClassListOneBuild.get(0).getCode();
+
+                        Log.d("MGR_SELECT", "Selected MGR Code = " + holder.selectedMgrCode);
+
+                        saveCheckedItemWithAPI(holder, holder.selectedMgrCode);
+                    }
                 } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getDoctors().clear();
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setDoctors(subClassListOneBuild);
@@ -3877,6 +3890,81 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         sessionMultiHQItemAdapter.notifyDataSetChanged();
     }
 
+    public void saveCheckedItemWithAPI(MyViewHolder holder, String hqCode){
+        try {
+            String baseUrl = SharedPref.getBaseWebUrl(context);
+            String pathUrl = SharedPref.getPhpPathUrl(context);
+            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
+            apiInterface = RetrofitClient.getRetrofit(context, baseUrl + replacedUrl);
+
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+            jsonObject.put("tableName", "gettpdetail_mgr");
+            jsonObject.put("sfcode", SharedPref.getSfCode(context));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+            jsonObject.put("Date", TimeUtils.GetConvertedDateTP(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, inputDataArrayOneBuild.getDate()));
+            jsonObject.put("Month", inputDataArrayOneBuild.getMonth());
+            jsonObject.put("Year", inputDataArrayOneBuild.getYear());
+            jsonObject.put("Rsf", holder.selectedMgrCode);
+            jsonObject.put("sf_type", "2");
+
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "get/tp");
+            Log.d("API_DEBUG", "Full JSON = " + jsonObject.toString());
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call,
+                                       @NonNull Response<JsonElement> response) {
+
+                    if (response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+
+                            if (jsonElement != null && !jsonElement.isJsonNull()) {
+
+                                JSONArray tpResponse = null;
+
+                                if (jsonElement.isJsonArray()) {
+                                    tpResponse = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                } else if (jsonElement.isJsonObject()) {
+                                    tpResponse = new JSONArray();
+                                    tpResponse.put(new JSONObject(jsonElement.getAsJsonObject().toString()));
+                                }
+
+                                if (tpResponse != null && tpResponse.length() > 0) {
+
+                                    // 👉 existing populate logic
+                                    for (int i = 0; i < tpResponse.length(); i++) {
+                                        JSONObject sessionObject = tpResponse.getJSONObject(i);
+                                        populateSessionFromResponse(holder, sessionObject, i);
+                                    }
+
+                                    notifyDataSetChanged();
+                                }
+                            }
+
+                            Log.d("SAVE_FLOW", "API done → calling final save");
+
+                            saveCheckedItemOneBuild(holder);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void saveCheckedItem(MyViewHolder holder) {
         try {
             if (holder.hqLayout.getVisibility() == View.VISIBLE) {
@@ -4342,8 +4430,155 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    private void populateSessionFromResponse(MyViewHolder holder, JSONObject responseJson, int position) {
+        try {
+            OneBuildModelClass.SessionList sessionData = inputDataArrayOneBuild.getSessionList().get(position);
+            Log.d("POPULATE_DEBUG", "rawResponseJson = " + responseJson.toString());
+            sessionData.getWorkType().setCode(responseJson.optString("WorkTypeCode"));
+            sessionData.getWorkType().setName(responseJson.optString("WorkTypeName"));
+            String fwFlg = responseJson.optString("WorkTypeFlag");
+            if (fwFlg.isEmpty()) fwFlg = responseJson.optString("Plan_Work_Type");
+            sessionData.getWorkType().setFWFlg(fwFlg);
+            holder.workTypeField.setText(responseJson.optString("WorkTypeName"));
 
+            sessionData.getHeadquarters().setCode(responseJson.optString("SF_HQ_Code"));
+            sessionData.getHeadquarters().setName(responseJson.optString("SF_HQ_Name"));
+            holder.hqField.setText(responseJson.optString("SF_HQ_Name"));
+            holder.selectedHq = responseJson.optString("SF_HQ_Code");
+
+            List<OneBuildModelClass.SessionList.SubClass> clusterList = parseSubClassList(responseJson.optString("Territories"));
+            StringBuilder clusterNames = new StringBuilder();
+            holder.selectedClusterCode.clear();
+            for (OneBuildModelClass.SessionList.SubClass item : clusterList) {
+                holder.selectedClusterCode.add(item.getCode());
+                if (clusterNames.length() > 0) clusterNames.append(", ");
+                clusterNames.append(item.getName());
+            }
+            sessionData.getTerritories().clear();
+            sessionData.setTerritories(clusterList);
+            holder.clusterField.setText(clusterNames.length() > 0 ? clusterNames.toString() : context.getString(R.string.select));
+
+            List<OneBuildModelClass.SessionList.SubClass> drList = parseSubClassList(responseJson.optString("Doctors"));
+            StringBuilder drNames = new StringBuilder();
+            for (OneBuildModelClass.SessionList.SubClass item : drList) {
+                if (drNames.length() > 0) drNames.append(", ");
+                drNames.append(item.getName());
+            }
+            sessionData.getDoctors().clear();
+            sessionData.setDoctors(drList);
+            holder.drField.setText(drNames.length() > 0 ? drNames.toString() : context.getString(R.string.select));
+
+            List<OneBuildModelClass.SessionList.SubClass> chemistList = parseSubClassList(responseJson.optString("Chemists"));
+            StringBuilder chemistNames = new StringBuilder();
+            for (OneBuildModelClass.SessionList.SubClass item : chemistList) {
+                if (chemistNames.length() > 0) chemistNames.append(", ");
+                chemistNames.append(item.getName());
+            }
+            sessionData.getChemists().clear();
+            sessionData.setChemists(chemistList);
+            holder.chemistField.setText(chemistNames.length() > 0 ? chemistNames.toString() : context.getString(R.string.select));
+
+            List<OneBuildModelClass.SessionList.SubClass> stockList = parseSubClassList(responseJson.optString("Stockists"));
+            StringBuilder stockNames = new StringBuilder();
+            for (OneBuildModelClass.SessionList.SubClass item : stockList) {
+                if (stockNames.length() > 0) stockNames.append(", ");
+                stockNames.append(item.getName());
+            }
+            sessionData.getStockists().clear();
+            sessionData.setStockists(stockList);
+            holder.stockiestField.setText(stockNames.length() > 0 ? stockNames.toString() : context.getString(R.string.select));
+
+            List<OneBuildModelClass.SessionList.SubClass> jcList = parseSubClassList(responseJson.optString("JointWorks"));
+            StringBuilder jcNames = new StringBuilder();
+            for (OneBuildModelClass.SessionList.SubClass item : jcList) {
+                if (jcNames.length() > 0) jcNames.append(", ");
+                jcNames.append(item.getName());
+            }
+            sessionData.getJointWorks().clear();
+            sessionData.setJointWorks(jcList);
+            holder.jcField.setText(jcNames.length() > 0 ? jcNames.toString() : context.getString(R.string.select));
+
+            List<OneBuildModelClass.SessionList.SubClass> unlistedList = parseSubClassList(responseJson.optString("UnlistedDoctors"));
+            StringBuilder unlistedNames = new StringBuilder();
+            for (OneBuildModelClass.SessionList.SubClass item : unlistedList) {
+                if (unlistedNames.length() > 0) unlistedNames.append(", ");
+                unlistedNames.append(item.getName());
+            }
+            sessionData.getUnlistedDoctors().clear();
+            sessionData.setUnlistedDoctors(unlistedList);
+            holder.unListedDrField.setText(unlistedNames.length() > 0 ? unlistedNames.toString() : context.getString(R.string.select));
+
+            List<OneBuildModelClass.SessionList.SubClass> hospList = parseSubClassList(responseJson.optString("Hospitals"));
+            StringBuilder hospNames = new StringBuilder();
+            for (OneBuildModelClass.SessionList.SubClass item : hospList) {
+                if (hospNames.length() > 0) hospNames.append(", ");
+                hospNames.append(item.getName());
+            }
+            sessionData.getHospitals().clear();
+            sessionData.setHospitals(hospList);
+            holder.hospField.setText(hospNames.length() > 0 ? hospNames.toString() : context.getString(R.string.select));
+
+            sessionData.setRemarks(responseJson.optString("TP_Remarks"));
+            holder.remarks.setText(responseJson.optString("TP_Remarks"));
+
+            prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getTerritories(), holder.clusterArray);
+            prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getDoctors(), holder.listedDrArray);
+            prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getChemists(), holder.chemistArray);
+            prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getStockists(), holder.stockiestArray);
+            prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getJointWorks(), holder.jointCallArray);
+            prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getUnlistedDoctors(), holder.unListedDrArray);
+            prepareInputDataOneBuild((ArrayList<OneBuildModelClass.SessionList.SubClass>) sessionData.getHospitals(), holder.hospArray);
+
+            notifyItemChanged(position);
+            inputDataArrayOneBuild.getSessionList().set(position, sessionData);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<OneBuildModelClass.SessionList.SubClass> parseSubClassList(String raw) {
+        List<OneBuildModelClass.SessionList.SubClass> list = new ArrayList<>();
+        if (raw == null || raw.isEmpty()) return list;
+
+        raw = raw.trim();
+
+        if (raw.startsWith("[")) {
+            try {
+                JSONArray jsonArray = new JSONArray(raw);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    String code = obj.optString("Code");
+                    String name = obj.optString("Name");
+                    if (!code.isEmpty() || !name.isEmpty()) {
+                        list.add(new OneBuildModelClass.SessionList.SubClass(name, code));
+                    }
+                }
+                return list;
+            } catch (JSONException e) {
+                // fall through to pipe format
+            }
+        }
+
+        if (raw.contains("|")) {
+            String[] parts = raw.split("\\|", 2);
+            String[] codes = parts[0].split(",");
+            String[] names = parts.length > 1 ? parts[1].split(",") : new String[0];
+            for (int i = 0; i < codes.length; i++) {
+                String code = codes[i].trim();
+                String name = (i < names.length) ? names[i].trim() : "";
+                if (!code.isEmpty() || !name.isEmpty()) {
+                    list.add(new OneBuildModelClass.SessionList.SubClass(name, code));
+                }
+            }
+        }
+
+        return list;
+    }
+
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        public String selectedMgrCode = "";
         public RelativeLayout searchClearIcon;
         public TextView workTypeField, hqField, clusterField, jcField, drField, chemistField, stockiestField, unListedDrField, cipField, hospField, workDayField;
         public TextView listedDrCapTV, cheCapTV, stockCapTV, unListedDrCapTV, hospCapTV, cipCapTV;
