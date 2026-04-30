@@ -613,48 +613,35 @@ public class TourPlanActivity extends AppCompatActivity {
 ////            }
 //        });
         binding.tpNavigation.checkBoxSave.setOnClickListener(view -> {
+            // Current-ah user interact panra ViewHolder-ai edukkurom
+            SessionEditAdapter.MyViewHolder viewHolder = (SessionEditAdapter.MyViewHolder)
+                    binding.tpNavigation.tpSessionRecView.findViewHolderForAdapterPosition(sessionEditAdapter.itemPosition);
 
-            Log.d("SAVE_CLICK", "Save button clicked!");
+            if (viewHolder == null) return;
 
-            SessionEditAdapter.MyViewHolder viewHolder =
-                    (SessionEditAdapter.MyViewHolder)
-                            binding.tpNavigation.tpSessionRecView
-                                    .findViewHolderForAdapterPosition(sessionEditAdapter.itemPosition);
+            // Layout visibility and shared preferences check
+            boolean isJcVisible = viewHolder.jcLayout.getVisibility() == View.VISIBLE;
+            String selectedMgr = viewHolder.selectedMgrCode;
+            String mySfCode = SharedPref.getSfCode(this); // Logged-in user SFCode
 
-            if (viewHolder == null) {
-                Log.d("SAVE_CLICK", "ViewHolder is NULL ❌");
-                return;
-            }
-            Log.d("FINAL_CHECK", "MgrCode = " + viewHolder.selectedMgrCode);
-            boolean isJcLayoutOpen = viewHolder.jcLayout.getVisibility() == View.VISIBLE;
+            if (SharedPref.getOneBuild(this).equalsIgnoreCase("0")) {
 
-            boolean isMgrSelected = !viewHolder.jcField.getText().toString()
-                    .equalsIgnoreCase(getString(R.string.select));
+                // ✅ YOUR LOGIC: Layout is JC AND codes are NOT same
+                // selectedMgr-um mySfCode-um match aagalana dhaan API-ku ponom
+                if (isJcVisible && !selectedMgr.isEmpty() && !selectedMgr.equalsIgnoreCase(mySfCode)
+                        && sftype.equalsIgnoreCase("1") && "0".equals(AutoJointCallNeed)) {
 
-            Log.d("SAVE_CLICK", "isJcLayoutOpen: " + isJcLayoutOpen);
-            Log.d("SAVE_CLICK", "isMgrSelected: " + isMgrSelected);
-            Log.d("SAVE_CLICK", "sftype: " + sftype);
-            Log.d("SAVE_CLICK", "AutoJointCallNeed: " + AutoJointCallNeed);
-
-            if (SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0")) {
-
-                if (isMgrSelected &&
-                        sftype.equalsIgnoreCase("1") &&
-                        "0".equals(AutoJointCallNeed)) {
-
-                    Log.d("SAVE_CLICK", "🔥 NEW API CALL");
-
-                    String hqCode = viewHolder.sessionDataOneBuild
-                            .getHeadquarters().getCode();
-
+                    Log.d("SAVE_LOGIC", "Codes are different. Triggering API Auto-fill.");
+                    String hqCode = viewHolder.sessionDataOneBuild.getHeadquarters().getCode();
                     sessionEditAdapter.saveCheckedItemWithAPI(viewHolder, hqCode);
 
                 } else {
-                    Log.d("SAVE_CLICK", "Normal Flow");
+                    // Self-selection (same code) or other layouts (Dr, Territory, etc.)
+                    Log.d("SAVE_LOGIC", "Same code or not a JC layout. Saving locally.");
                     sessionEditAdapter.saveCheckedItemOneBuild(viewHolder);
                 }
-
             } else {
+                // Normal build flow
                 sessionEditAdapter.saveCheckedItem(viewHolder);
             }
         });

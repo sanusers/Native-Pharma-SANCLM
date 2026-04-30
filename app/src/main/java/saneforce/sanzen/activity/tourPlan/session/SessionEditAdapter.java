@@ -177,11 +177,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void setSelectedCount(MyViewHolder holder, ArrayList<EditModelClass> arrayList, boolean selectState, TextView selectedNameTxtView, TextView countTxt) {
 
-        if (!selectState) { // if its false we should show the text as "Selected" with count or just "Select" .if its true we need to show the selected item name in TextView.
+        if (!selectState) {
             int count = 0;
             for (int i = 0; i < arrayList.size(); i++) {
-                if (arrayList.get(i).isChecked())
-                    count++;
+                if (arrayList.get(i).isChecked()) count++;
             }
 
             if (count > 0) {
@@ -198,102 +197,112 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             StringBuilder text = new StringBuilder();
             for (int i = 0; i < arrayList.size(); i++) {
                 if (arrayList.get(i).isChecked()) {
-                    if (text.length() == 0)
-                        text = new StringBuilder(arrayList.get(i).getName());
-                    else
-                        text.append(",").append(arrayList.get(i).getName());
+                    if (text.length() == 0) text = new StringBuilder(arrayList.get(i).getName());
+                    else text.append(",").append(arrayList.get(i).getName());
                 }
             }
-            if (text.length() == 0) {
-                selectedNameTxtView.setText(R.string.select);
-            } else {
-                selectedNameTxtView.setText(text);
-            }
+            selectedNameTxtView.setText(text.length() == 0 ? context.getString(R.string.select) : text);
             countTxt.setVisibility(View.GONE);
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
             holder.fieldSelected = false;
+
+            int pos = holder.getAbsoluteAdapterPosition();
 
             if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
                 List<OneBuildModelClass.SessionList.SubClass> subClassListOneBuild = new ArrayList<>();
                 for (int i = 0; i < arrayList.size(); i++) {
                     if (arrayList.get(i).isChecked()) {
-                        OneBuildModelClass.SessionList.SubClass subClassOneBuild = new OneBuildModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
-                        subClassListOneBuild.add(subClassOneBuild);
+                        subClassListOneBuild.add(new OneBuildModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode()));
                     }
                 }
 
-                if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getTerritories().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setTerritories(subClassListOneBuild);
-                } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJointWorks().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJointWorks(subClassListOneBuild);
+
+                if (holder.jcLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(pos).setJointWorks(subClassListOneBuild);
 
                     if (subClassListOneBuild.size() > 0) {
+                        // 1. Get the selected manager's code
+                        String selectedMgrCode = subClassListOneBuild.get(0).getCode();
 
-                        // 👉 first selected manager code
-                        holder.selectedMgrCode = subClassListOneBuild.get(0).getCode();
+                        // 2. Get the current user's (logged-in SF) code
+                        String currentUserSfCode = SharedPref.getSfCode(context);
 
-                        Log.d("MGR_SELECT", "Selected MGR Code = " + holder.selectedMgrCode);
+                        //  CRITICAL CHECK: selectedMgrCode and currentUserSfCode should NOT be the same
+                        if (!selectedMgrCode.equalsIgnoreCase(currentUserSfCode)) {
+                            holder.selectedMgrCode = selectedMgrCode;
+                            Log.d("MGR_SELECT", "Different Manager Selected. Triggering API.");
 
-                        saveCheckedItemWithAPI(holder, holder.selectedMgrCode);
+                            //  Only call API if it's a different person
+                            saveCheckedItemWithAPI(holder, holder.selectedMgrCode);
+                        } else {
+                            //  Same person selected as Joint Call
+                            holder.selectedMgrCode = "";
+                            Log.d("MGR_SELECT", "Self-selection or Same SFCode. Skipping API.");
+
+                            // Optional: User-ku puriyanum na unga existing save flow-ai call pannalaam
+                            saveCheckedItemOneBuild(holder);
+                        }
+                    } else {
+                        holder.selectedMgrCode = "";
                     }
+                } else if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(pos).getTerritories().clear();
+                    inputDataArrayOneBuild.getSessionList().get(pos).setTerritories(subClassListOneBuild);
                 } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getDoctors().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setDoctors(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(pos).getDoctors().clear();
+                    inputDataArrayOneBuild.getSessionList().get(pos).setDoctors(subClassListOneBuild);
                 } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemists().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemists(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(pos).getChemists().clear();
+                    inputDataArrayOneBuild.getSessionList().get(pos).setChemists(subClassListOneBuild);
                 } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockists().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockists(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(pos).getStockists().clear();
+                    inputDataArrayOneBuild.getSessionList().get(pos).setStockists(subClassListOneBuild);
                 } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnlistedDoctors().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnlistedDoctors(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(pos).getUnlistedDoctors().clear();
+                    inputDataArrayOneBuild.getSessionList().get(pos).setUnlistedDoctors(subClassListOneBuild);
                 } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(pos).getCip().clear();
+                    inputDataArrayOneBuild.getSessionList().get(pos).setCip(subClassListOneBuild);
                 } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospitals().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospitals(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(pos).getHospitals().clear();
+                    inputDataArrayOneBuild.getSessionList().get(pos).setHospitals(subClassListOneBuild);
                 }
             } else {
+                // Normal Build Flow (No Auto-fill changes needed here)
                 List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
                 for (int i = 0; i < arrayList.size(); i++) {
                     if (arrayList.get(i).isChecked()) {
-                        ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
-                        subClassList.add(subClass);
+                        subClassList.add(new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode()));
                     }
                 }
 
-                //replace the new/modified data to the input data of this adapter class
                 if (holder.hqLayout.getVisibility() == View.VISIBLE && isMGR) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHQs().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHQs(subClassList);
+                    inputDataArray.getSessionList().get(pos).getHQs().clear();
+                    inputDataArray.getSessionList().get(pos).setHQs(subClassList);
                 } else if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCluster().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCluster(subClassList);
+                    inputDataArray.getSessionList().get(pos).getCluster().clear();
+                    inputDataArray.getSessionList().get(pos).setCluster(subClassList);
                 } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJC().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJC(subClassList);
+                    inputDataArray.getSessionList().get(pos).getJC().clear();
+                    inputDataArray.getSessionList().get(pos).setJC(subClassList);
                 } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
+                    inputDataArray.getSessionList().get(pos).getListedDr().clear();
+                    inputDataArray.getSessionList().get(pos).setListedDr(subClassList);
                 } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
+                    inputDataArray.getSessionList().get(pos).getChemist().clear();
+                    inputDataArray.getSessionList().get(pos).setChemist(subClassList);
                 } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockiest().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockiest(subClassList);
+                    inputDataArray.getSessionList().get(pos).getStockiest().clear();
+                    inputDataArray.getSessionList().get(pos).setStockiest(subClassList);
                 } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
+                    inputDataArray.getSessionList().get(pos).getUnListedDr().clear();
+                    inputDataArray.getSessionList().get(pos).setUnListedDr(subClassList);
                 } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
+                    inputDataArray.getSessionList().get(pos).getCip().clear();
+                    inputDataArray.getSessionList().get(pos).setCip(subClassList);
                 } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
-                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
+                    inputDataArray.getSessionList().get(pos).getHospital().clear();
+                    inputDataArray.getSessionList().get(pos).setHospital(subClassList);
                 }
             }
         }
@@ -3890,7 +3899,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         sessionMultiHQItemAdapter.notifyDataSetChanged();
     }
 
-    public void saveCheckedItemWithAPI(MyViewHolder holder, String hqCode){
+    public void saveCheckedItemWithAPI(MyViewHolder holder, String hqCode) {
         try {
             String baseUrl = SharedPref.getBaseWebUrl(context);
             String pathUrl = SharedPref.getPhpPathUrl(context);
@@ -3934,10 +3943,36 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                                 if (tpResponse != null && tpResponse.length() > 0) {
 
-                                    // 👉 existing populate logic
                                     for (int i = 0; i < tpResponse.length(); i++) {
+
                                         JSONObject sessionObject = tpResponse.getJSONObject(i);
-                                        populateSessionFromResponse(holder, sessionObject, i);
+
+                                        String jointWorksStr = sessionObject.optString("JointWorks");
+
+                                        if (jointWorksStr == null || jointWorksStr.isEmpty())
+                                            continue;
+
+                                        // 👉 SFCode
+                                        String sfCode = sessionObject.optString("SFCode").trim();
+
+                                        JSONArray jointArray = new JSONArray(jointWorksStr);
+
+                                        for (int j = 0; j < jointArray.length(); j++) {
+
+                                            JSONObject jwObj = jointArray.getJSONObject(j);
+                                            String code = jwObj.optString("Code").trim();
+
+                                            Log.d("CHECK", "SFCode = " + sfCode + " | JW Code = " + code);
+
+                                            // ✅ MATCH CONDITION
+                                            if (sfCode.equalsIgnoreCase(code)) {
+
+                                                Log.d("MATCH_FOUND", "✅ Autofill triggered");
+
+                                                populateSessionFromResponse(holder, sessionObject, i);
+                                                break;
+                                            }
+                                        }
                                     }
 
                                     notifyDataSetChanged();
@@ -3953,6 +3988,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
                 }
+
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     t.printStackTrace();
