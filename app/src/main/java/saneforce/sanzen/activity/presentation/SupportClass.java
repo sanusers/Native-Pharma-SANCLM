@@ -297,6 +297,11 @@ public class SupportClass {
             case "jpg":
             case "png":
             case "jpeg":
+                File slide = new File(context.getExternalFilesDir(null) + "/Slides/", thumbnail.getName().replace("jpeg",fileFormat));
+                if(slide.exists()) {
+                    Glide.with(context).load(new File(slide.getAbsolutePath())).downsample(DownsampleStrategy.FIT_CENTER).placeholder(R.drawable.baseline_cached_24).into(imageView);
+                }
+                break;
             case "avi":
             case "mp4":
             case "pdf":

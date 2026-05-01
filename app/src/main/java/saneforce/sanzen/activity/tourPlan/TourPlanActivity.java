@@ -1882,7 +1882,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 tpOverviewNeed = jsonObject.optString("tp_overview_need", "1");
             }
 
-            if (tpOverviewNeed.equals("0")) {
+            if (tpOverviewNeed.equals("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
                 binding.planOverview.setVisibility(View.VISIBLE);
             } else {
                 binding.planOverview.setVisibility(View.GONE);
@@ -2049,7 +2049,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 tpOverviewNeed = jsonObject.optString("tp_overview_need", "1");
             }
 
-            if (tpOverviewNeed.equals("0")) {
+            if (tpOverviewNeed.equals("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
                 binding.planOverview.setVisibility(View.VISIBLE);
             } else {
                 binding.planOverview.setVisibility(View.GONE);
