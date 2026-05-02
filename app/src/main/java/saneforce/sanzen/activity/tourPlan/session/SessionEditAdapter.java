@@ -862,6 +862,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             } else {
                                 setSelectedCount(holder, holder.jointCallArray, false, holder.jcField, holder.jcCount);
                             }
+                            for (EditModelClass item : holder.jointCallArray) {
+                                if (item.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
+                                    item.setChecked(false);
+                                    break;
+                                }
+                            }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = holder.jointCallArray;
                             populateSessionItemAdapterOneBuild(holder, true, true, false);
